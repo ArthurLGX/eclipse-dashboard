@@ -1,8 +1,15 @@
 // ./config/server.ts
-import { env } from '@strapi/utils';
+type Env = {
+  (key: string, defaultValue?: string): string | undefined;
+  (key: string, defaultValue?: boolean): boolean | undefined;
+  (key: string, defaultValue?: number): number | undefined;
+  bool(key: string, defaultValue?: boolean): boolean | undefined;
+  int(key: string, defaultValue?: number): number | undefined;
+  // Ajoutez d'autres méthodes si nécessaire, comme float, json, array, etc.
+  array(key: string, defaultValue?: string[]): string[] | undefined;
+};
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default () => ({
+export default ({ env }: { env: Env }) => ({
   host: env('HOST', '0.0.0.0'),
   port: env.int('PORT', 1337),
   app: {

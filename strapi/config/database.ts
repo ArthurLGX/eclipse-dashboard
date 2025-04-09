@@ -1,7 +1,14 @@
 import path from 'path';
-
-// eslint-disable-next-line import/no-anonymous-default-export
-export default ({ env }) => {
+type Env = {
+  (key: string, defaultValue?: string): string | undefined;
+  (key: string, defaultValue?: boolean): boolean | undefined;
+  (key: string, defaultValue?: number): number | undefined;
+  bool(key: string, defaultValue?: boolean): boolean | undefined;
+  int(key: string, defaultValue?: number): number | undefined;
+  // Ajoutez d'autres méthodes si nécessaire, comme float, json, array, etc.
+  array(key: string, defaultValue?: string[]): string[] | undefined;
+};
+export default ({ env }: { env: Env }) => {
   const client = env('DATABASE_CLIENT', 'sqlite');
 
   const connections = {
