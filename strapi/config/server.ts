@@ -1,12 +1,12 @@
 // ./config/server.ts
 type Env = {
-  (key: string, defaultValue?: string): string | undefined;
-  (key: string, defaultValue?: boolean): boolean | undefined;
-  (key: string, defaultValue?: number): number | undefined;
-  bool(key: string, defaultValue?: boolean): boolean | undefined;
-  int(key: string, defaultValue?: number): number | undefined;
+  (key: string, defaultValue?: string): string;
+  (key: string, defaultValue?: boolean): boolean;
+  (key: string, defaultValue?: number): number;
+  bool(key: string, defaultValue?: boolean): boolean;
+  int(key: string, defaultValue?: number): number;
   // Ajoutez d'autres méthodes si nécessaire, comme float, json, array, etc.
-  array(key: string, defaultValue?: string[]): string[] | undefined;
+  array(key: string, defaultValue?: string[]): string[];
 };
 
 export default ({ env }: { env: Env }) => ({

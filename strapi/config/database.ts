@@ -1,13 +1,15 @@
+// ./config/database.ts
 import path from 'path';
+
 type Env = {
-  (key: string, defaultValue?: string): string | undefined;
-  (key: string, defaultValue?: boolean): boolean | undefined;
-  (key: string, defaultValue?: number): number | undefined;
-  bool(key: string, defaultValue?: boolean): boolean | undefined;
-  int(key: string, defaultValue?: number): number | undefined;
-  // Ajoutez d'autres méthodes si nécessaire, comme float, json, array, etc.
-  array(key: string, defaultValue?: string[]): string[] | undefined;
+  (key: string, defaultValue?: string): string;
+  (key: string, defaultValue?: boolean): boolean;
+  (key: string, defaultValue?: number): number;
+  bool(key: string, defaultValue?: boolean): boolean;
+  int(key: string, defaultValue?: number): number;
+  array(key: string, defaultValue?: string[]): string[];
 };
+
 export default ({ env }: { env: Env }) => {
   const client = env('DATABASE_CLIENT', 'sqlite');
 
@@ -20,11 +22,11 @@ export default ({ env }: { env: Env }) => {
         user: env('DATABASE_USERNAME', 'strapi'),
         password: env('DATABASE_PASSWORD', 'strapi'),
         ssl: env.bool('DATABASE_SSL', false) && {
-          key: env('DATABASE_SSL_KEY', undefined),
-          cert: env('DATABASE_SSL_CERT', undefined),
-          ca: env('DATABASE_SSL_CA', undefined),
-          capath: env('DATABASE_SSL_CAPATH', undefined),
-          cipher: env('DATABASE_SSL_CIPHER', undefined),
+          key: env('DATABASE_SSL_KEY', ''),
+          cert: env('DATABASE_SSL_CERT', ''),
+          ca: env('DATABASE_SSL_CA', ''),
+          capath: env('DATABASE_SSL_CAPATH', ''),
+          cipher: env('DATABASE_SSL_CIPHER', ''),
           rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
         },
       },
@@ -32,18 +34,18 @@ export default ({ env }: { env: Env }) => {
     },
     postgres: {
       connection: {
-        connectionString: env('DATABASE_URL'),
+        connectionString: env('DATABASE_URL', ''),
         host: env('DATABASE_HOST', 'localhost'),
         port: env.int('DATABASE_PORT', 5432),
         database: env('DATABASE_NAME', 'strapi'),
         user: env('DATABASE_USERNAME', 'strapi'),
         password: env('DATABASE_PASSWORD', 'strapi'),
         ssl: env.bool('DATABASE_SSL', false) && {
-          key: env('DATABASE_SSL_KEY', undefined),
-          cert: env('DATABASE_SSL_CERT', undefined),
-          ca: env('DATABASE_SSL_CA', undefined),
-          capath: env('DATABASE_SSL_CAPATH', undefined),
-          cipher: env('DATABASE_SSL_CIPHER', undefined),
+          key: env('DATABASE_SSL_KEY', ''),
+          cert: env('DATABASE_SSL_CERT', ''),
+          ca: env('DATABASE_SSL_CA', ''),
+          capath: env('DATABASE_SSL_CAPATH', ''),
+          cipher: env('DATABASE_SSL_CIPHER', ''),
           rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
         },
         schema: env('DATABASE_SCHEMA', 'public'),
