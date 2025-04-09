@@ -1,0 +1,72 @@
+{
+  "kind": "collectionType",
+  "collectionName": "factures",
+  "info": {
+    "singularName": "facture",
+    "pluralName": "factures",
+    "displayName": "factures"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "reference": {
+      "type": "uid",
+      "default": "01-01-2025",
+      "required": true
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "due_date": {
+      "type": "date"
+    },
+    "facture_status": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "sent",
+        "paid",
+        "overdue",
+        "cancelled"
+      ]
+    },
+    "number": {
+      "type": "decimal",
+      "required": true
+    },
+    "currency": {
+      "type": "string",
+      "required": true,
+      "default": "EUR"
+    },
+    "client_id": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::client.client",
+      "inversedBy": "factures"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::project.project"
+    },
+    "description": {
+      "type": "text"
+    },
+    "pdf": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "notes": {
+      "type": "text"
+    }
+  }
+}

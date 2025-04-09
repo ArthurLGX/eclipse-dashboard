@@ -1,0 +1,73 @@
+{
+  "kind": "collectionType",
+  "collectionName": "clients",
+  "info": {
+    "singularName": "client",
+    "pluralName": "clients",
+    "displayName": "clients",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "unique": false,
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "number": {
+      "type": "string"
+    },
+    "enterprise": {
+      "type": "string",
+      "required": true
+    },
+    "adress": {
+      "type": "text"
+    },
+    "website": {
+      "type": "string"
+    },
+    "processStatus": {
+      "type": "enumeration",
+      "enum": [
+        "prospect",
+        "client",
+        "archived"
+      ],
+      "required": true,
+      "default": "prospect"
+    },
+    "client_id": {
+      "type": "uid",
+      "required": false
+    },
+    "projects": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project.project",
+      "mappedBy": "client"
+    },
+    "factures": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::facture.facture",
+      "mappedBy": "client_id"
+    },
+    "image": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}
