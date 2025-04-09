@@ -1,5 +1,6 @@
 
 type Env = (key: string, defaultValue?: string | boolean | number) => string | boolean | number | undefined;
+// eslint-disable-next-line import/no-anonymous-default-export
 export default ({ env }: { env: Env }) => ({
   auth: {
     secret: env('ADMIN_JWT_SECRET'),

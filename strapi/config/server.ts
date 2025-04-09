@@ -1,5 +1,8 @@
+// ./config/server.ts
+import { env } from '@strapi/utils';
 
-export default ({ env }) => ({
+// eslint-disable-next-line import/no-anonymous-default-export
+export default () => ({
   host: env('HOST', '0.0.0.0'),
   port: env.int('PORT', 1337),
   app: {
@@ -8,5 +11,5 @@ export default ({ env }) => ({
   logger: {
     level: 'debug',
     requests: true,
-  }
+  },
 });

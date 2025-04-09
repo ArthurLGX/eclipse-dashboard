@@ -1,5 +1,6 @@
 import path from 'path';
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default ({ env }) => {
   const client = env('DATABASE_CLIENT', 'sqlite');
 
