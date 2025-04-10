@@ -28,6 +28,7 @@ export default function Login() {
                 console.log("Login successful");
                 localStorage.setItem('token', data.jwt); // Stockage du JWT dans localStorage ou cookies
                 localStorage.setItem('user', JSON.stringify(data.user)); // Stockage de l'utilisateur
+                console.log('user : ' + data.user);
                 login(data.user, data.jwt); // met à jour l'état global
                 router.push("/"); // Redirect to the dashboard
             } else {
