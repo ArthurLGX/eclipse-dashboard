@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setToken(token);
 
         try {
-            const res = await fetch(`http://localhost:1337/api/users?id=${user.id}?populate=*`)
+            const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users?id=${user.id}?populate=*`)
             const fullUser = await res.json();
             localStorage.setItem('user', JSON.stringify(fullUser));
             setUser(fullUser);

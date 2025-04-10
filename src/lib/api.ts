@@ -11,11 +11,19 @@ import axios from "axios";
 
 export async function fetchClients() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/clients?populate=*`);
+    if (!res.ok) {
+        console.error(res);
+        throw new Error("Erreur lors de la récupération des clients");
+    }
     return res.json();
 }
 
 export async function fetchNumberOfClients() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/clients?populate=*`);
+    if (!res.ok) {
+        console.error(res);
+        throw new Error("Erreur lors de la récupération du nombre de clients");
+    }
     const data = await res.json();
     return data.data.length;
 }
@@ -23,11 +31,19 @@ export async function fetchNumberOfClients() {
 
 export async function fetchProjects() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/projects?populate=*`);
+    if (!res.ok) {
+        console.error(res);
+        throw new Error("Erreur lors de la récupération des projets");
+    }
     return res.json();
 }
 
 export async function fetchNumberOfProjects() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/projects?populate=*`);
+    if (!res.ok) {
+        console.error(res);
+        throw new Error("Erreur lors de la récupération du nombre de projets");
+    }
     const data = await res.json();
     return data.data.length;
 }
@@ -52,6 +68,10 @@ export async function fetchClientById(id: string) {
 
 export async function fetchProspects() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/prospects?populate=*`);
+    if (!res.ok) {
+        console.error(res);
+        throw new Error("Erreur lors de la récupération des prospects");
+    }
     return res.json();
 }
 
@@ -120,16 +140,29 @@ export async function fetchUserById(userId: number) {
 
 export async function fetchMentors() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/mentors?populate=*`);
+
+    if (!res.ok) {
+        console.error(res);
+        throw new Error("Erreur lors de la récupération des mentors");
+    }
     return res.json();
 }
 //fetch number of users
 export async function fetchNumberOfUsers() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users/count`);
+    if (!res.ok) {
+        console.error(res);
+        throw new Error("Erreur lors de la récupération du nombre d'utilisateurs");
+    }
     return res.json();
 }
 
 export async function fetchNumberOfMentors() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/mentors?populate=*`);
+    if (!res.ok) {
+        console.error(res);
+        throw new Error("Erreur lors de la récupération du nombre de mentors");
+    }
     const data = await res.json();
     return data.data.length;
 }
