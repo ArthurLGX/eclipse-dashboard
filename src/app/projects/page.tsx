@@ -78,7 +78,7 @@ export default function Projects() {
         });
     }, []);
 
-    const apiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337";
+    const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
     return (
         <ProtectedRoute>

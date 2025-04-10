@@ -68,7 +68,7 @@ export const Header = () => {
             console.log("Fetching user by ID:", user_.id);
             fetchUserById(user_.id).then((data) => {
                     console.log("Fetched user data:", data);
-                    setProfilePictureUrl(process.env.NEXT_PUBLIC_STRAPI_API_URL + data[0].profile_picture.url);
+                    setProfilePictureUrl(process.env.NEXT_PUBLIC_STRAPI_URL + data[0].profile_picture.url);
                     setUser_(data[0]);
                 }
             ).catch((error) => {

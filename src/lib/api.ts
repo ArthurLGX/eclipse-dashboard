@@ -10,7 +10,7 @@ import axios from "axios";
 
 
 export async function fetchClients() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/clients?populate=*`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/clients?populate=*`);
     if (!res.ok) {
         console.error(res);
         throw new Error("Erreur lors de la récupération des clients");
@@ -19,7 +19,7 @@ export async function fetchClients() {
 }
 
 export async function fetchNumberOfClients() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/clients?populate=*`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/clients?populate=*`);
     if (!res.ok) {
         console.error(res);
         throw new Error("Erreur lors de la récupération du nombre de clients");
@@ -30,7 +30,7 @@ export async function fetchNumberOfClients() {
 
 
 export async function fetchProjects() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/projects?populate=*`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/projects?populate=*`);
     if (!res.ok) {
         console.error(res);
         throw new Error("Erreur lors de la récupération des projets");
@@ -39,7 +39,7 @@ export async function fetchProjects() {
 }
 
 export async function fetchNumberOfProjects() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/projects?populate=*`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/projects?populate=*`);
     if (!res.ok) {
         console.error(res);
         throw new Error("Erreur lors de la récupération du nombre de projets");
@@ -54,7 +54,7 @@ export async function fetchClientById(id: string) {
 
     const intId = parseInt(id, 10); // Convertir l'ID en entier
     const res = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}/api/clients?id=${intId}?populate=*`
+        `${process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"}/api/clients?id=${intId}?populate=*`
     );
     if (!res.ok) {
         console.error(res);
@@ -67,7 +67,7 @@ export async function fetchClientById(id: string) {
 }
 
 export async function fetchProspects() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/prospects?populate=*`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/prospects?populate=*`);
     if (!res.ok) {
         console.error(res);
         throw new Error("Erreur lors de la récupération des prospects");
@@ -80,7 +80,7 @@ export async function fetchProspectById(id: string) {
 
     const intId = parseInt(id, 10); // Convertir l'ID en entier
     const res = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}/api/prospects?id=${intId}?populate=*`
+        `${process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"}/api/prospects?id=${intId}?populate=*`
     );
     if (!res.ok) {
         console.error(res);
@@ -95,7 +95,7 @@ export async function fetchProspectById(id: string) {
 export async function fetchNumberOfProspects() {
 
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/prospects?populate=*`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/prospects?populate=*`);
         const data = await res.json();
         return data.data.length;
     } catch (error) {
@@ -106,7 +106,7 @@ export async function fetchNumberOfProspects() {
 
 export async function fetchLogin(username: string, password: string) {
 
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/auth/local`, {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local`, {
         identifier: username,
         password: password,
     });
@@ -117,13 +117,13 @@ export async function fetchLogin(username: string, password: string) {
 }
 
 export async function fetchUsers() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users?populate=*`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users?populate=*`);
     return res.json();
 }
 
 export async function fetchUserById(userId: number) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users?id=${userId}&populate=*`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users?id=${userId}&populate=*`);
         // Check if the response is OK
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -139,7 +139,7 @@ export async function fetchUserById(userId: number) {
 }
 
 export async function fetchMentors() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/mentors?populate=*`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/mentors?populate=*`);
 
     if (!res.ok) {
         console.error(res);
@@ -149,7 +149,7 @@ export async function fetchMentors() {
 }
 //fetch number of users
 export async function fetchNumberOfUsers() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users/count`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/count`);
     if (!res.ok) {
         console.error(res);
         throw new Error("Erreur lors de la récupération du nombre d'utilisateurs");
@@ -158,7 +158,7 @@ export async function fetchNumberOfUsers() {
 }
 
 export async function fetchNumberOfMentors() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/mentors?populate=*`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/mentors?populate=*`);
     if (!res.ok) {
         console.error(res);
         throw new Error("Erreur lors de la récupération du nombre de mentors");
