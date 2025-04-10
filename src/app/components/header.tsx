@@ -77,7 +77,7 @@ export const Header = () => {
         }
         /* }
  */
-    }, [profilePictureUrl, user]);
+    }, [profilePictureUrl, user, user_]);
 
     return (
         <motion.div
