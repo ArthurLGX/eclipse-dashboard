@@ -27,6 +27,10 @@ export default function Login() {
                 // Handle successful login
                 console.log("Login successful");
                 localStorage.setItem('token', data.jwt); // Stockage du JWT dans localStorage ou cookies
+                //on supprime le user dans le localstorage avant de le réécrire
+                if (localStorage.getItem('user')) {
+                    localStorage.removeItem('user');
+                }
                 localStorage.setItem('user', JSON.stringify(data.user)); // Stockage de l'utilisateur
                 console.log('user : ' + data.user);
                 login(data.user, data.jwt); // met à jour l'état global
