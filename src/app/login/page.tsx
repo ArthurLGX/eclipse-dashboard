@@ -42,6 +42,7 @@ export default function Login() {
     }
 
     useEffect(() => {
+        console.log("NEXT_PUBLIC_STRAPI_API_URL:", process.env.NEXT_PUBLIC_STRAPI_API_URL);
         if (!hasHydrated) return;
         if (authenticated) {
             router.push("/")
