@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { fetchCreateAccount, fetchLogin } from '@/lib/api';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -9,7 +9,7 @@ import useLenis from '@/utils/useLenis';
 import Image from 'next/image';
 import { usePopup } from '@/app/context/PopupContext';
 
-export default function Login() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const type = (searchParams.get('type') as 'login' | 'register') || 'login';
   const [isLogin, setIsLogin] = useState(type === 'login');
@@ -211,146 +211,61 @@ export default function Login() {
                   required
                   onChange={e => {
                     setPassword(e.target.value);
-                    if (!isLogin) {
-                      setPasswordError(validatePassword(e.target.value));
-                    }
+                    setPasswordError(validatePassword(e.target.value));
                   }}
-                  className={`w-full p-3 pr-12 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 ${
-                    passwordError && !isLogin ? '!border-red-500' : ''
-                  }`}
+                  className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-300 transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
                 >
-                  {showPassword ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  )}
+                  {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
               </div>
-              {passwordError && !isLogin && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="space-y-2"
-                >
-                  <p className="!text-red-400 text-sm text-center">
-                    {passwordError}
-                  </p>
-                </motion.div>
+              {passwordError && (
+                <p className="text-red-400 text-xs">{passwordError}</p>
               )}
             </div>
-            {confirmPasswordError && (
+
+            {!isLogin && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 className="space-y-2"
               >
-                <p className="text-red-400 text-sm text-center">
-                  {confirmPasswordError}
-                </p>
-              </motion.div>
-            )}
-            {!isLogin && (
-              <div className="space-y-2">
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirm Password"
                     value={confirmPassword}
-                    required
+                    required={!isLogin}
                     onChange={e => {
                       setConfirmPassword(e.target.value);
                       checkPassword(e.target.value);
                     }}
-                    className="w-full p-3 pr-12 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                    className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-300 transition-colors"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
                   >
-                    {showConfirmPassword ? (
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
-                    )}
+                    {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                   </button>
                 </div>
-              </div>
+                {confirmPasswordError && (
+                  <p className="text-red-400 text-xs">{confirmPasswordError}</p>
+                )}
+              </motion.div>
             )}
 
             <motion.button
+              type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              type="submit"
-              onClick={handleSubmit}
-              className="w-full bg-green-500 text-black font-semibold py-3 px-4 rounded-lg hover:bg-green-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-zinc-950"
+              className="w-full bg-green-500 text-black font-semibold py-3 px-6 rounded-lg hover:bg-green-400 transition-colors duration-200"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </motion.button>
@@ -359,50 +274,84 @@ export default function Login() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4, ease: 'easeInOut' }}
-            className="mt-8 text-center"
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-center mt-6"
           >
             <p className="text-zinc-400">
-              {isLogin ? "Don't have an account?" : 'Already have an account?'}
+              {isLogin
+                ? "Don't have an account? "
+                : 'Already have an account? '}
+              <button
+                onClick={toggleMode}
+                className="text-green-500 hover:text-green-400 transition-colors duration-200"
+              >
+                {isLogin ? 'Sign up' : 'Sign in'}
+              </button>
             </p>
-            <button
-              onClick={toggleMode}
-              className="mt-2 text-green-400 hover:text-green-300 font-medium transition-colors duration-200"
-            >
-              {isLogin ? 'Create one here' : 'Sign in here'}
-            </button>
           </motion.div>
         </div>
       </div>
 
-      {/* Right side - Background Image */}
-      <div className="hidden lg:flex flex-1 items-center justify-center relative overflow-hidden">
-        <div className="flex flex-col items-center justify-center w-11/12 h-11/12 border border-zinc-800 rounded-lg">
-          <Image
-            src="/images/background.jpg"
-            alt="Background"
-            width={1000}
-            height={1000}
-            className="object-cover opacity-50 w-full h-full"
-          />
-          <Image
-            src={'/images/logo/eclipse-logo.png'}
-            alt="Logo"
-            width={100}
-            height={100}
-            className=" opacity-100 w-[50px] h-[50px]"
-          />
-        </div>
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: 'easeInOut' }}
-            className="text-center text-white p-8"
-          ></motion.div>
+      {/* Right side - Video Background */}
+      <div className="flex-1 relative overflow-hidden rounded-r-xl">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/videos/flamme.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="relative z-10 flex items-center justify-center h-full">
+          <div className="text-center text-white">
+            <Image
+              src="/images/logo/eclipse-logo.png"
+              alt="Eclipse Studio Logo"
+              width={120}
+              height={120}
+              className="mx-auto mb-4"
+            />
+            <h2 className="text-2xl font-bold mb-2">Eclipse Studio</h2>
+            <p className="text-lg opacity-90">
+              {isLogin
+                ? 'Welcome back to your creative space'
+                : 'Join our creative community'}
+            </p>
+          </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function LoginLoading() {
+  return (
+    <div className="flex h-fit w-3/4 !my-32 border border-zinc-900 bg-gradient-to-b from-zinc-950 to-black rounded-xl">
+      <div className="flex-1 flex items-center justify-center p-16">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="h-8 bg-zinc-800 rounded w-48 mx-auto mb-2 animate-pulse"></div>
+            <div className="h-4 bg-zinc-800 rounded w-32 mx-auto animate-pulse"></div>
+          </div>
+          <div className="space-y-6">
+            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
+            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
+            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
+            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+      <div className="flex-1 bg-zinc-900 rounded-r-xl"></div>
+    </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<LoginLoading />}>
+      <LoginContent />
+    </Suspense>
   );
 }
