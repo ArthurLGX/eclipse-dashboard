@@ -3,24 +3,34 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 
-type Props = {
-    children: React.ReactNode;
-};
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
 
-export default function ProtectedRoute({ children }: Props) {
-    const { authenticated, hasHydrated } = useAuth();
-    const router = useRouter();
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { authenticated, hasHydrated } = useAuth();
+  const router = useRouter();
 
-    useEffect(() => {
-        if (!hasHydrated) return;
-        if (!authenticated) {
-            router.replace('/login');
-        }
-    }, [authenticated, hasHydrated, router]);
-
-    if (!hasHydrated || !authenticated) {
-        return null; // or loading spinner
+  useEffect(() => {
+    if (hasHydrated && !authenticated) {
+      router.push('/login?type=login');
     }
+  }, [authenticated, hasHydrated, router]);
 
-    return <>{children}</>;
+  if (!hasHydrated) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p className="text-zinc-400">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!authenticated) {
+    return null;
+  }
+
+  return <>{children}</>;
 }

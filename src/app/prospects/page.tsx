@@ -3,6 +3,8 @@ import React, {useEffect} from "react";
 import {motion} from "framer-motion";
 import {fetchProspects} from "@/lib/api";
 import Image from "next/image";
+import useLenis from '@/utils/useLenis';
+
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 interface Prospect {
@@ -25,6 +27,8 @@ interface Prospect {
 
 export default function Prospects() {
     const [prospects, setProspects] = React.useState<Prospect[]>([]);
+
+    useLenis();
 
     useEffect(() => {
         fetchProspects().then((data) => {

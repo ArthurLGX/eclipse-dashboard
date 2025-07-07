@@ -28,7 +28,6 @@ export default function Projects() {
 
     useEffect(() => {
         fetchProjects().then((data) => {
-            console.log(data.data);
             const updatedProjects = data.data.map((project: Project) => {
                 let bgColor = "";
                 let textColor = "";

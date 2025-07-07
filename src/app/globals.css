@@ -1,106 +1,126 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap?family=Poppins:wght@400..800&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /*google fonts*/
 
-
-
 :root {
-    --background: black;
-    --foreground: #171717;
-    --text-color: #f5f5f5;
+  --background: black;
+  --foreground: #171717;
+  --text-color: #e4e0e0;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 /*Scroll bar style*/
 
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
+  background: #888;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  background: #555;
 }
 
-
-
-
-
 body {
-    background: var(--background);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    width: 100%;
-    color: var(--foreground);
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 16px;
-    margin:0;
-    @apply border border-2 border-zinc-600;
-    overflow-x: auto;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 16px;
+  margin: 0;
+  overflow-x: auto;
 }
 
 main {
-    display: flex;
-    flex-direction: column;
-    background: var(--background);
-    color: var(--foreground);
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    gap: 32px;
-    width: 100%;
-    font-family: "Manrope", sans-serif;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+  color: var(--foreground);
+  align-items: start;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: 'Manrope', sans-serif;
 }
 
 h1 {
-    font-size: 3rem;
-    font-family: "Poppins ExtraBold", sans-serif;
-    text-align: left;
-    color: var(--text-color);
+  font-size: 3rem;
+  font-family: 'Manrope', sans-serif;
+  text-align: center;
+  text-transform: capitalize;
+  line-height: 1;
+  color: var(--text-color);
 }
 
 h2 {
-    font-family: "Poppins", sans-serif;
-    font-size: 2rem;
-    font-weight: 400;
+  font-family: 'Manrope', sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+button {
+  font-family: 'Manrope', sans-serif;
+}
+
+form select,
+form select option {
+  font-family: 'Manrope', sans-serif;
 }
 
 header nav {
-    font-family: "Manrope", sans-serif;
+  font-family: 'Manrope', sans-serif;
 }
 
-
-ul li a, a, h3#footerTitle{
-    list-style: none;
-    font-family: "Manrope", sans-serif;
+ul li a,
+a,
+h3#footerTitle,
+h3,
+h4 {
+  list-style: none;
+  font-family: 'Manrope', sans-serif;
 }
 
-
-form input, form label {
-    font-family: "Poppins", sans-serif;
+form input,
+form label {
+  font-family: 'Manrope', sans-serif;
 }
 
 p {
-    font-family: "Manrope ExtraLight", sans-serif;
-    color: var(--text-color);
-    font-size:12px;
+  font-family: 'Manrope', sans-serif;
+  color: var(--text-color);
+  font-size: 16px;
 }
 
 p#header {
-    font-family: "Manrope ExtraLight", sans-serif;
-    font-size: 16px;
-    color: var(--text-color);
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+table td,
+table th,
+table tr,
+span,
+label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+}
+
+select,
+option {
+  font-family: 'Manrope', sans-serif;
 }

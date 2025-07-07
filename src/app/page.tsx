@@ -1,117 +1,61 @@
-"use client";
-import useLenis from '../utils/useLenis';
-import {IconUser, IconMail, IconUsers, IconBuilding, IconMagnet, IconBrain} from "@tabler/icons-react";
-import {motion} from "framer-motion";
-import {fetchNumberOfClients, fetchNumberOfProjects, fetchNumberOfUsers, fetchNumberOfMentors} from "@/lib/api";
-import React, {useEffect} from "react";
-import {useAuth} from '@/app/context/AuthContext';
-import {useRouter} from "next/navigation";
-import ProtectedRoute from "@/app/components/ProtectedRoute";
+'use client';
+import useLenis from '@/utils/useLenis';
+import { motion } from 'framer-motion';
+import React from 'react';
 
+import Image from 'next/image';
+import { TryBtn } from './components/buttons/tryBtn';
 
 export default function Home() {
-    const [numberOfClients, setNumberOfClients] = React.useState(0);
-    const [numberOfProjects, setNumberOfProjects] = React.useState(0);
-    const [numberOfMentors, setNumberOfMentors] = React.useState(0);
-    /*
-        const [numberOfProspects, setNumberOfProspects] = React.useState(0);
-    */
-    const [numberOfUsers, setNumberOfUsers] = React.useState(0);
-    const {authenticated} = useAuth();
-    const router = useRouter();
+  useLenis();
 
-
-    useEffect(() => {
-        if (!authenticated) {
-            router.push('/login');
+  return (
+    <main className="min-h-screen flex flex-col items-center justify-center">
+      <Image
+        src="/images/background.jpg"
+        alt="background"
+        width={1000}
+        height={1000}
+        className="absolute top-0 left-0 w-full h-full object-cover opacity-20"
+      />
+      <div
+        className={
+          '!text-zinc-200 z-10 flex flex-col gap-16 items-center justify-center w-full p-4  h-full '
         }
-        fetchNumberOfUsers().then((data) => {
-            setNumberOfUsers(data);
-        });
-        fetchNumberOfMentors().then((data) => {
-            setNumberOfMentors(data);
-        });
+      >
+        <div
+          className={
+            'flex flex-col gap-8 items-center justify-center w-1/2 font-bold h-fit tracking-tighter gap-4'
+          }
+        >
+          <motion.h1
+            initial={{ opacity: 0, y: '20%' }}
+            animate={{ opacity: 1, y: 1 }}
+            transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.1 }}
+            className="flex flex-col items-center justify-center gap-2"
+          >
+            <motion.span
+              initial={{ opacity: 0, y: '100%' }}
+              animate={{ opacity: 1, y: 1 }}
+              transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.2 }}
+              className="text-xl text-zinc-200 font-light"
+            >
+              Handle your freelance activity{' '}
+            </motion.span>
+            manage your projects{' '}
+            <motion.span
+              initial={{ opacity: 0, y: '100%' }}
+              animate={{ opacity: 1, y: 1 }}
+              transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
+              className="bg-emerald-300/20 backdrop-blur-xs py-2 px-4 rounded-full text-green-200 font-extrabold shadow-md shadow-emerald-300/20"
+            >
+              with ease
+            </motion.span>
+          </motion.h1>
 
-        /*fetchNumberOfProspects().then((data) => {
-            setNumberOfProspects(data);
-        });*/
-        fetchNumberOfClients().then((data) => {
-            setNumberOfClients(data);
-        });
-        fetchNumberOfProjects().then((data) => {
-            setNumberOfProjects(data);
-        });
-    }, [authenticated, router]);
-
-    useLenis();
-    const gridItems = [
-        {
-            id: 1,
-            number: numberOfClients,
-            icon: <IconUsers
-                className={'group-hover:!text-green-200 !text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'}
-                size={24}/>,
-            title: 'Clients',
-            link: '/clients',
-            description: 'Manage your clients'
-        },
-        {
-            id: 2,
-            number: 0,
-            icon: <IconMagnet size={24}
-                              className={'group-hover:!text-green-200 !text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'}/>,
-            title: 'Prospects',
-            link: '/prospects',
-            description: 'Manage your prospects'
-        },
-        {
-            id: 3,
-            number: numberOfProjects,
-            icon: <IconBuilding size={24}
-                                className={'group-hover:!text-green-200 !text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'}/>,
-            title: 'Projects',
-            link: '/projects',
-            description: 'Manage your projects'
-        },
-        {
-            id: 4,
-            icon: <IconMail size={24}
-                            className={'group-hover:!text-green-200 !text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'}/>,
-            number: 0,
-            title: 'Newsletters',
-            link: '/newsletters',
-            description: 'Manage your newsletters'
-        },
-        {
-            id: 5,
-            number: numberOfUsers,
-            icon: <IconUser size={24}
-                            className={'group-hover:!text-green-200 !text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'}/>,
-            title: 'Users',
-            link: '/users',
-            description: 'Manage users'
-        },
-        {
-            id: 6,
-            number: numberOfMentors,
-            icon: <IconBrain size={24}
-                             className={'group-hover:!text-green-200 !text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'}/>,
-            title: 'Mentors',
-            link: '/mentors',
-            description: 'Contact mentors'
-        },
-
-    ];
-    return (
-        <ProtectedRoute>
-            <div className="flex flex-col gap-[32px] items-center justify-center min-h-screen p-24 text-center">
-                <main>
-                    <div
-                        className={"!text-zinc-200 !mt-32 z-10 flex flex-col gap-16 items-center justify-center w-11/12 h-full "}>
-                        <h1>Here, you can <span className={'italic !text-green-200'}>handle </span><br/>your <span
-                            className={'italic !text-green-200'}>Freelance activity</span>
-                        </h1>
-                        <div
+          <TryBtn />
+        </div>
+        {/* <div
                             className={'flex sm:flex-row flex-col flex-wrap items-center justify-start w-fit h-full gap-1 p-0'}>
                             {gridItems.map((item, index) => (
                                 <motion.div
@@ -122,22 +66,35 @@ export default function Home() {
                                     animate={{opacity: 1, y: 0}}
                                     transition={{duration: 1, delay: index * 0.1, ease: "easeInOut"}}
                                     key={item.id}
-                                    className="group bg-zinc-950 lg:w-[250px] h-[200px] border border-zinc-800 hover:border-green-200 !py-4 !px-8 rounded-lg shadow-md shadow-zinc-950 items-center justify-center flex flex-col transition-all ease-in-out duration-300 hover:bg-zinc-900 cursor-pointer hover:-translate-y-[5px] hover:shadow-md hover:shadow-zinc-800">
-                                    {item.icon}
+                                    className="group bg-zinc-950 lg:w-[250px] h-[200px] border border-zinc-800 hover:border-green-200 !p-2 rounded-lg shadow-md items-center justify-center flex flex-col transition-all ease-in-out duration-300 hover:bg-zinc-900 cursor-pointer hover:-translate-y-[5px] hover:shadow-md hover:shadow-zinc-800">
 
-                                    <h2 className="text-lg font-bold !text-zinc-200 group-hover:!text-green-200">{item.title}</h2>
-                                    <p className={"text-sm text-green-200"}>{item.description}</p>
+                                    <div
+                                        className={'flex flex-col items-start justify-start gap-2 w-full h-full rounded-sm'}>
+                                        <video
+                                            autoPlay
+                                            loop
+                                            muted
+                                            className={'rounded-sm w-full h-full object-cover'}>
+                                            <source src={item.videoSrc} type="video/mp4"/>
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
                                     {item.number !== undefined && (
-                                        <p className={`!text-2xl font-bold ${item.number > 0 ? "!text-green-200" : "!text-fuchsia-300"}`}>
-                                            {item.number}
-                                        </p>
+                                        <div
+                                            className={'flex flex-row items-center justify-between gap-2 w-full h-full !px-4'}>
+
+                                            <div className={'flex flex-row items-center justify-start gap-2'}>
+                                                <h2 className="!text-sm !font-light !text-zinc-200 group-hover:!text-green-200">{item.title}</h2>
+                                            </div>
+                                            <p className={`!text-2xl font-bold ${item.number > 0 ? "!text-green-200" : "!text-fuchsia-300"}`}>
+                                                {item.number}
+                                            </p>
+                                        </div>
                                     )}
                                 </motion.div>
                             ))}
-                        </div>
-                    </div>
-                </main>
-            </div>
-        </ProtectedRoute>
-    );
+                        </div>*/}
+      </div>
+    </main>
+  );
 }

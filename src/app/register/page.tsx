@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import useLenis from '@/utils/useLenis';
+import {IconUpload} from "@tabler/icons-react";
 
 export default function Register() {
     const [username, setUsername] = useState("");
@@ -13,12 +15,38 @@ export default function Register() {
     const [error, setError] = useState("");
     const router = useRouter();
 
+    useLenis();
+
+    function checkValidEmail(email: string) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    function checkValidityPassword(password: string) {
+        const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return re.test(password);
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
 
+        if (!username || !email || !password) {
+            setError("Tous les champs sont obligatoires.");
+            return;
+        }
+
+        if (!checkValidEmail(email)) {
+            setError("Adresse e-mail invalide.");
+            return;
+        }
+
+        if (!checkValidityPassword(password)) {
+            setError("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.");
+            return;
+        }
+
         try {
-            // Étape 1: Inscription de l'utilisateur
             const res = await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local/register`, {
                 username,
                 email,
@@ -28,7 +56,6 @@ export default function Register() {
             if (res.status === 200) {
                 const { jwt, user } = res.data;
 
-                // Étape 2: Téléchargement de l'image de profil si présente
                 if (profilePicture) {
                     const formData = new FormData();
                     formData.append("files", profilePicture);
@@ -43,7 +70,6 @@ export default function Register() {
                     });
                 }
 
-                // Redirection ou autre action après l'inscription réussie
                 router.push("/");
             } else {
                 setError("Une erreur est survenue lors de l'inscription.");
@@ -88,7 +114,7 @@ export default function Register() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
-                    className="border border-zinc-700 p-2 rounded text-zinc-200"
+                    className="border border-zinc-700 !p-2 rounded text-zinc-200"
                 />
                 <label className="text-zinc-200">
                     Email<span className="text-red-500">*</span>
@@ -99,7 +125,7 @@ export default function Register() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="border border-zinc-700 p-2 rounded text-zinc-200"
+                    className="border border-zinc-700 !p-2 rounded text-zinc-200"
                 />
                 <label className="text-zinc-200">
                     Mot de passe<span className="text-red-500">*</span>
@@ -110,18 +136,31 @@ export default function Register() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="border border-zinc-700 p-2 rounded text-zinc-200"
+                    className={`border !p-2 rounded text-zinc-200 ${
+                        password
+                            ? checkValidityPassword(password)
+                                ? "border-green-200"
+                                : "border-red-500"
+                            : "border-zinc-700"
+                    }`}
                 />
-                <label className="text-zinc-200">Photo de profil</label>
+                {password && (
+                    <p className={`text-sm ${checkValidityPassword(password) ? "!text-green-200" : "!text-red-500"}`}>
+                        {checkValidityPassword(password)
+                            ? "Mot de passe valide"
+                            : "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial."}
+                    </p>
+                )}
+                <label className="flex flex-row gap-2 items-center justify-start text-zinc-200"><span>Photo de profil</span><IconUpload size={18} className="inline-block ml-2" /></label>
                 <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setProfilePicture(e.target.files?.[0] || null)}
-                    className="border border-zinc-700 p-2 rounded text-zinc-200"
+                    className="border border-zinc-700 !p-2 rounded text-zinc-200 cursor-pointer hover:bg-zinc-700 transition-all ease-in-out duration-300"
                 />
                 <button
                     type="submit"
-                    className="bg-green-200 text-black border border-green-200 cursor-pointer p-2 rounded transition-all ease-in-out duration-300 hover:bg-transparent hover:text-green-200"
+                    className="bg-green-200 text-black border border-green-200 cursor-pointer !p-2 rounded transition-all ease-in-out duration-300 hover:bg-transparent hover:text-green-200"
                 >
                     S&#39;inscrire
                 </button>
