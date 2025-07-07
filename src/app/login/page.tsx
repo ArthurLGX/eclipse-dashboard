@@ -301,7 +301,7 @@ function LoginContent() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="/videos/flamme.mp4" type="video/mp4" />
+          <source src="/videos/fumee.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 flex items-center justify-center h-full">
@@ -313,11 +313,11 @@ function LoginContent() {
               height={120}
               className="mx-auto mb-4"
             />
-            <h2 className="text-2xl font-bold mb-2">Eclipse Studio</h2>
-            <p className="text-lg opacity-90">
+            <h2 className="!text-2xl font-bold mb-2">Eclipse Studio</h2>
+            <p className="!text-lg opacity-90">
               {isLogin
-                ? 'Welcome back to your creative space'
-                : 'Join our creative community'}
+                ? 'Bienvenue dans votre espace créatif'
+                : 'Rejoignez notre communauté créative'}
             </p>
           </div>
         </div>
