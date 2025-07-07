@@ -4,8 +4,10 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { IconArrowRight } from '@tabler/icons-react';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 export const RegisterBtn = () => {
+  const { t } = useLanguage();
   return (
     <motion.div
       initial={{ opacity: 0, y: '100%' }}
@@ -23,7 +25,7 @@ export const RegisterBtn = () => {
             'group-hover:!text-green-200 flex flex-row items-center gap-2'
           }
         >
-          Try for free{' '}
+          {t('register')}
           <IconArrowRight
             size={16}
             className="group-hover:!text-green-200 group-hover:-rotate-45 transition-all ease-in-out duration-300"

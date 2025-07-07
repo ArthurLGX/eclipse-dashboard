@@ -11,6 +11,7 @@ import {
   fetchProspects,
 } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface Client {
   id: string;
@@ -38,6 +39,7 @@ interface Prospect {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [numberOfClients, setNumberOfClients] = useState(0);
   const [numberOfProjects, setNumberOfProjects] = useState(0);
   const [numberOfProspects, setNumberOfProspects] = useState(0);
@@ -87,7 +89,7 @@ export default function DashboardPage() {
       transition={{ duration: 0.5 }}
       className="space-y-6 !my-16"
     >
-      <h1 className="!text-3xl font-bold !text-zinc-200">Dashboard</h1>
+      <h1 className="!text-3xl font-bold !text-zinc-200">{t('dashboard')}</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
@@ -95,7 +97,7 @@ export default function DashboardPage() {
           className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
         >
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            Clients
+            {t('clients')}
           </h3>
           <p className="!text-3xl font-bold !text-green-400">
             {numberOfClients || 0}
@@ -106,7 +108,7 @@ export default function DashboardPage() {
           className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
         >
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            Prospects
+            {t('prospects')}
           </h3>
           <p className="!text-3xl font-bold !text-blue-400">
             {numberOfProspects || 0}
@@ -117,7 +119,7 @@ export default function DashboardPage() {
           className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
         >
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            Projects
+            {t('projects')}
           </h3>
           <p className="!text-3xl font-bold !text-purple-400">
             {numberOfProjects || 0}
@@ -128,7 +130,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-4">
-            Activité récente
+            {t('recent_activity')}
           </h3>
           {loading ? (
             <div className="space-y-3">
@@ -203,7 +205,9 @@ export default function DashboardPage() {
                   return (
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-zinc-600 rounded-full"></div>
-                      <p className="!text-zinc-400">Aucune activité récente</p>
+                      <p className="!text-zinc-400">
+                        {t('no_recent_activity')}
+                      </p>
                     </div>
                   );
                 }
@@ -223,7 +227,7 @@ export default function DashboardPage() {
 
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-4">
-            Statistiques
+            {t('statistics')}
           </h3>
           {loading ? (
             <div className="space-y-3">
@@ -237,7 +241,7 @@ export default function DashboardPage() {
           ) : (
             <div className="space-y-3">
               <div className="flex justify-between">
-                <p className="!text-zinc-400">Taux de conversion</p>
+                <p className="!text-zinc-400">{t('conversion_rate')}</p>
                 <p className="!text-green-400 font-semibold">
                   {(() => {
                     const totalProspects = clients.length + prospects.length;
@@ -252,7 +256,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="flex justify-between">
-                <p className="!text-zinc-400">Clients actifs</p>
+                <p className="!text-zinc-400">{t('active_clients')}</p>
                 <p className="!text-blue-400 font-semibold">
                   {
                     clients.filter(client => client.processStatus === 'client')
@@ -261,7 +265,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="flex justify-between">
-                <p className="!text-zinc-400">Projets en cours</p>
+                <p className="!text-zinc-400">{t('projects_in_progress')}</p>
                 <p className="!text-purple-400 font-semibold">
                   {
                     projects.filter(

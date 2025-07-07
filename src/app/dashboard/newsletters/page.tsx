@@ -12,7 +12,9 @@ export default function NewslettersPage() {
       className="space-y-6"
     >
       <div className="flex items-center justify-between">
-        <h1 className="!text-3xl font-bold !text-zinc-200">Newsletters</h1>
+        <h1 className="!text-3xl font-bold text-left !text-zinc-200">
+          Newsletters
+        </h1>
         <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
           Créer une newsletter
         </button>

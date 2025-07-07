@@ -19,6 +19,8 @@ import { useAuth } from '../context/AuthContext';
 import { fetchUserById } from '@/lib/api';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import useLenis from '@/utils/useLenis';
+import LanguageToggle from '@/app/components/LanguageToggle';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface SidebarItem {
   id: string;
@@ -42,49 +44,50 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const { user } = useAuth();
   const { logout } = useAuth();
+  const { t } = useLanguage();
   useLenis();
 
   // Définir les items de la sidebar avec l'image de profil dynamique
   const sidebarItems: SidebarItem[] = [
     {
       id: 'home',
-      label: 'Dashboard',
+      label: t('dashboard'),
       icon: <IconHome size={20} />,
       path: '/dashboard',
     },
     {
       id: 'clients',
-      label: 'Clients',
+      label: t('clients'),
       icon: <IconUsers size={20} />,
       path: '/dashboard/clients',
     },
     {
       id: 'prospects',
-      label: 'Prospects',
+      label: t('prospects'),
       icon: <IconMagnet size={20} />,
       path: '/dashboard/prospects',
     },
     {
       id: 'projects',
-      label: 'Projects',
+      label: t('projects'),
       icon: <IconBuilding size={20} />,
       path: '/dashboard/projects',
     },
     {
       id: 'mentors',
-      label: 'Mentors',
+      label: t('mentors'),
       icon: <IconBrain size={20} />,
       path: '/dashboard/mentors',
     },
     {
       id: 'newsletters',
-      label: 'Newsletters',
+      label: t('newsletters'),
       icon: <IconMail size={20} />,
       path: '/dashboard/newsletters',
     },
     {
       id: 'profile',
-      label: 'Profile',
+      label: t('profile'),
       icon: (
         <Image
           src={profilePictureUrl || '/images/logo/eclipse-logo.png'}
@@ -98,7 +101,7 @@ export default function DashboardLayout({
     },
     {
       id: 'logout',
-      label: 'Logout',
+      label: t('logout'),
       icon: <IconLogout size={20} />,
       onClick: logout,
       path: '/login?type=login',
@@ -186,6 +189,7 @@ export default function DashboardLayout({
                 transition={{ duration: 0.3, delay: 0.1, ease: 'easeInOut' }}
                 className="flex items-center gap-2"
               >
+                <LanguageToggle />
                 <button
                   onClick={togglePin}
                   className="p-1 rounded hover:bg-zinc-800 transition-colors"
@@ -220,7 +224,7 @@ export default function DashboardLayout({
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="text-sm font-medium whitespace-nowrap"
+                      className="!text-sm font-medium whitespace-nowrap"
                     >
                       {item.label}
                     </motion.span>

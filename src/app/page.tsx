@@ -5,10 +5,10 @@ import React from 'react';
 
 import Image from 'next/image';
 import { TryBtn } from './components/buttons/tryBtn';
-
+import { useLanguage } from './context/LanguageContext';
 export default function Home() {
   useLenis();
-
+  const { t } = useLanguage();
   return (
     <main className="min-h-screen flex flex-col items-center justify-center">
       <Image
@@ -40,16 +40,16 @@ export default function Home() {
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.2 }}
               className="text-xl text-zinc-200 font-light"
             >
-              Handle your freelance activity{' '}
+              {t('hero_subtitle_top')}
             </motion.span>
-            manage your projects{' '}
+            {t('hero_title_main')}
             <motion.span
               initial={{ opacity: 0, y: '100%' }}
               animate={{ opacity: 1, y: 1 }}
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
               className="bg-emerald-300/20 backdrop-blur-xs py-2 px-4 rounded-full text-green-200 font-extrabold shadow-md shadow-emerald-300/20"
             >
-              with ease
+              {t('hero_subtitle_bottom')}
             </motion.span>
           </motion.h1>
 

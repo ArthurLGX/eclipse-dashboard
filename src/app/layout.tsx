@@ -5,6 +5,7 @@ import { Header } from '@/app/components/header';
 import { AuthProvider } from '@/app/context/AuthContext';
 import { Footer } from '@/app/components/footer';
 import { PopupProvider } from './context/PopupContext';
+import { LanguageProvider } from './context/LanguageContext';
 
 export const metadata: Metadata = {
   title: 'Eclipse Development Dashboard',
@@ -19,13 +20,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={` antialiased`}>
-        <AuthProvider>
-          <PopupProvider>
-            <Header />
-            {children}
-            <Footer />
-          </PopupProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <PopupProvider>
+              <Header />
+              {children}
+              <Footer />
+            </PopupProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

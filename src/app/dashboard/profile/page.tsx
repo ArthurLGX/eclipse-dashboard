@@ -164,7 +164,7 @@ export default function ProfilePage() {
       className="space-y-6"
     >
       <div className="flex items-center justify-between">
-        <h1 className="!text-3xl font-bold !text-zinc-200">Profil</h1>
+        <h1 className="!text-3xl font-bold text-left !text-zinc-200">Profil</h1>
         {!editing ? (
           <button
             onClick={() => setEditing(true)}

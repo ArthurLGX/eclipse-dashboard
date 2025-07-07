@@ -76,14 +76,14 @@ export default function DataTable<T = unknown>({
             data.map((row, index) => (
               <tr
                 key={(row as { id: string }).id || index}
-                className={`border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors ${
+                className={`border-b border-zinc-800/50 !font-light hover:bg-zinc-800/30 transition-colors ${
                   index % 2 === 0 ? 'bg-zinc-900/30' : 'bg-zinc-900/10'
                 }`}
               >
                 {columns.map((column, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`py-4 px-4 ${column.className || ''}`}
+                    className={`py-4 px-4 !font-light ${column.className || ''}`}
                   >
                     {column.render
                       ? column.render(

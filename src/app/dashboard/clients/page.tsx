@@ -169,7 +169,9 @@ export default function ClientsPage() {
       className="space-y-6"
     >
       <div className="flex items-center justify-between">
-        <h1 className="!text-3xl font-bold !text-zinc-200">Clients</h1>
+        <h1 className="!text-3xl font-bold text-left !text-zinc-200">
+          Clients
+        </h1>
         <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
           Ajouter un client
         </button>
@@ -216,15 +218,13 @@ export default function ClientsPage() {
               <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
                 Total Clients
               </h3>
-              <p className="!text-3xl font-bold !text-green-400">
-                {clients.length}
-              </p>
+              <p className="!text-3xl !text-green-400">{clients.length}</p>
             </div>
             <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
               <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
                 Clients Actifs
               </h3>
-              <p className="!text-3xl font-bold !text-blue-400">
+              <p className="!text-3xl  !text-blue-400">
                 {
                   clients.filter(client => client.processStatus === 'client')
                     .length
@@ -235,7 +235,7 @@ export default function ClientsPage() {
               <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
                 Nouveaux ce mois
               </h3>
-              <p className="!text-3xl font-bold !text-purple-400">
+              <p className="!text-3xl  !text-purple-400">
                 {
                   clients.filter(
                     client =>
@@ -256,8 +256,8 @@ export default function ClientsPage() {
               <TableFilters
                 searchPlaceholder="Rechercher par nom, email ou entreprise..."
                 statusOptions={statusOptions}
-                onSearchChange={setSearchTerm}
-                onStatusChange={setStatusFilter}
+                onSearchChangeAction={setSearchTerm}
+                onStatusChangeAction={setStatusFilter}
                 searchValue={searchTerm}
                 statusValue={statusFilter}
               />

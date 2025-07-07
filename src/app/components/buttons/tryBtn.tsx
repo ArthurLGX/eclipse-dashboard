@@ -4,8 +4,10 @@ import React from 'react';
 import Link from 'next/link';
 import { IconArrowRight } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 export const TryBtn = () => {
+  const { t } = useLanguage();
   return (
     <motion.div
       initial={{ opacity: 0, y: '100%' }}
@@ -27,7 +29,9 @@ export const TryBtn = () => {
             }
           />
         </span>
-        <span className={'group-hover:!text-green-200'}>Try for free</span>
+        <span className={'group-hover:!text-green-200'}>
+          {t('try_for_free')}
+        </span>
       </Link>
     </motion.div>
   );

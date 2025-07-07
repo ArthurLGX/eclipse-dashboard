@@ -193,7 +193,9 @@ export default function ProjectsPage() {
       className="space-y-6"
     >
       <div className="flex items-center justify-between">
-        <h1 className="!text-3xl font-bold !text-zinc-200">Projects</h1>
+        <h1 className="!text-3xl font-bold text-left !text-zinc-200">
+          Projets
+        </h1>
         <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
           Nouveau projet
         </button>
@@ -243,8 +245,8 @@ export default function ProjectsPage() {
           <TableFilters
             searchPlaceholder="Rechercher par nom, client ou mentor..."
             statusOptions={statusOptions}
-            onSearchChange={setSearchTerm}
-            onStatusChange={setStatusFilter}
+            onSearchChangeAction={setSearchTerm}
+            onStatusChangeAction={setStatusFilter}
             searchValue={searchTerm}
             statusValue={statusFilter}
           />

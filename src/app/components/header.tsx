@@ -7,24 +7,27 @@ import { LoginBtn } from '@/app/components/buttons/loginBtn';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/app/context/AuthContext';
 import { IconLayout, IconLogout, IconUser } from '@tabler/icons-react';
+import LanguageToggle from './LanguageToggle';
 import { useRouter } from 'next/navigation';
 import { fetchUserById } from '@/lib/api';
 import { RegisterBtn } from '@/app/components/buttons/registerBtn';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 export const Header = () => {
+  const { t } = useLanguage();
   const links = [
     {
-      name: 'dashboard',
+      name: t('dashboard'),
       path: '/dashboard',
       icon: <IconLayout size={16} stroke={1} />,
     },
     {
-      name: 'about',
+      name: t('about'),
       path: '/about',
       icon: <IconLayout size={16} stroke={1} />,
     },
     {
-      name: 'Pricing',
+      name: t('pricing'),
       path: '/pricing',
       icon: <IconLayout size={16} stroke={1} />,
     },
@@ -119,6 +122,7 @@ export const Header = () => {
                 'flex flex-row gap-2 items-center justify-center w-full h-fit'
               }
             >
+              <LanguageToggle />
               <RegisterBtn />
               <LoginBtn />
             </div>
@@ -128,6 +132,7 @@ export const Header = () => {
                 'flex flex-row items-center justify-center w-fit gap-4'
               }
             >
+              <LanguageToggle />
               <div
                 className={
                   'flex flex-row items-center justify-center w-fit gap-4'
