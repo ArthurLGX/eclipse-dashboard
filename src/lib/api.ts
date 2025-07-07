@@ -1,4 +1,3 @@
-'use client';
 import axios from 'axios';
 
 /**
@@ -8,8 +7,6 @@ import axios from 'axios';
 /**
  * @description This file contains functions to fetch data from the Strapi API.
  */
-
-const token = localStorage.getItem('token');
 
 export async function fetchClients() {
   const res = await fetch(
@@ -124,6 +121,12 @@ export async function fetchLogin(username: string, password: string) {
     }
   );
   if (res.status !== 200) {
+    switch (res.data.error.message) {
+      case 'Invalid identifier or password':
+        throw new Error('Identifiants invalides');
+      default:
+        throw new Error('Erreur lors de la connexion');
+    }
     throw new Error('Erreur lors de la connexion');
   }
   return res.data;
@@ -233,12 +236,18 @@ export async function updatedUser(
     };
   }
 ) {
+  // Vérifier si localStorage est disponible (côté client)
+  let token = null;
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('token');
+  }
+
   const res = await axios.put(
     `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${userId}`,
     data,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
     }
   );
