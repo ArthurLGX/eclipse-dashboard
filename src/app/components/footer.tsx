@@ -8,7 +8,7 @@ import Image from 'next/image';
 export const Footer = () => {
   const year = new Date().getFullYear();
   const links = [
-    { name: 'dashboard', path: '/' },
+    { name: 'dashboard', path: '/dashboard' },
     { name: 'pricing', path: '/pricing' },
     { name: 'contact', path: '/contact' },
     { name: 'terms', path: '/terms' },

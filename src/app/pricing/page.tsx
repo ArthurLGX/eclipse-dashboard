@@ -3,6 +3,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import useLenis from '@/utils/useLenis';
 import { useState, useEffect } from 'react';
 import { fetchPlans } from '@/lib/api';
+import { motion } from 'framer-motion';
 
 interface Plan {
   id: number;
@@ -123,8 +124,15 @@ export default function Plans() {
             ))}
           </>
         ) : plans.length > 0 ? (
-          plans.map(plan => (
-            <div
+          plans.map((plan, index) => (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.15 * index,
+                ease: 'easeInOut',
+              }}
               key={plan.id}
               className={`
                 flex relative flex-col items-center justify-between
@@ -196,7 +204,7 @@ export default function Plans() {
               >
                 {t('choose_plan')}
               </button>
-            </div>
+            </motion.div>
           ))
         ) : (
           <div className="col-span-full !text-center py-12">

@@ -86,7 +86,7 @@ export const Header = () => {
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeInOut' }}
         className={`  z-[199] fixed top-8 left-1/2 -translate-x-1/2 flex-col w-full h-fit items-center justify-center ${
@@ -115,7 +115,7 @@ export const Header = () => {
             <ul className="flex flex-row w-full items-center justify-end gap-8">
               {links.map((link, index) => (
                 <motion.li
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
                     duration: 0.5,

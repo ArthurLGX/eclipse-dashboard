@@ -14,7 +14,7 @@ export const RegisterBtn = ({ onClick }: RegisterBtnProps) => {
   const { t } = useLanguage();
   return (
     <motion.div
-      initial={{ opacity: 0, y: '100%' }}
+      initial={{ opacity: 0, y: '30%' }}
       animate={{ opacity: 1, y: 1 }}
       transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
       className="flex lg:w-fit w-full flex-row items-center gap-4"
