@@ -94,7 +94,7 @@ export const Header = () => {
         }`}
       >
         <header className="z-[199] flex bg-zinc-900/50 border border-zinc-800 h-fit flex-row w-11/12 backdrop-blur-xl !p-4 rounded-full gap-16 items-center justify-between text-white">
-          <div className="flex items-center gap-4 w-full justify-center">
+          <div className="flex items-center gap-4 w-fit justify-center">
             <Link href="/" className="flex flex-row w-full gap-2 items-center">
               <Image
                 src="/images/logo/eclipse-logo.png"
@@ -102,7 +102,7 @@ export const Header = () => {
                 width={40}
                 height={40}
               />
-              <span className="sm:flex hidden text-xs text-zinc-400 w-full !font-normal">
+              <span className="sm:flex hidden !text-xs text-zinc-400 w-full !font-normal">
                 Eclipse Studio Dashboard
               </span>
             </Link>
@@ -112,7 +112,7 @@ export const Header = () => {
               'lg:flex flex-row gap-8 hidden w-full h-fit items-center justify-center'
             }
           >
-            <ul className="flex w-fit flex-row w-full items-center justify-end gap-8">
+            <ul className="flex flex-row w-full items-center justify-end gap-8">
               {links.map((link, index) => (
                 <motion.li
                   initial={{ opacity: 0, y: -10 }}
@@ -140,7 +140,7 @@ export const Header = () => {
             {!authenticated ? (
               <div
                 className={
-                  'flex flex-row gap-2 items-center justify-center w-full h-fit !ml-4'
+                  'flex flex-row gap-2 items-center justify-center lg:w-fit w-full h-fit !ml-4'
                 }
               >
                 <RegisterBtn />
