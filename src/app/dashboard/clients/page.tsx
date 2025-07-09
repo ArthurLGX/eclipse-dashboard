@@ -2,12 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { fetchClients } from '@/lib/api';
+import { fetchClientsUser } from '@/lib/api';
 import useLenis from '@/utils/useLenis';
 import DataTable, { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
 import TableFilters, { FilterOption } from '@/app/components/TableFilters';
 import { usePopup } from '@/app/context/PopupContext';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface Client {
   id: number;
@@ -26,18 +28,21 @@ interface Client {
 
 export default function ClientsPage() {
   const { showGlobalPopup } = usePopup();
+  const { t } = useLanguage();
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-
+  const { user } = useAuth();
   useLenis();
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!user?.id) return;
+
       try {
         setLoading(true);
-        const response = await fetchClients();
+        const response = await fetchClientsUser(user.id);
         setClients(response.data || []);
       } catch (error) {
         console.error('Error fetching clients:', error);
@@ -46,7 +51,7 @@ export default function ClientsPage() {
       }
     };
     fetchData();
-  }, []);
+  }, [user?.id]);
 
   const statusOptions: FilterOption[] = [
     {
@@ -166,14 +171,14 @@ export default function ClientsPage() {
       initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="space-y-6"
+      className="space-y-6 "
     >
       <div className="flex items-center justify-between">
-        <h1 className="!text-3xl font-bold text-left !text-zinc-200">
-          Clients
+        <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
+          {t('clients')}
         </h1>
         <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
-          Ajouter un client
+          {t('add_client')}
         </button>
       </div>
       {loading ? (
@@ -216,13 +221,13 @@ export default function ClientsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="bg-zinc-900/50   p-6 rounded-lg border border-zinc-800">
               <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-                Total Clients
+                {t('total_clients')}
               </h3>
               <p className="!text-3xl !text-green-400">{clients.length}</p>
             </div>
             <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
               <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-                Clients Actifs
+                {t('active_clients')}
               </h3>
               <p className="!text-3xl  !text-blue-400">
                 {
@@ -233,7 +238,7 @@ export default function ClientsPage() {
             </div>
             <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
               <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-                Nouveaux ce mois
+                {t('new_clients_this_month')}
               </h3>
               <p className="!text-3xl  !text-purple-400">
                 {
@@ -249,12 +254,12 @@ export default function ClientsPage() {
           <div className="bg-zinc-900/50 rounded-lg border border-zinc-800">
             <div className="p-6 border-b border-zinc-800">
               <h2 className="!text-xl font-semibold !text-zinc-200">
-                Liste des clients
+                {t('clients_list')}
               </h2>
             </div>
             <div className="p-6">
               <TableFilters
-                searchPlaceholder="Rechercher par nom, email ou entreprise..."
+                searchPlaceholder={t('search_placeholder_clients')}
                 statusOptions={statusOptions}
                 onSearchChangeAction={setSearchTerm}
                 onStatusChangeAction={setStatusFilter}
@@ -265,14 +270,14 @@ export default function ClientsPage() {
                 columns={columns}
                 data={filteredClients}
                 loading={loading}
-                emptyMessage="Aucun client trouvé"
+                emptyMessage={t('no_client_found')}
               />
             </div>
           </div>
         </>
       ) : (
         <div className="flex items-center justify-center h-full">
-          <p className="!text-zinc-400">Aucun client trouvé</p>
+          <p className="!text-zinc-400">{t('no_client_found')}</p>
         </div>
       )}
     </motion.div>

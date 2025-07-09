@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { fetchProspects } from '@/lib/api';
+import { fetchProspectsUser } from '@/lib/api';
 import DataTable, { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
 import TableFilters, { FilterOption } from '@/app/components/TableFilters';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface Prospect {
   id: string;
@@ -18,11 +20,12 @@ interface Prospect {
 }
 
 export default function ProspectsPage() {
+  const { t } = useLanguage();
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-
+  const { user } = useAuth();
   // Options de filtres par statut
   const statusOptions: FilterOption[] = [
     {
@@ -146,7 +149,7 @@ export default function ProspectsPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetchProspects();
+        const response = await fetchProspectsUser(user?.id || 0);
         setProspects(response.data || []);
       } catch (error) {
         console.error('Error fetching prospects:', error);
@@ -165,8 +168,8 @@ export default function ProspectsPage() {
       className="space-y-6"
     >
       <div className="flex items-center justify-between">
-        <h1 className="!text-3xl font-bold text-left !text-zinc-200">
-          Prospects
+        <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
+          {t('prospects')}
         </h1>
         <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
           Ajouter un prospect

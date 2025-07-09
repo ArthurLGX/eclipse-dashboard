@@ -6,8 +6,8 @@ import { fetchCreateAccount, fetchLogin } from '@/lib/api';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import useLenis from '@/utils/useLenis';
-import Image from 'next/image';
 import { usePopup } from '@/app/context/PopupContext';
+import { BackBtn } from '@/app/components/buttons/backBtn';
 
 function LoginContent() {
   const searchParams = useSearchParams();
@@ -30,7 +30,8 @@ function LoginContent() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const router = useRouter();
-  const { authenticated, hasHydrated, login } = useAuth();
+  const { authenticated, hasHydrated, login, user } = useAuth();
+  console.log(user);
 
   useLenis();
 
@@ -43,12 +44,9 @@ function LoginContent() {
     try {
       if (isLogin) {
         const data = await fetchLogin(username, password);
-        if (!data.error) {
+        if (data.jwt && data.user) {
           console.log('Login successful');
-          localStorage.removeItem('token');
-          localStorage.setItem('token', data.jwt);
-          localStorage.removeItem('user');
-          localStorage.setItem('user', JSON.stringify(data.user));
+          // Utiliser la fonction login du contexte qui gère tout
           login(data.user, data.jwt);
           router.push('/dashboard');
           showGlobalPopup('Login successful', 'success');
@@ -136,10 +134,13 @@ function LoginContent() {
   };
 
   return (
-    <div className="flex h-fit w-3/4 !my-32 border border-zinc-900  bg-gradient-to-b from-zinc-950 to-black rounded-xl">
+    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 border border-zinc-900  bg-gradient-to-b from-zinc-900 to-black rounded-xl">
       {/* Left side - Form */}
-      <div className="flex-1 flex items-center justify-center p-16 bg-gradient-to-b from-zinc-950 to-black">
-        <div className="w-full max-w-md">
+      <div className=" bg-zinc-950 z-100 w-full">
+        <BackBtn />
+      </div>
+      <div className=" flex-1 flex items-center justify-center p-4 md:p-16 bg-gradient-to-b from-zinc-950 to-black">
+        <div className="md:max-w-md max-w-full">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -180,7 +181,7 @@ function LoginContent() {
                 value={username}
                 required
                 onChange={e => setUsername(e.target.value)}
-                className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
               />
             </div>
 
@@ -197,7 +198,7 @@ function LoginContent() {
                   value={email}
                   required={!isLogin}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                 />
               </motion.div>
             )}
@@ -213,7 +214,7 @@ function LoginContent() {
                     setPassword(e.target.value);
                     setPasswordError(validatePassword(e.target.value));
                   }}
-                  className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                 />
                 <button
                   type="button"
@@ -245,7 +246,7 @@ function LoginContent() {
                       setConfirmPassword(e.target.value);
                       checkPassword(e.target.value);
                     }}
-                    className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                    className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                   />
                   <button
                     type="button"
@@ -263,9 +264,8 @@ function LoginContent() {
 
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full bg-green-500 text-black font-semibold py-3 px-6 rounded-lg hover:bg-green-400 transition-colors duration-200"
+              className="w-full bg-emerald-300 
+               hover:text-emerald-300 border border-emerald-300 cursor-pointer hover:bg-emerald-300/20 text-black hover:text-emerald-300 font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </motion.button>
@@ -283,43 +283,12 @@ function LoginContent() {
                 : 'Already have an account? '}
               <button
                 onClick={toggleMode}
-                className="text-green-500 hover:text-green-400 transition-colors duration-200"
+                className="text-emerald-300 cursor-pointer hover:text-emerald-400  transition-colors duration-200"
               >
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>
             </p>
           </motion.div>
-        </div>
-      </div>
-
-      {/* Right side - Video Background */}
-      <div className="flex-1 relative overflow-hidden rounded-r-xl">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/videos/fumee.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="relative z-10 flex items-center justify-center h-full">
-          <div className="text-center text-white">
-            <Image
-              src="/images/logo/eclipse-logo.png"
-              alt="Eclipse Studio Logo"
-              width={120}
-              height={120}
-              className="mx-auto mb-4"
-            />
-            <h2 className="!text-2xl font-bold mb-2">Eclipse Studio</h2>
-            <p className="!text-lg opacity-90">
-              {isLogin
-                ? 'Bienvenue dans votre espace créatif'
-                : 'Rejoignez notre communauté créative'}
-            </p>
-          </div>
         </div>
       </div>
     </div>
@@ -328,7 +297,7 @@ function LoginContent() {
 
 function LoginLoading() {
   return (
-    <div className="flex h-fit w-3/4 !my-32 border border-zinc-900 bg-gradient-to-b from-zinc-950 to-black rounded-xl">
+    <div className="flex h-fit md:w-3/4 w-full !my-32 border border-zinc-900 bg-gradient-to-b from-zinc-950 to-black rounded-xl">
       <div className="flex-1 flex items-center justify-center p-16">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">

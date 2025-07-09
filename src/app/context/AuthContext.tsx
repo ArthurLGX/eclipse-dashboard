@@ -6,6 +6,7 @@ interface User {
   id: number;
   username: string;
   email: string;
+  password: string;
   profile_picture: {
     url: string;
   };
@@ -51,19 +52,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setToken(token);
 
     try {
+      // Récupérer les détails complets de l'utilisateur avec le token
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${user.id}?populate=*`
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${user.id}?populate=*`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
       if (!res.ok) {
         throw new Error('Failed to fetch user details');
       }
+
       const fullUser = await res.json();
-      localStorage.removeItem('user');
       localStorage.setItem('user', JSON.stringify(fullUser));
       setUser(fullUser);
       setAuthenticated(true);
     } catch (err) {
-      console.error('Failed to fetch full user with profile_picture:', err);
+      console.error('Failed to fetch full user details:', err);
+      // En cas d'erreur, utiliser les données de base
+      localStorage.setItem('user', JSON.stringify(user));
+      setUser(user);
+      setAuthenticated(true);
     }
   };
 

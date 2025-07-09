@@ -6,7 +6,11 @@ import { motion } from 'framer-motion';
 import { IconArrowRight } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 
-export const RegisterBtn = () => {
+interface RegisterBtnProps {
+  onClick?: () => void;
+}
+
+export const RegisterBtn = ({ onClick }: RegisterBtnProps) => {
   const { t } = useLanguage();
   return (
     <motion.div
@@ -18,6 +22,7 @@ export const RegisterBtn = () => {
       <Link
         id="registerBtn"
         href="/login?type=register"
+        onClick={onClick}
         className={`group flex flex-row items-center justify-center gap-2 text-zinc-200 !text-xs capitalize border border-zinc-700 rounded-full bg-zinc-900 hover:bg-zinc-950 hover:!text-zinc-200 w-full !px-4 !py-2  transition-all ease-in-out duration-300 `}
       >
         <span

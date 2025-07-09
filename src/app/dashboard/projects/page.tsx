@@ -3,11 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import useLenis from '@/utils/useLenis';
-import { fetchProjects } from '@/lib/api';
+import { fetchProjectsUser } from '@/lib/api';
 import DataTable, { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
 import TableFilters, { FilterOption } from '@/app/components/TableFilters';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
+import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 interface Project {
   id: string;
@@ -31,11 +34,12 @@ interface Project {
 
 export default function ProjectsPage() {
   useLenis();
+  const { t } = useLanguage();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-
+  const { user } = useAuth();
   // Options de filtres par statut
   const statusOptions: FilterOption[] = [
     {
@@ -172,9 +176,11 @@ export default function ProjectsPage() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!user?.id) return;
+
       try {
         setLoading(true);
-        const response = await fetchProjects();
+        const response = await fetchProjectsUser(user.id);
         setProjects(response.data || []);
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -183,81 +189,84 @@ export default function ProjectsPage() {
       }
     };
     fetchData();
-  }, []);
+  }, [user?.id]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6"
-    >
-      <div className="flex items-center justify-between">
-        <h1 className="!text-3xl font-bold text-left !text-zinc-200">
-          Projets
-        </h1>
-        <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
-          Nouveau projet
-        </button>
-      </div>
+    <ProtectedRoute>
+      <motion.div
+        initial={{ opacity: 0, y: 0 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="space-y-6"
+      >
+        <div className="flex items-center justify-between">
+          <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
+            {t('projects')}
+          </h1>
+          <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
+            {t('new_project')}
+          </button>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            Total Projects
-          </h3>
-          <p className="!text-3xl font-bold !text-purple-400">
-            {projects.length}
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+              {t('total_projects')}
+            </h3>
+            <p className="!text-3xl font-bold !text-purple-400">
+              {projects.length}
+            </p>
+          </div>
+          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+              {t('in_progress')}
+            </h3>
+            <p className="!text-3xl font-bold !text-yellow-400">
+              {
+                projects.filter(
+                  project => project.project_status === 'in_progress'
+                ).length
+              }
+            </p>
+          </div>
+          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+              {t('completed')}
+            </h3>
+            <p className="!text-3xl font-bold !text-green-400">
+              {
+                projects.filter(
+                  project => project.project_status === 'completed'
+                ).length
+              }
+            </p>
+          </div>
         </div>
-        <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            En cours
-          </h3>
-          <p className="!text-3xl font-bold !text-yellow-400">
-            {
-              projects.filter(
-                project => project.project_status === 'in_progress'
-              ).length
-            }
-          </p>
-        </div>
-        <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            Terminés
-          </h3>
-          <p className="!text-3xl font-bold !text-green-400">
-            {
-              projects.filter(project => project.project_status === 'completed')
-                .length
-            }
-          </p>
-        </div>
-      </div>
 
-      <div className="bg-zinc-900 rounded-lg border border-zinc-800">
-        <div className="p-6 border-b border-zinc-800">
-          <h2 className="!text-xl font-semibold !text-zinc-200">
-            Liste des projets
-          </h2>
+        <div className="bg-zinc-900 rounded-lg border border-zinc-800">
+          <div className="p-6 border-b border-zinc-800">
+            <h2 className="!text-xl font-semibold !text-zinc-200">
+              {t('projects_list')}
+            </h2>
+          </div>
+          <div className="p-6">
+            <TableFilters
+              searchPlaceholder={t('search_project_placeholder')}
+              statusOptions={statusOptions}
+              onSearchChangeAction={setSearchTerm}
+              onStatusChangeAction={setStatusFilter}
+              searchValue={searchTerm}
+              statusValue={statusFilter}
+            />
+            <DataTable<Project>
+              columns={columns}
+              data={filteredProjects}
+              loading={loading}
+              emptyMessage={t('no_project_found')}
+            />
+          </div>
         </div>
-        <div className="p-6">
-          <TableFilters
-            searchPlaceholder="Rechercher par nom, client ou mentor..."
-            statusOptions={statusOptions}
-            onSearchChangeAction={setSearchTerm}
-            onStatusChangeAction={setStatusFilter}
-            searchValue={searchTerm}
-            statusValue={statusFilter}
-          />
-          <DataTable<Project>
-            columns={columns}
-            data={filteredProjects}
-            loading={loading}
-            emptyMessage="Aucun projet trouvé"
-          />
-        </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </ProtectedRoute>
   );
 }

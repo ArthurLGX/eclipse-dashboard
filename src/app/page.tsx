@@ -6,6 +6,7 @@ import React from 'react';
 import Image from 'next/image';
 import { TryBtn } from './components/buttons/tryBtn';
 import { useLanguage } from './context/LanguageContext';
+import { PricingBtn } from './components/buttons/pricingBtn';
 export default function Home() {
   useLenis();
   const { t } = useLanguage();
@@ -25,7 +26,7 @@ export default function Home() {
       >
         <div
           className={
-            'flex flex-col gap-8 items-center justify-center w-1/2 font-bold h-fit tracking-tighter gap-4'
+            'flex flex-col gap-8 items-center justify-center md:w-1/2 w-full font-bold h-fit tracking-tighter gap-4'
           }
         >
           <motion.h1
@@ -52,8 +53,14 @@ export default function Home() {
               {t('hero_subtitle_bottom')}
             </motion.span>
           </motion.h1>
-
-          <TryBtn />
+          <div
+            className={
+              'flex md:flex-row flex-col items-center justify-center gap-4 w-full !my-8'
+            }
+          >
+            <TryBtn />
+            <PricingBtn />
+          </div>
         </div>
         {/* <div
                             className={'flex sm:flex-row flex-col flex-wrap items-center justify-start w-fit h-full gap-1 p-0'}>

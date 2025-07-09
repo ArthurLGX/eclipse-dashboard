@@ -8,6 +8,7 @@
   --background: black;
   --foreground: #171717;
   --text-color: #e4e0e0;
+  --subtitle-color: #e0e0e0;
 }
 
 @layer base {
@@ -67,7 +68,7 @@ main {
 
 h1 {
   font-size: 3rem;
-  font-family: var(--font-manrope), sans-serif;
+  font-family: var(--font-geist), sans-serif;
   text-align: center;
   text-transform: capitalize;
   line-height: 1;
@@ -75,9 +76,10 @@ h1 {
 }
 
 h2 {
-  font-family: var(--font-manrope), sans-serif;
+  font-family: var(--font-geist), sans-serif;
   font-size: 2rem;
   font-weight: 400;
+  color: var(--subtitle-color);
 }
 
 button {
@@ -92,11 +94,12 @@ form select option {
   background-color: var(--background);
 }
 
-header nav ul li a {
+header nav ul li a,
+a {
   font-family: var(--font-geist), sans-serif;
+  font-size: 14px;
 }
 
-h3#footerTitle,
 h3,
 h4 {
   list-style: none;
@@ -137,4 +140,3 @@ option {
   font-family: var(--font-geist), sans-serif;
   font-size: 14px;
 }
-

@@ -159,7 +159,7 @@ export default function DashboardLayout({
       <div className="flex min-h-screen bg-zinc-950 justify-start w-full ">
         {/* Sidebar */}
         <motion.div
-          className="sticky top-10 bg-zinc-900/50 border border-zinc-900 flex flex-col items-start justify-start gap-8 h-full"
+          className="md:sticky fixed top-10 md:bg-zinc-900/50 bg-zinc-950 border border-zinc-900 flex flex-col items-start justify-start gap-8 h-full"
           animate={{
             width: isExpanded || isPinned ? 240 : 64,
           }}
@@ -236,7 +236,7 @@ export default function DashboardLayout({
         </motion.div>
 
         {/* Contenu principal */}
-        <div className="flex-1 overflow-auto w-full h-full">
+        <div className="flex-1 overflow-auto w-full h-full md:pl-0 pl-16">
           <AnimatePresence mode="wait">
             <motion.div
               key={pathname}

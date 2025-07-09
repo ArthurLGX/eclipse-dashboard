@@ -7,6 +7,8 @@ import { fetchUserById } from '@/lib/api';
 import useLenis from '@/utils/useLenis';
 import Image from 'next/image';
 import { usePopup } from '@/app/context/PopupContext';
+import { useLanguage } from '@/app/context/LanguageContext';
+import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 interface UserProfile {
   id: number;
@@ -29,6 +31,7 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
+  const { t } = useLanguage();
   useLenis();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
@@ -46,7 +49,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) return;
+      if (!user?.id) return;
 
       try {
         setLoading(true);
@@ -69,7 +72,7 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, [user]); // Retirer showGlobalPopup des dépendances
+  }, [user?.id]); // Retirer showGlobalPopup des dépendances
 
   const handleSave = async () => {
     try {
@@ -121,38 +124,40 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="space-y-6"
-      >
-        <div className="flex items-center justify-between">
-          <div className="h-8 bg-zinc-800 rounded w-32 animate-pulse"></div>
-          <div className="h-10 bg-zinc-800 rounded w-24 animate-pulse"></div>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
-            <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-              <div className="flex flex-col items-center space-y-4">
-                <div className="w-24 h-24 bg-zinc-800 rounded-full animate-pulse"></div>
-                <div className="h-6 bg-zinc-800 rounded w-32 animate-pulse"></div>
-                <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse"></div>
+      <ProtectedRoute>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <div className="h-8 bg-zinc-800 rounded w-32 animate-pulse"></div>
+            <div className="h-10 bg-zinc-800 rounded w-24 animate-pulse"></div>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1">
+              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="w-24 h-24 bg-zinc-800 rounded-full animate-pulse"></div>
+                  <div className="h-6 bg-zinc-800 rounded w-32 animate-pulse"></div>
+                  <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-2">
+              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-4">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="space-y-2">
+                    <div className="h-4 bg-zinc-800 rounded w-20 animate-pulse"></div>
+                    <div className="h-10 bg-zinc-800 rounded animate-pulse"></div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="lg:col-span-2">
-            <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-4">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="space-y-2">
-                  <div className="h-4 bg-zinc-800 rounded w-20 animate-pulse"></div>
-                  <div className="h-10 bg-zinc-800 rounded animate-pulse"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </ProtectedRoute>
     );
   }
 
@@ -164,13 +169,15 @@ export default function ProfilePage() {
       className="space-y-6"
     >
       <div className="flex items-center justify-between">
-        <h1 className="!text-3xl font-bold text-left !text-zinc-200">Profil</h1>
+        <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
+          {t('profile')}
+        </h1>
         {!editing ? (
           <button
             onClick={() => setEditing(true)}
             className="bg-emerald-400/20 !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors"
           >
-            Modifier le profil
+            {t('edit_profile')}
           </button>
         ) : (
           <div className="flex gap-2">
