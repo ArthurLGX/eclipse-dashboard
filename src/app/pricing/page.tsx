@@ -24,16 +24,20 @@ export default function Plans() {
   const { t, language } = useLanguage();
 
   const [togglePlan, setTogglePlan] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   useLenis();
   const [plans, setPlans] = useState<Plan[]>([]);
   useEffect(() => {
     const fetchPlansData = async () => {
       try {
+        setLoading(true);
         const response = await fetchPlans();
         console.log('Plans data', response.data);
         setPlans(response.data || []);
       } catch (error) {
         console.error('Error fetching plans:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -81,7 +85,44 @@ export default function Plans() {
         </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full lg:max-w-6xl max-w-full lg:!px-6 !px-2">
-        {plans.length > 0 ? (
+        {loading ? (
+          // Skeleton Loader
+          <>
+            {[1, 2, 3].map(index => (
+              <div
+                key={index}
+                className="flex relative flex-col items-center justify-between bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-xl p-8 animate-pulse"
+              >
+                {/* Badge skeleton */}
+                <div className="absolute top-4 right-1/2 translate-x-1/2">
+                  <div className="h-6 w-24 bg-zinc-800 rounded-full"></div>
+                </div>
+
+                {/* Title and description skeleton */}
+                <div className="!text-center my-8 w-full">
+                  <div className="h-8 w-32 bg-zinc-800 rounded mb-4 mx-auto"></div>
+                  <div className="h-4 w-48 bg-zinc-800 rounded mx-auto"></div>
+                </div>
+
+                {/* Price skeleton */}
+                <div className="!text-center mb-8 w-full">
+                  <div className="h-12 w-24 bg-zinc-800 rounded mb-4 mx-auto"></div>
+                  <div className="h-4 w-32 bg-zinc-800 rounded mx-auto"></div>
+                </div>
+
+                {/* Features skeleton */}
+                <div className="space-y-4 mb-8 w-full">
+                  <div className="h-4 w-full bg-zinc-800 rounded"></div>
+                  <div className="h-4 w-3/4 bg-zinc-800 rounded"></div>
+                  <div className="h-4 w-1/2 bg-zinc-800 rounded"></div>
+                </div>
+
+                {/* Button skeleton */}
+                <div className="w-full h-12 bg-zinc-800 rounded-lg"></div>
+              </div>
+            ))}
+          </>
+        ) : plans.length > 0 ? (
           plans.map(plan => (
             <div
               key={plan.id}
@@ -159,7 +200,11 @@ export default function Plans() {
           ))
         ) : (
           <div className="col-span-full !text-center py-12">
-            <div className="!text-zinc-400 !text-lg">{t('loading_plans')}</div>
+            <div className="!text-zinc-400 !text-lg">
+              {plans.length === 0
+                ? t('no_plans_available')
+                : t('loading_plans')}
+            </div>
           </div>
         )}
       </div>
