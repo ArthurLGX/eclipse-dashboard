@@ -107,7 +107,10 @@ const CheckoutForm: React.FC<{
           <p className="text-zinc-400 text-sm mb-3">{plan.description}</p>
           <div className="flex items-center justify-between">
             <span className="text-2xl font-bold text-emerald-400">
-              €{price}
+              {billingType === 'yearly'
+                ? plan.price_yearly * 12
+                : plan.price_monthly}
+              {t('currency')}
             </span>
             <span className="text-zinc-400 text-sm">
               {billingType === 'yearly' ? t('per_year') : t('per_month')}
