@@ -210,7 +210,7 @@ export default function DashboardLayout({
         <motion.div
           className="md:sticky fixed top-10 rounded-lg md:bg-zinc-900/50 bg-zinc-950 border border-zinc-800 flex flex-col items-start justify-start gap-8 h-screen z-[1000]"
           animate={{
-            width: isExpanded || isPinned ? 280 : 64,
+            width: isExpanded || isPinned ? 300 : 64,
           }}
           transition={{ duration: 0.2, ease: 'easeInOut' }}
           onMouseEnter={handleMouseEnter}
