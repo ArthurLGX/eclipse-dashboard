@@ -224,22 +224,58 @@ export async function createSubscription(
     plan_features?: string;
   }
 ) {
-  const res = await axios.post(
-    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions`,
-    {
-      data: {
-        users: userId,
-        plan: data.plan,
-        subscription_status: 'active',
-        start_date: new Date().toISOString(),
-        end_date: new Date(
-          new Date().setDate(new Date().getDate() + 30)
-        ).toISOString(),
-        billing_type: data.billing_type,
-        auto_renew: true,
-        trial: data.trial || false,
-      },
+  // Vérifier d'abord si l'utilisateur a déjà une subscription
+  try {
+    const existingSubscriptions = await fetchSubscriptionsUser(userId);
+
+    if (existingSubscriptions.data && existingSubscriptions.data.length > 0) {
+      // Mettre à jour la subscription existante
+      const existingSubscription = existingSubscriptions.data[0];
+      console.log(
+        'Updating subscription with documentId:',
+        existingSubscription.documentId
+      );
+
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions/${existingSubscription.documentId}`,
+        {
+          data: {
+            plan: data.plan,
+            subscription_status: 'active',
+            start_date: new Date().toISOString(),
+            end_date: new Date(
+              new Date().setDate(new Date().getDate() + 30)
+            ).toISOString(),
+            billing_type: data.billing_type,
+            auto_renew: true,
+            trial: data.trial || false,
+          },
+        }
+      );
+      return res.data;
+    } else {
+      // Créer une nouvelle subscription
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions`,
+        {
+          data: {
+            users: userId,
+            plan: data.plan,
+            subscription_status: 'active',
+            start_date: new Date().toISOString(),
+            end_date: new Date(
+              new Date().setDate(new Date().getDate() + 30)
+            ).toISOString(),
+            billing_type: data.billing_type,
+            auto_renew: true,
+            trial: data.trial || false,
+          },
+        }
+      );
+      return res.data;
     }
-  );
-  return res.data;
+  } catch (error) {
+    console.error('Error in createSubscription:', error);
+    throw error;
+  }
 }
