@@ -206,9 +206,9 @@ export default function DashboardLayout({
   return (
     <ProtectedRoute>
       <div className="flex min-h-screen bg-zinc-950 justify-start w-full relative ">
-        {/* Sidebar */}
+        {/* Sidebar Desktop */}
         <motion.div
-          className="md:sticky fixed top-10 rounded-lg md:bg-zinc-900/50 bg-zinc-950 border border-zinc-800 flex flex-col items-start justify-start gap-8 h-screen z-[1000]"
+          className="hidden md:flex sticky top-10 rounded-lg bg-zinc-900/50 border border-zinc-800 flex-col items-start justify-start gap-8 h-screen z-[1000]"
           animate={{
             width: isExpanded || isPinned ? 300 : 64,
           }}
@@ -236,7 +236,7 @@ export default function DashboardLayout({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 10 }}
                 transition={{ duration: 0.3, delay: 0.1, ease: 'easeInOut' }}
-                className="flex lg:flex-row flex-col lg:justify-between justify-center items-center gap-2 w-full"
+                className="flex flex-row justify-between items-center gap-2 w-full"
               >
                 <LanguageToggle />
                 <button
@@ -254,7 +254,7 @@ export default function DashboardLayout({
           </div>
 
           {/* Navigation items */}
-          <nav className="p-2">
+          <nav className="p-2 flex flex-col gap-1">
             {sidebarItems.map(item => (
               <div key={item.id}>
                 <motion.button
@@ -313,8 +313,27 @@ export default function DashboardLayout({
           </nav>
         </motion.div>
 
+        {/* Mobile Bottom Navigation */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-zinc-900/95 border-t border-zinc-800 backdrop-blur-sm">
+          <nav className="flex items-center justify-around p-2">
+            {sidebarItems.map(item => (
+              <button
+                key={item.id}
+                onClick={() => handleItemClick(item)}
+                className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 min-w-0 ${
+                  activeItem === item.id
+                    ? 'text-green-400'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <div className="flex-shrink-0">{item.icon}</div>
+              </button>
+            ))}
+          </nav>
+        </div>
+
         {/* Contenu principal */}
-        <div className="flex-1 overflow-auto w-full h-full md:pl-0 pl-16">
+        <div className="flex-1 overflow-auto w-full h-full md:pl-0 pl-0 pb-20 md:pb-0 md:pt-0 pt-25">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

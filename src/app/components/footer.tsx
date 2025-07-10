@@ -21,7 +21,7 @@ export const Footer = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
       exit={{ opacity: 0, y: 50 }}
-      className=" flex items-center h-[200px] w-full justify-center p-4 !my-16  text-white"
+      className=" flex items-center h-fit w-full justify-center p-4 lg:!my-16 !my-20  text-white"
     >
       <div
         className={

@@ -89,9 +89,9 @@ export const Header = () => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeInOut' }}
-        className={`  z-[199] fixed top-8 left-1/2 -translate-x-1/2 flex-col w-full h-fit items-center justify-center ${
-          pathname.startsWith('/dashboard') ? 'hidden' : 'flex'
-        }`}
+        className={`z-[199] fixed ${
+          pathname.startsWith('/dashboard') ? 'lg:hidden flex' : 'flex'
+        } items-center top-8 left-1/2 -translate-x-1/2 flex-col w-full h-fit items-center justify-center`}
       >
         <header className="z-[199] flex bg-zinc-900/50 border border-zinc-800 h-fit flex-row w-11/12 backdrop-blur-xl !p-4 rounded-full gap-16 items-center justify-between text-white">
           <div className="flex items-center gap-4 w-fit justify-center">
