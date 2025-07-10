@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 
 interface UserProfile {
   id: number;
@@ -36,6 +36,7 @@ export default function PersonalInformationPage() {
   useLenis();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -174,12 +175,22 @@ export default function PersonalInformationPage() {
           {t('profile')}
         </h1>
         {!editing ? (
-          <button
-            onClick={() => setEditing(true)}
-            className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors"
-          >
-            {t('edit_profile')}
-          </button>
+          <div className="flex lg:flex-row flex-col lg:w-fit w-full  gap-4">
+            <button
+              onClick={() => setEditing(true)}
+              className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors"
+            >
+              {t('edit_profile')}
+            </button>
+            <button
+              onClick={() =>
+                router.push('/dashboard/profile/your-subscription')
+              }
+              className="bg-zinc-800/30 lg:w-fit w-full !text-zinc-200 border border-zinc-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-zinc-700/20 hover:text-white    transition-colors"
+            >
+              {t('your_subscription')}
+            </button>
+          </div>
         ) : (
           <div className="flex lg:flex-row flex-col lg:w-fit w-full  gap-4">
             <button
