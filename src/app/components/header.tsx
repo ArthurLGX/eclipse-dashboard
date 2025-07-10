@@ -236,7 +236,7 @@ export const Header = () => {
               }}
               className="fixed flex flex-col justify-center items-center bottom-0 left-0 right-0 bg-zinc-900/50 backdrop-blur-xl border-t border-zinc-800 h-3/4 z-[201] lg:hidden"
             >
-              <div className="p-6">
+              <div className="flex flex-col  h-full w-11/12 justify-center gap-8">
                 {/* Close button */}
                 <div className="absolute top-4 right-4">
                   <button
@@ -248,7 +248,7 @@ export const Header = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="space-y-4 h-full">
+                <nav className="space-y-4 h-fit">
                   {links.map((link, index) => (
                     <motion.div
                       key={link.name}
