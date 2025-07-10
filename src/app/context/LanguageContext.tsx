@@ -203,6 +203,7 @@ const translations = {
     expiry_date: "Date d'expiration",
     pay: 'Payer',
     processing: 'Traitement...',
+    card_information: 'Informations de la carte',
   },
   en: {
     // Navigation
@@ -322,7 +323,7 @@ const translations = {
     expiry_date: 'Expiry Date',
     pay: 'Pay',
     processing: 'Processing...',
-
+    card_information: 'Card Information',
     // Prospects
     new_prospect: 'New Prospect',
     answers: 'Answers',
