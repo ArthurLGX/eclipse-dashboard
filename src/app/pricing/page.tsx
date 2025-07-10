@@ -44,7 +44,7 @@ export default function Plans() {
       setSelectedPlan(plan);
       setShowPaymentModal(true);
     } else {
-      router.push('/auth/login');
+      router.push('/login');
     }
   };
 
