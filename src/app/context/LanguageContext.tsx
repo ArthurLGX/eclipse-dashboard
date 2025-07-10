@@ -34,6 +34,7 @@ const translations = {
     profile: 'Profil',
     logout: 'Déconnexion',
     back: 'Retour',
+
     // Auth
     welcome_back: 'Bon retour',
     create_account: 'Créer un compte',
@@ -56,6 +57,33 @@ const translations = {
     pending_account: 'Compte en attente',
     last_update: 'Dernière mise à jour',
     member_since: 'Membre depuis',
+
+    //Your Subscription
+    your_subscription: 'Votre abonnement',
+    edit_subscription: 'Modifier mon abonnement',
+    trial_subscription: "Version d'essai gratuite",
+    no_subscription_found: 'Aucun abonnement',
+    subscription_details: "Détails de l'abonnement",
+    active_subscription: 'Abonnement actif',
+    quick_actions: 'Actions rapides',
+    view_all_plans: 'Voir tous les plans',
+    back_to_profile: 'Retour au profil',
+    need_help: "Besoin d'aide ?",
+    contact_support_message:
+      "Contactez notre équipe de support pour obtenir de l'aide.",
+    contact_support: 'Contacter le support',
+
+    //Prospects
+    new_prospect: 'Nouveau prospect',
+    answers: 'Réponses',
+    contacted: 'Contactés',
+    list_of_prospects: 'Liste des prospects',
+    search_by_name_or_email: 'Rechercher par nom ou email...',
+    no_prospects_found: 'Aucun prospect trouvé',
+    to_be_contacted: 'À contacter',
+    answer: 'Réponse',
+    status: 'Statut',
+    creation_date: 'Date de création',
 
     // Messages
     error_loading_profile: 'Erreur lors du chargement du profil',
@@ -84,6 +112,10 @@ const translations = {
     yearly: 'Annuel',
     billed_yearly: 'Facturé annuellement',
     most_popular: 'Le plus populaire',
+
+    // Projects
+    new_project: 'Nouveau projet',
+
     // Dashboard
     total_clients: 'Total Clients',
     new_clients_this_month: 'Nouveaux ce mois',
@@ -101,7 +133,6 @@ const translations = {
     conversion_rate: 'Taux de conversion',
     projects_in_progress: 'Projets en cours',
     no_recent_activity: 'Aucune activité récente',
-    new_project: 'Nouveau projet',
     in_progress: 'En cours',
     completed: 'Terminés',
     search_project_placeholder: 'Rechercher par nom, client ou mentor...',
@@ -128,6 +159,7 @@ const translations = {
     hero_title_main: 'Maîtrisez vos projets',
     hero_subtitle_bottom: 'Sans effort',
     try_for_free: 'Essayer gratuitement',
+    all_statuses: 'Tous les statuts',
 
     // Clients
     add_client: 'Ajouter un client',
@@ -143,6 +175,27 @@ const translations = {
     error_code: "Code d'erreur",
     contact_support_if_problem_persists:
       'Si le problème persiste, contactez notre support.',
+
+    // Mentors
+    contact_mentor: 'Contacter un mentor',
+    available: 'Disponibles',
+    sessions: 'Sessions',
+    list_of_mentors: 'Liste des mentors',
+    list_of_mentors_available_to_implement:
+      'Liste des mentors disponibles à implémenter...',
+    search_mentor_placeholder: 'Rechercher par nom ou email...',
+    no_mentor_found: 'Aucun mentor trouvé',
+    first_name: 'Prénom',
+    last_name: 'Nom',
+    expertises: 'Expertises',
+    created_at: 'Créé le',
+    updated_at: 'Mis à jour le',
+
+    // Profile
+    account_confirmed: 'Compte confirmé',
+    account_pending: 'Compte en attente',
+    personal_information: 'Informations personnelles',
+    new_mentor: 'Nouveau mentor',
   },
   en: {
     // Navigation
@@ -164,8 +217,6 @@ const translations = {
     profile: 'Profile',
     logout: 'Logout',
     back: 'Back',
-
-    // Auth
     welcome_back: 'Welcome Back',
     create_account: 'Create Account',
     sign_in: 'Sign In',
@@ -174,7 +225,6 @@ const translations = {
     email: 'Email',
     password: 'Password',
     confirm_password: 'Confirm Password',
-
     // Profile
     edit_profile: 'Edit Profile',
     save: 'Save',
@@ -237,6 +287,53 @@ const translations = {
     search_project_placeholder: 'Search by name, client or mentor...',
     no_project_found: 'No project found',
 
+    // Mentors
+    contact_mentor: 'Contact a mentor',
+    available: 'Available',
+    sessions: 'Sessions',
+    list_of_mentors: 'List of Mentors',
+    list_of_mentors_available_to_implement:
+      'List of Mentors Available to Implement',
+    search_mentor_placeholder: 'Search by name or email...',
+    no_mentor_found: 'No mentor found',
+    first_name: 'First Name',
+    last_name: 'Last Name',
+    expertises: 'Expertises',
+    created_at: 'Created At',
+    updated_at: 'Updated At',
+    actions: 'Actions',
+
+    // Profile
+    account_confirmed: 'Account Confirmed',
+    account_pending: 'Account Pending',
+    personal_information: 'Personal Information',
+    new_mentor: 'New Mentor',
+
+    // Prospects
+    new_prospect: 'New Prospect',
+    answers: 'Answers',
+    contacted: 'Contacted',
+    list_of_prospects: 'List of Prospects',
+    search_by_name_or_email: 'Search by name or email...',
+    no_prospects_found: 'No prospects found',
+    to_be_contacted: 'To be contacted',
+    answer: 'Answer',
+    status: 'Status',
+    creation_date: 'Creation Date',
+
+    //Your Subscription
+    your_subscription: 'Your subscription',
+    edit_subscription: 'Edit subscription',
+    trial_subscription: 'Free trial',
+    no_subscription_found: 'No subscription found',
+    subscription_details: 'Subscription Details',
+    active_subscription: 'Active Subscription',
+    quick_actions: 'Quick Actions',
+    view_all_plans: 'View All Plans',
+    back_to_profile: 'Back to Profile',
+    need_help: 'Need Help?',
+    contact_support_message: 'Contact our support team for assistance.',
+    contact_support: 'Contact Support',
     // Common
     loading: 'Loading...',
     error: 'Error',
@@ -247,7 +344,7 @@ const translations = {
     hero_title_main: 'Master your projects',
     hero_subtitle_bottom: 'With ease',
     try_for_free: 'Try for free',
-
+    all_statuses: 'All statuses',
     // Clients
     add_client: 'Add Client',
     search_placeholder_clients: 'Search by name, email or company...',

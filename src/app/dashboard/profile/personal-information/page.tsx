@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
+import router from 'next/router';
 
 interface UserProfile {
   id: number;
@@ -30,7 +31,7 @@ interface UserProfile {
   updatedAt: string;
 }
 
-export default function ProfilePage() {
+export default function PersonalInformationPage() {
   const { t } = useLanguage();
   useLenis();
   const { user } = useAuth();
@@ -131,7 +132,7 @@ export default function ProfilePage() {
           transition={{ duration: 0.5 }}
           className="space-y-6"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
             <div className="h-8 bg-zinc-800 rounded w-32 animate-pulse"></div>
             <div className="h-10 bg-zinc-800 rounded w-24 animate-pulse"></div>
           </div>
@@ -168,30 +169,30 @@ export default function ProfilePage() {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
         <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
           {t('profile')}
         </h1>
         {!editing ? (
           <button
             onClick={() => setEditing(true)}
-            className="bg-emerald-400/20 !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors"
+            className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors"
           >
             {t('edit_profile')}
           </button>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex lg:flex-row flex-col lg:w-fit w-full  gap-4">
             <button
               onClick={handleCancel}
-              className="bg-orange-500/20 !text-orange-500 border border-orange-500/20 px-4 py-2 hover:bg-orange-500/10 hover:text-white rounded-lg cursor-pointer transition-colors"
+              className="bg-orange-500/20 lg:w-fit w-full !text-orange-500 border border-orange-500/20 px-4 py-2 hover:bg-orange-500/10 hover:text-white rounded-lg cursor-pointer transition-colors"
             >
-              Annuler
+              {t('cancel')}
             </button>
             <button
               onClick={handleSave}
               className="bg-emerald-500 !text-black px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors"
             >
-              Sauvegarder
+              {t('save')}
             </button>
           </div>
         )}
@@ -200,10 +201,18 @@ export default function ProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Section Photo de profil */}
         <div className="lg:col-span-1">
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+          <div className="bg-zinc-900 lg:!p-6 !p-4 rounded-lg border border-zinc-800">
             <div className="flex flex-col items-center space-y-4">
-              <div className="relative">
+              <div
+                onClick={() => {
+                  router.push('/dashboard/profile');
+                }}
+                className={
+                  'flex w-32 h-32 cursor-pointer hover:scale-[1.05] hover:border-green-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden'
+                }
+              >
                 <Image
+                  alt={'user profile picture'}
                   src={
                     previewUrl ||
                     (profile?.profile_picture?.formats?.thumbnail?.url
@@ -212,10 +221,8 @@ export default function ProfilePage() {
                         ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${profile.profile_picture.url}`
                         : '/images/logo/eclipse-logo.png')
                   }
-                  alt="Profile Picture"
-                  width={96}
-                  height={96}
-                  className="rounded-full object-cover"
+                  fill
+                  style={{ objectFit: 'cover' }}
                 />
               </div>
               <div className="text-center">
@@ -237,13 +244,13 @@ export default function ProfilePage() {
         <div className="lg:col-span-2">
           <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6">
             <h2 className="!text-xl font-semibold !text-zinc-200 mb-4">
-              Informations personnelles
+              {t('personal_information')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="!text-zinc-400 text-sm font-light">
-                  Nom d&apos;utilisateur
+                  {t('username')}
                 </label>
                 {editing ? (
                   <input
@@ -263,7 +270,7 @@ export default function ProfilePage() {
 
               <div className="space-y-2">
                 <label className="!text-zinc-400 text-sm font-light">
-                  Email
+                  {t('email')}
                 </label>
                 {editing ? (
                   <input
@@ -283,7 +290,7 @@ export default function ProfilePage() {
 
               <div className="space-y-2">
                 <label className="!text-zinc-400 text-sm font-light">
-                  Statut du compte
+                  {t('account_status')}
                 </label>
                 <div className="flex items-center gap-2 p-3 bg-zinc-800 rounded-lg">
                   <div
@@ -291,15 +298,15 @@ export default function ProfilePage() {
                   ></div>
                   <span className="!text-zinc-200">
                     {profile?.confirmed
-                      ? 'Compte confirmé'
-                      : 'Compte en attente'}
+                      ? t('account_confirmed')
+                      : t('account_pending')}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="!text-zinc-400 text-sm font-light">
-                  Dernière mise à jour
+                  {t('last_update')}
                 </label>
                 <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                   {profile?.updatedAt

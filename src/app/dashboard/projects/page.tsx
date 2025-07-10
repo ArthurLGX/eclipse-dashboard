@@ -199,73 +199,112 @@ export default function ProjectsPage() {
         transition={{ duration: 0.5 }}
         className="space-y-6"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
           <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
             {t('projects')}
           </h1>
-          <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
+          <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors">
             {t('new_project')}
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-              {t('total_projects')}
-            </h3>
-            <p className="!text-3xl font-bold !text-purple-400">
-              {projects.length}
-            </p>
-          </div>
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-              {t('in_progress')}
-            </h3>
-            <p className="!text-3xl font-bold !text-yellow-400">
-              {
-                projects.filter(
-                  project => project.project_status === 'in_progress'
-                ).length
-              }
-            </p>
-          </div>
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-              {t('completed')}
-            </h3>
-            <p className="!text-3xl font-bold !text-green-400">
-              {
-                projects.filter(
-                  project => project.project_status === 'completed'
-                ).length
-              }
-            </p>
-          </div>
-        </div>
+        {loading ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
+                <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
+                <div className="h-8 bg-zinc-800 rounded animate-pulse"></div>
+              </div>
+              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
+                <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
+                <div className="h-8 bg-zinc-800 rounded animate-pulse"></div>
+              </div>
+              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
+                <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
+                <div className="h-8 bg-zinc-800 rounded animate-pulse"></div>
+              </div>
+            </div>
+            <div className="bg-zinc-900/50 rounded-lg border border-zinc-800">
+              <div className="p-6 border-b border-zinc-800">
+                <div className="h-6 bg-zinc-800 rounded w-1/3 animate-pulse"></div>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map(i => (
+                    <div
+                      key={i}
+                      className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800"
+                    >
+                      <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
+                      <div className="h-4 bg-zinc-800 rounded animate-pulse"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+                <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+                  {t('total_projects')}
+                </h3>
+                <p className="!text-3xl font-bold !text-purple-400">
+                  {projects.length}
+                </p>
+              </div>
+              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+                <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+                  {t('in_progress')}
+                </h3>
+                <p className="!text-3xl font-bold !text-yellow-400">
+                  {
+                    projects.filter(
+                      project => project.project_status === 'in_progress'
+                    ).length
+                  }
+                </p>
+              </div>
+              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+                <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+                  {t('completed')}
+                </h3>
+                <p className="!text-3xl font-bold !text-green-400">
+                  {
+                    projects.filter(
+                      project => project.project_status === 'completed'
+                    ).length
+                  }
+                </p>
+              </div>
+            </div>
 
-        <div className="bg-zinc-900 rounded-lg border border-zinc-800">
-          <div className="p-6 border-b border-zinc-800">
-            <h2 className="!text-xl font-semibold !text-zinc-200">
-              {t('projects_list')}
-            </h2>
-          </div>
-          <div className="p-6">
-            <TableFilters
-              searchPlaceholder={t('search_project_placeholder')}
-              statusOptions={statusOptions}
-              onSearchChangeAction={setSearchTerm}
-              onStatusChangeAction={setStatusFilter}
-              searchValue={searchTerm}
-              statusValue={statusFilter}
-            />
-            <DataTable<Project>
-              columns={columns}
-              data={filteredProjects}
-              loading={loading}
-              emptyMessage={t('no_project_found')}
-            />
-          </div>
-        </div>
+            <div className="bg-zinc-900 rounded-lg border border-zinc-800">
+              <div className="p-6 border-b border-zinc-800">
+                <h2 className="!text-xl font-semibold !text-zinc-200">
+                  {t('projects_list')}
+                </h2>
+              </div>
+              <div className="p-6">
+                <TableFilters
+                  searchPlaceholder={t('search_project_placeholder')}
+                  statusOptions={statusOptions}
+                  onSearchChangeAction={setSearchTerm}
+                  onStatusChangeAction={setStatusFilter}
+                  searchValue={searchTerm}
+                  statusValue={statusFilter}
+                />
+                <DataTable<Project>
+                  columns={columns}
+                  data={filteredProjects}
+                  loading={loading}
+                  emptyMessage={t('no_project_found')}
+                />
+              </div>
+            </div>
+          </>
+        )}
       </motion.div>
     </ProtectedRoute>
   );

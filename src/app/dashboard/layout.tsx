@@ -13,6 +13,8 @@ import {
   IconPin,
   IconPinFilled,
   IconLogout,
+  IconUser,
+  IconCreditCard,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -26,8 +28,9 @@ interface SidebarItem {
   id: string;
   label: string;
   icon: React.ReactNode;
-  path: string;
+  path?: string;
   onClick?: () => void;
+  menuItems?: SidebarItem[];
 }
 
 export default function DashboardLayout({
@@ -89,15 +92,33 @@ export default function DashboardLayout({
       id: 'profile',
       label: t('profile'),
       icon: (
-        <Image
-          src={profilePictureUrl || '/images/logo/eclipse-logo.png'}
-          alt="Profile Picture"
-          width={20}
-          height={20}
-          className="rounded-full"
-        />
+        <div
+          className={
+            'flex w-5 h-5 cursor-pointer  hover:border-green-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden'
+          }
+        >
+          <Image
+            alt={'user profile picture'}
+            src={profilePictureUrl || '/images/logo/eclipse-logo.png'}
+            fill
+            style={{ objectFit: 'cover' }}
+          />
+        </div>
       ),
-      path: '/dashboard/profile',
+      menuItems: [
+        {
+          id: 'personal_information',
+          label: t('personal_information'),
+          icon: <IconUser size={20} />,
+          path: '/dashboard/profile/personal-information',
+        },
+        {
+          id: 'your_subscription',
+          label: t('your_subscription'),
+          icon: <IconCreditCard size={20} />,
+          path: '/dashboard/profile/your-subscription',
+        },
+      ],
     },
     {
       id: 'logout',
@@ -109,14 +130,42 @@ export default function DashboardLayout({
   ];
 
   // Déterminer l'item actif basé sur l'URL
-  const activeItem =
-    sidebarItems.find(item => item.path === pathname)?.id || 'home';
+  const activeItem = (() => {
+    // D'abord, chercher si on est sur un sous-menu
+    for (const item of sidebarItems) {
+      if (item.menuItems) {
+        const isOnMenuItem = item.menuItems.some(
+          menuItem => menuItem.path === pathname
+        );
+        if (isOnMenuItem) {
+          return item.id;
+        }
+      }
+    }
+
+    // Sinon, chercher un item principal
+    const mainItem = sidebarItems.find(item => item.path === pathname);
+    return mainItem?.id || 'home';
+  })();
 
   const handleItemClick = (item: SidebarItem) => {
     if (item.onClick) {
       item.onClick();
     } else {
-      router.push(item.path);
+      if (item.menuItems) {
+        // Si on est déjà sur une page du menu, naviguer vers la page principale
+        const isOnMenuItem = item.menuItems.some(
+          menuItem => menuItem.path === pathname
+        );
+        if (isOnMenuItem) {
+          router.push(item.path || '');
+        } else {
+          // Sinon, naviguer vers le premier item du menu
+          router.push(item.menuItems[0].path || '');
+        }
+      } else {
+        router.push(item.path || '');
+      }
     }
   };
 
@@ -156,19 +205,19 @@ export default function DashboardLayout({
 
   return (
     <ProtectedRoute>
-      <div className="flex min-h-screen bg-zinc-950 justify-start w-full ">
+      <div className="flex min-h-screen bg-zinc-950 justify-start w-full relative ">
         {/* Sidebar */}
         <motion.div
-          className="md:sticky fixed top-10 md:bg-zinc-900/50 bg-zinc-950 border border-zinc-900 flex flex-col items-start justify-start gap-8 h-full"
+          className="md:sticky fixed top-10 rounded-lg md:bg-zinc-900/50 bg-zinc-950 border border-zinc-800 flex flex-col items-start justify-start gap-8 h-screen z-[1000]"
           animate={{
-            width: isExpanded || isPinned ? 240 : 64,
+            width: isExpanded || isPinned ? 280 : 64,
           }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          transition={{ duration: 0.2, ease: 'easeInOut' }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           {/* Header de la sidebar */}
-          <div className="flex items-center w-full justify-between p-4">
+          <div className="flex flex-col items-center w-full justify-between gap-4 p-4">
             <div
               onClick={() => router.push('/')}
               className="text-zinc-200 cursor-pointer font-semibold text-lg"
@@ -187,7 +236,7 @@ export default function DashboardLayout({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 10 }}
                 transition={{ duration: 0.3, delay: 0.1, ease: 'easeInOut' }}
-                className="flex items-center gap-2"
+                className="flex lg:flex-row flex-col lg:justify-between justify-center items-center gap-2 w-full"
               >
                 <LanguageToggle />
                 <button
@@ -207,48 +256,73 @@ export default function DashboardLayout({
           {/* Navigation items */}
           <nav className="p-2">
             {sidebarItems.map(item => (
-              <motion.button
-                key={item.id}
-                onClick={() => handleItemClick(item)}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 mb-1 ${
-                  activeItem === item.id
-                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                    : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
-                }`}
-              >
-                <div className="flex-shrink-0">{item.icon}</div>
+              <div key={item.id}>
+                <motion.button
+                  onClick={() => handleItemClick(item)}
+                  className={`group w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 mb-1 ${
+                    activeItem === item.id
+                      ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                      : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+                  }`}
+                >
+                  <div className="flex-shrink-0">{item.icon}</div>
 
-                <AnimatePresence mode="wait">
-                  {(isExpanded || isPinned) && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="!text-sm font-medium whitespace-nowrap"
-                    >
-                      {item.label}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.button>
+                  <AnimatePresence mode="wait">
+                    {(isExpanded || isPinned) && (
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="!text-sm font-medium whitespace-nowrap"
+                      >
+                        {item.label}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+
+                {/* Sous-menus */}
+                {item.menuItems && (isExpanded || isPinned) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2, delay: 0.1 }}
+                    className="ml-6 space-y-1"
+                  >
+                    {item.menuItems.map(menuItem => (
+                      <motion.button
+                        key={menuItem.id}
+                        onClick={() => handleItemClick(menuItem)}
+                        className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 !text-xs ${
+                          pathname === menuItem.path
+                            ? 'bg-green-500/10 text-green-400 border border-green-500/20'
+                            : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300'
+                        }`}
+                      >
+                        <div className="flex-shrink-0">{menuItem.icon}</div>
+                        <span className="!text-sm font-medium whitespace-nowrap">
+                          {menuItem.label}
+                        </span>
+                      </motion.button>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
             ))}
           </nav>
         </motion.div>
 
         {/* Contenu principal */}
         <div className="flex-1 overflow-auto w-full h-full md:pl-0 pl-16">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="h-full p-6 w-full"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="h-full p-6 w-full"
+          >
+            {children}
+          </motion.div>
         </div>
       </div>
     </ProtectedRoute>

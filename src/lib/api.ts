@@ -123,13 +123,25 @@ export async function fetchFacturesUser(userId: number) {
   return secureFetch(`factures?populate=*&filters[user][$eq]=${userId}`);
 }
 
-export async function fetchMentors() {
-  return secureFetch('mentors?populate=*');
+export async function fetchMentorUsers(userId: number) {
+  try {
+    return secureFetch(`mentors?populate=*&filters[users][$eq]=${userId}`);
+  } catch (error) {
+    console.error('Error fetching mentors:', error);
+    throw new Error('Erreur lors de la récupération des mentors');
+  }
 }
 
-export async function fetchNumberOfMentors() {
-  const res = await secureFetch('mentors?populate=*');
-  return res.data.length;
+export async function fetchNumberOfMentorsUser(userId: number) {
+  try {
+    const res = await secureFetch(
+      `mentors?populate=*&filters[users][$eq]=${userId}`
+    );
+    return res.data.length;
+  } catch (error) {
+    console.error('Error fetching number of mentors:', error);
+    throw new Error('Erreur lors de la récupération du nombre de mentors');
+  }
 }
 
 export async function fetchCreateAccount(
@@ -156,7 +168,7 @@ export async function fetchCreateAccount(
   return res.data;
 }
 
-export async function updatedUser(
+export async function updateUser(
   userId: number,
   data: {
     username?: string;
@@ -164,6 +176,8 @@ export async function updatedUser(
     profile_picture?: {
       url: string;
     };
+    plan?: number;
+    billing_type?: string;
   }
 ) {
   // Vérifier si localStorage est disponible (côté client)
@@ -184,5 +198,48 @@ export async function updatedUser(
   if (res.status !== 200) {
     throw new Error("Erreur lors de la mise à jour de l'utilisateur");
   }
+  return res.data;
+}
+
+export async function fetchSubscriptionsUser(userId: number) {
+  try {
+    return secureFetch(
+      `subscriptions?populate=*&filters[users][$eq]=${userId}`
+    );
+  } catch (error) {
+    console.error('Error fetching subscriptions:', error);
+    throw new Error('Erreur lors de la récupération des abonnements');
+  }
+}
+
+export async function createSubscription(
+  userId: number,
+  data: {
+    plan: number;
+    billing_type: string;
+    price?: number;
+    trial?: boolean;
+    plan_name?: string;
+    plan_description?: string;
+    plan_features?: string;
+  }
+) {
+  const res = await axios.post(
+    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions`,
+    {
+      data: {
+        users: userId,
+        plan: data.plan,
+        subscription_status: 'active',
+        start_date: new Date().toISOString(),
+        end_date: new Date(
+          new Date().setDate(new Date().getDate() + 30)
+        ).toISOString(),
+        billing_type: data.billing_type,
+        auto_renew: true,
+        trial: data.trial || false,
+      },
+    }
+  );
   return res.data;
 }

@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export interface FilterOption {
   value: string;
@@ -24,6 +25,7 @@ export default function TableFilters({
   searchValue,
   statusValue,
 }: TableFiltersProps) {
+  const { t } = useLanguage();
   return (
     <div className="flex flex-col items-center justify-center sm:flex-row gap-4 mb-6">
       {/* Barre de recherche */}
@@ -60,7 +62,7 @@ export default function TableFilters({
             onChange={e => onStatusChangeAction(e.target.value)}
             className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="">Tous les statuts</option>
+            <option value="">{t('all_statuses')}</option>
             {statusOptions.map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}{' '}

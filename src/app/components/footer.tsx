@@ -37,7 +37,7 @@ export const Footer = () => {
               height={40}
             />
           </Link>
-          <p className="text-zinc-400">
+          <p className="text-zinc-400 text-center md:text-left">
             Eclipse Development Dashboard &#8482; {year}{' '}
           </p>
         </div>

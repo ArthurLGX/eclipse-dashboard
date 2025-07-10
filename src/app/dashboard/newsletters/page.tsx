@@ -14,7 +14,7 @@ export default function NewslettersPage() {
         transition={{ duration: 0.5 }}
         className="space-y-6"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
           <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
             {t('newsletters')}
           </h1>

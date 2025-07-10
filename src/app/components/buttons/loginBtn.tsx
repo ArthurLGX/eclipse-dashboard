@@ -17,7 +17,7 @@ export const LoginBtn = ({ onClick }: LoginBtnProps) => {
       initial={{ opacity: 0, y: '30%' }}
       animate={{ opacity: 1, y: 1 }}
       transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
-      className="flex lg:w-full w-fit flex-row items-center gap-4"
+      className="flex lg:w-fit w-full flex-row items-center gap-4"
     >
       <Link
         id="loginBtn"

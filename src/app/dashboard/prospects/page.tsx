@@ -30,23 +30,23 @@ export default function ProspectsPage() {
   const statusOptions: FilterOption[] = [
     {
       value: 'prospect',
-      label: 'Prospect',
+      label: t('prospect'),
       count: prospects.filter(p => p.prospect_status === 'prospect').length,
     },
     {
       value: 'answers',
-      label: 'Answers',
+      label: t('answers'),
       count: prospects.filter(p => p.prospect_status === 'answer').length,
     },
     {
       value: 'to_be_contacted',
-      label: 'To be contacted',
+      label: t('to_be_contacted'),
       count: prospects.filter(p => p.prospect_status === 'to_be_contacted')
         .length,
     },
     {
       value: 'contacted',
-      label: 'Contacted',
+      label: t('contacted'),
       count: prospects.filter(p => p.prospect_status === 'contacted').length,
     },
   ];
@@ -71,43 +71,43 @@ export default function ProspectsPage() {
   const columns: Column<Prospect>[] = [
     {
       key: 'title',
-      label: 'Nom',
+      label: t('name'),
       render: value => (
         <p className="!text-zinc-200 font-medium">{value as string}</p>
       ),
     },
     {
       key: 'email',
-      label: 'Email',
+      label: t('email'),
       render: value => <p className="!text-zinc-300">{value as string}</p>,
     },
     {
       key: 'phone',
-      label: 'Téléphone',
+      label: t('phone'),
       render: value => (
         <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>
       ),
     },
     {
       key: 'prospect_status',
-      label: 'Statut',
+      label: t('status'),
       render: value => {
         const status = value as string;
         const getStatusConfig = (status: string) => {
           switch (status) {
             case 'answer':
               return {
-                label: 'answer',
+                label: t('answer'),
                 className: 'bg-green-100 !text-green-800',
               };
             case 'to_be_contacted':
               return {
-                label: 'To be contacted',
+                label: t('to_be_contacted'),
                 className: 'bg-blue-100 !text-blue-800',
               };
             case 'contacted':
               return {
-                label: 'Contacted',
+                label: t('contacted'),
                 className: 'bg-yellow-100 !text-yellow-800',
               };
             default:
@@ -126,7 +126,7 @@ export default function ProspectsPage() {
     },
     {
       key: 'createdAt',
-      label: 'Date de création',
+      label: t('creation_date'),
       render: value => (
         <p className="!text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
@@ -135,7 +135,7 @@ export default function ProspectsPage() {
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('actions'),
       render: (_, row) => (
         <TableActions
           onEdit={() => console.log('Edit prospect:', (row as Prospect).id)}
@@ -158,7 +158,7 @@ export default function ProspectsPage() {
       }
     };
     fetchData();
-  }, []);
+  }, [user?.id]);
 
   return (
     <motion.div
@@ -167,19 +167,19 @@ export default function ProspectsPage() {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
         <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
           {t('prospects')}
         </h1>
-        <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
-          Ajouter un prospect
+        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors">
+          {t('new_prospect')}
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            Total Prospects
+            {t('total_prospects')}
           </h3>
           <p className="!text-3xl font-bold !text-blue-400">
             {prospects.length}
@@ -187,7 +187,7 @@ export default function ProspectsPage() {
         </div>
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            Answers
+            {t('answers')}
           </h3>
           <p className="!text-3xl font-bold !text-yellow-400">
             {prospects.filter(p => p.prospect_status === 'answer').length}
@@ -195,7 +195,7 @@ export default function ProspectsPage() {
         </div>
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            Contacted
+            {t('contacted')}
           </h3>
           <p className="!text-3xl font-bold !text-green-400">
             {prospects.filter(p => p.prospect_status === 'contacted').length}
@@ -206,12 +206,12 @@ export default function ProspectsPage() {
       <div className="bg-zinc-900 rounded-lg border border-zinc-800">
         <div className="p-6 border-b border-zinc-800">
           <h2 className="!text-xl font-semibold !text-zinc-200">
-            Liste des prospects
+            {t('list_of_prospects')}
           </h2>
         </div>
         <div className="p-6">
           <TableFilters
-            searchPlaceholder="Rechercher par nom ou email..."
+            searchPlaceholder={t('search_by_name_or_email')}
             statusOptions={statusOptions}
             onSearchChangeAction={setSearchTerm}
             onStatusChangeAction={setStatusFilter}
@@ -222,7 +222,7 @@ export default function ProspectsPage() {
             columns={columns}
             data={filteredProspects}
             loading={loading}
-            emptyMessage="Aucun prospect trouvé"
+            emptyMessage={t('no_prospects_found')}
           />
         </div>
       </div>

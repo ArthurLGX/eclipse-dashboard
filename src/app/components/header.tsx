@@ -160,7 +160,7 @@ export const Header = () => {
                   {profilePictureUrl ? (
                     <div
                       onClick={() => {
-                        router.push('/dashboard/profile');
+                        router.push('/dashboard/profile/personal-information');
                       }}
                       className={
                         'flex w-10 h-10 cursor-pointer hover:scale-[1.05] hover:border-green-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden'

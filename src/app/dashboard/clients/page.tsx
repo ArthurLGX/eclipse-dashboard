@@ -173,11 +173,11 @@ export default function ClientsPage() {
       transition={{ duration: 0.5 }}
       className="space-y-6 "
     >
-      <div className="flex items-center justify-between">
+      <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
         <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
           {t('clients')}
         </h1>
-        <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">
+        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors">
           {t('add_client')}
         </button>
       </div>

@@ -2,8 +2,11 @@
 import { useLanguage } from '@/app/context/LanguageContext';
 import useLenis from '@/utils/useLenis';
 import { useState, useEffect } from 'react';
-import { fetchPlans } from '@/lib/api';
+import { createSubscription, fetchPlans } from '@/lib/api';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { usePopup } from '../context/PopupContext';
 
 interface Plan {
   id: number;
@@ -28,6 +31,41 @@ export default function Plans() {
   const [loading, setLoading] = useState<boolean>(true);
   useLenis();
   const [plans, setPlans] = useState<Plan[]>([]);
+  const { user } = useAuth();
+  const router = useRouter();
+  const { showGlobalPopup } = usePopup();
+  const handleChoosePlan = async (plan: Plan) => {
+    if (user) {
+      //on ajoute une subscription à l'utilisateur
+      try {
+        const billingType = togglePlan ? 'yearly' : 'monthly';
+        const price = togglePlan ? plan.price_yearly : plan.price_monthly;
+
+        const response = await createSubscription(user.id, {
+          plan: plan.id,
+          billing_type: billingType,
+          price: price,
+          trial: plan.name === 'free' ? true : false, // Par défaut en mode trial
+          plan_name: plan.name,
+          plan_description: plan.description,
+          plan_features: plan.features,
+        });
+
+        if (response.data) {
+          showGlobalPopup('Plan updated successfully', 'success');
+          router.push('/dashboard/profile/your-subscription');
+        } else {
+          showGlobalPopup('Error creating subscription', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating user:', error);
+        showGlobalPopup('Error creating subscription', 'error');
+      }
+    } else {
+      router.push('/auth/login');
+    }
+  };
+
   useEffect(() => {
     const fetchPlansData = async () => {
       try {
@@ -200,6 +238,9 @@ export default function Plans() {
               </div>
 
               <button
+                onClick={() => {
+                  handleChoosePlan(plan);
+                }}
                 className={`w-full cursor-pointer ${plan.name === 'pro' ? 'bg-emerald-300 hover:bg-emerald-300/10 !text-black border border-emerald-300 hover:!text-emerald-300' : 'bg-zinc-200 hover:bg-zinc-700 !text-black hover:bg-zinc-950 border border-zinc-200 hover:!text-zinc-200'} font-semibold py-3 px-6 rounded-lg transition-colors duration-200`}
               >
                 {t('choose_plan')}
