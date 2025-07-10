@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { usePopup } from '../context/PopupContext';
+import PaymentModal from '@/app/components/PaymentModal';
 
 interface Plan {
   id: number;
@@ -29,40 +30,55 @@ export default function Plans() {
 
   const [togglePlan, setTogglePlan] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   useLenis();
   const [plans, setPlans] = useState<Plan[]>([]);
   const { user } = useAuth();
   const router = useRouter();
   const { showGlobalPopup } = usePopup();
+
   const handleChoosePlan = async (plan: Plan) => {
     if (user) {
-      //on ajoute une subscription à l'utilisateur
-      try {
-        const billingType = togglePlan ? 'yearly' : 'monthly';
-        const price = togglePlan ? plan.price_yearly : plan.price_monthly;
-
-        const response = await createSubscription(user.id, {
-          plan: plan.id,
-          billing_type: billingType,
-          price: price,
-          trial: plan.name === 'free' ? true : false, // Par défaut en mode trial
-          plan_name: plan.name,
-          plan_description: plan.description,
-          plan_features: plan.features,
-        });
-
-        if (response.data) {
-          showGlobalPopup('Plan updated successfully', 'success');
-          router.push('/dashboard/profile/your-subscription');
-        } else {
-          showGlobalPopup('Error creating subscription', 'error');
-        }
-      } catch (error) {
-        console.error('Error updating user:', error);
-        showGlobalPopup('Error creating subscription', 'error');
-      }
+      // Ouvrir le modal de paiement au lieu de créer directement la subscription
+      setSelectedPlan(plan);
+      setShowPaymentModal(true);
     } else {
       router.push('/auth/login');
+    }
+  };
+
+  const handlePaymentSuccess = async () => {
+    if (!selectedPlan || !user) return;
+
+    try {
+      const billingType = togglePlan ? 'yearly' : 'monthly';
+      const price = togglePlan
+        ? selectedPlan.price_yearly
+        : selectedPlan.price_monthly;
+
+      const response = await createSubscription(user.id, {
+        plan: selectedPlan.id,
+        billing_type: billingType,
+        price: price,
+        trial: false, // Plus en trial après paiement
+        plan_name: selectedPlan.name,
+        plan_description: selectedPlan.description,
+        plan_features: selectedPlan.features,
+      });
+
+      if (response.data) {
+        showGlobalPopup(
+          'Paiement réussi ! Votre abonnement est maintenant actif.',
+          'success'
+        );
+        setShowPaymentModal(false);
+        setSelectedPlan(null);
+        router.push('/dashboard/profile/your-subscription');
+      }
+    } catch (error) {
+      console.error('Error creating subscription after payment:', error);
+      showGlobalPopup("Erreur lors de la création de l'abonnement", 'error');
     }
   };
 
@@ -257,6 +273,15 @@ export default function Plans() {
           </div>
         )}
       </div>
+      {showPaymentModal && selectedPlan && (
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          plan={selectedPlan}
+          billingType={togglePlan ? 'yearly' : 'monthly'}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
     </div>
   );
 }

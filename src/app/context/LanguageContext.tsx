@@ -101,7 +101,7 @@ const translations = {
     pro_plan: 'Plan Pro',
     pricing_page_title:
       'Choisissez la formule qui propulse votre succès freelance',
-    choose_plan: 'Choisir ce plan',
+    choose_plan: 'Choisir un abonnement',
     per_month: '/mois',
     per_year: '/an',
     save_20_percent: '(économisez 20%)',
@@ -196,6 +196,13 @@ const translations = {
     account_pending: 'Compte en attente',
     personal_information: 'Informations personnelles',
     new_mentor: 'Nouveau mentor',
+
+    // Payment
+    payment_details: 'Détails de paiement',
+    card_number: 'Numéro de carte',
+    expiry_date: "Date d'expiration",
+    pay: 'Payer',
+    processing: 'Traitement...',
   },
   en: {
     // Navigation
@@ -252,7 +259,7 @@ const translations = {
     premium_plan: 'Premium Plan',
     pro_plan: 'Pro Plan',
     pricing_page_title: 'Choose the Plan that Powers Your Freelance Success',
-    choose_plan: 'Choose this plan',
+    choose_plan: 'Choose a plan',
     per_month: '/month',
     per_year: '/year',
     save_20_percent: '(save 20%)',
@@ -308,6 +315,13 @@ const translations = {
     account_pending: 'Account Pending',
     personal_information: 'Personal Information',
     new_mentor: 'New Mentor',
+
+    // Payment
+    payment_details: 'Payment Details',
+    card_number: 'Card Number',
+    expiry_date: 'Expiry Date',
+    pay: 'Pay',
+    processing: 'Processing...',
 
     // Prospects
     new_prospect: 'New Prospect',
