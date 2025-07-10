@@ -39,7 +39,7 @@ const CheckoutForm: React.FC<{
 }> = ({ plan, billingType, onSuccess, onClose }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -107,10 +107,11 @@ const CheckoutForm: React.FC<{
           <p className="text-zinc-400 text-sm mb-3">{plan.description}</p>
           <div className="flex items-center justify-between">
             <span className="text-2xl font-bold text-emerald-400">
+              {language === 'fr' ? '' : '€'}
               {billingType === 'yearly'
-                ? plan.price_yearly * 12
-                : plan.price_monthly}
-              {t('currency')}
+                ? (plan.price_yearly * 12).toFixed(2)
+                : plan.price_monthly.toFixed(2)}
+              {language === 'fr' ? '€' : ''}
             </span>
             <span className="text-zinc-400 text-sm">
               {billingType === 'yearly' ? t('per_year') : t('per_month')}
@@ -159,7 +160,9 @@ const CheckoutForm: React.FC<{
           disabled={!stripe || loading}
           className="flex-1 bg-emerald-500 text-black px-4 py-3 rounded-lg hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
         >
-          {loading ? t('processing') : `${t('pay')} €${price}`}
+          {loading
+            ? t('processing')
+            : `${t('pay')} ${language === 'fr' ? '€' : '$'}${price}`}
         </button>
       </div>
     </form>
