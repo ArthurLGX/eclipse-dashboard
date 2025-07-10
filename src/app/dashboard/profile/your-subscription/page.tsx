@@ -408,7 +408,9 @@ export default function YourSubscriptionPage() {
               </button>
 
               <button
-                onClick={() => router.push('/dashboard/profile')}
+                onClick={() =>
+                  router.push('/dashboard/profile/personal-information')
+                }
                 className="w-full bg-zinc-800 !text-zinc-200 px-4 py-3 rounded-lg hover:bg-zinc-700 transition-colors font-semibold border border-zinc-700"
               >
                 {t('back_to_profile')}
