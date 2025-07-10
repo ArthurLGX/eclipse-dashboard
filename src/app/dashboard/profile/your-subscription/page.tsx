@@ -236,7 +236,7 @@ export default function YourSubscriptionPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Section Informations de l'abonnement */}
         <div className="lg:col-span-2">
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6">
+          <div className="bg-zinc-900 lg:!p-6 !p-4 rounded-lg border border-zinc-800 space-y-6">
             <h2 className="!text-xl font-semibold !text-zinc-200 mb-4">
               {t('subscription_details')}
             </h2>

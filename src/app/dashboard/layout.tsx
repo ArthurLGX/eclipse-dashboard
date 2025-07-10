@@ -338,7 +338,7 @@ export default function DashboardLayout({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="h-full p-6 w-full"
+            className="h-full lg:!p-6 !p-4 w-full"
           >
             {children}
           </motion.div>
