@@ -234,11 +234,11 @@ export const Header = () => {
                 damping: 30,
                 duration: 0.5,
               }}
-              className="fixed bottom-0 left-0 right-0 bg-zinc-900/50 backdrop-blur-xl border-t border-zinc-800 z-[201] lg:hidden"
+              className="fixed flex flex-col justify-center items-center bottom-0 left-0 right-0 bg-zinc-900/50 backdrop-blur-xl border-t border-zinc-800 h-3/4 z-[201] lg:hidden"
             >
-              <div className="p-6 space-y-6">
+              <div className="p-6">
                 {/* Close button */}
-                <div className="flex justify-end">
+                <div className="absolute top-4 right-4">
                   <button
                     onClick={closeMenu}
                     className="p-2 text-zinc-400 hover:text-white transition-colors"
@@ -248,7 +248,7 @@ export const Header = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="space-y-4">
+                <nav className="space-y-4 h-full">
                   {links.map((link, index) => (
                     <motion.div
                       key={link.name}
@@ -297,41 +297,7 @@ export const Header = () => {
                     <LoginBtn onClick={closeMenu} />
                   </motion.div>
                 ) : (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.5 }}
-                    className="flex items-center justify-between p-4 bg-zinc-800/30 rounded-lg"
-                  >
-                    <div className="flex items-center gap-3">
-                      {profilePictureUrl ? (
-                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-orange-300">
-                          <Image
-                            alt="user profile picture"
-                            src={profilePictureUrl}
-                            width={48}
-                            height={48}
-                            style={{ objectFit: 'cover' }}
-                          />
-                        </div>
-                      ) : (
-                        <IconUser
-                          size={48}
-                          className="text-zinc-400 border-2 border-emerald-300 rounded-full p-2"
-                        />
-                      )}
-                      <span className="text-zinc-200 text-lg">
-                        {user?.username || 'User'}
-                      </span>
-                    </div>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-2 p-3 text-zinc-200 hover:text-red-400 transition-colors"
-                    >
-                      <IconLogout size={20} />
-                      <span>Logout</span>
-                    </button>
-                  </motion.div>
+                  <></>
                 )}
               </div>
             </motion.div>

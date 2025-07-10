@@ -12,7 +12,7 @@ export default function LanguageToggle() {
   };
 
   return (
-    <div className="flex lg:flex-row flex-col lg:items-center items-start gap-2">
+    <div className="flex flex-row lg:items-center items-start gap-2">
       <IconLanguage size={16} className="text-zinc-400" />
       <select
         value={language}
