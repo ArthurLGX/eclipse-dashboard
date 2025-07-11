@@ -34,9 +34,9 @@ const PopupMessage = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.5 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 10, scale: 0.5 }}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
       className={`fixed lg:right-8 right-0 lg:-translate-x-0 lg:bottom-8 top-8  z-[1000] !text-black flex flex-col lg:m-0 m-4 w-11/12 flex-wrap lg:w-fit   h-fit justify-center items-center px-4 py-2 rounded-lg backdrop-blur-xl overflow-hidden ${
         type === 'success'

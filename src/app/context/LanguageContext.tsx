@@ -72,7 +72,7 @@ const translations = {
     contact_support_message:
       "Contactez notre équipe de support pour obtenir de l'aide.",
     contact_support: 'Contacter le support',
-
+    upgrade_plan: 'Mettre à niveau',
     //Prospects
     new_prospect: 'Nouveau prospect',
     answers: 'Réponses',
@@ -96,6 +96,7 @@ const translations = {
     register_failed: "Échec de l'inscription",
 
     //Pricing_Page
+    plans_associated: 'Plans associés',
     start_free_trial: "Commencer la version d'essai gratuite",
     premium_plan: 'Plan Premium',
     pro_plan: 'Plan Pro',
@@ -112,9 +113,53 @@ const translations = {
     yearly: 'Annuel',
     billed_yearly: 'Facturé annuellement',
     most_popular: 'Le plus populaire',
+    compare_plans: 'Comparer les plans',
+    features: 'Fonctionnalités',
+    storage: 'Stockage',
+    based_newsletters: 'Newsletters de base',
+    advanced_newsletters: 'Newsletters avancées',
+    personalized_newsletters: 'Newsletters personnalisées',
+    priority_support: 'Support prioritaire',
+    all_time_support: 'Support 24/7',
+    phone_support: 'Support téléphonique',
+    email_support: 'Support email',
+    personalized_integrations: 'Intégrations personnalisées',
+    anticipated_features: 'Accès anticipé aux nouvelles fonctionnalités',
+    data_export: 'Export des données',
+    advanced_reports: 'Rapports avancés',
+    auto_save: 'Sauvegarde automatique',
+    max_active_projects: 'Projets actifs',
+    max_active_clients: 'Clients actifs',
+    max_prospects_active: 'Prospects actifs',
+    max_handle_mentors: 'Mentors gérés',
+    free: 'Gratuit',
+    starter: 'Starter',
+    pro: 'Pro',
+    expert: 'Expert',
+    your_current_plan: 'Votre plan actuel',
+    trial_period: "Période d'essai",
+    free_trial_description:
+      "Vous avez 30 jours d'essai gratuit pour tester notre application.",
+    billing_type: 'Type de facturation',
+    trial: 'Essai',
+    active: 'Actif',
 
     // Projects
     new_project: 'Nouveau projet',
+    activate_free_plan: 'Activer le plan gratuit',
+    free_plan_confirmation_message:
+      'Voulez-vous vraiment activer le plan gratuit ?',
+    trial_progress_description:
+      "Vous pourrez accéder à toutes les fonctionnalités de l'application pendant 30 jours.",
+    free_plan_confirmation_message_button: 'Activer le plan gratuit',
+    free_plan_confirmation_message_button_cancel: 'Annuler',
+    activate_plan: 'Activer le plan',
+    cancel_plan: 'Annuler le plan',
+    cancel_plan_confirmation_message:
+      'Voulez-vous vraiment annuler votre abonnement ?',
+    cancel_plan_confirmation_message_description:
+      "Vous perdrez accès à toutes les fonctionnalités de l'application.",
+    cancel_plan_confirmation_message_button: 'Annuler le plan',
 
     // Dashboard
     total_clients: 'Total Clients',
@@ -204,6 +249,48 @@ const translations = {
     pay: 'Payer',
     processing: 'Traitement...',
     card_information: 'Informations de la carte',
+
+    // Usage Progress Bar
+    active_projects: 'Projets actifs',
+    active_prospects: 'Prospects actifs',
+    active_mentors: 'Mentors actifs',
+    managed_mentors: 'Mentors gérés',
+    usage_progress_bar_description: 'Vous voulez augmenter vos limites ?',
+    upgrade_now: 'Mettre à niveau',
+
+    // Free Plan Limits
+    free_plan_trial: 'Plan gratuit - Essai de 30 jours',
+    trial_days_remaining: 'Jours restants',
+    trial_expired: 'Essai expiré',
+    trial_progress: "Progression de l'essai",
+    trial_expired_description: "Votre période d'essai a expiré",
+    trial_expired_title: "Période d'essai expirée",
+    trial_expired_message:
+      "Votre période d'essai gratuit de 30 jours a expiré. Pour continuer à utiliser l'application, veuillez choisir un plan.",
+    choose_plan_to_continue: 'Choisissez un plan pour continuer',
+    select_plan: 'Sélectionner ce plan',
+    go_to_pricing: 'Aller aux tarifs',
+    redirecting: 'Redirection...',
+    checking_subscription: 'Vérification de votre abonnement...',
+    days: 'jours',
+    remaining: 'restants',
+    started_at: 'Commencée le',
+
+    // Support Options
+    chatbot_support: 'Support Chatbot',
+    chatbot_support_description: 'Assistant IA disponible 24/7',
+    email_support_description: 'Réponse sous 24h',
+    phone_support_description: 'Support direct par téléphone',
+    priority_phone_support: 'Support Téléphonique Prioritaire',
+    priority_phone_support_description: 'Support prioritaire 24/7',
+    priority_email_support: 'Support Email Prioritaire',
+    priority_email_support_description: 'Réponse prioritaire sous 4h',
+
+    // Upgrade Dropdown
+    choose_upgrade_plan: 'Choisir un plan de mise à niveau',
+    current_plan: 'Plan actuel',
+    upgrade_to: 'Mettre à niveau vers',
+    no_upgrade_available: 'Aucune mise à niveau disponible',
   },
   en: {
     // Navigation
@@ -255,7 +342,9 @@ const translations = {
     register_failed: 'Register failed',
 
     //Pricing_Page
-
+    plans_associated: 'Plans associated',
+    features_details: 'Features Details',
+    features_details_description: 'Features Details Description',
     start_free_trial: 'Start Free Trial',
     premium_plan: 'Premium Plan',
     pro_plan: 'Pro Plan',
@@ -271,9 +360,38 @@ const translations = {
     yearly: 'Yearly',
     billed_yearly: 'Billed yearly',
     most_popular: 'Most Popular',
+    compare_plans: 'Compare Plans',
+    features: 'Features',
+    storage: 'Storage',
+    based_newsletters: 'Based Newsletters',
+    advanced_newsletters: 'Advanced Newsletters',
+    personalized_newsletters: 'Personalized Newsletters',
+    priority_support: 'Priority Support',
+    all_time_support: 'All Time Support',
+    phone_support: 'Phone Support',
+    email_support: 'Email Support',
+    personalized_integrations: 'Personalized Integrations',
+    anticipated_features: 'Anticipated Features',
+    data_export: 'Data Export',
+    advanced_reports: 'Advanced Reports',
+    auto_save: 'Auto Save',
+    max_active_projects: 'Max Active Projects',
+    max_active_clients: 'Max Active Clients',
+    max_prospects_active: 'Max Prospects Active',
+    max_handle_mentors: 'Max Handle Mentors',
+    free: 'Free',
+    starter: 'Starter',
+    pro: 'Pro',
+    expert: 'Expert',
+    your_current_plan: 'Your Current Plan',
+    trial_period: 'Trial Period',
+    free_trial_description: 'You have a 30-day free trial to test our app.',
+    billing_type: 'Billing Type',
+    trial: 'Trial',
+    active: 'Active',
+
     // Dashboard
     total_clients: 'Total Clients',
-    active_clients: 'Active Clients',
     new_clients_this_month: 'New Clients This Month',
     new_prospects_this_month: 'New Prospects This Month',
     completed_projects: 'Completed Projects',
@@ -349,6 +467,48 @@ const translations = {
     need_help: 'Need Help?',
     contact_support_message: 'Contact our support team for assistance.',
     contact_support: 'Contact Support',
+    upgrade_plan: 'Upgrade Plan',
+    // Usage Progress Bar
+    active_projects: 'Active Projects',
+    active_clients: 'Active Clients',
+    active_prospects: 'Active Prospects',
+    active_mentors: 'Active Mentors',
+    managed_mentors: 'Managed Mentors',
+    usage_progress_bar_description: 'You want to increase your limits?',
+    upgrade_now: 'Upgrade now',
+
+    // Free Plan Limits
+    free_plan_trial: 'Free Plan - 30 Day Trial',
+    trial_days_remaining: 'Days remaining',
+    trial_expired: 'Trial expired',
+    trial_progress: 'Trial progress',
+    trial_progress_description: 'Your trial period is progressing',
+    trial_expired_description: 'Your trial period has expired',
+    trial_expired_title: 'Trial Period Expired',
+    trial_expired_message:
+      'Your 30-day free trial has expired. To continue using the application, please choose a plan.',
+    choose_plan_to_continue: 'Choose a plan to continue',
+    select_plan: 'Select this plan',
+    go_to_pricing: 'Go to pricing',
+    redirecting: 'Redirecting...',
+    checking_subscription: 'Checking your subscription...',
+    days: 'days',
+    remaining: 'remaining',
+    started_at: 'Started at',
+    // Support Options
+    chatbot_support: 'Chatbot Support',
+    chatbot_support_description: 'AI assistant available 24/7',
+    phone_support_description: 'Direct phone support',
+    priority_phone_support: 'Priority Phone Support',
+    priority_phone_support_description: 'Priority support 24/7',
+    priority_email_support: 'Priority Email Support',
+    priority_email_support_description: 'Priority response within 4h',
+
+    // Upgrade Dropdown
+    choose_upgrade_plan: 'Choose upgrade plan',
+    current_plan: 'Current plan',
+    upgrade_to: 'Upgrade to',
+    no_upgrade_available: 'No upgrade available',
     // Common
     loading: 'Loading...',
     error: 'Error',

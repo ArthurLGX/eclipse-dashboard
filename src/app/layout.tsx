@@ -6,6 +6,7 @@ import { AuthProvider } from '@/app/context/AuthContext';
 import { Footer } from '@/app/components/footer';
 import { PopupProvider } from './context/PopupContext';
 import { LanguageProvider } from './context/LanguageContext';
+import TrialExpiredWrapper from './components/TrialExpiredWrapper';
 
 export const metadata: Metadata = {
   title: 'Eclipse Development Dashboard',
@@ -23,9 +24,11 @@ export default function RootLayout({
         <LanguageProvider>
           <AuthProvider>
             <PopupProvider>
-              <Header />
-              {children}
-              <Footer />
+              <TrialExpiredWrapper>
+                <Header />
+                {children}
+                <Footer />
+              </TrialExpiredWrapper>
             </PopupProvider>
           </AuthProvider>
         </LanguageProvider>

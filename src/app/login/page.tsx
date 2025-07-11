@@ -145,12 +145,12 @@ function LoginContent() {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, ease: 'easeInOut' }}
-            className="text-center mb-8"
+            className="!text-center mb-8"
           >
-            <h1 className="text-4xl font-bold text-zinc-200 mb-2">
+            <h1 className="!text-4xl font-bold !text-zinc-200 mb-2">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </h1>
-            <p className="text-zinc-400">
+            <p className="!text-zinc-400">
               {isLogin
                 ? 'Sign in to your account'
                 : 'Join us today to start your journey'}
@@ -170,7 +170,7 @@ function LoginContent() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="bg-red-500/10 border border-red-500/20 rounded-lg p-3"
               >
-                <p className="text-red-400 text-sm text-center">{error}</p>
+                <p className="!text-red-400 !text-sm !text-center">{error}</p>
               </motion.div>
             )}
 
@@ -181,7 +181,7 @@ function LoginContent() {
                 value={username}
                 required
                 onChange={e => setUsername(e.target.value)}
-                className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg !text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
               />
             </div>
 
@@ -198,7 +198,7 @@ function LoginContent() {
                   value={email}
                   required={!isLogin}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg !text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                 />
               </motion.div>
             )}
@@ -214,18 +214,18 @@ function LoginContent() {
                     setPassword(e.target.value);
                     setPasswordError(validatePassword(e.target.value));
                   }}
-                  className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg !text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 !text-zinc-400 hover:!text-zinc-200"
                 >
                   {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
               </div>
               {passwordError && (
-                <p className="text-red-400 text-xs">{passwordError}</p>
+                <p className="!text-red-400 !text-xs">{passwordError}</p>
               )}
             </div>
 
@@ -246,18 +246,20 @@ function LoginContent() {
                       setConfirmPassword(e.target.value);
                       checkPassword(e.target.value);
                     }}
-                    className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                    className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg !text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 !text-zinc-400 hover:!text-zinc-200"
                   >
                     {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                   </button>
                 </div>
                 {confirmPasswordError && (
-                  <p className="text-red-400 text-xs">{confirmPasswordError}</p>
+                  <p className="!text-red-400 !text-xs">
+                    {confirmPasswordError}
+                  </p>
                 )}
               </motion.div>
             )}
@@ -265,7 +267,7 @@ function LoginContent() {
             <motion.button
               type="submit"
               className="w-full bg-emerald-300 
-               hover:text-emerald-300 border border-emerald-300 cursor-pointer hover:bg-emerald-300/20 text-black hover:text-emerald-300 font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+               hover:!text-emerald-300 border border-emerald-300 cursor-pointer hover:bg-emerald-300/20 !text-black hover:!text-emerald-300 font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </motion.button>
@@ -275,15 +277,15 @@ function LoginContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-center mt-6"
+            className="!text-center mt-6"
           >
-            <p className="text-zinc-400">
+            <p className="!text-zinc-400">
               {isLogin
                 ? "Don't have an account? "
                 : 'Already have an account? '}
               <button
                 onClick={toggleMode}
-                className="text-emerald-300 cursor-pointer hover:text-emerald-400  transition-colors duration-200"
+                className="!text-emerald-300 cursor-pointer hover:!text-emerald-400  transition-colors duration-200"
               >
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>
@@ -300,7 +302,7 @@ function LoginLoading() {
     <div className="flex h-fit md:w-3/4 w-full !my-32 border border-zinc-900 bg-gradient-to-b from-zinc-950 to-black rounded-xl">
       <div className="flex-1 flex items-center justify-center p-16">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+          <div className="!text-center mb-8">
             <div className="h-8 bg-zinc-800 rounded w-48 mx-auto mb-2 animate-pulse"></div>
             <div className="h-4 bg-zinc-800 rounded w-32 mx-auto animate-pulse"></div>
           </div>

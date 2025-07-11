@@ -54,6 +54,27 @@ const CheckoutForm: React.FC<{
     setError(null);
 
     try {
+      // Calculer le montant correct (Stripe utilise les centimes)
+      // price_yearly = montant mensuel pour un abonnement annuel
+      const amount = Math.round(
+        billingType === 'yearly'
+          ? plan.price_yearly * 100 * 12 // Montant mensuel × 12 mois
+          : plan.price_monthly * 100 // Montant mensuel
+      );
+
+      // Vérifier que le montant est suffisant
+      if (amount < 50) {
+        setError('Le montant minimum est de 0.50€');
+        setLoading(false);
+        return;
+      }
+
+      console.log('Plan:', plan.name);
+      console.log('Billing Type:', billingType);
+      console.log('Price Monthly:', plan.price_monthly);
+      console.log('Price Yearly:', plan.price_yearly);
+      console.log('Amount sent to Stripe:', amount);
+
       // Créer l'intention de paiement côté serveur
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
@@ -63,10 +84,7 @@ const CheckoutForm: React.FC<{
         body: JSON.stringify({
           planId: plan.id,
           billingType,
-          amount:
-            billingType === 'yearly'
-              ? plan.price_yearly * 100
-              : plan.price_monthly * 100, // Stripe utilise les centimes
+          amount: amount, // Stripe utilise les centimes
         }),
       });
 
@@ -95,32 +113,32 @@ const CheckoutForm: React.FC<{
   };
 
   const price =
-    billingType === 'yearly' ? plan.price_yearly : plan.price_monthly;
+    billingType === 'yearly' ? plan.price_yearly * 12 : plan.price_monthly;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-          <h3 className="text-lg font-semibold text-zinc-200 mb-2">
+          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
             {plan.name.charAt(0).toUpperCase() + plan.name.slice(1)} Plan
           </h3>
-          <p className="text-zinc-400 text-sm mb-3">{plan.description}</p>
+          <p className="!text-zinc-400 !text-sm mb-3">{plan.description}</p>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-bold text-emerald-400">
+            <span className="!text-2xl font-bold !text-emerald-400">
               {language === 'fr' ? '' : '€'}
               {billingType === 'yearly'
                 ? (plan.price_yearly * 12).toFixed(2)
                 : plan.price_monthly.toFixed(2)}
               {language === 'fr' ? '€' : ''}
             </span>
-            <span className="text-zinc-400 text-sm">
+            <span className="!text-zinc-400 !text-sm">
               {billingType === 'yearly' ? t('per_year') : t('per_month')}
             </span>
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-zinc-300 text-sm font-medium">
+          <label className="!text-zinc-300 !text-sm font-medium">
             {t('card_information')}
           </label>
           <div className="bg-zinc-800 border border-zinc-700 rounded-lg p-3">
@@ -142,7 +160,7 @@ const CheckoutForm: React.FC<{
 
         {error && (
           <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3">
-            <p className="text-red-400 text-sm">{error}</p>
+            <p className="!text-red-400 !text-sm">{error}</p>
           </div>
         )}
       </div>
@@ -151,14 +169,14 @@ const CheckoutForm: React.FC<{
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 bg-zinc-800 text-zinc-300 px-4 py-3 rounded-lg hover:bg-zinc-700 transition-colors"
+          className="flex-1 bg-zinc-800 !text-zinc-300 px-4 py-3 rounded-lg hover:bg-zinc-700 transition-colors"
         >
           {t('cancel')}
         </button>
         <button
           type="submit"
           disabled={!stripe || loading}
-          className="flex-1 bg-emerald-500 text-black px-4 py-3 rounded-lg hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+          className="flex-1 bg-emerald-500 !text-black px-4 py-3 rounded-lg hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
         >
           {loading
             ? t('processing')
@@ -217,12 +235,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             className="relative bg-zinc-900 rounded-xl border border-zinc-800 p-6 w-full max-w-md"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-zinc-200">
+              <h2 className="!text-xl font-bold !text-zinc-200">
                 {t('payment_details')}
               </h2>
               <button
                 onClick={onClose}
-                className="text-zinc-400 hover:text-zinc-200 transition-colors"
+                className="!text-zinc-400 hover:!text-zinc-200 transition-colors"
               >
                 <svg
                   className="w-6 h-6"

@@ -215,13 +215,14 @@ export async function fetchSubscriptionsUser(userId: number) {
 export async function createSubscription(
   userId: number,
   data: {
-    plan: number;
+    plan: string; // documentId du plan (string)
     billing_type: string;
     price?: number;
     trial?: boolean;
     plan_name?: string;
     plan_description?: string;
     plan_features?: string;
+    start_date?: string;
   }
 ) {
   // Vérifier d'abord si l'utilisateur a déjà une subscription

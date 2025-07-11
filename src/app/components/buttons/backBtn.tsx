@@ -20,7 +20,7 @@ export const BackBtn = () => {
         id="backBtn"
         onClick={() => router.back()}
         href="/"
-        className={`group flex flex-row items-center justify-center gap-2 text-zinc-900 !text-xs capitalize border border-zinc-700 rounded-full bg-zinc-200 hover:bg-zinc-950 hover:!text-zinc-200 !pl-2 !pr-4 !py-2  transition-all ease-in-out duration-300 w-full !m-4  `}
+        className={`group flex flex-row items-center justify-center gap-2 !text-zinc-900 !text-xs capitalize border border-zinc-700 rounded-full bg-zinc-200 hover:bg-zinc-950 hover:!text-zinc-200 !pl-2 !pr-4 !py-2  transition-all ease-in-out duration-300 w-full !m-4  `}
       >
         <span
           className={
@@ -32,7 +32,7 @@ export const BackBtn = () => {
             size={16}
             stroke={1}
             className={
-              'bg-zinc-950 rounded-full w-full h-full p-1 text-zinc-200 group-hover:text-green-300 group-hover:-translate-x-1 group-hover:bg-green-200/20 transition-all ease-in-out duration-300'
+              'bg-zinc-950 rounded-full w-full h-full p-1 !text-zinc-200 group-hover:!text-green-300 group-hover:-translate-x-1 group-hover:bg-green-200/20 transition-all ease-in-out duration-300'
             }
           />
           {t('back')}

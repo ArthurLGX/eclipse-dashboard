@@ -81,7 +81,7 @@ export default function ClientsPage() {
       render: value => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
-            <span className="!text-zinc-300 font-medium text-sm">
+            <span className="!text-zinc-300 font-medium !text-sm">
               {(value as string).charAt(0).toUpperCase()}
             </span>
           </div>
@@ -126,13 +126,16 @@ export default function ClientsPage() {
                 className: 'bg-blue-100 !text-blue-800',
               };
             default:
-              return { label: status, className: 'bg-gray-100 !text-gray-800' };
+              return {
+                label: status,
+                className: 'bg-gray-100 !text-gray-800',
+              };
           }
         };
         const config = getStatusConfig(status);
         return (
           <p
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.className}`}
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}
           >
             {config.label}
           </p>
@@ -174,10 +177,10 @@ export default function ClientsPage() {
       className="space-y-6 "
     >
       <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
           {t('clients')}
         </h1>
-        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors">
+        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors">
           {t('add_client')}
         </button>
       </div>

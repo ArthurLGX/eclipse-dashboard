@@ -33,7 +33,7 @@ export default function DataTable<T = unknown>({
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className="text-left py-3 px-4 !text-zinc-300 font-semibold"
+                  className="!text-left py-3 px-4 !text-zinc-300 font-semibold"
                 >
                   <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse"></div>
                 </th>
@@ -64,7 +64,7 @@ export default function DataTable<T = unknown>({
             {columns.map((column, index) => (
               <th
                 key={index}
-                className="text-left py-3 px-4 !text-zinc-300 font-semibold"
+                className="!text-left py-3 px-4 !text-zinc-300 font-semibold"
               >
                 {column.label}
               </th>
@@ -101,7 +101,7 @@ export default function DataTable<T = unknown>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="py-8 px-4 text-center !text-zinc-400"
+                className="py-8 px-4 !text-center !text-zinc-400"
               >
                 {emptyMessage}
               </td>

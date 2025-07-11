@@ -93,7 +93,7 @@ export const Header = () => {
           pathname.startsWith('/dashboard') ? 'lg:hidden flex' : 'flex'
         } items-center top-8 left-1/2 -translate-x-1/2 flex-col w-full h-fit items-center justify-center`}
       >
-        <header className="z-[199] flex bg-zinc-900/50 border border-zinc-800 h-fit flex-row w-11/12 backdrop-blur-xl !p-4 rounded-full gap-16 items-center justify-between text-white">
+        <header className="z-[199] flex bg-zinc-900/50 border border-zinc-800 h-fit flex-row w-11/12 backdrop-blur-xl !p-4 rounded-full gap-16 items-center justify-between !text-white">
           <div className="flex items-center gap-4 w-fit justify-center">
             <Link href="/" className="flex flex-row w-full gap-2 items-center">
               <Image
@@ -102,7 +102,7 @@ export const Header = () => {
                 width={40}
                 height={40}
               />
-              <span className="sm:flex hidden !text-xs text-zinc-400 w-full !font-normal">
+              <span className="sm:flex hidden !text-xs !text-zinc-400 w-full !font-normal">
                 Eclipse Studio Dashboard
               </span>
             </Link>
@@ -124,9 +124,9 @@ export const Header = () => {
                   }}
                   className={`!flex !flex-row gap-1 items-center justify-center ${
                     isActive(link.path)
-                      ? 'text-green-200  items-center justify-center gap-2  !px-2 border bg-green-300/20 border-green-200 rounded-full'
-                      : 'text-zinc-200'
-                  } hover:text-green-200 capitalize !text-sm`}
+                      ? '!text-green-200  items-center justify-center gap-2  !px-2 border bg-green-300/20 border-green-200 rounded-full'
+                      : '!text-zinc-200'
+                  } hover:!text-green-200 capitalize !text-sm`}
                   key={link.name}
                   onClick={() => {
                     setIsMenuOpen(false);
@@ -201,7 +201,7 @@ export const Header = () => {
           <div className="lg:hidden">
             <button
               onClick={toggleMenu}
-              className="p-2 text-zinc-200 hover:text-green-200 transition-colors"
+              className="p-2 !text-zinc-200 hover:!text-green-200 transition-colors"
             >
               {isMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
             </button>
@@ -241,7 +241,7 @@ export const Header = () => {
                 <div className="absolute top-4 right-4">
                   <button
                     onClick={closeMenu}
-                    className="p-2 text-zinc-400 hover:text-white transition-colors"
+                    className="p-2 !text-zinc-400 hover:!text-white transition-colors"
                   >
                     <IconX size={24} />
                   </button>
@@ -264,12 +264,12 @@ export const Header = () => {
                         onClick={closeMenu}
                         className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                           isActive(link.path)
-                            ? 'bg-green-200/10 text-green-200 border border-green-200/20'
-                            : 'text-zinc-200 hover:bg-zinc-800/80 hover:text-green-200'
+                            ? 'bg-green-200/10 !text-green-200 border border-green-200/20'
+                            : '!text-zinc-200 hover:bg-zinc-800/80 hover:!text-green-200'
                         }`}
                       >
                         {link.icon}
-                        <span className="text-lg capitalize">{link.name}</span>
+                        <span className="!text-lg capitalize">{link.name}</span>
                       </Link>
                     </motion.div>
                   ))}

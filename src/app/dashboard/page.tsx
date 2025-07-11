@@ -102,7 +102,7 @@ export default function DashboardPage() {
         className="space-y-6 "
       >
         <div className="flex items-center justify-between">
-          <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
+          <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
             {t('dashboard')}
           </h1>
         </div>

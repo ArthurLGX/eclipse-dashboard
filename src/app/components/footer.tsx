@@ -21,7 +21,7 @@ export const Footer = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
       exit={{ opacity: 0, y: 50 }}
-      className=" flex items-center h-fit w-full justify-center p-4 lg:!my-16 !my-20  text-white"
+      className=" flex items-center h-fit w-full justify-center p-4 lg:!my-16 !my-20  !text-white"
     >
       <div
         className={
@@ -37,7 +37,7 @@ export const Footer = () => {
               height={40}
             />
           </Link>
-          <p className="text-zinc-400 text-center md:text-left">
+          <p className="!text-zinc-400 !text-center md:!text-left">
             Eclipse Development Dashboard &#8482; {year}{' '}
           </p>
         </div>
@@ -53,7 +53,7 @@ export const Footer = () => {
               }}
               key={link.name}
               href={link.path}
-              className={`text-zinc-200 hover:text-green-200 transition-all ease-in-out duration-300`}
+              className={`!text-zinc-200 hover:!text-green-200 transition-all ease-in-out duration-300`}
             >
               {link.name}
             </motion.a>

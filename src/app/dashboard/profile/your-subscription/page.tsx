@@ -3,11 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/app/context/AuthContext';
-import { fetchUserById, fetchSubscriptionsUser } from '@/lib/api';
+import { fetchUserById, fetchSubscriptionsUser, fetchPlans } from '@/lib/api';
 import useLenis from '@/utils/useLenis';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
+import SupportDropdown from '@/app/components/SupportDropdown';
+import UpgradeDropdown from '@/app/components/UpgradeDropdown';
+import PaymentModal from '@/app/components/PaymentModal';
+import FreePlanModal from '@/app/components/FreePlanModal';
 import { useRouter } from 'next/navigation';
 
 interface UserProfile {
@@ -30,16 +34,18 @@ interface UserProfile {
   updatedAt: string;
 }
 
+interface Plan {
+  id: number;
+  name: string;
+  description: string;
+  features: string;
+  price_monthly: number;
+  price_yearly: number;
+}
+
 interface Subscription {
   id: number;
-  plan: {
-    id: number;
-    name: string;
-    description: string;
-    features: string;
-    price_monthly: number;
-    price_yearly: number;
-  };
+  plan: Plan;
   billing_type: string;
   trial: boolean;
   createdAt: string;
@@ -47,7 +53,7 @@ interface Subscription {
 }
 
 export default function YourSubscriptionPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const router = useRouter();
   useLenis();
   const { user } = useAuth();
@@ -56,6 +62,13 @@ export default function YourSubscriptionPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
+  const [supportDropdownOpen, setSupportDropdownOpen] = useState(false);
+  const [upgradeDropdownOpen, setUpgradeDropdownOpen] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showFreePlanModal, setShowFreePlanModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [availablePlans, setAvailablePlans] = useState<Plan[]>([]);
+  const [togglePlan, setTogglePlan] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -103,9 +116,56 @@ export default function YourSubscriptionPage() {
       }
     };
 
+    const fetchAvailablePlans = async () => {
+      try {
+        const response = await fetchPlans();
+        setAvailablePlans(response.data || []);
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+      }
+    };
+
     fetchProfile();
     fetchSubscriptions();
+    fetchAvailablePlans();
   }, [user?.id]);
+
+  const handlePlanSelect = (plan: Plan) => {
+    setSelectedPlan(plan);
+    setUpgradeDropdownOpen(false);
+
+    // Si c'est le plan gratuit, afficher la modale du plan gratuit
+    if (plan.name === 'free') {
+      setShowFreePlanModal(true);
+    } else {
+      setShowPaymentModal(true);
+    }
+  };
+
+  const handlePaymentSuccess = async () => {
+    if (!selectedPlan || !user) return;
+
+    try {
+      // Ici vous pouvez ajouter la logique pour créer la nouvelle subscription
+      console.log('Plan sélectionné:', selectedPlan);
+      showGlobalPopup(
+        'Paiement réussi ! Votre abonnement a été mis à niveau.',
+        'success'
+      );
+      setShowPaymentModal(false);
+      setSelectedPlan(null);
+
+      // Recharger les subscriptions
+      const response = await fetchSubscriptionsUser(user.id);
+      setSubscriptions(response.data || []);
+    } catch (error) {
+      console.error('Error upgrading subscription:', error);
+      showGlobalPopup(
+        "Erreur lors de la mise à niveau de l'abonnement",
+        'error'
+      );
+    }
+  };
 
   const handleSave = async () => {
     try {
@@ -201,14 +261,14 @@ export default function YourSubscriptionPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
           {t('your_subscription')}
         </h1>
         {editing ? (
           <div className="flex lg:flex-row flex-col lg:w-fit w-full  gap-4">
             <button
               onClick={handleCancel}
-              className="bg-orange-500/20 lg:w-fit w-full !text-orange-500 border border-orange-500/20 px-4 py-2 hover:bg-orange-500/10 hover:text-white rounded-lg cursor-pointer transition-colors"
+              className="bg-orange-500/20 lg:w-fit w-full !text-orange-500 border border-orange-500/20 px-4 py-2 hover:bg-orange-500/10 hover:!text-white rounded-lg cursor-pointer transition-colors"
             >
               {t('cancel')}
             </button>
@@ -222,14 +282,14 @@ export default function YourSubscriptionPage() {
         ) : subscriptions.length > 0 && subscriptions[0].trial ? (
           <button
             onClick={() => setEditing(true)}
-            className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors"
+            className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors"
           >
             {t('edit_subscription')}
           </button>
         ) : subscriptions.length > 0 ? (
-          <p className="text-zinc-400">{t('active_subscription')}</p>
+          <p className="!text-zinc-400">{t('active_subscription')}</p>
         ) : (
-          <p className="text-zinc-400">{t('no_subscription')}</p>
+          <p className="!text-zinc-400">{t('no_subscription')}</p>
         )}
       </div>
 
@@ -261,12 +321,12 @@ export default function YourSubscriptionPage() {
                           {subscription.plan?.name || 'Plan'}
                         </h3>
                         {subscription.trial && (
-                          <span className="bg-orange-500/20 text-orange-400 text-xs px-2 py-1 rounded-full">
+                          <span className="bg-orange-500/20 !text-orange-400 !text-xs px-2 py-1 rounded-full">
                             {t('trial')}
                           </span>
                         )}
                       </div>
-                      <div className="text-right">
+                      <div className="!text-right">
                         <div className="!text-2xl font-bold !text-emerald-400">
                           €{subscription.plan?.price_monthly || 0}
                         </div>
@@ -279,7 +339,7 @@ export default function YourSubscriptionPage() {
                     {/* Détails de l'abonnement */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 text-sm font-light">
+                        <label className="!text-zinc-400 !text-sm font-light">
                           {t('billing_type')}
                         </label>
                         <div className="flex items-center gap-2 p-3 bg-zinc-800 rounded-lg">
@@ -290,7 +350,7 @@ export default function YourSubscriptionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 text-sm font-light">
+                        <label className="!text-zinc-400 !text-sm font-light">
                           {t('status')}
                         </label>
                         <div className="flex items-center gap-2 p-3 bg-zinc-800 rounded-lg">
@@ -298,15 +358,13 @@ export default function YourSubscriptionPage() {
                             className={`w-2 h-2 rounded-full ${subscription.trial ? 'bg-orange-500' : 'bg-emerald-500'}`}
                           ></div>
                           <span className="!text-zinc-200">
-                            {subscription.trial
-                              ? t('trial_active')
-                              : t('active')}
+                            {subscription.trial ? t('trial') : t('active')}
                           </span>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 text-sm font-light">
+                        <label className="!text-zinc-400 !text-sm font-light">
                           {t('created_at')}
                         </label>
                         <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
@@ -319,7 +377,7 @@ export default function YourSubscriptionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 text-sm font-light">
+                        <label className="!text-zinc-400 !text-sm font-light">
                           {t('last_updated')}
                         </label>
                         <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
@@ -335,7 +393,7 @@ export default function YourSubscriptionPage() {
                     {/* Description et fonctionnalités */}
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 text-sm font-light">
+                        <label className="!text-zinc-400 !text-sm font-light">
                           {t('description')}
                         </label>
                         <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
@@ -345,13 +403,63 @@ export default function YourSubscriptionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 text-sm font-light">
+                        <label className="!text-zinc-400 !text-sm font-light">
                           {t('features')}
                         </label>
                         <div className="p-3 bg-zinc-800 rounded-lg">
                           {subscription.plan?.features ? (
-                            <div className="!text-zinc-200 whitespace-pre-line">
-                              {subscription.plan.features}
+                            <div className="!text-zinc-200 space-y-2">
+                              {(() => {
+                                try {
+                                  const features =
+                                    typeof subscription.plan.features ===
+                                    'string'
+                                      ? JSON.parse(subscription.plan.features)
+                                      : subscription.plan.features;
+
+                                  return Object.entries(features).map(
+                                    ([key, value]) => {
+                                      if (typeof value === 'boolean') {
+                                        return value ? (
+                                          <div
+                                            key={key}
+                                            className="flex items-center gap-2"
+                                          >
+                                            <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
+                                            <span>
+                                              {key
+                                                .replace(/_/g, ' ')
+                                                .replace(/\b\w/g, l =>
+                                                  l.toUpperCase()
+                                                )}
+                                            </span>
+                                          </div>
+                                        ) : null;
+                                      } else if (typeof value === 'number') {
+                                        return (
+                                          <div
+                                            key={key}
+                                            className="flex items-center gap-2"
+                                          >
+                                            <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
+                                            <span>
+                                              {key
+                                                .replace(/_/g, ' ')
+                                                .replace(/\b\w/g, l =>
+                                                  l.toUpperCase()
+                                                )}
+                                              : {value === 0 ? '∞' : value}
+                                            </span>
+                                          </div>
+                                        );
+                                      }
+                                      return null;
+                                    }
+                                  );
+                                } catch {
+                                  return <p>{subscription.plan.features}</p>;
+                                }
+                              })()}
                             </div>
                           ) : (
                             <p className="!text-zinc-500 italic">
@@ -365,7 +473,7 @@ export default function YourSubscriptionPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
+              <div className="!text-center py-12">
                 <div className="!text-zinc-400 !text-lg mb-4">
                   {t('no_subscription_found')}
                 </div>
@@ -388,21 +496,25 @@ export default function YourSubscriptionPage() {
             </h2>
 
             <div className="space-y-4">
-              {subscriptions &&
-                subscriptions.length > 0 &&
-                subscriptions[0].trial &&
-                !editing && (
-                  <button
-                    onClick={() => setEditing(true)}
-                    className="w-full bg-emerald-500 !text-black px-4 py-3 rounded-lg hover:bg-emerald-400 transition-colors font-semibold"
-                  >
-                    {t('upgrade_plan')}
-                  </button>
-                )}
+              {subscriptions && subscriptions.length > 0 && (
+                <UpgradeDropdown
+                  currentPlan={subscriptions[0]?.plan?.name || 'free'}
+                  availablePlans={availablePlans}
+                  isOpen={upgradeDropdownOpen}
+                  onToggleAction={() =>
+                    setUpgradeDropdownOpen(!upgradeDropdownOpen)
+                  }
+                  onCloseAction={() => setUpgradeDropdownOpen(false)}
+                  onPlanSelectAction={handlePlanSelect}
+                  togglePlan={togglePlan}
+                  onTogglePlanAction={() => setTogglePlan(!togglePlan)}
+                  language={language}
+                />
+              )}
 
               <button
                 onClick={() => router.push('/pricing')}
-                className="w-full bg-zinc-800 !text-zinc-200 px-4 py-3 rounded-lg hover:bg-zinc-700 transition-colors font-semibold border border-zinc-700"
+                className="cursor-pointer w-full bg-zinc-200 !text-zinc-900 px-4 py-3 rounded-lg  transition-colors font-semibold border border-zinc-700 hover:!text-zinc-200 hover:border-zinc-200 hover:bg-zinc-200/20"
               >
                 {t('view_all_plans')}
               </button>
@@ -411,7 +523,7 @@ export default function YourSubscriptionPage() {
                 onClick={() =>
                   router.push('/dashboard/profile/personal-information')
                 }
-                className="w-full bg-zinc-800 !text-zinc-200 px-4 py-3 rounded-lg hover:bg-zinc-700 transition-colors font-semibold border border-zinc-700"
+                className="cursor-pointer w-full bg-zinc-800 !text-zinc-200 px-4 py-3 rounded-lg hover:bg-zinc-900 transition-colors font-semibold border border-zinc-700 hover:border-zinc-200"
               >
                 {t('back_to_profile')}
               </button>
@@ -425,13 +537,38 @@ export default function YourSubscriptionPage() {
               <p className="!text-sm !text-zinc-400 mb-4">
                 {t('contact_support_message')}
               </p>
-              <button className="w-full bg-zinc-800 !text-zinc-200 px-4 py-2 rounded-lg hover:bg-zinc-700 transition-colors text-sm">
-                {t('contact_support')}
-              </button>
+              <SupportDropdown
+                userPlan={subscriptions[0]?.plan?.name || 'free'}
+                isOpen={supportDropdownOpen}
+                onToggle={() => setSupportDropdownOpen(!supportDropdownOpen)}
+                onClose={() => setSupportDropdownOpen(false)}
+              />
             </div>
           </div>
         </div>
       </div>
+
+      {showPaymentModal && selectedPlan && (
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          plan={selectedPlan}
+          billingType={togglePlan ? 'yearly' : 'monthly'}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
+
+      {showFreePlanModal && selectedPlan && (
+        <FreePlanModal
+          isOpen={showFreePlanModal}
+          onClose={() => setShowFreePlanModal(false)}
+          plan={{
+            ...selectedPlan,
+            documentId: selectedPlan.id.toString(),
+          }}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
     </motion.div>
   );
 }

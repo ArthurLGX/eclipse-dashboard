@@ -39,7 +39,7 @@ export default function Home() {
               initial={{ opacity: 0, y: '100%' }}
               animate={{ opacity: 1, y: 1 }}
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.2 }}
-              className="text-xl text-zinc-200 font-light"
+              className="!text-xl !text-zinc-200 font-light"
             >
               {t('hero_subtitle_top')}
             </motion.span>
@@ -48,7 +48,7 @@ export default function Home() {
               initial={{ opacity: 0, y: '100%' }}
               animate={{ opacity: 1, y: 1 }}
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
-              className="bg-emerald-300/20 backdrop-blur-xs py-2 px-4 rounded-full text-green-200 font-extrabold shadow-md shadow-emerald-300/20"
+              className="bg-emerald-300/20 backdrop-blur-xs py-2 px-4 rounded-full !text-green-200 font-extrabold shadow-md shadow-emerald-300/20"
             >
               {t('hero_subtitle_bottom')}
             </motion.span>

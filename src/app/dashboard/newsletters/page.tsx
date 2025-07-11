@@ -15,7 +15,7 @@ export default function NewslettersPage() {
         className="space-y-6"
       >
         <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-          <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
+          <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
             {t('newsletters')}
           </h1>
           <button className="bg-green-500 !text-black px-4 py-2 rounded-lg hover:bg-green-400 transition-colors">

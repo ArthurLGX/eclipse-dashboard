@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
+import PageSkeleton from './PageSkeleton';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -18,14 +19,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   }, [authenticated, hasHydrated, router]);
 
   if (!hasHydrated) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-zinc-400">Chargement...</p>
-        </div>
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   if (!authenticated) {

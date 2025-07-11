@@ -111,13 +111,16 @@ export default function ProspectsPage() {
                 className: 'bg-yellow-100 !text-yellow-800',
               };
             default:
-              return { label: status, className: 'bg-gray-100 !text-gray-800' };
+              return {
+                label: status,
+                className: 'bg-gray-100 !text-gray-800',
+              };
           }
         };
         const config = getStatusConfig(status);
         return (
           <p
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.className}`}
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}
           >
             {config.label}
           </p>
@@ -168,10 +171,10 @@ export default function ProspectsPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
           {t('prospects')}
         </h1>
-        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:text-white    transition-colors">
+        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors">
           {t('new_prospect')}
         </button>
       </div>

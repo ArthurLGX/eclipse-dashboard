@@ -1,6 +1,7 @@
 'use client';
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
+import { fetchSubscriptionsUser } from '@/lib/api';
 
 interface User {
   id: number;
@@ -22,6 +23,8 @@ type AuthContextType = {
   login: (user: User, token: string) => void;
   logout: () => void;
   hasHydrated: boolean;
+  showTrialExpiredModal: boolean;
+  setShowTrialExpiredModal: (show: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [hasHydrated, setHasHydrated] = useState(false);
+  const [showTrialExpiredModal, setShowTrialExpiredModal] = useState(false);
   const router = useRouter();
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -71,6 +75,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem('user', JSON.stringify(fullUser));
       setUser(fullUser);
       setAuthenticated(true);
+
+      // Vérifier si l'utilisateur a un trial expiré
+      try {
+        const subscriptionResponse = await fetchSubscriptionsUser(user.id);
+        if (subscriptionResponse.data && subscriptionResponse.data.length > 0) {
+          const subscription = subscriptionResponse.data[0];
+          const planName = subscription.plan.name;
+          const isTrial = subscription.trial;
+          const startDate = subscription.start_date;
+
+          if (planName === 'free' && isTrial && startDate) {
+            const trialEndDate = new Date(startDate);
+            trialEndDate.setDate(trialEndDate.getDate() + 30); // +30 jours
+            const now = new Date();
+
+            if (now > trialEndDate) {
+              setShowTrialExpiredModal(true);
+              // Ne pas rediriger ici, laisser TrialExpiredGuard s'en charger
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error checking trial status:', error);
+      }
     } catch (err) {
       console.error('Failed to fetch full user details:', err);
       // En cas d'erreur, utiliser les données de base
@@ -90,7 +118,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, authenticated, login, logout, hasHydrated }}
+      value={{
+        user,
+        token,
+        authenticated,
+        login,
+        logout,
+        hasHydrated,
+        showTrialExpiredModal,
+        setShowTrialExpiredModal,
+      }}
     >
       {children}
     </AuthContext.Provider>
