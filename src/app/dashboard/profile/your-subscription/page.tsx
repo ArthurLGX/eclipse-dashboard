@@ -14,26 +14,6 @@ import PaymentModal from '@/app/components/PaymentModal';
 import FreePlanModal from '@/app/components/FreePlanModal';
 import { useRouter } from 'next/navigation';
 
-interface UserProfile {
-  id: number;
-  username: string;
-  email: string;
-  profile_picture: {
-    id: number;
-    url: string;
-    formats?: {
-      thumbnail: { url: string };
-      small: { url: string };
-      medium: { url: string };
-      large: { url: string };
-    };
-  } | null;
-  confirmed: boolean;
-  blocked: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
 interface Plan {
   id: number;
   name: string;
@@ -59,9 +39,7 @@ export default function YourSubscriptionPage() {
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
   const [supportDropdownOpen, setSupportDropdownOpen] = useState(false);
   const [upgradeDropdownOpen, setUpgradeDropdownOpen] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -69,13 +47,6 @@ export default function YourSubscriptionPage() {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [availablePlans, setAvailablePlans] = useState<Plan[]>([]);
   const [togglePlan, setTogglePlan] = useState(false);
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    profile_picture: {
-      url: '',
-    },
-  });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -84,15 +55,7 @@ export default function YourSubscriptionPage() {
       try {
         setLoading(true);
         const data = await fetchUserById(user.id);
-        setProfile(data);
         console.log('Réponse :', data);
-        setFormData({
-          username: data.username,
-          email: data.email,
-          profile_picture: {
-            url: data.profile_picture?.url || '',
-          },
-        });
       } catch (error) {
         console.error('Error fetching profile:', error);
         showGlobalPopup('Erreur lors du chargement du profil', 'error');
@@ -106,13 +69,11 @@ export default function YourSubscriptionPage() {
         const response = await fetchSubscriptionsUser(user.id);
         console.log('Subscriptions response:', response);
         setSubscriptions(response.data || []);
-        setEditing(false);
       } catch (error) {
         console.error('Error fetching subscriptions:', error);
         showGlobalPopup('Erreur lors du chargement des abonnements', 'error');
       } finally {
         setLoading(false);
-        setEditing(false);
       }
     };
 
@@ -167,53 +128,6 @@ export default function YourSubscriptionPage() {
     }
   };
 
-  const handleSave = async () => {
-    try {
-      // Si une nouvelle image a été sélectionnée, l'uploader d'abord
-      // Mettre à jour les autres données du profil
-      const updateFormData = new FormData();
-      updateFormData.append('username', formData.username);
-      updateFormData.append('email', formData.email);
-
-      const token = localStorage.getItem('token');
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${user?.id || 0}`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: updateFormData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de la mise à jour de l'utilisateur");
-      }
-
-      const updatedData = await response.json();
-      setEditing(false);
-      showGlobalPopup('Profil mis à jour avec succès', 'success');
-      //on affiche dynamiquement le nouveau profil
-      setProfile(updatedData);
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      showGlobalPopup('Erreur lors de la mise à jour', 'error');
-    }
-  };
-
-  const handleCancel = () => {
-    setFormData({
-      username: profile?.username || '',
-      email: profile?.email || '',
-      profile_picture: {
-        url: profile?.profile_picture?.url || '',
-      },
-    });
-    setEditing(false);
-  };
-
   if (loading) {
     return (
       <ProtectedRoute>
@@ -264,33 +178,6 @@ export default function YourSubscriptionPage() {
         <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
           {t('your_subscription')}
         </h1>
-        {editing ? (
-          <div className="flex lg:flex-row flex-col lg:w-fit w-full  gap-4">
-            <button
-              onClick={handleCancel}
-              className="bg-orange-500/20 lg:w-fit w-full !text-orange-500 border border-orange-500/20 px-4 py-2 hover:bg-orange-500/10 hover:!text-white rounded-lg cursor-pointer transition-colors"
-            >
-              {t('cancel')}
-            </button>
-            <button
-              onClick={handleSave}
-              className="bg-emerald-500 !text-black px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors"
-            >
-              {t('save')}
-            </button>
-          </div>
-        ) : subscriptions.length > 0 && subscriptions[0].trial ? (
-          <button
-            onClick={() => setEditing(true)}
-            className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors"
-          >
-            {t('edit_subscription')}
-          </button>
-        ) : subscriptions.length > 0 ? (
-          <p className="!text-zinc-400">{t('active_subscription')}</p>
-        ) : (
-          <p className="!text-zinc-400">{t('no_subscription')}</p>
-        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

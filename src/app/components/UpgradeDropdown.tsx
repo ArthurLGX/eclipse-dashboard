@@ -66,7 +66,7 @@ export default function UpgradeDropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggleAction}
-        className="w-full bg-emerald-300/20 !text-emerald-300 px-4 py-3 rounded-lg border border-emerald-300/20 hover:bg-emerald-300/10 transition-colors hover:border-emerald-300 font-semibold flex items-center justify-between"
+        className="w-full cursor-pointer bg-emerald-300/20 !text-emerald-300 px-4 py-3 rounded-lg border border-emerald-300/20 hover:bg-emerald-300/10 transition-colors hover:border-emerald-300 font-semibold flex items-center justify-between"
       >
         <span>{t('upgrade_plan')}</span>
         <motion.span

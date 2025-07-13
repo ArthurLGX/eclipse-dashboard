@@ -186,7 +186,7 @@ export default function PersonalInformationPage() {
               onClick={() =>
                 router.push('/dashboard/profile/your-subscription')
               }
-              className="bg-zinc-800/30 lg:w-fit w-full !text-zinc-200 border border-zinc-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-zinc-700/20 hover:!text-white    transition-colors"
+              className="bg-zinc-200 lg:w-fit w-full !text-zinc-900 border border-zinc-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-zinc-700/20 hover:!text-white    transition-colors"
             >
               {t('your_subscription')}
             </button>

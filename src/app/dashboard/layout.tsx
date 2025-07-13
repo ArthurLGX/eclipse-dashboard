@@ -208,10 +208,10 @@ export default function DashboardLayout({
   return (
     <ProtectedRoute>
       <TrialExpiredGuard>
-        <div className="flex min-h-screen bg-zinc-950 justify-start w-full relative ">
+        <div className="flex min-h-screen justify-start w-full relative ">
           {/* Sidebar Desktop */}
           <motion.div
-            className="hidden md:flex sticky top-10 rounded-lg bg-zinc-900/50 border border-zinc-800 flex-col items-start justify-start gap-8 h-screen z-[1000]"
+            className="hidden lg:flex sticky top-10 rounded-lg bg-zinc-900/80 border border-zinc-800 flex-col items-start justify-start gap-8 h-screen z-[1000]"
             animate={{
               width: isExpanded || isPinned ? 300 : 64,
             }}
@@ -317,7 +317,7 @@ export default function DashboardLayout({
           </motion.div>
 
           {/* Mobile Bottom Navigation */}
-          <div className="md:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-zinc-900/95 border-t border-zinc-800 backdrop-blur-sm">
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-zinc-900/95 border-t border-zinc-800 backdrop-blur-sm">
             <nav className="flex items-center justify-around p-2">
               {sidebarItems.map(item => (
                 <button

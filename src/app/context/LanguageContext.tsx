@@ -55,7 +55,7 @@ const translations = {
     account_status: 'Statut du compte',
     confirmed_account: 'Compte confirmé',
     pending_account: 'Compte en attente',
-    last_update: 'Dernière mise à jour',
+    last_updated: 'Dernière mise à jour',
     member_since: 'Membre depuis',
 
     //Your Subscription
@@ -277,8 +277,8 @@ const translations = {
     started_at: 'Commencée le',
 
     // Support Options
-    chatbot_support: 'Support Chatbot',
-    chatbot_support_description: 'Assistant IA disponible 24/7',
+    eclipse_chatbot_support: 'Assistant Eclipse',
+    eclipse_chatbot_support_description: 'Assistant IA Eclipse disponible 24/7',
     email_support_description: 'Réponse sous 24h',
     phone_support_description: 'Support direct par téléphone',
     priority_phone_support: 'Support Téléphonique Prioritaire',
@@ -328,7 +328,7 @@ const translations = {
     account_status: 'Account Status',
     confirmed_account: 'Confirmed Account',
     pending_account: 'Pending Account',
-    last_update: 'Last Update',
+    last_updated: 'Last Updated',
     member_since: 'Member since',
 
     // Messages
@@ -536,6 +536,10 @@ const translations = {
     error_code: 'Error Code',
     contact_support_if_problem_persists:
       'If the problem persists, contact our support.',
+
+    // Eclipse Chatbot
+    eclipse_chatbot_support: 'Eclipse Chatbot Support',
+    eclipse_chatbot_support_description: 'AI assistant available 24/7',
   },
 };
 

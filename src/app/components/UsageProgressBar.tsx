@@ -190,11 +190,11 @@ export default function UsageProgressBar() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col gap-4 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-lg p-4 mb-16 mt-2"
+      className="flex flex-col gap-4 w-full bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-lg p-4 lg:!mt-8 !mt-32 !mb-16"
     >
       {/* Barre de progression du trial pour le plan gratuit */}
       {trialData && (
-        <div className="border-b border-zinc-700 pb-4 mb-4">
+        <div className="border-b border-zinc-700 pb-4 mb-4 w-full">
           <div className="flex justify-between items-center mb-2">
             <span className="!text-sm !text-zinc-200 font-medium">
               {trialData.isExpired ? t('trial_expired') : t('trial_period')}
@@ -243,7 +243,7 @@ export default function UsageProgressBar() {
 
       <div className="flex lg:flex-row flex-col gap-12 items-center">
         {Object.entries(usageData).map(([key, data]) => (
-          <div key={key} className="flex-1 min-w-48">
+          <div key={key} className="flex-1 min-w-48 w-full">
             <div className="flex justify-between items-center mb-2">
               <span className="!text-sm !text-zinc-400 font-medium">
                 {data.label}

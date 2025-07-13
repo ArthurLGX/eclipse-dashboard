@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useChatbot } from '@/app/context/ChatbotContext';
 
 interface SupportDropdownProps {
   userPlan: string;
@@ -18,6 +19,7 @@ export default function SupportDropdown({
   onClose,
 }: SupportDropdownProps) {
   const { t } = useLanguage();
+  const { openChatbot } = useChatbot();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Fermer le dropdown si on clique en dehors
@@ -51,8 +53,7 @@ export default function SupportDropdown({
             icon: '🤖',
             description: t('chatbot_support_description'),
             action: () => {
-              // Ouvrir le chatbot
-              console.log('Ouvrir le chatbot');
+              openChatbot();
               onClose();
             },
           },
@@ -75,7 +76,7 @@ export default function SupportDropdown({
             icon: '🤖',
             description: t('chatbot_support_description'),
             action: () => {
-              console.log('Ouvrir le chatbot');
+              openChatbot();
               onClose();
             },
           },
@@ -108,7 +109,7 @@ export default function SupportDropdown({
             icon: '🤖',
             description: t('chatbot_support_description'),
             action: () => {
-              console.log('Ouvrir le chatbot');
+              openChatbot();
               onClose();
             },
           },
@@ -141,7 +142,7 @@ export default function SupportDropdown({
             icon: '🤖',
             description: t('chatbot_support_description'),
             action: () => {
-              console.log('Ouvrir le chatbot');
+              openChatbot();
               onClose();
             },
           },
