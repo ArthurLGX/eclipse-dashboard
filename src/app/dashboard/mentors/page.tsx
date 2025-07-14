@@ -106,6 +106,13 @@ export default function MentorsPage() {
         </div>
       ),
     },
+    {
+      key: 'createdAt',
+      label: t('created_at'),
+      render: (value, row) => (
+        <p className="!text-zinc-500 !text-sm">{row.createdAt}</p>
+      ),
+    },
 
     {
       key: 'actions',
@@ -132,7 +139,7 @@ export default function MentorsPage() {
             {t('mentors')}
           </h1>
           <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors">
-            {t('new_mentor')}
+            {t('add_mentor')}
           </button>
         </div>
 

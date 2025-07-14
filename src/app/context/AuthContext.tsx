@@ -25,6 +25,8 @@ type AuthContextType = {
   hasHydrated: boolean;
   showTrialExpiredModal: boolean;
   setShowTrialExpiredModal: (show: boolean) => void;
+  subscriptionUpdated: boolean;
+  triggerSubscriptionUpdate: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,9 +34,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [authenticated, setAuthenticated] = useState(false);
   const [hasHydrated, setHasHydrated] = useState(false);
   const [showTrialExpiredModal, setShowTrialExpiredModal] = useState(false);
+  const [subscriptionUpdated, setSubscriptionUpdated] = useState(false);
   const router = useRouter();
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -116,22 +119,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     router.push('/');
   };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        authenticated,
-        login,
-        logout,
-        hasHydrated,
-        showTrialExpiredModal,
-        setShowTrialExpiredModal,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const triggerSubscriptionUpdate = () => {
+    setSubscriptionUpdated(prev => !prev);
+  };
+
+  const value: AuthContextType = {
+    user,
+    token,
+    authenticated,
+    login,
+    logout,
+    hasHydrated,
+    showTrialExpiredModal,
+    setShowTrialExpiredModal,
+    subscriptionUpdated,
+    triggerSubscriptionUpdate,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

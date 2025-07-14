@@ -29,7 +29,7 @@ export const PricingBtn = () => {
             }
           />
         </span>
-        <span className={'group-hover:!text-zinc-950'}>
+        <span className={'group-hover:!text-zinc-950 !font-light'}>
           {t('go_to_offers')}
         </span>
       </Link>

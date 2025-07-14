@@ -29,7 +29,7 @@ export const TryBtn = () => {
             }
           />
         </span>
-        <span className={'group-hover:!text-green-200'}>
+        <span className={'group-hover:!text-green-200 !font-light'}>
           {t('try_for_free')}
         </span>
       </Link>

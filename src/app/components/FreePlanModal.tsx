@@ -32,7 +32,7 @@ export default function FreePlanModal({
   onSuccess,
 }: FreePlanModalProps) {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, triggerSubscriptionUpdate } = useAuth();
   const { showGlobalPopup } = usePopup();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -77,6 +77,9 @@ export default function FreePlanModal({
         onSuccess();
         onClose();
         router.push('/dashboard/profile/your-subscription');
+
+        // Déclencher la mise à jour de l'UsageProgressBar
+        triggerSubscriptionUpdate();
       }
     } catch (error) {
       console.error('Error creating free subscription:', error);

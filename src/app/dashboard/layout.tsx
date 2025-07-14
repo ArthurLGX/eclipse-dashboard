@@ -336,12 +336,12 @@ export default function DashboardLayout({
           </div>
 
           {/* Contenu principal */}
-          <div className="flex-1 overflow-auto w-full h-full md:pl-0 pl-0 pb-20 md:pb-0 md:pt-0 pt-25">
+          <div className="flex-1 overflow-visible w-full h-full md:pl-0 pl-0 pb-20 md:pb-0 md:pt-0">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="h-full lg:!p-6 !p-2 w-full"
+              className="h-full lg:!p-6 !p-2 w-full overflow-visible"
             >
               <UsageProgressBar />
               {children}

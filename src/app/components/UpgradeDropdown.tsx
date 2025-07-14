@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useAuth } from '@/app/context/AuthContext';
+import { cancelSubscription } from '@/lib/api';
+import { usePopup } from '@/app/context/PopupContext';
+import { useRouter } from 'next/navigation';
 
 interface Plan {
   id: number;
@@ -38,7 +42,12 @@ export default function UpgradeDropdown({
 }: UpgradeDropdownProps) {
   const { t } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>(
+    'bottom'
+  );
+  const { user } = useAuth();
+  const { showGlobalPopup } = usePopup();
+  const router = useRouter();
   // Fermer le dropdown si on clique en dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,8 +68,36 @@ export default function UpgradeDropdown({
     };
   }, [isOpen, onCloseAction]);
 
+  // Calculer la position du dropdown pour éviter qu'il soit coupé
+  useEffect(() => {
+    if (isOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const dropdownHeight = 400; // Estimation de la hauteur du dropdown
+
+      // Si il n'y a pas assez d'espace en bas, afficher en haut
+      if (rect.bottom + dropdownHeight > viewportHeight) {
+        setDropdownPosition('top');
+      } else {
+        setDropdownPosition('bottom');
+      }
+    }
+  }, [isOpen]);
+
   // Filtrer les plans disponibles (exclure le plan actuel)
   const upgradePlans = availablePlans.filter(plan => plan.name !== currentPlan);
+
+  const handleCancelSubscription = async (userId: number) => {
+    try {
+      const response = await cancelSubscription(userId);
+      if (response.data) {
+        showGlobalPopup(t('subscription_cancelled'), 'success');
+        router.push('/pricing');
+      }
+    } catch (error) {
+      console.error('Error canceling subscription:', error);
+    }
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -81,11 +118,27 @@ export default function UpgradeDropdown({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            initial={{
+              opacity: 0,
+              y: dropdownPosition === 'bottom' ? -10 : 10,
+              scale: 0.95,
+            }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            exit={{
+              opacity: 0,
+              y: dropdownPosition === 'bottom' ? -10 : 10,
+              scale: 0.95,
+            }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="absolute top-full left-0 right-0 mt-2 bg-zinc-900 border border-zinc-700 rounded-lg shadow-lg z-50 overflow-hidden"
+            className={`absolute ${
+              dropdownPosition === 'bottom'
+                ? 'top-full mt-2'
+                : 'bottom-full mb-2'
+            } left-0 right-0 bg-zinc-900 border border-zinc-700 rounded-lg shadow-lg z-[9999] overflow-hidden`}
+            style={{
+              maxHeight: '400px',
+              overflowY: 'auto',
+            }}
           >
             <div className="p-4 space-y-3">
               <div className="!text-center pb-2 border-b border-zinc-700">
@@ -191,6 +244,16 @@ export default function UpgradeDropdown({
                   </div>
                 </motion.button>
               ))}
+              <div
+                onClick={() => {
+                  handleCancelSubscription(user?.id || 0);
+                }}
+                className="flex items-center justify-center w-full"
+              >
+                <p className="!text-red-400 cursor-pointer bg-red-500/10 px-4 py-2 text-center rounded-lg !text-sm w-full hover:bg-red-500/20 transition-colors border border-red-500/20 hover:border-red-500">
+                  {t('cancel_subscription')}
+                </p>
+              </div>
 
               {upgradePlans.length === 0 && (
                 <div className="!text-center py-4">

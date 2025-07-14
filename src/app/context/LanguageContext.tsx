@@ -73,8 +73,9 @@ const translations = {
       "Contactez notre équipe de support pour obtenir de l'aide.",
     contact_support: 'Contacter le support',
     upgrade_plan: 'Mettre à niveau',
+    cancel_subscription: "Annuler l'abonnement",
     //Prospects
-    new_prospect: 'Nouveau prospect',
+    new_prospects_this_month: 'Nouveaux prospects ce mois',
     answers: 'Réponses',
     contacted: 'Contactés',
     list_of_prospects: 'Liste des prospects',
@@ -164,8 +165,15 @@ const translations = {
     // Dashboard
     total_clients: 'Total Clients',
     new_clients_this_month: 'Nouveaux ce mois',
-    new_prospects_this_month: 'Nouveaux prospects ce mois',
+    dashboard_description:
+      'Gérez vos clients, prospects et projets en temps réel avec une interface intuitive et puissante',
+    ready_to_transform: 'Prêt à transformer votre gestion de projet ?',
+    new_clients: 'Nouveaux clients',
+    new_prospects: 'Nouveaux prospects',
     completed_projects: 'Projets terminés',
+    active_clients: 'Clients actifs',
+    projects_in_progress: 'Projets en cours',
+    conversion_rate: 'Taux de conversion',
     total_prospects: 'Total Prospects',
     total_projects: 'Total Projets',
     total_mentors: 'Total Mentors',
@@ -175,11 +183,6 @@ const translations = {
     mentors_list: 'Liste des mentors',
     recent_activity: 'Activité récente',
     statistics: 'Statistiques',
-    conversion_rate: 'Taux de conversion',
-    projects_in_progress: 'Projets en cours',
-    no_recent_activity: 'Aucune activité récente',
-    in_progress: 'En cours',
-    completed: 'Terminés',
     search_project_placeholder: 'Rechercher par nom, client ou mentor...',
     no_project_found: 'Aucun projet trouvé',
 
@@ -205,10 +208,9 @@ const translations = {
     hero_subtitle_bottom: 'Sans effort',
     try_for_free: 'Essayer gratuitement',
     all_statuses: 'Tous les statuts',
-
+    no_recent_activity: 'Aucune activité récente',
     // Clients
     add_client: 'Ajouter un client',
-    active_clients: 'Clients Actifs',
     no_client_found: 'Aucun client trouvé',
 
     // 404 Page
@@ -240,7 +242,7 @@ const translations = {
     account_confirmed: 'Compte confirmé',
     account_pending: 'Compte en attente',
     personal_information: 'Informations personnelles',
-    new_mentor: 'Nouveau mentor',
+    add_mentor: 'Ajouter un mentor',
 
     // Payment
     payment_details: 'Détails de paiement',
@@ -291,6 +293,15 @@ const translations = {
     current_plan: 'Plan actuel',
     upgrade_to: 'Mettre à niveau vers',
     no_upgrade_available: 'Aucune mise à niveau disponible',
+
+    // Newsletters
+    add_newsletter: 'Ajouter une newsletter',
+    total_newsletters: 'Total des newsletters',
+    sent: 'Envoyées',
+    open_rate: "Taux d'ouverture",
+    newsletter_history: 'Historique des newsletters',
+    newsletter_history_description:
+      'Historique des newsletters envoyées à implémenter...',
   },
   en: {
     // Navigation
@@ -433,7 +444,15 @@ const translations = {
     account_confirmed: 'Account Confirmed',
     account_pending: 'Account Pending',
     personal_information: 'Personal Information',
-    new_mentor: 'New Mentor',
+    add_mentor: 'Add Mentor',
+
+    // Newsletters
+    add_newsletter: 'Add Newsletter',
+    total_newsletters: 'Total Newsletters',
+    sent: 'Sent',
+    open_rate: 'Open Rate',
+    newsletter_history: 'Newsletter History',
+    newsletter_history_description: 'Newsletter History Description',
 
     // Payment
     payment_details: 'Payment Details',
@@ -468,6 +487,7 @@ const translations = {
     contact_support_message: 'Contact our support team for assistance.',
     contact_support: 'Contact Support',
     upgrade_plan: 'Upgrade Plan',
+    cancel_subscription: 'Cancel Subscription',
     // Usage Progress Bar
     active_projects: 'Active Projects',
     active_clients: 'Active Clients',

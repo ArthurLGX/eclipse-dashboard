@@ -3,7 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/app/context/AuthContext';
-import { fetchUserById, fetchSubscriptionsUser, fetchPlans } from '@/lib/api';
+import {
+  fetchUserById,
+  fetchSubscriptionsUser,
+  fetchPlans,
+  createSubscription,
+} from '@/lib/api';
 import useLenis from '@/utils/useLenis';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -16,6 +21,7 @@ import { useRouter } from 'next/navigation';
 
 interface Plan {
   id: number;
+  documentId?: string;
   name: string;
   description: string;
   features: string;
@@ -36,7 +42,7 @@ export default function YourSubscriptionPage() {
   const { t, language } = useLanguage();
   const router = useRouter();
   useLenis();
-  const { user } = useAuth();
+  const { user, triggerSubscriptionUpdate } = useAuth();
   const { showGlobalPopup } = usePopup();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,6 +86,7 @@ export default function YourSubscriptionPage() {
     const fetchAvailablePlans = async () => {
       try {
         const response = await fetchPlans();
+        console.log('Plans récupérés:', response.data);
         setAvailablePlans(response.data || []);
       } catch (error) {
         console.error('Error fetching plans:', error);
@@ -107,18 +114,40 @@ export default function YourSubscriptionPage() {
     if (!selectedPlan || !user) return;
 
     try {
-      // Ici vous pouvez ajouter la logique pour créer la nouvelle subscription
-      console.log('Plan sélectionné:', selectedPlan);
-      showGlobalPopup(
-        'Paiement réussi ! Votre abonnement a été mis à niveau.',
-        'success'
-      );
-      setShowPaymentModal(false);
-      setSelectedPlan(null);
+      const billingType = togglePlan ? 'yearly' : 'monthly';
+      const price = togglePlan
+        ? selectedPlan.price_yearly
+        : selectedPlan.price_monthly;
 
-      // Recharger les subscriptions
-      const response = await fetchSubscriptionsUser(user.id);
-      setSubscriptions(response.data || []);
+      // Appeler createSubscription pour mettre à jour la subscription
+      const response = await createSubscription(user.id, {
+        plan: selectedPlan.documentId || selectedPlan.id.toString(), // Utiliser documentId s'il existe, sinon l'ID
+        billing_type: billingType,
+        price: price,
+        trial: selectedPlan.name === 'free' ? true : false,
+        plan_name: selectedPlan.name,
+        plan_description: selectedPlan.description,
+        plan_features: selectedPlan.features,
+        start_date: new Date().toISOString(),
+      });
+
+      if (response.data) {
+        console.log('Plan sélectionné:', selectedPlan);
+        showGlobalPopup(
+          'Paiement réussi ! Votre abonnement a été mis à niveau.',
+          'success'
+        );
+        setShowPaymentModal(false);
+        setShowFreePlanModal(false);
+        setSelectedPlan(null);
+
+        // Recharger les subscriptions pour afficher les nouvelles données
+        const updatedSubscriptions = await fetchSubscriptionsUser(user.id);
+        setSubscriptions(updatedSubscriptions.data || []);
+
+        // Déclencher la mise à jour de l'UsageProgressBar
+        triggerSubscriptionUpdate();
+      }
     } catch (error) {
       console.error('Error upgrading subscription:', error);
       showGlobalPopup(
@@ -377,26 +406,28 @@ export default function YourSubscriptionPage() {
 
         {/* Section Actions rapides */}
         <div className="lg:col-span-1">
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6">
+          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6 relative overflow-visible">
             <h2 className="!text-xl font-semibold !text-zinc-200 mb-4">
               {t('quick_actions')}
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-4 relative overflow-visible">
               {subscriptions && subscriptions.length > 0 && (
-                <UpgradeDropdown
-                  currentPlan={subscriptions[0]?.plan?.name || 'free'}
-                  availablePlans={availablePlans}
-                  isOpen={upgradeDropdownOpen}
-                  onToggleAction={() =>
-                    setUpgradeDropdownOpen(!upgradeDropdownOpen)
-                  }
-                  onCloseAction={() => setUpgradeDropdownOpen(false)}
-                  onPlanSelectAction={handlePlanSelect}
-                  togglePlan={togglePlan}
-                  onTogglePlanAction={() => setTogglePlan(!togglePlan)}
-                  language={language}
-                />
+                <div className="relative overflow-visible">
+                  <UpgradeDropdown
+                    currentPlan={subscriptions[0]?.plan?.name || 'free'}
+                    availablePlans={availablePlans}
+                    isOpen={upgradeDropdownOpen}
+                    onToggleAction={() =>
+                      setUpgradeDropdownOpen(!upgradeDropdownOpen)
+                    }
+                    onCloseAction={() => setUpgradeDropdownOpen(false)}
+                    onPlanSelectAction={handlePlanSelect}
+                    togglePlan={togglePlan}
+                    onTogglePlanAction={() => setTogglePlan(!togglePlan)}
+                    language={language}
+                  />
+                </div>
               )}
 
               <button

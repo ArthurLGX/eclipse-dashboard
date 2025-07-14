@@ -9,6 +9,7 @@ import {
   fetchNumberOfProspectsUser,
   fetchNumberOfMentorsUser,
   fetchSubscriptionsUser,
+  fetchNumberOfNewslettersUser,
 } from '@/lib/api';
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
@@ -18,6 +19,7 @@ interface UsageData {
   clients: { current: number; limit: number; label: string };
   prospects: { current: number; limit: number; label: string };
   mentors: { current: number; limit: number; label: string };
+  newsletters: { current: number; limit: number; label: string };
 }
 
 interface TrialData {
@@ -29,7 +31,7 @@ interface TrialData {
 }
 
 export default function UsageProgressBar() {
-  const { user } = useAuth();
+  const { user, subscriptionUpdated } = useAuth();
   const { t, language } = useLanguage();
   const [usageData, setUsageData] = useState<UsageData | null>(null);
   const [trialData, setTrialData] = useState<TrialData | null>(null);
@@ -48,6 +50,7 @@ export default function UsageProgressBar() {
           max_active_clients: 5,
           max_prospects_active: 10,
           max_handle_mentors: 0,
+          max_newsletters: 0,
         };
 
         try {
@@ -91,6 +94,9 @@ export default function UsageProgressBar() {
                 isExpired,
                 startedDate: startedDate,
               });
+            } else {
+              // Réinitialiser les données de trial si ce n'est plus un plan gratuit
+              setTrialData(null);
             }
 
             // Parser les features si c'est une string
@@ -102,28 +108,40 @@ export default function UsageProgressBar() {
               max_active_clients: parsedFeatures.max_active_clients ?? 5,
               max_prospects_active: parsedFeatures.max_prospects_active ?? 10,
               max_handle_mentors: parsedFeatures.max_handle_mentors ?? 0,
+              max_newsletters: parsedFeatures.max_newsletters ?? 0,
             };
 
             console.log('Current plan limits : ', currentPlanLimits);
+          } else {
+            // Pas de subscription, utiliser les limites par défaut
+            setTrialData(null);
           }
         } catch (error) {
           console.error('Error parsing plan features:', error);
+          setTrialData(null);
         }
 
         // Récupérer les données réelles d'utilisation depuis l'API
-        const [projectsCount, clientsCount, prospectsCount, mentorsCount] =
-          await Promise.all([
-            fetchNumberOfProjectsUser(user.id),
-            fetchNumberOfClientsUser(user.id),
-            fetchNumberOfProspectsUser(user.id),
-            fetchNumberOfMentorsUser(user.id),
-          ]);
+        const [
+          projectsCount,
+          clientsCount,
+          prospectsCount,
+          mentorsCount,
+          newslettersCount,
+        ] = await Promise.all([
+          fetchNumberOfProjectsUser(user.id),
+          fetchNumberOfClientsUser(user.id),
+          fetchNumberOfProspectsUser(user.id),
+          fetchNumberOfMentorsUser(user.id),
+          fetchNumberOfNewslettersUser(user.id),
+        ]);
 
         const currentUsage = {
           projects: projectsCount,
           clients: clientsCount,
           prospects: prospectsCount,
           mentors: mentorsCount,
+          newsletters: newslettersCount,
         };
 
         setUsageData({
@@ -147,6 +165,11 @@ export default function UsageProgressBar() {
             limit: currentPlanLimits.max_handle_mentors,
             label: t('managed_mentors'),
           },
+          newsletters: {
+            current: currentUsage.newsletters,
+            limit: currentPlanLimits.max_newsletters,
+            label: t('newsletters'),
+          },
         });
       } catch (error) {
         console.error('Error fetching usage data:', error);
@@ -156,7 +179,12 @@ export default function UsageProgressBar() {
     };
 
     fetchUsageData();
-  }, [user?.id, t]);
+
+    // Ajouter un intervalle pour rafraîchir les données toutes les 30 secondes
+    const interval = setInterval(fetchUsageData, 30000);
+
+    return () => clearInterval(interval);
+  }, [user?.id, t, subscriptionUpdated]);
 
   if (loading || !usageData) {
     return (
@@ -268,7 +296,8 @@ export default function UsageProgressBar() {
       {usageData.projects.current >= usageData.projects.limit ||
         usageData.clients.current >= usageData.clients.limit ||
         usageData.prospects.current >= usageData.prospects.limit ||
-        (usageData.mentors.current >= usageData.mentors.limit && (
+        usageData.mentors.current >= usageData.mentors.limit ||
+        (usageData.newsletters.current >= usageData.newsletters.limit && (
           <div className="flex lg:flex-row flex-col gap-2">
             <p className="!text-sm !text-zinc-400 font-medium">
               {t('usage_progress_bar_description')}

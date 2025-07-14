@@ -31,7 +31,7 @@ export default function TrialExpiredModal({
 }: TrialExpiredModalProps) {
   const { t, language } = useLanguage();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, triggerSubscriptionUpdate } = useAuth();
   const { showGlobalPopup } = usePopup();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -94,6 +94,9 @@ export default function TrialExpiredModal({
         setSelectedPlan(null);
         onClose();
         router.push('/dashboard/profile/your-subscription');
+
+        // Déclencher la mise à jour de l'UsageProgressBar
+        triggerSubscriptionUpdate();
       }
     } catch (error) {
       console.error('Error creating subscription after payment:', error);

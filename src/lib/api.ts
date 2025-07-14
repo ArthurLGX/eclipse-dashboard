@@ -144,6 +144,27 @@ export async function fetchNumberOfMentorsUser(userId: number) {
   }
 }
 
+export async function fetchNumberOfNewslettersUser(userId: number) {
+  try {
+    const res = await secureFetch(
+      `newsletters?populate=*&filters[author][$eq]=${userId}`
+    );
+    return res.data.length;
+  } catch (error) {
+    console.error('Error fetching number of newsletters:', error);
+    throw new Error('Erreur lors de la récupération du nombre de newsletters');
+  }
+}
+
+export async function fetchNewslettersUser(userId: number) {
+  try {
+    return secureFetch(`newsletters?populate=*&filters[author][$eq]=${userId}`);
+  } catch (error) {
+    console.error('Error fetching newsletters:', error);
+    throw new Error('Erreur lors de la récupération des newsletters');
+  }
+}
+
 export async function fetchCreateAccount(
   username: string,
   email: string,
@@ -278,5 +299,35 @@ export async function createSubscription(
   } catch (error) {
     console.error('Error in createSubscription:', error);
     throw error;
+  }
+}
+
+export async function cancelSubscription(userId: number) {
+  try {
+    const existingSubscriptions = await fetchSubscriptionsUser(userId);
+    if (existingSubscriptions.data && existingSubscriptions.data.length > 0) {
+      // Mettre à jour la subscription existante
+      const existingSubscription = existingSubscriptions.data[0];
+
+      console.log(
+        'Updating subscription with documentId:',
+        existingSubscription.documentId
+      );
+
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions/${existingSubscription.documentId}`,
+        {
+          data: {
+            subscription_status: 'canceled',
+          },
+        }
+      );
+      return res.data;
+    } else {
+      throw new Error('Aucun abonnement trouvé');
+    }
+  } catch (error) {
+    console.error('Error canceling subscription:', error);
+    throw new Error("Erreur lors de l'annulation de l'abonnement");
   }
 }

@@ -64,7 +64,7 @@ export default function DataTable<T = unknown>({
             {columns.map((column, index) => (
               <th
                 key={index}
-                className="!text-left py-3 px-4 !text-zinc-300 font-semibold"
+                className="!text-left py-3 px-4 !text-zinc-300 font-semibold !capitalize"
               >
                 {column.label}
               </th>

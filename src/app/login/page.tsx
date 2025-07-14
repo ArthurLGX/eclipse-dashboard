@@ -1,19 +1,36 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from 'react';
-import { motion } from 'framer-motion';
-import { fetchCreateAccount, fetchLogin } from '@/lib/api';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/app/context/AuthContext';
-import useLenis from '@/utils/useLenis';
 import { usePopup } from '@/app/context/PopupContext';
+import {
+  fetchLogin,
+  fetchCreateAccount,
+  fetchSubscriptionsUser,
+} from '@/lib/api';
 import { BackBtn } from '@/app/components/buttons/backBtn';
+import useLenis from '@/utils/useLenis';
 
 function LoginContent() {
   const searchParams = useSearchParams();
   const type = (searchParams.get('type') as 'login' | 'register') || 'login';
   const [isLogin, setIsLogin] = useState(type === 'login');
   const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [error, setError] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const router = useRouter();
+  const { authenticated, hasHydrated, login, user } = useAuth();
+  const { showGlobalPopup } = usePopup();
+
+  useLenis();
 
   // Mettre à jour le mode quand l'URL change
   useEffect(() => {
@@ -21,21 +38,6 @@ function LoginContent() {
       (searchParams.get('type') as 'login' | 'register') || 'login';
     setIsLogin(newType === 'login');
   }, [searchParams]);
-  const [password, setPassword] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [error, setError] = React.useState('');
-  const [confirmPassword, setConfirmPassword] = React.useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState('');
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const router = useRouter();
-  const { authenticated, hasHydrated, login, user } = useAuth();
-  console.log(user);
-
-  useLenis();
-
-  const { showGlobalPopup } = usePopup();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,9 +48,11 @@ function LoginContent() {
         const data = await fetchLogin(username, password);
         if (data.jwt && data.user) {
           console.log('Login successful');
+          console.log('data.user', data.user);
+
           // Utiliser la fonction login du contexte qui gère tout
           login(data.user, data.jwt);
-          router.push('/dashboard');
+
           showGlobalPopup('Login successful', 'success');
         } else {
           console.error('Login failed');
@@ -81,11 +85,33 @@ function LoginContent() {
   };
 
   useEffect(() => {
-    if (!hasHydrated) return;
-    if (authenticated) {
-      router.push('/dashboard');
-    }
-  });
+    if (!hasHydrated || !authenticated || !user) return;
+
+    const checkSubscriptionAndRedirect = async () => {
+      try {
+        // Vérifier si l'utilisateur a un abonnement
+        const subscription = await fetchSubscriptionsUser(user.id);
+        console.log('subscription', subscription);
+
+        if (
+          Array.isArray(subscription.data) &&
+          subscription.data.length > 0 &&
+          (subscription.data[0].subscription_status === 'active' ||
+            subscription.data[0].subscription_status === 'trial')
+        ) {
+          router.push('/dashboard');
+        } else {
+          router.push('/pricing');
+        }
+      } catch (error) {
+        console.error('Error checking subscription:', error);
+        // En cas d'erreur, rediriger vers pricing par défaut
+        router.push('/pricing');
+      }
+    };
+
+    checkSubscriptionAndRedirect();
+  }, [authenticated, hasHydrated, user, router]);
 
   const toggleMode = () => {
     const newMode = !isLogin;

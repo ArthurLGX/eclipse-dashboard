@@ -46,7 +46,7 @@ export default function Plans() {
   useLenis();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [currentUserPlan, setCurrentUserPlan] = useState<string | null>(null);
-  const { user } = useAuth();
+  const { user, triggerSubscriptionUpdate } = useAuth();
   const router = useRouter();
   const { showGlobalPopup } = usePopup();
 
@@ -113,6 +113,9 @@ export default function Plans() {
         setShowPaymentModal(false);
         setSelectedPlan(null);
         router.push('/dashboard/profile/your-subscription');
+
+        // Déclencher la mise à jour de l'UsageProgressBar
+        triggerSubscriptionUpdate();
       }
     } catch (error) {
       console.error('Error creating subscription after payment:', error);
@@ -142,7 +145,11 @@ export default function Plans() {
 
       try {
         const subscription = await fetchSubscriptionsUser(user.id);
-        if (subscription.data && subscription.data.length > 0) {
+        if (
+          subscription.data &&
+          subscription.data.length > 0 &&
+          subscription.data[0].subscription_status === 'active'
+        ) {
           const planName = subscription.data[0].plan.name;
           console.log('Plan name : ', planName);
           setCurrentUserPlan(planName);
