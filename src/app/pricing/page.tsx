@@ -442,6 +442,7 @@ export default function Plans() {
                           'based_newsletters',
                           'advanced_newsletters',
                           'personalized_newsletters',
+                          'max_newsletters',
                         ],
                         Support: [
                           'priority_support',
@@ -480,27 +481,38 @@ export default function Plans() {
                                 <td className="p-4 !text-zinc-300 font-medium">
                                   {(() => {
                                     const labels = {
-                                      max_active_projects: 'Projets actifs',
-                                      max_active_clients: 'Clients actifs',
-                                      max_prospects_active: 'Prospects actifs',
-                                      max_handle_mentors: 'Mentors gérés',
-                                      storage: 'Stockage',
-                                      based_newsletters: 'Newsletters de base',
-                                      advanced_newsletters:
-                                        'Newsletters avancées',
-                                      personalized_newsletters:
-                                        'Newsletters personnalisées',
-                                      priority_support: 'Support prioritaire',
-                                      all_time_support: 'Support 24/7',
-                                      phone_support: 'Support téléphonique',
-                                      email_support: 'Support email',
-                                      personalized_integrations:
-                                        'Intégrations personnalisées',
-                                      anticipated_features:
-                                        'Accès anticipé aux nouvelles fonctionnalités',
-                                      data_export: 'Export des données',
-                                      advanced_reports: 'Rapports avancés',
-                                      auto_save: 'Sauvegarde automatique',
+                                      max_active_projects: t(
+                                        'max_active_projects'
+                                      ),
+                                      max_active_clients:
+                                        t('max_active_clients'),
+                                      max_prospects_active: t(
+                                        'max_prospects_active'
+                                      ),
+                                      max_handle_mentors:
+                                        t('max_handle_mentors'),
+                                      storage: t('storage'),
+                                      based_newsletters: t('based_newsletters'),
+                                      advanced_newsletters: t(
+                                        'advanced_newsletters'
+                                      ),
+                                      personalized_newsletters: t(
+                                        'personalized_newsletters'
+                                      ),
+                                      priority_support: t('priority_support'),
+                                      all_time_support: t('all_time_support'),
+                                      phone_support: t('phone_support'),
+                                      email_support: t('email_support'),
+                                      personalized_integrations: t(
+                                        'personalized_integrations'
+                                      ),
+                                      anticipated_features: t(
+                                        'anticipated_features'
+                                      ),
+                                      data_export: t('data_export'),
+                                      advanced_reports: t('advanced_reports'),
+                                      auto_save: t('auto_save'),
+                                      max_newsletters: t('max_newsletters'),
                                     };
                                     return (
                                       labels[

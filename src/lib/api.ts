@@ -34,6 +34,30 @@ async function secureFetch(endpoint: string, options: RequestInit = {}) {
   return res.json();
 }
 
+//CLIENTS
+export async function addClientUser(
+  userId: number,
+  data: {
+    name: string;
+    email: string;
+    number: string;
+    enterprise: string;
+    adress: string;
+    website: string;
+    processStatus: string;
+    isActive: boolean;
+  }
+) {
+  return secureFetch('clients', {
+    method: 'POST',
+    body: JSON.stringify({
+      data: {
+        ...data,
+        users: userId,
+      },
+    }),
+  });
+}
 export async function fetchClientsUser(userId: number) {
   return secureFetch(`clients?populate=*&filters[users][$eq]=${userId}`);
 }
@@ -56,9 +80,9 @@ export async function fetchNumberOfProjectsUser(userId: number) {
   return res.data.length;
 }
 
-export async function fetchClientById(id: string) {
-  const intId = parseInt(id, 10); // Convertir l'ID en entier
-  return secureFetch(`clients/${intId}?populate=*`);
+export async function fetchClientById(id: number) {
+  console.log('id', id);
+  return secureFetch(`clients?populate=*&filters[id][$eq]=${id}`);
 }
 
 export async function fetchProspectsUser(userId: number) {
@@ -123,6 +147,34 @@ export async function fetchFacturesUser(userId: number) {
   return secureFetch(`factures?populate=*&filters[user][$eq]=${userId}`);
 }
 
+export async function fetchFacturesUserByClientId(
+  userId: number,
+  clientId: number
+) {
+  return secureFetch(
+    `factures?populate=*&filters[user][$eq]=${userId}&filters[client_id][$eq]=${clientId}`
+  );
+}
+
+export async function createFacture(data: {
+  reference: string;
+  number: number;
+  date: string;
+  due_date: string;
+  facture_status: string;
+  currency: string;
+  description: string;
+  notes: string;
+  pdf: string;
+  client_id: number;
+  project: number;
+  user: number;
+}) {
+  return secureFetch('factures', {
+    method: 'POST',
+    body: JSON.stringify({ data }),
+  });
+}
 export async function fetchMentorUsers(userId: number) {
   try {
     return secureFetch(`mentors?populate=*&filters[users][$eq]=${userId}`);
@@ -222,6 +274,38 @@ export async function updateUser(
   return res.data;
 }
 
+//SUBSCRIPTIONS
+
+export async function cancelSubscription(userId: number) {
+  try {
+    const existingSubscriptions = await fetchSubscriptionsUser(userId);
+    if (existingSubscriptions.data && existingSubscriptions.data.length > 0) {
+      // Mettre à jour la subscription existante
+      const existingSubscription = existingSubscriptions.data[0];
+
+      console.log(
+        'Updating subscription with documentId:',
+        existingSubscription.documentId
+      );
+
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions/${existingSubscription.documentId}`,
+        {
+          data: {
+            subscription_status: 'canceled',
+          },
+        }
+      );
+      return res.data;
+    } else {
+      throw new Error('Aucun abonnement trouvé');
+    }
+  } catch (error) {
+    console.error('Error canceling subscription:', error);
+    throw new Error("Erreur lors de l'annulation de l'abonnement");
+  }
+}
+
 export async function fetchSubscriptionsUser(userId: number) {
   try {
     return secureFetch(
@@ -299,35 +383,5 @@ export async function createSubscription(
   } catch (error) {
     console.error('Error in createSubscription:', error);
     throw error;
-  }
-}
-
-export async function cancelSubscription(userId: number) {
-  try {
-    const existingSubscriptions = await fetchSubscriptionsUser(userId);
-    if (existingSubscriptions.data && existingSubscriptions.data.length > 0) {
-      // Mettre à jour la subscription existante
-      const existingSubscription = existingSubscriptions.data[0];
-
-      console.log(
-        'Updating subscription with documentId:',
-        existingSubscription.documentId
-      );
-
-      const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions/${existingSubscription.documentId}`,
-        {
-          data: {
-            subscription_status: 'canceled',
-          },
-        }
-      );
-      return res.data;
-    } else {
-      throw new Error('Aucun abonnement trouvé');
-    }
-  } catch (error) {
-    console.error('Error canceling subscription:', error);
-    throw new Error("Erreur lors de l'annulation de l'abonnement");
   }
 }

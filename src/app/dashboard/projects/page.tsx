@@ -1,16 +1,21 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import useLenis from '@/utils/useLenis';
 import { fetchProjectsUser } from '@/lib/api';
-import DataTable, { Column } from '@/app/components/DataTable';
+import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
-import TableFilters, { FilterOption } from '@/app/components/TableFilters';
+import { FilterOption } from '@/app/components/TableFilters';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
+import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
+import {
+  IconBuilding,
+  IconCheck,
+  IconProgressCheck,
+} from '@tabler/icons-react';
 
 interface Project {
   id: string;
@@ -73,19 +78,19 @@ export default function ProjectsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const columns: Column<Project>[] = [
+  const columns = [
     {
       key: 'title',
       label: 'Projet',
-      render: (value, row) => (
+      render: (value: unknown, row: Project) => (
         <div>
           <h4 className="!text-zinc-200 font-medium">{value as string}</h4>
           <div className="flex items-center gap-2 mt-1">
             <ProjectTypeIcon
-              type={(row as Project).type}
+              type={row.type}
               className="w-4 h-4 !text-zinc-500"
             />
-            <p className="!text-zinc-500 !text-sm">{(row as Project).type}</p>
+            <p className="!text-zinc-500 !text-sm">{row.type}</p>
           </div>
         </div>
       ),
@@ -93,7 +98,7 @@ export default function ProjectsPage() {
     {
       key: 'client',
       label: 'Client',
-      render: value => (
+      render: (value: unknown) => (
         <p className="!text-zinc-300">
           {(value as { name: string })?.name || 'N/A'}
         </p>
@@ -102,7 +107,7 @@ export default function ProjectsPage() {
     {
       key: 'mentor',
       label: 'Mentor',
-      render: value => (
+      render: (value: unknown) => (
         <p className="!text-zinc-300">
           {(value as { name: string })?.name || 'N/A'}
         </p>
@@ -111,7 +116,7 @@ export default function ProjectsPage() {
     {
       key: 'project_status',
       label: 'Statut',
-      render: value => {
+      render: (value: unknown) => {
         const status = value as string;
         const getStatusConfig = (status: string) => {
           switch (status) {
@@ -150,7 +155,7 @@ export default function ProjectsPage() {
     {
       key: 'start_date',
       label: 'Début',
-      render: value => (
+      render: (value: unknown) => (
         <p className="!text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
@@ -159,7 +164,7 @@ export default function ProjectsPage() {
     {
       key: 'end_date',
       label: 'Fin',
-      render: value => (
+      render: (value: unknown) => (
         <p className="!text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
@@ -168,10 +173,10 @@ export default function ProjectsPage() {
     {
       key: 'actions',
       label: 'Actions',
-      render: (_, row) => (
+      render: (_: unknown, row: Project) => (
         <TableActions
-          onEdit={() => console.log('Edit project:', (row as Project).id)}
-          onDelete={() => console.log('Delete project:', (row as Project).id)}
+          onEdit={() => console.log('Edit project:', row.id)}
+          onDelete={() => console.log('Delete project:', row.id)}
         />
       ),
     },
@@ -196,119 +201,43 @@ export default function ProjectsPage() {
 
   return (
     <ProtectedRoute>
-      <motion.div
-        initial={{ opacity: 0, y: 0 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="space-y-6"
-      >
-        <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
-          <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
-            {t('projects')}
-          </h1>
-          <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors">
-            {t('new_project')}
-          </button>
-        </div>
-
-        {loading ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
-                <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
-                <div className="h-8 bg-zinc-800 rounded animate-pulse"></div>
-              </div>
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
-                <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
-                <div className="h-8 bg-zinc-800 rounded animate-pulse"></div>
-              </div>
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
-                <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
-                <div className="h-8 bg-zinc-800 rounded animate-pulse"></div>
-              </div>
-            </div>
-            <div className="bg-zinc-900/50 rounded-lg border border-zinc-800">
-              <div className="p-6 border-b border-zinc-800">
-                <div className="h-6 bg-zinc-800 rounded w-1/3 animate-pulse"></div>
-              </div>
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1, 2, 3].map(i => (
-                    <div
-                      key={i}
-                      className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800"
-                    >
-                      <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
-                      <div className="h-4 bg-zinc-800 rounded animate-pulse"></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-                <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-                  {t('total_projects')}
-                </h3>
-                <p className="!text-3xl font-bold !text-purple-400">
-                  {projects.length}
-                </p>
-              </div>
-              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-                <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-                  {t('in_progress')}
-                </h3>
-                <p className="!text-3xl font-bold !text-yellow-400">
-                  {
-                    projects.filter(
-                      project => project.project_status === 'in_progress'
-                    ).length
-                  }
-                </p>
-              </div>
-              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-                <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-                  {t('completed')}
-                </h3>
-                <p className="!text-3xl font-bold !text-green-400">
-                  {
-                    projects.filter(
-                      project => project.project_status === 'completed'
-                    ).length
-                  }
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-zinc-900 rounded-lg border border-zinc-800">
-              <div className="p-6 border-b border-zinc-800">
-                <h2 className="!text-xl font-semibold !text-zinc-200">
-                  {t('projects_list')}
-                </h2>
-              </div>
-              <div className="p-6">
-                <TableFilters
-                  searchPlaceholder={t('search_project_placeholder')}
-                  statusOptions={statusOptions}
-                  onSearchChangeAction={setSearchTerm}
-                  onStatusChangeAction={setStatusFilter}
-                  searchValue={searchTerm}
-                  statusValue={statusFilter}
-                />
-                <DataTable<Project>
-                  columns={columns}
-                  data={filteredProjects}
-                  loading={loading}
-                  emptyMessage={t('no_project_found')}
-                />
-              </div>
-            </div>
-          </>
-        )}
-      </motion.div>
+      <DashboardPageTemplate<Project>
+        title={t('projects')}
+        actionButtonLabel={t('new_project')}
+        onActionButtonClick={() => {}}
+        stats={[
+          {
+            label: t('total_projects'),
+            value: projects.length,
+            colorClass: '!text-green-400',
+            icon: <IconBuilding className="w-6 h-6 !text-green-400" />,
+          },
+          {
+            label: t('completed_projects'),
+            value: projects.filter(p => p.project_status === 'completed')
+              .length,
+            colorClass: '!text-blue-400',
+            icon: <IconCheck className="w-6 h-6 !text-blue-400" />,
+          },
+          {
+            label: t('in_progress_projects'),
+            value: projects.filter(p => p.project_status === 'in_progress')
+              .length,
+            colorClass: '!text-yellow-400',
+            icon: <IconProgressCheck className="w-6 h-6 !text-yellow-400" />,
+          },
+        ]}
+        loading={loading}
+        filterOptions={statusOptions}
+        searchPlaceholder={t('search_project_placeholder')}
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        statusValue={statusFilter}
+        onStatusChange={setStatusFilter}
+        columns={columns as unknown as Column<Project>[]}
+        data={filteredProjects}
+        emptyMessage={t('no_project_found')}
+      />
     </ProtectedRoute>
   );
 }

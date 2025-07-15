@@ -74,7 +74,9 @@ export const Header = () => {
       fetchUserById(user.id)
         .then(data => {
           setProfilePictureUrl(
-            process.env.NEXT_PUBLIC_STRAPI_URL + data.profile_picture.url
+            data.profile_picture?.url
+              ? process.env.NEXT_PUBLIC_STRAPI_URL + data.profile_picture.url
+              : '/images/logo/eclipse-logo.png'
           );
         })
         .catch(error => {
@@ -176,7 +178,7 @@ export const Header = () => {
                   ) : (
                     <IconUser
                       onClick={() => {
-                        router.push('/dashboard/profile');
+                        router.push('/dashboard/profile/personal-information');
                       }}
                       stroke={1}
                       className={

@@ -1,19 +1,28 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { fetchClientsUser } from '@/lib/api';
+import { fetchClientsUser, addClientUser } from '@/lib/api';
 import useLenis from '@/utils/useLenis';
-import DataTable, { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
-import TableFilters, { FilterOption } from '@/app/components/TableFilters';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
+import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
+import { Column } from '@/app/components/DataTable';
+import { FilterOption } from '@/app/components/TableFilters';
+import {
+  IconUsers,
+  IconUserCheck,
+  IconUserPlus,
+  IconFileInvoice,
+} from '@tabler/icons-react';
+import AddClientModal from './AddClientModal';
+import { useRouter } from 'next/navigation';
 
 interface Client {
   id: number;
+  documentId: string;
   name: string;
   email: string;
   enterprise: string;
@@ -25,6 +34,13 @@ interface Client {
   };
   createdAt: string;
   updatedAt: string;
+  factures: {
+    id: number;
+    documentId: string;
+    reference: string;
+    date: string;
+    due_date: string;
+  }[];
 }
 
 export default function ClientsPage() {
@@ -35,6 +51,8 @@ export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const { user } = useAuth();
+  const [showAddClientModal, setShowAddClientModal] = useState(false);
+  const router = useRouter();
   useLenis();
 
   useEffect(() => {
@@ -53,6 +71,23 @@ export default function ClientsPage() {
     };
     fetchData();
   }, [user?.id]);
+
+  const handleAddClient = async (clientData: {
+    name: string;
+    email: string;
+    number: string;
+    enterprise: string;
+    adress: string;
+    website: string;
+    processStatus: string;
+    isActive: boolean;
+  }) => {
+    const response = await addClientUser(user?.id || 0, clientData);
+    if (response?.data) {
+      setClients(prev => [response.data, ...prev] as Client[]);
+      showGlobalPopup(t('client_added_successfully'), 'success');
+    }
+  };
 
   const statusOptions: FilterOption[] = [
     {
@@ -75,44 +110,49 @@ export default function ClientsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const columns: Column<Client>[] = [
+  const columns = [
     {
       key: 'name',
-      label: 'Nom',
-      render: value => (
-        <div className="flex items-center gap-3">
+      label: t('name'),
+      render: (value: string, row: Client) => (
+        <div
+          className="flex items-center gap-3 cursor-pointer hover:underline hover:text-emerald-400 transition-colors"
+          onClick={() => router.push(`/dashboard/clients/${row.id}`)}
+        >
           <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
             <span className="!text-zinc-300 font-medium !text-sm">
-              {(value as string).charAt(0).toUpperCase()}
+              {value.charAt(0).toUpperCase()}
             </span>
           </div>
-          <p className="!text-zinc-200 font-medium">{value as string}</p>
+          <p className="!text-zinc-200 font-medium">{value}</p>
         </div>
       ),
     },
     {
       key: 'email',
       label: 'Email',
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: (value: string) => (
+        <p className="!text-zinc-300">{value as string}</p>
+      ),
     },
     {
       key: 'enterprise',
       label: 'Entreprise',
-      render: value => (
+      render: (value: string) => (
         <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>
       ),
     },
     {
       key: 'website',
       label: 'Site web',
-      render: value => (
+      render: (value: string) => (
         <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>
       ),
     },
     {
       key: 'processStatus',
       label: 'Statut',
-      render: value => {
+      render: (value: string) => {
         const status = value as string;
         const getStatusConfig = (status: string) => {
           switch (status) {
@@ -146,7 +186,7 @@ export default function ClientsPage() {
     {
       key: 'createdAt',
       label: 'Date de création',
-      render: value => (
+      render: (value: string) => (
         <p className="!text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
@@ -155,138 +195,87 @@ export default function ClientsPage() {
     {
       key: 'actions',
       label: 'Actions',
-      render: (_, row) => (
-        <TableActions
-          onEdit={() => {
-            console.log('Edit client:', (row as Client).id);
-            showGlobalPopup('Client modifié avec succès', 'success');
-          }}
-          onDelete={() => {
-            console.log('Delete client:', (row as Client).id);
-            showGlobalPopup('Client supprimé avec succès', 'success');
-          }}
-        />
+      render: (_: string, row: Client) => (
+        <div className="flex items-center gap-2">
+          <TableActions
+            onEdit={() => {
+              console.log('Edit client:', (row as Client).id);
+              showGlobalPopup('Client modifié avec succès', 'success');
+            }}
+            onDelete={() => {
+              console.log('Delete client:', (row as Client).id);
+              showGlobalPopup('Client supprimé avec succès', 'success');
+            }}
+          />
+          {row.factures.length > 0 && (
+            <button
+              onClick={() => {
+                router.push(
+                  `/dashboard/clients/${row.id}/factures?name=${encodeURIComponent(row.name)}`
+                );
+              }}
+              title="Voir les factures"
+              className="p-2 rounded hover:bg-zinc-800 transition-colors"
+            >
+              <IconFileInvoice className="w-5 h-5 text-emerald-400" />
+            </button>
+          )}
+        </div>
       ),
     },
   ];
 
   return (
     <ProtectedRoute>
-      <motion.div
-        initial={{ opacity: 0, y: 0 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="space-y-6 "
-      >
-        <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
-          <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
-            {t('clients')}
-          </h1>
-          <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors">
-            {t('add_client')}
-          </button>
-        </div>
-        {loading ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
-                <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
-                <div className="h-8 bg-zinc-800 rounded animate-pulse"></div>
-              </div>
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
-                <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
-                <div className="h-8 bg-zinc-800 rounded animate-pulse"></div>
-              </div>
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
-                <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
-                <div className="h-8 bg-zinc-800 rounded animate-pulse"></div>
-              </div>
-            </div>
-            <div className="bg-zinc-900/50 rounded-lg border border-zinc-800">
-              <div className="p-6 border-b border-zinc-800">
-                <div className="h-6 bg-zinc-800 rounded w-1/3 animate-pulse"></div>
-              </div>
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1, 2, 3].map(i => (
-                    <div
-                      key={i}
-                      className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800"
-                    >
-                      <div className="h-6 bg-zinc-800 rounded mb-2 animate-pulse"></div>
-                      <div className="h-4 bg-zinc-800 rounded animate-pulse"></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </>
-        ) : clients.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-zinc-900/50   p-6 rounded-lg border border-zinc-800">
-                <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-                  {t('total_clients')}
-                </h3>
-                <p className="!text-3xl !text-green-400">{clients.length}</p>
-              </div>
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
-                <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-                  {t('active_clients')}
-                </h3>
-                <p className="!text-3xl  !text-blue-400">
-                  {
-                    clients.filter(client => client.processStatus === 'client')
-                      .length
-                  }
-                </p>
-              </div>
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
-                <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-                  {t('new_clients_this_month')}
-                </h3>
-                <p className="!text-3xl  !text-purple-400">
-                  {
-                    clients.filter(
-                      client =>
-                        client.createdAt >=
-                        new Date().toISOString().split('T')[0]
-                    ).length
-                  }
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-zinc-900/50 rounded-lg border border-zinc-800">
-              <div className="p-6 border-b border-zinc-800">
-                <h2 className="!text-xl font-semibold !text-zinc-200">
-                  {t('clients_list')}
-                </h2>
-              </div>
-              <div className="p-6">
-                <TableFilters
-                  searchPlaceholder={t('search_placeholder_clients')}
-                  statusOptions={statusOptions}
-                  onSearchChangeAction={setSearchTerm}
-                  onStatusChangeAction={setStatusFilter}
-                  searchValue={searchTerm}
-                  statusValue={statusFilter}
-                />
-                <DataTable<Client>
-                  columns={columns}
-                  data={filteredClients}
-                  loading={loading}
-                  emptyMessage={t('no_client_found')}
-                />
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <p className="!text-zinc-400">{t('no_client_found')}</p>
-          </div>
-        )}
-      </motion.div>
+      <DashboardPageTemplate<Client>
+        title={t('clients')}
+        actionButtonLabel={t('add_client')}
+        onActionButtonClick={() => setShowAddClientModal(true)}
+        stats={[
+          {
+            label: t('total_clients'),
+            value: clients.length,
+            colorClass: '!text-green-400',
+            icon: <IconUsers className="w-6 h-6 !text-green-400" />,
+          },
+          {
+            label: t('active_clients'),
+            value: clients.filter(client => client.processStatus === 'client')
+              .length,
+            colorClass: '!text-blue-400',
+            icon: <IconUserCheck className="w-6 h-6 !text-blue-400" />,
+          },
+          {
+            label: t('new_clients_this_month'),
+            value: clients.filter(client => {
+              const created = new Date(client.createdAt);
+              const now = new Date();
+              return (
+                created.getMonth() === now.getMonth() &&
+                created.getFullYear() === now.getFullYear()
+              );
+            }).length,
+            colorClass: '!text-purple-400',
+            icon: <IconUserPlus className="w-6 h-6 !text-purple-400" />,
+          },
+        ]}
+        loading={loading}
+        filterOptions={statusOptions}
+        searchPlaceholder={t('search_placeholder_clients')}
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        statusValue={statusFilter}
+        onStatusChange={setStatusFilter}
+        columns={columns as unknown as Column<Client>[]}
+        data={filteredClients}
+        emptyMessage={t('no_client_found')}
+      />
+      <AddClientModal
+        isOpen={showAddClientModal}
+        onClose={() => setShowAddClientModal(false)}
+        onAdd={handleAddClient}
+        t={t}
+      />
     </ProtectedRoute>
   );
 }

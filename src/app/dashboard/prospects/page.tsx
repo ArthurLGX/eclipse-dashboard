@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { fetchProspectsUser } from '@/lib/api';
-import DataTable, { Column } from '@/app/components/DataTable';
+import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
+import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
-import TableFilters, { FilterOption } from '@/app/components/TableFilters';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
+import { FilterOption } from '@/app/components/TableFilters';
 
 interface Prospect {
   id: string;
@@ -72,26 +72,28 @@ export default function ProspectsPage() {
     {
       key: 'title',
       label: t('name'),
-      render: value => (
+      render: (value: unknown) => (
         <p className="!text-zinc-200 font-medium">{value as string}</p>
       ),
     },
     {
       key: 'email',
       label: t('email'),
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: (value: unknown) => (
+        <p className="!text-zinc-300">{value as string}</p>
+      ),
     },
     {
       key: 'phone',
       label: t('phone'),
-      render: value => (
+      render: (value: unknown) => (
         <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>
       ),
     },
     {
       key: 'prospect_status',
       label: t('status'),
-      render: value => {
+      render: (value: unknown) => {
         const status = value as string;
         const getStatusConfig = (status: string) => {
           switch (status) {
@@ -130,7 +132,7 @@ export default function ProspectsPage() {
     {
       key: 'createdAt',
       label: t('creation_date'),
-      render: value => (
+      render: (value: unknown) => (
         <p className="!text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
@@ -139,10 +141,10 @@ export default function ProspectsPage() {
     {
       key: 'actions',
       label: t('actions'),
-      render: (_, row) => (
+      render: (_: unknown, row: Prospect) => (
         <TableActions
-          onEdit={() => console.log('Edit prospect:', (row as Prospect).id)}
-          onDelete={() => console.log('Delete prospect:', (row as Prospect).id)}
+          onEdit={() => console.log('Edit prospect:', row.id)}
+          onDelete={() => console.log('Delete prospect:', row.id)}
         />
       ),
     },
@@ -164,71 +166,38 @@ export default function ProspectsPage() {
   }, [user?.id]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6"
-    >
-      <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
-          {t('prospects')}
-        </h1>
-        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors">
-          {t('new_prospect')}
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            {t('total_prospects')}
-          </h3>
-          <p className="!text-3xl font-bold !text-blue-400">
-            {prospects.length}
-          </p>
-        </div>
-        <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            {t('answers')}
-          </h3>
-          <p className="!text-3xl font-bold !text-yellow-400">
-            {prospects.filter(p => p.prospect_status === 'answer').length}
-          </p>
-        </div>
-        <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
-            {t('contacted')}
-          </h3>
-          <p className="!text-3xl font-bold !text-green-400">
-            {prospects.filter(p => p.prospect_status === 'contacted').length}
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-zinc-900 rounded-lg border border-zinc-800">
-        <div className="p-6 border-b border-zinc-800">
-          <h2 className="!text-xl font-semibold !text-zinc-200">
-            {t('list_of_prospects')}
-          </h2>
-        </div>
-        <div className="p-6">
-          <TableFilters
-            searchPlaceholder={t('search_by_name_or_email')}
-            statusOptions={statusOptions}
-            onSearchChangeAction={setSearchTerm}
-            onStatusChangeAction={setStatusFilter}
-            searchValue={searchTerm}
-            statusValue={statusFilter}
-          />
-          <DataTable<Prospect>
-            columns={columns}
-            data={filteredProspects}
-            loading={loading}
-            emptyMessage={t('no_prospects_found')}
-          />
-        </div>
-      </div>
-    </motion.div>
+    <DashboardPageTemplate<Prospect>
+      title={t('prospects')}
+      actionButtonLabel={t('new_prospect')}
+      onActionButtonClick={() => {}}
+      stats={[
+        {
+          label: t('total_prospects'),
+          value: prospects.length,
+          colorClass: '!text-blue-400',
+        },
+        {
+          label: t('answers'),
+          value: prospects.filter(p => p.prospect_status === 'answer').length,
+          colorClass: '!text-yellow-400',
+        },
+        {
+          label: t('contacted'),
+          value: prospects.filter(p => p.prospect_status === 'contacted')
+            .length,
+          colorClass: '!text-green-400',
+        },
+      ]}
+      loading={loading}
+      filterOptions={statusOptions}
+      searchPlaceholder={t('search_by_name_or_email')}
+      searchValue={searchTerm}
+      onSearchChange={setSearchTerm}
+      statusValue={statusFilter}
+      onStatusChange={setStatusFilter}
+      columns={columns}
+      data={filteredProspects}
+      emptyMessage={t('no_prospects_found')}
+    />
   );
 }

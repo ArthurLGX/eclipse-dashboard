@@ -10,10 +10,12 @@ import {
   fetchClientsUser,
   fetchProjectsUser,
   fetchProspectsUser,
+  fetchFacturesUser,
 } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import UsageProgressBar from '@/app/components/UsageProgressBar';
 
 interface Client {
   id: string;
@@ -39,6 +41,11 @@ interface Prospect {
   dateCreated?: string;
 }
 
+interface Facture {
+  id: string;
+  number: number;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const { t } = useLanguage();
@@ -50,6 +57,8 @@ export default function DashboardPage() {
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const [factures, setFactures] = useState<Facture[]>([]);
+  const [totalCA, setTotalCA] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +73,7 @@ export default function DashboardPage() {
           clientsData,
           projectsData,
           prospectsData,
+          facturesData,
         ] = await Promise.all([
           fetchNumberOfClientsUser(user.id),
           fetchNumberOfProjectsUser(user.id),
@@ -71,6 +81,7 @@ export default function DashboardPage() {
           fetchClientsUser(user.id),
           fetchProjectsUser(user.id),
           fetchProspectsUser(user.id),
+          fetchFacturesUser(user.id),
         ]);
         setNumberOfClients(typeof clientsCount === 'number' ? clientsCount : 0);
         setNumberOfProjects(
@@ -84,6 +95,12 @@ export default function DashboardPage() {
         setProspects(
           Array.isArray(prospectsData.data) ? prospectsData.data : []
         );
+        setFactures(Array.isArray(facturesData.data) ? facturesData.data : []);
+        // Calcul du chiffre d'affaires
+        const ca = (Array.isArray(facturesData.data) ? facturesData.data : [])
+          .map((f: Facture) => Number(f.number) || 0)
+          .reduce((acc: number, v: number) => acc + v, 0);
+        setTotalCA(ca);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -106,8 +123,9 @@ export default function DashboardPage() {
             {t('dashboard')}
           </h1>
         </div>
+        <UsageProgressBar />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div
             onClick={() => router.push('/dashboard/clients')}
             className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
@@ -140,6 +158,25 @@ export default function DashboardPage() {
             <p className="!text-3xl font-bold !text-purple-400">
               {typeof numberOfProjects === 'number' ? numberOfProjects : 0}
             </p>
+          </div>
+
+          <div
+            className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 flex flex-col justify-between cursor-pointer hover:bg-zinc-800 transition-all duration-300"
+            onClick={() => router.push('/dashboard/revenue')}
+          >
+            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+              {t('revenue')}
+            </h3>
+            {factures.length > 0 ? (
+              <p className="!text-3xl font-bold !text-emerald-400">
+                {totalCA.toLocaleString('fr-FR', {
+                  style: 'currency',
+                  currency: 'EUR',
+                })}
+              </p>
+            ) : (
+              <p className="!text-3xl font-bold !text-zinc-400">0</p>
+            )}
           </div>
         </div>
 

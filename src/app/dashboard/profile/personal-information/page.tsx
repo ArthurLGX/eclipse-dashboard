@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/app/context/AuthContext';
-import { fetchUserById } from '@/lib/api';
+import { fetchUserById, updateUser } from '@/lib/api';
 import useLenis from '@/utils/useLenis';
 import Image from 'next/image';
 import { usePopup } from '@/app/context/PopupContext';
@@ -84,24 +84,19 @@ export default function PersonalInformationPage() {
       updateFormData.append('username', formData.username);
       updateFormData.append('email', formData.email);
 
-      const token = localStorage.getItem('token');
+      const response = await updateUser(user?.id || 0, {
+        username: formData.username,
+        email: formData.email,
+        profile_picture: {
+          url: formData.profile_picture.url,
+        },
+      });
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${user?.id || 0}`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: updateFormData,
-        }
-      );
-
-      if (!response.ok) {
+      if (!response) {
         throw new Error("Erreur lors de la mise à jour de l'utilisateur");
       }
 
-      const updatedData = await response.json();
+      const updatedData = await response;
       setEditing(false);
       showGlobalPopup('Profil mis à jour avec succès', 'success');
       //on affiche dynamiquement le nouveau profil

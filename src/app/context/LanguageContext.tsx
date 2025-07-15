@@ -29,6 +29,7 @@ const translations = {
     clients: 'Clients',
     prospects: 'Prospects',
     projects: 'Projets',
+    project: 'Projet',
     mentors: 'Mentors',
     newsletters: 'Newsletters',
     profile: 'Profil',
@@ -75,6 +76,7 @@ const translations = {
     upgrade_plan: 'Mettre à niveau',
     cancel_subscription: "Annuler l'abonnement",
     //Prospects
+    new_prospect: 'Nouveau prospect',
     new_prospects_this_month: 'Nouveaux prospects ce mois',
     answers: 'Réponses',
     contacted: 'Contactés',
@@ -133,6 +135,7 @@ const translations = {
     max_active_clients: 'Clients actifs',
     max_prospects_active: 'Prospects actifs',
     max_handle_mentors: 'Mentors gérés',
+    max_newsletters: 'Newsletters max. par mois',
     free: 'Gratuit',
     starter: 'Starter',
     pro: 'Pro',
@@ -197,6 +200,11 @@ const translations = {
     search_value_prospects: 'Rechercher...',
     status_value_prospects: 'Tous les statuts',
 
+    // Table Filters - Mentors
+    search_placeholder_mentors: 'Rechercher par nom ou email...',
+    status_options_mentors: 'Tous les statuts',
+    status_value_mentors: 'Tous les statuts',
+
     // Common
     loading: 'Chargement...',
     error: 'Erreur',
@@ -209,8 +217,9 @@ const translations = {
     try_for_free: 'Essayer gratuitement',
     all_statuses: 'Tous les statuts',
     no_recent_activity: 'Aucune activité récente',
+    all: 'Tous',
     // Clients
-    add_client: 'Ajouter un client',
+    add_client: 'Nouveau client',
     no_client_found: 'Aucun client trouvé',
 
     // 404 Page
@@ -242,7 +251,7 @@ const translations = {
     account_confirmed: 'Compte confirmé',
     account_pending: 'Compte en attente',
     personal_information: 'Informations personnelles',
-    add_mentor: 'Ajouter un mentor',
+    add_mentor: 'Nouveau mentor',
 
     // Payment
     payment_details: 'Détails de paiement',
@@ -295,13 +304,45 @@ const translations = {
     no_upgrade_available: 'Aucune mise à niveau disponible',
 
     // Newsletters
-    add_newsletter: 'Ajouter une newsletter',
+    add_newsletter: 'Nouvelle newsletter',
     total_newsletters: 'Total des newsletters',
+    no_newsletter_found: 'Aucune newsletter trouvée',
     sent: 'Envoyées',
     open_rate: "Taux d'ouverture",
-    newsletter_history: 'Historique des newsletters',
-    newsletter_history_description:
-      'Historique des newsletters envoyées à implémenter...',
+    newsletters_list: 'Liste des newsletters',
+    newsletters_list_description:
+      'Liste des newsletters envoyées à implémenter...',
+
+    // Clients
+    invoices: 'Factures',
+    no_invoice_found: 'Aucune facture trouvée.',
+    number: 'Numéro',
+    amount: 'Montant',
+    revenue: "Chiffre d'affaires",
+
+    // Revenue
+    top_project: 'Projet le plus rentable',
+    top_client: 'Client le plus rentable',
+    average_invoice: 'Moyenne des factures',
+    due_date: "Date d'échéance",
+    view_invoice: 'Voir la facture',
+    add_invoice: 'Créer une facture',
+    // Factures
+    download: 'Télécharger',
+    invoice_pdf: 'Facture PDF',
+    target_revenue: "Chiffre d'affaires cible",
+    progress_to_target: "Progression vers le chiffre d'affaires cible",
+    no_project: 'Sans projet',
+    reference: 'Référence',
+    currency: 'Devise',
+    description: 'Description',
+    note: 'Note',
+    date: 'Date',
+    date_due: "Date d'échéance",
+    facture_status: 'Statut de la facture',
+    paid: 'Payé',
+    pending: 'En attente',
+    draft: 'Brouillon',
   },
   en: {
     // Navigation
@@ -318,6 +359,7 @@ const translations = {
     clients: 'Clients',
     prospects: 'Prospects',
     projects: 'Projects',
+    project: 'Project',
     mentors: 'Mentors',
     newsletters: 'Newsletters',
     profile: 'Profile',
@@ -390,6 +432,7 @@ const translations = {
     max_active_clients: 'Max Active Clients',
     max_prospects_active: 'Max Prospects Active',
     max_handle_mentors: 'Max Handle Mentors',
+    max_newsletters: 'Max Newsletters per month',
     free: 'Free',
     starter: 'Starter',
     pro: 'Pro',
@@ -449,10 +492,16 @@ const translations = {
     // Newsletters
     add_newsletter: 'Add Newsletter',
     total_newsletters: 'Total Newsletters',
+    search_placeholder_newsletters: 'Search by title or status...',
+    no_newsletter_found: 'No newsletter found',
     sent: 'Sent',
     open_rate: 'Open Rate',
-    newsletter_history: 'Newsletter History',
-    newsletter_history_description: 'Newsletter History Description',
+    newsletter_list: 'Newsletter List',
+    newsletter_list_description: 'Newsletter List Description',
+
+    // Table Filters - Newsletters
+    status_options_newsletters: 'Tous les statuts',
+    status_value_newsletters: 'Tous les statuts',
 
     // Payment
     payment_details: 'Payment Details',
@@ -540,6 +589,7 @@ const translations = {
     hero_subtitle_bottom: 'With ease',
     try_for_free: 'Try for free',
     all_statuses: 'All statuses',
+    all: 'All',
     // Clients
     add_client: 'Add Client',
     search_placeholder_clients: 'Search by name, email or company...',
@@ -560,6 +610,34 @@ const translations = {
     // Eclipse Chatbot
     eclipse_chatbot_support: 'Eclipse Chatbot Support',
     eclipse_chatbot_support_description: 'AI assistant available 24/7',
+
+    // Clients
+    invoices: 'Invoices',
+    no_invoice_found: 'No invoice found.',
+    number: 'Number',
+    amount: 'Amount',
+    revenue: 'Revenue',
+
+    // Factures
+    download: 'Download',
+    invoice_pdf: 'Invoice PDF',
+    add_invoice: 'Add Invoice',
+    // Revenue
+    top_project: 'Top Project',
+    top_client: 'Top Client',
+    average_invoice: 'Average Invoice',
+    due_date: 'Due Date',
+    view_invoice: 'View Invoice',
+    target_revenue: 'Target Revenue',
+    progress_to_target: 'Progress to target revenue',
+    no_project: 'No project',
+    reference: 'Reference',
+    currency: 'Currency',
+    description: 'Description',
+    note: 'Note',
+    date: 'Date',
+    date_due: 'Due Date',
+    draft: 'Draft',
   },
 };
 

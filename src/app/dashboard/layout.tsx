@@ -15,6 +15,7 @@ import {
   IconLogout,
   IconUser,
   IconCreditCard,
+  IconTrendingUp,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -24,7 +25,7 @@ import TrialExpiredGuard from '@/app/components/TrialExpiredGuard';
 import useLenis from '@/utils/useLenis';
 import LanguageToggle from '@/app/components/LanguageToggle';
 import { useLanguage } from '@/app/context/LanguageContext';
-import UsageProgressBar from '@/app/components/UsageProgressBar';
+import { BreadCrumb } from '@/app/components/BreadCrumb';
 
 interface SidebarItem {
   id: string;
@@ -57,37 +58,43 @@ export default function DashboardLayout({
     {
       id: 'home',
       label: t('dashboard'),
-      icon: <IconHome size={20} />,
+      icon: <IconHome size={20} stroke={1} />,
       path: '/dashboard',
+    },
+    {
+      id: 'revenue',
+      label: t('revenue'),
+      icon: <IconTrendingUp size={20} stroke={1} />,
+      path: '/dashboard/revenue',
     },
     {
       id: 'clients',
       label: t('clients'),
-      icon: <IconUsers size={20} />,
+      icon: <IconUsers size={20} stroke={1} />,
       path: '/dashboard/clients',
     },
     {
       id: 'prospects',
       label: t('prospects'),
-      icon: <IconMagnet size={20} />,
+      icon: <IconMagnet size={20} stroke={1} />,
       path: '/dashboard/prospects',
     },
     {
       id: 'projects',
       label: t('projects'),
-      icon: <IconBuilding size={20} />,
+      icon: <IconBuilding size={20} stroke={1} />,
       path: '/dashboard/projects',
     },
     {
       id: 'mentors',
       label: t('mentors'),
-      icon: <IconBrain size={20} />,
+      icon: <IconBrain size={20} stroke={1} />,
       path: '/dashboard/mentors',
     },
     {
       id: 'newsletters',
       label: t('newsletters'),
-      icon: <IconMail size={20} />,
+      icon: <IconMail size={20} stroke={1} />,
       path: '/dashboard/newsletters',
     },
     {
@@ -111,13 +118,13 @@ export default function DashboardLayout({
         {
           id: 'personal_information',
           label: t('personal_information'),
-          icon: <IconUser size={20} />,
+          icon: <IconUser size={20} stroke={1} />,
           path: '/dashboard/profile/personal-information',
         },
         {
           id: 'your_subscription',
           label: t('your_subscription'),
-          icon: <IconCreditCard size={20} />,
+          icon: <IconCreditCard size={20} stroke={1} />,
           path: '/dashboard/profile/your-subscription',
         },
       ],
@@ -125,7 +132,7 @@ export default function DashboardLayout({
     {
       id: 'logout',
       label: t('logout'),
-      icon: <IconLogout size={20} />,
+      icon: <IconLogout size={20} stroke={1} />,
       onClick: logout,
       path: '/login?type=login',
     },
@@ -336,14 +343,15 @@ export default function DashboardLayout({
           </div>
 
           {/* Contenu principal */}
-          <div className="flex-1 overflow-visible w-full h-full md:pl-0 pl-0 pb-20 md:pb-0 md:pt-0">
+          <div className="flex-1 overflow-visible w-full h-full md:pl-0 pl-0 pb-20 md:pb-0 md:pt-0 pt-24">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="h-full lg:!p-6 !p-2 w-full overflow-visible"
             >
-              <UsageProgressBar />
+              <BreadCrumb />
+
               {children}
             </motion.div>
           </div>

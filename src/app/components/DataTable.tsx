@@ -83,7 +83,7 @@ export default function DataTable<T = unknown>({
                 {columns.map((column, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`py-4 px-4 !font-light ${column.className || ''}`}
+                    className={`py-4 px-4 !text-zinc-400 !font-light ${column.className || ''}`}
                   >
                     {column.render
                       ? column.render(
