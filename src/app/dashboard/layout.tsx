@@ -16,6 +16,9 @@ import {
   IconUser,
   IconCreditCard,
   IconTrendingUp,
+  IconBuildings,
+  IconFileInvoice,
+  IconChevronDown,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -52,7 +55,7 @@ export default function DashboardLayout({
   const { logout } = useAuth();
   const { t } = useLanguage();
   useLenis();
-
+  const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
   // Définir les items de la sidebar avec l'image de profil dynamique
   const sidebarItems: SidebarItem[] = [
     {
@@ -66,6 +69,14 @@ export default function DashboardLayout({
       label: t('revenue'),
       icon: <IconTrendingUp size={20} stroke={1} />,
       path: '/dashboard/revenue',
+      menuItems: [
+        {
+          id: 'factures',
+          label: t('invoices'),
+          icon: <IconFileInvoice size={20} stroke={1} />,
+          path: '/dashboard/factures',
+        },
+      ],
     },
     {
       id: 'clients',
@@ -126,6 +137,12 @@ export default function DashboardLayout({
           label: t('your_subscription'),
           icon: <IconCreditCard size={20} stroke={1} />,
           path: '/dashboard/profile/your-subscription',
+        },
+        {
+          id: 'your_enterprise',
+          label: t('your_enterprise'),
+          icon: <IconBuildings size={20} stroke={1} />,
+          path: '/dashboard/profile/your-company',
         },
       ],
     },
@@ -266,7 +283,11 @@ export default function DashboardLayout({
             {/* Navigation items */}
             <nav className="p-2 flex flex-col gap-1">
               {sidebarItems.map(item => (
-                <div key={item.id}>
+                <div
+                  key={item.id}
+                  onMouseEnter={() => setMenuItemHovered(item.id)}
+                  onMouseLeave={() => setMenuItemHovered(null)}
+                >
                   <motion.button
                     onClick={() => handleItemClick(item)}
                     className={`group w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 mb-1 ${
@@ -288,36 +309,48 @@ export default function DashboardLayout({
                           {item.label}
                         </motion.span>
                       )}
+                      {item.menuItems && isExpanded && (
+                        <IconChevronDown
+                          size={16}
+                          className={` group-hover:rotate-180 transition-all duration-200 ${
+                            pathname === item.path
+                              ? 'rotate-180 !text-green-400'
+                              : '!text-zinc-400'
+                          }`}
+                        />
+                      )}
                     </AnimatePresence>
                   </motion.button>
 
                   {/* Sous-menus */}
-                  {item.menuItems && (isExpanded || isPinned) && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2, delay: 0.1 }}
-                      className="ml-6 space-y-1"
-                    >
-                      {item.menuItems.map(menuItem => (
-                        <motion.button
-                          key={menuItem.id}
-                          onClick={() => handleItemClick(menuItem)}
-                          className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 !text-xs ${
-                            pathname === menuItem.path
-                              ? 'bg-green-500/10 !text-green-400 border border-green-500/20'
-                              : '!text-zinc-500 hover:bg-zinc-800 hover:!text-zinc-300'
-                          }`}
-                        >
-                          <div className="flex-shrink-0">{menuItem.icon}</div>
-                          <span className="!text-sm font-medium whitespace-nowrap">
-                            {menuItem.label}
-                          </span>
-                        </motion.button>
-                      ))}
-                    </motion.div>
-                  )}
+                  {item.menuItems &&
+                    (isExpanded || isPinned) &&
+                    (menuItemHovered === item.id || pathname === item.path) && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2, delay: 0.1 }}
+                        className="ml-6 space-y-1"
+                      >
+                        {item.menuItems.map(menuItem => (
+                          <motion.button
+                            key={menuItem.id}
+                            onClick={() => handleItemClick(menuItem)}
+                            className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 !text-xs ${
+                              pathname === menuItem.path
+                                ? 'bg-green-500/10 !text-green-400 border border-green-500/20'
+                                : '!text-zinc-500 hover:bg-zinc-800 hover:!text-zinc-300'
+                            }`}
+                          >
+                            <div className="flex-shrink-0">{menuItem.icon}</div>
+                            <span className="!text-sm font-medium whitespace-nowrap">
+                              {menuItem.label}
+                            </span>
+                          </motion.button>
+                        ))}
+                      </motion.div>
+                    )}
                 </div>
               ))}
             </nav>
@@ -343,12 +376,12 @@ export default function DashboardLayout({
           </div>
 
           {/* Contenu principal */}
-          <div className="flex-1 overflow-visible w-full h-full md:pl-0 pl-0 pb-20 md:pb-0 md:pt-0 pt-24">
+          <div className="flex-1 overflow-x-hidden w-full h-full md:pl-0 pl-0 pb-20 md:pb-0 md:pt-0 pt-24">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="h-full lg:!p-6 !p-2 w-full overflow-visible"
+              className="h-full lg:!p-6 !p-2 w-full overflow-y-auto"
             >
               <BreadCrumb />
 

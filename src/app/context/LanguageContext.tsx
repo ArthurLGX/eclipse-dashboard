@@ -167,7 +167,7 @@ const translations = {
 
     // Dashboard
     total_clients: 'Total Clients',
-    new_clients_this_month: 'Nouveaux ce mois',
+    new_clients_this_month: 'Nouveaux clients ce mois',
     dashboard_description:
       'Gérez vos clients, prospects et projets en temps réel avec une interface intuitive et puissante',
     ready_to_transform: 'Prêt à transformer votre gestion de projet ?',
@@ -182,7 +182,7 @@ const translations = {
     total_mentors: 'Total Mentors',
     clients_list: 'Liste des clients',
     prospects_list: 'Liste des prospects',
-    projects_list: 'Liste des projets',
+    projects_list: 'projets',
     mentors_list: 'Liste des mentors',
     recent_activity: 'Activité récente',
     statistics: 'Statistiques',
@@ -221,7 +221,9 @@ const translations = {
     // Clients
     add_client: 'Nouveau client',
     no_client_found: 'Aucun client trouvé',
-
+    name: 'Nom',
+    assign_project: 'Assigner un projet',
+    search_project: 'Rechercher un projet',
     // 404 Page
     page_not_found: 'Page introuvable',
     page_not_found_description:
@@ -316,10 +318,17 @@ const translations = {
     // Clients
     invoices: 'Factures',
     no_invoice_found: 'Aucune facture trouvée.',
-    number: 'Numéro',
+    number: 'Téléphone',
     amount: 'Montant',
     revenue: "Chiffre d'affaires",
-
+    enterprise: 'Entreprise',
+    address: 'Adresse',
+    website: 'Site web',
+    process_status: 'Statut du processus',
+    is_active: 'Actif',
+    edit: 'Modifier',
+    your_enterprise: 'Votre entreprise',
+    edit_enterprise: 'Modifier votre entreprise',
     // Revenue
     top_project: 'Projet le plus rentable',
     top_client: 'Client le plus rentable',
@@ -328,6 +337,13 @@ const translations = {
     view_invoice: 'Voir la facture',
     add_invoice: 'Créer une facture',
     // Factures
+    select_project: 'Sélectionner un projet',
+    search_placeholder_factures:
+      'Rechercher par référence, client ou projet...',
+    select_client: 'Sélectionner un client',
+    total_invoices: 'Nombre de factures',
+    active_factures: 'Factures payées',
+    new_factures_this_month: 'Nouvelles factures ce mois',
     download: 'Télécharger',
     invoice_pdf: 'Facture PDF',
     target_revenue: "Chiffre d'affaires cible",
@@ -343,7 +359,42 @@ const translations = {
     paid: 'Payé',
     pending: 'En attente',
     draft: 'Brouillon',
+    send_email: 'Envoyer un email',
+    print: 'Imprimer',
+    delete: 'Supprimer',
+    invoice_details: 'Détails de la facture',
+    services: 'Prestations',
+    calculations: 'Calculs',
+    subtotal: 'Sous-total',
+    total_ttc: 'Total TTC',
+    notes: 'Notes',
+    client: 'Client',
+    unit_price: 'Prix unitaire',
+    total: 'Total',
+    add_line: 'Ajouter une ligne',
+    quantity: 'Quantité',
+    emission_date: "Date d'émission",
+    overdue: 'En retard',
+
+    // Enterprise
+
+    create_your_enterprise: 'Créer votre entreprise',
+    enterprise_name: "Nom de l'entreprise",
+    enterprise_email: "Email de l'entreprise",
+    enterprise_description: "Description de l'entreprise",
+    siret: 'Numéro SIRET',
+    siren: 'Numéro SIREN',
+    vat: 'Numéro de TVA',
+    vat_applicable: 'TVA applicable',
+    phone_number: 'Téléphone',
+    activity_domain: "Domaine d'activité",
+    select_activity_domain: 'Sélectionner un domaine',
+    no_enterprise_profile: "Vous n'avez pas encore de profil d'entreprise.",
+    create: 'Créer',
+    create_facture: 'Créer une facture',
+    add: 'ajouter',
   },
+
   en: {
     // Navigation
     dashboard: 'Dashboard',
@@ -443,10 +494,10 @@ const translations = {
     billing_type: 'Billing Type',
     trial: 'Trial',
     active: 'Active',
-
+    create: 'Create',
     // Dashboard
     total_clients: 'Total Clients',
-    new_clients_this_month: 'New Clients This Month',
+    new_clients_this_month: 'Nouveaux clients ce mois',
     new_prospects_this_month: 'New Prospects This Month',
     completed_projects: 'Completed Projects',
     total_prospects: 'Total Prospects',
@@ -454,7 +505,7 @@ const translations = {
     total_mentors: 'Total Mentors',
     clients_list: 'Clients List',
     prospects_list: 'Prospects List',
-    projects_list: 'Projects List',
+    projects_list: 'projects',
     mentors_list: 'Mentors List',
     recent_activity: 'Recent Activity',
     statistics: 'Statistics',
@@ -579,6 +630,7 @@ const translations = {
     upgrade_to: 'Upgrade to',
     no_upgrade_available: 'No upgrade available',
     // Common
+    add: 'add',
     loading: 'Loading...',
     error: 'Error',
     success: 'Success',
@@ -596,7 +648,9 @@ const translations = {
     status_options_clients: 'All statuses',
     status_value_clients: 'All statuses',
     no_client_found: 'No client found',
-
+    name: 'Name',
+    assign_project: 'Assign Project',
+    search_project: 'Search Project',
     // 404 Page
     page_not_found: 'Page Not Found',
     page_not_found_description:
@@ -614,14 +668,32 @@ const translations = {
     // Clients
     invoices: 'Invoices',
     no_invoice_found: 'No invoice found.',
-    number: 'Number',
+    number: 'Phone',
     amount: 'Amount',
     revenue: 'Revenue',
-
+    enterprise: 'Enterprise',
+    address: 'Address',
+    website: 'Website',
+    process_status: 'Process Status',
+    is_active: 'Active',
+    edit: 'Edit',
+    your_enterprise: 'Your Enterprise',
+    edit_enterprise: 'Edit your enterprise',
     // Factures
+    select_project: 'Select Project',
+    search_placeholder_factures: 'Search by reference, client or project...',
+    select_client: 'Select Client',
+    total_invoices: 'Number of invoices',
+    active_factures: 'Paid invoices',
+    new_factures_this_month: 'New invoices this month',
     download: 'Download',
     invoice_pdf: 'Invoice PDF',
     add_invoice: 'Add Invoice',
+    add_line: 'Add Line',
+    quantity: 'Quantity',
+    vat_applicable: 'VAT applicable',
+    overdue: 'Overdue',
+    create_facture: 'Create Facture',
     // Revenue
     top_project: 'Top Project',
     top_client: 'Top Client',
@@ -638,6 +710,34 @@ const translations = {
     date: 'Date',
     date_due: 'Due Date',
     draft: 'Draft',
+    send_email: 'Send Email',
+    print: 'Print',
+    delete: 'Delete',
+    invoice_details: 'Invoice Details',
+    calculations: 'Calculations',
+    subtotal: 'Subtotal',
+    vat: 'VAT',
+    total_ttc: 'Total TTC',
+    notes: 'Notes',
+    client: 'Client',
+    unit_price: 'Unit Price',
+    total: 'Total',
+    emission_date: 'Emission Date',
+    paid: 'Paid',
+    pending: 'Pending',
+    phone: 'Phone',
+    siret: 'SIRET',
+    siren: 'SIREN',
+    services: 'Services',
+    // Enterprise
+    create_your_enterprise: 'Create your enterprise',
+    enterprise_name: 'Enterprise Name',
+    enterprise_email: 'Enterprise Email',
+    enterprise_description: 'Enterprise Description',
+    phone_number: 'Phone Number',
+    activity_domain: 'Activity Domain',
+    select_activity_domain: 'Select Activity Domain',
+    no_enterprise_profile: "You don't have an enterprise profile yet.",
   },
 };
 

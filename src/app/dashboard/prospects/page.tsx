@@ -8,6 +8,7 @@ import TableActions from '@/app/components/TableActions';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { FilterOption } from '@/app/components/TableFilters';
+import { useRouter } from 'next/navigation';
 
 interface Prospect {
   id: string;
@@ -26,6 +27,7 @@ export default function ProspectsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const { user } = useAuth();
+  const router = useRouter();
   // Options de filtres par statut
   const statusOptions: FilterOption[] = [
     {
@@ -168,6 +170,7 @@ export default function ProspectsPage() {
   return (
     <DashboardPageTemplate<Prospect>
       title={t('prospects')}
+      onRowClick={row => router.push(`/dashboard/prospects/${row.id}`)}
       actionButtonLabel={t('new_prospect')}
       onActionButtonClick={() => {}}
       stats={[

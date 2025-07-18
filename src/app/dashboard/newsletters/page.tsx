@@ -9,6 +9,7 @@ import { Column } from '@/app/components/DataTable';
 import { IconPencil, IconTrash, IconMail, IconSend } from '@tabler/icons-react';
 import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
 import { FilterOption } from '@/app/components/TableFilters';
+import { useRouter } from 'next/navigation';
 
 interface Newsletter {
   id: number;
@@ -39,6 +40,7 @@ interface Newsletter {
 export default function NewslettersPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const router = useRouter();
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -126,6 +128,7 @@ export default function NewslettersPage() {
     <ProtectedRoute>
       <DashboardPageTemplate<Newsletter>
         title={t('newsletters')}
+        onRowClick={row => router.push(`/dashboard/newsletters/${row.id}`)}
         actionButtonLabel={t('add_newsletter')}
         onActionButtonClick={() => {}}
         stats={[

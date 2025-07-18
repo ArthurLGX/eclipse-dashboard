@@ -45,7 +45,6 @@ export async function addClientUser(
     adress: string;
     website: string;
     processStatus: string;
-    isActive: boolean;
   }
 ) {
   return secureFetch('clients', {
@@ -78,11 +77,40 @@ export async function fetchNumberOfProjectsUser(userId: number) {
     `projects?populate=*&filters[user][$eq]=${userId}`
   );
   return res.data.length;
+
+  //CLIENTS
 }
 
 export async function fetchClientById(id: number) {
   console.log('id', id);
   return secureFetch(`clients?populate=*&filters[id][$eq]=${id}`);
+}
+
+export async function updateClientById(
+  clientId: string,
+  data: {
+    name: string;
+    email: string;
+    number: string;
+    enterprise: string;
+    adress: string;
+    website: string;
+    processStatus: string;
+  }
+) {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const res = await axios.put(
+    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/clients/${clientId}`,
+    { data },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    }
+  );
+  return res.data;
 }
 
 export async function fetchProspectsUser(userId: number) {
@@ -147,12 +175,9 @@ export async function fetchFacturesUser(userId: number) {
   return secureFetch(`factures?populate=*&filters[user][$eq]=${userId}`);
 }
 
-export async function fetchFacturesUserByClientId(
-  userId: number,
-  clientId: number
-) {
+export async function fetchFacturesUserById(userId: number, factureId: string) {
   return secureFetch(
-    `factures?populate=*&filters[user][$eq]=${userId}&filters[client_id][$eq]=${clientId}`
+    `factures?populate=*&filters[user][$eq]=${userId}&filters[documentId][$eq]=${factureId}`
   );
 }
 
@@ -167,14 +192,76 @@ export async function createFacture(data: {
   notes: string;
   pdf: string;
   client_id: number;
-  project: number;
+  project?: number;
   user: number;
+  tva_applicable: boolean;
+  invoice_lines: {
+    description: string;
+    quantity: number;
+    unit_price: number;
+    total: number;
+  }[];
 }) {
-  return secureFetch('factures', {
-    method: 'POST',
-    body: JSON.stringify({ data }),
-  });
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const res = await axios.post(
+    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/factures`,
+    { data },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    }
+  );
+  if (res.status !== 200) {
+    throw new Error('Erreur lors de la création de la facture');
+  }
+  return res.data;
 }
+
+export async function updateFactureById(
+  factureId: string,
+  data: {
+    reference: string;
+    number: number;
+    date: string;
+    due_date: string;
+    facture_status: string;
+    currency: string;
+    description: string;
+    notes: string;
+    pdf?: string;
+    client_id: number;
+    project?: number;
+    user: number;
+    tva_applicable: boolean;
+    invoice_lines: {
+      description: string;
+      quantity: number;
+      unit_price: number;
+      total: number;
+    }[];
+  }
+) {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const res = await axios.put(
+    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/factures/${factureId}`,
+    { data },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    }
+  );
+  if (res.status !== 200) {
+    throw new Error('Erreur lors de la mise à jour de la facture');
+  }
+  return res.data;
+}
+
 export async function fetchMentorUsers(userId: number) {
   try {
     return secureFetch(`mentors?populate=*&filters[users][$eq]=${userId}`);
@@ -385,3 +472,102 @@ export async function createSubscription(
     throw error;
   }
 }
+
+export async function createProject(data: {
+  title: string;
+  description: string;
+  project_status: string;
+  start_date: string;
+  end_date: string;
+  notes?: string;
+  type: string;
+  technologies?: string[];
+  client: number;
+  document?: File;
+  user?: number;
+}) {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/projects`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ data }),
+    }
+  );
+  if (!res.ok) {
+    throw new Error('Erreur lors de la création du projet');
+  }
+  return res.json();
+}
+
+// FACTURES
+
+export const fetchFactureFromId = async (id: string) => {
+  return secureFetch(`factures?populate=*&filters[id][$eq]=${id}`);
+};
+
+export const fetchFactureFromDocumentId = async (documentId: string) => {
+  return secureFetch(
+    `factures?populate=*&filters[documentId][$eq]=${documentId}`
+  );
+};
+
+// COMPANY
+
+export const fetchCompanyUser = async (userId: number) => {
+  return secureFetch(`companies?populate=*&filters[user][$eq]=${userId}`);
+};
+
+export const updateCompanyUser = async (
+  userId: number,
+  companyId: string,
+  data: {
+    name: string;
+    email: string;
+    description: string;
+    siret: string;
+    siren: string;
+    vat: string;
+    phoneNumber: string;
+    logo?: string;
+    location: string;
+    domaine: string;
+    website: string;
+  }
+) => {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+  //we need to find if the company exists
+  const company = await fetchCompanyUser(userId);
+  if (company.data.length === 0) {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/companies`,
+      { data: { ...data } },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      }
+    );
+    return res.data;
+  } else {
+    const res = await axios.put(
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/companies/${companyId}`,
+      { data: { ...data } },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      }
+    );
+    return res.data;
+  }
+};

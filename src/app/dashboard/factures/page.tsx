@@ -1,159 +1,59 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import DataTable, { Column } from '@/app/components/DataTable';
-import { useLanguage } from '@/app/context/LanguageContext';
+import React, { useEffect, useRef, useState } from 'react';
 import { fetchFacturesUser, createFacture, fetchProjectsUser } from '@/lib/api';
-import { useAuth } from '@/app/context/AuthContext';
-import { useParams, useSearchParams } from 'next/navigation';
-import { IconCheck, IconDownload, IconX, IconEye } from '@tabler/icons-react';
-import FloatingModal from '@/app/components/FloatingModal';
-import { useRef } from 'react';
+import useLenis from '@/utils/useLenis';
+import TableActions from '@/app/components/TableActions';
 import { usePopup } from '@/app/context/PopupContext';
-import { motion, AnimatePresence } from 'framer-motion';
-
-interface Facture {
-  id: string;
-  documentId: string;
-  reference: string;
-  date: string;
-  due_date: string;
-  facture_status: string;
-  number: number;
-  currency: string;
-  description: string;
-  notes: string;
-  project: {
-    id: number;
-    title: string;
-  };
-  pdf: {
-    url: string;
-  }[];
-}
-
-interface Project {
-  id: number;
-  title: string;
-}
+import { useLanguage } from '@/app/context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
+import ProtectedRoute from '@/app/components/ProtectedRoute';
+import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
+import { Column } from '@/app/components/DataTable';
+import { FilterOption } from '@/app/components/TableFilters';
+import {
+  IconCheck,
+  IconClock,
+  IconUsers,
+  IconUserCheck,
+  IconUserPlus,
+} from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
+import { Client, Facture, Project } from '@/app/models/Models';
+import { AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export default function FacturesPage() {
-  const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const clientName = searchParams.get('name') || '';
-  const clientId = Number(params.id);
-  const { user } = useAuth();
+  const { t } = useLanguage();
   const [factures, setFactures] = useState<Facture[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showPdfModal, setShowPdfModal] = useState(false);
-  const [pdfToShow, setPdfToShow] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const { user } = useAuth();
+  const router = useRouter();
+  useLenis();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-
+  const [projects, setProjects] = useState<Project[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       if (!user?.id) return;
-      setLoading(true);
+
       try {
+        setLoading(true);
         const response = await fetchFacturesUser(user.id);
         setFactures(response.data || []);
-        console.log('Factures', response.data);
         const projectsResponse = await fetchProjectsUser(user.id);
         setProjects(projectsResponse.data || []);
-      } catch {
-        setFactures([]);
+      } catch (error) {
+        console.error('Error fetching clients:', error);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [user?.id, clientId]);
-
-  const columns: Column<Facture>[] = [
-    {
-      key: 'reference',
-      label: t('reference'),
-      render: v => <span>{v as string}</span>,
-    },
-    {
-      key: 'number',
-      label: t('amount'),
-      render: v => <span>{v as number} €</span>,
-    },
-    {
-      key: 'facture_status',
-      label: t('status'),
-      render: v => (
-        <span className="flex items-center gap-2 !text-zinc-400">
-          {v === 'paid' ? (
-            <IconCheck className="w-4 h-4 !text-emerald-400" />
-          ) : (
-            <IconX className="w-4 h-4 !text-red-400" />
-          )}{' '}
-          {v as string}
-        </span>
-      ),
-    },
-
-    {
-      key: 'date',
-      label: t('date'),
-      render: v => (
-        <span>{new Date(v as string).toLocaleDateString('fr-FR')}</span>
-      ),
-    },
-    {
-      key: 'due_date',
-      label: t('due_date'),
-      render: v => (
-        <span>{new Date(v as string).toLocaleDateString('fr-FR')}</span>
-      ),
-    },
-    {
-      key: 'actions',
-      label: t('actions') || 'Actions',
-      render: (_v, row: Facture) => {
-        const pdfUrl =
-          row.pdf && row.pdf[0]?.url
-            ? (process.env.NEXT_PUBLIC_STRAPI_URL || '') + row.pdf[0].url
-            : null;
-
-        console.log('pdfUrl', pdfUrl);
-        return (
-          <div className="flex gap-2 items-center">
-            {pdfUrl && (
-              <>
-                <button
-                  type="button"
-                  title={t('view_invoice') || 'Voir la facture'}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-zinc-800 text-blue-400 border border-zinc-700 hover:bg-zinc-700 hover:text-white transition-colors text-xs font-semibold"
-                  onClick={() => {
-                    setPdfToShow(pdfUrl);
-                    setShowPdfModal(true);
-                  }}
-                >
-                  <IconEye className="w-4 h-4" />
-                </button>
-                <a
-                  href={pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 hover:text-white transition-colors text-xs font-semibold"
-                  download
-                >
-                  <IconDownload className="w-4 h-4" />
-                </a>
-              </>
-            )}
-            {!pdfUrl && <span className="text-zinc-500 text-xs">-</span>}
-          </div>
-        );
-      },
-    },
-  ];
+  }, [user?.id]);
 
   const handleCreateInvoice = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -167,7 +67,7 @@ export default function FacturesPage() {
       facture_status: data.facture_status as string,
       currency: data.currency as string,
       pdf: data.pdf as string,
-      client_id: clientId,
+      client_id: Number(data.client_id),
       description: data.description as string,
       notes: data.notes as string,
       project: Number(data.project),
@@ -180,19 +80,205 @@ export default function FacturesPage() {
     setShowCreateModal(false);
   };
 
-  return (
-    <div className="max-w-7xl mx-auto p-6 flex flex-col gap-8">
-      <div className="flex flex-col lg:flex-row items-center justify-between my-8 gap-4">
-        <h1 className="text-3xl !text-left font-bold text-zinc-100">
-          {clientName} - {t('invoices')}
-        </h1>
-        <button
-          className="bg-emerald-400/20 lg:w-auto w-full text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg font-semibold hover:bg-emerald-500/20 hover:text-white transition-colors"
-          onClick={() => setShowCreateModal(true)}
+  const statusOptions: FilterOption[] = [
+    {
+      value: 'client',
+      label: 'Client',
+      count: factures.filter(facture => facture.facture_status === 'paid')
+        .length,
+    },
+  ];
+
+  const filteredFactures = factures.filter(facture => {
+    const matchesSearch =
+      searchTerm === '' ||
+      facture.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      facture.date.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      facture.due_date.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === '' || facture.facture_status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
+
+  const columns = [
+    {
+      key: 'reference',
+      label: t('reference'),
+      render: (value: string, row: Facture) => (
+        <div
+          className="flex items-center gap-3 cursor-pointer  transition-colors"
+          onClick={() => router.push(`/dashboard/factures/${row.documentId}`)}
         >
-          {t('add_invoice')}
-        </button>
-      </div>
+          <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
+            <span className="!text-zinc-300 font-medium !text-sm">
+              {value.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <p className="!text-zinc-200 font-medium">{value}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'date',
+      label: 'Date',
+      render: (value: string) => (
+        <p className="!text-zinc-300">{value as string}</p>
+      ),
+    },
+    {
+      key: 'due_date',
+      label: "Date d'échéance",
+      render: (value: string) => (
+        <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>
+      ),
+    },
+    {
+      key: 'facture_status',
+      label: 'Statut',
+      render: (value: string) => (
+        <div
+          className={` ${value === 'paid' ? '!text-green-500' : value === 'pending' ? '!text-yellow-500' : '!text-orange-500'}`}
+        >
+          {value === 'paid' ? (
+            <div className="flex items-center gap-2">
+              <IconCheck className="w-4 h-4 !text-green-500 bg-green-500/10 p-1 rounded-full" />{' '}
+              {t('paid')}
+            </div>
+          ) : value === 'pending' ? (
+            <div className="flex items-center gap-2">
+              <IconClock className="w-4 h-4 !text-yellow-500 bg-yellow-500/10 p-1 rounded-full" />{' '}
+              {t('pending')}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <IconClock className="w-4 h-4 !text-orange-500 bg-orange-500/10 p-1 rounded-full" />{' '}
+              {t('draft')}
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'currency',
+      label: 'Devise',
+      render: (value: string) => {
+        const status = value as string;
+        const getStatusConfig = (status: string) => {
+          switch (status) {
+            case 'EUR':
+              return {
+                label: 'EUR',
+                className: 'bg-green-100 !text-green-800',
+              };
+            case 'USD':
+              return {
+                label: 'USD',
+                className: 'bg-blue-100 !text-blue-800',
+              };
+            default:
+              return {
+                label: status,
+                className: 'bg-gray-100 !text-gray-800',
+              };
+          }
+        };
+        const config = getStatusConfig(status);
+        return (
+          <p
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}
+          >
+            {config.label}
+          </p>
+        );
+      },
+    },
+    {
+      key: 'project',
+      label: 'Projet',
+      render: (value: Project) => (
+        <p className="!text-zinc-300">
+          {value && typeof value === 'object' ? value.title : value || 'N/A'}
+        </p>
+      ),
+    },
+    {
+      key: 'client_id',
+      label: 'Client',
+      render: (value: Client) => (
+        <p className="!text-zinc-300">
+          {value && typeof value === 'object' ? value.name : value || 'N/A'}
+        </p>
+      ),
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+      render: (_: string, row: Facture) => (
+        <TableActions
+          onEdit={() => {
+            router.push(
+              `/dashboard/factures/${row.documentId}?edit=1&name=${row.reference}`
+            );
+          }}
+          onDelete={() => {
+            console.log('Delete facture:', (row as Facture).id);
+            showGlobalPopup('Facture supprimée avec succès', 'success');
+          }}
+        />
+      ),
+    },
+  ];
+
+  return (
+    <ProtectedRoute>
+      <DashboardPageTemplate<Facture>
+        title={t('invoices')}
+        onRowClick={row => router.push(`/dashboard/factures/${row.documentId}`)}
+        actionButtonLabel={t('create_facture')}
+        onActionButtonClick={() => {
+          router.push(`/dashboard/factures/${t('add')}`);
+        }}
+        stats={[
+          {
+            label: t('total_invoices'),
+            value: factures.length,
+            colorClass: '!text-green-400',
+            icon: <IconUsers className="w-6 h-6 !text-green-400" />,
+          },
+          {
+            label: t('active_factures'),
+            value: factures.filter(facture => facture.facture_status === 'paid')
+              .length,
+            colorClass: '!text-blue-400',
+            icon: <IconUserCheck className="w-6 h-6 !text-blue-400" />,
+          },
+          {
+            label: t('new_factures_this_month'),
+            value: factures.filter(facture => {
+              const created = new Date(facture.createdAt);
+              const now = new Date();
+              return (
+                created.getMonth() === now.getMonth() &&
+                created.getFullYear() === now.getFullYear()
+              );
+            }).length,
+            colorClass: '!text-purple-400',
+            icon: <IconUserPlus className="w-6 h-6 !text-purple-400" />,
+          },
+        ]}
+        loading={loading}
+        filterOptions={statusOptions}
+        searchPlaceholder={t('search_placeholder_factures')}
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        statusValue={statusFilter}
+        onStatusChange={setStatusFilter}
+        columns={columns as unknown as Column<Facture>[]}
+        data={filteredFactures}
+        emptyMessage={t('no_facture_found')}
+      />
       <AnimatePresence>
         {showCreateModal && (
           <motion.div
@@ -367,26 +453,6 @@ export default function FacturesPage() {
           </motion.div>
         )}
       </AnimatePresence>
-      <DataTable
-        columns={columns}
-        data={factures}
-        loading={loading}
-        emptyMessage={t('no_invoice_found')}
-      />
-      {showPdfModal && pdfToShow && (
-        <FloatingModal
-          isOpen={showPdfModal}
-          onClose={() => setShowPdfModal(false)}
-        >
-          <div className="w-[90vw] max-w-4xl h-[80vh] flex flex-col">
-            <iframe
-              src={pdfToShow}
-              title={t('invoice_pdf')}
-              className="flex-1 w-full h-full rounded-lg border border-zinc-800 bg-white"
-            />
-          </div>
-        </FloatingModal>
-      )}
-    </div>
+    </ProtectedRoute>
   );
 }

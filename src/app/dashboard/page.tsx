@@ -44,6 +44,7 @@ interface Prospect {
 interface Facture {
   id: string;
   number: number;
+  facture_status: string;
 }
 
 export default function DashboardPage() {
@@ -98,6 +99,7 @@ export default function DashboardPage() {
         setFactures(Array.isArray(facturesData.data) ? facturesData.data : []);
         // Calcul du chiffre d'affaires
         const ca = (Array.isArray(facturesData.data) ? facturesData.data : [])
+          .filter((f: Facture) => f.facture_status === 'paid')
           .map((f: Facture) => Number(f.number) || 0)
           .reduce((acc: number, v: number) => acc + v, 0);
         setTotalCA(ca);
@@ -217,7 +219,7 @@ export default function DashboardPage() {
                   if (newClientsThisMonth.length > 0) {
                     recentActivities.push({
                       type: 'client',
-                      message: `${newClientsThisMonth.length} ${t('new_clients_this_month')}${newClientsThisMonth.length > 1 ? 'x' : ''} client${newClientsThisMonth.length > 1 ? 's' : ''} ce mois`,
+                      message: `${t('new_clients_this_month')}: ${newClientsThisMonth.length}`,
                       color: 'green',
                     });
                   }

@@ -11,13 +11,7 @@ import ProtectedRoute from '@/app/components/ProtectedRoute';
 import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
 import { Column } from '@/app/components/DataTable';
 import { FilterOption } from '@/app/components/TableFilters';
-import {
-  IconUsers,
-  IconUserCheck,
-  IconUserPlus,
-  IconFileInvoice,
-} from '@tabler/icons-react';
-import AddClientModal from './AddClientModal';
+import { IconUsers, IconUserCheck, IconUserPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 interface Client {
@@ -51,7 +45,6 @@ export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const { user } = useAuth();
-  const [showAddClientModal, setShowAddClientModal] = useState(false);
   const router = useRouter();
   useLenis();
 
@@ -80,7 +73,6 @@ export default function ClientsPage() {
     adress: string;
     website: string;
     processStatus: string;
-    isActive: boolean;
   }) => {
     const response = await addClientUser(user?.id || 0, clientData);
     if (response?.data) {
@@ -116,7 +108,7 @@ export default function ClientsPage() {
       label: t('name'),
       render: (value: string, row: Client) => (
         <div
-          className="flex items-center gap-3 cursor-pointer hover:underline hover:text-emerald-400 transition-colors"
+          className="flex items-center gap-3 cursor-pointer  transition-colors"
           onClick={() => router.push(`/dashboard/clients/${row.id}`)}
         >
           <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
@@ -199,27 +191,23 @@ export default function ClientsPage() {
         <div className="flex items-center gap-2">
           <TableActions
             onEdit={() => {
-              console.log('Edit client:', (row as Client).id);
-              showGlobalPopup('Client modifié avec succès', 'success');
+              router.push(`/dashboard/clients/${row.id}?edit=1`);
             }}
             onDelete={() => {
               console.log('Delete client:', (row as Client).id);
               showGlobalPopup('Client supprimé avec succès', 'success');
             }}
+            onFactures={
+              row.factures.length > 0
+                ? () => {
+                    console.log('Factures client:', (row as Client).id);
+                    router.push(
+                      `/dashboard/clients/${row.id}/factures?name=${encodeURIComponent(row.name)}`
+                    );
+                  }
+                : undefined
+            }
           />
-          {row.factures.length > 0 && (
-            <button
-              onClick={() => {
-                router.push(
-                  `/dashboard/clients/${row.id}/factures?name=${encodeURIComponent(row.name)}`
-                );
-              }}
-              title="Voir les factures"
-              className="p-2 rounded hover:bg-zinc-800 transition-colors"
-            >
-              <IconFileInvoice className="w-5 h-5 text-emerald-400" />
-            </button>
-          )}
         </div>
       ),
     },
@@ -229,8 +217,11 @@ export default function ClientsPage() {
     <ProtectedRoute>
       <DashboardPageTemplate<Client>
         title={t('clients')}
+        onRowClick={row => router.push(`/dashboard/clients/${row.id}`)}
         actionButtonLabel={t('add_client')}
-        onActionButtonClick={() => setShowAddClientModal(true)}
+        onActionButtonClick={() => {
+          console.log('Add client');
+        }}
         stats={[
           {
             label: t('total_clients'),
@@ -269,12 +260,6 @@ export default function ClientsPage() {
         columns={columns as unknown as Column<Client>[]}
         data={filteredClients}
         emptyMessage={t('no_client_found')}
-      />
-      <AddClientModal
-        isOpen={showAddClientModal}
-        onClose={() => setShowAddClientModal(false)}
-        onAdd={handleAddClient}
-        t={t}
       />
     </ProtectedRoute>
   );

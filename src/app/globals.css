@@ -140,3 +140,35 @@ option {
   font-family: var(--font-geist), sans-serif;
   font-size: 14px;
 }
+
+/* Impression : n'affiche que la modale d'aperçu */
+@media print {
+  .print-modal {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 auto !important;
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    z-index: 9999 !important;
+    padding: 20mm !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .print-section {
+    page-break-after: always;
+    break-after: page;
+  }
+  body * {
+    visibility: hidden !important;
+  }
+  .print-modal,
+  .print-modal * {
+    visibility: visible !important;
+  }
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+}

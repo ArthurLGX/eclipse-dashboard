@@ -11,6 +11,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import useLenis from '@/utils/useLenis';
 import { fetchMentorUsers } from '@/lib/api';
 import { IconBrain, IconUserStar } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 
 interface Mentor {
   id: number;
@@ -36,6 +37,7 @@ interface Mentor {
 export default function MentorsPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const router = useRouter();
   useLenis();
 
   const [mentors, setMentors] = useState<Mentor[]>([]);
@@ -129,6 +131,7 @@ export default function MentorsPage() {
     <ProtectedRoute>
       <DashboardPageTemplate<Mentor>
         title={t('mentors')}
+        onRowClick={row => router.push(`/dashboard/mentors/${row.id}`)}
         actionButtonLabel={t('add_mentor')}
         onActionButtonClick={() => {}}
         stats={[

@@ -13,21 +13,8 @@ import {
   IconEye,
 } from '@tabler/icons-react';
 import FloatingModal from '@/app/components/FloatingModal';
-
-interface Facture {
-  id: string;
-  number: number;
-  reference: string;
-  date: string;
-  due_date: string;
-  facture_status: string;
-  project?: { id: number; title: string };
-  client_id?: { id: number; name: string };
-  user?: { id: number; max_ca: number };
-  pdf: {
-    url: string;
-  }[];
-}
+import { useRouter } from 'next/navigation';
+import { Facture } from '@/app/models/Models';
 
 export default function RevenuePage() {
   const { t } = useLanguage();
@@ -38,7 +25,7 @@ export default function RevenuePage() {
   const [maxCA, setMaxCA] = useState<number>(10000);
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [pdfToShow, setPdfToShow] = useState<string | null>(null);
-
+  const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
       if (!user?.id) return;
@@ -77,6 +64,7 @@ export default function RevenuePage() {
       projectCA[f.project.id].ca += Number(f.number) || 0;
     }
   });
+
   // const topProject = Object.values(projectCA).sort((a, b) => b.ca - a.ca)[0];
 
   // Client top CA
@@ -140,7 +128,16 @@ export default function RevenuePage() {
     {
       key: 'client_id',
       label: t('client') || 'Client',
-      render: (_v, row) => <span>{row.client_id?.name || '-'}</span>,
+      render: (_v, row) => (
+        <span
+          className="cursor-pointer hover:underline"
+          onClick={() => {
+            router.push(`/dashboard/clients/${row.client_id?.id}`);
+          }}
+        >
+          {row.client_id?.name || '-'}
+        </span>
+      ),
     },
     {
       key: 'actions',
@@ -190,7 +187,7 @@ export default function RevenuePage() {
       <h1 className="text-3xl font-bold mb-8 text-zinc-100 flex items-center gap-2">
         {t('revenue')}
       </h1>
-      <div className="mb-8 flex flex-col md:flex-row md:items-center md:gap-8 gap-4">
+      <div className="mb-8 flex flex-col lg:flex-row md:items-center md:gap-8 gap-4">
         <form
           onSubmit={e => {
             e.preventDefault();
@@ -199,7 +196,7 @@ export default function RevenuePage() {
               if (!isNaN(val) && val > 0) setMaxCA(val);
             }
           }}
-          className="flex items-center gap-4"
+          className="flex flex-col lg:flex-row items-center gap-4"
         >
           <label htmlFor="ca-target" className="text-zinc-200 font-semibold">
             {t('target_revenue') || 'Objectif CA'}
@@ -303,6 +300,9 @@ export default function RevenuePage() {
           data={factures}
           loading={loading}
           emptyMessage={t('no_invoice_found')}
+          onRowClick={row =>
+            router.push(`/dashboard/factures/${row.documentId}`)
+          }
         />
       </div>
       {showPdfModal && pdfToShow && (

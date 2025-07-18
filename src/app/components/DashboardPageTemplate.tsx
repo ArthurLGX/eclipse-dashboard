@@ -14,7 +14,7 @@ interface StatCard {
 interface DashboardPageTemplateProps<T> {
   title: string;
   actionButtonLabel: string;
-  onActionButtonClick: () => void;
+  onActionButtonClick?: () => void;
   stats?: StatCard[];
   loading: boolean;
   filterOptions?: FilterOption[];
@@ -27,6 +27,7 @@ interface DashboardPageTemplateProps<T> {
   data: T[];
   emptyMessage: string;
   children?: React.ReactNode;
+  onRowClick?: (row: T) => void;
 }
 
 export default function DashboardPageTemplate<T>({
@@ -45,6 +46,7 @@ export default function DashboardPageTemplate<T>({
   data,
   emptyMessage,
   children,
+  onRowClick,
 }: DashboardPageTemplateProps<T>) {
   return (
     <motion.div
@@ -60,7 +62,7 @@ export default function DashboardPageTemplate<T>({
         </h1>
         <button
           className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors"
-          onClick={onActionButtonClick}
+          onClick={onActionButtonClick || (() => {})}
         >
           {actionButtonLabel}
         </button>
@@ -124,6 +126,7 @@ export default function DashboardPageTemplate<T>({
                 data={data}
                 loading={loading}
                 emptyMessage={emptyMessage}
+                onRowClick={onRowClick}
               />
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { IconCheck, IconX } from '@tabler/icons-react';
+import { IconAlertCircle, IconCheck, IconX } from '@tabler/icons-react';
 
 const PopupMessage = ({
   message,
@@ -41,7 +41,9 @@ const PopupMessage = ({
       className={`fixed lg:right-8 right-0 lg:-translate-x-0 lg:bottom-8 top-8  z-[1000] !text-black flex flex-col lg:m-0 m-4 w-11/12 flex-wrap lg:w-fit   h-fit justify-center items-center px-4 py-2 rounded-lg backdrop-blur-xl overflow-hidden ${
         type === 'success'
           ? '!bg-emerald-300/20 !border border-emerald-300'
-          : '!bg-red-800/20 !border border-red-800'
+          : type === 'error'
+            ? '!bg-red-800/20 !border border-red-800'
+            : '!bg-orange-500/20 !border border-orange-500'
       }`}
     >
       {/* Barre de progression */}
@@ -50,22 +52,31 @@ const PopupMessage = ({
         animate={{ width: '0%' }}
         transition={{ duration: 2.5, ease: 'linear' }}
         className={`absolute top-0 left-0 h-1 ${
-          type === 'success' ? 'bg-emerald-300' : 'bg-red-500'
+          type === 'success'
+            ? 'bg-emerald-300'
+            : type === 'error'
+              ? 'bg-red-500'
+              : 'bg-orange-500'
         }`}
       />
 
       <p
-        className={`flex flex-row items-center gap-2 ${type === 'success' ? '!text-emerald-300' : '!text-zinc-200'}`}
+        className={`flex flex-row items-center gap-2 ${type === 'success' ? '!text-emerald-300' : type === 'error' ? '!text-red-500' : '!text-orange-500'}`}
       >
         {type === 'success' ? (
           <IconCheck
             size={20}
             className="!text-emerald-300 rounded-full bg-emerald-300/20 p-1"
           />
-        ) : (
+        ) : type === 'error' ? (
           <IconX
             size={20}
-            className="!text-zinc-200 rounded-full bg-red-800/20 p-1"
+            className="!text-red-500 rounded-full bg-red-800/20 p-1"
+          />
+        ) : (
+          <IconAlertCircle
+            size={20}
+            className="!text-orange-500 rounded-full bg-orange-500/20 p-1"
           />
         )}
         {message}

@@ -16,6 +16,7 @@ import {
   IconCheck,
   IconProgressCheck,
 } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 
 interface Project {
   id: string;
@@ -45,6 +46,7 @@ export default function ProjectsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const { user } = useAuth();
+  const router = useRouter();
   // Options de filtres par statut
   const statusOptions: FilterOption[] = [
     {
@@ -203,6 +205,7 @@ export default function ProjectsPage() {
     <ProtectedRoute>
       <DashboardPageTemplate<Project>
         title={t('projects')}
+        onRowClick={row => router.push(`/dashboard/projects/${row.id}`)}
         actionButtonLabel={t('new_project')}
         onActionButtonClick={() => {}}
         stats={[
