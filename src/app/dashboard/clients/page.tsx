@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { fetchClientsUser, addClientUser } from '@/lib/api';
+import { fetchClientsUser } from '@/lib/api';
 import useLenis from '@/utils/useLenis';
 import TableActions from '@/app/components/TableActions';
 import { usePopup } from '@/app/context/PopupContext';
@@ -64,22 +64,6 @@ export default function ClientsPage() {
     };
     fetchData();
   }, [user?.id]);
-
-  const handleAddClient = async (clientData: {
-    name: string;
-    email: string;
-    number: string;
-    enterprise: string;
-    adress: string;
-    website: string;
-    processStatus: string;
-  }) => {
-    const response = await addClientUser(user?.id || 0, clientData);
-    if (response?.data) {
-      setClients(prev => [response.data, ...prev] as Client[]);
-      showGlobalPopup(t('client_added_successfully'), 'success');
-    }
-  };
 
   const statusOptions: FilterOption[] = [
     {
