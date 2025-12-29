@@ -13,6 +13,10 @@ import {
 import { BackBtn } from '@/app/components/buttons/backBtn';
 import useLenis from '@/utils/useLenis';
 
+interface SubscriptionData {
+  subscription_status: string;
+}
+
 function LoginContent() {
   const searchParams = useSearchParams();
   const type = (searchParams.get('type') as 'login' | 'register') || 'login';
@@ -90,11 +94,11 @@ function LoginContent() {
     const checkSubscriptionAndRedirect = async () => {
       try {
         // Vérifier si l'utilisateur a un abonnement
-        const subscription = await fetchSubscriptionsUser(user.id);
+        const subscription = await fetchSubscriptionsUser(user.id) as { data?: SubscriptionData[] };
         console.log('subscription', subscription);
 
         if (
-          Array.isArray(subscription.data) &&
+          subscription?.data &&
           subscription.data.length > 0 &&
           (subscription.data[0].subscription_status === 'active' ||
             subscription.data[0].subscription_status === 'trial')

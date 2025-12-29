@@ -30,6 +30,17 @@ interface TrialData {
   startedDate: string;
 }
 
+interface SubscriptionPlan {
+  name: string;
+  features: string | Record<string, number>;
+}
+
+interface SubscriptionData {
+  plan: SubscriptionPlan;
+  trial: boolean;
+  start_date: string;
+}
+
 export default function UsageProgressBar() {
   const { user, subscriptionUpdated } = useAuth();
   const { t, language } = useLanguage();
@@ -54,8 +65,8 @@ export default function UsageProgressBar() {
         };
 
         try {
-          const subscription = await fetchSubscriptionsUser(user.id);
-          if (subscription.data && subscription.data.length > 0) {
+          const subscription = await fetchSubscriptionsUser(user.id) as { data?: SubscriptionData[] };
+          if (subscription?.data && subscription.data.length > 0) {
             const features = subscription.data[0].plan.features;
             const planName = subscription.data[0].plan.name;
             const startedDate = subscription.data[0].start_date;
