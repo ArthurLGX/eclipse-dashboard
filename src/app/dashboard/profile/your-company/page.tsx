@@ -97,13 +97,15 @@ export default function YourCompanyPage() {
           user?.id || 0,
           companyId,
           formData
-        );
+        ) as { data?: Company };
         if (!response) {
           throw new Error("Erreur lors de la mise à jour de l'utilisateur");
         }
 
         // Mettre à jour companyProfile avec les nouvelles données
-        setCompanyProfile(response.data);
+        if (response?.data) {
+          setCompanyProfile(response.data);
+        }
 
         setEditing(false);
         showGlobalPopup('Profil mis à jour avec succès', 'success');
@@ -112,14 +114,16 @@ export default function YourCompanyPage() {
           user?.id || 0,
           companyId,
           formData
-        );
+        ) as { data?: Company };
 
         if (!response) {
           throw new Error("Erreur lors de la mise à jour de l'utilisateur");
         }
 
         // Mettre à jour companyProfile avec les nouvelles données
-        setCompanyProfile(response.data);
+        if (response?.data) {
+          setCompanyProfile(response.data);
+        }
 
         setEditing(false);
         showGlobalPopup('Profil mis à jour avec succès', 'success');
