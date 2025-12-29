@@ -7,6 +7,12 @@ import { useEffect, useState } from 'react';
 import { fetchFactureFromDocumentId, fetchFactureFromId } from '@/lib/api';
 import { useAuth } from '@/app/context/AuthContext';
 
+interface FactureForBreadcrumb {
+  reference?: string;
+  client_id?: { name?: string };
+  project?: { title?: string };
+}
+
 export const BreadCrumb = () => {
   const { t } = useLanguage();
   const pathname = usePathname();
@@ -40,23 +46,25 @@ export const BreadCrumb = () => {
           //si id est un string, on fait une requete pour récupérer l'id
           if (typeof id === 'string') {
             const facture = await fetchFactureFromDocumentId(id);
-            if (facture?.data) {
-              if (facture.data.client_id?.name) {
-                factureDataMap[id] = facture.data.client_id.name;
-              } else if (facture.data.project?.title) {
-                factureDataMap[id] = facture.data.project.title;
-              } else if (facture.data.reference) {
-                factureDataMap[id] = facture.data.reference;
+            const factureItem = facture?.data?.[0] as FactureForBreadcrumb | undefined;
+            if (factureItem) {
+              if (factureItem.client_id?.name) {
+                factureDataMap[id] = factureItem.client_id.name;
+              } else if (factureItem.project?.title) {
+                factureDataMap[id] = factureItem.project.title;
+              } else if (factureItem.reference) {
+                factureDataMap[id] = factureItem.reference;
               } else {
                 factureDataMap[id] = `Facture #${id}`;
               }
             }
           } else {
             const facture = await fetchFactureFromId(id);
-            if (facture?.data) {
+            const factureItem = facture?.data?.[0] as FactureForBreadcrumb | undefined;
+            if (factureItem) {
               // Priorité 1: Nom du client
-              if (facture.data.reference) {
-                factureDataMap[id] = facture.data.reference;
+              if (factureItem.reference) {
+                factureDataMap[id] = factureItem.reference;
               } else {
                 factureDataMap[id] = `Facture #${id}`;
               }
