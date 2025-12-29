@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import FloatingModal from '@/app/components/FloatingModal';
-import { motion } from 'motion/react';
 import {
   IconFolder,
   IconFileDescription,
@@ -69,7 +68,6 @@ export default function NewProjectModal({
   const [selectedClient, setSelectedClient] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
