@@ -72,9 +72,9 @@ export default function YourSubscriptionPage() {
     const fetchSubscriptions = async () => {
       try {
         if (!user?.id) return;
-        const response = await fetchSubscriptionsUser(user.id);
+        const response = await fetchSubscriptionsUser(user.id) as { data?: Subscription[] };
         console.log('Subscriptions response:', response);
-        setSubscriptions(response.data || []);
+        setSubscriptions(response?.data || []);
       } catch (error) {
         console.error('Error fetching subscriptions:', error);
         showGlobalPopup('Erreur lors du chargement des abonnements', 'error');
@@ -85,9 +85,9 @@ export default function YourSubscriptionPage() {
 
     const fetchAvailablePlans = async () => {
       try {
-        const response = await fetchPlans();
-        console.log('Plans récupérés:', response.data);
-        setAvailablePlans(response.data || []);
+        const response = await fetchPlans() as { data?: Plan[] };
+        console.log('Plans récupérés:', response?.data);
+        setAvailablePlans(response?.data || []);
       } catch (error) {
         console.error('Error fetching plans:', error);
       }
@@ -129,9 +129,9 @@ export default function YourSubscriptionPage() {
         plan_description: selectedPlan.description,
         plan_features: selectedPlan.features,
         start_date: new Date().toISOString(),
-      });
+      }) as { data?: unknown };
 
-      if (response.data) {
+      if (response?.data) {
         console.log('Plan sélectionné:', selectedPlan);
         showGlobalPopup(
           'Paiement réussi ! Votre abonnement a été mis à niveau.',
@@ -142,8 +142,8 @@ export default function YourSubscriptionPage() {
         setSelectedPlan(null);
 
         // Recharger les subscriptions pour afficher les nouvelles données
-        const updatedSubscriptions = await fetchSubscriptionsUser(user.id);
-        setSubscriptions(updatedSubscriptions.data || []);
+        const updatedSubscriptions = await fetchSubscriptionsUser(user.id) as { data?: Subscription[] };
+        setSubscriptions(updatedSubscriptions?.data || []);
 
         // Déclencher la mise à jour de l'UsageProgressBar
         triggerSubscriptionUpdate();

@@ -102,9 +102,9 @@ export default function Plans() {
         plan_description: selectedPlan.description,
         plan_features: selectedPlan.features,
         start_date: new Date().toISOString(),
-      });
+      }) as { data?: unknown };
 
-      if (response.data) {
+      if (response?.data) {
         console.log('Plan choisi : ', selectedPlan);
         showGlobalPopup(
           'Paiement réussi ! Votre abonnement est maintenant actif.',
@@ -127,9 +127,9 @@ export default function Plans() {
     const fetchPlansData = async () => {
       try {
         setLoading(true);
-        const response = await fetchPlans();
+        const response = await fetchPlans() as { data?: Plan[] };
         // Trier les plans selon leur rank
-        const sortedPlans = response.data.sort(
+        const sortedPlans = (response?.data || []).sort(
           (a: Plan, b: Plan) => a.rank - b.rank
         );
         setPlans(sortedPlans);
@@ -144,9 +144,9 @@ export default function Plans() {
       if (!user?.id) return;
 
       try {
-        const subscription = await fetchSubscriptionsUser(user.id);
+        const subscription = await fetchSubscriptionsUser(user.id) as { data?: Array<{ subscription_status: string; plan: { name: string } }> };
         if (
-          subscription.data &&
+          subscription?.data &&
           subscription.data.length > 0 &&
           subscription.data[0].subscription_status === 'active'
         ) {

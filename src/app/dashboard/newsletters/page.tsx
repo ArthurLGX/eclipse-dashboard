@@ -61,8 +61,8 @@ export default function NewslettersPage() {
 
       try {
         setLoading(true);
-        const response = await fetchNewslettersUser(user.id);
-        setNewsletters(response.data || []);
+        const response = await fetchNewslettersUser(user.id) as { data?: Newsletter[] };
+        setNewsletters(response?.data || []);
       } catch (error) {
         console.error('Error fetching clients:', error);
       } finally {

@@ -39,9 +39,9 @@ export default function YourCompanyPage() {
 
       try {
         setLoading(true);
-        const data = await fetchCompanyUser(user.id);
+        const data = await fetchCompanyUser(user.id) as { data?: Company[] };
 
-        if (data.data.length === 0) {
+        if (!data?.data || data.data.length === 0) {
           setCompanyProfile(null);
           return;
         }

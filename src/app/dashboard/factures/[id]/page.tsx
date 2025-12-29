@@ -96,7 +96,7 @@ export default function FacturePage() {
     documentId: '',
     title: '',
     description: '',
-    project_status: 'draft',
+    project_status: 'planning',
     start_date: '',
     end_date: '',
     notes: '',
@@ -117,7 +117,7 @@ export default function FacturePage() {
     updatedAt: '',
     publishedAt: '',
     max_ca: 0,
-    profile_picture: { url: '' },
+    profile_picture: { id: 0, url: '' },
     role: {
       id: 0,
       documentId: '',
@@ -128,9 +128,6 @@ export default function FacturePage() {
       updatedAt: '',
       publishedAt: '',
     },
-    projects: [],
-    factures: [],
-    technologies: [],
   };
   const emptyFacture: Facture = {
     id: 0,
@@ -187,13 +184,14 @@ export default function FacturePage() {
           factureData = await fetchFacturesUserById(user?.id ?? 0, id as string);
         }
         
-        if (factureData.data && factureData.data[0]) {
-          setFacture(factureData.data[0]);
-          setFormData(factureData.data[0]);
+        const typedData = factureData as { data?: Facture[] };
+        if (typedData?.data && typedData.data[0]) {
+          setFacture(typedData.data[0]);
+          setFormData(typedData.data[0]);
           if (edit === '1') {
             setEditing(true);
           }
-          setInvoiceLines(factureData.data[0]?.lines || []);
+          setInvoiceLines(typedData.data[0]?.invoice_lines || []);
         }
         setIsLoading(false);
       } catch (error) {
@@ -207,8 +205,8 @@ export default function FacturePage() {
     const fetchCompany = async () => {
       if (!user?.id) return;
       try {
-        const companyResponse = await fetchCompanyUser(user.id);
-        if (companyResponse.data && companyResponse.data.length > 0) {
+        const companyResponse = await fetchCompanyUser(user.id) as { data?: Company[] };
+        if (companyResponse?.data && companyResponse.data.length > 0) {
           setCompany(companyResponse.data[0]);
         }
       } catch {
@@ -219,10 +217,10 @@ export default function FacturePage() {
     const fetchClientsAndProjects = async () => {
       if (!user?.id) return;
       try {
-        const clientsRes = await fetchClientsUser(user.id);
-        setClients(clientsRes.data || []);
-        const projectsRes = await fetchProjectsUser(user.id);
-        setProjects(projectsRes.data || []);
+        const clientsRes = await fetchClientsUser(user.id) as { data?: Client[] };
+        setClients(clientsRes?.data || []);
+        const projectsRes = await fetchProjectsUser(user.id) as { data?: Project[] };
+        setProjects(projectsRes?.data || []);
       } catch (error) {
         console.error('Erreur lors du chargement des clients/projets', error);
       }
@@ -355,11 +353,13 @@ export default function FacturePage() {
       const refreshed = await fetchFacturesUserById(
         user?.id ?? 0,
         facture?.documentId ?? ''
-      );
-      const refreshedFacture = refreshed.data[0];
-      setFacture(refreshedFacture);
-      setFormData(refreshedFacture);
-      setInvoiceLines(refreshedFacture.invoice_lines || []);
+      ) as { data?: Facture[] };
+      const refreshedFacture = refreshed?.data?.[0];
+      if (refreshedFacture) {
+        setFacture(refreshedFacture);
+        setFormData(refreshedFacture);
+        setInvoiceLines(refreshedFacture.invoice_lines || []);
+      }
       showGlobalPopup('Facture mise à jour', 'success');
       setEditing(false);
     } catch (error) {

@@ -42,10 +42,10 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
       try {
         setIsCheckingSubscription(true);
-        const response = await fetchSubscriptionsUser(user.id);
+        const response = await fetchSubscriptionsUser(user.id) as { data?: Subscription[] };
 
         if (
-          response.data &&
+          response?.data &&
           response.data.length > 0 &&
           response.data[0].subscription_status === 'active'
         ) {

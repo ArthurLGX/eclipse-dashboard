@@ -42,7 +42,8 @@ export default function TrialExpiredModal({
   useEffect(() => {
     if (isOpen) {
       fetchPlans().then(response => {
-        setPlans(response.data || []);
+        const res = response as { data?: Plan[] };
+        setPlans(res?.data || []);
       });
     }
   }, [isOpen]);
@@ -82,9 +83,9 @@ export default function TrialExpiredModal({
         plan_description: selectedPlan.description,
         plan_features: selectedPlan.features,
         start_date: new Date().toISOString(),
-      });
+      }) as { data?: unknown };
 
-      if (response.data) {
+      if (response?.data) {
         showGlobalPopup(
           'Paiement réussi ! Votre abonnement est maintenant actif.',
           'success'

@@ -89,8 +89,8 @@ export default function UpgradeDropdown({
 
   const handleCancelSubscription = async (userId: number) => {
     try {
-      const response = await cancelSubscription(userId);
-      if (response.data) {
+      const response = await cancelSubscription(userId) as { data?: unknown };
+      if (response?.data) {
         showGlobalPopup(t('subscription_cancelled'), 'success');
         router.push('/pricing');
       }
