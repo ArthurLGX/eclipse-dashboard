@@ -36,7 +36,7 @@ export default function RevenuePage() {
         const response = await fetchFacturesUser(user.id) as { data?: Facture[] };
         setFactures(response?.data || []);
         // Récupère le user pour max_ca
-        const userData = await fetchUserById(user.id);
+        const userData = await fetchUserById(user.id) as { max_ca?: number };
         setMaxCA(Number(userData?.max_ca) || 10000);
       } catch {
         setFactures([]);
