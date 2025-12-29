@@ -8,6 +8,12 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import PageSkeleton from './PageSkeleton';
 
+interface SubscriptionData {
+  plan: { name: string };
+  trial: boolean;
+  start_date: string;
+}
+
 interface TrialExpiredGuardProps {
   children: React.ReactNode;
 }
@@ -37,8 +43,8 @@ export default function TrialExpiredGuard({
       }
 
       try {
-        const subscriptionResponse = await fetchSubscriptionsUser(user.id);
-        if (subscriptionResponse.data && subscriptionResponse.data.length > 0) {
+        const subscriptionResponse = await fetchSubscriptionsUser(user.id) as { data?: SubscriptionData[] };
+        if (subscriptionResponse?.data && subscriptionResponse.data.length > 0) {
           const subscription = subscriptionResponse.data[0];
           const planName = subscription.plan.name;
           const isTrial = subscription.trial;
