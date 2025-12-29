@@ -67,9 +67,9 @@ export default function FreePlanModal({
         plan_name: plan.name,
         plan_description: plan.description,
         plan_features: plan.features,
-      });
+      }) as { data?: unknown };
 
-      if (response.data) {
+      if (response?.data) {
         showGlobalPopup(
           "Plan gratuit activé ! Vous avez 30 jours d'essai.",
           'success'
