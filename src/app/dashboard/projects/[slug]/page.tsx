@@ -15,13 +15,10 @@ import {
   IconFileInvoice,
   IconPlus,
   IconShare,
-  IconUsers,
-  IconClock,
   IconCurrencyEuro,
   IconListCheck,
   IconChartBar,
   IconX,
-  IconDotsVertical,
   IconExternalLink,
   IconCalendarEvent,
 } from '@tabler/icons-react';
@@ -254,7 +251,7 @@ export default function ProjectDetailsPage() {
           <IconFileText className="w-10 h-10 text-zinc-600" />
         </div>
         <h1 className="text-2xl font-semibold text-zinc-200">Projet non trouvé</h1>
-        <p className="text-zinc-500">Ce projet n'existe pas ou a été supprimé</p>
+        <p className="text-zinc-500">Ce projet n&apos;existe pas ou a été supprimé</p>
         <Link
           href="/dashboard/projects"
           className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors mt-2"
