@@ -411,7 +411,7 @@ export default function ClientDetailsPage() {
           columns={projectColumns}
           data={filteredProjects}
           emptyMessage="Aucun projet pour ce client."
-          onRowClick={(row) => router.push(`/dashboard/projects/${generateSlug(row.title, row.id)}`)}
+          onRowClick={(row) => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}`)}
         />
       </div>
     </div>

@@ -47,7 +47,7 @@ export default function FacturesPage() {
     const clientName = clientData && typeof clientData === 'object'
       ? (clientData as Client).name
       : '';
-    return generateSlug(`${facture.reference}-${clientName || 'facture'}`, facture.id);
+    return generateSlug(`${facture.reference}-${clientName || 'facture'}`, facture.documentId);
   };
 
   // Stats

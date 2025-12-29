@@ -99,6 +99,26 @@ export const BreadCrumb = () => {
     };
   });
 
+  // Fonction pour extraire le titre d'un slug (format: titre-du-projet--documentId)
+  function extractTitleFromSlug(slug: string): string {
+    // Nouveau format avec double tiret : titre--documentId
+    if (slug.includes('--')) {
+      const titlePart = slug.split('--')[0];
+      return titlePart
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    }
+    // Ancien format avec ID numérique : titre-123
+    const parts = slug.split('-');
+    if (parts.length > 1 && !isNaN(Number(parts[parts.length - 1]))) {
+      parts.pop();
+    }
+    return parts
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
   // Fonction pour obtenir le label approprié pour chaque segment
   function getSegmentLabel(
     segment: string,
@@ -112,6 +132,16 @@ export const BreadCrumb = () => {
       if (!isNaN(Number(segment)) || segment.length > 10) {
         return factureData[segment] || `Facture #${segment}`;
       }
+    }
+
+    // Si c'est un slug de projet (contient double tiret ou tirets et le parent est "projects")
+    if (segments[index - 1] === 'projects' && (segment.includes('--') || segment.includes('-'))) {
+      return extractTitleFromSlug(segment);
+    }
+
+    // Si c'est un slug de client (contient des tirets et le parent est "clients")
+    if (segments[index - 1] === 'clients' && (segment.includes('--') || segment.includes('-'))) {
+      return extractTitleFromSlug(segment);
     }
 
     // Si c'est un nombre (ID), on peut essayer de récupérer le nom depuis le contexte

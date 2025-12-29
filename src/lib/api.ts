@@ -236,8 +236,64 @@ export const deleteClient = (documentId: string) =>
 export const fetchProjectsUser = (userId: number) =>
   fetchUserEntities('projects', userId, 'user');
 
+/** Récupère tous les projets de l'utilisateur (propriétaire + collaborateur) */
+export async function fetchAllUserProjects(userId: number) {
+  // 1. Récupérer les projets où l'utilisateur est propriétaire
+  const ownedProjects = await fetchUserEntities('projects', userId, 'user');
+  
+  // 2. Récupérer les collaborations de l'utilisateur
+  try {
+    const collaborationsResponse = await get<ApiResponse<{
+      project: {
+        id: number;
+        documentId: string;
+        title: string;
+        description: string;
+        project_status: string;
+        deadline: string;
+        createdAt: string;
+        updatedAt: string;
+      };
+      permission: string;
+      is_owner: boolean;
+    }[]>>(`project-collaborators?populate=project&filters[user][id][$eq]=${userId}`);
+    
+    const collaborations = collaborationsResponse.data || [];
+    
+    // Extraire les projets des collaborations
+    const collaboratedProjects = collaborations
+      .filter(c => c.project && !c.is_owner) // Exclure les projets dont l'utilisateur est propriétaire
+      .map(c => ({
+        ...c.project,
+        _isCollaborator: true,
+        _permission: c.permission,
+      }));
+    
+    // Combiner les projets (propriétaire + collaborateur)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ownedProjectsData = (ownedProjects as any).data || [];
+    const ownedProjectIds = new Set(ownedProjectsData.map((p: { documentId: string }) => p.documentId));
+    
+    // Filtrer les projets collaborés pour éviter les doublons
+    const uniqueCollaboratedProjects = collaboratedProjects.filter(
+      p => !ownedProjectIds.has(p.documentId)
+    );
+    
+    return {
+      data: [...ownedProjectsData, ...uniqueCollaboratedProjects],
+      meta: {},
+    };
+  } catch {
+    // Si project-collaborators n'existe pas encore, retourner juste les projets possédés
+    return ownedProjects;
+  }
+}
+
 export const fetchProjectById = (id: number) =>
   fetchEntityById('projects', id);
+
+export const fetchProjectByDocumentId = (documentId: string) =>
+  fetchEntityById('projects', documentId, true);
 
 export const fetchNumberOfProjectsUser = (userId: number) =>
   fetchCount('projects', userId, 'user');
@@ -718,3 +774,355 @@ export async function updateCompanyUser(
   }
   return put(`companies/${companyId}`, data);
 }
+
+// ============================================================================
+// INVITATIONS DE PROJET (COLLABORATION)
+// ============================================================================
+
+/** Génère un code d'invitation unique */
+function generateInvitationCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 8; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+/** Crée une invitation pour un projet */
+export async function createProjectInvitation(data: {
+  project: string; // documentId du projet
+  sender: number; // id de l'utilisateur qui invite
+  recipient_email: string;
+  permission?: 'view' | 'edit';
+  isPublicLink?: boolean; // true si c'est un lien public partageable
+}) {
+  const invitationCode = generateInvitationCode();
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 jours
+
+  let recipient: { id: number; documentId: string } | undefined;
+
+  // Si c'est un lien public, pas de recherche de destinataire
+  // Si un email est fourni, vérifier si le destinataire existe
+  if (!data.isPublicLink && data.recipient_email) {
+    try {
+      // L'API users-permissions retourne un tableau directement, pas { data: [...] }
+      const recipientCheck = await get<{ id: number; documentId: string; email: string }[]>(
+        `users?filters[email][$eq]=${encodeURIComponent(data.recipient_email)}`
+      );
+      
+      // recipientCheck est directement un tableau
+      if (Array.isArray(recipientCheck) && recipientCheck.length > 0) {
+        recipient = recipientCheck[0];
+      }
+    } catch {
+      // Utilisateur non trouvé
+    }
+  }
+
+  const payload = {
+    project: data.project,
+    sender: data.sender,
+    recipient_email: data.recipient_email || null,
+    invitation_code: invitationCode,
+    invitation_status: 'pending',
+    permission: data.permission || 'edit',
+    expires_at: expiresAt,
+    ...(recipient ? { recipient: recipient.id } : {}),
+  };
+
+  const invitation = await post('project-invitations', payload);
+
+  // Si le destinataire existe, créer une notification
+  if (recipient) {
+    try {
+      // Récupérer les infos du sender et du projet pour la notification
+      const senderData = await get<{ username: string }>(`users/${data.sender}`);
+      const projectData = await get<ApiResponse<{ title: string }[]>>(
+        `projects?filters[documentId][$eq]=${data.project}`
+      );
+      const projectTitle = projectData.data?.[0]?.title || 'un projet';
+
+      await createNotification({
+        user: recipient.id,
+        type: 'project_invitation',
+        title: 'Invitation à collaborer',
+        message: `${senderData.username || 'Un utilisateur'} vous invite à collaborer sur le projet "${projectTitle}"`,
+        data: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          invitation_id: (invitation as any).data?.documentId,
+          project_id: data.project,
+          sender_name: senderData.username,
+          project_title: projectTitle,
+        },
+        action_url: `/dashboard/projects/invitation/${invitationCode}`,
+      });
+    } catch {
+      // Erreur création notification - silencieuse
+    }
+  }
+
+  return { ...(invitation as object), invitation_code: invitationCode };
+}
+
+/** Récupère les invitations envoyées par un utilisateur */
+export const fetchSentInvitations = (userId: number) =>
+  get(`project-invitations?populate=*&filters[sender][$eq]=${userId}`);
+
+/** Récupère les invitations reçues par un utilisateur (via email) */
+export const fetchReceivedInvitations = (email: string) =>
+  get(`project-invitations?populate=*&filters[recipient_email][$eq]=${encodeURIComponent(email)}&filters[invitation_status][$eq]=pending`);
+
+/** Récupère une invitation par son code */
+export const fetchInvitationByCode = (code: string) =>
+  get(`project-invitations?populate=*&filters[invitation_code][$eq]=${code}`);
+
+/** Récupère les invitations d'un projet */
+export const fetchProjectInvitations = (projectDocumentId: string) =>
+  get(`project-invitations?populate=*&filters[project][documentId][$eq]=${projectDocumentId}`);
+
+/** Accepte une invitation */
+export async function acceptInvitation(invitationDocumentId: string, userId: number) {
+  // Mettre à jour le statut de l'invitation
+  const result = await put(`project-invitations/${invitationDocumentId}`, {
+    invitation_status: 'accepted',
+    recipient: userId,
+  });
+
+  // Récupérer l'invitation pour obtenir le projet
+  const invitationData = await get<ApiResponse<{ project: { documentId: string }; permission: string }[]>>(
+    `project-invitations?filters[documentId][$eq]=${invitationDocumentId}&populate=project`
+  );
+  const invitation = invitationData.data?.[0];
+
+  if (invitation?.project?.documentId) {
+    // Ajouter l'utilisateur comme collaborateur du projet
+    await addProjectCollaborator(invitation.project.documentId, userId, invitation.permission as 'view' | 'edit');
+  }
+
+  return result;
+}
+
+/** Refuse une invitation */
+export const rejectInvitation = (invitationDocumentId: string) =>
+  put(`project-invitations/${invitationDocumentId}`, { invitation_status: 'rejected' });
+
+/** Annule une invitation (par l'expéditeur) */
+export const cancelInvitation = (invitationDocumentId: string) =>
+  del(`project-invitations/${invitationDocumentId}`);
+
+// ============================================================================
+// COLLABORATEURS DE PROJET
+// ============================================================================
+
+/** Ajoute un collaborateur à un projet */
+export async function addProjectCollaborator(
+  projectDocumentId: string,
+  userId: number,
+  permission: 'view' | 'edit' = 'edit'
+) {
+  return post('project-collaborators', {
+    project: projectDocumentId,
+    user: userId,
+    permission,
+    joined_at: new Date().toISOString(),
+    is_owner: false,
+  });
+}
+
+/** Récupère les collaborateurs d'un projet */
+export const fetchProjectCollaborators = (projectDocumentId: string) =>
+  get(`project-collaborators?populate=*&filters[project][documentId][$eq]=${projectDocumentId}`);
+
+/** Récupère les projets partagés avec un utilisateur */
+export const fetchSharedProjects = (userId: number) =>
+  get(`project-collaborators?populate=*&filters[user][$eq]=${userId}&filters[is_owner][$eq]=false`);
+
+/** Supprime un collaborateur d'un projet */
+export const removeProjectCollaborator = (collaboratorDocumentId: string) =>
+  del(`project-collaborators/${collaboratorDocumentId}`);
+
+/** Vérifie si l'utilisateur peut supprimer un projet (propriétaire uniquement) */
+export async function canDeleteProject(projectDocumentId: string, userId: number): Promise<boolean> {
+  const collaborator = await get<ApiResponse<{ is_owner: boolean }[]>>(
+    `project-collaborators?filters[project][documentId][$eq]=${projectDocumentId}&filters[user][$eq]=${userId}`
+  );
+  // Si pas de collaborateur trouvé, vérifier si c'est le créateur original
+  if (!collaborator.data?.length) {
+    const project = await get<ApiResponse<{ user?: { id: number } }[]>>(
+      `projects?filters[documentId][$eq]=${projectDocumentId}&populate=user`
+    );
+    return project.data?.[0]?.user?.id === userId;
+  }
+  return collaborator.data[0].is_owner;
+}
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+/** Crée une notification */
+export async function createNotification(data: {
+  user: number;
+  type: 'project_invitation' | 'project_update' | 'system';
+  title: string;
+  message: string;
+  data?: {
+    invitation_id?: string;
+    project_id?: string;
+    sender_name?: string;
+    project_title?: string;
+  };
+  action_url?: string;
+}) {
+  return post('notifications', {
+    ...data,
+    read: false,
+  });
+}
+
+/** Récupère les notifications d'un utilisateur */
+export const fetchNotifications = (userId: number) =>
+  get(`notifications?populate=*&filters[user][id][$eq]=${userId}&sort=createdAt:desc`);
+
+/** Récupère le nombre de notifications non lues */
+export async function fetchUnreadNotificationCount(userId: number): Promise<number> {
+  const res = await get<ApiResponse<unknown[]>>(
+    `notifications?filters[user][id][$eq]=${userId}&filters[read][$eq]=false`
+  );
+  return res.data?.length || 0;
+}
+
+/** Marque une notification comme lue */
+export const markNotificationAsRead = (notificationDocumentId: string) =>
+  put(`notifications/${notificationDocumentId}`, { read: true });
+
+/** Marque toutes les notifications comme lues */
+export async function markAllNotificationsAsRead(userId: number) {
+  const notifications = await get<ApiResponse<{ documentId: string }[]>>(
+    `notifications?filters[user][id][$eq]=${userId}&filters[read][$eq]=false`
+  );
+  
+  const updatePromises = (notifications.data || []).map(n =>
+    put(`notifications/${n.documentId}`, { read: true })
+  );
+  
+  return Promise.all(updatePromises);
+}
+
+/** Supprime une notification */
+export const deleteNotification = (notificationDocumentId: string) =>
+  del(`notifications/${notificationDocumentId}`);
+
+// ============================================================================
+// PROJECT TASKS (TÂCHES DE PROJET)
+// ============================================================================
+
+import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
+
+/** Récupère les tâches d'un projet */
+export const fetchProjectTasks = (projectDocumentId: string) =>
+  get<ApiResponse<ProjectTask[]>>(
+    `project-tasks?populate=*&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc`
+  );
+
+/** Crée une nouvelle tâche */
+export async function createProjectTask(data: {
+  project: string; // documentId du projet
+  title: string;
+  description?: string;
+  task_status?: TaskStatus;
+  priority?: TaskPriority;
+  progress?: number;
+  start_date?: string | null;
+  due_date?: string | null;
+  estimated_hours?: number | null;
+  assigned_to?: number; // user id
+  created_user: number; // user id
+  order?: number;
+  tags?: string[];
+}) {
+  return post('project-tasks', {
+    project: data.project,
+    title: data.title,
+    description: data.description || '',
+    task_status: data.task_status || 'todo',
+    priority: data.priority || 'medium',
+    progress: data.progress || 0,
+    start_date: data.start_date || null,
+    due_date: data.due_date || null,
+    completed_date: null,
+    estimated_hours: data.estimated_hours || null,
+    order: data.order || 0,
+    assigned_to: data.assigned_to || null,
+    created_user: data.created_user,
+    tags: data.tags || [],
+  });
+}
+
+/** Met à jour une tâche */
+export async function updateProjectTask(
+  taskDocumentId: string,
+  data: Partial<{
+    title: string;
+    description: string;
+    task_status: TaskStatus;
+    priority: TaskPriority;
+    progress: number;
+    start_date: string | null;
+    due_date: string | null;
+    completed_date: string | null;
+    estimated_hours: number | null;
+    assigned_to: number | null;
+    order: number;
+    tags: string[];
+  }>
+) {
+  // Si la tâche est marquée comme complétée, ajouter la date de complétion
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { actual_hours: _removed, ...cleanData } = data as Record<string, unknown>;
+  const payload = { ...cleanData };
+  if (data.task_status === 'completed' && !data.completed_date) {
+    payload.completed_date = new Date().toISOString();
+    payload.progress = 100;
+  }
+  
+  return put(`project-tasks/${taskDocumentId}`, payload);
+}
+
+/** Supprime une tâche */
+export const deleteProjectTask = (taskDocumentId: string) =>
+  del(`project-tasks/${taskDocumentId}`);
+
+/** Réordonne les tâches */
+export async function reorderProjectTasks(tasks: { documentId: string; order: number }[]) {
+  const updatePromises = tasks.map(task =>
+    put(`project-tasks/${task.documentId}`, { order: task.order })
+  );
+  return Promise.all(updatePromises);
+}
+
+/** Met à jour le statut d'une tâche */
+export async function updateTaskStatus(taskDocumentId: string, status: TaskStatus) {
+  const payload: { task_status: TaskStatus; completed_date?: string; progress?: number } = {
+    task_status: status,
+  };
+  
+  if (status === 'completed') {
+    payload.completed_date = new Date().toISOString();
+    payload.progress = 100;
+  } else if (status === 'todo') {
+    payload.completed_date = undefined;
+    payload.progress = 0;
+  }
+  
+  return put(`project-tasks/${taskDocumentId}`, payload);
+}
+
+/** Met à jour la progression d'une tâche */
+export const updateTaskProgress = (taskDocumentId: string, progress: number) =>
+  put(`project-tasks/${taskDocumentId}`, { 
+    progress: Math.max(0, Math.min(100, progress)),
+    task_status: progress >= 100 ? 'completed' : progress > 0 ? 'in_progress' : 'todo',
+    ...(progress >= 100 ? { completed_date: new Date().toISOString() } : {}),
+  });

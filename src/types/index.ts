@@ -50,6 +50,10 @@ export type ProspectStatus = 'prospect' | 'answer' | 'to_be_contacted' | 'contac
 export type SubscriptionStatus = 'active' | 'canceled' | 'expired' | 'trial';
 export type BillingType = 'monthly' | 'yearly';
 
+// Types pour les tâches de projet
+export type TaskStatus = 'todo' | 'in_progress' | 'completed' | 'cancelled';
+export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+
 // ============================================================================
 // ENTITÉS PRINCIPALES
 // ============================================================================
@@ -126,6 +130,29 @@ export interface Project {
   client?: Client | null;
   user?: User;
   technologies?: Technology[];
+  tasks?: ProjectTask[];
+}
+
+export interface ProjectTask {
+  id: number;
+  documentId: string;
+  title: string;
+  description: string;
+  task_status: TaskStatus;
+  priority: TaskPriority;
+  progress: number; // 0-100
+  start_date: string | null;
+  due_date: string | null;
+  completed_date: string | null;
+  estimated_hours: number | null;
+  actual_hours: number | null;
+  order: number;
+  project?: Project;
+  assigned_to?: User;
+  created_user?: User;
+  tags?: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Prospect {
@@ -410,3 +437,62 @@ export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 
 /** Extrait les clés d'un objet qui ont une valeur de type V */
 export type KeysOfType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];
+
+// ============================================================================
+// COLLABORATION & PARTAGE DE PROJETS
+// ============================================================================
+
+export type InvitationStatus = 'pending' | 'accepted' | 'rejected' | 'expired';
+export type InvitationPermission = 'view' | 'edit';
+export type NotificationType = 'project_invitation' | 'project_update' | 'system';
+
+export interface ProjectInvitation {
+  id: number;
+  documentId: string;
+  project: Project;
+  sender: User;
+  recipient_email: string;
+  recipient?: User;
+  invitation_code: string;
+  invitation_status: InvitationStatus;
+  permission: InvitationPermission;
+  expires_at: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Notification {
+  id: number;
+  documentId: string;
+  user: User;
+  type: NotificationType;
+  title: string;
+  message: string;
+  read: boolean;
+  data?: {
+    invitation_id?: string;
+    project_id?: string;
+    sender_name?: string;
+    project_title?: string;
+  };
+  action_url?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateProjectInvitationData {
+  project: string; // documentId
+  sender: number; // user id
+  recipient_email: string;
+  permission: InvitationPermission;
+}
+
+export interface ProjectCollaborator {
+  id: number;
+  documentId: string;
+  user: User;
+  project: Project;
+  permission: InvitationPermission;
+  joined_at: string;
+  is_owner: boolean;
+}

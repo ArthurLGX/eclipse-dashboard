@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { createProject, deleteProject } from '@/lib/api';
+import { createProject, deleteProject, fetchProjectTasks } from '@/lib/api';
 import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
@@ -37,6 +37,7 @@ export default function ProjectsPage() {
     isOpen: false,
     project: null,
   });
+  const [taskCounts, setTaskCounts] = useState<Record<string, number>>({});
 
   // Hooks avec cache
   const { data: projectsData, loading: loadingProjects, refetch: refetchProjects } = useProjects(user?.id);
@@ -55,6 +56,32 @@ export default function ProjectsPage() {
       router.replace('/dashboard/projects', { scroll: false });
     }
   }, [searchParams, router]);
+
+  // Charger le nombre de tâches non terminées pour chaque projet
+  useEffect(() => {
+    const loadTaskCounts = async () => {
+      if (!projects.length) return;
+      
+      const counts: Record<string, number> = {};
+      await Promise.all(
+        projects.map(async (project) => {
+          try {
+            const response = await fetchProjectTasks(project.documentId);
+            const tasks = response.data || [];
+            // Compter les tâches non terminées (todo, in_progress)
+            const pendingTasks = tasks.filter(
+              (t: { task_status: string }) => t.task_status !== 'completed' && t.task_status !== 'cancelled'
+            ).length;
+            counts[project.documentId] = pendingTasks;
+          } catch {
+            counts[project.documentId] = 0;
+          }
+        })
+      );
+      setTaskCounts(counts);
+    };
+    loadTaskCounts();
+  }, [projects]);
 
   // Options de filtres par statut
   const statusOptions: FilterOption[] = useMemo(() => [
@@ -103,8 +130,15 @@ export default function ProjectsPage() {
       key: 'title',
       label: 'Projet',
       render: (value, row) => (
-        <div>
-          <h4 className="!text-zinc-200 font-medium">{value as string}</h4>
+        <div className="relative">
+          <div className="flex items-start gap-2">
+            <h4 className="!text-zinc-200 font-medium">{value as string}</h4>
+            {taskCounts[row.documentId] > 0 && (
+              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-amber-500 rounded-full">
+                {taskCounts[row.documentId]}
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2 mt-1">
             <ProjectTypeIcon type={row.type} className="w-4 h-4 !text-zinc-500" />
             <p className="!text-zinc-500 !text-sm">{row.type}</p>
@@ -162,7 +196,7 @@ export default function ProjectsPage() {
       label: 'Actions',
       render: (_, row) => (
         <TableActions
-          onEdit={() => router.push(`/dashboard/projects/${generateSlug(row.title, row.id)}?edit=1`)}
+          onEdit={() => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}?edit=1`)}
           onDelete={() => setDeleteModal({ isOpen: true, project: row })}
         />
       ),
@@ -215,7 +249,7 @@ export default function ProjectsPage() {
     <ProtectedRoute>
       <DashboardPageTemplate<Project>
         title={t('projects')}
-        onRowClick={row => router.push(`/dashboard/projects/${generateSlug(row.title, row.id)}`)}
+        onRowClick={row => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}`)}
         actionButtonLabel={t('new_project')}
         onActionButtonClick={() => setShowNewProjectModal(true)}
         stats={[

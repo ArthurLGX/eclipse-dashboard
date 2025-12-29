@@ -28,6 +28,7 @@ import LanguageToggle from '@/app/components/LanguageToggle';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { BreadCrumb } from '@/app/components/BreadCrumb';
 import { useCurrentUser } from '@/hooks/useApi';
+import NotificationBell from '@/app/components/NotificationBell';
 
 interface SidebarItem {
   id: string;
@@ -238,6 +239,9 @@ export default function DashboardLayout({
   return (
     <ProtectedRoute>
       <TrialExpiredGuard>
+        {/* Notification Bell - Fixed en haut à droite */}
+        <NotificationBell />
+        
         <div className="flex h-screen w-full">
           {/* Sidebar Desktop - Fixed height */}
           <motion.div

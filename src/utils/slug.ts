@@ -12,13 +12,14 @@ export function slugifyText(text: string): string {
 }
 
 /**
- * Génère un slug à partir d'un titre et d'un ID (numérique)
- * Format: titre-slugifie-id
- * Exemple: "Mon Super Projet" avec id 2 → "mon-super-projet-2"
+ * Génère un slug à partir d'un titre et d'un documentId (stable)
+ * Format: titre-slugifie--documentId
+ * Exemple: "Mon Super Projet" avec documentId "abc123" → "mon-super-projet--abc123"
+ * Note: Double tiret pour séparer le titre du documentId
  */
-export function generateSlug(title: string, id: number | string): string {
+export function generateSlug(title: string, documentId: string): string {
   const slugifiedTitle = slugifyText(title);
-  return `${slugifiedTitle}-${id}`;
+  return `${slugifiedTitle}--${documentId}`;
 }
 
 /**
@@ -31,11 +32,11 @@ export function generateClientSlug(name: string): string {
 }
 
 /**
- * Extrait l'ID numérique d'un slug
- * Exemple: "mon-super-projet-2" → "2"
+ * Extrait le documentId d'un slug
+ * Exemple: "mon-super-projet--abc123" → "abc123"
  */
 export function extractIdFromSlug(slug: string): string | null {
-  const match = slug.match(/-(\d+)$/);
-  return match ? match[1] : null;
+  const parts = slug.split('--');
+  return parts.length > 1 ? parts[parts.length - 1] : null;
 }
 

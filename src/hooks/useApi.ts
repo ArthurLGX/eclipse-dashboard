@@ -7,12 +7,14 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   fetchClientsUser,
   fetchProjectsUser,
+  fetchAllUserProjects,
   fetchProspectsUser,
   fetchFacturesUser,
   fetchMentorUsers,
   fetchNewslettersUser,
   fetchClientById,
   fetchProjectById,
+  fetchProjectByDocumentId,
   fetchUnassignedProjects,
   fetchCompanyUser,
   fetchSubscriptionsUser,
@@ -211,6 +213,16 @@ export function useClientBySlug(slug: string | undefined) {
 export function useProjects(userId: number | undefined) {
   return useApiQuery(
     `projects-${userId}`,
+    () => fetchAllUserProjects(userId!),
+    [userId],
+    { enabled: !!userId }
+  );
+}
+
+/** Hook pour récupérer uniquement les projets dont l'utilisateur est propriétaire */
+export function useOwnedProjects(userId: number | undefined) {
+  return useApiQuery(
+    `owned-projects-${userId}`,
     () => fetchProjectsUser(userId!),
     [userId],
     { enabled: !!userId }
@@ -227,6 +239,19 @@ export function useProject(projectId: number | undefined) {
     },
     [projectId],
     { enabled: !!projectId }
+  );
+}
+
+export function useProjectByDocumentId(documentId: string | undefined) {
+  return useApiQuery(
+    `project-doc-${documentId}`,
+    async () => {
+      const response = await fetchProjectByDocumentId(documentId!);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return { data: (response as any).data?.[0] || null };
+    },
+    [documentId],
+    { enabled: !!documentId }
   );
 }
 

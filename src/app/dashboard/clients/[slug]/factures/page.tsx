@@ -53,7 +53,7 @@ export default function ClientFacturesPage() {
     // Strapi peut retourner "client" ou "client_id"
     const clientData = facture.client || facture.client_id;
     const clientSlug = clientData?.name || 'client';
-    return generateSlug(`${facture.reference}-${clientSlug}`, facture.id);
+    return generateSlug(`${facture.reference}-${clientSlug}`, facture.documentId);
   };
 
   const columns: Column<Facture>[] = [
