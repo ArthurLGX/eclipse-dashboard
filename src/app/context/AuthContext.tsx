@@ -3,6 +3,12 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchSubscriptionsUser } from '@/lib/api';
 
+interface SubscriptionData {
+  plan: { name: string };
+  trial: boolean;
+  start_date: string;
+}
+
 interface User {
   id: number;
   username: string;
@@ -81,8 +87,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Vérifier si l'utilisateur a un trial expiré
       try {
-        const subscriptionResponse = await fetchSubscriptionsUser(user.id);
-        if (subscriptionResponse.data && subscriptionResponse.data.length > 0) {
+        const subscriptionResponse = await fetchSubscriptionsUser(user.id) as { data?: SubscriptionData[] };
+        if (subscriptionResponse?.data && subscriptionResponse.data.length > 0) {
           const subscription = subscriptionResponse.data[0];
           const planName = subscription.plan.name;
           const isTrial = subscription.trial;
