@@ -27,6 +27,7 @@ import type { Client, Project } from '@/types';
 
 interface ProjectTableRow {
   id: string;
+  documentId: string;
   title: string;
   description: string;
   project_status: string;
@@ -127,6 +128,7 @@ export default function ClientDetailsPage() {
   const projectsTableData = useMemo(() => {
     return (client?.projects || []).map(p => ({
       id: String(p.id),
+      documentId: p.documentId,
       title: p.title,
       description: p.description,
       project_status: p.project_status,
