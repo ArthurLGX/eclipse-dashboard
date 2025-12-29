@@ -1,11 +1,10 @@
 'use client';
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { updateClientById, assignProjectToClient, updateClientImage, deleteClient } from '@/lib/api';
+import { updateClientById, assignProjectToClient, updateClientImage } from '@/lib/api';
 import { useState, useRef, useMemo } from 'react';
 import DataTable, { Column } from '@/app/components/DataTable';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
-import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import {
   IconMail,
   IconBuilding,
@@ -14,7 +13,6 @@ import {
   IconMapPin,
   IconFileInvoice,
   IconEdit,
-  IconTrash,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
@@ -50,7 +48,6 @@ export default function ClientDetailsPage() {
   
   const [searchValue, setSearchValue] = useState('');
   const [isEditMode, setIsEditMode] = useState(searchParams.get('edit') === '1');
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
