@@ -1,97 +1,58 @@
 'use client';
 
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
 import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
-import useLenis from '@/utils/useLenis';
-import { fetchMentorUsers } from '@/lib/api';
 import { IconBrain, IconUserStar } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-
-interface Mentor {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  projects: {
-    id: number;
-    title: string;
-  }[];
-  users: {
-    id: number;
-    username: string;
-  }[];
-  expertises: {
-    id: number;
-    name: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-}
+import { useMentors } from '@/hooks/useApi';
+import type { Mentor } from '@/types';
 
 export default function MentorsPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
-  useLenis();
 
-  const [mentors, setMentors] = useState<Mentor[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user?.id) return;
+  // Hook avec cache
+  const { data: mentorsData, loading } = useMentors(user?.id);
+  const mentors = (mentorsData as Mentor[]) || [];
 
-      try {
-        setLoading(true);
-        const response = await fetchMentorUsers(user.id);
-        setMentors(response.data || []);
-      } catch (error) {
-        console.error('Error fetching mentors:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [user?.id]);
+  // Filtrage
+  const filteredMentors = useMemo(() => {
+    return mentors.filter(mentor => {
+      const matchesSearch =
+        searchTerm === '' ||
+        mentor.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        mentor.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        mentor.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const filteredMentors = mentors.filter(mentor => {
-    const matchesSearch =
-      searchTerm === '' ||
-      mentor.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      mentor.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      mentor.email.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesSearch;
+    });
+  }, [mentors, searchTerm]);
 
-    return matchesSearch;
-  });
-
-  const columns = [
+  // Colonnes
+  const columns: Column<Mentor>[] = [
     {
       key: 'firstName',
-      label: 'First Name',
-      render: (value: string, row: Mentor) => (
-        <div className="flex items-center gap-2">
-          <h4 className="!text-zinc-200 font-medium">{value}</h4>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="!text-zinc-500 !text-sm">{row.firstName}</p>
+      label: t('first_name') || 'Prénom',
+      render: (value, row) => (
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
+            <span className="!text-indigo-400 font-medium !text-sm">
+              {(value as string)?.charAt(0)?.toUpperCase() || '?'}
+            </span>
           </div>
-        </div>
-      ),
-    },
-    {
-      key: 'lastName',
-      label: 'Last Name',
-      render: (value: string, row: Mentor) => (
-        <div className="flex items-center gap-2">
-          <h4 className="!text-zinc-200 font-medium">{value}</h4>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="!text-zinc-500 !text-sm">{row.lastName}</p>
+          <div>
+            <p className="!text-zinc-200 font-medium">
+              {value as string} {row.lastName}
+            </p>
+            <p className="!text-zinc-500 !text-sm">{row.email}</p>
           </div>
         </div>
       ),
@@ -99,26 +60,35 @@ export default function MentorsPage() {
     {
       key: 'email',
       label: 'Email',
-      render: (value: string, row: Mentor) => (
-        <div className="flex items-center gap-2">
-          <h4 className="!text-zinc-200 font-medium">{value}</h4>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="!text-zinc-500 !text-sm">{row.email}</p>
-          </div>
-        </div>
+      render: (value) => (
+        <p className="!text-zinc-300">{value as string}</p>
       ),
+    },
+    {
+      key: 'projects',
+      label: t('projects'),
+      render: (value) => {
+        const projects = value as { id: number; title: string }[] | undefined;
+        return (
+          <p className="!text-zinc-300">
+            {projects?.length || 0} {t('projects')?.toLowerCase()}
+          </p>
+        );
+      },
     },
     {
       key: 'createdAt',
       label: t('created_at'),
-      render: (value: string, row: Mentor) => (
-        <p className="!text-zinc-500 !text-sm">{row.createdAt}</p>
+      render: (value) => (
+        <p className="!text-zinc-300">
+          {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
+        </p>
       ),
     },
     {
       key: 'actions',
       label: 'Actions',
-      render: (_: string, row: Mentor) => (
+      render: (_, row) => (
         <TableActions
           onEdit={() => console.log('Edit mentor:', row.id)}
           onDelete={() => console.log('Delete mentor:', row.id)}
@@ -142,10 +112,10 @@ export default function MentorsPage() {
             icon: <IconBrain className="w-6 h-6 !text-indigo-400" />,
           },
           {
-            label: t('available'),
+            label: t('available') || 'Disponibles',
             value: mentors.length,
-            colorClass: '!text-green-400',
-            icon: <IconUserStar className="w-6 h-6 !text-green-400" />,
+            colorClass: '!text-emerald-400',
+            icon: <IconUserStar className="w-6 h-6 !text-emerald-400" />,
           },
         ]}
         loading={loading}
@@ -155,7 +125,7 @@ export default function MentorsPage() {
         onSearchChange={setSearchTerm}
         statusValue={''}
         onStatusChange={() => {}}
-        columns={columns as unknown as Column<Mentor>[]}
+        columns={columns}
         data={filteredMentors}
         emptyMessage={t('no_mentor_found')}
       />

@@ -2,7 +2,36 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
     images: {
-        domains: ['localhost', 'api.dashboard.eclipsestudiodev.fr'], // Allow localhost and your API domain
+        remotePatterns: [
+            {
+                protocol: 'http',
+                hostname: 'localhost',
+            },
+            {
+                protocol: 'https',
+                hostname: 'api.dashboard.eclipsestudiodev.fr',
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.google.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 't0.gstatic.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 't1.gstatic.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 't2.gstatic.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 't3.gstatic.com',
+            },
+        ],
     },
     async headers() {
         return [

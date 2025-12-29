@@ -90,7 +90,7 @@ export default function DashboardPageTemplate<T>({
                   </h3>
                   <p
                     className={`!text-3xl font-bold ${
-                      stat.colorClass ? '' : '!text-green-400'
+                      stat.colorClass ? '' : '!text-emerald-400'
                     }`}
                   >
                     {stat.value}

@@ -1,5 +1,5 @@
 'use client';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import Modal from '@/app/components/Modal';
 import FactureApercu from '@/app/components/FactureApercu';
 import { useEffect, useState } from 'react';
@@ -12,7 +12,10 @@ import {
   fetchProjectsUser,
   updateFactureById,
   createFacture,
+  fetchFactureFromId,
 } from '@/lib/api';
+import { clearCache } from '@/hooks/useApi';
+import { extractIdFromSlug } from '@/utils/slug';
 import {
   Facture,
   Company,
@@ -33,11 +36,22 @@ import {
 import { useRef } from 'react';
 
 export default function FacturePage() {
-  const { id, edit } = useParams();
+  const params = useParams();
+  const searchParams = useSearchParams();
   const { showGlobalPopup } = usePopup();
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useLanguage();
   const { user } = useAuth();
+  
+  // Extraire l'ID du slug ou utiliser directement l'ID
+  const rawId = params.id as string;
+  const extractedId = extractIdFromSlug(rawId);
+  const id = extractedId || rawId;
+  const edit = params.edit;
+  
+  // Client prérempli depuis l'URL (quand on vient de la page client)
+  const prefilledClientId = searchParams.get('clientId');
+  const prefilledClientName = searchParams.get('clientName');
 
   const [showPreview, setShowPreview] = useState(false);
   const [facture, setFacture] = useState<Facture | null>(null);
@@ -142,27 +156,45 @@ export default function FacturePage() {
 
   useEffect(() => {
     const fetchFacture = async () => {
-      if (id === t('add')) {
+      // Mode création
+      if (rawId === t('add') || rawId === 'add' || rawId === 'ajouter') {
         setEditing(true);
-        setFacture(emptyFacture);
-        setFormData(emptyFacture);
+        
+        // Préremplir le client si fourni dans l'URL
+        const factureWithClient = {
+          ...emptyFacture,
+          client_id: prefilledClientId ? {
+            ...emptyClient,
+            id: Number(prefilledClientId),
+            name: prefilledClientName || '',
+          } : emptyClient,
+        };
+        
+        setFacture(factureWithClient);
+        setFormData(factureWithClient);
         setInvoiceLines([]);
         setIsLoading(false);
         return;
       }
+      
       try {
-        const facture = await fetchFacturesUserById(
-          user?.id ?? 0,
-          id as string
-        );
-        setFacture(facture.data[0]);
-        setFormData(facture.data[0]);
-        if (edit === '1') {
-          setEditing(true);
+        // Essayer d'abord avec l'ID extrait du slug (numérique)
+        let factureData;
+        if (extractedId) {
+          factureData = await fetchFactureFromId(extractedId);
+        } else {
+          // Sinon, utiliser le documentId (ancien format)
+          factureData = await fetchFacturesUserById(user?.id ?? 0, id as string);
         }
-        setInvoiceLines(facture.data[0]?.lines || []);
-        console.log('facture', facture.data[0]);
-
+        
+        if (factureData.data && factureData.data[0]) {
+          setFacture(factureData.data[0]);
+          setFormData(factureData.data[0]);
+          if (edit === '1') {
+            setEditing(true);
+          }
+          setInvoiceLines(factureData.data[0]?.lines || []);
+        }
         setIsLoading(false);
       } catch (error) {
         console.error('Erreur lors de la récupération de la facture:', error);
@@ -173,17 +205,14 @@ export default function FacturePage() {
     };
 
     const fetchCompany = async () => {
+      if (!user?.id) return;
       try {
-        const companyResponse = await fetchCompanyUser(user?.id ?? 0);
+        const companyResponse = await fetchCompanyUser(user.id);
         if (companyResponse.data && companyResponse.data.length > 0) {
           setCompany(companyResponse.data[0]);
-          console.log('company', companyResponse.data[0]);
         }
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des données de l'entreprise:",
-          error
-        );
+      } catch {
+        // Silencieux - les données de l'entreprise sont optionnelles
       }
     };
 
@@ -202,7 +231,7 @@ export default function FacturePage() {
     fetchFacture();
     fetchCompany();
     fetchClientsAndProjects();
-  }, [id, user?.id]);
+  }, [rawId, id, user?.id, prefilledClientId, prefilledClientName]);
 
   useEffect(() => {
     if (facture) setTvaApplicable(facture.tva_applicable ?? true);
@@ -268,23 +297,23 @@ export default function FacturePage() {
         total: line.total,
       }));
 
-      if (id === t('create')) {
-        // Création d'une nouvelle facture
+      if (id === t('create') || id === 'ajouter') {
+        // Création d'une nouvelle facture - Strapi v5: utiliser documentId pour les relations
         await createFacture({
           reference: formData?.reference ?? '',
-          number: formData?.number ?? 0,
+          number: total, // Montant total calculé automatiquement (avec ou sans TVA)
           date: formData?.date ?? '',
           due_date: formData?.due_date ?? '',
           facture_status: formData?.facture_status ?? '',
           currency: formData?.currency ?? '',
           description: formData?.description ?? '',
           notes: formData?.notes ?? '',
-          client_id: formData?.client_id?.id ?? 0,
-          project: formData?.project?.id ?? 0,
-          user: formData?.user?.id ?? 0,
+          client_id: formData?.client_id?.documentId ?? '',
+          project: formData?.project?.documentId ?? '',
+          user: user?.id ?? 0,
           tva_applicable: tvaApplicable,
           invoice_lines: cleanLines,
-          pdf: facture?.pdf[0]?.url ?? '',
+          pdf: facture?.pdf?.[0]?.url ?? '',
         });
         showGlobalPopup('Facture créée', 'success');
         setEditing(false);
@@ -292,23 +321,37 @@ export default function FacturePage() {
         return;
       }
 
-      await updateFactureById(facture?.documentId ?? '', {
-        reference: formData?.reference ?? '',
-        number: formData?.number ?? 0,
-        date: formData?.date ?? '',
-        due_date: formData?.due_date ?? '',
-        facture_status: formData?.facture_status ?? '',
-        currency: formData?.currency ?? '',
-        description: formData?.description ?? '',
-        notes: formData?.notes ?? '',
-        client_id: formData?.client_id?.id ?? 0,
-        project: formData?.project?.id ?? 0,
-        user: formData?.user?.id ?? 0,
+      // Vérifier que la facture et formData existent avant de mettre à jour
+      if (!facture?.documentId) {
+        showGlobalPopup('Erreur: facture non trouvée', 'error');
+        return;
+      }
+      
+      if (!formData) {
+        showGlobalPopup('Erreur: données du formulaire manquantes', 'error');
+        return;
+      }
+
+      await updateFactureById(facture.documentId, {
+        reference: formData.reference || facture.reference,
+        number: total, // Montant total calculé automatiquement (avec ou sans TVA)
+        date: formData.date || facture.date,
+        due_date: formData.due_date || facture.due_date,
+        facture_status: formData.facture_status || facture.facture_status,
+        currency: formData.currency || facture.currency,
+        description: formData.description ?? '',
+        notes: formData.notes ?? '',
+        // Strapi v5: utiliser documentId pour les relations
+        client_id: formData.client_id?.documentId || '',
+        project: formData.project?.documentId || '',
+        user: user?.id ?? 0,
         tva_applicable: tvaApplicable,
         invoice_lines: cleanLines,
       });
 
-      // Recharge la facture complète avec les relations
+      // Invalider le cache et recharger la facture
+      clearCache('factures');
+      
       const refreshed = await fetchFacturesUserById(
         user?.id ?? 0,
         facture?.documentId ?? ''
@@ -456,9 +499,8 @@ export default function FacturePage() {
                     className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
                   >
                     <option value="draft">{t('draft')}</option>
-                    <option value="pending">{t('pending')}</option>
+                    <option value="sent">{t('sent')}</option>
                     <option value="paid">{t('paid')}</option>
-                    <option value="overdue">{t('overdue')}</option>
                   </select>
                 ) : (
                   <p className="!text-zinc-700 !text-sm font-semibold">
@@ -563,27 +605,37 @@ export default function FacturePage() {
                   {t('project')}
                 </label>
                 {editing ? (
-                  <select
-                    name="project"
-                    value={formData?.project?.id || ''}
-                    onChange={e => {
-                      const project = projects.find(
-                        p => p.id === Number(e.target.value)
-                      );
-                      setFormData({ ...formData!, project: project! });
-                    }}
-                    className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
-                  >
-                    <option value="">{t('select_project')}</option>
-                    {projects.map(project => (
-                      <option key={project.id} value={project.id}>
-                        {project.title}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="flex gap-2">
+                    <select
+                      name="project"
+                      value={formData?.project?.id || ''}
+                      onChange={e => {
+                        const project = projects.find(
+                          p => p.id === Number(e.target.value)
+                        );
+                        setFormData({ ...formData!, project: project! });
+                      }}
+                      className="input border flex-1 rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                    >
+                      <option value="">{t('select_project')}</option>
+                      {projects.map(project => (
+                        <option key={project.id} value={project.id}>
+                          {project.title}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => window.open('/dashboard/projects?new=1', '_blank')}
+                      className="px-3 py-2 bg-emerald-500/10 text-emerald-600 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/20 transition-colors text-sm font-medium whitespace-nowrap"
+                      title={t('create_new_project') || 'Créer un nouveau projet'}
+                    >
+                      + {t('new_project') || 'Nouveau'}
+                    </button>
+                  </div>
                 ) : (
                   <p className="!text-zinc-700 !text-sm font-semibold">
-                    {facture?.project?.title}
+                    {facture?.project?.title || '-'}
                   </p>
                 )}
               </div>

@@ -10,7 +10,7 @@ export const TryBtn = () => {
   const { t } = useLanguage();
   return (
     <motion.div
-      initial={{ opacity: 0, y: '100%' }}
+      initial={{ opacity: 0, y: '5%' }}
       animate={{ opacity: 1, y: 1 }}
       transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
       className="flex md:w-fit w-full flex-row items-center justify-center gap-4"
@@ -25,11 +25,11 @@ export const TryBtn = () => {
             size={30}
             stroke={1}
             className={
-              'bg-zinc-950 rounded-full w-full h-full p-1 !text-zinc-200 group-hover:!text-green-300 group-hover:-rotate-45 group-hover:bg-green-200/20 transition-all ease-in-out duration-300'
+              'bg-zinc-950 rounded-full w-full h-full p-1 !text-zinc-200 group-hover:!text-emerald-300 group-hover:-rotate-45 group-hover:bg-emerald-200/20 transition-all ease-in-out duration-300'
             }
           />
         </span>
-        <span className={'group-hover:!text-green-200 !font-light'}>
+        <span className={'group-hover:!text-emerald-200 !font-light'}>
           {t('try_for_free')}
         </span>
       </Link>

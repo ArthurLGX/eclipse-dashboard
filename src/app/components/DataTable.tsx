@@ -37,7 +37,7 @@ export default function DataTable<T = unknown>({
 
   if (loading) {
     return (
-      <div className={` ${className} !bg-red-500`}>
+      <div className={` ${className}`}>
         <table className="w-full">
           <thead>
             <tr className="border-b border-zinc-800">

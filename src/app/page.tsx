@@ -208,7 +208,7 @@ export default function Home() {
             case 'client':
               return {
                 label: 'Client',
-                className: 'bg-green-100 !text-green-800',
+                className: 'bg-emerald-100 !text-emerald-800',
               };
             case 'prospect':
               return {
@@ -271,7 +271,7 @@ export default function Home() {
             case 'terminé':
               return {
                 label: t('completed'),
-                className: 'bg-green-100 !text-green-800',
+                className: 'bg-emerald-100 !text-emerald-800',
               };
             default:
               return {
@@ -314,7 +314,7 @@ export default function Home() {
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
             {t('clients')}
           </h3>
-          <p className="!text-3xl font-bold !text-green-400">24</p>
+          <p className="!text-3xl font-bold !text-emerald-400">24</p>
         </div>
         <div className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800">
           <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
@@ -337,7 +337,7 @@ export default function Home() {
           </h3>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+              <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
               <p className="!text-zinc-300">{t('new_clients_this_month')}</p>
             </div>
             <div className="flex items-center gap-3">
@@ -358,7 +358,7 @@ export default function Home() {
           <div className="space-y-3">
             <div className="flex justify-between">
               <p className="!text-zinc-400">{t('conversion_rate')}</p>
-              <p className="!text-green-400 font-semibold">67%</p>
+              <p className="!text-emerald-400 font-semibold">67%</p>
             </div>
             <div className="flex justify-between">
               <p className="!text-zinc-400">{t('active_clients')}</p>
@@ -510,13 +510,13 @@ export default function Home() {
           }
         >
           <motion.h1
-            initial={{ opacity: 0, y: '20%' }}
+            initial={{ opacity: 0, y: '5%' }}
             animate={{ opacity: 1, y: 1 }}
             transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.1 }}
             className="flex flex-col items-center justify-center gap-2"
           >
             <motion.span
-              initial={{ opacity: 0, y: '100%' }}
+              initial={{ opacity: 0, y: '5%' }}
               animate={{ opacity: 1, y: 1 }}
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.2 }}
               className="!text-xl !text-zinc-200 font-light"
@@ -525,10 +525,10 @@ export default function Home() {
             </motion.span>
             {t('hero_title_main')}
             <motion.span
-              initial={{ opacity: 0, y: '100%' }}
+              initial={{ opacity: 0, y: '5%' }}
               animate={{ opacity: 1, y: 1 }}
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
-              className="bg-emerald-300/20 backdrop-blur-xs py-2 px-4 rounded-full !text-green-200 font-extrabold shadow-md shadow-emerald-300/20"
+              className="bg-emerald-300/20 backdrop-blur-xs py-2 px-4 rounded-full !text-emerald-200 font-extrabold shadow-md shadow-emerald-300/20"
             >
               {t('hero_subtitle_bottom')}
             </motion.span>
@@ -547,24 +547,24 @@ export default function Home() {
       {/* Section de démonstration du Dashboard */}
       <div id="dashboard-demo" className="w-full py-20 px-4 z-10 relative">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: '5%' }}
+          animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: '5%' }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
           className="max-w-7xl mx-auto"
         >
           {/* Titre de la section */}
           <div className="text-center mb-16">
             <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: '5%' }}
+              animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: '5%' }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-4xl md:text-5xl font-bold text-zinc-200 mb-4"
             >
               {t('dashboard')}
             </motion.h2>
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: '5%' }}
+              animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: '5%' }}
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-xl text-zinc-400 max-w-2xl mx-auto"
             >
@@ -574,9 +574,9 @@ export default function Home() {
 
           {/* Dashboard Demo avec Sidebar */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, y: '5%' }}
             animate={
-              isVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }
+              isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: '5%' }
             }
             transition={{ duration: 0.8, delay: 0.6 }}
             className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden"
@@ -612,7 +612,7 @@ export default function Home() {
                       onClick={() => setActiveSection(item.id)}
                       className={`group w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 mb-1 ${
                         item.active
-                          ? 'bg-green-500/20 !text-green-400 border border-green-500/30'
+                          ? 'bg-emerald-500/20 !text-emerald-400 border border-emerald-500/30'
                           : '!text-zinc-400 hover:bg-zinc-800 hover:!text-zinc-200'
                       }`}
                     >
@@ -643,7 +643,7 @@ export default function Home() {
                       onClick={() => setActiveSection(item.id)}
                       className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 min-w-0 ${
                         item.active
-                          ? '!text-green-400'
+                          ? '!text-emerald-400'
                           : '!text-zinc-400 hover:!text-zinc-200'
                       }`}
                     >
@@ -669,8 +669,8 @@ export default function Home() {
 
           {/* Call-to-action */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: '5%' }}
+            animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: '5%' }}
             transition={{ duration: 0.6, delay: 2.4 }}
             className="text-center mt-12"
           >

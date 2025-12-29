@@ -145,7 +145,7 @@ export default function TableActions({
                 setOpen(false);
                 onProjects();
               }}
-              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 hover:text-green-300 transition-colors"
+              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 hover:text-emerald-300 transition-colors"
               type="button"
             >
               <IconBuilding className="w-4 h-4" />

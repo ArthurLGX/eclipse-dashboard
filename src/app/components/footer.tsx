@@ -4,8 +4,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 export const Footer = () => {
+  const pathname = usePathname();
   const year = new Date().getFullYear();
   const links = [
     { name: 'dashboard', path: '/dashboard' },
@@ -14,6 +16,10 @@ export const Footer = () => {
     { name: 'terms', path: '/terms' },
     { name: 'privacy', path: '/privacy' },
   ];
+
+  // Ne pas afficher le footer sur les pages du dashboard
+  const isDashboard = pathname?.startsWith('/dashboard');
+  if (isDashboard) return null;
 
   return (
     <motion.footer
@@ -53,7 +59,7 @@ export const Footer = () => {
               }}
               key={link.name}
               href={link.path}
-              className={`!text-zinc-200 hover:!text-green-200 transition-all ease-in-out duration-300`}
+              className={`!text-zinc-200 hover:!text-emerald-200 transition-all ease-in-out duration-300`}
             >
               {link.name}
             </motion.a>

@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import useLenis from '@/utils/useLenis';
-import { fetchProjectsUser } from '@/lib/api';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createProject, deleteProject } from '@/lib/api';
 import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
+import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import { FilterOption } from '@/app/components/TableFilters';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -16,82 +16,97 @@ import {
   IconCheck,
   IconProgressCheck,
 } from '@tabler/icons-react';
-import { useRouter } from 'next/navigation';
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  project_status: string;
-  client: {
-    id: string;
-    name: string;
-  };
-  mentor: {
-    id: string;
-    name: string;
-  };
-  type: string;
-  start_date: string;
-  end_date: string;
-  created_at: string;
-  updated_at: string;
-}
+import { useRouter, useSearchParams } from 'next/navigation';
+import NewProjectModal, { CreateProjectData } from './NewProjectModal';
+import { usePopup } from '@/app/context/PopupContext';
+import { generateSlug } from '@/utils/slug';
+import { useProjects, useClients, clearCache } from '@/hooks/useApi';
+import type { Project, Client } from '@/types';
 
 export default function ProjectsPage() {
-  useLenis();
   const { t } = useLanguage();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const { showGlobalPopup } = usePopup();
   const { user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; project: Project | null }>({
+    isOpen: false,
+    project: null,
+  });
+
+  // Hooks avec cache
+  const { data: projectsData, loading: loadingProjects, refetch: refetchProjects } = useProjects(user?.id);
+  const { data: clientsData } = useClients(user?.id);
+
+  const projects = (projectsData as Project[]) || [];
+  const clients = useMemo(() => 
+    ((clientsData as Client[]) || []).map(c => ({ id: c.id, name: c.name })),
+    [clientsData]
+  );
+
+  // Ouvrir le modal si ?new=1 dans l'URL
+  useEffect(() => {
+    if (searchParams.get('new') === '1') {
+      setShowNewProjectModal(true);
+      router.replace('/dashboard/projects', { scroll: false });
+    }
+  }, [searchParams, router]);
+
   // Options de filtres par statut
-  const statusOptions: FilterOption[] = [
+  const statusOptions: FilterOption[] = useMemo(() => [
     {
       value: 'completed',
-      label: 'Terminé',
+      label: t('completed') || 'Terminé',
       count: projects.filter(p => p.project_status === 'completed').length,
     },
     {
       value: 'in_progress',
-      label: 'En cours',
+      label: t('in_progress') || 'En cours',
       count: projects.filter(p => p.project_status === 'in_progress').length,
     },
     {
-      value: 'pending',
-      label: 'En attente',
-      count: projects.filter(p => p.project_status === 'pending').length,
+      value: 'planning',
+      label: t('planning') || 'Planification',
+      count: projects.filter(p => p.project_status === 'planning').length,
     },
-  ];
+  ], [projects, t]);
 
   // Filtrage des données
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch =
-      searchTerm === '' ||
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.client?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.mentor?.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredProjects = useMemo(() => {
+    return projects.filter(project => {
+      const matchesSearch =
+        searchTerm === '' ||
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.client?.name?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === '' || project.project_status === statusFilter;
+      const matchesStatus =
+        statusFilter === '' || project.project_status === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  });
+      return matchesSearch && matchesStatus;
+    });
+  }, [projects, searchTerm, statusFilter]);
 
-  const columns = [
+  // Stats
+  const stats = useMemo(() => ({
+    total: projects.length,
+    completed: projects.filter(p => p.project_status === 'completed').length,
+    inProgress: projects.filter(p => p.project_status === 'in_progress').length,
+  }), [projects]);
+
+  // Colonnes du tableau
+  const columns: Column<Project>[] = [
     {
       key: 'title',
       label: 'Projet',
-      render: (value: unknown, row: Project) => (
+      render: (value, row) => (
         <div>
           <h4 className="!text-zinc-200 font-medium">{value as string}</h4>
           <div className="flex items-center gap-2 mt-1">
-            <ProjectTypeIcon
-              type={row.type}
-              className="w-4 h-4 !text-zinc-500"
-            />
+            <ProjectTypeIcon type={row.type} className="w-4 h-4 !text-zinc-500" />
             <p className="!text-zinc-500 !text-sm">{row.type}</p>
           </div>
         </div>
@@ -100,55 +115,25 @@ export default function ProjectsPage() {
     {
       key: 'client',
       label: 'Client',
-      render: (value: unknown) => (
+      render: (value) => (
         <p className="!text-zinc-300">
-          {(value as { name: string })?.name || 'N/A'}
-        </p>
-      ),
-    },
-    {
-      key: 'mentor',
-      label: 'Mentor',
-      render: (value: unknown) => (
-        <p className="!text-zinc-300">
-          {(value as { name: string })?.name || 'N/A'}
+          {(value as { name?: string })?.name || 'N/A'}
         </p>
       ),
     },
     {
       key: 'project_status',
       label: 'Statut',
-      render: (value: unknown) => {
+      render: (value) => {
         const status = value as string;
-        const getStatusConfig = (status: string) => {
-          switch (status) {
-            case 'completed':
-              return {
-                label: 'Terminé',
-                className: 'bg-green-100 !text-green-800',
-              };
-            case 'in_progress':
-              return {
-                label: 'En cours',
-                className: 'bg-yellow-100 !text-yellow-800',
-              };
-            case 'pending':
-              return {
-                label: 'En attente',
-                className: 'bg-blue-100 !text-blue-800',
-              };
-            default:
-              return {
-                label: status,
-                className: 'bg-gray-100 !text-gray-800',
-              };
-          }
-        };
-        const config = getStatusConfig(status);
+        const config = 
+          status === 'completed' ? { label: t('completed') || 'Terminé', className: 'bg-emerald-100 !text-emerald-800' } :
+          status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'bg-yellow-100 !text-yellow-800' } :
+          status === 'planning' ? { label: t('planning') || 'Planification', className: 'bg-blue-100 !text-blue-800' } :
+          { label: status, className: 'bg-gray-100 !text-gray-800' };
+
         return (
-          <p
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}
-          >
+          <p className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}>
             {config.label}
           </p>
         );
@@ -157,89 +142,129 @@ export default function ProjectsPage() {
     {
       key: 'start_date',
       label: 'Début',
-      render: (value: unknown) => (
+      render: (value) => (
         <p className="!text-zinc-300">
-          {new Date(value as string).toLocaleDateString('fr-FR')}
+          {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
     },
     {
       key: 'end_date',
       label: 'Fin',
-      render: (value: unknown) => (
+      render: (value) => (
         <p className="!text-zinc-300">
-          {new Date(value as string).toLocaleDateString('fr-FR')}
+          {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
     },
     {
       key: 'actions',
       label: 'Actions',
-      render: (_: unknown, row: Project) => (
+      render: (_, row) => (
         <TableActions
-          onEdit={() => console.log('Edit project:', row.id)}
-          onDelete={() => console.log('Delete project:', row.id)}
+          onEdit={() => router.push(`/dashboard/projects/${generateSlug(row.title, row.id)}?edit=1`)}
+          onDelete={() => setDeleteModal({ isOpen: true, project: row })}
         />
       ),
     },
   ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user?.id) return;
+  // Fonction pour créer un nouveau projet
+  const handleCreateProject = async (projectData: CreateProjectData) => {
+    if (!user?.id) {
+      showGlobalPopup('Vous devez être connecté', 'error');
+      throw new Error('Not authenticated');
+    }
 
-      try {
-        setLoading(true);
-        const response = await fetchProjectsUser(user.id);
-        setProjects(response.data || []);
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [user?.id]);
+    try {
+      await createProject({
+        title: projectData.title,
+        description: projectData.description,
+        project_status: projectData.project_status,
+        start_date: projectData.start_date,
+        end_date: projectData.end_date,
+        notes: projectData.notes,
+        type: projectData.type,
+        technologies: projectData.technologies,
+        client: projectData.client as number,
+        user: user.id,
+      });
+
+      showGlobalPopup(t('project_created_success') || 'Projet créé avec succès', 'success');
+
+      // Invalider le cache et recharger
+      clearCache('projects');
+      await refetchProjects();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
+      showGlobalPopup(errorMessage, 'error');
+      throw error;
+    }
+  };
+
+  const handleDeleteProject = async () => {
+    if (!deleteModal.project?.documentId) return;
+    
+    await deleteProject(deleteModal.project.documentId);
+    showGlobalPopup(t('project_deleted_success') || 'Projet supprimé avec succès', 'success');
+    clearCache('projects');
+    await refetchProjects();
+  };
 
   return (
     <ProtectedRoute>
       <DashboardPageTemplate<Project>
         title={t('projects')}
-        onRowClick={row => router.push(`/dashboard/projects/${row.id}`)}
+        onRowClick={row => router.push(`/dashboard/projects/${generateSlug(row.title, row.id)}`)}
         actionButtonLabel={t('new_project')}
-        onActionButtonClick={() => {}}
+        onActionButtonClick={() => setShowNewProjectModal(true)}
         stats={[
           {
             label: t('total_projects'),
-            value: projects.length,
-            colorClass: '!text-green-400',
-            icon: <IconBuilding className="w-6 h-6 !text-green-400" />,
+            value: stats.total,
+            colorClass: '!text-emerald-400',
+            icon: <IconBuilding className="w-6 h-6 !text-emerald-400" />,
           },
           {
             label: t('completed_projects'),
-            value: projects.filter(p => p.project_status === 'completed')
-              .length,
+            value: stats.completed,
             colorClass: '!text-blue-400',
             icon: <IconCheck className="w-6 h-6 !text-blue-400" />,
           },
           {
             label: t('in_progress_projects'),
-            value: projects.filter(p => p.project_status === 'in_progress')
-              .length,
+            value: stats.inProgress,
             colorClass: '!text-yellow-400',
             icon: <IconProgressCheck className="w-6 h-6 !text-yellow-400" />,
           },
         ]}
-        loading={loading}
+        loading={loadingProjects}
         filterOptions={statusOptions}
         searchPlaceholder={t('search_project_placeholder')}
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
         statusValue={statusFilter}
         onStatusChange={setStatusFilter}
-        columns={columns as unknown as Column<Project>[]}
+        columns={columns}
         data={filteredProjects}
         emptyMessage={t('no_project_found')}
+      />
+
+      <NewProjectModal
+        isOpen={showNewProjectModal}
+        onClose={() => setShowNewProjectModal(false)}
+        onAdd={handleCreateProject}
+        clients={clients}
+        t={t}
+      />
+
+      <DeleteConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, project: null })}
+        onConfirm={handleDeleteProject}
+        title={t('delete_project') || 'Supprimer le projet'}
+        itemName={deleteModal.project?.title || ''}
+        itemType="project"
       />
     </ProtectedRoute>
   );

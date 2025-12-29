@@ -1,0 +1,412 @@
+/**
+ * @file types/index.ts
+ * @description Types centralisés pour toute l'application
+ */
+
+// ============================================================================
+// TYPES DE BASE (FICHIERS / MÉDIAS)
+// ============================================================================
+
+export interface PdfFile {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number | null;
+  height: number | null;
+  formats: string | null;
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: string | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export interface ImageFile {
+  id: number;
+  url: string;
+  alternativeText?: string;
+  width?: number;
+  height?: number;
+}
+
+// ============================================================================
+// ENUMS / TYPES LITTÉRAUX
+// ============================================================================
+
+export type ProjectStatus = 'planning' | 'in_progress' | 'completed';
+export type ProjectType = 'development' | 'design' | 'maintenance';
+export type FactureStatus = 'draft' | 'sent' | 'paid';
+export type Currency = 'EUR' | 'USD' | 'GBP';
+export type ProcessStatus = 'client' | 'prospect';
+export type ProspectStatus = 'prospect' | 'answer' | 'to_be_contacted' | 'contacted';
+export type SubscriptionStatus = 'active' | 'canceled' | 'expired' | 'trial';
+export type BillingType = 'monthly' | 'yearly';
+
+// ============================================================================
+// ENTITÉS PRINCIPALES
+// ============================================================================
+
+export interface Role {
+  id: number;
+  documentId: string;
+  name: string;
+  description: string;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export interface Technology {
+  id: number;
+  documentId: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export interface User {
+  id: number;
+  documentId: string;
+  username: string;
+  email: string;
+  provider: string;
+  confirmed: boolean;
+  blocked: boolean;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  max_ca: number;
+  profile_picture?: ImageFile;
+  role?: Role;
+}
+
+export interface Client {
+  id: number;
+  documentId: string;
+  name: string;
+  email: string;
+  number: string;
+  enterprise: string;
+  adress: string | null;
+  website: string | null;
+  processStatus: string;
+  client_id?: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+  isActive: boolean;
+  image?: ImageFile;
+  projects?: Project[];
+  factures?: Facture[];
+}
+
+export interface Project {
+  id: number;
+  documentId: string;
+  title: string;
+  description: string;
+  project_status: ProjectStatus;
+  start_date: string;
+  end_date: string | null;
+  notes: string | null;
+  type: ProjectType;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+  client?: Client | null;
+  user?: User;
+  technologies?: Technology[];
+}
+
+export interface Prospect {
+  id: number;
+  documentId: string;
+  title: string;
+  description: string;
+  prospect_status: ProspectStatus;
+  contacted_date: string;
+  notes: string;
+  email: string;
+  website: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+  image?: string;
+}
+
+export interface InvoiceLine {
+  id?: number;
+  description: string;
+  quantity: number;
+  unit_price: number;
+  total: number;
+}
+
+export interface Facture {
+  id: number;
+  documentId: string;
+  reference: string;
+  date: string;
+  due_date: string;
+  facture_status: FactureStatus;
+  number: number;
+  currency: Currency;
+  description: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+  // Le client peut être retourné sous "client" ou "client_id" selon la config Strapi
+  client?: Client;
+  client_id?: Client;
+  project?: Project;
+  pdf?: PdfFile[];
+  user?: User;
+  invoice_lines?: InvoiceLine[];
+  tva_applicable: boolean;
+  total_ht?: number;
+  total_ttc?: number;
+}
+
+export interface Company {
+  id: number;
+  documentId: string;
+  name: string;
+  email: string;
+  description: string;
+  siret: string;
+  siren: string;
+  vat: string;
+  logo?: string;
+  phoneNumber: string;
+  location: string;
+  domaine: string;
+  website: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Mentor {
+  id: number;
+  documentId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  projects?: Project[];
+  users?: User[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Newsletter {
+  id: number;
+  documentId: string;
+  title: string;
+  content: string;
+  author?: User;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+}
+
+export interface Plan {
+  id: number;
+  documentId: string;
+  name: string;
+  description: string;
+  price_monthly: number;
+  price_yearly: number;
+  features: string[];
+  max_clients: number;
+  max_projects: number;
+  max_prospects: number;
+  max_mentors: number;
+  max_newsletters: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Subscription {
+  id: number;
+  documentId: string;
+  subscription_status: SubscriptionStatus;
+  start_date: string;
+  end_date: string;
+  billing_type: BillingType;
+  auto_renew: boolean;
+  trial: boolean;
+  plan?: Plan;
+  users?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ============================================================================
+// TYPES POUR LES RÉPONSES API
+// ============================================================================
+
+export interface ApiResponse<T> {
+  data: T;
+  meta?: {
+    pagination?: PaginationMeta;
+  };
+}
+
+export interface PaginationMeta {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+}
+
+export interface FacturesResponse {
+  data: Facture[];
+  meta: {
+    pagination: PaginationMeta;
+  };
+}
+
+// ============================================================================
+// TYPES POUR LES FORMULAIRES (CRÉATION / MISE À JOUR)
+// ============================================================================
+
+export interface CreateClientData {
+  name: string;
+  email: string;
+  number?: string;
+  enterprise?: string;
+  adress?: string;
+  website?: string;
+  processStatus: ProcessStatus;
+  isActive?: boolean;
+}
+
+export interface UpdateClientData extends Partial<CreateClientData> {
+  id?: number;
+}
+
+export interface CreateProjectData {
+  title: string;
+  description: string;
+  project_status: ProjectStatus;
+  start_date: string;
+  end_date: string;
+  notes?: string;
+  type: ProjectType;
+  technologies?: string[];
+  client?: number;
+  user?: number;
+}
+
+export interface UpdateProjectData extends Partial<CreateProjectData> {
+  id?: number;
+}
+
+export interface CreateProspectData {
+  title: string;
+  email: string;
+  phone?: string;
+  description?: string;
+  prospect_status: ProspectStatus;
+  website?: string;
+  notes?: string;
+}
+
+export interface CreateFactureData {
+  reference: string;
+  date: string;
+  due_date: string;
+  facture_status: FactureStatus;
+  number: number;
+  currency: Currency;
+  description?: string;
+  notes?: string;
+  client_id: number;
+  project?: number;
+  user: number;
+  tva_applicable: boolean;
+  invoice_lines: InvoiceLine[];
+}
+
+export interface UpdateFactureData extends Partial<CreateFactureData> {
+  id?: number;
+}
+
+// ============================================================================
+// TYPES POUR LE DASHBOARD
+// ============================================================================
+
+export interface DashboardStats {
+  totalClients: number;
+  activeClients: number;
+  newClientsThisMonth: number;
+  totalProjects: number;
+  completedProjects: number;
+  inProgressProjects: number;
+  totalProspects: number;
+  totalFactures: number;
+  totalRevenue: number;
+  pendingRevenue: number;
+}
+
+// ============================================================================
+// TYPES POUR LES LISTES SIMPLIFIÉES
+// ============================================================================
+
+export interface ClientListItem {
+  id: number;
+  documentId: string;
+  name: string;
+  email: string;
+  enterprise: string;
+  processStatus: ProcessStatus;
+  isActive: boolean;
+  createdAt: string;
+  projectsCount?: number;
+  facturesCount?: number;
+}
+
+export interface ProjectListItem {
+  id: number;
+  documentId: string;
+  title: string;
+  project_status: ProjectStatus;
+  type: ProjectType;
+  client?: { id: number; name: string };
+  start_date: string;
+  end_date: string | null;
+}
+
+export interface FactureListItem {
+  id: number;
+  documentId: string;
+  reference: string;
+  facture_status: FactureStatus;
+  number: number;
+  date: string;
+  due_date: string;
+  client?: { id: number; name: string };
+}
+
+// ============================================================================
+// TYPES UTILITAIRES
+// ============================================================================
+
+/** Rend certaines propriétés optionnelles */
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+/** Rend certaines propriétés requises */
+export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+
+/** Extrait les clés d'un objet qui ont une valeur de type V */
+export type KeysOfType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];

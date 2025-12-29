@@ -1,40 +1,170 @@
-import axios from 'axios';
-
 /**
  * @file api.ts
+ * @description API centralisée pour les requêtes Strapi
  */
 
-/**
- * @description This file contains functions to fetch data from the Strapi API.
- */
+import type { Client } from '@/types';
 
-// lib/api.ts
+// ============================================================================
+// CONFIGURATION & HELPERS
+// ============================================================================
 
-async function secureFetch(endpoint: string, options: RequestInit = {}) {
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/${endpoint}`,
-    {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        ...(options.headers || {}),
-      },
-    }
-  );
+/** Récupère le token d'authentification */
+const getToken = (): string | null => {
+  return typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+};
+
+/** Headers par défaut avec authentification */
+const getHeaders = (customHeaders?: HeadersInit): HeadersInit => {
+  const token = getToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...customHeaders,
+  };
+};
+
+/** Wrapper générique pour les requêtes fetch */
+async function apiRequest<T = unknown>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const url = endpoint.startsWith('http') 
+    ? endpoint 
+    : `${API_URL}/api/${endpoint}`;
+
+  const res = await fetch(url, {
+    ...options,
+    headers: getHeaders(options.headers as HeadersInit),
+  });
 
   if (!res.ok) {
-    console.error(res);
-    throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+    const errorData = await res.json().catch(() => null);
+    const errorMessage = errorData?.error?.message || `Erreur ${res.status}: ${res.statusText}`;
+    throw new Error(errorMessage);
   }
 
-  return res.json();
+  // Gérer les réponses vides (204 No Content) typiques des suppressions
+  const contentType = res.headers.get('content-type');
+  if (res.status === 204 || !contentType?.includes('application/json')) {
+    return null as T;
+  }
+
+  // Vérifier si le body est vide avant de parser
+  const text = await res.text();
+  if (!text) {
+    return null as T;
+  }
+
+  return JSON.parse(text);
 }
 
-//CLIENTS
+/** GET request */
+const get = <T = unknown>(endpoint: string): Promise<T> => 
+  apiRequest<T>(endpoint);
+
+/** POST request */
+const post = <T = unknown>(endpoint: string, data: unknown): Promise<T> =>
+  apiRequest<T>(endpoint, {
+    method: 'POST',
+    body: JSON.stringify({ data }),
+  });
+
+/** PUT request */
+const put = <T = unknown>(endpoint: string, data: unknown): Promise<T> =>
+  apiRequest<T>(endpoint, {
+    method: 'PUT',
+    body: JSON.stringify({ data }),
+  });
+
+/** DELETE request */
+const del = <T = unknown>(endpoint: string): Promise<T> =>
+  apiRequest<T>(endpoint, { method: 'DELETE' });
+
+// ============================================================================
+// TYPES COMMUNS
+// ============================================================================
+
+interface ApiResponse<T> {
+  data: T;
+  meta?: {
+    pagination?: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
+
+// ============================================================================
+// FONCTIONS UTILITAIRES FACTORISÉES
+// ============================================================================
+
+/** Récupère le nombre d'éléments pour une entité donnée */
+export async function fetchCount(
+  entity: 'clients' | 'projects' | 'prospects' | 'mentors' | 'newsletters' | 'factures',
+  userId: number,
+  filterField: string = 'users'
+): Promise<number> {
+  const res = await get<ApiResponse<unknown[]>>(
+    `${entity}?filters[${filterField}][$eq]=${userId}`
+  );
+  return res.data?.length || 0;
+}
+
+/** Récupère une liste d'entités pour un utilisateur */
+export async function fetchUserEntities<T>(
+  entity: string,
+  userId: number,
+  filterField: string = 'users',
+  additionalFilters: string = ''
+): Promise<ApiResponse<T[]>> {
+  return get<ApiResponse<T[]>>(
+    `${entity}?populate=*&filters[${filterField}][$eq]=${userId}${additionalFilters}`
+  );
+}
+
+/** Récupère une entité par ID */
+export async function fetchEntityById<T>(
+  entity: string,
+  id: number | string,
+  useDocumentId: boolean = false
+): Promise<ApiResponse<T[]>> {
+  const filterKey = useDocumentId ? 'documentId' : 'id';
+  return get<ApiResponse<T[]>>(`${entity}?populate=*&filters[${filterKey}][$eq]=${id}`);
+}
+
+// ============================================================================
+// CLIENTS
+// ============================================================================
+
+export async function checkClientDuplicate(
+  userId: number,
+  name: string,
+  email: string
+): Promise<{ isDuplicate: boolean; duplicateField: 'name' | 'email' | null }> {
+  // Vérifier le nom
+  const nameCheck = await get<ApiResponse<unknown[]>>(
+    `clients?filters[users][$eq]=${userId}&filters[name][$eqi]=${encodeURIComponent(name)}`
+  );
+  if (nameCheck.data?.length > 0) {
+    return { isDuplicate: true, duplicateField: 'name' };
+  }
+
+  // Vérifier l'email
+  const emailCheck = await get<ApiResponse<unknown[]>>(
+    `clients?filters[users][$eq]=${userId}&filters[email][$eqi]=${encodeURIComponent(email)}`
+  );
+  if (emailCheck.data?.length > 0) {
+    return { isDuplicate: true, duplicateField: 'email' };
+  }
+
+  return { isDuplicate: false, duplicateField: null };
+}
+
 export async function addClientUser(
   userId: number,
   data: {
@@ -45,46 +175,40 @@ export async function addClientUser(
     adress: string;
     website: string;
     processStatus: string;
-  }
+    isActive?: boolean;
+  },
+  skipDuplicateCheck = false
 ) {
-  return secureFetch('clients', {
-    method: 'POST',
-    body: JSON.stringify({
-      data: {
-        ...data,
-        users: userId,
-      },
-    }),
-  });
-}
-export async function fetchClientsUser(userId: number) {
-  return secureFetch(`clients?populate=*&filters[users][$eq]=${userId}`);
+  if (!skipDuplicateCheck) {
+    const duplicateCheck = await checkClientDuplicate(userId, data.name, data.email);
+    if (duplicateCheck.isDuplicate) {
+      const field = duplicateCheck.duplicateField === 'name' ? 'nom' : 'email';
+      throw new Error(`Un client avec ce ${field} existe déjà`);
+    }
+  }
+
+  return post('clients', { ...data, users: userId });
 }
 
-export async function fetchNumberOfClientsUser(userId: number) {
-  const res = await secureFetch(
-    `clients?populate=*&filters[users][$eq]=${userId}`
-  );
-  return res.data.length;
-}
+export const fetchClientsUser = (userId: number) =>
+  fetchUserEntities('clients', userId);
 
-export async function fetchProjectsUser(userId: number) {
-  return secureFetch(`projects?populate=*&filters[user][$eq]=${userId}`);
-}
+export const fetchNumberOfClientsUser = (userId: number) =>
+  fetchCount('clients', userId);
 
-export async function fetchNumberOfProjectsUser(userId: number) {
-  const res = await secureFetch(
-    `projects?populate=*&filters[user][$eq]=${userId}`
-  );
-  return res.data.length;
+export const fetchClientById = (id: number) =>
+  fetchEntityById('clients', id);
 
-  //CLIENTS
-}
+export const fetchClientByDocumentId = (documentId: string) =>
+  fetchEntityById('clients', documentId, true);
 
-export async function fetchClientById(id: number) {
-  console.log('id', id);
-  return secureFetch(`clients?populate=*&filters[id][$eq]=${id}`);
-}
+/** Recherche un client par son nom (slug) */
+export const fetchClientBySlug = async (slug: string): Promise<ApiResponse<Client[]>> => {
+  // Convertit le slug en pattern de recherche (remplace les tirets par des espaces pour la recherche)
+  // On fait une recherche insensible à la casse
+  const searchTerm = slug.replace(/-/g, ' ');
+  return get<ApiResponse<Client[]>>(`clients?populate=*&filters[name][$containsi]=${encodeURIComponent(searchTerm)}`);
+};
 
 export async function updateClientById(
   clientId: string,
@@ -98,88 +222,163 @@ export async function updateClientById(
     processStatus: string;
   }
 ) {
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-  const res = await axios.put(
-    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/clients/${clientId}`,
-    { data },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    }
+  return put(`clients/${clientId}`, data);
+}
+
+/** Supprime un client par son documentId */
+export const deleteClient = (documentId: string) =>
+  del(`clients/${documentId}`);
+
+// ============================================================================
+// PROJECTS
+// ============================================================================
+
+export const fetchProjectsUser = (userId: number) =>
+  fetchUserEntities('projects', userId, 'user');
+
+export const fetchProjectById = (id: number) =>
+  fetchEntityById('projects', id);
+
+export const fetchNumberOfProjectsUser = (userId: number) =>
+  fetchCount('projects', userId, 'user');
+
+export const fetchUnassignedProjects = (userId: number) =>
+  get(`projects?populate=*&filters[user][$eq]=${userId}&filters[client][$null]=true`);
+
+export async function updateProject(
+  projectDocumentId: string,
+  data: {
+    title?: string;
+    description?: string;
+    notes?: string;
+    project_status?: string;
+    start_date?: string;
+    end_date?: string;
+    type?: string;
+    client?: string | null;
+  }
+) {
+  return put(`projects/${projectDocumentId}`, data);
+}
+
+export async function checkProjectDuplicateForClient(
+  clientId: number,
+  title: string
+): Promise<{ isDuplicate: boolean; existingProject: { id: number; title: string } | null }> {
+  const check = await get<ApiResponse<{ id: number; title: string }[]>>(
+    `projects?filters[client][$eq]=${clientId}&filters[title][$eqi]=${encodeURIComponent(title)}`
   );
-  return res.data;
+  if (check.data?.length > 0) {
+    return {
+      isDuplicate: true,
+      existingProject: { id: check.data[0].id, title: check.data[0].title },
+    };
+  }
+  return { isDuplicate: false, existingProject: null };
 }
 
-export async function fetchProspectsUser(userId: number) {
-  return secureFetch(`prospects?populate=*&filters[users][$eq]=${userId}`);
-}
-
-export async function fetchProspectById(id: string) {
-  const intId = parseInt(id, 10); // Convertir l'ID en entier
-  return secureFetch(`prospects/${intId}?populate=*`);
-}
-
-export async function fetchNumberOfProspectsUser(userId: number) {
+export async function checkProjectAlreadyAssigned(
+  projectId: number,
+  clientId: number
+): Promise<boolean> {
   try {
-    const res = await secureFetch(
-      `prospects?populate=*&filters[users][$eq]=${userId}`
+    const project = await get<{ data: { client?: { id: number } } }>(
+      `projects/${projectId}?populate=client`
     );
-    return res.data.length;
-  } catch (error) {
-    console.error('Error fetching number of prospects:', error);
-    throw new Error('Erreur lors de la récupération du nombre de prospects');
+    return project.data?.client?.id === clientId;
+  } catch {
+    return false;
   }
 }
 
-export async function fetchLogin(username: string, password: string) {
-  const res = await axios.post(
-    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local`,
-    {
-      identifier: username,
-      password: password,
+export async function createProject(
+  data: {
+    title: string;
+    description: string;
+    project_status: string;
+    start_date: string;
+    end_date: string;
+    notes?: string;
+    type: string;
+    technologies?: string[];
+    client?: number;
+    user?: number;
+  },
+  skipDuplicateCheck = false
+) {
+  if (!skipDuplicateCheck && data.client) {
+    const duplicateCheck = await checkProjectDuplicateForClient(data.client, data.title);
+    if (duplicateCheck.isDuplicate) {
+      throw new Error(`Un projet "${duplicateCheck.existingProject?.title}" existe déjà pour ce client`);
     }
-  );
-
-  if (res.status !== 200) {
-    if (res.data.error?.message === 'Invalid identifier or password') {
-      throw new Error('Identifiants invalides');
-    } else {
-      throw new Error('Erreur lors de la connexion');
-    }
   }
 
-  return res.data;
+  const { technologies, ...projectData } = data;
+  const payload = {
+    ...projectData,
+    notes: technologies?.length
+      ? `${projectData.notes || ''}\n\nTechnologies: ${technologies.join(', ')}`.trim()
+      : projectData.notes,
+  };
+
+  return post('projects', payload);
 }
 
-export async function fetchLogout() {
-  return secureFetch('auth/logout');
-}
-
-export async function fetchUserById(userId: number) {
-  try {
-    return secureFetch(`users/${userId}?populate=*`);
-  } catch (error) {
-    console.error('Failed to fetch user by ID:', error);
-    throw error; // Re-throw the error for further handling
+export async function assignProjectToClient(
+  projectId: number,
+  clientId: number
+): Promise<{ success: boolean; message: string }> {
+  const isAlreadyAssigned = await checkProjectAlreadyAssigned(projectId, clientId);
+  if (isAlreadyAssigned) {
+    throw new Error('Ce projet est déjà assigné à ce client');
   }
+
+  await put(`projects/${projectId}`, { client: clientId });
+  return { success: true, message: 'Projet assigné avec succès' };
 }
 
-export async function fetchPlans() {
-  return secureFetch('plans?populate=*');
-}
+/** Supprime un projet par son documentId */
+export const deleteProject = (documentId: string) =>
+  del(`projects/${documentId}`);
 
-export async function fetchFacturesUser(userId: number) {
-  return secureFetch(`factures?populate=*&filters[user][$eq]=${userId}`);
-}
+// ============================================================================
+// PROSPECTS
+// ============================================================================
 
-export async function fetchFacturesUserById(userId: number, factureId: string) {
-  return secureFetch(
-    `factures?populate=*&filters[user][$eq]=${userId}&filters[documentId][$eq]=${factureId}`
-  );
-}
+export const fetchProspectsUser = (userId: number) =>
+  fetchUserEntities('prospects', userId);
+
+export const fetchProspectById = (id: string) =>
+  get(`prospects/${parseInt(id, 10)}?populate=*`);
+
+export const fetchNumberOfProspectsUser = (userId: number) =>
+  fetchCount('prospects', userId);
+
+/** Supprime un prospect par son documentId */
+export const deleteProspect = (documentId: string) =>
+  del(`prospects/${documentId}`);
+
+// ============================================================================
+// FACTURES
+// ============================================================================
+
+export const fetchFacturesUser = (userId: number) =>
+  fetchUserEntities('factures', userId, 'user');
+
+export const fetchFacturesByClient = (userId: number, clientId: number) =>
+  get(`factures?populate=*&filters[user][$eq]=${userId}&filters[client][id][$eq]=${clientId}`);
+
+export const fetchFacturesByProject = (userId: number, projectId: number) =>
+  get(`factures?populate=*&filters[user][$eq]=${userId}&filters[project][id][$eq]=${projectId}`);
+
+export const fetchFacturesUserById = (userId: number, factureId: string) =>
+  get(`factures?populate=*&filters[user][$eq]=${userId}&filters[documentId][$eq]=${factureId}`);
+
+export const fetchFactureFromId = (id: string) =>
+  fetchEntityById('factures', id);
+
+export const fetchFactureFromDocumentId = (documentId: string) =>
+  fetchEntityById('factures', documentId, true);
 
 export async function createFacture(data: {
   reference: string;
@@ -191,8 +390,8 @@ export async function createFacture(data: {
   description: string;
   notes: string;
   pdf: string;
-  client_id: number;
-  project?: number;
+  client_id: string; // documentId du client
+  project?: string; // documentId du projet
   user: number;
   tva_applicable: boolean;
   invoice_lines: {
@@ -202,22 +401,35 @@ export async function createFacture(data: {
     total: number;
   }[];
 }) {
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-  const res = await axios.post(
-    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/factures`,
-    { data },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    }
-  );
-  if (res.status !== 200) {
-    throw new Error('Erreur lors de la création de la facture');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const payload: any = {
+    reference: data.reference,
+    number: data.number,
+    date: data.date,
+    due_date: data.due_date,
+    facture_status: data.facture_status,
+    currency: data.currency,
+    description: data.description,
+    notes: data.notes,
+    tva_applicable: data.tva_applicable,
+    invoice_lines: data.invoice_lines,
+  };
+
+  // Relations Strapi v5 - utiliser documentId
+  if (data.client_id) {
+    payload.client_id = data.client_id;
   }
-  return res.data;
+  if (data.project) {
+    payload.project = data.project;
+  }
+  if (data.user) {
+    payload.user = data.user;
+  }
+  if (data.pdf) {
+    payload.pdf = data.pdf;
+  }
+
+  return post('factures', payload);
 }
 
 export async function updateFactureById(
@@ -232,8 +444,8 @@ export async function updateFactureById(
     description: string;
     notes: string;
     pdf?: string;
-    client_id: number;
-    project?: number;
+    client_id: string; // documentId du client
+    project?: string; // documentId du projet
     user: number;
     tva_applicable: boolean;
     invoice_lines: {
@@ -244,64 +456,112 @@ export async function updateFactureById(
     }[];
   }
 ) {
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-  const res = await axios.put(
-    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/factures/${factureId}`,
-    { data },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const payload: any = {
+    reference: data.reference,
+    number: data.number,
+    date: data.date,
+    due_date: data.due_date,
+    facture_status: data.facture_status,
+    currency: data.currency,
+    description: data.description,
+    notes: data.notes,
+    tva_applicable: data.tva_applicable,
+    invoice_lines: data.invoice_lines,
+  };
+
+  // Relations Strapi - le champ s'appelle client_id dans votre schéma
+  if (data.client_id) {
+    payload.client_id = data.client_id;
+  }
+  if (data.project) {
+    payload.project = data.project;
+  }
+  if (data.user) {
+    payload.user = data.user;
+  }
+  if (data.pdf) {
+    payload.pdf = data.pdf;
+  }
+
+  console.log('=== UPDATE FACTURE ===');
+  console.log('URL:', `factures/${factureId}`);
+  console.log('Payload envoyé:', JSON.stringify(payload, null, 2));
+  
+  const result = await put(`factures/${factureId}`, payload);
+  console.log('Réponse Strapi:', result);
+  return result;
+}
+
+/** Supprime une facture par son documentId */
+export const deleteFacture = (documentId: string) =>
+  del(`factures/${documentId}`);
+
+// ============================================================================
+// MENTORS
+// ============================================================================
+
+export const fetchMentorUsers = (userId: number) =>
+  fetchUserEntities('mentors', userId);
+
+export const fetchNumberOfMentorsUser = (userId: number) =>
+  fetchCount('mentors', userId);
+
+/** Supprime un mentor par son documentId */
+export const deleteMentor = (documentId: string) =>
+  del(`mentors/${documentId}`);
+
+// ============================================================================
+// NEWSLETTERS
+// ============================================================================
+
+export const fetchNewslettersUser = (userId: number) =>
+  fetchUserEntities('newsletters', userId, 'author');
+
+export const fetchNumberOfNewslettersUser = (userId: number) =>
+  fetchCount('newsletters', userId, 'author');
+
+// ============================================================================
+// AUTH & USER
+// ============================================================================
+
+export async function fetchLogin(username: string, password: string) {
+  const res = await fetch(`${API_URL}/api/auth/local`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ identifier: username, password }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    if (data?.error?.message === 'Invalid identifier or password') {
+      throw new Error('Identifiants invalides');
     }
-  );
-  if (res.status !== 200) {
-    throw new Error('Erreur lors de la mise à jour de la facture');
+    throw new Error('Erreur lors de la connexion');
   }
-  return res.data;
+
+  return res.json();
 }
 
-export async function fetchMentorUsers(userId: number) {
-  try {
-    return secureFetch(`mentors?populate=*&filters[users][$eq]=${userId}`);
-  } catch (error) {
-    console.error('Error fetching mentors:', error);
-    throw new Error('Erreur lors de la récupération des mentors');
-  }
-}
+export const fetchLogout = () => get('auth/logout');
 
-export async function fetchNumberOfMentorsUser(userId: number) {
-  try {
-    const res = await secureFetch(
-      `mentors?populate=*&filters[users][$eq]=${userId}`
-    );
-    return res.data.length;
-  } catch (error) {
-    console.error('Error fetching number of mentors:', error);
-    throw new Error('Erreur lors de la récupération du nombre de mentors');
-  }
-}
+export const fetchUserById = (userId: number) =>
+  get(`users/${userId}?populate=*`);
 
-export async function fetchNumberOfNewslettersUser(userId: number) {
-  try {
-    const res = await secureFetch(
-      `newsletters?populate=*&filters[author][$eq]=${userId}`
-    );
-    return res.data.length;
-  } catch (error) {
-    console.error('Error fetching number of newsletters:', error);
-    throw new Error('Erreur lors de la récupération du nombre de newsletters');
+export async function updateUser(
+  userId: number,
+  data: {
+    username?: string;
+    email?: string;
+    profile_picture?: { url: string };
+    plan?: number;
+    billing_type?: string;
   }
-}
-
-export async function fetchNewslettersUser(userId: number) {
-  try {
-    return secureFetch(`newsletters?populate=*&filters[author][$eq]=${userId}`);
-  } catch (error) {
-    console.error('Error fetching newsletters:', error);
-    throw new Error('Erreur lors de la récupération des newsletters');
-  }
+) {
+  return apiRequest(`users/${userId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
 }
 
 export async function fetchCreateAccount(
@@ -309,105 +569,50 @@ export async function fetchCreateAccount(
   email: string,
   password: string
 ) {
-  const res = await axios.post(
-    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local/register`,
-    {
-      username: username,
-      email: email,
-      password: password,
+  const res = await fetch(`${API_URL}/api/auth/local/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, email, password }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    if (data?.error?.message === 'Email or Username are already taken') {
+      throw new Error('Username or Email already exists');
     }
-  );
-  if (res.status !== 200) {
-    switch (res.data.error.message) {
-      case 'Email or Username are already taken':
-        throw new Error('Username or Email already exists');
-      default:
-        throw new Error('An error occurred during authentication');
-    }
+    throw new Error('An error occurred during authentication');
   }
-  return res.data;
+
+  return res.json();
 }
 
-export async function updateUser(
-  userId: number,
-  data: {
-    username?: string;
-    email?: string;
-    profile_picture?: {
-      url: string;
-    };
-    plan?: number;
-    billing_type?: string;
-  }
-) {
-  // Vérifier si localStorage est disponible (côté client)
-  let token = null;
-  if (typeof window !== 'undefined') {
-    token = localStorage.getItem('token');
-  }
+// ============================================================================
+// PLANS & SUBSCRIPTIONS
+// ============================================================================
 
-  const res = await axios.put(
-    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${userId}`,
-    data,
-    {
-      headers: {
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-    }
-  );
-  if (res.status !== 200) {
-    throw new Error("Erreur lors de la mise à jour de l'utilisateur");
-  }
-  return res.data;
-}
+export const fetchPlans = () => get('plans?populate=*');
 
-//SUBSCRIPTIONS
+export const fetchSubscriptionsUser = (userId: number) =>
+  fetchUserEntities('subscriptions', userId);
 
 export async function cancelSubscription(userId: number) {
-  try {
-    const existingSubscriptions = await fetchSubscriptionsUser(userId);
-    if (existingSubscriptions.data && existingSubscriptions.data.length > 0) {
-      // Mettre à jour la subscription existante
-      const existingSubscription = existingSubscriptions.data[0];
-
-      console.log(
-        'Updating subscription with documentId:',
-        existingSubscription.documentId
-      );
-
-      const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions/${existingSubscription.documentId}`,
-        {
-          data: {
-            subscription_status: 'canceled',
-          },
-        }
-      );
-      return res.data;
-    } else {
-      throw new Error('Aucun abonnement trouvé');
-    }
-  } catch (error) {
-    console.error('Error canceling subscription:', error);
-    throw new Error("Erreur lors de l'annulation de l'abonnement");
+  const existingSubscriptions = await fetchSubscriptionsUser(userId);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const subscriptions = existingSubscriptions as any;
+  
+  if (subscriptions.data?.length > 0) {
+    const existingSubscription = subscriptions.data[0];
+    return put(`subscriptions/${existingSubscription.documentId}`, {
+      subscription_status: 'canceled',
+    });
   }
-}
-
-export async function fetchSubscriptionsUser(userId: number) {
-  try {
-    return secureFetch(
-      `subscriptions?populate=*&filters[users][$eq]=${userId}`
-    );
-  } catch (error) {
-    console.error('Error fetching subscriptions:', error);
-    throw new Error('Erreur lors de la récupération des abonnements');
-  }
+  throw new Error('Aucun abonnement trouvé');
 }
 
 export async function createSubscription(
   userId: number,
   data: {
-    plan: string; // documentId du plan (string)
+    plan: string;
     billing_type: string;
     price?: number;
     trial?: boolean;
@@ -417,113 +622,77 @@ export async function createSubscription(
     start_date?: string;
   }
 ) {
-  // Vérifier d'abord si l'utilisateur a déjà une subscription
-  try {
-    const existingSubscriptions = await fetchSubscriptionsUser(userId);
+  const existingSubscriptions = await fetchSubscriptionsUser(userId);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const subscriptions = existingSubscriptions as any;
 
-    if (existingSubscriptions.data && existingSubscriptions.data.length > 0) {
-      // Mettre à jour la subscription existante
-      const existingSubscription = existingSubscriptions.data[0];
-      console.log(
-        'Updating subscription with documentId:',
-        existingSubscription.documentId
-      );
+  const subscriptionData = {
+    plan: data.plan,
+    subscription_status: 'active',
+    start_date: new Date().toISOString(),
+    end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    billing_type: data.billing_type,
+    auto_renew: true,
+    trial: data.trial || false,
+  };
 
-      const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions/${existingSubscription.documentId}`,
-        {
-          data: {
-            plan: data.plan,
-            subscription_status: 'active',
-            start_date: new Date().toISOString(),
-            end_date: new Date(
-              new Date().setDate(new Date().getDate() + 30)
-            ).toISOString(),
-            billing_type: data.billing_type,
-            auto_renew: true,
-            trial: data.trial || false,
-          },
-        }
-      );
-      return res.data;
-    } else {
-      // Créer une nouvelle subscription
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/subscriptions`,
-        {
-          data: {
-            users: userId,
-            plan: data.plan,
-            subscription_status: 'active',
-            start_date: new Date().toISOString(),
-            end_date: new Date(
-              new Date().setDate(new Date().getDate() + 30)
-            ).toISOString(),
-            billing_type: data.billing_type,
-            auto_renew: true,
-            trial: data.trial || false,
-          },
-        }
-      );
-      return res.data;
-    }
-  } catch (error) {
-    console.error('Error in createSubscription:', error);
-    throw error;
+  if (subscriptions.data?.length > 0) {
+    const existingSubscription = subscriptions.data[0];
+    return put(`subscriptions/${existingSubscription.documentId}`, subscriptionData);
   }
+  
+  return post('subscriptions', { ...subscriptionData, users: userId });
 }
 
-export async function createProject(data: {
-  title: string;
-  description: string;
-  project_status: string;
-  start_date: string;
-  end_date: string;
-  notes?: string;
-  type: string;
-  technologies?: string[];
-  client: number;
-  document?: File;
-  user?: number;
-}) {
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/projects`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify({ data }),
-    }
-  );
+// ============================================================================
+// UPLOAD D'IMAGES
+// ============================================================================
+
+const API_URL_BASE = process.env.NEXT_PUBLIC_STRAPI_URL;
+
+/** Upload une image vers Strapi */
+export async function uploadImage(file: File): Promise<{ id: number; url: string }> {
+  const token = getToken();
+  const formData = new FormData();
+  formData.append('files', file);
+
+  const res = await fetch(`${API_URL_BASE}/api/upload`, {
+    method: 'POST',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
+
   if (!res.ok) {
-    throw new Error('Erreur lors de la création du projet');
+    throw new Error('Erreur lors de l\'upload de l\'image');
   }
-  return res.json();
+
+  const data = await res.json();
+  return { id: data[0].id, url: data[0].url };
 }
 
-// FACTURES
+/** Met à jour la profile picture d'un utilisateur */
+export async function updateUserProfilePicture(userId: number, imageId: number) {
+  return apiRequest(`users/${userId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ profile_picture: imageId }),
+  });
+}
 
-export const fetchFactureFromId = async (id: string) => {
-  return secureFetch(`factures?populate=*&filters[id][$eq]=${id}`);
-};
+/** Met à jour l'image d'un client */
+export async function updateClientImage(clientDocumentId: string, imageId: number) {
+  return put(`clients/${clientDocumentId}`, { image: imageId });
+}
 
-export const fetchFactureFromDocumentId = async (documentId: string) => {
-  return secureFetch(
-    `factures?populate=*&filters[documentId][$eq]=${documentId}`
-  );
-};
-
+// ============================================================================
 // COMPANY
+// ============================================================================
 
-export const fetchCompanyUser = async (userId: number) => {
-  return secureFetch(`companies?populate=*&filters[user][$eq]=${userId}`);
-};
+export const fetchCompanyUser = (userId: number) =>
+  fetchUserEntities('companies', userId, 'user');
 
-export const updateCompanyUser = async (
+export async function updateCompanyUser(
   userId: number,
   companyId: string,
   data: {
@@ -539,35 +708,13 @@ export const updateCompanyUser = async (
     domaine: string;
     website: string;
   }
-) => {
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
-  //we need to find if the company exists
+) {
   const company = await fetchCompanyUser(userId);
-  if (company.data.length === 0) {
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/companies`,
-      { data: { ...data } },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      }
-    );
-    return res.data;
-  } else {
-    const res = await axios.put(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/companies/${companyId}`,
-      { data: { ...data } },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      }
-    );
-    return res.data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const companyData = company as any;
+  
+  if (companyData.data?.length === 0) {
+    return post('companies', data);
   }
-};
+  return put(`companies/${companyId}`, data);
+}

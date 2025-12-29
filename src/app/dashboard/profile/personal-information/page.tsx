@@ -1,106 +1,77 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useMemo } from 'react';
+import { motion } from 'motion/react';
 import { useAuth } from '@/app/context/AuthContext';
-import { fetchUserById, updateUser } from '@/lib/api';
-import useLenis from '@/utils/useLenis';
-import Image from 'next/image';
+import { updateUser, updateUserProfilePicture } from '@/lib/api';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import { useRouter } from 'next/navigation';
-
-interface UserProfile {
-  id: number;
-  username: string;
-  email: string;
-  profile_picture: {
-    id: number;
-    url: string;
-    formats?: {
-      thumbnail: { url: string };
-      small: { url: string };
-      medium: { url: string };
-      large: { url: string };
-    };
-  } | null;
-  confirmed: boolean;
-  blocked: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import { useCurrentUser, clearCache } from '@/hooks/useApi';
+import ImageUpload from '@/app/components/ImageUpload';
 
 export default function PersonalInformationPage() {
   const { t } = useLanguage();
-  useLenis();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const router = useRouter();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    profile_picture: {
-      url: '',
-    },
   });
-  const [previewUrl, setPreviewUrl] = useState<string>('');
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user?.id) return;
+  // Hook pour l'utilisateur courant
+  const { data: profileData, loading, refetch: refetchProfile } = useCurrentUser(user?.id);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const profile = profileData as any;
 
-      try {
-        setLoading(true);
-        const data = await fetchUserById(user.id);
-        setProfile(data);
-        console.log('Réponse :', data);
-        setFormData({
-          username: data.username,
-          email: data.email,
-          profile_picture: {
-            url: data.profile_picture?.url || '',
-          },
-        });
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-        showGlobalPopup('Erreur lors du chargement du profil', 'error');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Initialiser le formulaire quand le profil est chargé
+  useMemo(() => {
+    if (profile) {
+      setFormData({
+        username: profile.username || '',
+        email: profile.email || '',
+      });
+    }
+  }, [profile]);
 
-    fetchProfile();
-  }, [user?.id]); // Retirer showGlobalPopup des dépendances
+  // URL de la photo de profil
+  const profilePictureUrl = useMemo(() => {
+    if (profile?.profile_picture?.url) {
+      return process.env.NEXT_PUBLIC_STRAPI_URL + profile.profile_picture.url;
+    }
+    return null;
+  }, [profile]);
+
+  // Handler pour l'upload de profile picture
+  const handleProfilePictureUpload = async (imageId: number) => {
+    if (!user?.id) return;
+    try {
+      await updateUserProfilePicture(user.id, imageId);
+      showGlobalPopup(t('image_updated') || 'Photo de profil mise à jour', 'success');
+      clearCache('current-user');
+      await refetchProfile();
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+      showGlobalPopup(t('image_update_error') || 'Erreur lors de la mise à jour de la photo', 'error');
+    }
+  };
 
   const handleSave = async () => {
+    if (!user?.id) return;
     try {
-      // Si une nouvelle image a été sélectionnée, l'uploader d'abord
-      // Mettre à jour les autres données du profil
-      const updateFormData = new FormData();
-      updateFormData.append('username', formData.username);
-      updateFormData.append('email', formData.email);
-
-      const response = await updateUser(user?.id || 0, {
+      await updateUser(user.id, {
         username: formData.username,
         email: formData.email,
-        profile_picture: {
-          url: formData.profile_picture.url,
-        },
       });
-
-      if (!response) {
-        throw new Error("Erreur lors de la mise à jour de l'utilisateur");
-      }
-
-      const updatedData = await response;
+      
       setEditing(false);
       showGlobalPopup('Profil mis à jour avec succès', 'success');
-      //on affiche dynamiquement le nouveau profil
-      setProfile(updatedData);
+      clearCache('current-user');
+      await refetchProfile();
     } catch (error) {
       console.error('Error updating profile:', error);
       showGlobalPopup('Erreur lors de la mise à jour', 'error');
@@ -111,11 +82,7 @@ export default function PersonalInformationPage() {
     setFormData({
       username: profile?.username || '',
       email: profile?.email || '',
-      profile_picture: {
-        url: profile?.profile_picture?.url || '',
-      },
     });
-    setPreviewUrl('');
     setEditing(false);
   };
 
@@ -128,7 +95,7 @@ export default function PersonalInformationPage() {
           transition={{ duration: 0.5 }}
           className="space-y-6"
         >
-          <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
+          <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
             <div className="h-8 bg-zinc-800 rounded w-32 animate-pulse"></div>
             <div className="h-10 bg-zinc-800 rounded w-24 animate-pulse"></div>
           </div>
@@ -170,24 +137,22 @@ export default function PersonalInformationPage() {
           {t('profile')}
         </h1>
         {!editing ? (
-          <div className="flex lg:flex-row flex-col lg:w-fit w-full  gap-4">
+          <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={() => setEditing(true)}
-              className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors"
+              className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors"
             >
               {t('edit_profile')}
             </button>
             <button
-              onClick={() =>
-                router.push('/dashboard/profile/your-subscription')
-              }
-              className="bg-zinc-200 lg:w-fit w-full !text-zinc-900 border border-zinc-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-zinc-700/20 hover:!text-white    transition-colors"
+              onClick={() => router.push('/dashboard/profile/your-subscription')}
+              className="bg-zinc-200 lg:w-fit w-full !text-zinc-900 border border-zinc-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-zinc-700/20 hover:!text-white transition-colors"
             >
               {t('your_subscription')}
             </button>
           </div>
         ) : (
-          <div className="flex lg:flex-row flex-col lg:w-fit w-full  gap-4">
+          <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={handleCancel}
               className="bg-orange-500/20 lg:w-fit w-full !text-orange-500 border border-orange-500/20 px-4 py-2 hover:bg-orange-500/10 hover:!text-white rounded-lg cursor-pointer transition-colors"
@@ -209,28 +174,19 @@ export default function PersonalInformationPage() {
         <div className="lg:col-span-1">
           <div className="bg-zinc-900 lg:!p-6 !p-4 rounded-lg border border-zinc-800">
             <div className="flex flex-col items-center space-y-4">
-              <div
-                onClick={() => {
-                  router.push('/dashboard/profile');
-                }}
-                className={
-                  'flex w-32 h-32 cursor-pointer hover:scale-[1.05] hover:border-green-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden'
-                }
-              >
-                <Image
-                  alt={'user profile picture'}
-                  src={
-                    previewUrl ||
-                    (profile?.profile_picture?.formats?.thumbnail?.url
-                      ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${profile.profile_picture.formats.thumbnail.url}`
-                      : profile?.profile_picture?.url
-                        ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${profile.profile_picture.url}`
-                        : '/images/logo/eclipse-logo.png')
-                  }
-                  fill
-                  style={{ objectFit: 'cover' }}
-                />
-              </div>
+              <ImageUpload
+                currentImageUrl={profilePictureUrl}
+                onUpload={handleProfilePictureUpload}
+                size="lg"
+                shape="circle"
+                placeholder="user"
+                disabled={!editing}
+              />
+              {editing && (
+                <p className="text-xs text-zinc-500 text-center">
+                  {t('click_to_change_photo') || 'Cliquez pour changer la photo'}
+                </p>
+              )}
               <div className="!text-center">
                 <h3 className="!text-lg font-semibold !text-zinc-200">
                   {profile?.username}
@@ -262,9 +218,7 @@ export default function PersonalInformationPage() {
                   <input
                     type="text"
                     value={formData.username}
-                    onChange={e =>
-                      setFormData({ ...formData, username: e.target.value })
-                    }
+                    onChange={e => setFormData({ ...formData, username: e.target.value })}
                     className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 ) : (
@@ -282,9 +236,7 @@ export default function PersonalInformationPage() {
                   <input
                     type="email"
                     value={formData.email}
-                    onChange={e =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
+                    onChange={e => setFormData({ ...formData, email: e.target.value })}
                     className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 ) : (
@@ -303,9 +255,7 @@ export default function PersonalInformationPage() {
                     className={`w-2 h-2 rounded-full ${profile?.confirmed ? 'bg-emerald-500' : 'bg-red-500'}`}
                   ></div>
                   <span className="!text-zinc-200">
-                    {profile?.confirmed
-                      ? t('account_confirmed')
-                      : t('account_pending')}
+                    {profile?.confirmed ? t('account_confirmed') : t('account_pending')}
                   </span>
                 </div>
               </div>

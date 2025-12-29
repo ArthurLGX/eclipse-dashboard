@@ -15,6 +15,7 @@ import {
 import FloatingModal from '@/app/components/FloatingModal';
 import { useRouter } from 'next/navigation';
 import { Facture } from '@/app/models/Models';
+import { generateClientSlug } from '@/utils/slug';
 
 export default function RevenuePage() {
   const { t } = useLanguage();
@@ -128,16 +129,22 @@ export default function RevenuePage() {
     {
       key: 'client_id',
       label: t('client') || 'Client',
-      render: (_v, row) => (
-        <span
-          className="cursor-pointer hover:underline"
-          onClick={() => {
-            router.push(`/dashboard/clients/${row.client_id?.id}`);
-          }}
-        >
-          {row.client_id?.name || '-'}
-        </span>
-      ),
+      render: (_v, row) => {
+        const client = row.client_id;
+        if (!client?.name) {
+          return <span>-</span>;
+        }
+        return (
+          <span
+            className="cursor-pointer hover:underline"
+            onClick={() => {
+              router.push(`/dashboard/clients/${generateClientSlug(client.name)}`);
+            }}
+          >
+            {client.name}
+          </span>
+        );
+      },
     },
     {
       key: 'actions',

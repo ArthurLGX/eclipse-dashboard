@@ -27,13 +27,13 @@ export const RegisterBtn = ({ onClick }: RegisterBtnProps) => {
       >
         <span
           className={
-            'group-hover:!text-green-200 flex flex-row !text-xs lg:w-full w-fit items-center justify-center gap-2'
+            'group-hover:!text-emerald-200 flex flex-row !text-xs lg:w-full w-fit items-center justify-center gap-2'
           }
         >
           {t('register')}
           <IconArrowRight
             size={16}
-            className="group-hover:!text-green-200 group-hover:-rotate-45 transition-all ease-in-out duration-300"
+            className="group-hover:!text-emerald-200 group-hover:-rotate-45 transition-all ease-in-out duration-300"
           />
         </span>
       </Link>

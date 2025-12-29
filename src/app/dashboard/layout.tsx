@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useRouter, usePathname } from 'next/navigation';
 import {
   IconHome,
@@ -22,13 +22,12 @@ import {
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
-import { fetchUserById } from '@/lib/api';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import TrialExpiredGuard from '@/app/components/TrialExpiredGuard';
-import useLenis from '@/utils/useLenis';
 import LanguageToggle from '@/app/components/LanguageToggle';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { BreadCrumb } from '@/app/components/BreadCrumb';
+import { useCurrentUser } from '@/hooks/useApi';
 
 interface SidebarItem {
   id: string;
@@ -46,18 +45,47 @@ export default function DashboardLayout({
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isPinned, setIsPinned] = useState(false);
-  const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(
-    null
-  );
+  const [isDesktop, setIsDesktop] = useState(false);
   const router = useRouter();
+
   const pathname = usePathname();
-  const { user } = useAuth();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { t } = useLanguage();
-  useLenis();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
+
+  // Hook pour l'utilisateur avec profile_picture
+  const { data: currentUserData } = useCurrentUser(user?.id);
+  
+  // URL de la photo de profil
+  const profilePictureUrl = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userData = currentUserData as any;
+    if (userData?.profile_picture?.url) {
+      return process.env.NEXT_PUBLIC_STRAPI_URL + userData.profile_picture.url;
+    }
+    return null;
+  }, [currentUserData]);
+
+  // Détecter si on est sur desktop (lg breakpoint = 1024px)
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
+  // Désactiver le scroll du body sur le dashboard pour éviter le double scroll
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    };
+  }, []);
+
   // Définir les items de la sidebar avec l'image de profil dynamique
-  const sidebarItems: SidebarItem[] = [
+  const sidebarItems: SidebarItem[] = useMemo(() => [
     {
       id: 'home',
       label: t('dashboard'),
@@ -112,13 +140,9 @@ export default function DashboardLayout({
       id: 'profile',
       label: t('profile'),
       icon: (
-        <div
-          className={
-            'flex w-5 h-5 cursor-pointer  hover:border-green-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden'
-          }
-        >
+        <div className="flex w-5 h-5 cursor-pointer hover:border-emerald-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden">
           <Image
-            alt={'user profile picture'}
+            alt="user profile picture"
             src={profilePictureUrl || '/images/logo/eclipse-logo.png'}
             fill
             style={{ objectFit: 'cover' }}
@@ -153,10 +177,10 @@ export default function DashboardLayout({
       onClick: logout,
       path: '/login?type=login',
     },
-  ];
+  ], [t, profilePictureUrl, logout]);
 
   // Déterminer l'item actif basé sur l'URL
-  const activeItem = (() => {
+  const activeItem = useMemo(() => {
     // D'abord, chercher si on est sur un sous-menu
     for (const item of sidebarItems) {
       if (item.menuItems) {
@@ -172,7 +196,7 @@ export default function DashboardLayout({
     // Sinon, chercher un item principal
     const mainItem = sidebarItems.find(item => item.path === pathname);
     return mainItem?.id || 'home';
-  })();
+  }, [sidebarItems, pathname]);
 
   const handleItemClick = (item: SidebarItem) => {
     if (item.onClick) {
@@ -195,24 +219,6 @@ export default function DashboardLayout({
     }
   };
 
-  useEffect(() => {
-    if (!user) return; // ou redirection, ou erreur gérée
-    if (user) {
-      fetchUserById(user.id)
-        .then(data => {
-          setProfilePictureUrl(
-            process.env.NEXT_PUBLIC_STRAPI_URL + data.profile_picture.url
-          );
-        })
-        .catch(error => {
-          console.error('Failed to fetch user by ID:', error);
-        });
-    }
-
-    /* }
-     */
-  }, [profilePictureUrl, user]);
-
   const togglePin = () => {
     setIsPinned(!isPinned);
   };
@@ -232,10 +238,10 @@ export default function DashboardLayout({
   return (
     <ProtectedRoute>
       <TrialExpiredGuard>
-        <div className="flex min-h-screen justify-start w-full relative ">
-          {/* Sidebar Desktop */}
+        <div className="flex h-screen w-full">
+          {/* Sidebar Desktop - Fixed height */}
           <motion.div
-            className="hidden lg:flex sticky top-10 rounded-lg bg-zinc-900/80 border border-zinc-800 flex-col items-start justify-start gap-8 h-screen z-[1000]"
+            className="hidden lg:flex fixed left-0 top-0 bg-zinc-900/95 backdrop-blur-sm border-r border-zinc-800 flex-col items-start justify-start gap-8 h-screen z-[1000] overflow-hidden"
             animate={{
               width: isExpanded || isPinned ? 300 : 64,
             }}
@@ -271,9 +277,9 @@ export default function DashboardLayout({
                     className="p-1 rounded hover:bg-zinc-800 transition-colors"
                   >
                     {isPinned ? (
-                      <IconPinFilled size={16} className="!text-green-400" />
+                      <IconPinFilled size={16} className="!text-emerald-400" />
                     ) : (
-                      <IconPin size={16} className="!text-zinc-400" />
+                      <IconPin size={16} className="!text-zinc-200" />
                     )}
                   </button>
                 </motion.div>
@@ -292,32 +298,35 @@ export default function DashboardLayout({
                     onClick={() => handleItemClick(item)}
                     className={`group w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 mb-1 ${
                       activeItem === item.id
-                        ? 'bg-green-500/20 !text-green-400 border border-green-500/30'
-                        : '!text-zinc-400 hover:bg-zinc-800 hover:!text-zinc-200'
+                        ? 'bg-emerald-500/20 !text-emerald-400 border border-emerald-500/30'
+                        : '!text-zinc-200 hover:bg-zinc-800 hover:!text-zinc-100'
                     }`}
                   >
                     <div className="flex-shrink-0">{item.icon}</div>
 
-                    <AnimatePresence mode="wait">
+                    <AnimatePresence mode="sync">
                       {(isExpanded || isPinned) && (
-                        <motion.span
+                        <motion.div
+                          key={`menu-content-${item.id}`}
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
-                          className="!text-sm font-medium whitespace-nowrap"
+                          className="flex items-center gap-2"
                         >
-                          {item.label}
-                        </motion.span>
-                      )}
-                      {item.menuItems && isExpanded && (
-                        <IconChevronDown
-                          size={16}
-                          className={` group-hover:rotate-180 transition-all duration-200 ${
-                            pathname === item.path
-                              ? 'rotate-180 !text-green-400'
-                              : '!text-zinc-400'
-                          }`}
-                        />
+                          <span className="!text-sm font-medium whitespace-nowrap">
+                            {item.label}
+                          </span>
+                          {item.menuItems && (
+                            <IconChevronDown
+                              size={16}
+                              className={`group-hover:rotate-180 transition-all duration-200 ${
+                                pathname === item.path
+                                  ? 'rotate-180 !text-emerald-400'
+                                  : '!text-zinc-400'
+                              }`}
+                            />
+                          )}
+                        </motion.div>
                       )}
                     </AnimatePresence>
                   </motion.button>
@@ -339,8 +348,8 @@ export default function DashboardLayout({
                             onClick={() => handleItemClick(menuItem)}
                             className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 !text-xs ${
                               pathname === menuItem.path
-                                ? 'bg-green-500/10 !text-green-400 border border-green-500/20'
-                                : '!text-zinc-500 hover:bg-zinc-800 hover:!text-zinc-300'
+                                ? 'bg-emerald-500/10 !text-emerald-400 border border-emerald-500/20'
+                                : '!text-zinc-200 hover:bg-zinc-800 hover:!text-emerald-400'
                             }`}
                           >
                             <div className="flex-shrink-0">{menuItem.icon}</div>
@@ -365,8 +374,8 @@ export default function DashboardLayout({
                   onClick={() => handleItemClick(item)}
                   className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 min-w-0 ${
                     activeItem === item.id
-                      ? '!text-green-400'
-                      : '!text-zinc-400 hover:!text-zinc-200'
+                      ? '!text-emerald-400'
+                      : '!text-zinc-200 hover:!text-emerald-400'
                   }`}
                 >
                   <div className="flex-shrink-0">{item.icon}</div>
@@ -375,19 +384,19 @@ export default function DashboardLayout({
             </nav>
           </div>
 
-          {/* Contenu principal */}
-          <div className="flex-1 overflow-x-hidden w-full h-full md:pl-0 pl-0 pb-20 md:pb-0 md:pt-0 pt-24">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="h-full lg:!p-6 !p-2 w-full overflow-y-auto"
-            >
+          {/* Contenu principal - seul élément scrollable */}
+          <motion.main
+            className="h-screen overflow-y-scroll overflow-x-hidden w-full"
+            animate={{
+              marginLeft: isDesktop ? (isExpanded || isPinned ? 300 : 64) : 0,
+            }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+          >
+            <div className="w-full lg:p-6 p-4 pb-32 lg:my-24 min-h-full">
               <BreadCrumb />
-
               {children}
-            </motion.div>
-          </div>
+            </div>
+          </motion.main>
         </div>
       </TrialExpiredGuard>
     </ProtectedRoute>

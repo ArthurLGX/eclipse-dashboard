@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { fetchClientsUser } from '@/lib/api';
-import useLenis from '@/utils/useLenis';
+import React, { useState, useMemo } from 'react';
+import ClientAvatar from '@/app/components/ClientAvatar';
+import { addClientUser, deleteClient } from '@/lib/api';
 import TableActions from '@/app/components/TableActions';
+import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
@@ -13,147 +14,152 @@ import { Column } from '@/app/components/DataTable';
 import { FilterOption } from '@/app/components/TableFilters';
 import { IconUsers, IconUserCheck, IconUserPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-
-interface Client {
-  id: number;
-  documentId: string;
-  name: string;
-  email: string;
-  enterprise: string;
-  address: string;
-  website: string;
-  processStatus: string;
-  image: {
-    url: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-  factures: {
-    id: number;
-    documentId: string;
-    reference: string;
-    date: string;
-    due_date: string;
-  }[];
-}
+import AddClientModal from './AddClientModal';
+import { useClients, clearCache } from '@/hooks/useApi';
+import { generateClientSlug } from '@/utils/slug';
+import type { Client, CreateClientData } from '@/types';
 
 export default function ClientsPage() {
   const { showGlobalPopup } = usePopup();
   const { t } = useLanguage();
-  const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
   const { user } = useAuth();
   const router = useRouter();
-  useLenis();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user?.id) return;
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; client: Client | null }>({
+    isOpen: false,
+    client: null,
+  });
 
-      try {
-        setLoading(true);
-        const response = await fetchClientsUser(user.id);
-        setClients(response.data || []);
-      } catch (error) {
-        console.error('Error fetching clients:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [user?.id]);
+  // Hook avec cache
+  const { data: clientsData, loading, refetch } = useClients(user?.id);
+  const clients = (clientsData as Client[]) || [];
 
-  const statusOptions: FilterOption[] = [
+  const handleAddClient = async (clientData: CreateClientData) => {
+    if (!user?.id) {
+      showGlobalPopup(t('error_not_authenticated') || 'Vous devez être connecté', 'error');
+      throw new Error('Not authenticated');
+    }
+
+    try {
+      await addClientUser(user.id, {
+        name: clientData.name,
+        email: clientData.email,
+        number: clientData.number || '',
+        enterprise: clientData.enterprise || '',
+        adress: clientData.adress || '',
+        website: clientData.website || '',
+        processStatus: clientData.processStatus,
+        isActive: clientData.isActive,
+      });
+
+      showGlobalPopup(t('client_added_success') || 'Client ajouté avec succès', 'success');
+      
+      // Invalider le cache et recharger
+      clearCache('clients');
+      await refetch();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
+      showGlobalPopup(errorMessage, 'error');
+      throw error;
+    }
+  };
+
+  const handleDeleteClient = async () => {
+    if (!deleteModal.client?.documentId) return;
+    
+    await deleteClient(deleteModal.client.documentId);
+    showGlobalPopup(t('client_deleted_success') || 'Client supprimé avec succès', 'success');
+    clearCache('clients');
+    await refetch();
+  };
+
+  const statusOptions: FilterOption[] = useMemo(() => [
     {
       value: 'client',
       label: 'Client',
       count: clients.filter(client => client.processStatus === 'client').length,
     },
-  ];
+  ], [clients]);
 
-  const filteredClients = clients.filter(client => {
-    const matchesSearch =
-      searchTerm === '' ||
-      client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      client.enterprise.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredClients = useMemo(() => {
+    return clients.filter(client => {
+      const matchesSearch =
+        searchTerm === '' ||
+        client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (client.enterprise?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
 
-    const matchesStatus =
-      statusFilter === '' || client.processStatus === statusFilter;
+      const matchesStatus =
+        statusFilter === '' || client.processStatus === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  });
+      return matchesSearch && matchesStatus;
+    });
+  }, [clients, searchTerm, statusFilter]);
 
-  const columns = [
+  const stats = useMemo(() => {
+    const now = new Date();
+    return {
+      total: clients.length,
+      active: clients.filter(c => c.processStatus === 'client').length,
+      newThisMonth: clients.filter(client => {
+        const created = new Date(client.createdAt);
+        return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
+      }).length,
+    };
+  }, [clients]);
+
+  const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+
+  const columns: Column<Client>[] = [
     {
       key: 'name',
       label: t('name'),
-      render: (value: string, row: Client) => (
+      render: (value, row) => (
         <div
-          className="flex items-center gap-3 cursor-pointer  transition-colors"
-          onClick={() => router.push(`/dashboard/clients/${row.id}`)}
+          className="flex items-center gap-3 cursor-pointer transition-colors"
+          onClick={() => router.push(`/dashboard/clients/${generateClientSlug(row.name)}`)}
         >
-          <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
-            <span className="!text-zinc-300 font-medium !text-sm">
-              {value.charAt(0).toUpperCase()}
-            </span>
-          </div>
-          <p className="!text-zinc-200 font-medium">{value}</p>
+          <ClientAvatar
+            name={row.name}
+            imageUrl={row.image?.url ? apiUrl + row.image.url : null}
+            website={row.website}
+            size="sm"
+          />
+          <p className="!text-zinc-200 font-medium">{value as string}</p>
         </div>
       ),
     },
     {
       key: 'email',
       label: 'Email',
-      render: (value: string) => (
-        <p className="!text-zinc-300">{value as string}</p>
-      ),
+      render: (value) => <p className="!text-zinc-300">{value as string}</p>,
     },
     {
       key: 'enterprise',
       label: 'Entreprise',
-      render: (value: string) => (
-        <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>
-      ),
+      render: (value) => <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>,
     },
     {
       key: 'website',
       label: 'Site web',
-      render: (value: string) => (
-        <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>
-      ),
+      render: (value) => <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>,
     },
     {
       key: 'processStatus',
       label: 'Statut',
-      render: (value: string) => {
+      render: (value) => {
         const status = value as string;
-        const getStatusConfig = (status: string) => {
-          switch (status) {
-            case 'client':
-              return {
-                label: 'Client',
-                className: 'bg-green-100 !text-green-800',
-              };
-            case 'prospect':
-              return {
-                label: 'Prospect',
-                className: 'bg-blue-100 !text-blue-800',
-              };
-            default:
-              return {
-                label: status,
-                className: 'bg-gray-100 !text-gray-800',
-              };
-          }
-        };
-        const config = getStatusConfig(status);
+        const config = status === 'client'
+          ? { label: 'Client', className: 'bg-emerald-100 !text-emerald-800' }
+          : status === 'prospect'
+            ? { label: 'Prospect', className: 'bg-blue-100 !text-blue-800' }
+            : { label: status, className: 'bg-gray-100 !text-gray-800' };
+
         return (
-          <p
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}
-          >
+          <p className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}>
             {config.label}
           </p>
         );
@@ -162,7 +168,7 @@ export default function ClientsPage() {
     {
       key: 'createdAt',
       label: 'Date de création',
-      render: (value: string) => (
+      render: (value) => (
         <p className="!text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
@@ -171,29 +177,22 @@ export default function ClientsPage() {
     {
       key: 'actions',
       label: 'Actions',
-      render: (_: string, row: Client) => (
-        <div className="flex items-center gap-2">
-          <TableActions
-            onEdit={() => {
-              router.push(`/dashboard/clients/${row.id}?edit=1`);
-            }}
-            onDelete={() => {
-              console.log('Delete client:', (row as Client).id);
-              showGlobalPopup('Client supprimé avec succès', 'success');
-            }}
-            onFactures={
-              row.factures.length > 0
-                ? () => {
-                    console.log('Factures client:', (row as Client).id);
-                    router.push(
-                      `/dashboard/clients/${row.id}/factures?name=${encodeURIComponent(row.name)}`
-                    );
-                  }
-                : undefined
-            }
-          />
-        </div>
-      ),
+      render: (_, row) => {
+        const clientSlug = generateClientSlug(row.name);
+        return (
+          <div className="flex items-center gap-2">
+            <TableActions
+              onEdit={() => router.push(`/dashboard/clients/${clientSlug}?edit=1`)}
+              onDelete={() => setDeleteModal({ isOpen: true, client: row })}
+              onFactures={
+                (row.factures?.length ?? 0) > 0
+                  ? () => router.push(`/dashboard/clients/${clientSlug}/factures?name=${encodeURIComponent(row.name)}`)
+                  : undefined
+              }
+            />
+          </div>
+        );
+      },
     },
   ];
 
@@ -201,35 +200,25 @@ export default function ClientsPage() {
     <ProtectedRoute>
       <DashboardPageTemplate<Client>
         title={t('clients')}
-        onRowClick={row => router.push(`/dashboard/clients/${row.id}`)}
+        onRowClick={row => router.push(`/dashboard/clients/${generateClientSlug(row.name)}`)}
         actionButtonLabel={t('add_client')}
-        onActionButtonClick={() => {
-          console.log('Add client');
-        }}
+        onActionButtonClick={() => setShowAddModal(true)}
         stats={[
           {
             label: t('total_clients'),
-            value: clients.length,
-            colorClass: '!text-green-400',
-            icon: <IconUsers className="w-6 h-6 !text-green-400" />,
+            value: stats.total,
+            colorClass: '!text-emerald-400',
+            icon: <IconUsers className="w-6 h-6 !text-emerald-400" />,
           },
           {
             label: t('active_clients'),
-            value: clients.filter(client => client.processStatus === 'client')
-              .length,
+            value: stats.active,
             colorClass: '!text-blue-400',
             icon: <IconUserCheck className="w-6 h-6 !text-blue-400" />,
           },
           {
             label: t('new_clients_this_month'),
-            value: clients.filter(client => {
-              const created = new Date(client.createdAt);
-              const now = new Date();
-              return (
-                created.getMonth() === now.getMonth() &&
-                created.getFullYear() === now.getFullYear()
-              );
-            }).length,
+            value: stats.newThisMonth,
             colorClass: '!text-purple-400',
             icon: <IconUserPlus className="w-6 h-6 !text-purple-400" />,
           },
@@ -241,9 +230,30 @@ export default function ClientsPage() {
         onSearchChange={setSearchTerm}
         statusValue={statusFilter}
         onStatusChange={setStatusFilter}
-        columns={columns as unknown as Column<Client>[]}
+        columns={columns}
         data={filteredClients}
         emptyMessage={t('no_client_found')}
+      />
+
+      <AddClientModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onAdd={handleAddClient}
+        t={t}
+      />
+
+      <DeleteConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, client: null })}
+        onConfirm={handleDeleteClient}
+        title={t('delete_client') || 'Supprimer le client'}
+        itemName={deleteModal.client?.name || ''}
+        itemType="client"
+        warningMessage={
+          (deleteModal.client?.factures?.length ?? 0) > 0
+            ? `Ce client a ${deleteModal.client?.factures?.length} facture(s) associée(s). Ces données seront conservées.`
+            : undefined
+        }
       />
     </ProtectedRoute>
   );

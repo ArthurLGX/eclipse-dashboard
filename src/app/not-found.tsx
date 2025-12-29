@@ -26,12 +26,9 @@ export default function NotFound() {
       <div className="relative z-10 !text-center px-6 max-w-2xl mx-auto">
         {/* Numéro 404 animé */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="mb-8"
+                    className="mb-8"
         >
-          <h1 className="!text-9xl md:!text-[12rem] font-black clip-text bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-300 bg-clip-text !text-transparent">
+          <h1 className="!text-9xl md:!text-[12rem] font-black clip-text bg-gradient-to-r from-emerald-400 via-emerald-400 to-emerald-300 bg-clip-text !text-transparent">
             404
           </h1>
         </motion.div>

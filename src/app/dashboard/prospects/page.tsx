@@ -1,131 +1,112 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { fetchProspectsUser } from '@/lib/api';
+import React, { useState, useMemo } from 'react';
+import { deleteProspect } from '@/lib/api';
 import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
 import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
+import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
+import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { FilterOption } from '@/app/components/TableFilters';
 import { useRouter } from 'next/navigation';
-
-interface Prospect {
-  id: string;
-  title: string;
-  email: string;
-  phone: string;
-  prospect_status: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { useProspects, clearCache } from '@/hooks/useApi';
+import { IconUsers, IconUserCheck, IconUserPlus } from '@tabler/icons-react';
+import type { Prospect } from '@/types';
 
 export default function ProspectsPage() {
   const { t } = useLanguage();
-  const [prospects, setProspects] = useState<Prospect[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const { showGlobalPopup } = usePopup();
   const { user } = useAuth();
   const router = useRouter();
-  // Options de filtres par statut
-  const statusOptions: FilterOption[] = [
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; prospect: Prospect | null }>({
+    isOpen: false,
+    prospect: null,
+  });
+
+  // Hook avec cache
+  const { data: prospectsData, loading, refetch } = useProspects(user?.id);
+  const prospects = (prospectsData as Prospect[]) || [];
+
+  // Options de filtres
+  const statusOptions: FilterOption[] = useMemo(() => [
     {
       value: 'prospect',
-      label: t('prospect'),
+      label: t('prospect') || 'Prospect',
       count: prospects.filter(p => p.prospect_status === 'prospect').length,
     },
     {
-      value: 'answers',
-      label: t('answers'),
+      value: 'answer',
+      label: t('answer') || 'Réponse',
       count: prospects.filter(p => p.prospect_status === 'answer').length,
     },
     {
       value: 'to_be_contacted',
-      label: t('to_be_contacted'),
-      count: prospects.filter(p => p.prospect_status === 'to_be_contacted')
-        .length,
+      label: t('to_be_contacted') || 'À contacter',
+      count: prospects.filter(p => p.prospect_status === 'to_be_contacted').length,
     },
     {
       value: 'contacted',
-      label: t('contacted'),
+      label: t('contacted') || 'Contacté',
       count: prospects.filter(p => p.prospect_status === 'contacted').length,
     },
-  ];
+  ], [prospects, t]);
 
-  // Filtrage des données
-  const filteredProspects = prospects.filter(prospect => {
-    const matchesSearch =
-      searchTerm === '' ||
-      prospect.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      prospect.email.toLowerCase().includes(searchTerm.toLowerCase());
+  // Filtrage
+  const filteredProspects = useMemo(() => {
+    return prospects.filter(prospect => {
+      const matchesSearch =
+        searchTerm === '' ||
+        prospect.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        prospect.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === '' ||
-      prospect.prospect_status === statusFilter ||
-      prospect.prospect_status === 'answer' ||
-      prospect.prospect_status === 'to_be_contacted' ||
-      prospect.prospect_status === 'contacted';
+      const matchesStatus =
+        statusFilter === '' || prospect.prospect_status === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  });
+      return matchesSearch && matchesStatus;
+    });
+  }, [prospects, searchTerm, statusFilter]);
 
+  // Stats
+  const stats = useMemo(() => ({
+    total: prospects.length,
+    answers: prospects.filter(p => p.prospect_status === 'answer').length,
+    contacted: prospects.filter(p => p.prospect_status === 'contacted').length,
+  }), [prospects]);
+
+  // Colonnes
   const columns: Column<Prospect>[] = [
     {
       key: 'title',
       label: t('name'),
-      render: (value: unknown) => (
+      render: (value) => (
         <p className="!text-zinc-200 font-medium">{value as string}</p>
       ),
     },
     {
       key: 'email',
       label: t('email'),
-      render: (value: unknown) => (
+      render: (value) => (
         <p className="!text-zinc-300">{value as string}</p>
-      ),
-    },
-    {
-      key: 'phone',
-      label: t('phone'),
-      render: (value: unknown) => (
-        <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>
       ),
     },
     {
       key: 'prospect_status',
       label: t('status'),
-      render: (value: unknown) => {
+      render: (value) => {
         const status = value as string;
-        const getStatusConfig = (status: string) => {
-          switch (status) {
-            case 'answer':
-              return {
-                label: t('answer'),
-                className: 'bg-green-100 !text-green-800',
-              };
-            case 'to_be_contacted':
-              return {
-                label: t('to_be_contacted'),
-                className: 'bg-blue-100 !text-blue-800',
-              };
-            case 'contacted':
-              return {
-                label: t('contacted'),
-                className: 'bg-yellow-100 !text-yellow-800',
-              };
-            default:
-              return {
-                label: status,
-                className: 'bg-gray-100 !text-gray-800',
-              };
-          }
-        };
-        const config = getStatusConfig(status);
+        const config =
+          status === 'answer' ? { label: t('answer') || 'Réponse', className: 'bg-emerald-100 !text-emerald-800' } :
+          status === 'to_be_contacted' ? { label: t('to_be_contacted') || 'À contacter', className: 'bg-blue-100 !text-blue-800' } :
+          status === 'contacted' ? { label: t('contacted') || 'Contacté', className: 'bg-yellow-100 !text-yellow-800' } :
+          { label: t('prospect') || 'Prospect', className: 'bg-gray-100 !text-gray-800' };
+
         return (
-          <p
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}
-          >
+          <p className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}>
             {config.label}
           </p>
         );
@@ -134,61 +115,58 @@ export default function ProspectsPage() {
     {
       key: 'createdAt',
       label: t('creation_date'),
-      render: (value: unknown) => (
+      render: (value) => (
         <p className="!text-zinc-300">
-          {new Date(value as string).toLocaleDateString('fr-FR')}
+          {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
     },
     {
       key: 'actions',
       label: t('actions'),
-      render: (_: unknown, row: Prospect) => (
+      render: (_, row) => (
         <TableActions
-          onEdit={() => console.log('Edit prospect:', row.id)}
-          onDelete={() => console.log('Delete prospect:', row.id)}
+          onEdit={() => router.push(`/dashboard/prospects/${row.id}?edit=1`)}
+          onDelete={() => setDeleteModal({ isOpen: true, prospect: row })}
         />
       ),
     },
   ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetchProspectsUser(user?.id || 0);
-        setProspects(response.data || []);
-      } catch (error) {
-        console.error('Error fetching prospects:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [user?.id]);
+  const handleDeleteProspect = async () => {
+    if (!deleteModal.prospect?.documentId) return;
+    
+    await deleteProspect(deleteModal.prospect.documentId);
+    showGlobalPopup(t('prospect_deleted_success') || 'Prospect supprimé avec succès', 'success');
+    clearCache('prospects');
+    await refetch();
+  };
 
   return (
+    <>
     <DashboardPageTemplate<Prospect>
       title={t('prospects')}
       onRowClick={row => router.push(`/dashboard/prospects/${row.id}`)}
-      actionButtonLabel={t('new_prospect')}
+      actionButtonLabel={t('add_prospect')}
       onActionButtonClick={() => {}}
       stats={[
         {
           label: t('total_prospects'),
-          value: prospects.length,
+          value: stats.total,
           colorClass: '!text-blue-400',
+          icon: <IconUsers className="w-6 h-6 !text-blue-400" />,
         },
         {
-          label: t('answers'),
-          value: prospects.filter(p => p.prospect_status === 'answer').length,
+          label: t('answer') || 'Réponses',
+          value: stats.answers,
           colorClass: '!text-yellow-400',
+          icon: <IconUserCheck className="w-6 h-6 !text-yellow-400" />,
         },
         {
           label: t('contacted'),
-          value: prospects.filter(p => p.prospect_status === 'contacted')
-            .length,
-          colorClass: '!text-green-400',
+          value: stats.contacted,
+          colorClass: '!text-emerald-400',
+          icon: <IconUserPlus className="w-6 h-6 !text-emerald-400" />,
         },
       ]}
       loading={loading}
@@ -202,5 +180,16 @@ export default function ProspectsPage() {
       data={filteredProspects}
       emptyMessage={t('no_prospects_found')}
     />
+
+    <DeleteConfirmModal
+      isOpen={deleteModal.isOpen}
+      onClose={() => setDeleteModal({ isOpen: false, prospect: null })}
+      onConfirm={handleDeleteProspect}
+      title={t('delete_prospect') || 'Supprimer le prospect'}
+      itemName={deleteModal.prospect?.title || deleteModal.prospect?.email || ''}
+      itemType="prospect"
+    />
+    </>
+    
   );
 }

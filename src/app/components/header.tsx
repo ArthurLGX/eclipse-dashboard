@@ -1,10 +1,10 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { LoginBtn } from '@/app/components/buttons/loginBtn';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/app/context/AuthContext';
 import {
   IconLogout,
@@ -17,16 +17,29 @@ import {
 } from '@tabler/icons-react';
 import LanguageToggle from './LanguageToggle';
 import { useRouter } from 'next/navigation';
-import { fetchUserById } from '@/lib/api';
 import { RegisterBtn } from '@/app/components/buttons/registerBtn';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useCurrentUser } from '@/hooks/useApi';
 
 export const Header = () => {
   const { t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [profilePictureUrl, setProfilePictureUrl] = React.useState<
-    string | null
-  >(null);
+  const router = useRouter();
+  const { authenticated, logout, user } = useAuth();
+  const pathname = usePathname();
+
+  // Hook pour l'utilisateur avec profile_picture
+  const { data: currentUserData } = useCurrentUser(user?.id);
+
+  // URL de la photo de profil
+  const profilePictureUrl = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userData = currentUserData as any;
+    if (userData?.profile_picture?.url) {
+      return process.env.NEXT_PUBLIC_STRAPI_URL + userData.profile_picture.url;
+    }
+    return '/images/logo/eclipse-logo.png';
+  }, [currentUserData]);
 
   const links = [
     {
@@ -46,13 +59,11 @@ export const Header = () => {
     },
   ];
 
-  const router = useRouter();
-  const { authenticated } = useAuth();
-  const { logout } = useAuth();
-  const { user } = useAuth();
-
-  const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
+
+  // Ne pas afficher le header sur les pages du dashboard
+  const isDashboard = pathname?.startsWith('/dashboard');
+  if (isDashboard) return null;
 
   const handleLogout = () => {
     logout();
@@ -67,23 +78,6 @@ export const Header = () => {
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
-
-  useEffect(() => {
-    if (!user) return;
-    if (user) {
-      fetchUserById(user.id)
-        .then(data => {
-          setProfilePictureUrl(
-            data.profile_picture?.url
-              ? process.env.NEXT_PUBLIC_STRAPI_URL + data.profile_picture.url
-              : '/images/logo/eclipse-logo.png'
-          );
-        })
-        .catch(error => {
-          console.error('Failed to fetch user by ID:', error);
-        });
-    }
-  }, [profilePictureUrl, user]);
 
   return (
     <>
@@ -126,9 +120,9 @@ export const Header = () => {
                   }}
                   className={`!flex !flex-row gap-1 items-center justify-center ${
                     isActive(link.path)
-                      ? '!text-green-200  items-center justify-center gap-2  !px-2 border bg-green-300/20 border-green-200 rounded-full'
+                      ? '!text-emerald-200 items-center justify-center gap-2 !px-2 border bg-emerald-300/20 border-emerald-200 rounded-full'
                       : '!text-zinc-200'
-                  } hover:!text-green-200 capitalize !text-sm`}
+                  } hover:!text-emerald-200 capitalize !text-sm`}
                   key={link.name}
                   onClick={() => {
                     setIsMenuOpen(false);
@@ -165,12 +159,12 @@ export const Header = () => {
                         router.push('/dashboard/profile/personal-information');
                       }}
                       className={
-                        'flex w-10 h-10 cursor-pointer hover:scale-[1.05] hover:border-green-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden'
+                        'flex w-10 h-10 cursor-pointer hover:scale-[1.05] hover:border-emerald-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden'
                       }
                     >
                       <Image
                         alt={'user profile picture'}
-                        src={`${profilePictureUrl}`}
+                        src={profilePictureUrl}
                         fill
                         style={{ objectFit: 'cover' }}
                       />
@@ -191,7 +185,7 @@ export const Header = () => {
                 <IconLogout
                   onClick={handleLogout}
                   className={
-                    'group-hover:!text-green-200 cursor-pointer hover:scale-[1.1] !text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'
+                    'group-hover:!text-emerald-200 cursor-pointer hover:scale-[1.1] !text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'
                   }
                   size={24}
                 />
@@ -203,7 +197,7 @@ export const Header = () => {
           <div className="lg:hidden">
             <button
               onClick={toggleMenu}
-              className="p-2 !text-zinc-200 hover:!text-green-200 transition-colors"
+              className="p-2 !text-zinc-200 hover:!text-emerald-200 transition-colors"
             >
               {isMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
             </button>
@@ -212,16 +206,19 @@ export const Header = () => {
       </motion.div>
 
       {/* Mobile Menu Overlay */}
-      <AnimatePresence>
+      <AnimatePresence mode="sync">
         {isMenuOpen && (
-          <>
+          <motion.div
+            key="mobile-menu-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[200] lg:hidden"
+          >
             {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/50 z-[200] lg:hidden"
+            <div
+              className="absolute inset-0 bg-black/50"
               onClick={closeMenu}
             />
 
@@ -236,9 +233,9 @@ export const Header = () => {
                 damping: 30,
                 duration: 0.5,
               }}
-              className="fixed flex flex-col justify-center items-center bottom-0 left-0 right-0 bg-zinc-900/50 backdrop-blur-xl border-t border-zinc-800 h-3/4 z-[201] lg:hidden"
+              className="absolute flex flex-col justify-center items-center bottom-0 left-0 right-0 bg-zinc-900/50 backdrop-blur-xl border-t border-zinc-800 h-3/4 z-[1]"
             >
-              <div className="flex flex-col  h-full w-11/12 justify-center gap-8">
+              <div className="flex flex-col h-full w-11/12 justify-center gap-8">
                 {/* Close button */}
                 <div className="absolute top-4 right-4">
                   <button
@@ -266,8 +263,8 @@ export const Header = () => {
                         onClick={closeMenu}
                         className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                           isActive(link.path)
-                            ? 'bg-green-200/10 !text-green-200 border border-green-200/20'
-                            : '!text-zinc-200 hover:bg-zinc-800/80 hover:!text-green-200'
+                            ? 'bg-emerald-200/10 !text-emerald-200 border border-emerald-200/20'
+                            : '!text-zinc-200 hover:bg-zinc-800/80 hover:!text-emerald-200'
                         }`}
                       >
                         {link.icon}
@@ -303,7 +300,7 @@ export const Header = () => {
                 )}
               </div>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

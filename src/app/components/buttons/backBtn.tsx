@@ -24,7 +24,7 @@ export const BackBtn = () => {
       >
         <span
           className={
-            'group-hover:!text-green-200 flex flex-row items-center gap-2'
+            'group-hover:!text-emerald-200 flex flex-row items-center gap-2'
           }
         >
           {' '}
@@ -32,7 +32,7 @@ export const BackBtn = () => {
             size={16}
             stroke={1}
             className={
-              'bg-zinc-950 rounded-full w-full h-full p-1 !text-zinc-200 group-hover:!text-green-300 group-hover:-translate-x-1 group-hover:bg-green-200/20 transition-all ease-in-out duration-300'
+              'bg-zinc-950 rounded-full w-full h-full p-1 !text-zinc-200 group-hover:!text-emerald-300 group-hover:-translate-x-1 group-hover:bg-emerald-200/20 transition-all ease-in-out duration-300'
             }
           />
           {t('back')}

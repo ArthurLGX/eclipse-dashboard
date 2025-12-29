@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap?family=Poppins:wght@400..800&display=swap&family=Geist+Mono:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap?family=Poppins:wght@400..800&display=swap&family=Geist:wght@400..800&display=swap');
 
 @import 'tailwindcss';
 
@@ -15,7 +15,8 @@
   :root {
     --font-manrope: 'Manrope', sans-serif;
     --font-poppins: 'Poppins', sans-serif;
-    --font-geist: 'Geist Mono', sans-serif;
+    --font-geist: 'Geist', sans-serif;
+    --font-manrope: 'Manrope', sans-serif;
   }
 }
 
@@ -83,44 +84,44 @@ h2 {
 }
 
 button {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
 }
 
 form select,
 form select option {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
   background-color: var(--background);
 }
 
 header nav ul li a,
 a {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
 }
 
 h3,
 h4 {
   list-style: none;
-  font-family: var(--font-manrope), sans-serif;
+  font-family: var(--font-geist), sans-serif;
 }
 
 form input,
 form label {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
 }
 
 p {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   color: var(--text-color);
   font-size: 14px;
   font-weight: 400;
 }
 
 p#header {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
   color: var(--text-color);
   font-weight: 400;
@@ -131,13 +132,13 @@ table th,
 table tr,
 span,
 label {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   font-size: 16px;
 }
 
 select,
 option {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
 }
 

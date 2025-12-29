@@ -96,7 +96,7 @@ export default function NewslettersPage() {
           <p
             className={`${
               v === 'sent'
-                ? '!text-green-400 bg-emerald-400/20 px-2 py-1 rounded-full lg:w-fit w-full !text-sm'
+                ? '!text-emerald-400 bg-emerald-400/20 px-2 py-1 rounded-full lg:w-fit w-full !text-sm'
                 : '!text-orange-400 bg-orange-400/20 px-2 py-1 rounded-full lg:w-fit w-full !text-sm'
             } !text-sm`}
           >
@@ -143,8 +143,8 @@ export default function NewslettersPage() {
             value: newsletters.filter(
               newsletter => newsletter.n_status === 'sent'
             ).length,
-            colorClass: '!text-green-400',
-            icon: <IconSend className="w-6 h-6 !text-green-400" />,
+            colorClass: '!text-emerald-400',
+            icon: <IconSend className="w-6 h-6 !text-emerald-400" />,
           },
         ]}
         loading={loading}

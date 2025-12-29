@@ -10,7 +10,7 @@ export const PricingBtn = () => {
   const { t } = useLanguage();
   return (
     <motion.div
-      initial={{ opacity: 0, y: '100%' }}
+      initial={{ opacity: 0, y: '5%' }}
       animate={{ opacity: 1, y: 1 }}
       transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
       className="flex  md:w-fit w-full flex-row items-center justify-center gap-4"
