@@ -50,7 +50,6 @@ export default function ShareProjectModal({
   const [email, setEmail] = useState('');
   const [permission, setPermission] = useState<InvitationPermission>('edit');
   const [loading, setLoading] = useState(false);
-  const [codeCopied, setCodeCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [pendingInvitations, setPendingInvitations] = useState<ProjectInvitation[]>([]);
   const [collaborators, setCollaborators] = useState<ProjectCollaborator[]>([]);
@@ -114,8 +113,8 @@ export default function ShareProjectModal({
       // Si on veut afficher le code généré
       if (invitationCode) {
         navigator.clipboard.writeText(invitationCode);
-        setCodeCopied(true);
-        setTimeout(() => setCodeCopied(false), 3000);
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 3000);
       }
     } catch (error) {
       console.error('Error sending invitation:', error);

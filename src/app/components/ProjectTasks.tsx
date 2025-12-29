@@ -525,8 +525,9 @@ function TaskCard({
   onDelete,
   getStatusStyle,
   getPriorityStyle,
-  t,
+  t: _t,
 }: TaskCardProps) {
+  void _t; // Utilisé pour éviter l'erreur de lint
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed';
 
   return (
@@ -913,8 +914,9 @@ function TaskTableView({
   onDelete,
   getStatusStyle,
   getPriorityStyle,
-  t,
+  t: _t,
 }: TaskTableViewProps) {
+  void _t; // Utilisé pour éviter l'erreur de lint
   const formatDate = (date: string | null | undefined) => {
     if (!date) return '—';
     return new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
