@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { usePreferences } from '@/app/context/PreferencesContext';
 import { fetchFacturesUser, fetchUserById } from '@/lib/api';
 import { useAuth } from '../../context/AuthContext';
 import DataTable, { Column } from '@/app/components/DataTable';
@@ -20,6 +21,7 @@ import { generateClientSlug } from '@/utils/slug';
 export default function RevenuePage() {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { formatCurrency, formatDate } = usePreferences();
   const [factures, setFactures] = useState<Facture[]>([]);
   const [loading, setLoading] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -88,7 +90,7 @@ export default function RevenuePage() {
     {
       key: 'number',
       label: t('amount') || 'Montant',
-      render: v => <span>{v as number} €</span>,
+      render: v => <span>{formatCurrency(v as number)}</span>,
     },
     {
       key: 'facture_status',
@@ -111,14 +113,14 @@ export default function RevenuePage() {
       key: 'date',
       label: t('date') || 'Date',
       render: v => (
-        <span>{new Date(v as string).toLocaleDateString('fr-FR')}</span>
+        <span>{v ? formatDate(v as string) : '-'}</span>
       ),
     },
     {
       key: 'due_date',
       label: t('due_date') || 'Échéance',
       render: v => (
-        <span>{new Date(v as string).toLocaleDateString('fr-FR')}</span>
+        <span>{v ? formatDate(v as string) : '-'}</span>
       ),
     },
     {
@@ -231,15 +233,7 @@ export default function RevenuePage() {
               {t('progress_to_target') || "Progression vers l'objectif"}
             </span>
             <span className="text-zinc-200 text-sm font-semibold">
-              {totalCA.toLocaleString('fr-FR', {
-                style: 'currency',
-                currency: 'EUR',
-              })}{' '}
-              /{' '}
-              {maxCA.toLocaleString('fr-FR', {
-                style: 'currency',
-                currency: 'EUR',
-              })}
+              {formatCurrency(totalCA)} / {formatCurrency(maxCA)}
             </span>
           </div>
           <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
@@ -252,47 +246,38 @@ export default function RevenuePage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 flex flex-col justify-between">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2 flex items-center gap-2">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-2 flex items-center gap-2">
             <IconTrendingUp className="w-5 h-5 text-emerald-400" />
             {t('revenue')}
           </h3>
           <p className="!text-3xl font-bold !text-emerald-400">
-            {totalCA.toLocaleString('fr-FR', {
-              style: 'currency',
-              currency: 'EUR',
-            })}
+            {formatCurrency(totalCA)}
           </p>
         </div>
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 flex flex-col justify-between">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2 flex items-center gap-2">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-2 flex items-center gap-2">
             <IconReceipt className="w-5 h-5 text-blue-400" />
             {t('invoices')}
           </h3>
           <p className="!text-3xl font-bold !text-blue-400">{nbFactures}</p>
         </div>
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 flex flex-col justify-between">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2 flex items-center gap-2">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-2 flex items-center gap-2">
             <IconFileInvoice className="w-5 h-5 text-purple-400" />
             {t('average_invoice')}
           </h3>
           <p className="!text-3xl font-bold !text-purple-400">
-            {avgFacture.toLocaleString('fr-FR', {
-              style: 'currency',
-              currency: 'EUR',
-            })}
+            {formatCurrency(avgFacture)}
           </p>
         </div>
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 flex flex-col justify-between">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2 flex items-center gap-2">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-2 flex items-center gap-2">
             <IconUser className="w-5 h-5 text-orange-400" />
             {t('top_client')}
           </h3>
           <p className="!text-lg font-bold !text-orange-400">
             {topClient
-              ? `${topClient.name} (${topClient.ca.toLocaleString('fr-FR', {
-                  style: 'currency',
-                  currency: 'EUR',
-                })})`
+              ? `${topClient.name} (${formatCurrency(topClient.ca)})`
               : '-'}
           </p>
         </div>

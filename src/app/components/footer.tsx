@@ -43,7 +43,7 @@ export const Footer = () => {
               height={40}
             />
           </Link>
-          <p className="!text-zinc-400 !text-center md:!text-left">
+          <p className="text-zinc-400 !text-center md:!text-left">
             Eclipse Development Dashboard &#8482; {year}{' '}
           </p>
         </div>
@@ -59,7 +59,7 @@ export const Footer = () => {
               }}
               key={link.name}
               href={link.path}
-              className={`!text-zinc-200 hover:!text-emerald-200 transition-all ease-in-out duration-300`}
+              className={`text-zinc-200 hover:!text-emerald-200 transition-all ease-in-out duration-300`}
             >
               {link.name}
             </motion.a>

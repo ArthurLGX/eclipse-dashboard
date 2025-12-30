@@ -132,7 +132,7 @@ export default function ProjectsPage() {
       render: (value, row) => (
         <div className="relative">
           <div className="flex items-start gap-2">
-            <h4 className="!text-zinc-200 font-medium">{value as string}</h4>
+            <h4 className="text-zinc-200 font-medium">{value as string}</h4>
             {taskCounts[row.documentId] > 0 && (
               <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-amber-500 rounded-full">
                 {taskCounts[row.documentId]}
@@ -140,8 +140,8 @@ export default function ProjectsPage() {
             )}
           </div>
           <div className="flex items-center gap-2 mt-1">
-            <ProjectTypeIcon type={row.type} className="w-4 h-4 !text-zinc-500" />
-            <p className="!text-zinc-500 !text-sm">{row.type}</p>
+            <ProjectTypeIcon type={row.type} className="w-4 h-4 text-zinc-500" />
+            <p className="text-zinc-500 !text-sm">{row.type}</p>
           </div>
         </div>
       ),
@@ -150,7 +150,7 @@ export default function ProjectsPage() {
       key: 'client',
       label: 'Client',
       render: (value) => (
-        <p className="!text-zinc-300">
+        <p className="text-zinc-300">
           {(value as { name?: string })?.name || 'N/A'}
         </p>
       ),
@@ -177,7 +177,7 @@ export default function ProjectsPage() {
       key: 'start_date',
       label: 'Début',
       render: (value) => (
-        <p className="!text-zinc-300">
+        <p className="text-zinc-300">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
@@ -186,7 +186,7 @@ export default function ProjectsPage() {
       key: 'end_date',
       label: 'Fin',
       render: (value) => (
-        <p className="!text-zinc-300">
+        <p className="text-zinc-300">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),

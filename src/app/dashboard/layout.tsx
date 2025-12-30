@@ -19,6 +19,9 @@ import {
   IconBuildings,
   IconFileInvoice,
   IconChevronDown,
+  IconSettings,
+  IconSun,
+  IconMoon,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -29,6 +32,8 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { BreadCrumb } from '@/app/components/BreadCrumb';
 import { useCurrentUser } from '@/hooks/useApi';
 import NotificationBell from '@/app/components/NotificationBell';
+import { useTheme } from '@/app/context/ThemeContext';
+import { useSidebar } from '@/app/context/SidebarContext';
 
 interface SidebarItem {
   id: string;
@@ -52,6 +57,8 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const { t } = useLanguage();
+  const { resolvedTheme, setTheme } = useTheme();
+  const { isLinkVisible } = useSidebar();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
 
   // Hook pour l'utilisateur avec profile_picture
@@ -141,7 +148,7 @@ export default function DashboardLayout({
       id: 'profile',
       label: t('profile'),
       icon: (
-        <div className="flex w-5 h-5 cursor-pointer hover:border-emerald-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden">
+        <div className="flex w-5 h-5 cursor-pointer hover:border-violet-300 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden">
           <Image
             alt="user profile picture"
             src={profilePictureUrl || '/images/logo/eclipse-logo.png'}
@@ -169,6 +176,12 @@ export default function DashboardLayout({
           icon: <IconBuildings size={20} stroke={1} />,
           path: '/dashboard/profile/your-company',
         },
+        {
+          id: 'settings',
+          label: t('settings') || 'Paramètres',
+          icon: <IconSettings size={20} stroke={1} />,
+          path: '/dashboard/settings',
+        },
       ],
     },
     {
@@ -179,6 +192,11 @@ export default function DashboardLayout({
       path: '/login?type=login',
     },
   ], [t, profilePictureUrl, logout]);
+
+  // Filtrer les items selon les préférences de visibilité
+  const visibleSidebarItems = useMemo(() => {
+    return sidebarItems.filter(item => isLinkVisible(item.id));
+  }, [sidebarItems, isLinkVisible]);
 
   // Déterminer l'item actif basé sur l'URL
   const activeItem = useMemo(() => {
@@ -245,7 +263,7 @@ export default function DashboardLayout({
         <div className="flex h-screen w-full">
           {/* Sidebar Desktop - Fixed height */}
           <motion.div
-            className="hidden lg:flex fixed left-0 top-0 bg-zinc-900/95 backdrop-blur-sm border-r border-zinc-800 flex-col items-start justify-start gap-8 h-screen z-[1000] overflow-hidden"
+            className="hidden lg:flex fixed left-0 top-0 bg-zinc-900/95 backdrop-blur-sm border-r border-zinc-800 flex-col items-start justify-start gap-8 h-screen z-[1000] overflow-hidden transition-colors duration-300"
             animate={{
               width: isExpanded || isPinned ? 300 : 64,
             }}
@@ -257,7 +275,7 @@ export default function DashboardLayout({
             <div className="flex flex-col items-center w-full justify-between gap-4 p-4">
               <div
                 onClick={() => router.push('/')}
-                className="!text-zinc-200 cursor-pointer font-semibold !text-lg"
+                className="text-zinc-200 cursor-pointer font-semibold !text-lg"
               >
                 <Image
                   src="/images/logo/eclipse-logo.png"
@@ -276,23 +294,38 @@ export default function DashboardLayout({
                   className="flex flex-row justify-between items-center gap-2 w-full"
                 >
                   <LanguageToggle />
-                  <button
-                    onClick={togglePin}
-                    className="p-1 rounded hover:bg-zinc-800 transition-colors"
-                  >
-                    {isPinned ? (
-                      <IconPinFilled size={16} className="!text-emerald-400" />
-                    ) : (
-                      <IconPin size={16} className="!text-zinc-200" />
-                    )}
-                  </button>
+                  <div className="flex items-center gap-1">
+                    {/* Theme Switch */}
+                    <button
+                      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                      className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors group"
+                      title={resolvedTheme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+                    >
+                      {resolvedTheme === 'dark' ? (
+                        <IconSun size={16} className="text-amber-400 group-hover:text-amber-300 transition-colors" />
+                      ) : (
+                        <IconMoon size={16} className="text-violet-400 group-hover:text-violet-300 transition-colors" />
+                      )}
+                    </button>
+                    {/* Pin Button */}
+                    <button
+                      onClick={togglePin}
+                      className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors"
+                    >
+                      {isPinned ? (
+                        <IconPinFilled size={16} className="text-violet-400" />
+                      ) : (
+                        <IconPin size={16} className="text-zinc-200" />
+                      )}
+                    </button>
+                  </div>
                 </motion.div>
               )}
             </div>
 
             {/* Navigation items */}
             <nav className="p-2 flex flex-col gap-1">
-              {sidebarItems.map(item => (
+              {visibleSidebarItems.map(item => (
                 <div
                   key={item.id}
                   onMouseEnter={() => setMenuItemHovered(item.id)}
@@ -302,11 +335,13 @@ export default function DashboardLayout({
                     onClick={() => handleItemClick(item)}
                     className={`group w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 mb-1 ${
                       activeItem === item.id
-                        ? 'bg-emerald-500/20 !text-emerald-400 border border-emerald-500/30'
-                        : '!text-zinc-200 hover:bg-zinc-800 hover:!text-zinc-100'
+                        ? 'bg-violet-500/20 text-violet-400 border border-violet-500/30'
+                        : 'text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100'
                     }`}
                   >
-                    <div className="flex-shrink-0">{item.icon}</div>
+                    <div className={`flex-shrink-0 transition-colors ${
+                      activeItem === item.id ? 'text-violet-400' : 'text-zinc-400 group-hover:text-zinc-200'
+                    }`}>{item.icon}</div>
 
                     <AnimatePresence mode="sync">
                       {(isExpanded || isPinned) && (
@@ -325,8 +360,8 @@ export default function DashboardLayout({
                               size={16}
                               className={`group-hover:rotate-180 transition-all duration-200 ${
                                 pathname === item.path
-                                  ? 'rotate-180 !text-emerald-400'
-                                  : '!text-zinc-400'
+                                  ? 'rotate-180 text-violet-400'
+                                  : 'text-zinc-400'
                               }`}
                             />
                           )}
@@ -350,10 +385,10 @@ export default function DashboardLayout({
                           <motion.button
                             key={menuItem.id}
                             onClick={() => handleItemClick(menuItem)}
-                            className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 !text-xs ${
+                            className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 text-xs ${
                               pathname === menuItem.path
-                                ? 'bg-emerald-500/10 !text-emerald-400 border border-emerald-500/20'
-                                : '!text-zinc-200 hover:bg-zinc-800 hover:!text-emerald-400'
+                                ? 'bg-violet-500/10 text-violet-400 border border-violet-500/20'
+                                : 'text-zinc-200 hover:bg-zinc-800 hover:text-violet-400'
                             }`}
                           >
                             <div className="flex-shrink-0">{menuItem.icon}</div>
@@ -370,19 +405,19 @@ export default function DashboardLayout({
           </motion.div>
 
           {/* Mobile Bottom Navigation */}
-          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-zinc-900/95 border-t border-zinc-800 backdrop-blur-sm">
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-zinc-900/95 border-t border-zinc-800 backdrop-blur-sm transition-colors duration-300">
             <nav className="flex items-center justify-around p-2">
-              {sidebarItems.map(item => (
+              {visibleSidebarItems.map(item => (
                 <button
                   key={item.id}
                   onClick={() => handleItemClick(item)}
                   className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 min-w-0 ${
                     activeItem === item.id
-                      ? '!text-emerald-400'
-                      : '!text-zinc-200 hover:!text-emerald-400'
+                      ? 'text-violet-400'
+                      : 'text-zinc-400 hover:text-violet-400'
                   }`}
                 >
-                  <div className="flex-shrink-0">{item.icon}</div>
+                  <div className={`flex-shrink-0 ${activeItem === item.id ? 'text-violet-400' : ''}`}>{item.icon}</div>
                 </button>
               ))}
             </nav>

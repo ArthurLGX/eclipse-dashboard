@@ -111,10 +111,10 @@ export default function FreePlanModal({
               <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="!text-2xl">🎉</span>
               </div>
-              <h2 className="!text-xl font-bold !text-zinc-200 mb-2">
+              <h2 className="!text-xl font-bold text-zinc-200 mb-2">
                 {t('activate_free_plan')}
               </h2>
-              <p className="!text-zinc-400 !text-sm">
+              <p className="text-zinc-400 !text-sm">
                 {t('free_plan_confirmation_message')}
               </p>
             </div>
@@ -122,18 +122,18 @@ export default function FreePlanModal({
             {/* Détails du plan */}
             <div className="bg-zinc-800/50 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="!text-zinc-300 font-medium capitalize">
+                <span className="text-zinc-300 font-medium capitalize">
                   {plan.name}
                 </span>
                 <span className="!text-emerald-400 font-bold">Gratuit</span>
               </div>
-              <p className="!text-zinc-400 !text-sm">{plan.description}</p>
+              <p className="text-zinc-400 !text-sm">{plan.description}</p>
             </div>
 
             {/* Barre de progression du trial */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="!text-sm !text-zinc-400">
+                <span className="!text-sm text-zinc-400">
                   {t('trial_period')}
                 </span>
                 <span className="!text-sm !text-emerald-400 font-medium">
@@ -148,7 +148,7 @@ export default function FreePlanModal({
                   className="h-2 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full"
                 />
               </div>
-              <p className="!text-xs !text-zinc-500 mt-1">
+              <p className="!text-xs text-zinc-500 mt-1">
                 {t('trial_progress_description')}
               </p>
             </div>
@@ -158,7 +158,7 @@ export default function FreePlanModal({
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="flex-1 bg-zinc-800 !text-zinc-300 px-4 py-2 rounded-lg hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                className="flex-1 bg-zinc-800 text-zinc-300 px-4 py-2 rounded-lg hover:bg-zinc-700 transition-colors disabled:opacity-50"
               >
                 {t('cancel')}
               </button>

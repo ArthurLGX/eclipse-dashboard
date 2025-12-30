@@ -157,8 +157,16 @@ export const BreadCrumb = () => {
     return t(segment) || segment;
   }
 
-  const handleNavigation = (path: string, isLast: boolean) => {
-    if (!isLast) {
+  // Segments qui n'ont pas de page (chemins intermédiaires uniquement)
+  const nonClickableSegments = ['profile'];
+
+  const isSegmentClickable = (segment: string, isLast: boolean) => {
+    if (isLast) return false;
+    return !nonClickableSegments.includes(segment);
+  };
+
+  const handleNavigation = (path: string, segment: string, isLast: boolean) => {
+    if (isSegmentClickable(segment, isLast)) {
       router.push(path);
     }
   };
@@ -168,26 +176,31 @@ export const BreadCrumb = () => {
       className="flex flex-row items-center gap-2 py-4"
       aria-label="Breadcrumb"
     >
-      {breadcrumbItems.map((item, index) => (
-        <div key={index} className="flex flex-row items-center gap-2">
-          <p
-            onClick={() => handleNavigation(item.path, item.isLast)}
-            className={`text-sm transition-colors capitalize ${
-              item.isLast
-                ? '!text-emerald-300 font-medium cursor-default' // Page active en vert
-                : '!text-zinc-600 hover:!text-zinc-300 hover:underline cursor-pointer'
-            }`}
-            aria-current={item.isLast ? 'page' : undefined}
-          >
-            {item.label}
-          </p>
+      {breadcrumbItems.map((item, index) => {
+        const clickable = isSegmentClickable(item.segment, item.isLast);
+        return (
+          <div key={index} className="flex flex-row items-center gap-2">
+            <p
+              onClick={() => handleNavigation(item.path, item.segment, item.isLast)}
+              className={`text-sm transition-colors capitalize ${
+                item.isLast
+                  ? '!text-violet-400 font-medium cursor-default' // Page active en violet
+                  : clickable
+                    ? 'text-zinc-600 hover:text-zinc-300 hover:underline cursor-pointer'
+                    : 'text-zinc-500 cursor-default' // Non-cliquable
+              }`}
+              aria-current={item.isLast ? 'page' : undefined}
+            >
+              {item.label}
+            </p>
 
-          {/* Afficher la flèche seulement si ce n'est pas le dernier élément */}
-          {!item.isLast && (
-            <IconChevronRight className="!text-zinc-600" size={16} />
-          )}
-        </div>
-      ))}
+            {/* Afficher la flèche seulement si ce n'est pas le dernier élément */}
+            {!item.isLast && (
+              <IconChevronRight className="text-zinc-600" size={16} />
+            )}
+          </div>
+        );
+      })}
     </nav>
   );
 };

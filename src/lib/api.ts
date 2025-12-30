@@ -601,6 +601,61 @@ export async function fetchLogin(username: string, password: string) {
 
 export const fetchLogout = () => get('auth/logout');
 
+/** Demande de réinitialisation de mot de passe (envoie un email) */
+export async function forgotPassword(email: string) {
+  const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    console.error('Forgot password error:', data);
+    
+    // Erreur 500 = probablement email provider non configuré
+    if (res.status === 500) {
+      throw new Error('Le service d\'envoi d\'emails n\'est pas configuré. Contactez l\'administrateur.');
+    }
+    
+    throw new Error(data?.error?.message || 'Erreur lors de l\'envoi de l\'email');
+  }
+
+  return res.json();
+}
+
+/** Réinitialisation du mot de passe avec le token reçu par email */
+export async function resetPassword(code: string, password: string, passwordConfirmation: string) {
+  const res = await fetch(`${API_URL}/api/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code, password, passwordConfirmation }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.error?.message || 'Erreur lors de la réinitialisation du mot de passe');
+  }
+
+  return res.json();
+}
+
+/** Renvoi de l'email de confirmation */
+export async function sendEmailConfirmation(email: string) {
+  const res = await fetch(`${API_URL}/api/auth/send-email-confirmation`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.error?.message || 'Erreur lors de l\'envoi de l\'email de confirmation');
+  }
+
+  return res.json();
+}
+
 export const fetchUserById = (userId: number) =>
   get(`users/${userId}?populate=*`);
 
@@ -769,8 +824,9 @@ export async function updateCompanyUser(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const companyData = company as any;
   
-  if (companyData.data?.length === 0) {
-    return post('companies', data);
+  if (companyData.data?.length === 0 || !companyId) {
+    // Création d'une nouvelle entreprise liée à l'utilisateur
+    return post('companies', { ...data, user: userId });
   }
   return put(`companies/${companyId}`, data);
 }
@@ -836,12 +892,17 @@ export async function createProjectInvitation(data: {
   // Si le destinataire existe, créer une notification
   if (recipient) {
     try {
-      // Récupérer les infos du sender et du projet pour la notification
-      const senderData = await get<{ username: string }>(`users/${data.sender}`);
+      // Récupérer les infos du sender (avec profile_picture) et du projet pour la notification
+      const senderData = await get<{ username: string; profile_picture?: { url: string } }>(`users/${data.sender}?populate=profile_picture`);
       const projectData = await get<ApiResponse<{ title: string }[]>>(
         `projects?filters[documentId][$eq]=${data.project}`
       );
       const projectTitle = projectData.data?.[0]?.title || 'un projet';
+      
+      // Construire l'URL complète de la photo de profil
+      const senderProfilePicture = senderData.profile_picture?.url 
+        ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${senderData.profile_picture.url}`
+        : undefined;
 
       await createNotification({
         user: recipient.id,
@@ -853,6 +914,7 @@ export async function createProjectInvitation(data: {
           invitation_id: (invitation as any).data?.documentId,
           project_id: data.project,
           sender_name: senderData.username,
+          sender_profile_picture: senderProfilePicture,
           project_title: projectTitle,
         },
         action_url: `/dashboard/projects/invitation/${invitationCode}`,
@@ -971,6 +1033,7 @@ export async function createNotification(data: {
     invitation_id?: string;
     project_id?: string;
     sender_name?: string;
+    sender_profile_picture?: string;
     project_title?: string;
   };
   action_url?: string;

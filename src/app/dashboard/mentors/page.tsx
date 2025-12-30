@@ -49,10 +49,10 @@ export default function MentorsPage() {
             </span>
           </div>
           <div>
-            <p className="!text-zinc-200 font-medium">
+            <p className="text-zinc-200 font-medium">
               {value as string} {row.lastName}
             </p>
-            <p className="!text-zinc-500 !text-sm">{row.email}</p>
+            <p className="text-zinc-500 !text-sm">{row.email}</p>
           </div>
         </div>
       ),
@@ -61,7 +61,7 @@ export default function MentorsPage() {
       key: 'email',
       label: 'Email',
       render: (value) => (
-        <p className="!text-zinc-300">{value as string}</p>
+        <p className="text-zinc-300">{value as string}</p>
       ),
     },
     {
@@ -70,7 +70,7 @@ export default function MentorsPage() {
       render: (value) => {
         const projects = value as { id: number; title: string }[] | undefined;
         return (
-          <p className="!text-zinc-300">
+          <p className="text-zinc-300">
             {projects?.length || 0} {t('projects')?.toLowerCase()}
           </p>
         );
@@ -80,7 +80,7 @@ export default function MentorsPage() {
       key: 'createdAt',
       label: t('created_at'),
       render: (value) => (
-        <p className="!text-zinc-300">
+        <p className="text-zinc-300">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),

@@ -142,10 +142,10 @@ export default function UpgradeDropdown({
           >
             <div className="p-4 space-y-3">
               <div className="!text-center pb-2 border-b border-zinc-700">
-                <h3 className="!text-zinc-200 font-semibold !text-sm">
+                <h3 className="text-zinc-200 font-semibold !text-sm">
                   {t('choose_upgrade_plan')}
                 </h3>
-                <p className="!text-zinc-400 !text-xs mt-1">
+                <p className="text-zinc-400 !text-xs mt-1">
                   {t('current_plan')}: {currentPlan}
                 </p>
               </div>
@@ -154,7 +154,7 @@ export default function UpgradeDropdown({
               <div className="flex flex-col lg:flex-row items-center justify-center gap-4 py-2">
                 <span
                   className={`!text-sm font-medium transition-colors duration-200 ${
-                    !togglePlan ? '!text-emerald-400' : '!text-zinc-400'
+                    !togglePlan ? '!text-emerald-400' : 'text-zinc-400'
                   }`}
                 >
                   {t('monthly')}
@@ -175,7 +175,7 @@ export default function UpgradeDropdown({
 
                 <span
                   className={`!text-sm font-medium transition-colors duration-200 ${
-                    togglePlan ? '!text-emerald-400' : '!text-zinc-400'
+                    togglePlan ? '!text-emerald-400' : 'text-zinc-400'
                   }`}
                 >
                   {t('yearly')}
@@ -185,7 +185,7 @@ export default function UpgradeDropdown({
                   className={`px-2 py-1 ${
                     togglePlan
                       ? 'bg-emerald-500/20 !text-emerald-300'
-                      : 'bg-zinc-900 !text-zinc-500'
+                      : 'bg-zinc-900 text-zinc-500'
                   } !text-xs font-medium rounded-full`}
                 >
                   {t('save_20_percent')}
@@ -202,7 +202,7 @@ export default function UpgradeDropdown({
                   className="w-full p-4 rounded-lg border border-zinc-700 hover:border-emerald-500/50 hover:bg-zinc-800/50 transition-all duration-200 !text-left group"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="!text-zinc-200 font-semibold capitalize group-hover:!text-emerald-300 transition-colors">
+                    <h4 className="text-zinc-200 font-semibold capitalize group-hover:!text-emerald-300 transition-colors">
                       {plan.name}
                     </h4>
                     <div className="!text-right">
@@ -213,13 +213,13 @@ export default function UpgradeDropdown({
                           : plan.price_monthly.toFixed(2)}
                         {language === 'fr' ? '€' : ''}
                       </div>
-                      <div className="!text-zinc-400 !text-xs">
+                      <div className="text-zinc-400 !text-xs">
                         {t('per_month')}
                       </div>
                     </div>
                   </div>
                   {togglePlan && (
-                    <div className="!text-zinc-400 !text-xs">
+                    <div className="text-zinc-400 !text-xs">
                       {language === 'en' ? '€' : ''}
                       {(plan.price_yearly * 12).toFixed(2)}
                       {language === 'fr' ? '€ ' : ' '}
@@ -227,7 +227,7 @@ export default function UpgradeDropdown({
                     </div>
                   )}
 
-                  <p className="!text-zinc-400 !text-sm mb-3">
+                  <p className="text-zinc-400 !text-sm mb-3">
                     {plan.description}
                   </p>
 
@@ -257,7 +257,7 @@ export default function UpgradeDropdown({
 
               {upgradePlans.length === 0 && (
                 <div className="!text-center py-4">
-                  <p className="!text-zinc-400 !text-sm">
+                  <p className="text-zinc-400 !text-sm">
                     {t('no_upgrade_available')}
                   </p>
                 </div>

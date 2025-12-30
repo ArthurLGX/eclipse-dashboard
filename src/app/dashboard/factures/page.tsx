@@ -6,6 +6,7 @@ import TableActions from '@/app/components/TableActions';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { usePreferences } from '@/app/context/PreferencesContext';
 import { useAuth } from '../../context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
@@ -27,6 +28,7 @@ export default function FacturesPage() {
   const { showGlobalPopup } = usePopup();
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { formatCurrency, formatDate } = usePreferences();
   const router = useRouter();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -119,11 +121,11 @@ export default function FacturesPage() {
           onClick={() => router.push(`/dashboard/factures/${getFactureSlug(row)}`)}
         >
           <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
-            <span className="!text-zinc-300 font-medium !text-sm">
+            <span className="text-zinc-300 font-medium !text-sm">
               {(value as string).charAt(0).toUpperCase()}
             </span>
           </div>
-          <p className="!text-zinc-200 font-medium">{value as string}</p>
+          <p className="text-zinc-200 font-medium">{value as string}</p>
         </div>
       ),
     },
@@ -131,8 +133,8 @@ export default function FacturesPage() {
       key: 'date',
       label: 'Date',
       render: (value) => (
-        <p className="!text-zinc-300">
-          {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
+        <p className="text-zinc-300">
+          {value ? formatDate(value as string) : '-'}
         </p>
       ),
     },
@@ -140,8 +142,8 @@ export default function FacturesPage() {
       key: 'due_date',
       label: "Échéance",
       render: (value) => (
-        <p className="!text-zinc-300">
-          {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
+        <p className="text-zinc-300">
+          {value ? formatDate(value as string) : '-'}
         </p>
       ),
     },
@@ -168,8 +170,8 @@ export default function FacturesPage() {
       key: 'number',
       label: 'Montant',
       render: (value) => (
-        <p className="!text-zinc-200 font-medium">
-          {(value as number)?.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) || '-'}
+        <p className="text-zinc-200 font-medium">
+          {value ? formatCurrency(value as number) : '-'}
         </p>
       ),
     },
@@ -180,7 +182,7 @@ export default function FacturesPage() {
         // Strapi peut retourner "client" ou "client_id"
         const clientData = value || row.client_id;
         return (
-          <p className="!text-zinc-300">
+          <p className="text-zinc-300">
             {clientData && typeof clientData === 'object' ? (clientData as Client).name : '-'}
           </p>
         );
@@ -190,7 +192,7 @@ export default function FacturesPage() {
       key: 'project',
       label: 'Projet',
       render: (value) => (
-        <p className="!text-zinc-300">
+        <p className="text-zinc-300">
           {value && typeof value === 'object' ? (value as Project).title : '-'}
         </p>
       ),
@@ -238,7 +240,7 @@ export default function FacturesPage() {
           },
           {
             label: t('revenue'),
-            value: stats.paidAmount.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }),
+            value: formatCurrency(stats.paidAmount),
             colorClass: '!text-emerald-400',
             icon: <IconCurrencyEuro className="w-6 h-6 !text-emerald-400" />,
           },

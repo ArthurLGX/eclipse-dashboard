@@ -123,7 +123,7 @@ export default function DashboardPage() {
         className="space-y-6"
       >
         <div className="flex items-center justify-between">
-          <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+          <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
             {t('dashboard')}
           </h1>
         </div>
@@ -135,7 +135,7 @@ export default function DashboardPage() {
             onClick={() => router.push('/dashboard/clients')}
             className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
           >
-            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+            <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
               {t('clients')}
             </h3>
             <p className="!text-3xl font-bold !text-emerald-400">
@@ -147,7 +147,7 @@ export default function DashboardPage() {
             onClick={() => router.push('/dashboard/prospects')}
             className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
           >
-            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+            <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
               {t('prospects')}
             </h3>
             <p className="!text-3xl font-bold !text-blue-400">
@@ -159,7 +159,7 @@ export default function DashboardPage() {
             onClick={() => router.push('/dashboard/projects')}
             className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
           >
-            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+            <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
               {t('projects')}
             </h3>
             <p className="!text-3xl font-bold !text-purple-400">
@@ -171,11 +171,11 @@ export default function DashboardPage() {
             className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 flex flex-col justify-between cursor-pointer hover:bg-zinc-800 transition-all duration-300"
             onClick={() => router.push('/dashboard/revenue')}
           >
-            <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+            <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
               {t('revenue')}
             </h3>
             {loading ? (
-              <p className="!text-3xl font-bold !text-zinc-400">...</p>
+              <p className="!text-3xl font-bold text-zinc-400">...</p>
             ) : (
               <p className="!text-3xl font-bold !text-emerald-400">
                 {stats.totalCA.toLocaleString('fr-FR', {
@@ -190,7 +190,7 @@ export default function DashboardPage() {
         {/* Recent Activity & Statistics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-            <h3 className="!text-lg font-semibold !text-zinc-200 mb-4">
+            <h3 className="!text-lg font-semibold text-zinc-200 mb-4">
               {t('recent_activity')}
             </h3>
             {loading ? (
@@ -205,14 +205,14 @@ export default function DashboardPage() {
             ) : recentActivities.length === 0 ? (
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-zinc-600 rounded-full"></div>
-                <p className="!text-zinc-400">{t('no_recent_activity')}</p>
+                <p className="text-zinc-400">{t('no_recent_activity')}</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {recentActivities.slice(0, 3).map((activity, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div className={`w-2 h-2 bg-${activity.color}-400 rounded-full`}></div>
-                    <p className="!text-zinc-300">{activity.message}</p>
+                    <p className="text-zinc-300">{activity.message}</p>
                   </div>
                 ))}
               </div>
@@ -220,7 +220,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-            <h3 className="!text-lg font-semibold !text-zinc-200 mb-4">
+            <h3 className="!text-lg font-semibold text-zinc-200 mb-4">
               {t('statistics')}
             </h3>
             {loading ? (
@@ -235,15 +235,15 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <p className="!text-zinc-400">{t('conversion_rate')}</p>
+                  <p className="text-zinc-400">{t('conversion_rate')}</p>
                   <p className="!text-emerald-400 font-semibold">{stats.conversionRate}%</p>
                 </div>
                 <div className="flex justify-between">
-                  <p className="!text-zinc-400">{t('active_clients')}</p>
+                  <p className="text-zinc-400">{t('active_clients')}</p>
                   <p className="!text-blue-400 font-semibold">{stats.activeClients.length}</p>
                 </div>
                 <div className="flex justify-between">
-                  <p className="!text-zinc-400">{t('projects_in_progress')}</p>
+                  <p className="text-zinc-400">{t('projects_in_progress')}</p>
                   <p className="!text-purple-400 font-semibold">{stats.inProgressProjects.length}</p>
                 </div>
               </div>

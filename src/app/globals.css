@@ -5,10 +5,47 @@
 /*google fonts*/
 
 :root {
-  --background: black;
-  --foreground: #171717;
-  --text-color: #e4e0e0;
-  --subtitle-color: #e0e0e0;
+  --background: #000000;
+  --foreground: #0B192C;
+  --text-color: #E2E8F0;
+  --subtitle-color: #c6a8ff;
+  --accent: #7C3AED;
+}
+
+/* Theme: Dark (default) - Violet profond avec accent violet clair */
+:root.dark,
+:root:not(.light) {
+  --background: #0D0A1A;
+  --foreground: #1A1428;
+  --text-color: #E8E4F0;
+  --text-secondary: #A89EC8;
+  --text-muted: #7B6F9E;
+  --card-bg: #1A1428;
+  --card-border: #2E2648;
+  --input-bg: #1A1428;
+  --input-border: #3D3260;
+  --sidebar-bg: #0D0A1A;
+  --hover-bg: #2E2648;
+  --accent: #7C3AED;
+  --accent-light: #A78BFA;
+}
+
+/* Theme: Light - Style dashboard moderne violet/lavande */
+:root.light {
+  --background: #F5F5F9;
+  --foreground: #1F2937;
+  --text-color: #1F2937;
+  --text-secondary: #4B5563;
+  --text-muted: #6B7280;
+  --text-placeholder: #9CA3AF;
+  --card-bg: #FFFFFF;
+  --card-border: #E5E7EB;
+  --input-bg: #FFFFFF;
+  --input-border: #D1D5DB;
+  --sidebar-bg: #7C3AED;
+  --hover-bg: #F3F4F6;
+  --accent: #7C3AED;
+  --accent-light: #A78BFA;
 }
 
 @layer base {
@@ -18,6 +55,1035 @@
     --font-geist: 'Geist', sans-serif;
     --font-manrope: 'Manrope', sans-serif;
   }
+}
+
+/* ============================================
+   DARK MODE OVERRIDES - Accent violet cohérent
+   ============================================ */
+
+/* Replace emerald accent with violet in dark mode */
+.dark .bg-emerald-500,
+:root:not(.light) .bg-emerald-500 {
+  background-color: #7C3AED !important;
+}
+
+/* Force violet on all emerald buttons in dark mode */
+.dark button.bg-emerald-500,
+.dark [class*="bg-emerald-500"]:not([class*="/"]) {
+  background-color: #7C3AED !important;
+}
+
+:root.dark .bg-emerald-500\/10,
+:root:not(.light) .bg-emerald-500\/10,
+:root.dark .bg-emerald-500\/20,
+:root:not(.light) .bg-emerald-500\/20 {
+  background-color: rgba(124, 58, 237, 0.15) !important;
+}
+
+:root.dark .border-emerald-500,
+:root:not(.light) .border-emerald-500,
+:root.dark .border-emerald-500\/20,
+:root:not(.light) .border-emerald-500\/20 {
+  border-color: #7C3AED !important;
+}
+
+:root.dark .text-emerald-400,
+:root:not(.light) .text-emerald-400,
+:root.dark .text-emerald-300,
+:root:not(.light) .text-emerald-300,
+:root.dark .text-emerald-500,
+:root:not(.light) .text-emerald-500 {
+  color: #A78BFA !important;
+}
+
+/* Dark mode buttons */
+:root.dark button.bg-emerald-500,
+:root:not(.light) button.bg-emerald-500,
+:root.dark button.bg-emerald-600,
+:root:not(.light) button.bg-emerald-600 {
+  background-color: #7C3AED !important;
+  color: #FFFFFF !important;
+}
+
+:root.dark button.bg-emerald-500:hover,
+:root:not(.light) button.bg-emerald-500:hover,
+:root.dark button.bg-emerald-600:hover,
+:root:not(.light) button.bg-emerald-600:hover {
+  background-color: #6D28D9 !important;
+}
+
+/* Dark mode sidebar active state - Replace emerald with violet */
+:root.dark .bg-emerald-500\/20,
+:root:not(.light) .bg-emerald-500\/20,
+:root.dark .bg-emerald-500\/10,
+:root:not(.light) .bg-emerald-500\/10 {
+  background-color: rgba(124, 58, 237, 0.2) !important;
+  border-color: rgba(124, 58, 237, 0.3) !important;
+}
+
+:root.dark .bg-emerald-500\/20 span,
+:root:not(.light) .bg-emerald-500\/20 span,
+:root.dark .bg-emerald-500\/10 span,
+:root:not(.light) .bg-emerald-500\/10 span,
+:root.dark .\!text-emerald-400,
+:root:not(.light) .\!text-emerald-400 {
+  color: #A78BFA !important;
+}
+
+:root.dark .bg-emerald-500\/20 svg,
+:root:not(.light) .bg-emerald-500\/20 svg,
+:root.dark .bg-emerald-500\/10 svg,
+:root:not(.light) .bg-emerald-500\/10 svg {
+  color: #A78BFA !important;
+}
+
+/* Replace emerald borders with violet in dark mode */
+:root.dark .border-emerald-500\/30,
+:root:not(.light) .border-emerald-500\/30,
+:root.dark .border-emerald-500\/20,
+:root:not(.light) .border-emerald-500\/20 {
+  border-color: rgba(124, 58, 237, 0.3) !important;
+}
+
+:root.dark .border-emerald-500,
+:root:not(.light) .border-emerald-500 {
+  border-color: #7C3AED !important;
+}
+
+/* Dark mode hover states - Replace emerald with violet */
+:root.dark .hover\:text-emerald-400:hover,
+:root:not(.light) .hover\:text-emerald-400:hover,
+:root.dark .hover\:\!text-emerald-400:hover,
+:root:not(.light) .hover\:\!text-emerald-400:hover {
+  color: #A78BFA !important;
+}
+
+/* Dark mode emerald text colors to violet */
+:root.dark .text-emerald-400,
+:root:not(.light) .text-emerald-400,
+:root.dark .text-emerald-300,
+:root:not(.light) .text-emerald-300,
+:root.dark .text-emerald-500,
+:root:not(.light) .text-emerald-500,
+:root.dark .\!text-emerald-300,
+:root:not(.light) .\!text-emerald-300,
+:root.dark .\!text-emerald-500,
+:root:not(.light) .\!text-emerald-500 {
+  color: #A78BFA !important;
+}
+
+/* Dark mode emerald backgrounds to violet */
+:root.dark .bg-emerald-400\/20,
+:root:not(.light) .bg-emerald-400\/20,
+:root.dark .bg-emerald-400\/10,
+:root:not(.light) .bg-emerald-400\/10 {
+  background-color: rgba(124, 58, 237, 0.2) !important;
+}
+
+/* Dark mode hover emerald border to violet */
+:root.dark .hover\:border-emerald-200:hover,
+:root:not(.light) .hover\:border-emerald-200:hover,
+:root.dark .hover\:border-emerald-500:hover,
+:root:not(.light) .hover\:border-emerald-500:hover,
+:root.dark .hover\:border-emerald-500\/50:hover,
+:root:not(.light) .hover\:border-emerald-500\/50:hover {
+  border-color: #A78BFA !important;
+}
+
+/* Dark mode progress bars */
+:root.dark .bg-emerald-400,
+:root:not(.light) .bg-emerald-400 {
+  background-color: #7C3AED !important;
+}
+
+/* Dark mode cards - Violet profond */
+:root.dark .bg-zinc-900,
+:root:not(.light) .bg-zinc-900 {
+  background-color: #1A1428 !important;
+  border-color: #2E2648 !important;
+}
+
+:root.dark .bg-zinc-800,
+:root:not(.light) .bg-zinc-800 {
+  background-color: #221A38 !important;
+}
+
+:root.dark .bg-zinc-700,
+:root:not(.light) .bg-zinc-700 {
+  background-color: #2E2648 !important;
+}
+
+/* Dark mode borders - violet tones */
+:root.dark .border-zinc-800,
+:root:not(.light) .border-zinc-800,
+:root.dark .border-zinc-700,
+:root:not(.light) .border-zinc-700 {
+  border-color: #2E2648 !important;
+}
+
+/* Dark mode tables - Violet profond */
+:root.dark table,
+:root:not(.light) table {
+  background-color: #1A1428 !important;
+}
+
+:root.dark th,
+:root:not(.light) th {
+  background-color: #0D0A1A !important;
+  color: #E8E4F0 !important;
+  border-color: #2E2648 !important;
+}
+
+:root.dark td,
+:root:not(.light) td {
+  border-color: #2E2648 !important;
+  color: #A89EC8 !important;
+}
+
+:root.dark tbody tr,
+:root:not(.light) tbody tr {
+  background-color: #1A1428 !important;
+}
+
+:root.dark tbody tr:nth-child(even),
+:root:not(.light) tbody tr:nth-child(even) {
+  background-color: #181224 !important;
+}
+
+:root.dark tbody tr:hover,
+:root:not(.light) tbody tr:hover {
+  background-color: #2E2648 !important;
+}
+
+/* Dark mode sidebar - Gradient violet profond */
+:root.dark aside,
+:root:not(.light) aside,
+:root.dark [class*="sidebar"],
+:root:not(.light) [class*="sidebar"],
+:root.dark .bg-zinc-900\/95,
+:root:not(.light) .bg-zinc-900\/95 {
+  background: linear-gradient(180deg, #1A1030 0%, #0D0A1A 50%, #0F0820 100%) !important;
+  border-color: #3D3260 !important;
+  border-right: 1px solid #3D3260 !important;
+}
+
+/* Mobile bottom nav - Gradient violet */
+:root.dark .bg-zinc-900\/95.border-t,
+:root:not(.light) .bg-zinc-900\/95.border-t {
+  background: linear-gradient(0deg, #0D0A1A 0%, #1A1030 100%) !important;
+  border-color: #3D3260 !important;
+}
+
+/* Sidebar navigation items in dark mode */
+:root.dark nav button,
+:root:not(.light) nav button,
+:root.dark nav a,
+:root:not(.light) nav a {
+  color: #C4B5E8 !important;
+}
+
+:root.dark nav button span,
+:root:not(.light) nav button span,
+:root.dark nav a span,
+:root:not(.light) nav a span {
+  color: #eae0ff !important;
+}
+
+:root.dark nav button:hover,
+:root:not(.light) nav button:hover,
+:root.dark nav a:hover,
+:root:not(.light) nav a:hover {
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.15) 0%, rgba(124, 58, 237, 0.05) 100%) !important;
+  border-radius: 8px !important;
+}
+
+:root.dark nav button:hover span,
+:root:not(.light) nav button:hover span {
+  color: #A78BFA !important;
+}
+
+:root.dark nav svg,
+:root:not(.light) nav svg {
+  color: #8B7BB8 !important;
+}
+
+:root.dark nav button:hover svg,
+:root:not(.light) nav button:hover svg {
+  color: #A78BFA !important;
+}
+
+/* Sidebar borders and dividers */
+:root.dark .border-zinc-800,
+:root:not(.light) .border-zinc-800 {
+  border-color: #2E2648 !important;
+}
+
+/* Sidebar select/dropdown */
+:root.dark .bg-zinc-800\/20,
+:root:not(.light) .bg-zinc-800\/20 {
+  background-color: rgba(46, 38, 72, 0.3) !important;
+}
+
+:root.dark .border-zinc-700,
+:root:not(.light) .border-zinc-700 {
+  border-color: #3D3260 !important;
+}
+
+:root.dark .hover\:bg-zinc-700\/50:hover,
+:root:not(.light) .hover\:bg-zinc-700\/50:hover {
+  background-color: rgba(61, 50, 96, 0.5) !important;
+}
+
+:root.dark .hover\:bg-zinc-800:hover,
+:root:not(.light) .hover\:bg-zinc-800:hover {
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.15) 0%, rgba(124, 58, 237, 0.05) 100%) !important;
+}
+
+/* Dark mode inputs - Violet tones */
+:root.dark input,
+:root:not(.light) input,
+:root.dark textarea,
+:root:not(.light) textarea,
+:root.dark select,
+:root:not(.light) select {
+  background-color: #1A1428 !important;
+  border-color: #3D3260 !important;
+  color: #E8E4F0 !important;
+}
+
+:root.dark input::placeholder,
+:root:not(.light) input::placeholder,
+:root.dark textarea::placeholder,
+:root:not(.light) textarea::placeholder {
+  color: #7B6F9E !important;
+}
+
+:root.dark input:focus,
+:root:not(.light) input:focus,
+:root.dark textarea:focus,
+:root:not(.light) textarea:focus {
+  border-color: #7C3AED !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25) !important;
+}
+
+/* Dark mode hover states - Violet */
+:root.dark .hover\:bg-zinc-800:hover,
+:root:not(.light) .hover\:bg-zinc-800:hover {
+  background-color: #2E2648 !important;
+}
+
+:root.dark .hover\:bg-zinc-700:hover,
+:root:not(.light) .hover\:bg-zinc-700:hover {
+  background-color: #3D3260 !important;
+}
+
+/* ============================================
+   WHITE BACKGROUND CONTAINERS (Invoice cards, etc.)
+   Text should always be dark on white backgrounds
+   ============================================ */
+.bg-white,
+.bg-white p,
+.bg-white span,
+.bg-white label,
+.bg-white h1,
+.bg-white h2,
+.bg-white h3,
+.bg-white h4,
+.bg-white h5,
+.bg-white h6 {
+  color: #1F2937 !important;
+}
+
+.bg-white .text-zinc-800 {
+  color: #27272a !important;
+}
+
+/* ============================================
+   LIGHT MODE OVERRIDES
+   ============================================ */
+
+/* Body & Main containers */
+.light body,
+.light main {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+/* Headings - Dark gray for modern look */
+.light h1,
+.light h2,
+.light h3,
+.light h4,
+.light h5,
+.light h6 {
+  color: #1F2937 !important;
+}
+
+/* Paragraphs & Text - Gray tones */
+.light p {
+  color: #374151 !important;
+}
+
+.light span {
+  color: #4B5563 !important;
+}
+
+.light label {
+  color: #374151 !important;
+}
+
+/* Background colors - Modern light gray/white */
+.light .bg-black,
+.light .bg-zinc-950 {
+  background-color: #F5F5F9 !important;
+}
+
+.light .bg-zinc-900,
+.light .bg-zinc-900\/50,
+.light .bg-zinc-900\/95,
+.light .\!bg-zinc-900 {
+  background-color: #FFFFFF !important;
+}
+
+.light .bg-zinc-800,
+.light .bg-zinc-800\/50,
+.light .bg-zinc-800\/30,
+.light .bg-zinc-800\/80,
+.light .\!bg-zinc-800 {
+  background-color: #F9FAFB !important;
+}
+
+.light .bg-zinc-700,
+.light .bg-zinc-700\/50,
+.light .\!bg-zinc-700 {
+  background-color: #F3F4F6 !important;
+}
+
+.light .bg-zinc-600,
+.light .\!bg-zinc-600 {
+  background-color: #E5E7EB !important;
+}
+
+/* Hover backgrounds */
+.light .hover\:\!bg-zinc-900:hover,
+.light .hover\:bg-zinc-900:hover {
+  background-color: #F3F4F6 !important;
+}
+
+.light .hover\:\!bg-zinc-800:hover,
+.light .hover\:bg-zinc-800:hover {
+  background-color: #E5E7EB !important;
+}
+
+.light .hover\:bg-zinc-700:hover {
+  background-color: #E5E7EB !important;
+}
+
+/* Border colors - Soft gray */
+.light .border-zinc-900,
+.light .border-zinc-800,
+.light .border-zinc-700,
+.light .border-zinc-700\/50 {
+  border-color: #E5E7EB !important;
+}
+
+.light .border-zinc-600,
+.light .border-zinc-500 {
+  border-color: #D1D5DB !important;
+}
+
+/* Text colors - Light mode - Modern gray tones */
+.light .text-white,
+.light .\!text-white {
+  color: #1F2937 !important;
+}
+
+.light .text-zinc-100,
+.light .\!text-zinc-100 {
+  color: #1F2937 !important;
+}
+
+.light .text-zinc-200,
+.light .\!text-zinc-200 {
+  color: #1F2937 !important;
+}
+
+.light .text-zinc-300,
+.light .\!text-zinc-300 {
+  color: #374151 !important;
+}
+
+.light .text-zinc-400,
+.light .\!text-zinc-400 {
+  color: #6B7280 !important;
+}
+
+.light .text-zinc-500,
+.light .\!text-zinc-500 {
+  color: #6B7280 !important;
+}
+
+.light .text-zinc-600,
+.light .\!text-zinc-600 {
+  color: #4B5563 !important;
+}
+
+.light .text-zinc-700,
+.light .\!text-zinc-700 {
+  color: #374151 !important;
+}
+
+.light .text-zinc-800,
+.light .\!text-zinc-800 {
+  color: #1F2937 !important;
+}
+
+.light .text-zinc-900,
+.light .\!text-zinc-900 {
+  color: #111827 !important;
+}
+
+/* Icons - Make them darker in light mode */
+.light svg {
+  color: inherit;
+}
+
+.light .text-zinc-200 svg,
+.light .text-zinc-300 svg,
+.light .text-zinc-400 svg {
+  color: #334155 !important;
+}
+
+/* Form elements - Clean modern style */
+.light input,
+.light textarea,
+.light select {
+  background-color: #FFFFFF !important;
+  border-color: #D1D5DB !important;
+  color: #1F2937 !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #9CA3AF !important;
+}
+
+.light input:focus,
+.light textarea:focus,
+.light select:focus {
+  border-color: #7C3AED !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1) !important;
+}
+
+/* Hover states */
+.light .hover\:bg-zinc-800:hover,
+.light .hover\:bg-zinc-700:hover {
+  background-color: #e2e8f0 !important;
+}
+
+.light .hover\:bg-zinc-900:hover {
+  background-color: #f1f5f9 !important;
+}
+
+.light .hover\:\!text-zinc-100:hover,
+.light .hover\:\!text-emerald-400:hover {
+  color: #10b981 !important;
+}
+
+/* Backdrop blur containers */
+.light .backdrop-blur-sm {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Cards & Panels with shadows - Soft modern shadows */
+.light .shadow-xl,
+.light .shadow-lg {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Dividers */
+.light .divide-zinc-800 > :not([hidden]) ~ :not([hidden]),
+.light .divide-zinc-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #E5E7EB !important;
+}
+
+/* Tables */
+.light table {
+  background-color: #FFFFFF !important;
+}
+
+.light th {
+  background-color: #F9FAFB !important;
+  color: #374151 !important;
+  font-weight: 500 !important;
+}
+
+.light td {
+  color: #4B5563 !important;
+  border-color: #E5E7EB !important;
+}
+
+.light tr:hover {
+  background-color: #F9FAFB !important;
+}
+
+/* Scrollbar for light mode */
+.light ::-webkit-scrollbar-thumb {
+  background: #D1D5DB !important;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF !important;
+}
+
+.light ::-webkit-scrollbar-track {
+  background: #F3F4F6 !important;
+}
+
+/* Modals & Overlays */
+.light .bg-black\/50,
+.light .bg-black\/80,
+.light .bg-zinc-900\/80 {
+  background-color: rgba(17, 24, 39, 0.5) !important;
+}
+
+/* Specific component overrides */
+.light .ring-zinc-700,
+.light .ring-zinc-800 {
+  --tw-ring-color: #e2e8f0 !important;
+}
+
+/* Accent colors - Violet theme */
+.light .bg-emerald-500\/10 .text-emerald-400,
+.light .bg-emerald-500\/20 .text-emerald-400,
+.light .\!text-emerald-400,
+.light .text-emerald-400,
+.light .text-emerald-300 {
+  color: #7C3AED !important;
+}
+
+.light .bg-blue-500\/10 .text-blue-400,
+.light .\!text-blue-400,
+.light .text-blue-400 {
+  color: #3B82F6 !important;
+}
+
+.light .bg-orange-500\/10 .text-orange-400,
+.light .\!text-orange-400,
+.light .text-orange-400 {
+  color: #F59E0B !important;
+}
+
+.light .bg-red-500\/10 .text-red-400,
+.light .\!text-red-400,
+.light .text-red-400 {
+  color: #EF4444 !important;
+}
+
+.light .bg-purple-500\/10 .text-purple-400,
+.light .\!text-purple-400,
+.light .text-purple-400 {
+  color: #7C3AED !important;
+}
+
+/* Use violet accent for primary buttons in light mode */
+.light .bg-emerald-500 {
+  background-color: #7C3AED !important;
+}
+
+.light .border-emerald-500,
+.light .border-emerald-500\/20,
+.light .border-emerald-500\/30 {
+  border-color: #7C3AED !important;
+}
+
+.light .bg-emerald-500\/10,
+.light .bg-emerald-500\/20 {
+  background-color: rgba(124, 58, 237, 0.1) !important;
+}
+
+/* Progress bars use violet */
+.light .bg-emerald-400,
+.light .bg-emerald-500 {
+  background-color: #7C3AED !important;
+}
+
+/* Dropdown menus */
+.light [role="menu"],
+.light [role="listbox"] {
+  background-color: #FFFFFF !important;
+  border-color: #E5E7EB !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Tooltips */
+.light [role="tooltip"] {
+  background-color: #1F2937 !important;
+  color: #FFFFFF !important;
+}
+
+/* Charts backgrounds */
+.light .recharts-wrapper {
+  background-color: #FFFFFF !important;
+}
+
+/* Code/Pre blocks */
+.light pre,
+.light code {
+  background-color: #F3F4F6 !important;
+  color: #1F2937 !important;
+}
+
+/* ============================================
+   BUTTONS - Light mode comprehensive styles
+   ============================================ */
+
+/* Default buttons */
+.light button {
+  color: var(--text-color) !important;
+}
+
+/* Primary/Action buttons - Violet theme */
+.light button.bg-emerald-500,
+.light button.bg-emerald-600,
+.light button.bg-green-500,
+.light button.bg-green-600,
+.light button.bg-purple-500,
+.light button.bg-purple-600 {
+  background-color: #7C3AED !important;
+  color: #FFFFFF !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+}
+
+.light button.bg-emerald-500:hover,
+.light button.bg-emerald-600:hover,
+.light button.bg-green-500:hover,
+.light button.bg-green-600:hover,
+.light button.bg-purple-500:hover,
+.light button.bg-purple-600:hover {
+  background-color: #6D28D9 !important;
+}
+
+.light button.bg-blue-500,
+.light button.bg-blue-600 {
+  background-color: #3B82F6 !important;
+  color: #FFFFFF !important;
+}
+
+.light button.bg-red-500,
+.light button.bg-red-600 {
+  background-color: #EF4444 !important;
+  color: #FFFFFF !important;
+}
+
+.light button.bg-orange-500,
+.light button.bg-orange-600 {
+  background-color: #F59E0B !important;
+  color: #FFFFFF !important;
+}
+
+/* Ghost/Outline buttons */
+.light button[class*="bg-emerald-500/10"],
+.light button[class*="bg-emerald-500/20"] {
+  background-color: rgba(124, 58, 237, 0.1) !important;
+  color: #7C3AED !important;
+}
+
+.light button[class*="bg-blue-500/10"],
+.light button[class*="bg-blue-500/20"] {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  color: #3B82F6 !important;
+}
+
+.light button[class*="bg-red-500/10"],
+.light button[class*="bg-red-500/20"] {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  color: #EF4444 !important;
+}
+
+.light button[class*="bg-orange-500/10"],
+.light button[class*="bg-orange-500/20"] {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  color: #F59E0B !important;
+}
+
+/* Zinc/Gray buttons */
+.light button.bg-zinc-800,
+.light button.bg-zinc-900 {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  color: #374151 !important;
+}
+
+.light button.bg-zinc-800:hover,
+.light button.bg-zinc-900:hover {
+  background-color: #F3F4F6 !important;
+}
+
+.light button.bg-zinc-700 {
+  background-color: #F3F4F6 !important;
+  color: #374151 !important;
+}
+
+/* Button text colors */
+.light button .text-white,
+.light button.text-white {
+  color: inherit !important;
+}
+
+.light button[class*="text-emerald"],
+.light button [class*="text-emerald"] {
+  color: #7C3AED !important;
+}
+
+.light button[class*="text-blue"],
+.light button [class*="text-blue"] {
+  color: #3B82F6 !important;
+}
+
+.light button[class*="text-red"],
+.light button [class*="text-red"] {
+  color: #EF4444 !important;
+}
+
+.light button[class*="text-orange"],
+.light button [class*="text-orange"] {
+  color: #F59E0B !important;
+}
+
+/* ============================================
+   TABLE ROWS - Light mode comprehensive styles
+   ============================================ */
+
+/* Table container */
+.light table {
+  background-color: #FFFFFF !important;
+  border-color: #E5E7EB !important;
+}
+
+/* Table header */
+.light thead {
+  background-color: #F9FAFB !important;
+}
+
+.light thead tr {
+  background-color: #F9FAFB !important;
+  border-color: #E5E7EB !important;
+}
+
+.light th {
+  background-color: #F9FAFB !important;
+  color: #374151 !important;
+  font-weight: 600 !important;
+  border-color: #E5E7EB !important;
+}
+
+/* Table body rows */
+.light tbody tr {
+  background-color: #FFFFFF !important;
+  border-color: #E5E7EB !important;
+  color: #374151 !important;
+}
+
+.light tbody tr:nth-child(even) {
+  background-color: #FAFBFC !important;
+}
+
+.light tbody tr:hover {
+  background-color: #F3F4F6 !important;
+}
+
+/* Table cells */
+.light td {
+  color: #4B5563 !important;
+  border-color: #E5E7EB !important;
+}
+
+.light td a {
+  color: #7C3AED !important;
+}
+
+.light td a:hover {
+  color: #6D28D9 !important;
+}
+
+/* Alternating row colors override */
+.light tr.bg-zinc-900\/30,
+.light tr.bg-zinc-900\/10 {
+  background-color: #FFFFFF !important;
+}
+
+.light tr.bg-zinc-900\/30:nth-child(even),
+.light tr.bg-zinc-900\/10:nth-child(even) {
+  background-color: #FAFBFC !important;
+}
+
+/* Table text */
+.light table .text-zinc-200,
+.light table .text-zinc-300,
+.light table .text-zinc-400 {
+  color: #4B5563 !important;
+}
+
+.light table .text-white {
+  color: #1F2937 !important;
+}
+
+/* Table badges/status */
+.light table [class*="bg-emerald"] {
+  background-color: rgba(124, 58, 237, 0.1) !important;
+  color: #7C3AED !important;
+}
+
+.light table [class*="bg-yellow"],
+.light table [class*="bg-amber"] {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  color: #D97706 !important;
+}
+
+.light table [class*="bg-red"] {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  color: #DC2626 !important;
+}
+
+.light table [class*="bg-blue"] {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  color: #2563EB !important;
+}
+
+.light table [class*="bg-gray"],
+.light table [class*="bg-zinc"]:not(tr) {
+  background-color: #F3F4F6 !important;
+  color: #4B5563 !important;
+}
+
+/* ============================================
+   SIDEBAR SPECIFIC - Light mode (Modern style)
+   ============================================ */
+
+/* Sidebar container - Light gray background */
+.light [class*="sidebar"],
+.light aside {
+  background-color: #FAFBFC !important;
+  border-color: #E5E7EB !important;
+  border-right: 1px solid #E5E7EB !important;
+}
+
+/* Sidebar navigation items - Default state */
+.light nav button span,
+.light nav a span {
+  color: #64748B !important;
+  font-weight: 500 !important;
+}
+
+.light nav button svg {
+  color: #b4c3e0 !important;
+}
+
+.light nav button:hover svg,
+.light nav a:hover svg {
+  color: #7C3AED !important;
+}
+
+.light nav button:hover span,
+.light nav a:hover span {
+  color: #7C3AED !important;
+}
+
+/* Active menu item uses violet accent */
+.light .bg-emerald-500\/20 span,
+.light .bg-emerald-500\/10 span {
+  color: #7C3AED !important;
+}
+
+.light .bg-emerald-500\/20 svg,
+.light .bg-emerald-500\/10 svg {
+  color: #7C3AED !important;
+}
+
+/* ============================================
+   CARDS & DASHBOARD WIDGETS - Light mode
+   ============================================ */
+.light [class*="rounded-lg"],
+.light [class*="rounded-xl"],
+.light [class*="rounded-2xl"] {
+  color: #374151;
+}
+
+/* Card titles */
+.light .font-semibold,
+.light .font-bold,
+.light .font-medium {
+  color: #1F2937 !important;
+}
+
+/* Card subtitles and descriptions */
+.light .text-sm {
+  color: #6B7280 !important;
+}
+
+.light .text-xs {
+  color: #9CA3AF !important;
+}
+
+/* Progress bar labels - Use violet accent */
+.light .text-emerald-400,
+.light .\!text-emerald-400,
+.light .text-emerald-300,
+.light .\!text-emerald-300 {
+  color: #7C3AED !important;
+}
+
+/* Numbers and stats - make them stand out */
+.light .text-2xl,
+.light .text-3xl,
+.light .text-4xl {
+  color: #1F2937 !important;
+}
+
+/* Muted text should still be readable */
+.light .text-muted,
+.light [class*="text-gray"],
+.light [class*="text-slate"] {
+  color: #6B7280 !important;
+}
+
+/* ============================================
+   NOTIFICATION BELL - Light mode
+   ============================================ */
+.light [class*="notification"] svg,
+.light button svg {
+  color: #6B7280 !important;
+}
+
+.light button:hover svg {
+  color: #7C3AED !important;
+}
+
+/* Keep colored buttons' icons white */
+.light .bg-emerald-500 svg,
+.light .bg-blue-500 svg,
+.light .bg-red-500 svg,
+.light .bg-purple-500 svg,
+.light .bg-orange-500 svg {
+  color: #ffffff !important;
+}
+
+/* ============================================
+   BREADCRUMB - Light mode  
+   ============================================ */
+.light nav[aria-label="Breadcrumb"] p {
+  color: #6B7280 !important;
+}
+
+.light nav[aria-label="Breadcrumb"] p.\!text-emerald-300,
+.light nav[aria-label="Breadcrumb"] .text-emerald-300 {
+  color: #7C3AED !important;
+}
+
+.light nav[aria-label="Breadcrumb"] svg {
+  color: #9CA3AF !important;
 }
 
 * {
@@ -64,12 +1130,12 @@ main {
   justify-content: center;
   width: 100%;
   height: 100%;
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
 }
 
 h1 {
   font-size: 3rem;
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   text-align: center;
   text-transform: capitalize;
   line-height: 1;

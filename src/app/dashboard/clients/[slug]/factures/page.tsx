@@ -82,7 +82,7 @@ export default function ClientFacturesPage() {
       key: 'facture_status',
       label: t('status'),
       render: v => (
-        <span className="flex items-center gap-2 !text-zinc-400">
+        <span className="flex items-center gap-2 text-zinc-400">
           {v === 'paid' ? (
             <IconCheck className="w-4 h-4 !text-emerald-400" />
           ) : v === 'sent' ? (

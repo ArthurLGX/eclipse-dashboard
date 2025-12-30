@@ -119,10 +119,10 @@ const CheckoutForm: React.FC<{
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
             {plan.name.charAt(0).toUpperCase() + plan.name.slice(1)} Plan
           </h3>
-          <p className="!text-zinc-400 !text-sm mb-3">{plan.description}</p>
+          <p className="text-zinc-400 !text-sm mb-3">{plan.description}</p>
           <div className="flex items-center justify-between">
             <span className="!text-2xl font-bold !text-emerald-400">
               {language === 'fr' ? '' : '€'}
@@ -131,14 +131,14 @@ const CheckoutForm: React.FC<{
                 : plan.price_monthly.toFixed(2)}
               {language === 'fr' ? '€' : ''}
             </span>
-            <span className="!text-zinc-400 !text-sm">
+            <span className="text-zinc-400 !text-sm">
               {billingType === 'yearly' ? t('per_year') : t('per_month')}
             </span>
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="!text-zinc-300 !text-sm font-medium">
+          <label className="text-zinc-300 !text-sm font-medium">
             {t('card_information')}
           </label>
           <div className="bg-zinc-800 border border-zinc-700 rounded-lg p-3">
@@ -169,7 +169,7 @@ const CheckoutForm: React.FC<{
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 bg-zinc-800 !text-zinc-300 px-4 py-3 rounded-lg hover:bg-zinc-700 transition-colors"
+          className="flex-1 bg-zinc-800 text-zinc-300 px-4 py-3 rounded-lg hover:bg-zinc-700 transition-colors"
         >
           {t('cancel')}
         </button>
@@ -235,12 +235,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             className="relative bg-zinc-900 rounded-xl border border-zinc-800 p-6 w-full max-w-md"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="!text-xl font-bold !text-zinc-200">
+              <h2 className="!text-xl font-bold text-zinc-200">
                 {t('payment_details')}
               </h2>
               <button
                 onClick={onClose}
-                className="!text-zinc-400 hover:!text-zinc-200 transition-colors"
+                className="text-zinc-400 hover:text-zinc-200 transition-colors"
               >
                 <svg
                   className="w-6 h-6"

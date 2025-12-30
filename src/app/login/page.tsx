@@ -177,10 +177,10 @@ function LoginContent() {
             transition={{ duration: 0.6, ease: 'easeInOut' }}
             className="!text-center mb-8"
           >
-            <h1 className="!text-4xl font-bold !text-zinc-200 mb-2">
+            <h1 className="!text-4xl font-bold text-zinc-200 mb-2">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </h1>
-            <p className="!text-zinc-400">
+            <p className="text-zinc-400">
               {isLogin
                 ? 'Sign in to your account'
                 : 'Join us today to start your journey'}
@@ -211,7 +211,7 @@ function LoginContent() {
                 value={username}
                 required
                 onChange={e => setUsername(e.target.value)}
-                className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg !text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
               />
             </div>
 
@@ -228,7 +228,7 @@ function LoginContent() {
                   value={email}
                   required={!isLogin}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg !text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                 />
               </motion.div>
             )}
@@ -244,12 +244,12 @@ function LoginContent() {
                     setPassword(e.target.value);
                     setPasswordError(validatePassword(e.target.value));
                   }}
-                  className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg !text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 !text-zinc-400 hover:!text-zinc-200"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
                 >
                   {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
@@ -276,12 +276,12 @@ function LoginContent() {
                       setConfirmPassword(e.target.value);
                       checkPassword(e.target.value);
                     }}
-                    className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg !text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                    className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 !text-zinc-400 hover:!text-zinc-200"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
                   >
                     {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                   </button>
@@ -296,11 +296,22 @@ function LoginContent() {
 
             <motion.button
               type="submit"
-              className="w-full bg-emerald-300 
-               hover:!text-emerald-300 border border-emerald-300 cursor-pointer hover:bg-emerald-300/20 !text-black hover:!text-emerald-300 font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+              className="w-full bg-violet-500 
+               hover:!text-white border border-violet-500 cursor-pointer hover:bg-violet-600 !text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </motion.button>
+
+            {isLogin && (
+              <div className="!text-center">
+                <a
+                  href="/forgot-password"
+                  className="!text-zinc-400 hover:!text-violet-400 !text-sm transition-colors duration-200"
+                >
+                  Forgot your password?
+                </a>
+              </div>
+            )}
           </motion.form>
 
           <motion.div
@@ -309,13 +320,13 @@ function LoginContent() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="!text-center mt-6"
           >
-            <p className="!text-zinc-400">
+            <p className="text-zinc-400">
               {isLogin
                 ? "Don't have an account? "
                 : 'Already have an account? '}
               <button
                 onClick={toggleMode}
-                className="!text-emerald-300 cursor-pointer hover:!text-emerald-400  transition-colors duration-200"
+                className="!text-violet-400 cursor-pointer hover:!text-violet-300 transition-colors duration-200"
               >
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>

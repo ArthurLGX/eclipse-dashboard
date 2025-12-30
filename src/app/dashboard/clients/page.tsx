@@ -128,24 +128,24 @@ export default function ClientsPage() {
             website={row.website}
             size="sm"
           />
-          <p className="!text-zinc-200 font-medium">{value as string}</p>
+          <p className="text-zinc-200 font-medium">{value as string}</p>
         </div>
       ),
     },
     {
       key: 'email',
       label: 'Email',
-      render: (value) => <p className="!text-zinc-300">{value as string}</p>,
+      render: (value) => <p className="text-zinc-300">{value as string}</p>,
     },
     {
       key: 'enterprise',
       label: 'Entreprise',
-      render: (value) => <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>,
+      render: (value) => <p className="text-zinc-300">{(value as string) || 'N/A'}</p>,
     },
     {
       key: 'website',
       label: 'Site web',
-      render: (value) => <p className="!text-zinc-300">{(value as string) || 'N/A'}</p>,
+      render: (value) => <p className="text-zinc-300">{(value as string) || 'N/A'}</p>,
     },
     {
       key: 'processStatus',
@@ -169,7 +169,7 @@ export default function ClientsPage() {
       key: 'createdAt',
       label: 'Date de création',
       render: (value) => (
-        <p className="!text-zinc-300">
+        <p className="text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
       ),

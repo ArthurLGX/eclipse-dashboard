@@ -180,23 +180,23 @@ export default function Home() {
       render: value => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
-            <span className="!text-zinc-300 font-medium !text-sm">
+            <span className="text-zinc-300 font-medium !text-sm">
               {(value as string).charAt(0).toUpperCase()}
             </span>
           </div>
-          <p className="!text-zinc-200 font-medium">{value as string}</p>
+          <p className="text-zinc-200 font-medium">{value as string}</p>
         </div>
       ),
     },
     {
       key: 'email',
       label: 'Email',
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: value => <p className="text-zinc-300">{value as string}</p>,
     },
     {
       key: 'enterprise',
       label: 'Entreprise',
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: value => <p className="text-zinc-300">{value as string}</p>,
     },
     {
       key: 'processStatus',
@@ -236,7 +236,7 @@ export default function Home() {
       key: 'createdAt',
       label: t('created_at'),
       render: value => (
-        <p className="!text-zinc-300">
+        <p className="text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
       ),
@@ -248,13 +248,13 @@ export default function Home() {
       key: 'name',
       label: t('project_name'),
       render: value => (
-        <p className="!text-zinc-200 font-medium">{value as string}</p>
+        <p className="text-zinc-200 font-medium">{value as string}</p>
       ),
     },
     {
       key: 'client',
       label: t('client'),
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: value => <p className="text-zinc-300">{value as string}</p>,
     },
     {
       key: 'status',
@@ -294,7 +294,7 @@ export default function Home() {
       key: 'createdAt',
       label: t('created_at'),
       render: value => (
-        <p className="!text-zinc-300">
+        <p className="text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
       ),
@@ -304,26 +304,26 @@ export default function Home() {
   const renderDashboardContent = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
           {t('dashboard')}
         </h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
             {t('clients')}
           </h3>
           <p className="!text-3xl font-bold !text-emerald-400">24</p>
         </div>
         <div className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
             {t('prospects')}
           </h3>
           <p className="!text-3xl font-bold !text-blue-400">12</p>
         </div>
         <div className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-2">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
             {t('projects')}
           </h3>
           <p className="!text-3xl font-bold !text-purple-400">8</p>
@@ -332,40 +332,40 @@ export default function Home() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-4">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-4">
             {t('recent_activity')}
           </h3>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-              <p className="!text-zinc-300">{t('new_clients_this_month')}</p>
+              <p className="text-zinc-300">{t('new_clients_this_month')}</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-              <p className="!text-zinc-300">{t('completed_projects')}</p>
+              <p className="text-zinc-300">{t('completed_projects')}</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-              <p className="!text-zinc-300">{t('new_prospects')}</p>
+              <p className="text-zinc-300">{t('new_prospects')}</p>
             </div>
           </div>
         </div>
 
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold !text-zinc-200 mb-4">
+          <h3 className="!text-lg font-semibold text-zinc-200 mb-4">
             {t('statistics')}
           </h3>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <p className="!text-zinc-400">{t('conversion_rate')}</p>
+              <p className="text-zinc-400">{t('conversion_rate')}</p>
               <p className="!text-emerald-400 font-semibold">67%</p>
             </div>
             <div className="flex justify-between">
-              <p className="!text-zinc-400">{t('active_clients')}</p>
+              <p className="text-zinc-400">{t('active_clients')}</p>
               <p className="!text-blue-400 font-semibold">18</p>
             </div>
             <div className="flex justify-between">
-              <p className="!text-zinc-400">{t('projects_in_progress')}</p>
+              <p className="text-zinc-400">{t('projects_in_progress')}</p>
               <p className="!text-purple-400 font-semibold">5</p>
             </div>
           </div>
@@ -377,7 +377,7 @@ export default function Home() {
   const renderClientsContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
           {t('clients')}
         </h1>
         <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
@@ -391,7 +391,7 @@ export default function Home() {
   const renderProjectsContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
           {t('projects')}
         </h1>
         <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
@@ -405,7 +405,7 @@ export default function Home() {
   const renderProspectsContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
           {t('prospects')}
         </h1>
         <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
@@ -419,7 +419,7 @@ export default function Home() {
   const renderMentorsContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
           {t('mentors')}
         </h1>
         <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
@@ -433,7 +433,7 @@ export default function Home() {
   const renderNewslettersContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
           {t('newsletters')}
         </h1>
         <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
@@ -447,27 +447,27 @@ export default function Home() {
     {
       key: 'first_name',
       label: t('first_name'),
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: value => <p className="text-zinc-300">{value as string}</p>,
     },
     {
       key: 'last_name',
       label: t('last_name'),
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: value => <p className="text-zinc-300">{value as string}</p>,
     },
     {
       key: 'email',
       label: t('email'),
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: value => <p className="text-zinc-300">{value as string}</p>,
     },
     {
       key: 'actions',
       label: t('actions'),
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: value => <p className="text-zinc-300">{value as string}</p>,
     },
     {
       key: 'createdAt',
       label: t('created_at'),
-      render: value => <p className="!text-zinc-300">{value as string}</p>,
+      render: value => <p className="text-zinc-300">{value as string}</p>,
     },
   ];
 
@@ -501,7 +501,7 @@ export default function Home() {
       />
       <div
         className={
-          '!text-zinc-200 z-10 flex flex-col gap-16 items-center justify-center w-full p-4  h-full '
+          'text-zinc-200 z-10 flex flex-col gap-16 items-center justify-center w-full p-4  h-full '
         }
       >
         <div
@@ -519,7 +519,7 @@ export default function Home() {
               initial={{ opacity: 0, y: '5%' }}
               animate={{ opacity: 1, y: 1 }}
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.2 }}
-              className="!text-xl !text-zinc-200 font-light"
+              className="!text-xl text-zinc-200 font-light"
             >
               {t('hero_subtitle_top')}
             </motion.span>
@@ -594,7 +594,7 @@ export default function Home() {
               >
                 {/* Header de la sidebar */}
                 <div className="flex flex-col items-center w-full justify-between gap-4">
-                  <div className="!text-zinc-200 cursor-pointer font-semibold !text-lg">
+                  <div className="text-zinc-200 cursor-pointer font-semibold !text-lg">
                     <Image
                       src="/images/logo/eclipse-logo.png"
                       alt="Eclipse Studio"
@@ -613,7 +613,7 @@ export default function Home() {
                       className={`group w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 mb-1 ${
                         item.active
                           ? 'bg-emerald-500/20 !text-emerald-400 border border-emerald-500/30'
-                          : '!text-zinc-400 hover:bg-zinc-800 hover:!text-zinc-200'
+                          : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
                       }`}
                     >
                       <div className="flex-shrink-0">{item.icon}</div>
@@ -644,7 +644,7 @@ export default function Home() {
                       className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 min-w-0 ${
                         item.active
                           ? '!text-emerald-400'
-                          : '!text-zinc-400 hover:!text-zinc-200'
+                          : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       <div className="flex-shrink-0">{item.icon}</div>

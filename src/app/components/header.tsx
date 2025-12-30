@@ -98,7 +98,7 @@ export const Header = () => {
                 width={40}
                 height={40}
               />
-              <span className="sm:flex hidden !text-xs !text-zinc-400 w-full !font-normal">
+              <span className="sm:flex hidden !text-xs text-zinc-400 w-full !font-normal">
                 Eclipse Studio Dashboard
               </span>
             </Link>
@@ -121,7 +121,7 @@ export const Header = () => {
                   className={`!flex !flex-row gap-1 items-center justify-center ${
                     isActive(link.path)
                       ? '!text-emerald-200 items-center justify-center gap-2 !px-2 border bg-emerald-300/20 border-emerald-200 rounded-full'
-                      : '!text-zinc-200'
+                      : 'text-zinc-200'
                   } hover:!text-emerald-200 capitalize !text-sm`}
                   key={link.name}
                   onClick={() => {
@@ -185,7 +185,7 @@ export const Header = () => {
                 <IconLogout
                   onClick={handleLogout}
                   className={
-                    'group-hover:!text-emerald-200 cursor-pointer hover:scale-[1.1] !text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'
+                    'group-hover:!text-emerald-200 cursor-pointer hover:scale-[1.1] text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'
                   }
                   size={24}
                 />
@@ -197,7 +197,7 @@ export const Header = () => {
           <div className="lg:hidden">
             <button
               onClick={toggleMenu}
-              className="p-2 !text-zinc-200 hover:!text-emerald-200 transition-colors"
+              className="p-2 text-zinc-200 hover:!text-emerald-200 transition-colors"
             >
               {isMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
             </button>
@@ -240,7 +240,7 @@ export const Header = () => {
                 <div className="absolute top-4 right-4">
                   <button
                     onClick={closeMenu}
-                    className="p-2 !text-zinc-400 hover:!text-white transition-colors"
+                    className="p-2 text-zinc-400 hover:!text-white transition-colors"
                   >
                     <IconX size={24} />
                   </button>
@@ -264,7 +264,7 @@ export const Header = () => {
                         className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                           isActive(link.path)
                             ? 'bg-emerald-200/10 !text-emerald-200 border border-emerald-200/20'
-                            : '!text-zinc-200 hover:bg-zinc-800/80 hover:!text-emerald-200'
+                            : 'text-zinc-200 hover:bg-zinc-800/80 hover:!text-emerald-200'
                         }`}
                       >
                         {link.icon}

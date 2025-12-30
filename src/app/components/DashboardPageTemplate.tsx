@@ -57,11 +57,11 @@ export default function DashboardPageTemplate<T>({
     >
       {/* Header */}
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="text-3xl !uppercase font-extrabold text-left text-zinc-200">
           {title}
         </h1>
         <button
-          className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors"
+          className="bg-violet-400/20 lg:w-fit w-full text-violet-500 border border-violet-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-violet-500/20 hover:text-white transition-colors"
           onClick={onActionButtonClick || (() => {})}
         >
           {actionButtonLabel}
@@ -80,7 +80,7 @@ export default function DashboardPageTemplate<T>({
                   key={i}
                   className={`bg-zinc-900 p-6 rounded-lg border border-zinc-800 ${stat.colorClass || ''}`}
                 >
-                  <h3 className="!text-lg font-semibold !text-zinc-200 mb-2 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold text-zinc-200 mb-2 flex items-center gap-2">
                     {stat.icon && (
                       <span className="w-6 h-6 flex items-center justify-center">
                         {stat.icon}
@@ -89,8 +89,8 @@ export default function DashboardPageTemplate<T>({
                     {stat.label}
                   </h3>
                   <p
-                    className={`!text-3xl font-bold ${
-                      stat.colorClass ? '' : '!text-emerald-400'
+                    className={`text-3xl font-bold ${
+                      stat.colorClass ? '' : 'text-violet-400'
                     }`}
                   >
                     {stat.value}
@@ -106,7 +106,7 @@ export default function DashboardPageTemplate<T>({
           {/* Filtres + Table */}
           <div className="bg-zinc-900/50 rounded-lg border border-zinc-800">
             <div className="p-6 border-b border-zinc-800">
-              <h2 className="!text-xl font-semibold !text-zinc-200">{title}</h2>
+              <h2 className="text-xl font-semibold text-zinc-200">{title}</h2>
             </div>
             <div className="p-6">
               <TableFilters

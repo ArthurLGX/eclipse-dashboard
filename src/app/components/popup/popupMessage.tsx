@@ -24,7 +24,7 @@ const PopupMessage = ({
           <button className="bg-emerald-300/10   !text-emerald-300 font-bold py-2 px-4 rounded-2xl hover:rounded-sm transition-all ease-in-out delay-50">
             YES
           </button>
-          <button className="bg-red-800/10 !text-zinc-200 font-bold py-2 px-4 rounded-2xl hover:rounded-sm transition-all ease-in-out delay-50">
+          <button className="bg-red-800/10 text-zinc-200 font-bold py-2 px-4 rounded-2xl hover:rounded-sm transition-all ease-in-out delay-50">
             NO
           </button>
         </div>
@@ -40,10 +40,10 @@ const PopupMessage = ({
       transition={{ duration: 0.5, ease: 'easeInOut' }}
       className={`fixed lg:right-8 right-0 lg:-translate-x-0 lg:bottom-8 top-8  z-[1000] !text-black flex flex-col lg:m-0 m-4 w-11/12 flex-wrap lg:w-fit   h-fit justify-center items-center px-4 py-2 rounded-lg backdrop-blur-xl overflow-hidden ${
         type === 'success'
-          ? '!bg-emerald-300/20 !border border-emerald-300'
+          ? 'bg-emerald-300/20 !border border-emerald-300'
           : type === 'error'
-            ? '!bg-red-800/20 !border border-red-800'
-            : '!bg-orange-500/20 !border border-orange-500'
+            ? 'bg-red-800/20 !border border-red-800'
+            : 'bg-orange-500/20 !border border-orange-500'
       }`}
     >
       {/* Barre de progression */}

@@ -92,42 +92,29 @@ export default function YourCompanyPage() {
     try {
       const companyId = companyProfile?.documentId || '';
       console.log('companyId', companyId);
-      if (companyId) {
-        const response = await updateCompanyUser(
-          user?.id || 0,
-          companyId,
-          formData
-        ) as { data?: Company };
-        if (!response) {
-          throw new Error("Erreur lors de la mise à jour de l'utilisateur");
-        }
-
-        // Mettre à jour companyProfile avec les nouvelles données
-        if (response?.data) {
-          setCompanyProfile(response.data);
-        }
-
-        setEditing(false);
-        showGlobalPopup('Profil mis à jour avec succès', 'success');
-      } else {
-        const response = await updateCompanyUser(
-          user?.id || 0,
-          companyId,
-          formData
-        ) as { data?: Company };
-
-        if (!response) {
-          throw new Error("Erreur lors de la mise à jour de l'utilisateur");
-        }
-
-        // Mettre à jour companyProfile avec les nouvelles données
-        if (response?.data) {
-          setCompanyProfile(response.data);
-        }
-
-        setEditing(false);
-        showGlobalPopup('Profil mis à jour avec succès', 'success');
+      
+      // Assurer une valeur par défaut pour le domaine
+      const dataToSend = {
+        ...formData,
+        domaine: formData.domaine || 'Autre'
+      };
+      const response = await updateCompanyUser(
+        user?.id || 0,
+        companyId,
+        dataToSend
+      ) as { data?: Company };
+      
+      if (!response) {
+        throw new Error("Erreur lors de la mise à jour de l'entreprise");
       }
+
+      // Mettre à jour companyProfile avec les nouvelles données
+      if (response?.data) {
+        setCompanyProfile(response.data);
+      }
+
+      setEditing(false);
+      showGlobalPopup('Profil mis à jour avec succès', 'success');
     } catch (error) {
       console.error('Error updating profile:', error);
       showGlobalPopup('Erreur lors de la mise à jour', 'error');
@@ -229,7 +216,7 @@ export default function YourCompanyPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
           {t('your_enterprise')}
         </h1>
         {!editing ? (
@@ -288,14 +275,14 @@ export default function YourCompanyPage() {
           {/* Section Informations */}
           <div className="lg:col-span-2">
             <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6">
-              <h2 className="!text-xl font-semibold !text-zinc-200 mb-4">
+              <h2 className="!text-xl font-semibold text-zinc-200 mb-4">
                 {t('personal_information')}
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Section générale */}
                 <div className="space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     {t('enterprise_name')}
                   </label>
                   {editing ? (
@@ -306,16 +293,16 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, name: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                       {companyProfile?.name}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     Email
                   </label>
                   {editing ? (
@@ -328,7 +315,7 @@ export default function YourCompanyPage() {
                           setFormData({ ...formData, email: e.target.value });
                           if (emailError) setEmailError('');
                         }}
-                        className={`w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${emailError ? '!border-red-500' : ''}`}
+                        className={`w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${emailError ? '!border-red-500' : ''}`}
                       />
                       {emailError && (
                         <p className="text-red-500 text-xs mt-1">
@@ -337,13 +324,13 @@ export default function YourCompanyPage() {
                       )}
                     </>
                   ) : (
-                    <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                       {companyProfile?.email}
                     </p>
                   )}
                 </div>
                 <div className="md:col-span-2 space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     {t('enterprise_description')}
                   </label>
                   {editing ? (
@@ -356,17 +343,17 @@ export default function YourCompanyPage() {
                           description: e.target.value,
                         })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                       {companyProfile?.description}
                     </p>
                   )}
                 </div>
                 {/* Section légale */}
                 <div className="space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     {t('siret')}
                   </label>
                   {editing ? (
@@ -377,16 +364,16 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, siret: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                       {companyProfile?.siret}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     {t('siren')}
                   </label>
                   {editing ? (
@@ -397,16 +384,16 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, siren: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                       {companyProfile?.siren}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     {t('vat')}
                   </label>
                   {editing ? (
@@ -417,17 +404,17 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, vat: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                       {companyProfile?.vat}
                     </p>
                   )}
                 </div>
                 {/* Section contact */}
                 <div className="space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     {t('phone_number')}
                   </label>
                   {editing ? (
@@ -441,16 +428,16 @@ export default function YourCompanyPage() {
                           phoneNumber: e.target.value,
                         })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                       {companyProfile?.phoneNumber}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     {t('address')}
                   </label>
                   {editing ? (
@@ -461,16 +448,16 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, location: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                       {companyProfile?.location}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     {t('activity_domain')}
                   </label>
                   {editing ? (
@@ -479,7 +466,7 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, domaine: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     >
                       <option value="">{t('select_activity_domain')}</option>
                       {domaines.map(domaine => (
@@ -489,13 +476,13 @@ export default function YourCompanyPage() {
                       ))}
                     </select>
                   ) : (
-                    <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                       {companyProfile?.domaine}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="!text-zinc-400 !text-sm font-light">
+                  <label className="text-zinc-400 !text-sm font-light">
                     {t('website')}
                   </label>
                   {editing ? (
@@ -506,7 +493,7 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, website: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   ) : (
                     <a
@@ -525,7 +512,7 @@ export default function YourCompanyPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center min-h-[50vh] !my-10">
-          <p className="!text-zinc-200">{t('no_enterprise_profile')}</p>
+          <p className="text-zinc-200">{t('no_enterprise_profile')}</p>
         </div>
       )}
     </motion.div>

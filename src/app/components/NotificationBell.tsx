@@ -1,19 +1,20 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconBell,
   IconCheck,
   IconX,
-  IconUsers,
   IconCheckbox,
   IconTrash,
 } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { useAuth } from '@/app/context/AuthContext';
+import { usePreferences } from '@/app/context/PreferencesContext';
 import {
   fetchNotifications,
   fetchUnreadNotificationCount,
@@ -29,6 +30,7 @@ export default function NotificationBell() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const { preferences } = usePreferences();
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +38,18 @@ export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Filtrer les notifications selon les préférences utilisateur
+  const filteredNotifications = useMemo(() => {
+    return notifications.filter(notif => {
+      // Filtrer selon le type de notification et les préférences
+      if (notif.type === 'project_invitation') {
+        return preferences.notifications.emailCollaboration;
+      }
+      // Les autres types (project_update, system) sont toujours affichés
+      return true;
+    });
+  }, [notifications, preferences.notifications]);
 
   // Charger les notifications au montage et toutes les 30 secondes
   useEffect(() => {
@@ -168,13 +182,36 @@ export default function NotificationBell() {
     }
   };
 
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'project_invitation':
-        return <IconUsers className="w-5 h-5 text-emerald-400" />;
-      default:
-        return <IconBell className="w-5 h-5 text-blue-400" />;
+  const getNotificationIcon = (notification: Notification) => {
+    // Pour les invitations de projet, afficher la photo de profil de l'expéditeur
+    if (notification.type === 'project_invitation' && notification.data?.sender_profile_picture) {
+      return (
+        <Image
+          src={notification.data.sender_profile_picture}
+          alt={notification.data.sender_name || 'User'}
+          width={20}
+          height={20}
+          className="w-5 h-5 rounded-full object-cover"
+        />
+      );
     }
+    
+    // Fallback: initiales de l'expéditeur ou icône par défaut
+    if (notification.type === 'project_invitation' && notification.data?.sender_name) {
+      const initials = notification.data.sender_name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+      return (
+        <span className="text-xs font-bold text-violet-400">
+          {initials}
+        </span>
+      );
+    }
+    
+    return <IconBell className="w-5 h-5 text-blue-400" />;
   };
 
   const formatTimeAgo = (dateString: string) => {
@@ -232,7 +269,7 @@ export default function NotificationBell() {
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+                  className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1"
                 >
                   <IconCheckbox className="w-3 h-3" />
                   {t('mark_all_read') || 'Tout marquer comme lu'}
@@ -244,9 +281,9 @@ export default function NotificationBell() {
             <div className="max-h-96 overflow-y-auto">
               {loading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="w-6 h-6 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
                 </div>
-              ) : notifications.length === 0 ? (
+              ) : filteredNotifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 px-4">
                   <IconBell className="w-12 h-12 text-zinc-700 mb-3" />
                   <p className="text-zinc-500 text-sm text-center">
@@ -255,16 +292,16 @@ export default function NotificationBell() {
                 </div>
               ) : (
                 <div className="divide-y divide-zinc-800/50">
-                  {notifications.map((notification) => (
+                  {filteredNotifications.map((notification) => (
                     <div
                       key={notification.documentId}
                       className={`p-4 hover:bg-zinc-800/30 transition-colors ${
-                        !notification.read ? 'bg-emerald-500/5' : ''
+                        !notification.read ? 'bg-violet-500/5' : ''
                       }`}
                     >
                       <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center">
-                          {getNotificationIcon(notification.type)}
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden">
+                          {getNotificationIcon(notification)}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
@@ -284,7 +321,7 @@ export default function NotificationBell() {
                             <div className="flex gap-2 mt-3">
                               <button
                                 onClick={() => handleAcceptInvitation(notification)}
-                                className="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                                className="flex-1 py-2 px-3 bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
                               >
                                 <IconCheck className="w-4 h-4" />
                                 {t('accept') || 'Accepter'}
@@ -316,7 +353,7 @@ export default function NotificationBell() {
                         {/* Indicateur non lu */}
                         {!notification.read && (
                           <div className="flex-shrink-0">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                            <div className="w-2 h-2 rounded-full bg-violet-500" />
                           </div>
                         )}
                       </div>

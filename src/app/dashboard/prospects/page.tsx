@@ -84,14 +84,14 @@ export default function ProspectsPage() {
       key: 'title',
       label: t('name'),
       render: (value) => (
-        <p className="!text-zinc-200 font-medium">{value as string}</p>
+        <p className="text-zinc-200 font-medium">{value as string}</p>
       ),
     },
     {
       key: 'email',
       label: t('email'),
       render: (value) => (
-        <p className="!text-zinc-300">{value as string}</p>
+        <p className="text-zinc-300">{value as string}</p>
       ),
     },
     {
@@ -116,7 +116,7 @@ export default function ProspectsPage() {
       key: 'createdAt',
       label: t('creation_date'),
       render: (value) => (
-        <p className="!text-zinc-300">
+        <p className="text-zinc-300">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),

@@ -44,7 +44,7 @@ export interface ImageFile {
 export type ProjectStatus = 'planning' | 'in_progress' | 'completed';
 export type ProjectType = 'development' | 'design' | 'maintenance';
 export type FactureStatus = 'draft' | 'sent' | 'paid';
-export type Currency = 'EUR' | 'USD' | 'GBP';
+export type Currency = 'EUR' | 'USD' | 'GBP' | 'CHF';
 export type ProcessStatus = 'client' | 'prospect';
 export type ProspectStatus = 'prospect' | 'answer' | 'to_be_contacted' | 'contacted';
 export type SubscriptionStatus = 'active' | 'canceled' | 'expired' | 'trial';
@@ -171,12 +171,15 @@ export interface Prospect {
   image?: string;
 }
 
+export type BillingUnit = 'hour' | 'day' | 'fixed' | 'unit';
+
 export interface InvoiceLine {
   id?: number;
   description: string;
   quantity: number;
   unit_price: number;
   total: number;
+  unit?: BillingUnit; // 'hour' = à l'heure, 'day' = à la journée, 'fixed' = forfait, 'unit' = unité
 }
 
 export interface Facture {
@@ -473,6 +476,7 @@ export interface Notification {
     invitation_id?: string;
     project_id?: string;
     sender_name?: string;
+    sender_profile_picture?: string;
     project_title?: string;
   };
   action_url?: string;

@@ -67,7 +67,7 @@ export default function FloatingPricingHeader({
         >
           <button
             onClick={handleToggleMinimize}
-            className="cursor-pointer !text-zinc-400 hover:!text-zinc-200 transition-colors absolute top-2 right-2 z-50 w-6 h-6 flex items-center justify-center rounded-full hover:bg-zinc-800/50"
+            className="cursor-pointer text-zinc-400 hover:text-zinc-200 transition-colors absolute top-2 right-2 z-50 w-6 h-6 flex items-center justify-center rounded-full hover:bg-zinc-800/50"
             title={isMinimized ? 'Agrandir' : 'Réduire'}
           >
             {isMinimized ? (
@@ -105,7 +105,7 @@ export default function FloatingPricingHeader({
             <div className="overflow-x-auto">
               {isMinimized ? (
                 <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between">
-                  <p className="!text-zinc-200 font-semibold">
+                  <p className="text-zinc-200 font-semibold">
                     {t('plans_associated')}
                   </p>
                 </div>
@@ -113,13 +113,13 @@ export default function FloatingPricingHeader({
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-zinc-800">
-                      <th className="p-4 !text-left !text-zinc-400 font-medium capitalize w-1/3">
+                      <th className="p-4 !text-left text-zinc-400 font-medium capitalize w-1/3">
                         {t('features')}
                       </th>
                       {plans.map(plan => (
                         <th
                           key={plan.id}
-                          className={`p-4 !text-center !text-zinc-200 font-semibold transition-all duration-500 w-1/6 ${
+                          className={`p-4 !text-center text-zinc-200 font-semibold transition-all duration-500 w-1/6 ${
                             highlightedPlan === plan.name
                               ? 'bg-emerald-300/20'
                               : ''

@@ -5,6 +5,7 @@ import FactureApercu from '@/app/components/FactureApercu';
 import { useEffect, useState } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
+import { usePreferences } from '@/app/context/PreferencesContext';
 import {
   fetchFacturesUserById,
   fetchCompanyUser,
@@ -12,7 +13,7 @@ import {
   fetchProjectsUser,
   updateFactureById,
   createFacture,
-  fetchFactureFromId,
+  fetchFactureFromDocumentId,
 } from '@/lib/api';
 import { clearCache } from '@/hooks/useApi';
 import { extractIdFromSlug } from '@/utils/slug';
@@ -23,6 +24,7 @@ import {
   Project,
   InvoiceLine,
   User,
+  Currency,
 } from '@/app/models/Models';
 import { useAuth } from '@/app/context/AuthContext';
 import { motion } from 'framer-motion';
@@ -34,6 +36,8 @@ import {
   IconCalculator,
 } from '@tabler/icons-react';
 import { useRef } from 'react';
+import { pdf } from '@react-pdf/renderer';
+import FacturePDF from '@/app/components/FacturePDF';
 
 export default function FacturePage() {
   const params = useParams();
@@ -42,6 +46,7 @@ export default function FacturePage() {
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { preferences } = usePreferences();
   
   // Extraire l'ID du slug ou utiliser directement l'ID
   const rawId = params.id as string;
@@ -64,9 +69,9 @@ export default function FacturePage() {
   const [tvaApplicable, setTvaApplicable] = useState<boolean>(
     facture?.tva_applicable ?? true
   );
-  // Calculs automatiques
+  // Calculs automatiques - utilise le taux de TVA des préférences
   const subtotal = invoiceLines.reduce((sum, line) => sum + line.total, 0);
-  const tvaRate = 20; // 20% TVA
+  const tvaRate = preferences.invoice.defaultTaxRate;
   const tvaAmount = subtotal * (tvaRate / 100);
   const total = tvaApplicable ? subtotal + tvaAmount : subtotal;
 
@@ -129,17 +134,22 @@ export default function FacturePage() {
       publishedAt: '',
     },
   };
+  // Calcul de la date d'échéance par défaut selon les préférences
+  const today = new Date();
+  const defaultDueDate = new Date(today);
+  defaultDueDate.setDate(today.getDate() + preferences.invoice.defaultPaymentDays);
+  
   const emptyFacture: Facture = {
     id: 0,
     documentId: '',
-    reference: '',
-    date: '',
-    due_date: '',
+    reference: preferences.invoice.autoNumbering ? `${preferences.invoice.invoicePrefix}${Date.now().toString().slice(-6)}` : '',
+    date: today.toISOString().split('T')[0],
+    due_date: defaultDueDate.toISOString().split('T')[0],
     facture_status: 'draft',
     number: 0,
-    currency: 'EUR',
+    currency: preferences.format.currency as Currency,
     description: '',
-    notes: '',
+    notes: preferences.invoice.legalMentions || '',
     createdAt: '',
     updatedAt: '',
     publishedAt: '',
@@ -148,13 +158,19 @@ export default function FacturePage() {
     pdf: [],
     user: emptyUser,
     invoice_lines: [],
-    tva_applicable: true,
+    tva_applicable: preferences.invoice.defaultTaxRate > 0,
   };
 
   useEffect(() => {
     const fetchFacture = async () => {
+      console.log('🔍 [FACTURE DEBUG] rawId:', rawId);
+      console.log('🔍 [FACTURE DEBUG] extractedId:', extractedId);
+      console.log('🔍 [FACTURE DEBUG] id:', id);
+      console.log('🔍 [FACTURE DEBUG] user?.id:', user?.id);
+      
       // Mode création
       if (rawId === t('add') || rawId === 'add' || rawId === 'ajouter') {
+        console.log('🔍 [FACTURE DEBUG] Mode création détecté');
         setEditing(true);
         
         // Préremplir le client si fourni dans l'URL
@@ -175,27 +191,31 @@ export default function FacturePage() {
       }
       
       try {
-        // Essayer d'abord avec l'ID extrait du slug (numérique)
+        // Utiliser le documentId extrait du slug
         let factureData;
-        if (extractedId) {
-          factureData = await fetchFactureFromId(extractedId);
-        } else {
-          // Sinon, utiliser le documentId (ancien format)
-          factureData = await fetchFacturesUserById(user?.id ?? 0, id as string);
-        }
+        const documentIdToFetch = extractedId || id;
+        console.log('🔍 [FACTURE DEBUG] Appel fetchFactureFromDocumentId avec:', documentIdToFetch);
+        factureData = await fetchFactureFromDocumentId(documentIdToFetch as string);
         
         const typedData = factureData as { data?: Facture[] };
+        console.log('🔍 [FACTURE DEBUG] typedData:', typedData);
+        console.log('🔍 [FACTURE DEBUG] typedData?.data:', typedData?.data);
+        console.log('🔍 [FACTURE DEBUG] typedData.data[0]:', typedData?.data?.[0]);
+        
         if (typedData?.data && typedData.data[0]) {
+          console.log('🔍 [FACTURE DEBUG] ✅ Facture trouvée:', typedData.data[0]);
           setFacture(typedData.data[0]);
           setFormData(typedData.data[0]);
           if (edit === '1') {
             setEditing(true);
           }
           setInvoiceLines(typedData.data[0]?.invoice_lines || []);
+        } else {
+          console.log('🔍 [FACTURE DEBUG] ❌ Aucune facture trouvée dans la réponse');
         }
         setIsLoading(false);
       } catch (error) {
-        console.error('Erreur lors de la récupération de la facture:', error);
+        console.error('🔍 [FACTURE DEBUG] ❌ Erreur lors de la récupération de la facture:', error);
         showGlobalPopup(t('error_fetching_facture'), 'error');
       } finally {
         setIsLoading(false);
@@ -276,7 +296,7 @@ export default function FacturePage() {
   const handleAddLine = () => {
     setInvoiceLines([
       ...invoiceLines,
-      { id: Date.now(), description: '', quantity: 1, unit_price: 0, total: 0 },
+      { id: Date.now(), description: '', quantity: 1, unit_price: 0, total: 0, unit: 'hour' },
     ]);
   };
 
@@ -380,6 +400,46 @@ export default function FacturePage() {
     // Logique d'envoi email à implémenter
   };
 
+  const handleDownloadPDF = async () => {
+    if (!facture) {
+      showGlobalPopup('Erreur: facture non trouvée', 'error');
+      return;
+    }
+
+    try {
+      showGlobalPopup('Génération du PDF en cours...', 'info');
+
+      // Générer le PDF avec @react-pdf/renderer
+      const blob = await pdf(
+        <FacturePDF
+          facture={facture}
+          company={company}
+          invoiceLines={invoiceLines}
+          tvaApplicable={tvaApplicable}
+          tvaRate={tvaRate}
+          tvaAmount={tvaAmount}
+          subtotal={subtotal}
+          total={total}
+        />
+      ).toBlob();
+
+      // Créer le lien de téléchargement
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Facture_${facture.reference || 'sans-reference'}_${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      showGlobalPopup('PDF téléchargé avec succès', 'success');
+    } catch (error) {
+      console.error('Erreur lors de la génération du PDF:', error);
+      showGlobalPopup('Erreur lors de la génération du PDF', 'error');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -401,7 +461,7 @@ export default function FacturePage() {
           {!editing ? (
             <button
               onClick={handleEdit}
-              className="flex items-center gap-2 bg-blue-500/20 !text-blue-400 border border-blue-500/20 px-4 py-2 rounded-lg hover:bg-blue-500/30 transition-colors"
+              className="flex items-center justify-center gap-2 bg-blue-500/20 !text-blue-400 border border-blue-500/20 px-4 py-2 rounded-lg hover:bg-blue-500/30 transition-colors"
             >
               <IconEdit className="w-4 h-4" />
               {t('edit')}
@@ -410,13 +470,13 @@ export default function FacturePage() {
             <>
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 bg-emerald-500/20 !text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500/30 transition-colors"
+                className="flex items-center justify-center gap-2 bg-emerald-500/20 !text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500/30 transition-colors"
               >
                 {t('save')}
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 bg-orange-500/20 !text-orange-400 border border-orange-500/20 px-4 py-2 rounded-lg hover:bg-orange-500/30 transition-colors"
+                className="flex items-center justify-center gap-2 bg-orange-500/20 !text-orange-400 border border-orange-500/20 px-4 py-2 rounded-lg hover:bg-orange-500/30 transition-colors"
               >
                 {t('cancel')}
               </button>
@@ -426,21 +486,21 @@ export default function FacturePage() {
             <>
               <button
                 onClick={handleSendEmail}
-                className="flex items-center gap-2 bg-emerald-500/20 !text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500/30 transition-colors"
+                className="flex items-center justify-center gap-2 bg-emerald-500/20 !text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500/30 transition-colors"
               >
                 <IconMail className="w-4 h-4" />
                 {t('send_email')}
               </button>
               <button
-                onClick={() => setShowPreview(true)}
-                className="flex items-center gap-2 bg-purple-500/20 !text-purple-400 border border-purple-500/20 px-4 py-2 rounded-lg hover:bg-purple-500/30 transition-colors"
+                onClick={handleDownloadPDF}
+                className="flex items-center justify-center gap-2 bg-purple-500/20 !text-purple-400 border border-purple-500/20 px-4 py-2 rounded-lg hover:bg-purple-500/30 transition-colors"
               >
                 <IconDownload className="w-4 h-4" />
-                {t('download')}
+                {t('download_pdf')}
               </button>
               <button
                 onClick={handleDelete}
-                className="flex items-center gap-2 bg-red-500/20 !text-red-400 border border-red-500/20 px-4 py-2 rounded-lg hover:bg-red-500/30 transition-colors"
+                className="flex items-center justify-center gap-2 bg-red-500/20 !text-red-400 border border-red-500/20 px-4 py-2 rounded-lg hover:bg-red-500/30 transition-colors"
               >
                 <IconTrash className="w-4 h-4" />
                 {t('delete')}
@@ -451,7 +511,7 @@ export default function FacturePage() {
 
         {/* Contenu de la facture */}
         <div ref={factureRef} className="print-area">
-          <div className="p-8 bg-white rounded-lg flex flex-col gap-4">
+          <div className="p-8 !bg-white rounded-lg flex flex-col gap-4">
             {/* Champs principaux modifiables */}
             <div className="flex items-center gap-2 mb-4">
               <label className="font-medium">{t('vat_applicable')}</label>
@@ -470,7 +530,7 @@ export default function FacturePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 !text-zinc-800 ">
                   {t('reference')}
                 </label>
                 {editing ? (
@@ -479,16 +539,16 @@ export default function FacturePage() {
                     name="reference"
                     value={formData?.reference || ''}
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
-                  <p className="!text-zinc-700 !text-sm font-semibold">
+                  <p className="!text-zinc-800 text-sm font-semibold">
                     {facture?.reference}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 !text-zinc-800">
                   {t('status')}
                 </label>
                 {editing ? (
@@ -496,20 +556,20 @@ export default function FacturePage() {
                     name="facture_status"
                     value={formData?.facture_status || ''}
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   >
                     <option value="draft">{t('draft')}</option>
                     <option value="sent">{t('sent')}</option>
                     <option value="paid">{t('paid')}</option>
                   </select>
                 ) : (
-                  <p className="!text-zinc-700 !text-sm font-semibold">
+                  <p className="!text-zinc-800 text-sm font-semibold">
                     {t(facture?.facture_status || '')}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 !text-zinc-800">
                   {t('emission_date')}
                 </label>
                 {editing ? (
@@ -518,10 +578,10 @@ export default function FacturePage() {
                     name="date"
                     value={formData?.date ? formData.date.slice(0, 10) : ''}
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
-                  <p className="!text-zinc-700 !text-sm font-semibold">
+                  <p className="!text-zinc-800 text-sm font-semibold">
                     {facture?.date
                       ? new Date(facture.date).toLocaleDateString('fr-FR')
                       : ''}
@@ -529,7 +589,7 @@ export default function FacturePage() {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 !text-zinc-800">
                   {t('due_date')}
                 </label>
                 {editing ? (
@@ -540,10 +600,10 @@ export default function FacturePage() {
                       formData?.due_date ? formData.due_date.slice(0, 10) : ''
                     }
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
-                  <p className="!text-zinc-700 !text-sm font-semibold">
+                  <p className="!text-zinc-800 text-sm font-semibold">
                     {facture?.due_date
                       ? new Date(facture.due_date).toLocaleDateString('fr-FR')
                       : ''}
@@ -551,7 +611,7 @@ export default function FacturePage() {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 !text-zinc-800">
                   {t('currency')}
                 </label>
                 {editing ? (
@@ -559,20 +619,20 @@ export default function FacturePage() {
                     name="currency"
                     value={formData?.currency || ''}
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   >
                     <option value="EUR">EUR</option>
                     <option value="USD">USD</option>
                     <option value="GBP">GBP</option>
                   </select>
                 ) : (
-                  <p className="!text-zinc-700 !text-sm font-semibold">
+                  <p className="!text-zinc-800 text-sm font-semibold">
                     {facture?.currency}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 !text-zinc-800">
                   {t('client')}
                 </label>
                 {editing ? (
@@ -585,7 +645,7 @@ export default function FacturePage() {
                       );
                       setFormData({ ...formData!, client_id: client! });
                     }}
-                    className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   >
                     <option value="">{t('select_client')}</option>
                     {clients.map(client => (
@@ -595,13 +655,13 @@ export default function FacturePage() {
                     ))}
                   </select>
                 ) : (
-                  <p className="!text-zinc-700 !text-sm font-semibold">
+                  <p className="!text-zinc-800 text-sm font-semibold">
                     {facture?.client_id?.name}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 !text-zinc-800">
                   {t('project')}
                 </label>
                 {editing ? (
@@ -615,7 +675,7 @@ export default function FacturePage() {
                         );
                         setFormData({ ...formData!, project: project! });
                       }}
-                      className="input border flex-1 rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                        className="input border flex-1 rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                     >
                       <option value="">{t('select_project')}</option>
                       {projects.map(project => (
@@ -634,13 +694,13 @@ export default function FacturePage() {
                     </button>
                   </div>
                 ) : (
-                  <p className="!text-zinc-700 !text-sm font-semibold">
+                  <p className="!text-zinc-800 text-sm font-semibold">
                     {facture?.project?.title || '-'}
                   </p>
                 )}
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 !text-zinc-800">
                   {t('notes')}
                 </label>
                 {editing ? (
@@ -648,10 +708,10 @@ export default function FacturePage() {
                     name="notes"
                     value={formData?.notes || ''}
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
-                  <p className="!text-zinc-700 !text-sm font-semibold">
+                  <p className="!text-zinc-800 text-sm font-semibold">
                     {facture?.notes}
                   </p>
                 )}
@@ -678,30 +738,52 @@ export default function FacturePage() {
                 <table className="w-full">
                   <thead className="bg-zinc-700/10">
                     <tr>
-                      <th className="!text-left p-4 !text-zinc-800 font-bold">
+                      <th className="!text-left !bg-zinc-200 p-4 !text-zinc-800 font-bold">
                         {t('description')}
                       </th>
-                      <th className="!text-right p-4 !text-zinc-800 font-bold">
+                      <th className="!text-center !bg-zinc-200 p-4 !text-zinc-800 font-bold">
+                        {t('unit_type')}
+                      </th>
+                      <th className="!text-right !bg-zinc-200 p-4 !text-zinc-800 font-bold">
                         {t('quantity')}
                       </th>
-                      <th className="!text-right p-4 !text-zinc-800 font-bold">
+                      <th className="!text-right !bg-zinc-200 p-4 !text-zinc-800 font-bold">
                         {t('unit_price')}
                       </th>
-                      <th className="!text-right p-4 !text-zinc-800 font-bold">
+                      <th className="!text-right !bg-zinc-200 p-4 !text-zinc-800 font-bold">
                         {t('total')}
                       </th>
-                      {editing && <th></th>}
+                      {editing && <th className="!bg-zinc-200 p-4 !text-zinc-800 font-bold"></th>}
                     </tr>
                   </thead>
-                  <tbody>
-                    {invoiceLines.map((line, index) => (
+                  <tbody className="!bg-zinc-100">
+                    {invoiceLines.map((line, index) => {
+                      const getUnitLabel = (unit?: string) => {
+                        switch (unit) {
+                          case 'hour': return 'h';
+                          case 'day': return 'j';
+                          case 'fixed': return '';
+                          case 'unit': return 'u';
+                          default: return 'h';
+                        }
+                      };
+                      const getUnitDisplay = (unit?: string) => {
+                        switch (unit) {
+                          case 'hour': return t('billing_hour');
+                          case 'day': return t('billing_day');
+                          case 'fixed': return t('billing_fixed');
+                          case 'unit': return t('billing_unit');
+                          default: return t('billing_hour');
+                        }
+                      };
+                      return (
                       <tr
                         key={line.id}
                         className={
-                          index % 2 === 0 ? 'bg-zinc-300/10' : 'bg-zinc-600/10'
+                          index % 2 === 0 ? '!bg-zinc-200/10' : '!bg-zinc-300/10'
                         }
                       >
-                        <td className="p-4 !text-zinc-900">
+                        <td className="!bg-zinc-100 p-4 !text-zinc-900">
                           {editing ? (
                             <input
                               type="text"
@@ -713,13 +795,35 @@ export default function FacturePage() {
                                   e.target.value
                                 )
                               }
-                              className="input border w-full rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                              className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                             />
                           ) : (
                             line.description
                           )}
                         </td>
-                        <td className="p-4 !text-right !text-zinc-900">
+                        <td className="!bg-zinc-100 p-4 !text-center !text-zinc-900">
+                          {editing ? (
+                            <select
+                              value={line.unit || 'hour'}
+                              onChange={e =>
+                                handleLineChange(
+                                  index,
+                                  'unit',
+                                  e.target.value
+                                )
+                              }
+                              className="input border rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                            >
+                              <option value="hour">{t('billing_hour')}</option>
+                              <option value="day">{t('billing_day')}</option>
+                              <option value="fixed">{t('billing_fixed')}</option>
+                              <option value="unit">{t('billing_unit')}</option>
+                            </select>
+                          ) : (
+                            getUnitDisplay(line.unit)
+                          )}
+                        </td>
+                        <td className="!bg-zinc-100 p-4 !text-right !text-zinc-900">
                           {editing ? (
                             <input
                               type="number"
@@ -732,13 +836,13 @@ export default function FacturePage() {
                                   e.target.value
                                 )
                               }
-                              className="input border w-20 text-right rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                              className="input border w-20 text-right rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                             />
                           ) : (
-                            `${line.quantity}h`
+                            line.unit === 'fixed' ? line.quantity : `${line.quantity}${getUnitLabel(line.unit)}`
                           )}
                         </td>
-                        <td className="p-4 !text-right !text-zinc-900">
+                        <td className="!bg-zinc-100 p-4 !text-right !text-zinc-900">
                           {editing ? (
                             <input
                               type="number"
@@ -751,28 +855,29 @@ export default function FacturePage() {
                                   e.target.value
                                 )
                               }
-                              className="input border w-24 text-right rounded-lg p-2 bg-zinc-50 border-zinc-300 !text-zinc-900"
+                              className="input border w-24 text-right rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                             />
                           ) : (
                             `${line.unit_price}€`
                           )}
                         </td>
-                        <td className="p-4 !text-right !text-zinc-900 font-medium">
+                        <td className="!bg-zinc-100 p-4 !text-right !text-zinc-900 font-medium">
                           {line.total}€
                         </td>
                         {editing && (
-                          <td>
+                          <td className="!bg-zinc-100 p-4 !text-right !text-zinc-900">
                             <button
                               type="button"
                               onClick={() => handleRemoveLine(index)}
-                              className="text-red-500 hover:text-red-700"
+                              className="!text-red-500 hover:!text-red-700"
                             >
                               {t('delete')}
                             </button>
                           </td>
                         )}
                       </tr>
-                    ))}
+                    );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -820,51 +925,79 @@ export default function FacturePage() {
               </div>
             )}
 
-            {/* Pied de page */}
+            {/* Pied de page - Informations entreprise */}
             <div className="mt-8 pt-6 border-t border-zinc-200 !text-center !text-zinc-600 !text-sm">
-              <div className="space-y-1 !text-zinc-600">
-                {company?.name && (
-                  <p className="font-semibold !text-zinc-800 !text-xs">
-                    {company.name}
-                  </p>
-                )}
+              <div className="space-y-3 !text-zinc-600">
+                {/* Logo et nom de l'entreprise */}
+                <div className="flex flex-col items-center gap-2">
+                  {company?.logo && (
+                    <img 
+                      src={company.logo.startsWith('http') ? company.logo : `${process.env.NEXT_PUBLIC_STRAPI_URL}${company.logo}`}
+                      alt={company.name || 'Logo'}
+                      className="h-10 w-auto object-contain"
+                    />
+                  )}
+                  {company?.name && (
+                    <p className="font-bold !text-zinc-800 text-base">
+                      {company.name}
+                    </p>
+                  )}
+                  {company?.domaine && (
+                    <p className="!text-zinc-500 !text-xs italic">
+                      {company.domaine}
+                    </p>
+                  )}
+                </div>
+
+                {/* Coordonnées */}
                 <div className="flex flex-wrap justify-center gap-4 !text-xs">
                   {company?.location && (
-                    <span className="!text-xs">{company.location}</span>
+                    <span className="!text-zinc-600">{company.location}</span>
                   )}
                   {company?.phoneNumber && (
-                    <span className="!text-xs">
-                      {t('phone_number')} {company.phoneNumber}
+                    <span className="!text-zinc-600">
+                      📞 {company.phoneNumber}
                     </span>
                   )}
                   {company?.email && (
-                    <span className="!text-xs">
-                      {t('email')} {company.email}
+                    <span className="!text-zinc-600">
+                      ✉️ {company.email}
                     </span>
                   )}
                   {company?.website && (
-                    <span className="!text-xs">
-                      {t('website')} {company.website}
+                    <span className="!text-zinc-600">
+                      🌐 {company.website}
                     </span>
                   )}
                 </div>
+
+                {/* Informations légales */}
                 <div className="flex flex-wrap justify-center gap-4 !text-xs mt-2 pt-2 border-t border-zinc-200">
                   {company?.siret && (
-                    <span className="!text-xs">
-                      {t('siret')} {company.siret}
+                    <span className="!text-zinc-500">
+                      SIRET: {company.siret}
                     </span>
                   )}
                   {company?.siren && (
-                    <span className="!text-xs">
-                      {t('siren')} {company.siren}
+                    <span className="!text-zinc-500">
+                      SIREN: {company.siren}
                     </span>
                   )}
                   {company?.vat && (
-                    <span className="!text-xs">
-                      {t('vat')} {company.vat}
+                    <span className="!text-zinc-500">
+                      TVA: {company.vat}
                     </span>
                   )}
                 </div>
+
+                {/* Mentions légales depuis les préférences */}
+                {preferences.invoice.legalMentions && (
+                  <div className="mt-3 pt-3 border-t border-zinc-200">
+                    <p className="!text-zinc-500 !text-xs italic whitespace-pre-line">
+                      {preferences.invoice.legalMentions}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -133,20 +133,20 @@ export default function PersonalInformationPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
           {t('profile')}
         </h1>
         {!editing ? (
           <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={() => setEditing(true)}
-              className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors"
+              className="bg-emerald-400/20 lg:w-fit w-full text-zinc-200 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors"
             >
               {t('edit_profile')}
             </button>
             <button
               onClick={() => router.push('/dashboard/profile/your-subscription')}
-              className="bg-zinc-200 lg:w-fit w-full !text-zinc-900 border border-zinc-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-zinc-700/20 hover:!text-white transition-colors"
+              className="bg-zinc-200 lg:w-fit w-full text-zinc-900 border border-zinc-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-zinc-700/20 hover:!text-white transition-colors"
             >
               {t('your_subscription')}
             </button>
@@ -188,10 +188,10 @@ export default function PersonalInformationPage() {
                 </p>
               )}
               <div className="!text-center">
-                <h3 className="!text-lg font-semibold !text-zinc-200">
+                <h3 className="!text-lg font-semibold text-zinc-200">
                   {profile?.username}
                 </h3>
-                <p className="!text-zinc-400 !text-sm">
+                <p className="text-zinc-400 !text-sm">
                   Membre depuis{' '}
                   {profile?.createdAt
                     ? new Date(profile.createdAt).toLocaleDateString('fr-FR')
@@ -205,13 +205,13 @@ export default function PersonalInformationPage() {
         {/* Section Informations */}
         <div className="lg:col-span-2">
           <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6">
-            <h2 className="!text-xl font-semibold !text-zinc-200 mb-4">
+            <h2 className="!text-xl font-semibold text-zinc-200 mb-4">
               {t('personal_information')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="!text-zinc-400 !text-sm font-light">
+                <label className="text-zinc-400 !text-sm font-light">
                   {t('username')}
                 </label>
                 {editing ? (
@@ -219,17 +219,17 @@ export default function PersonalInformationPage() {
                     type="text"
                     value={formData.username}
                     onChange={e => setFormData({ ...formData, username: e.target.value })}
-                    className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 ) : (
-                  <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                  <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                     {profile?.username}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label className="!text-zinc-400 !text-sm font-light">
+                <label className="text-zinc-400 !text-sm font-light">
                   {t('email')}
                 </label>
                 {editing ? (
@@ -237,34 +237,34 @@ export default function PersonalInformationPage() {
                     type="email"
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg !text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 ) : (
-                  <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                  <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                     {profile?.email}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label className="!text-zinc-400 !text-sm font-light">
+                <label className="text-zinc-400 !text-sm font-light">
                   {t('account_status')}
                 </label>
                 <div className="flex items-center gap-2 p-3 bg-zinc-800 rounded-lg">
                   <div
                     className={`w-2 h-2 rounded-full ${profile?.confirmed ? 'bg-emerald-500' : 'bg-red-500'}`}
                   ></div>
-                  <span className="!text-zinc-200">
+                  <span className="text-zinc-200">
                     {profile?.confirmed ? t('account_confirmed') : t('account_pending')}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="!text-zinc-400 !text-sm font-light">
+                <label className="text-zinc-400 !text-sm font-light">
                   {t('last_update')}
                 </label>
-                <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                   {profile?.updatedAt
                     ? new Date(profile.updatedAt).toLocaleDateString('fr-FR')
                     : 'N/A'}

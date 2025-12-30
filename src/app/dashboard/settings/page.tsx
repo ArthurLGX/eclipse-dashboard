@@ -1,0 +1,412 @@
+'use client';
+
+import { useState } from 'react';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { useTheme } from '@/app/context/ThemeContext';
+import { useSidebar, CONFIGURABLE_LINKS, SidebarLinkId } from '@/app/context/SidebarContext';
+import { usePreferences, DateFormat, Currency, NotificationFrequency } from '@/app/context/PreferencesContext';
+import { motion } from 'framer-motion';
+import { 
+  IconSun, 
+  IconMoon, 
+  IconDeviceDesktop,
+  IconTrendingUp,
+  IconUsers,
+  IconMagnet,
+  IconBuilding,
+  IconBrain,
+  IconMail,
+  IconRefresh,
+  IconBell,
+  IconCalendar,
+  IconFileInvoice,
+} from '@tabler/icons-react';
+
+type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'sidebar';
+
+export default function SettingsPage() {
+  const { t, language, setLanguage } = useLanguage();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { visibleLinks, toggleLink, resetToDefault } = useSidebar();
+  const { preferences, updateNotifications, updateInvoice, updateFormat } = usePreferences();
+  const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
+
+  const tabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
+    { id: 'appearance', label: t('appearance') || 'Apparence', icon: <IconSun className="w-4 h-4" /> },
+    { id: 'notifications', label: t('notifications') || 'Notifications', icon: <IconBell className="w-4 h-4" /> },
+    { id: 'format', label: t('format') || 'Format', icon: <IconCalendar className="w-4 h-4" /> },
+    { id: 'invoice', label: t('invoicing') || 'Facturation', icon: <IconFileInvoice className="w-4 h-4" /> },
+    { id: 'sidebar', label: t('navigation') || 'Navigation', icon: <IconBuilding className="w-4 h-4" /> },
+  ];
+
+  const sidebarLinkOptions: { id: SidebarLinkId; label: string; icon: React.ReactNode }[] = [
+    { id: 'revenue', label: t('revenue') || 'Chiffre d\'affaires', icon: <IconTrendingUp className="w-4 h-4" /> },
+    { id: 'clients', label: t('clients') || 'Clients', icon: <IconUsers className="w-4 h-4" /> },
+    { id: 'prospects', label: t('prospects') || 'Prospects', icon: <IconMagnet className="w-4 h-4" /> },
+    { id: 'projects', label: t('projects') || 'Projets', icon: <IconBuilding className="w-4 h-4" /> },
+    { id: 'mentors', label: t('mentors') || 'Mentors', icon: <IconBrain className="w-4 h-4" /> },
+    { id: 'newsletters', label: t('newsletters') || 'Newsletters', icon: <IconMail className="w-4 h-4" /> },
+  ];
+
+  const dateFormats: { value: DateFormat; label: string; example: string }[] = [
+    { value: 'DD/MM/YYYY', label: 'DD/MM/YYYY', example: '31/12/2024' },
+    { value: 'MM/DD/YYYY', label: 'MM/DD/YYYY', example: '12/31/2024' },
+    { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD', example: '2024-12-31' },
+  ];
+
+  const currencies: { value: Currency; label: string; symbol: string }[] = [
+    { value: 'EUR', label: 'Euro', symbol: '€' },
+    { value: 'USD', label: 'Dollar US', symbol: '$' },
+    { value: 'GBP', label: 'Livre Sterling', symbol: '£' },
+    { value: 'CHF', label: 'Franc Suisse', symbol: 'CHF' },
+  ];
+
+  const frequencies: { value: NotificationFrequency; label: string }[] = [
+    { value: 'instant', label: t('instant') || 'Instantané' },
+    { value: 'daily', label: t('daily') || 'Quotidien' },
+    { value: 'weekly', label: t('weekly') || 'Hebdomadaire' },
+    { value: 'never', label: t('never') || 'Jamais' },
+  ];
+
+  const Toggle = ({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) => (
+    <label className="flex items-center justify-between cursor-pointer group">
+      <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">{label}</span>
+      <button
+        type="button"
+        onClick={() => onChange(!checked)}
+        className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-violet-500' : 'bg-zinc-700'}`}
+      >
+        <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${checked ? 'translate-x-5' : ''}`} />
+      </button>
+    </label>
+  );
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="w-full max-w-4xl mx-auto"
+    >
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-white">
+          {t('settings') || 'Paramètres'}
+        </h1>
+        <p className="text-sm text-zinc-500 mt-1">
+          {t('settings_description') || 'Gérez vos préférences et personnalisez votre expérience'}
+        </p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex flex-wrap items-center gap-2 mb-6 pb-4 border-b border-zinc-800">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`
+              flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all
+              ${activeTab === tab.id
+                ? 'bg-violet-500 text-white'
+                : 'bg-zinc-800/50 text-zinc-400 hover:text-white hover:bg-zinc-800'
+              }
+            `}
+          >
+            {tab.icon}
+            <span className="hidden sm:inline">{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div className="space-y-6">
+        {/* APPARENCE */}
+        {activeTab === 'appearance' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <SettingsRow 
+              title={t('theme') || 'Thème'} 
+              description={t('appearance_desc') || 'Choisissez le mode d\'affichage'}
+            >
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { value: 'light', icon: <IconSun className="w-4 h-4" />, label: t('theme_light') || 'Clair' },
+                  { value: 'dark', icon: <IconMoon className="w-4 h-4" />, label: t('theme_dark') || 'Sombre' },
+                  { value: 'system', icon: <IconDeviceDesktop className="w-4 h-4" />, label: t('theme_system') || 'Système' },
+                ].map((opt) => (
+                  <OptionButton key={opt.value} selected={theme === opt.value} onClick={() => setTheme(opt.value as 'light' | 'dark' | 'system')}>
+                    {opt.icon} {opt.label}
+                  </OptionButton>
+                ))}
+              </div>
+              <p className="text-xs text-zinc-600 mt-2">
+                {t('current_theme') || 'Actuel'}: {resolvedTheme === 'dark' ? (t('theme_dark') || 'Sombre') : (t('theme_light') || 'Clair')}
+              </p>
+            </SettingsRow>
+
+            <SettingsRow title={t('language') || 'Langue'} description={t('language_desc') || 'Langue de l\'interface'}>
+              <div className="flex gap-2">
+                <OptionButton selected={language === 'fr'} onClick={() => setLanguage('fr')}>🇫🇷 Français</OptionButton>
+                <OptionButton selected={language === 'en'} onClick={() => setLanguage('en')}>🇬🇧 English</OptionButton>
+              </div>
+            </SettingsRow>
+          </motion.div>
+        )}
+
+        {/* NOTIFICATIONS */}
+        {activeTab === 'notifications' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <SettingsRow 
+              title={t('email_notifications') || 'Notifications email'} 
+              description={t('email_notifications_desc') || 'Choisissez les emails que vous souhaitez recevoir'}
+            >
+              <div className="space-y-3 w-full max-w-md">
+                <Toggle 
+                  checked={preferences.notifications.emailNewProject} 
+                  onChange={(v) => updateNotifications({ emailNewProject: v })}
+                  label={t('notif_new_project') || 'Nouveau projet'}
+                />
+                <Toggle 
+                  checked={preferences.notifications.emailNewInvoice} 
+                  onChange={(v) => updateNotifications({ emailNewInvoice: v })}
+                  label={t('notif_new_invoice') || 'Nouvelle facture créée'}
+                />
+                <Toggle 
+                  checked={preferences.notifications.emailInvoicePaid} 
+                  onChange={(v) => updateNotifications({ emailInvoicePaid: v })}
+                  label={t('notif_invoice_paid') || 'Facture payée'}
+                />
+                <Toggle 
+                  checked={preferences.notifications.emailCollaboration} 
+                  onChange={(v) => updateNotifications({ emailCollaboration: v })}
+                  label={t('notif_collaboration') || 'Invitation de collaboration'}
+                />
+                <Toggle 
+                  checked={preferences.notifications.emailNewsletter} 
+                  onChange={(v) => updateNotifications({ emailNewsletter: v })}
+                  label={t('notif_newsletter') || 'Newsletter et actualités'}
+                />
+              </div>
+            </SettingsRow>
+
+            <SettingsRow 
+              title={t('notification_frequency') || 'Fréquence'} 
+              description={t('notification_frequency_desc') || 'À quelle fréquence recevoir les emails'}
+            >
+              <div className="flex flex-wrap gap-2">
+                {frequencies.map((freq) => (
+                  <OptionButton 
+                    key={freq.value} 
+                    selected={preferences.notifications.frequency === freq.value}
+                    onClick={() => updateNotifications({ frequency: freq.value })}
+                  >
+                    {freq.label}
+                  </OptionButton>
+                ))}
+              </div>
+            </SettingsRow>
+          </motion.div>
+        )}
+
+        {/* FORMAT */}
+        {activeTab === 'format' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <SettingsRow 
+              title={t('date_format') || 'Format de date'} 
+              description={t('date_format_desc') || 'Comment afficher les dates'}
+            >
+              <div className="flex flex-wrap gap-2">
+                {dateFormats.map((fmt) => (
+                  <OptionButton 
+                    key={fmt.value} 
+                    selected={preferences.format.dateFormat === fmt.value}
+                    onClick={() => updateFormat({ dateFormat: fmt.value })}
+                  >
+                    <span>{fmt.label}</span>
+                    <span className="text-zinc-500 text-xs ml-1">({fmt.example})</span>
+                  </OptionButton>
+                ))}
+              </div>
+            </SettingsRow>
+
+            <SettingsRow 
+              title={t('currency') || 'Devise'} 
+              description={t('currency_desc') || 'Devise par défaut pour les montants'}
+            >
+              <div className="flex flex-wrap gap-2">
+                {currencies.map((cur) => (
+                  <OptionButton 
+                    key={cur.value} 
+                    selected={preferences.format.currency === cur.value}
+                    onClick={() => updateFormat({ currency: cur.value })}
+                  >
+                    <span className="font-mono">{cur.symbol}</span>
+                    <span className="ml-1">{cur.label}</span>
+                  </OptionButton>
+                ))}
+              </div>
+            </SettingsRow>
+
+            <SettingsRow 
+              title={t('timezone') || 'Fuseau horaire'} 
+              description={t('timezone_desc') || 'Votre fuseau horaire actuel'}
+            >
+              <p className="text-sm text-zinc-300 bg-zinc-800 px-3 py-2 rounded-lg inline-block">
+                🌍 {preferences.format.timezone}
+              </p>
+            </SettingsRow>
+          </motion.div>
+        )}
+
+        {/* FACTURATION */}
+        {activeTab === 'invoice' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <SettingsRow 
+              title={t('payment_delay') || 'Délai de paiement'} 
+              description={t('payment_delay_desc') || 'Délai par défaut sur les nouvelles factures'}
+            >
+              <div className="flex flex-wrap gap-2">
+                {[7, 14, 30, 45, 60].map((days) => (
+                  <OptionButton 
+                    key={days} 
+                    selected={preferences.invoice.defaultPaymentDays === days}
+                    onClick={() => updateInvoice({ defaultPaymentDays: days })}
+                  >
+                    {days} {t('days') || 'jours'}
+                  </OptionButton>
+                ))}
+              </div>
+            </SettingsRow>
+
+            <SettingsRow 
+              title={t('default_tax_rate') || 'Taux de TVA par défaut'} 
+              description={t('default_tax_rate_desc') || 'TVA appliquée automatiquement'}
+            >
+              <div className="flex flex-wrap gap-2">
+                {[0, 5.5, 10, 20].map((rate) => (
+                  <OptionButton 
+                    key={rate} 
+                    selected={preferences.invoice.defaultTaxRate === rate}
+                    onClick={() => updateInvoice({ defaultTaxRate: rate })}
+                  >
+                    {rate}%
+                  </OptionButton>
+                ))}
+              </div>
+            </SettingsRow>
+
+            <SettingsRow 
+              title={t('invoice_prefix') || 'Préfixe de numérotation'} 
+              description={t('invoice_prefix_desc') || 'Préfixe des numéros de facture'}
+            >
+              <input
+                type="text"
+                value={preferences.invoice.invoicePrefix}
+                onChange={(e) => updateInvoice({ invoicePrefix: e.target.value })}
+                className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white w-32 focus:border-violet-500 focus:outline-none"
+                placeholder="FAC-"
+              />
+              <p className="text-xs text-zinc-500 mt-1">
+                {t('example') || 'Exemple'}: {preferences.invoice.invoicePrefix}001
+              </p>
+            </SettingsRow>
+
+            <SettingsRow 
+              title={t('auto_numbering') || 'Numérotation automatique'} 
+              description={t('auto_numbering_desc') || 'Générer automatiquement les numéros'}
+            >
+              <Toggle 
+                checked={preferences.invoice.autoNumbering} 
+                onChange={(v) => updateInvoice({ autoNumbering: v })}
+                label={preferences.invoice.autoNumbering ? (t('enabled') || 'Activé') : (t('disabled') || 'Désactivé')}
+              />
+            </SettingsRow>
+
+            <SettingsRow 
+              title={t('legal_mentions') || 'Mentions légales'} 
+              description={t('legal_mentions_desc') || 'Texte affiché en bas des factures'}
+            >
+              <textarea
+                value={preferences.invoice.legalMentions}
+                onChange={(e) => updateInvoice({ legalMentions: e.target.value })}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-violet-500 focus:outline-none resize-none"
+                rows={3}
+                placeholder={t('legal_mentions_placeholder') || 'Ex: TVA non applicable, art. 293 B du CGI...'}
+              />
+            </SettingsRow>
+          </motion.div>
+        )}
+
+        {/* NAVIGATION / SIDEBAR */}
+        {activeTab === 'sidebar' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <SettingsRow 
+              title={t('visible_links') || 'Liens visibles'} 
+              description={t('sidebar_management_desc') || 'Sélectionnez les éléments à afficher'}
+            >
+              <div className="flex flex-wrap gap-2">
+                {sidebarLinkOptions.map((link) => {
+                  const isVisible = visibleLinks.includes(link.id);
+                  return (
+                    <OptionButton key={link.id} selected={isVisible} onClick={() => toggleLink(link.id)}>
+                      {link.icon} {link.label}
+                    </OptionButton>
+                  );
+                })}
+              </div>
+              <p className="text-xs text-zinc-600 mt-2">
+                {visibleLinks.length}/{CONFIGURABLE_LINKS.length} {t('links_visible') || 'liens affichés'}
+              </p>
+            </SettingsRow>
+
+            <SettingsRow title={t('reset') || 'Réinitialiser'} description={t('reset_desc') || 'Restaurer les valeurs par défaut'}>
+              <button
+                onClick={resetToDefault}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-white transition-all text-sm"
+              >
+                <IconRefresh className="w-4 h-4" />
+                {t('reset_sidebar') || 'Afficher tous les liens'}
+              </button>
+            </SettingsRow>
+          </motion.div>
+        )}
+
+        {/* Footer info */}
+        <div className="pt-4 border-t border-zinc-800 text-xs text-zinc-500 flex items-center gap-2">
+          <span className="text-blue-400">💡</span>
+          {t('settings_saved_locally') || 'Vos préférences sont enregistrées automatiquement.'}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// Composant réutilisable pour une ligne de paramètre
+function SettingsRow({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 pb-6 border-b border-zinc-800 last:border-0">
+      <div className="md:w-48 flex-shrink-0">
+        <h3 className="text-sm font-medium text-white">{title}</h3>
+        <p className="text-xs text-zinc-500 mt-0.5">{description}</p>
+      </div>
+      <div className="flex-1">{children}</div>
+    </div>
+  );
+}
+
+// Bouton d'option réutilisable
+function OptionButton({ children, selected, onClick }: { children: React.ReactNode; selected: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all
+        ${selected
+          ? 'border-violet-500 bg-violet-500/10 text-violet-400'
+          : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-white'
+        }
+      `}
+    >
+      {children}
+    </button>
+  );
+}

@@ -204,7 +204,7 @@ export default function YourSubscriptionPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
           {t('your_subscription')}
         </h1>
       </div>
@@ -213,7 +213,7 @@ export default function YourSubscriptionPage() {
         {/* Section Informations de l'abonnement */}
         <div className="lg:col-span-2">
           <div className="bg-zinc-900 lg:!p-6 !p-4 rounded-lg border border-zinc-800 space-y-6">
-            <h2 className="!text-xl font-semibold !text-zinc-200 mb-4">
+            <h2 className="!text-xl font-semibold text-zinc-200 mb-4">
               {t('subscription_details')}
             </h2>
 
@@ -233,7 +233,7 @@ export default function YourSubscriptionPage() {
                         <div
                           className={`w-3 h-3 rounded-full ${subscription.trial ? 'bg-orange-500' : 'bg-emerald-500'}`}
                         ></div>
-                        <h3 className="!text-lg font-semibold !text-zinc-200 capitalize">
+                        <h3 className="!text-lg font-semibold text-zinc-200 capitalize">
                           {subscription.plan?.name || 'Plan'}
                         </h3>
                         {subscription.trial && (
@@ -246,7 +246,7 @@ export default function YourSubscriptionPage() {
                         <div className="!text-2xl font-bold !text-emerald-400">
                           €{subscription.plan?.price_monthly || 0}
                         </div>
-                        <div className="!text-sm !text-zinc-400">
+                        <div className="!text-sm text-zinc-400">
                           {t('per_month')}
                         </div>
                       </div>
@@ -255,35 +255,35 @@ export default function YourSubscriptionPage() {
                     {/* Détails de l'abonnement */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 !text-sm font-light">
+                        <label className="text-zinc-400 !text-sm font-light">
                           {t('billing_type')}
                         </label>
                         <div className="flex items-center gap-2 p-3 bg-zinc-800 rounded-lg">
-                          <span className="!text-zinc-200 font-medium capitalize">
+                          <span className="text-zinc-200 font-medium capitalize">
                             {subscription.billing_type}
                           </span>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 !text-sm font-light">
+                        <label className="text-zinc-400 !text-sm font-light">
                           {t('status')}
                         </label>
                         <div className="flex items-center gap-2 p-3 bg-zinc-800 rounded-lg">
                           <div
                             className={`w-2 h-2 rounded-full ${subscription.trial ? 'bg-orange-500' : 'bg-emerald-500'}`}
                           ></div>
-                          <span className="!text-zinc-200">
+                          <span className="text-zinc-200">
                             {subscription.trial ? t('trial') : t('active')}
                           </span>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 !text-sm font-light">
+                        <label className="text-zinc-400 !text-sm font-light">
                           {t('created_at')}
                         </label>
-                        <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                        <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                           {subscription.createdAt
                             ? new Date(
                                 subscription.createdAt
@@ -293,10 +293,10 @@ export default function YourSubscriptionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 !text-sm font-light">
+                        <label className="text-zinc-400 !text-sm font-light">
                           {t('last_updated')}
                         </label>
-                        <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                        <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                           {subscription.updatedAt
                             ? new Date(
                                 subscription.updatedAt
@@ -309,22 +309,22 @@ export default function YourSubscriptionPage() {
                     {/* Description et fonctionnalités */}
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 !text-sm font-light">
+                        <label className="text-zinc-400 !text-sm font-light">
                           {t('description')}
                         </label>
-                        <p className="!text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                        <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
                           {subscription.plan?.description ||
                             t('no_description')}
                         </p>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="!text-zinc-400 !text-sm font-light">
+                        <label className="text-zinc-400 !text-sm font-light">
                           {t('features')}
                         </label>
                         <div className="p-3 bg-zinc-800 rounded-lg">
                           {subscription.plan?.features ? (
-                            <div className="!text-zinc-200 space-y-2">
+                            <div className="text-zinc-200 space-y-2">
                               {(() => {
                                 try {
                                   const features =
@@ -378,7 +378,7 @@ export default function YourSubscriptionPage() {
                               })()}
                             </div>
                           ) : (
-                            <p className="!text-zinc-500 italic">
+                            <p className="text-zinc-500 italic">
                               {t('no_features_specified')}
                             </p>
                           )}
@@ -390,7 +390,7 @@ export default function YourSubscriptionPage() {
               </div>
             ) : (
               <div className="!text-center py-12">
-                <div className="!text-zinc-400 !text-lg mb-4">
+                <div className="text-zinc-400 !text-lg mb-4">
                   {t('no_subscription_found')}
                 </div>
                 <button
@@ -407,7 +407,7 @@ export default function YourSubscriptionPage() {
         {/* Section Actions rapides */}
         <div className="lg:col-span-1">
           <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6 relative overflow-visible">
-            <h2 className="!text-xl font-semibold !text-zinc-200 mb-4">
+            <h2 className="!text-xl font-semibold text-zinc-200 mb-4">
               {t('quick_actions')}
             </h2>
 
@@ -432,7 +432,7 @@ export default function YourSubscriptionPage() {
 
               <button
                 onClick={() => router.push('/pricing')}
-                className="cursor-pointer w-full bg-zinc-200 !text-zinc-900 px-4 py-3 rounded-lg  transition-colors font-semibold border border-zinc-700 hover:!text-zinc-200 hover:border-zinc-200 hover:bg-zinc-200/20"
+                className="cursor-pointer w-full bg-zinc-200 text-zinc-900 px-4 py-3 rounded-lg  transition-colors font-semibold border border-zinc-700 hover:text-zinc-200 hover:border-zinc-200 hover:bg-zinc-200/20"
               >
                 {t('view_all_plans')}
               </button>
@@ -441,7 +441,7 @@ export default function YourSubscriptionPage() {
                 onClick={() =>
                   router.push('/dashboard/profile/personal-information')
                 }
-                className="cursor-pointer w-full bg-zinc-800 !text-zinc-200 px-4 py-3 rounded-lg hover:bg-zinc-900 transition-colors font-semibold border border-zinc-700 hover:border-zinc-200"
+                className="cursor-pointer w-full bg-zinc-800 text-zinc-200 px-4 py-3 rounded-lg hover:bg-zinc-900 transition-colors font-semibold border border-zinc-700 hover:border-zinc-200"
               >
                 {t('back_to_profile')}
               </button>
@@ -449,10 +449,10 @@ export default function YourSubscriptionPage() {
 
             {/* Informations supplémentaires */}
             <div className="pt-6 border-t border-zinc-800">
-              <h3 className="!text-sm font-semibold !text-zinc-300 mb-3">
+              <h3 className="!text-sm font-semibold text-zinc-300 mb-3">
                 {t('need_help')}
               </h3>
-              <p className="!text-sm !text-zinc-400 mb-4">
+              <p className="!text-sm text-zinc-400 mb-4">
                 {t('contact_support_message')}
               </p>
               <SupportDropdown

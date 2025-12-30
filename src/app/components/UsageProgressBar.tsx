@@ -235,7 +235,7 @@ export default function UsageProgressBar() {
       {trialData && (
         <div className="border-b border-zinc-700 pb-4 mb-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <span className="!text-sm !text-zinc-200 font-medium">
+            <span className="!text-sm text-zinc-200 font-medium">
               {trialData.isExpired ? t('trial_expired') : t('trial_period')}
             </span>
             <span
@@ -262,7 +262,7 @@ export default function UsageProgressBar() {
               }`}
             />
           </div>
-          <p className="!text-xs !text-zinc-500 mt-1">
+          <p className="!text-xs text-zinc-500 mt-1">
             {trialData &&
               t('started_at') +
                 ' : ' +
@@ -272,7 +272,7 @@ export default function UsageProgressBar() {
                   year: 'numeric',
                 })}
           </p>
-          <p className="!text-xs !text-zinc-500 mt-1">
+          <p className="!text-xs text-zinc-500 mt-1">
             {trialData.isExpired
               ? t('trial_expired_description')
               : t('trial_progress_description')}
@@ -284,10 +284,10 @@ export default function UsageProgressBar() {
         {Object.entries(usageData).map(([key, data]) => (
           <div key={key} className="flex-1 min-w-48 w-full">
             <div className="flex justify-between items-center mb-2">
-              <span className="!text-sm !text-zinc-400 font-medium">
+              <span className="!text-sm text-zinc-400 font-medium">
                 {data.label}
               </span>
-              <span className="!text-sm !text-zinc-300 font-semibold">
+              <span className="!text-sm text-zinc-300 font-semibold">
                 {data.current} / {data.limit === 0 ? '∞' : data.limit}
               </span>
             </div>
@@ -310,12 +310,12 @@ export default function UsageProgressBar() {
         usageData.mentors.current >= usageData.mentors.limit ||
         (usageData.newsletters.current >= usageData.newsletters.limit && (
           <div className="flex lg:flex-row flex-col gap-2">
-            <p className="!text-sm !text-zinc-400 font-medium">
+            <p className="!text-sm text-zinc-400 font-medium">
               {t('usage_progress_bar_description')}
             </p>
             <Link
               href="/pricing"
-              className="!text-sm !text-zinc-400 font-medium underline hover:!text-zinc-300 transition-colors"
+              className="!text-sm text-zinc-400 font-medium underline hover:text-zinc-300 transition-colors"
             >
               {t('upgrade_now')}
             </Link>

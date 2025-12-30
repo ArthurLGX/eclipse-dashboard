@@ -40,10 +40,10 @@ export default function NotFound() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-8"
         >
-          <h2 className="!text-3xl md:!text-4xl font-bold !text-zinc-200 mb-4">
+          <h2 className="!text-3xl md:!text-4xl font-bold text-zinc-200 mb-4">
             {t('page_not_found')}
           </h2>
-          <p className="!text-lg !text-zinc-400 leading-relaxed">
+          <p className="!text-lg text-zinc-400 leading-relaxed">
             {t('page_not_found_description')}
           </p>
         </motion.div>
@@ -64,7 +64,7 @@ export default function NotFound() {
 
           <button
             onClick={handleGoBack}
-            className="group relative px-4 py-2 border-1 border-zinc-700 cursor-pointer hover:border-emerald-300 !text-zinc-300 hover:!text-emerald-400 font-semibold rounded-lg transition-all duration-300 transform  hover:shadow-lg hover:shadow-emerald-500/25   "
+            className="group relative px-4 py-2 border-1 border-zinc-700 cursor-pointer hover:border-emerald-300 text-zinc-300 hover:!text-emerald-400 font-semibold rounded-lg transition-all duration-300 transform  hover:shadow-lg hover:shadow-emerald-500/25   "
           >
             <span className="relative z-10">{t('go_back')}</span>
           </button>
@@ -77,8 +77,8 @@ export default function NotFound() {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="mt-12 !text-center"
         >
-          <p className="!text-sm !text-zinc-500 mb-2">{t('error_code')}: 404</p>
-          <p className="!text-xs !text-zinc-600">
+          <p className="!text-sm text-zinc-500 mb-2">{t('error_code')}: 404</p>
+          <p className="!text-xs text-zinc-600">
             {t('contact_support_if_problem_persists')}
           </p>
         </motion.div>

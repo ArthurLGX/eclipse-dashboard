@@ -80,8 +80,8 @@ export default function ClientDetailsPage() {
         <div>
           <span className="font-semibold text-zinc-200">{value as string}</span>
           <div className="flex items-center gap-2 mt-1">
-            <ProjectTypeIcon type={row.type} className="w-4 h-4 !text-zinc-500" />
-            <span className="!text-zinc-500 !text-xs">{row.type}</span>
+            <ProjectTypeIcon type={row.type} className="w-4 h-4 text-zinc-500" />
+            <span className="text-zinc-500 !text-xs">{row.type}</span>
           </div>
         </div>
       ),
@@ -108,7 +108,7 @@ export default function ClientDetailsPage() {
       key: 'start_date',
       label: 'Début',
       render: (value) => (
-        <span className="!text-zinc-300">
+        <span className="text-zinc-300">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </span>
       ),
@@ -117,7 +117,7 @@ export default function ClientDetailsPage() {
       key: 'end_date',
       label: 'Fin',
       render: (value) => (
-        <span className="!text-zinc-300">
+        <span className="text-zinc-300">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </span>
       ),
@@ -276,7 +276,7 @@ export default function ClientDetailsPage() {
             )}
             {client.adress && (
               <span className="flex items-center gap-1">
-                <IconMapPin className="w-4 h-4 !text-zinc-500" stroke={1} />
+                <IconMapPin className="w-4 h-4 text-zinc-500" stroke={1} />
                 {client.adress}
               </span>
             )}

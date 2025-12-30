@@ -171,7 +171,7 @@ export default function Plans() {
       {/* Affichage des limites du plan gratuit si l'utilisateur est connecté */}
       <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-4 mb-8">
         <span
-          className={`!text-sm font-medium transition-colors duration-200 ${!togglePlan ? '!text-emerald-400' : '!text-zinc-400'}`}
+          className={`!text-sm font-medium transition-colors duration-200 ${!togglePlan ? '!text-emerald-400' : 'text-zinc-400'}`}
         >
           {t('monthly')}
         </span>
@@ -190,7 +190,7 @@ export default function Plans() {
         </button>
 
         <span
-          className={`!text-sm font-medium transition-colors duration-200 ${togglePlan ? '!text-emerald-400' : '!text-zinc-400'}`}
+          className={`!text-sm font-medium transition-colors duration-200 ${togglePlan ? '!text-emerald-400' : 'text-zinc-400'}`}
         >
           {t('yearly')}
         </span>
@@ -199,7 +199,7 @@ export default function Plans() {
           className={`ml-2 px-2 py-1 ${
             togglePlan
               ? 'bg-emerald-500/20 !text-emerald-300'
-              : 'bg-zinc-900 !text-zinc-500'
+              : 'bg-zinc-900 text-zinc-500'
           }  !text-xs font-medium rounded-full`}
         >
           {t('save_20_percent')}
@@ -295,14 +295,14 @@ export default function Plans() {
                 <div className="!text-center my-8">
                   <h2
                     className={`!text-2xl font-bold ${
-                      plan.name === 'free' ? '!text-zinc-900' : '!text-zinc-200'
+                      plan.name === 'free' ? 'text-zinc-900' : 'text-zinc-200'
                     } mb-2 capitalize`}
                   >
                     {plan.name}
                   </h2>
                   <p
-                    className={`!text-zinc-400 !text-sm ${
-                      plan.name === 'free' ? '!text-zinc-900' : '!text-zinc-400'
+                    className={`text-zinc-400 !text-sm ${
+                      plan.name === 'free' ? 'text-zinc-900' : 'text-zinc-400'
                     }`}
                   >
                     {plan.description}
@@ -314,7 +314,7 @@ export default function Plans() {
                     <span
                       className={`!text-4xl font-bold ${
                         plan.name === 'free'
-                          ? '!text-zinc-900'
+                          ? 'text-zinc-900'
                           : '!text-emerald-300'
                       }`}
                     >
@@ -322,13 +322,13 @@ export default function Plans() {
                       {togglePlan ? plan.price_yearly : plan.price_monthly}
                       {language === 'fr' ? '€' : ''}
                     </span>
-                    <span className="!text-zinc-400 !text-sm ml-2">
+                    <span className="text-zinc-400 !text-sm ml-2">
                       {t('per_month')}
                     </span>
                   </div>
                   {togglePlan && (
-                    <div className="!text-sm flex flex-col items-center justify-center gap-2 !text-zinc-500">
-                      <span className="!text-zinc-400 font-semibold">
+                    <div className="!text-sm flex flex-col items-center justify-center gap-2 text-zinc-500">
+                      <span className="text-zinc-400 font-semibold">
                         {togglePlan
                           ? t('billed_yearly') +
                             ' ' +
@@ -337,7 +337,7 @@ export default function Plans() {
                             (language === 'fr' ? '€' : '')
                           : ''}
                       </span>
-                      <span className="!text-zinc-400 !text-sm font-semibold">
+                      <span className="text-zinc-400 !text-sm font-semibold">
                         {togglePlan ? t('save_20_percent') : ''}
                       </span>
                     </div>
@@ -347,14 +347,14 @@ export default function Plans() {
                   onClick={() => {
                     handleChoosePlan(plan);
                   }}
-                  className={`w-full cursor-pointer ${plan.name === 'pro' ? 'bg-emerald-300 hover:bg-emerald-300/10 !text-black border border-emerald-300 hover:!text-emerald-300' : plan.name === 'free' ? 'bg-zinc-900 hover:bg-zinc-200 !text-zinc-200 border border-zinc-200 border-zinc-200 hover:border-zinc-900 hover:!text-zinc-900' : 'bg-zinc-200 hover:bg-zinc-700 !text-black hover:bg-zinc-950 border border-zinc-200 hover:!text-zinc-200'} font-semibold py-3 px-6 rounded-lg transition-colors duration-200`}
+                  className={`w-full cursor-pointer ${plan.name === 'pro' ? 'bg-emerald-300 hover:bg-emerald-300/10 !text-black border border-emerald-300 hover:!text-emerald-300' : plan.name === 'free' ? 'bg-zinc-900 hover:bg-zinc-200 text-zinc-200 border border-zinc-200 border-zinc-200 hover:border-zinc-900 hover:text-zinc-900' : 'bg-zinc-200 hover:bg-zinc-700 !text-black hover:bg-zinc-950 border border-zinc-200 hover:text-zinc-200'} font-semibold py-3 px-6 rounded-lg transition-colors duration-200`}
                 >
                   {t('choose_plan')}
                 </button>
               </motion.div>
               {currentUserPlan === plan.name && (
                 <div className="flex !my-4 !mx-auto md:!w-fit !w-11/12 !text-center justify-center items-center">
-                  <span className="!text-xs font-medium !text-zinc-200/50 bg-zinc-200/10 rounded-full px-2 py-1 md:!w-fit !w-full border border-zinc-200/20  ">
+                  <span className="!text-xs font-medium text-zinc-200/50 bg-zinc-200/10 rounded-full px-2 py-1 md:!w-fit !w-full border border-zinc-200/20  ">
                     {t('your_current_plan')}
                   </span>
                 </div>
@@ -363,7 +363,7 @@ export default function Plans() {
           ))
         ) : (
           <div className="col-span-full !text-center py-12">
-            <div className="!text-zinc-400 !text-lg">
+            <div className="text-zinc-400 !text-lg">
               {plans.length === 0
                 ? t('no_plans_available')
                 : t('loading_plans')}
@@ -382,7 +382,7 @@ export default function Plans() {
             language={language}
           />
           <div className="w-full lg:max-w-6xl lg:!px-6 !px-2 mt-12">
-            <h2 className="!text-2xl font-bold !text-center !text-zinc-200 mb-8">
+            <h2 className="!text-2xl font-bold !text-center text-zinc-200 mb-8">
               {t('compare_plans')}
             </h2>
             <div
@@ -393,13 +393,13 @@ export default function Plans() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-zinc-800">
-                      <th className="p-4 !text-left !text-zinc-400 font-medium capitalize w-1/3">
+                      <th className="p-4 !text-left text-zinc-400 font-medium capitalize w-1/3">
                         {t('features')}
                       </th>
                       {plans.map(plan => (
                         <th
                           key={plan.id}
-                          className={`p-4 !text-center !text-zinc-200 font-semibold transition-all duration-500 w-1/6 ${
+                          className={`p-4 !text-center text-zinc-200 font-semibold transition-all duration-500 w-1/6 ${
                             highlightedPlan === plan.name
                               ? 'bg-emerald-300/20'
                               : ''
@@ -466,7 +466,7 @@ export default function Plans() {
                             <tr className="bg-zinc-800/30">
                               <td
                                 colSpan={plans.length + 1}
-                                className="p-3 !text-zinc-200 font-semibold !text-center"
+                                className="p-3 text-zinc-200 font-semibold !text-center"
                               >
                                 {sectionName}
                               </td>
@@ -478,7 +478,7 @@ export default function Plans() {
                                 key={featureKey}
                                 className="border-b border-zinc-800/50"
                               >
-                                <td className="p-4 !text-zinc-300 font-medium">
+                                <td className="p-4 text-zinc-300 font-medium">
                                   {(() => {
                                     const labels = {
                                       max_active_projects: t(
@@ -536,7 +536,7 @@ export default function Plans() {
                                     {(() => {
                                       if (!plan.features)
                                         return (
-                                          <span className="!text-zinc-600">
+                                          <span className="text-zinc-600">
                                             -
                                           </span>
                                         );
@@ -555,14 +555,14 @@ export default function Plans() {
                                               ✓
                                             </span>
                                           ) : (
-                                            <span className="!text-zinc-600">
+                                            <span className="text-zinc-600">
                                               ✗
                                             </span>
                                           );
                                         } else if (typeof value === 'number') {
                                           if (featureKey === 'storage') {
                                             return (
-                                              <span className="!text-zinc-200 font-medium">
+                                              <span className="text-zinc-200 font-medium">
                                                 {value === 0
                                                   ? '∞'
                                                   : value === 100
@@ -572,26 +572,26 @@ export default function Plans() {
                                             );
                                           }
                                           return (
-                                            <span className="!text-zinc-200 font-medium">
+                                            <span className="text-zinc-200 font-medium">
                                               {value === 0 ? '∞' : value}
                                             </span>
                                           );
                                         } else if (typeof value === 'string') {
                                           return (
-                                            <span className="!text-zinc-200 !text-sm">
+                                            <span className="text-zinc-200 !text-sm">
                                               {value}
                                             </span>
                                           );
                                         }
 
                                         return (
-                                          <span className="!text-zinc-600">
+                                          <span className="text-zinc-600">
                                             -
                                           </span>
                                         );
                                       } catch {
                                         return (
-                                          <span className="!text-zinc-600">
+                                          <span className="text-zinc-600">
                                             -
                                           </span>
                                         );
