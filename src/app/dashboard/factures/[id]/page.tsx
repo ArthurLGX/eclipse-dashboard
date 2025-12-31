@@ -187,9 +187,8 @@ export default function FacturePage() {
       
       try {
         // Utiliser le documentId extrait du slug
-        let factureData;
         const documentIdToFetch = extractedId || id;
-        factureData = await fetchFactureFromDocumentId(documentIdToFetch as string);
+        const factureData = await fetchFactureFromDocumentId(documentIdToFetch as string);
         
         const typedData = factureData as { data?: Facture[] };
       
