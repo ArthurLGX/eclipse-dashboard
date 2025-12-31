@@ -30,7 +30,7 @@ export default function ProspectsPage() {
 
   // Hook avec cache
   const { data: prospectsData, loading, refetch } = useProspects(user?.id);
-  const prospects = (prospectsData as Prospect[]) || [];
+  const prospects = useMemo(() => (prospectsData as Prospect[]) || [], [prospectsData]);
 
   // Options de filtres
   const statusOptions: FilterOption[] = useMemo(() => [

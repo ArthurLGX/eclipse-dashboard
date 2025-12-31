@@ -163,14 +163,9 @@ export default function FacturePage() {
 
   useEffect(() => {
     const fetchFacture = async () => {
-      console.log('🔍 [FACTURE DEBUG] rawId:', rawId);
-      console.log('🔍 [FACTURE DEBUG] extractedId:', extractedId);
-      console.log('🔍 [FACTURE DEBUG] id:', id);
-      console.log('🔍 [FACTURE DEBUG] user?.id:', user?.id);
-      
+   
       // Mode création
       if (rawId === t('add') || rawId === 'add' || rawId === 'ajouter') {
-        console.log('🔍 [FACTURE DEBUG] Mode création détecté');
         setEditing(true);
         
         // Préremplir le client si fourni dans l'URL
@@ -194,16 +189,12 @@ export default function FacturePage() {
         // Utiliser le documentId extrait du slug
         let factureData;
         const documentIdToFetch = extractedId || id;
-        console.log('🔍 [FACTURE DEBUG] Appel fetchFactureFromDocumentId avec:', documentIdToFetch);
         factureData = await fetchFactureFromDocumentId(documentIdToFetch as string);
         
         const typedData = factureData as { data?: Facture[] };
-        console.log('🔍 [FACTURE DEBUG] typedData:', typedData);
-        console.log('🔍 [FACTURE DEBUG] typedData?.data:', typedData?.data);
-        console.log('🔍 [FACTURE DEBUG] typedData.data[0]:', typedData?.data?.[0]);
+      
         
         if (typedData?.data && typedData.data[0]) {
-          console.log('🔍 [FACTURE DEBUG] ✅ Facture trouvée:', typedData.data[0]);
           setFacture(typedData.data[0]);
           setFormData(typedData.data[0]);
           if (edit === '1') {
@@ -211,7 +202,6 @@ export default function FacturePage() {
           }
           setInvoiceLines(typedData.data[0]?.invoice_lines || []);
         } else {
-          console.log('🔍 [FACTURE DEBUG] ❌ Aucune facture trouvée dans la réponse');
         }
         setIsLoading(false);
       } catch (error) {

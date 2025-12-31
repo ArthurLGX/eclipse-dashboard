@@ -46,7 +46,6 @@ export default function YourCompanyPage() {
           return;
         }
         setCompanyProfile(data.data[0]);
-        console.log('Réponse :', data.data[0]);
       } catch (error) {
         console.error('Error fetching profile:', error);
         showGlobalPopup('Erreur lors du chargement du profil', 'error');
@@ -91,7 +90,6 @@ export default function YourCompanyPage() {
     }
     try {
       const companyId = companyProfile?.documentId || '';
-      console.log('companyId', companyId);
       
       // Assurer une valeur par défaut pour le domaine
       const dataToSend = {

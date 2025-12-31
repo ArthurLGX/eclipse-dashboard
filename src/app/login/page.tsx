@@ -51,9 +51,7 @@ function LoginContent() {
       if (isLogin) {
         const data = await fetchLogin(username, password);
         if (data.jwt && data.user) {
-          console.log('Login successful');
-          console.log('data.user', data.user);
-
+          
           // Utiliser la fonction login du contexte qui gère tout
           login(data.user, data.jwt);
 
@@ -66,7 +64,6 @@ function LoginContent() {
       } else {
         const data = await fetchCreateAccount(username, email, password);
         if (!data.error) {
-          console.log('Register successful');
           router.push('/login');
           showGlobalPopup(
             'Register successful, please login to continue',
@@ -95,7 +92,6 @@ function LoginContent() {
       try {
         // Vérifier si l'utilisateur a un abonnement
         const subscription = await fetchSubscriptionsUser(user.id) as { data?: SubscriptionData[] };
-        console.log('subscription', subscription);
 
         if (
           subscription?.data &&

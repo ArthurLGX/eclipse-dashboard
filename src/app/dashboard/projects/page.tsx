@@ -43,7 +43,7 @@ export default function ProjectsPage() {
   const { data: projectsData, loading: loadingProjects, refetch: refetchProjects } = useProjects(user?.id);
   const { data: clientsData } = useClients(user?.id);
 
-  const projects = (projectsData as Project[]) || [];
+  const projects = useMemo(() => (projectsData as Project[]) || [], [projectsData]);
   const clients = useMemo(() => 
     ((clientsData as Client[]) || []).map(c => ({ id: c.id, name: c.name })),
     [clientsData]

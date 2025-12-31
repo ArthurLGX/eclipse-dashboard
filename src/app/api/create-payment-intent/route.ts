@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
   try {
     const { planId, billingType, amount } = await request.json();
 
-    console.log('Received amount:', amount, 'centimes');
 
     // Vérifier que le montant est suffisant (minimum 50 centimes pour EUR)
     if (amount < 50) {

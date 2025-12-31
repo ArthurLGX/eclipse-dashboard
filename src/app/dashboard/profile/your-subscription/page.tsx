@@ -61,7 +61,6 @@ export default function YourSubscriptionPage() {
       try {
         setLoading(true);
         const data = await fetchUserById(user.id) as { id: number; username: string };
-        console.log('Réponse :', data);
       } catch (error) {
         console.error('Error fetching profile:', error);
         showGlobalPopup('Erreur lors du chargement du profil', 'error');
@@ -73,7 +72,6 @@ export default function YourSubscriptionPage() {
       try {
         if (!user?.id) return;
         const response = await fetchSubscriptionsUser(user.id) as { data?: Subscription[] };
-        console.log('Subscriptions response:', response);
         setSubscriptions(response?.data || []);
       } catch (error) {
         console.error('Error fetching subscriptions:', error);
@@ -86,7 +84,6 @@ export default function YourSubscriptionPage() {
     const fetchAvailablePlans = async () => {
       try {
         const response = await fetchPlans() as { data?: Plan[] };
-        console.log('Plans récupérés:', response?.data);
         setAvailablePlans(response?.data || []);
       } catch (error) {
         console.error('Error fetching plans:', error);
@@ -96,6 +93,7 @@ export default function YourSubscriptionPage() {
     fetchProfile();
     fetchSubscriptions();
     fetchAvailablePlans();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const handlePlanSelect = (plan: Plan) => {
@@ -132,7 +130,6 @@ export default function YourSubscriptionPage() {
       }) as { data?: unknown };
 
       if (response?.data) {
-        console.log('Plan sélectionné:', selectedPlan);
         showGlobalPopup(
           'Paiement réussi ! Votre abonnement a été mis à niveau.',
           'success'

@@ -157,7 +157,6 @@ export default function RevenuePage() {
             ? (process.env.NEXT_PUBLIC_STRAPI_URL || '') + row.pdf[0].url
             : null;
 
-        console.log('pdfUrl', pdfUrl);
         return (
           <div className="flex gap-2 items-center">
             {pdfUrl && (

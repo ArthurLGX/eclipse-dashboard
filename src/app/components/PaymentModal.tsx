@@ -69,11 +69,6 @@ const CheckoutForm: React.FC<{
         return;
       }
 
-      console.log('Plan:', plan.name);
-      console.log('Billing Type:', billingType);
-      console.log('Price Monthly:', plan.price_monthly);
-      console.log('Price Yearly:', plan.price_yearly);
-      console.log('Amount sent to Stripe:', amount);
 
       // Créer l'intention de paiement côté serveur
       const response = await fetch('/api/create-payment-intent', {

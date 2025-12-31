@@ -72,10 +72,7 @@ export default function UsageProgressBar() {
             const startedDate = subscription.data[0].start_date;
             const isTrial = subscription.data[0].trial;
 
-            console.log('Features : ', features);
-            console.log('Plan name : ', planName);
-            console.log('Started date : ', startedDate);
-            console.log('Is trial : ', isTrial);
+          
 
             // Calculer les données du trial si c'est un plan gratuit en trial
             if (planName === 'free' && isTrial) {
@@ -93,10 +90,7 @@ export default function UsageProgressBar() {
               const progress = Math.min((elapsed / totalDuration) * 100, 100);
               const isExpired = now.getTime() > endDate.getTime();
 
-              console.log('Days remaining : ', daysRemaining);
-              console.log('Total days : ', totalDuration);
-              console.log('Progress : ', progress);
-              console.log('Is expired : ', isExpired);
+             
 
               setTrialData({
                 daysRemaining,
@@ -122,7 +116,6 @@ export default function UsageProgressBar() {
               max_newsletters: parsedFeatures.max_newsletters ?? 0,
             };
 
-            console.log('Current plan limits : ', currentPlanLimits);
           } else {
             // Pas de subscription, utiliser les limites par défaut
             setTrialData(null);

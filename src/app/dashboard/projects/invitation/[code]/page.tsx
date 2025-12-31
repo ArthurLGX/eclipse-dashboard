@@ -83,6 +83,7 @@ export default function InvitationPage() {
     };
 
     loadInvitation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
   const handleAccept = async () => {

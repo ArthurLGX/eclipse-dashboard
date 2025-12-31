@@ -105,7 +105,6 @@ export default function Plans() {
       }) as { data?: unknown };
 
       if (response?.data) {
-        console.log('Plan choisi : ', selectedPlan);
         showGlobalPopup(
           'Paiement réussi ! Votre abonnement est maintenant actif.',
           'success'
@@ -151,7 +150,6 @@ export default function Plans() {
           subscription.data[0].subscription_status === 'active'
         ) {
           const planName = subscription.data[0].plan.name;
-          console.log('Plan name : ', planName);
           setCurrentUserPlan(planName);
         }
       } catch (error) {

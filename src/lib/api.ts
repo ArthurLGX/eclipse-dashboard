@@ -540,12 +540,9 @@ export async function updateFactureById(
     payload.pdf = data.pdf;
   }
 
-  console.log('=== UPDATE FACTURE ===');
-  console.log('URL:', `factures/${factureId}`);
-  console.log('Payload envoyé:', JSON.stringify(payload, null, 2));
+ 
   
   const result = await put(`factures/${factureId}`, payload);
-  console.log('Réponse Strapi:', result);
   return result;
 }
 
