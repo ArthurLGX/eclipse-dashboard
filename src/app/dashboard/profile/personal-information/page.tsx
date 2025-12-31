@@ -96,25 +96,25 @@ export default function PersonalInformationPage() {
           className="space-y-6"
         >
           <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-            <div className="h-8 bg-zinc-800 rounded w-32 animate-pulse"></div>
-            <div className="h-10 bg-zinc-800 rounded w-24 animate-pulse"></div>
+            <div className="h-8 bg-muted rounded w-32 animate-pulse"></div>
+            <div className="h-10 bg-muted rounded w-24 animate-pulse"></div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
-              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+              <div className="card p-6">
                 <div className="flex flex-col items-center space-y-4">
-                  <div className="w-24 h-24 bg-zinc-800 rounded-full animate-pulse"></div>
-                  <div className="h-6 bg-zinc-800 rounded w-32 animate-pulse"></div>
-                  <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse"></div>
+                  <div className="w-24 h-24 bg-muted rounded-full animate-pulse"></div>
+                  <div className="h-6 bg-muted rounded w-32 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
                 </div>
               </div>
             </div>
             <div className="lg:col-span-2">
-              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-4">
+              <div className="card p-6 space-y-4">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="space-y-2">
-                    <div className="h-4 bg-zinc-800 rounded w-20 animate-pulse"></div>
-                    <div className="h-10 bg-zinc-800 rounded animate-pulse"></div>
+                    <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>
+                    <div className="h-10 bg-muted rounded animate-pulse"></div>
                   </div>
                 ))}
               </div>
@@ -133,20 +133,20 @@ export default function PersonalInformationPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-primary">
           {t('profile')}
         </h1>
         {!editing ? (
           <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={() => setEditing(true)}
-              className="bg-emerald-400/20 lg:w-fit w-full text-zinc-200 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors"
+              className="btn-primary lg:w-fit w-full px-4 py-2 rounded-lg"
             >
               {t('edit_profile')}
             </button>
             <button
               onClick={() => router.push('/dashboard/profile/your-subscription')}
-              className="bg-zinc-200 lg:w-fit w-full text-zinc-900 border border-zinc-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-zinc-700/20 hover:!text-white transition-colors"
+              className="btn-ghost lg:w-fit w-full px-4 py-2"
             >
               {t('your_subscription')}
             </button>
@@ -155,13 +155,13 @@ export default function PersonalInformationPage() {
           <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={handleCancel}
-              className="bg-orange-500/20 lg:w-fit w-full !text-orange-500 border border-orange-500/20 px-4 py-2 hover:bg-orange-500/10 hover:!text-white rounded-lg cursor-pointer transition-colors"
+              className="bg-warning-light lg:w-fit w-full text-warning border border-warning px-4 py-2 hover:opacity-80 rounded-lg cursor-pointer transition-colors"
             >
               {t('cancel')}
             </button>
             <button
               onClick={handleSave}
-              className="bg-emerald-500 !text-black px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors"
+              className="btn-primary px-4 py-2"
             >
               {t('save')}
             </button>
@@ -172,7 +172,7 @@ export default function PersonalInformationPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Section Photo de profil */}
         <div className="lg:col-span-1">
-          <div className="bg-zinc-900 lg:!p-6 !p-4 rounded-lg border border-zinc-800">
+          <div className="card lg:!p-6 !p-4">
             <div className="flex flex-col items-center space-y-4">
               <ImageUpload
                 currentImageUrl={profilePictureUrl}
@@ -183,15 +183,15 @@ export default function PersonalInformationPage() {
                 disabled={!editing}
               />
               {editing && (
-                <p className="text-xs text-zinc-500 text-center">
+                <p className="text-xs text-muted text-center">
                   {t('click_to_change_photo') || 'Cliquez pour changer la photo'}
                 </p>
               )}
               <div className="!text-center">
-                <h3 className="!text-lg font-semibold text-zinc-200">
+                <h3 className="!text-lg font-semibold text-primary">
                   {profile?.username}
                 </h3>
-                <p className="text-zinc-400 !text-sm">
+                <p className="text-secondary !text-sm">
                   Membre depuis{' '}
                   {profile?.createdAt
                     ? new Date(profile.createdAt).toLocaleDateString('fr-FR')
@@ -204,14 +204,14 @@ export default function PersonalInformationPage() {
 
         {/* Section Informations */}
         <div className="lg:col-span-2">
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6">
-            <h2 className="!text-xl font-semibold text-zinc-200 mb-4">
+          <div className="card p-6 space-y-6">
+            <h2 className="!text-xl font-semibold text-primary mb-4">
               {t('personal_information')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-zinc-400 !text-sm font-light">
+                <label className="text-secondary !text-sm font-light">
                   {t('username')}
                 </label>
                 {editing ? (
@@ -219,17 +219,17 @@ export default function PersonalInformationPage() {
                     type="text"
                     value={formData.username}
                     onChange={e => setFormData({ ...formData, username: e.target.value })}
-                    className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="input w-full p-3"
                   />
                 ) : (
-                  <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                  <p className="text-primary p-3 bg-muted rounded-lg">
                     {profile?.username}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-zinc-400 !text-sm font-light">
+                <label className="text-secondary !text-sm font-light">
                   {t('email')}
                 </label>
                 {editing ? (
@@ -237,34 +237,34 @@ export default function PersonalInformationPage() {
                     type="email"
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="input w-full p-3"
                   />
                 ) : (
-                  <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                  <p className="text-primary p-3 bg-muted rounded-lg">
                     {profile?.email}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-zinc-400 !text-sm font-light">
+                <label className="text-secondary !text-sm font-light">
                   {t('account_status')}
                 </label>
-                <div className="flex items-center gap-2 p-3 bg-zinc-800 rounded-lg">
+                <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
                   <div
-                    className={`w-2 h-2 rounded-full ${profile?.confirmed ? 'bg-emerald-500' : 'bg-red-500'}`}
+                    className={`w-2 h-2 rounded-full ${profile?.confirmed ? 'bg-success' : 'bg-danger'}`}
                   ></div>
-                  <span className="text-zinc-200">
+                  <span className="text-primary">
                     {profile?.confirmed ? t('account_confirmed') : t('account_pending')}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-zinc-400 !text-sm font-light">
+                <label className="text-secondary !text-sm font-light">
                   {t('last_update')}
                 </label>
-                <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                <p className="text-primary p-3 bg-muted rounded-lg">
                   {profile?.updatedAt
                     ? new Date(profile.updatedAt).toLocaleDateString('fr-FR')
                     : 'N/A'}

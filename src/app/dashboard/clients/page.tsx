@@ -18,12 +18,14 @@ import AddClientModal from './AddClientModal';
 import { useClients, clearCache } from '@/hooks/useApi';
 import { generateClientSlug } from '@/utils/slug';
 import type { Client, CreateClientData } from '@/types';
+import { useQuota } from '@/app/context/QuotaContext';
 
 export default function ClientsPage() {
   const { showGlobalPopup } = usePopup();
   const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
+  const { canAdd, getVisibleCount, limits } = useQuota();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -84,8 +86,14 @@ export default function ClientsPage() {
     },
   ], [clients]);
 
+  // Limiter les clients selon le quota
+  const visibleClients = useMemo(() => {
+    const visibleCount = getVisibleCount('clients');
+    return clients.slice(0, visibleCount);
+  }, [clients, getVisibleCount]);
+
   const filteredClients = useMemo(() => {
-    return clients.filter(client => {
+    return visibleClients.filter(client => {
       const matchesSearch =
         searchTerm === '' ||
         client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -97,19 +105,21 @@ export default function ClientsPage() {
 
       return matchesSearch && matchesStatus;
     });
-  }, [clients, searchTerm, statusFilter]);
+  }, [visibleClients, searchTerm, statusFilter]);
 
   const stats = useMemo(() => {
     const now = new Date();
+    const visibleCount = getVisibleCount('clients');
     return {
-      total: clients.length,
-      active: clients.filter(c => c.processStatus === 'client').length,
-      newThisMonth: clients.filter(client => {
+      total: visibleCount,
+      limit: limits.clients,
+      active: visibleClients.filter(c => c.processStatus === 'client').length,
+      newThisMonth: visibleClients.filter(client => {
         const created = new Date(client.createdAt);
         return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
       }).length,
     };
-  }, [clients]);
+  }, [visibleClients, getVisibleCount, limits]);
 
   const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -128,14 +138,14 @@ export default function ClientsPage() {
             website={row.website}
             size="sm"
           />
-          <p className="text-zinc-200 font-medium">{value as string}</p>
+          <p className="text-primary font-medium">{value as string}</p>
         </div>
       ),
     },
     {
       key: 'email',
       label: 'Email',
-      render: (value) => <p className="text-zinc-300">{value as string}</p>,
+      render: (value) => <p className="text-secondary">{value as string}</p>,
     },
     {
       key: 'enterprise',
@@ -153,15 +163,15 @@ export default function ClientsPage() {
       render: (value) => {
         const status = value as string;
         const config = status === 'client'
-          ? { label: 'Client', className: 'bg-emerald-100 !text-emerald-800' }
+          ? { label: 'Client', className: 'badge-success' }
           : status === 'prospect'
-            ? { label: 'Prospect', className: 'bg-blue-100 !text-blue-800' }
-            : { label: status, className: 'bg-gray-100 !text-gray-800' };
+            ? { label: 'Prospect', className: 'badge-info' }
+            : { label: status, className: 'badge-primary' };
 
         return (
-          <p className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}>
+          <span className={`badge ${config.className}`}>
             {config.label}
-          </p>
+          </span>
         );
       },
     },
@@ -201,26 +211,26 @@ export default function ClientsPage() {
       <DashboardPageTemplate<Client>
         title={t('clients')}
         onRowClick={row => router.push(`/dashboard/clients/${generateClientSlug(row.name)}`)}
-        actionButtonLabel={t('add_client')}
-        onActionButtonClick={() => setShowAddModal(true)}
+        actionButtonLabel={canAdd('clients') ? t('add_client') : `${t('add_client')} (${t('quota_reached') || 'Quota atteint'})`}
+        onActionButtonClick={canAdd('clients') ? () => setShowAddModal(true) : () => showGlobalPopup(t('quota_reached_message') || 'Quota atteint. Passez à un plan supérieur.', 'warning')}
         stats={[
           {
             label: t('total_clients'),
-            value: stats.total,
-            colorClass: '!text-emerald-400',
-            icon: <IconUsers className="w-6 h-6 !text-emerald-400" />,
+            value: stats.limit > 0 ? `${stats.total}/${stats.limit}` : stats.total,
+            colorClass: 'text-success',
+            icon: <IconUsers className="w-6 h-6 text-success" />,
           },
           {
             label: t('active_clients'),
             value: stats.active,
-            colorClass: '!text-blue-400',
-            icon: <IconUserCheck className="w-6 h-6 !text-blue-400" />,
+            colorClass: 'text-info',
+            icon: <IconUserCheck className="w-6 h-6 text-info" />,
           },
           {
             label: t('new_clients_this_month'),
             value: stats.newThisMonth,
-            colorClass: '!text-purple-400',
-            icon: <IconUserPlus className="w-6 h-6 !text-purple-400" />,
+            colorClass: 'text-color-primary',
+            icon: <IconUserPlus className="w-6 h-6 text-color-primary" />,
           },
         ]}
         loading={loading}

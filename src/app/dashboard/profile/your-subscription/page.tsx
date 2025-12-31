@@ -163,26 +163,26 @@ export default function YourSubscriptionPage() {
           transition={{ duration: 0.5 }}
           className="space-y-6"
         >
-          <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
-            <div className="h-8 bg-zinc-800 rounded w-32 animate-pulse"></div>
-            <div className="h-10 bg-zinc-800 rounded w-24 animate-pulse"></div>
+          <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
+            <div className="h-8 bg-muted rounded w-32 animate-pulse"></div>
+            <div className="h-10 bg-muted rounded w-24 animate-pulse"></div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
-              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+              <div className="card p-6">
                 <div className="flex flex-col items-center space-y-4">
-                  <div className="w-24 h-24 bg-zinc-800 rounded-full animate-pulse"></div>
-                  <div className="h-6 bg-zinc-800 rounded w-32 animate-pulse"></div>
-                  <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse"></div>
+                  <div className="w-24 h-24 bg-muted rounded-full animate-pulse"></div>
+                  <div className="h-6 bg-muted rounded w-32 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
                 </div>
               </div>
             </div>
             <div className="lg:col-span-2">
-              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-4">
+              <div className="card p-6 space-y-4">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="space-y-2">
-                    <div className="h-4 bg-zinc-800 rounded w-20 animate-pulse"></div>
-                    <div className="h-10 bg-zinc-800 rounded animate-pulse"></div>
+                    <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>
+                    <div className="h-10 bg-muted rounded animate-pulse"></div>
                   </div>
                 ))}
               </div>
@@ -201,7 +201,7 @@ export default function YourSubscriptionPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-primary">
           {t('your_subscription')}
         </h1>
       </div>
@@ -209,8 +209,8 @@ export default function YourSubscriptionPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Section Informations de l'abonnement */}
         <div className="lg:col-span-2">
-          <div className="bg-zinc-900 lg:!p-6 !p-4 rounded-lg border border-zinc-800 space-y-6">
-            <h2 className="!text-xl font-semibold text-zinc-200 mb-4">
+          <div className="card lg:!p-6 !p-4 space-y-6">
+            <h2 className="!text-xl font-semibold text-primary mb-4">
               {t('subscription_details')}
             </h2>
 
@@ -222,28 +222,28 @@ export default function YourSubscriptionPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="bg-zinc-800/50 p-6 rounded-lg border border-zinc-700"
+                    className="bg-hover p-6 rounded-lg border border-default"
                   >
                     {/* En-tête de l'abonnement */}
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-3 h-3 rounded-full ${subscription.trial ? 'bg-orange-500' : 'bg-emerald-500'}`}
+                          className={`w-3 h-3 rounded-full ${subscription.trial ? 'bg-warning' : 'bg-success'}`}
                         ></div>
-                        <h3 className="!text-lg font-semibold text-zinc-200 capitalize">
+                        <h3 className="!text-lg font-semibold text-primary capitalize">
                           {subscription.plan?.name || 'Plan'}
                         </h3>
                         {subscription.trial && (
-                          <span className="bg-orange-500/20 !text-orange-400 !text-xs px-2 py-1 rounded-full">
+                          <span className="bg-warning-light !text-warning !text-xs px-2 py-1 rounded-full">
                             {t('trial')}
                           </span>
                         )}
                       </div>
                       <div className="!text-right">
-                        <div className="!text-2xl font-bold !text-emerald-400">
+                        <div className="!text-2xl font-bold !text-success">
                           €{subscription.plan?.price_monthly || 0}
                         </div>
-                        <div className="!text-sm text-zinc-400">
+                        <div className="!text-sm text-secondary">
                           {t('per_month')}
                         </div>
                       </div>
@@ -252,35 +252,35 @@ export default function YourSubscriptionPage() {
                     {/* Détails de l'abonnement */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="space-y-2">
-                        <label className="text-zinc-400 !text-sm font-light">
+                        <label className="text-secondary !text-sm font-light">
                           {t('billing_type')}
                         </label>
-                        <div className="flex items-center gap-2 p-3 bg-zinc-800 rounded-lg">
-                          <span className="text-zinc-200 font-medium capitalize">
+                        <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                          <span className="text-primary font-medium capitalize">
                             {subscription.billing_type}
                           </span>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-zinc-400 !text-sm font-light">
+                        <label className="text-secondary !text-sm font-light">
                           {t('status')}
                         </label>
-                        <div className="flex items-center gap-2 p-3 bg-zinc-800 rounded-lg">
+                        <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
                           <div
-                            className={`w-2 h-2 rounded-full ${subscription.trial ? 'bg-orange-500' : 'bg-emerald-500'}`}
+                            className={`w-2 h-2 rounded-full ${subscription.trial ? 'bg-warning' : 'bg-success'}`}
                           ></div>
-                          <span className="text-zinc-200">
+                          <span className="text-primary">
                             {subscription.trial ? t('trial') : t('active')}
                           </span>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-zinc-400 !text-sm font-light">
+                        <label className="text-secondary !text-sm font-light">
                           {t('created_at')}
                         </label>
-                        <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                        <p className="text-primary p-3 bg-muted rounded-lg">
                           {subscription.createdAt
                             ? new Date(
                                 subscription.createdAt
@@ -290,10 +290,10 @@ export default function YourSubscriptionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-zinc-400 !text-sm font-light">
+                        <label className="text-secondary !text-sm font-light">
                           {t('last_updated')}
                         </label>
-                        <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                        <p className="text-primary p-3 bg-muted rounded-lg">
                           {subscription.updatedAt
                             ? new Date(
                                 subscription.updatedAt
@@ -306,22 +306,22 @@ export default function YourSubscriptionPage() {
                     {/* Description et fonctionnalités */}
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-zinc-400 !text-sm font-light">
+                        <label className="text-secondary !text-sm font-light">
                           {t('description')}
                         </label>
-                        <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                        <p className="text-primary p-3 bg-muted rounded-lg">
                           {subscription.plan?.description ||
                             t('no_description')}
                         </p>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-zinc-400 !text-sm font-light">
+                        <label className="text-secondary !text-sm font-light">
                           {t('features')}
                         </label>
-                        <div className="p-3 bg-zinc-800 rounded-lg">
+                        <div className="p-3 bg-muted rounded-lg">
                           {subscription.plan?.features ? (
-                            <div className="text-zinc-200 space-y-2">
+                            <div className="text-primary space-y-2">
                               {(() => {
                                 try {
                                   const features =
@@ -338,7 +338,7 @@ export default function YourSubscriptionPage() {
                                             key={key}
                                             className="flex items-center gap-2"
                                           >
-                                            <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
+                                            <span className="w-2 h-2 bg-success rounded-full"></span>
                                             <span>
                                               {key
                                                 .replace(/_/g, ' ')
@@ -354,7 +354,7 @@ export default function YourSubscriptionPage() {
                                             key={key}
                                             className="flex items-center gap-2"
                                           >
-                                            <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
+                                            <span className="w-2 h-2 bg-success rounded-full"></span>
                                             <span>
                                               {key
                                                 .replace(/_/g, ' ')
@@ -375,7 +375,7 @@ export default function YourSubscriptionPage() {
                               })()}
                             </div>
                           ) : (
-                            <p className="text-zinc-500 italic">
+                            <p className="text-muted italic">
                               {t('no_features_specified')}
                             </p>
                           )}
@@ -387,12 +387,12 @@ export default function YourSubscriptionPage() {
               </div>
             ) : (
               <div className="!text-center py-12">
-                <div className="text-zinc-400 !text-lg mb-4">
+                <div className="text-secondary !text-lg mb-4">
                   {t('no_subscription_found')}
                 </div>
                 <button
                   onClick={() => router.push('/pricing')}
-                  className="bg-emerald-500 !text-black px-6 py-3 rounded-lg hover:bg-emerald-400 transition-colors font-semibold"
+                  className="btn-primary px-6 py-3 font-semibold"
                 >
                   {t('choose_plan')}
                 </button>
@@ -403,8 +403,8 @@ export default function YourSubscriptionPage() {
 
         {/* Section Actions rapides */}
         <div className="lg:col-span-1">
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6 relative overflow-visible">
-            <h2 className="!text-xl font-semibold text-zinc-200 mb-4">
+          <div className="card p-6 space-y-6 relative overflow-visible">
+            <h2 className="!text-xl font-semibold text-primary mb-4">
               {t('quick_actions')}
             </h2>
 
@@ -429,7 +429,7 @@ export default function YourSubscriptionPage() {
 
               <button
                 onClick={() => router.push('/pricing')}
-                className="cursor-pointer w-full bg-zinc-200 text-zinc-900 px-4 py-3 rounded-lg  transition-colors font-semibold border border-zinc-700 hover:text-zinc-200 hover:border-zinc-200 hover:bg-zinc-200/20"
+                className="btn-secondary w-full px-4 py-3 font-semibold"
               >
                 {t('view_all_plans')}
               </button>
@@ -438,18 +438,18 @@ export default function YourSubscriptionPage() {
                 onClick={() =>
                   router.push('/dashboard/profile/personal-information')
                 }
-                className="cursor-pointer w-full bg-zinc-800 text-zinc-200 px-4 py-3 rounded-lg hover:bg-zinc-900 transition-colors font-semibold border border-zinc-700 hover:border-zinc-200"
+                className="btn-ghost w-full px-4 py-3 font-semibold"
               >
                 {t('back_to_profile')}
               </button>
             </div>
 
             {/* Informations supplémentaires */}
-            <div className="pt-6 border-t border-zinc-800">
-              <h3 className="!text-sm font-semibold text-zinc-300 mb-3">
+            <div className="pt-6 border-t border-default">
+              <h3 className="!text-sm font-semibold text-primary mb-3">
                 {t('need_help')}
               </h3>
-              <p className="!text-sm text-zinc-400 mb-4">
+              <p className="!text-sm text-secondary mb-4">
                 {t('contact_support_message')}
               </p>
               <SupportDropdown

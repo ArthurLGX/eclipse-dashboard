@@ -8,6 +8,9 @@ import {
   IconX,
   IconCheckbox,
   IconTrash,
+  IconAlertTriangle,
+  IconClock,
+  IconArrowRight,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -15,6 +18,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePreferences } from '@/app/context/PreferencesContext';
+import { useQuota, QuotaNotification } from '@/app/context/QuotaContext';
 import {
   fetchNotifications,
   fetchUnreadNotificationCount,
@@ -31,13 +35,29 @@ export default function NotificationBell() {
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const { preferences } = usePreferences();
+  const { notifications: quotaNotifications } = useQuota();
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [dismissedQuotaAlerts, setDismissedQuotaAlerts] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Alertes de quota visibles
+  const visibleQuotaAlerts = useMemo(() => {
+    return quotaNotifications.filter(n => !dismissedQuotaAlerts.includes(n.id));
+  }, [quotaNotifications, dismissedQuotaAlerts]);
+
+  const handleDismissQuotaAlert = (id: string) => {
+    setDismissedQuotaAlerts(prev => [...prev, id]);
+  };
+
+  const handleUpgrade = () => {
+    setIsOpen(false);
+    router.push('/dashboard/profile/your-subscription');
+  };
 
   // Filtrer les notifications selon les préférences utilisateur
   const filteredNotifications = useMemo(() => {
@@ -205,13 +225,13 @@ export default function NotificationBell() {
         .toUpperCase()
         .slice(0, 2);
       return (
-        <span className="text-xs font-bold text-violet-400">
+        <span className="text-xs font-bold text-accent">
           {initials}
         </span>
       );
     }
     
-    return <IconBell className="w-5 h-5 text-blue-400" />;
+    return <IconBell className="w-5 h-5 text-info" />;
   };
 
   const formatTimeAgo = (dateString: string) => {
@@ -235,18 +255,18 @@ export default function NotificationBell() {
       <div ref={dropdownRef} className="fixed top-4 right-10 z-[1002]">
         <button
           onClick={handleToggle}
-          className="relative p-3 rounded-xl bg-zinc-900/90 backdrop-blur-sm border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-all shadow-lg"
+          className="relative p-3 rounded-xl bg-card backdrop-blur-sm border border-default hover:bg-hover text-muted hover:text-primary transition-all shadow-theme-lg"
         >
           <IconBell className="w-5 h-5" />
           
           {/* Badge */}
-          {unreadCount > 0 && (
+          {(unreadCount + visibleQuotaAlerts.length) > 0 && (
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
+              className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-danger text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
             >
-              {unreadCount > 99 ? '99+' : unreadCount}
+              {(unreadCount + visibleQuotaAlerts.length) > 99 ? '99+' : (unreadCount + visibleQuotaAlerts.length)}
             </motion.span>
           )}
         </button>
@@ -259,17 +279,17 @@ export default function NotificationBell() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 top-full mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden"
+              className="absolute right-0 top-full mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-card border border-default rounded-xl shadow-2xl overflow-hidden"
             >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-zinc-800">
-              <h3 className="text-sm font-semibold text-zinc-200">
+            <div className="flex items-center justify-between p-4 border-b border-default">
+              <h3 className="text-sm font-semibold text-primary">
                 {t('notifications') || 'Notifications'}
               </h3>
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1"
+                  className="text-xs text-accent hover:text-accent-light flex items-center gap-1"
                 >
                   <IconCheckbox className="w-3 h-3" />
                   {t('mark_all_read') || 'Tout marquer comme lu'}
@@ -279,40 +299,90 @@ export default function NotificationBell() {
 
             {/* Notifications List */}
             <div className="max-h-96 overflow-y-auto">
-              {loading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="w-6 h-6 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
-                </div>
-              ) : filteredNotifications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 px-4">
-                  <IconBell className="w-12 h-12 text-zinc-700 mb-3" />
-                  <p className="text-zinc-500 text-sm text-center">
-                    {t('no_notifications') || 'Aucune notification'}
-                  </p>
-                </div>
-              ) : (
-                <div className="divide-y divide-zinc-800/50">
-                  {filteredNotifications.map((notification) => (
+              {/* Alertes de quota */}
+              {visibleQuotaAlerts.length > 0 && (
+                <div className="divide-y divide-default">
+                  {visibleQuotaAlerts.map((alert: QuotaNotification) => (
                     <div
-                      key={notification.documentId}
-                      className={`p-4 hover:bg-zinc-800/30 transition-colors ${
-                        !notification.read ? 'bg-violet-500/5' : ''
+                      key={alert.id}
+                      className={`p-4 ${
+                        alert.type === 'quota_exceeded' || alert.type === 'trial_expired'
+                          ? 'bg-danger-light border-l-4 border-l-danger'
+                          : 'bg-warning-light border-l-4 border-l-warning'
                       }`}
                     >
                       <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center">
+                          {alert.type === 'quota_exceeded' || alert.type === 'trial_expired' ? (
+                            <IconAlertTriangle className="w-5 h-5 text-danger" />
+                          ) : (
+                            <IconClock className="w-5 h-5 text-warning" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-medium ${
+                            alert.type === 'quota_exceeded' || alert.type === 'trial_expired'
+                              ? 'text-danger'
+                              : 'text-warning'
+                          }`}>
+                            {alert.message}
+                          </p>
+                          <div className="flex gap-2 mt-2">
+                            <button
+                              onClick={handleUpgrade}
+                              className="btn-primary py-1 px-3 text-xs font-medium rounded-lg flex items-center gap-1"
+                            >
+                              {t('upgrade') || 'Mettre à niveau'}
+                              <IconArrowRight className="w-3 h-3" />
+                            </button>
+                            <button
+                              onClick={() => handleDismissQuotaAlert(alert.id)}
+                              className="btn-ghost py-1 px-2 text-xs"
+                            >
+                              <IconX className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="w-6 h-6 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+                </div>
+              ) : filteredNotifications.length === 0 && visibleQuotaAlerts.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 px-4">
+                  <IconBell className="w-12 h-12 text-muted mb-3" />
+                  <p className="text-muted text-sm text-center">
+                    {t('no_notifications') || 'Aucune notification'}
+                  </p>
+                </div>
+              ) : filteredNotifications.length > 0 && (
+                <div className="divide-y divide-default">
+                  {filteredNotifications.map((notification) => (
+                    <div
+                      key={notification.documentId}
+                      className={`p-4 hover:bg-hover transition-colors ${
+                        !notification.read ? 'bg-accent-light' : ''
+                      }`}
+                    >
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                           {getNotificationIcon(notification)}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
-                            <p className="text-sm font-medium text-zinc-200">
+                            <p className="text-sm font-medium text-primary">
                               {notification.title}
                             </p>
-                            <span className="text-xs text-zinc-500 whitespace-nowrap">
+                            <span className="text-xs text-muted whitespace-nowrap">
                               {formatTimeAgo(notification.createdAt)}
                             </span>
                           </div>
-                          <p className="text-sm text-zinc-400 mt-1 line-clamp-2">
+                          <p className="text-sm text-secondary mt-1 line-clamp-2">
                             {notification.message}
                           </p>
 
@@ -321,14 +391,14 @@ export default function NotificationBell() {
                             <div className="flex gap-2 mt-3">
                               <button
                                 onClick={() => handleAcceptInvitation(notification)}
-                                className="flex-1 py-2 px-3 bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                                className="btn-primary flex-1 py-2 px-3 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
                               >
                                 <IconCheck className="w-4 h-4" />
                                 {t('accept') || 'Accepter'}
                               </button>
                               <button
                                 onClick={() => handleRejectInvitation(notification)}
-                                className="flex-1 py-2 px-3 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                                className="btn-ghost flex-1 py-2 px-3 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
                               >
                                 <IconX className="w-4 h-4" />
                                 {t('reject') || 'Refuser'}
@@ -341,7 +411,7 @@ export default function NotificationBell() {
                             <div className="flex gap-2 mt-2">
                               <button
                                 onClick={() => handleDelete(notification.documentId)}
-                                className="text-xs text-zinc-500 hover:text-red-400 flex items-center gap-1"
+                                className="text-xs text-muted hover:text-danger flex items-center gap-1"
                               >
                                 <IconTrash className="w-3 h-3" />
                                 {t('delete') || 'Supprimer'}
@@ -353,7 +423,7 @@ export default function NotificationBell() {
                         {/* Indicateur non lu */}
                         {!notification.read && (
                           <div className="flex-shrink-0">
-                            <div className="w-2 h-2 rounded-full bg-violet-500" />
+                            <div className="w-2 h-2 rounded-full bg-accent" />
                           </div>
                         )}
                       </div>
@@ -365,13 +435,13 @@ export default function NotificationBell() {
 
             {/* Footer */}
             {notifications.length > 0 && (
-              <div className="p-3 border-t border-zinc-800 bg-zinc-900/50">
+              <div className="p-3 border-t border-default bg-muted">
                 <button
                   onClick={() => {
                     setIsOpen(false);
                     router.push('/dashboard/notifications');
                   }}
-                  className="w-full py-2 text-sm text-zinc-400 hover:text-zinc-200 text-center transition-colors"
+                  className="w-full py-2 text-sm text-secondary hover:text-primary text-center transition-colors"
                 >
                   {t('view_all_notifications') || 'Voir toutes les notifications'}
                 </button>
@@ -384,4 +454,3 @@ export default function NotificationBell() {
     </>
   );
 }
-

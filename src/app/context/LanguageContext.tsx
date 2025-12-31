@@ -368,6 +368,14 @@ const translations = {
     trial_expired_message:
       "Votre période d'essai gratuit de 30 jours a expiré. Pour continuer à utiliser l'application, veuillez choisir un plan.",
     choose_plan_to_continue: 'Choisissez un plan pour continuer',
+
+    // Quota management
+    quota_reached: 'Quota atteint',
+    quota_reached_message: 'Vous avez atteint votre quota. Passez à un plan supérieur pour continuer.',
+    upgrade_to_unlock: 'Passez à un plan supérieur pour débloquer.',
+    upgrade: 'Mettre à niveau',
+    dismiss: 'Fermer',
+    alerts: 'Alertes',
     select_plan: 'Sélectionner ce plan',
     go_to_pricing: 'Aller aux tarifs',
     redirecting: 'Redirection...',
@@ -438,6 +446,10 @@ const translations = {
     invoice_pdf: 'Facture PDF',
     target_revenue: "Chiffre d'affaires cible",
     progress_to_target: "Progression vers le chiffre d'affaires cible",
+    revenue_evolution: 'Évolution du CA',
+    revenue_by_client: 'CA par client',
+    invoices_by_month: 'Factures par mois',
+    no_data: 'Aucune donnée',
     no_project: 'Sans projet',
     reference: 'Référence',
     currency: 'Devise',
@@ -557,6 +569,9 @@ const translations = {
     invitation_cancelled: 'Invitation annulée',
     collaborator_removed: 'Collaborateur retiré',
     error_generic: 'Une erreur est survenue',
+
+    // Revenue
+    global_revenue_stats: 'Vue globale',  
 
     // Notifications
     mark_all_read: 'Tout marquer comme lu',
@@ -932,6 +947,14 @@ const translations = {
     trial_expired_message:
       'Your 30-day free trial has expired. To continue using the application, please choose a plan.',
     choose_plan_to_continue: 'Choose a plan to continue',
+
+    // Quota management
+    quota_reached: 'Quota reached',
+    quota_reached_message: 'You have reached your quota. Upgrade to a higher plan to continue.',
+    upgrade_to_unlock: 'Upgrade to a higher plan to unlock.',
+    upgrade: 'Upgrade',
+    dismiss: 'Dismiss',
+    alerts: 'Alerts',
     select_plan: 'Select this plan',
     go_to_pricing: 'Go to pricing',
     redirecting: 'Redirecting...',
@@ -1033,6 +1056,11 @@ const translations = {
     view_invoice: 'View Invoice',
     target_revenue: 'Target Revenue',
     progress_to_target: 'Progress to target revenue',
+    revenue_evolution: 'Revenue Evolution',
+    revenue_by_client: 'Revenue by Client',
+    invoices_by_month: 'Invoices per Month',
+    no_data: 'No data',
+    global_revenue_stats: 'Global view',
     no_project: 'No project',
     reference: 'Reference',
     currency: 'Currency',

@@ -95,17 +95,17 @@ export default function AddClientModal({
     <FloatingModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-2xl">
       {/* Header compact */}
       <div className="flex items-center gap-3 mb-5">
-        <div className="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
-          <IconUserPlus size={22} className="text-emerald-400" />
+        <div className="p-2 bg-accent-light rounded-lg border border-accent">
+          <IconUserPlus size={22} className="text-accent" />
         </div>
-        <h2 className="text-xl font-bold text-zinc-100">
+        <h2 className="text-xl font-bold text-primary">
           {t('add_client')}
         </h2>
       </div>
 
       {/* Message d'erreur */}
       {error && (
-        <div className="mb-3 p-2.5 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+        <div className="mb-3 p-2.5 bg-danger-light border border-danger rounded-lg text-danger text-sm">
           ⚠️ {error}
         </div>
       )}
@@ -114,9 +114,9 @@ export default function AddClientModal({
         {/* Ligne 1: Nom et Email (requis) */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconUser size={14} className="text-zinc-500" />
-              {t('name')} <span className="text-emerald-400">*</span>
+            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+              <IconUser size={14} className="text-muted" />
+              {t('name')} <span className="text-accent">*</span>
             </label>
             <input
               ref={nameInputRef}
@@ -125,14 +125,13 @@ export default function AddClientModal({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm"
             />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconMail size={14} className="text-zinc-500" />
-              {t('email')} <span className="text-emerald-400">*</span>
+            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+              <IconMail size={14} className="text-muted" />
+              {t('email')} <span className="text-accent">*</span>
             </label>
             <input
               type="email"
@@ -140,8 +139,7 @@ export default function AddClientModal({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm"
             />
           </div>
         </div>
@@ -149,8 +147,8 @@ export default function AddClientModal({
         {/* Ligne 2: Téléphone et Entreprise */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconPhone size={14} className="text-zinc-500" />
+            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+              <IconPhone size={14} className="text-muted" />
               {t('phone')}
             </label>
             <input
@@ -158,13 +156,12 @@ export default function AddClientModal({
               placeholder="+33 6 12 34 56 78"
               value={number}
               onChange={(e) => setNumber(e.target.value)}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm"
             />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconBuilding size={14} className="text-zinc-500" />
+            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+              <IconBuilding size={14} className="text-muted" />
               {t('enterprise')}
             </label>
             <input
@@ -172,8 +169,7 @@ export default function AddClientModal({
               placeholder="Nom de l'entreprise"
               value={enterprise}
               onChange={(e) => setEnterprise(e.target.value)}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm"
             />
           </div>
         </div>
@@ -181,8 +177,8 @@ export default function AddClientModal({
         {/* Ligne 3: Adresse et Site web */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconMapPin size={14} className="text-zinc-500" />
+            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+              <IconMapPin size={14} className="text-muted" />
               {t('address')}
             </label>
             <input
@@ -190,13 +186,12 @@ export default function AddClientModal({
               placeholder="123 Rue de Paris"
               value={adress}
               onChange={(e) => setAdress(e.target.value)}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm"
             />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconWorld size={14} className="text-zinc-500" />
+            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+              <IconWorld size={14} className="text-muted" />
               {t('website')}
             </label>
             <input
@@ -204,17 +199,16 @@ export default function AddClientModal({
               placeholder="https://exemple.com"
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm"
             />
           </div>
         </div>
 
         {/* Section Statut et Actif - compact */}
-        <div className="flex items-center gap-4 p-3 bg-zinc-800/30 rounded-lg border border-zinc-700/50">
+        <div className="flex items-center gap-4 p-3 bg-muted rounded-lg border border-default">
           {/* Sélecteur de statut */}
           <div className="flex-1">
-            <label className="text-zinc-400 text-xs mb-2 font-medium block">
+            <label className="text-secondary text-xs mb-2 font-medium block">
               {t('status')}
             </label>
             <div className="flex gap-2">
@@ -223,8 +217,8 @@ export default function AddClientModal({
                 onClick={() => setProcessStatus('client')}
                 className={`flex-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   processStatus === 'client'
-                    ? 'bg-emerald-500 text-black'
-                    : 'bg-zinc-700/50 text-zinc-400 hover:bg-zinc-700'
+                    ? 'bg-success text-accent-text'
+                    : 'bg-hover text-secondary hover:bg-card'
                 }`}
               >
                 {t('client')}
@@ -234,8 +228,8 @@ export default function AddClientModal({
                 onClick={() => setProcessStatus('prospect')}
                 className={`flex-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   processStatus === 'prospect'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-zinc-700/50 text-zinc-400 hover:bg-zinc-700'
+                    ? 'bg-info text-accent-text'
+                    : 'bg-hover text-secondary hover:bg-card'
                 }`}
               >
                 {t('prospect')}
@@ -249,7 +243,7 @@ export default function AddClientModal({
               type="button"
               onClick={() => setIsActive(!isActive)}
               className={`relative w-10 h-5 rounded-full transition-colors ${
-                isActive ? 'bg-emerald-500' : 'bg-zinc-600'
+                isActive ? 'bg-success' : 'bg-muted'
               }`}
             >
               <div
@@ -258,7 +252,7 @@ export default function AddClientModal({
                 }`}
               />
             </button>
-            <span className={`text-xs font-medium ${isActive ? 'text-emerald-400' : 'text-zinc-500'}`}>
+            <span className={`text-xs font-medium ${isActive ? 'text-success' : 'text-muted'}`}>
               {t('active')}
             </span>
           </div>
@@ -270,22 +264,14 @@ export default function AddClientModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="flex-1 bg-zinc-800 text-zinc-300 px-4 py-2.5 rounded-lg text-sm
-              hover:bg-zinc-700 transition-colors font-medium
-              disabled:opacity-50 disabled:cursor-not-allowed border border-zinc-700"
+            className="btn-ghost flex-1 px-4 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t('cancel')}
           </button>
           <button
             type="submit"
             disabled={loading || !name || !email}
-            className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold
-              transition-colors flex items-center justify-center gap-2
-              disabled:opacity-50 disabled:cursor-not-allowed
-              ${success 
-                ? 'bg-emerald-500 text-black' 
-                : 'bg-emerald-500 text-black hover:bg-emerald-400'
-              }`}
+            className={`btn-primary flex-1 px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {loading ? (
               <>

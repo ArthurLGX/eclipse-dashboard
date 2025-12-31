@@ -160,12 +160,12 @@ function LoginContent() {
   };
 
   return (
-    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 border border-zinc-900  bg-gradient-to-b from-zinc-900 to-black rounded-xl">
+    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
       {/* Left side - Form */}
-      <div className=" bg-zinc-950 z-100 w-full">
+      <div className="auth-header z-100 w-full rounded-t-xl">
         <BackBtn />
       </div>
-      <div className=" flex-1 flex items-center justify-center p-4 md:p-16 bg-gradient-to-b from-zinc-950 to-black">
+      <div className="flex-1 flex items-center justify-center p-4 md:p-16 auth-content rounded-b-xl">
         <div className="md:max-w-md max-w-full">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -173,10 +173,10 @@ function LoginContent() {
             transition={{ duration: 0.6, ease: 'easeInOut' }}
             className="!text-center mb-8"
           >
-            <h1 className="!text-4xl font-bold text-zinc-200 mb-2">
+            <h1 className="!text-4xl font-bold auth-title mb-2">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </h1>
-            <p className="text-zinc-400">
+            <p className="auth-subtitle">
               {isLogin
                 ? 'Sign in to your account'
                 : 'Join us today to start your journey'}
@@ -194,9 +194,9 @@ function LoginContent() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-red-500/10 border border-red-500/20 rounded-lg p-3"
+                className="auth-error rounded-lg p-3"
               >
-                <p className="!text-red-400 !text-sm !text-center">{error}</p>
+                <p className="!text-sm !text-center">{error}</p>
               </motion.div>
             )}
 
@@ -207,7 +207,7 @@ function LoginContent() {
                 value={username}
                 required
                 onChange={e => setUsername(e.target.value)}
-                className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
+                className="w-full p-3 auth-input rounded-lg transition-all duration-200"
               />
             </div>
 
@@ -224,7 +224,7 @@ function LoginContent() {
                   value={email}
                   required={!isLogin}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 auth-input rounded-lg transition-all duration-200"
                 />
               </motion.div>
             )}
@@ -240,18 +240,18 @@ function LoginContent() {
                     setPassword(e.target.value);
                     setPasswordError(validatePassword(e.target.value));
                   }}
-                  className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 pr-10 auth-input rounded-lg transition-all duration-200"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-primary transition-colors"
                 >
                   {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
               </div>
               {passwordError && (
-                <p className="!text-red-400 !text-xs">{passwordError}</p>
+                <p className="text-danger !text-xs">{passwordError}</p>
               )}
             </div>
 
@@ -272,18 +272,18 @@ function LoginContent() {
                       setConfirmPassword(e.target.value);
                       checkPassword(e.target.value);
                     }}
-                    className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
+                    className="w-full p-3 pr-10 auth-input rounded-lg transition-all duration-200"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-primary transition-colors"
                   >
                     {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                   </button>
                 </div>
                 {confirmPasswordError && (
-                  <p className="!text-red-400 !text-xs">
+                  <p className="text-danger !text-xs">
                     {confirmPasswordError}
                   </p>
                 )}
@@ -292,8 +292,7 @@ function LoginContent() {
 
             <motion.button
               type="submit"
-              className="w-full bg-violet-500 
-               hover:!text-white border border-violet-500 cursor-pointer hover:bg-violet-600 !text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+              className="btn-primary w-full font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </motion.button>
@@ -302,7 +301,7 @@ function LoginContent() {
               <div className="!text-center">
                 <a
                   href="/forgot-password"
-                  className="!text-zinc-400 hover:!text-violet-400 !text-sm transition-colors duration-200"
+                  className="auth-link !text-sm transition-colors duration-200"
                 >
                   Forgot your password?
                 </a>
@@ -316,13 +315,13 @@ function LoginContent() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="!text-center mt-6"
           >
-            <p className="text-zinc-400">
+            <p className="text-secondary">
               {isLogin
                 ? "Don't have an account? "
                 : 'Already have an account? '}
               <button
                 onClick={toggleMode}
-                className="!text-violet-400 cursor-pointer hover:!text-violet-300 transition-colors duration-200"
+                className="auth-link cursor-pointer transition-colors duration-200"
               >
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>
@@ -336,22 +335,22 @@ function LoginContent() {
 
 function LoginLoading() {
   return (
-    <div className="flex h-fit md:w-3/4 w-full !my-32 border border-zinc-900 bg-gradient-to-b from-zinc-950 to-black rounded-xl">
+    <div className="flex h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
       <div className="flex-1 flex items-center justify-center p-16">
         <div className="w-full max-w-md">
           <div className="!text-center mb-8">
-            <div className="h-8 bg-zinc-800 rounded w-48 mx-auto mb-2 animate-pulse"></div>
-            <div className="h-4 bg-zinc-800 rounded w-32 mx-auto animate-pulse"></div>
+            <div className="h-8 bg-muted rounded w-48 mx-auto mb-2 animate-pulse"></div>
+            <div className="h-4 bg-muted rounded w-32 mx-auto animate-pulse"></div>
           </div>
           <div className="space-y-6">
-            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
-            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
-            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
-            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
+            <div className="h-12 bg-muted rounded animate-pulse"></div>
+            <div className="h-12 bg-muted rounded animate-pulse"></div>
+            <div className="h-12 bg-muted rounded animate-pulse"></div>
+            <div className="h-12 bg-muted rounded animate-pulse"></div>
           </div>
         </div>
       </div>
-      <div className="flex-1 bg-zinc-900 rounded-r-xl"></div>
+      <div className="flex-1 bg-hover rounded-r-xl"></div>
     </div>
   );
 }

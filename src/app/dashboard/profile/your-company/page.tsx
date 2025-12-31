@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/app/context/AuthContext';
 import { fetchCompanyUser, updateCompanyUser } from '@/lib/api';
+import { clearCache } from '@/hooks/useApi';
 import useLenis from '@/utils/useLenis';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -111,6 +112,9 @@ export default function YourCompanyPage() {
         setCompanyProfile(response.data);
       }
 
+      // Invalider le cache pour rafraîchir le logo de la sidebar
+      clearCache('company');
+
       setEditing(false);
       showGlobalPopup('Profil mis à jour avec succès', 'success');
     } catch (error) {
@@ -145,26 +149,26 @@ export default function YourCompanyPage() {
           transition={{ duration: 0.5 }}
           className="space-y-6"
         >
-          <div className="flex lg:flex-row flex-col gap-4   items-center justify-between">
-            <div className="h-8 bg-zinc-800 rounded w-32 animate-pulse"></div>
-            <div className="h-10 bg-zinc-800 rounded w-24 animate-pulse"></div>
+          <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
+            <div className="h-8 bg-muted rounded w-32 animate-pulse"></div>
+            <div className="h-10 bg-muted rounded w-24 animate-pulse"></div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
-              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
+              <div className="card p-6">
                 <div className="flex flex-col items-center space-y-4">
-                  <div className="w-24 h-24 bg-zinc-800 rounded-full animate-pulse"></div>
-                  <div className="h-6 bg-zinc-800 rounded w-32 animate-pulse"></div>
-                  <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse"></div>
+                  <div className="w-24 h-24 bg-muted rounded-full animate-pulse"></div>
+                  <div className="h-6 bg-muted rounded w-32 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
                 </div>
               </div>
             </div>
             <div className="lg:col-span-2">
-              <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-4">
+              <div className="card p-6 space-y-4">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="space-y-2">
-                    <div className="h-4 bg-zinc-800 rounded w-20 animate-pulse"></div>
-                    <div className="h-10 bg-zinc-800 rounded animate-pulse"></div>
+                    <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>
+                    <div className="h-10 bg-muted rounded animate-pulse"></div>
                   </div>
                 ))}
               </div>
@@ -214,15 +218,15 @@ export default function YourCompanyPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-primary">
           {t('your_enterprise')}
         </h1>
         {!editing ? (
-          <div className="flex lg:flex-row flex-col lg:w-fit w-full  gap-4">
+          <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             {companyProfile ? (
               <button
                 onClick={() => setEditing(true)}
-                className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white    transition-colors"
+                className="btn-primary lg:w-fit w-full px-4 py-2 rounded-lg"
               >
                 {t('edit_enterprise')}
               </button>
@@ -244,23 +248,23 @@ export default function YourCompanyPage() {
                     website: '',
                   });
                 }}
-                className="bg-emerald-500 !text-black px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors"
+                className="btn-primary px-4 py-2"
               >
                 {t('create_your_enterprise')}
               </button>
             )}
           </div>
         ) : (
-          <div className="flex lg:flex-row flex-col lg:w-fit w-full  gap-4">
+          <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={handleCancel}
-              className="bg-orange-500/20 lg:w-fit w-full !text-orange-500 border border-orange-500/20 px-4 py-2 hover:bg-orange-500/10 hover:!text-white rounded-lg cursor-pointer transition-colors"
+              className="bg-warning-light lg:w-fit w-full text-warning border border-warning px-4 py-2 hover:opacity-80 rounded-lg cursor-pointer transition-colors"
             >
               {t('cancel')}
             </button>
             <button
               onClick={handleSave}
-              className="bg-emerald-500 !text-black px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors"
+              className="btn-primary px-4 py-2 rounded-lg"
             >
               {t('save')}
             </button>
@@ -269,18 +273,18 @@ export default function YourCompanyPage() {
       </div>
 
       {companyProfile || editing ? (
-        <div className="grid grid-cols-1  gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {/* Section Informations */}
           <div className="lg:col-span-2">
-            <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 space-y-6">
-              <h2 className="!text-xl font-semibold text-zinc-200 mb-4">
+            <div className="card p-6 space-y-6">
+              <h2 className="!text-xl font-semibold text-primary mb-4">
                 {t('personal_information')}
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Section générale */}
                 <div className="space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     {t('enterprise_name')}
                   </label>
                   {editing ? (
@@ -291,16 +295,16 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, name: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-primary p-3 bg-muted rounded-lg">
                       {companyProfile?.name}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     Email
                   </label>
                   {editing ? (
@@ -313,22 +317,22 @@ export default function YourCompanyPage() {
                           setFormData({ ...formData, email: e.target.value });
                           if (emailError) setEmailError('');
                         }}
-                        className={`w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${emailError ? '!border-red-500' : ''}`}
+                        className={`input w-full p-3 ${emailError ? '!border-danger' : ''}`}
                       />
                       {emailError && (
-                        <p className="text-red-500 text-xs mt-1">
+                        <p className="text-danger text-xs mt-1">
                           {emailError}
                         </p>
                       )}
                     </>
                   ) : (
-                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-primary p-3 bg-muted rounded-lg">
                       {companyProfile?.email}
                     </p>
                   )}
                 </div>
                 <div className="md:col-span-2 space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     {t('enterprise_description')}
                   </label>
                   {editing ? (
@@ -341,17 +345,17 @@ export default function YourCompanyPage() {
                           description: e.target.value,
                         })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-primary p-3 bg-muted rounded-lg">
                       {companyProfile?.description}
                     </p>
                   )}
                 </div>
                 {/* Section légale */}
                 <div className="space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     {t('siret')}
                   </label>
                   {editing ? (
@@ -362,16 +366,16 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, siret: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-primary p-3 bg-muted rounded-lg">
                       {companyProfile?.siret}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     {t('siren')}
                   </label>
                   {editing ? (
@@ -382,16 +386,16 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, siren: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-primary p-3 bg-muted rounded-lg">
                       {companyProfile?.siren}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     {t('vat')}
                   </label>
                   {editing ? (
@@ -402,17 +406,17 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, vat: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-primary p-3 bg-muted rounded-lg">
                       {companyProfile?.vat}
                     </p>
                   )}
                 </div>
                 {/* Section contact */}
                 <div className="space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     {t('phone_number')}
                   </label>
                   {editing ? (
@@ -426,16 +430,16 @@ export default function YourCompanyPage() {
                           phoneNumber: e.target.value,
                         })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-primary p-3 bg-muted rounded-lg">
                       {companyProfile?.phoneNumber}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     {t('address')}
                   </label>
                   {editing ? (
@@ -446,16 +450,16 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, location: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-primary p-3 bg-muted rounded-lg">
                       {companyProfile?.location}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     {t('activity_domain')}
                   </label>
                   {editing ? (
@@ -464,7 +468,7 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, domaine: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="input w-full p-3"
                     >
                       <option value="">{t('select_activity_domain')}</option>
                       {domaines.map(domaine => (
@@ -474,13 +478,13 @@ export default function YourCompanyPage() {
                       ))}
                     </select>
                   ) : (
-                    <p className="text-zinc-200 p-3 bg-zinc-800 rounded-lg">
+                    <p className="text-primary p-3 bg-muted rounded-lg">
                       {companyProfile?.domaine}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-zinc-400 !text-sm font-light">
+                  <label className="text-secondary !text-sm font-light">
                     {t('website')}
                   </label>
                   {editing ? (
@@ -491,14 +495,14 @@ export default function YourCompanyPage() {
                       onChange={e =>
                         setFormData({ ...formData, website: e.target.value })
                       }
-                      className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="input w-full p-3"
                     />
                   ) : (
                     <a
                       href={companyProfile?.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="!text-emerald-400 underline p-3 bg-zinc-800 rounded-lg block"
+                      className="!text-accent underline p-3 bg-muted rounded-lg block"
                     >
                       {companyProfile?.website}
                     </a>
@@ -510,7 +514,7 @@ export default function YourCompanyPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center min-h-[50vh] !my-10">
-          <p className="text-zinc-200">{t('no_enterprise_profile')}</p>
+          <p className="text-primary">{t('no_enterprise_profile')}</p>
         </div>
       )}
     </motion.div>

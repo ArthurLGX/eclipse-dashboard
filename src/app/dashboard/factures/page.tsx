@@ -120,12 +120,12 @@ export default function FacturesPage() {
           className="flex items-center gap-3 cursor-pointer transition-colors"
           onClick={() => router.push(`/dashboard/factures/${getFactureSlug(row)}`)}
         >
-          <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
-            <span className="text-zinc-300 font-medium !text-sm">
+          <div className="w-8 h-8 rounded-full bg-hover flex items-center justify-center">
+            <span className="text-secondary font-medium !text-sm">
               {(value as string).charAt(0).toUpperCase()}
             </span>
           </div>
-          <p className="text-zinc-200 font-medium">{value as string}</p>
+          <p className="text-primary font-medium">{value as string}</p>
         </div>
       ),
     },
@@ -133,7 +133,7 @@ export default function FacturesPage() {
       key: 'date',
       label: 'Date',
       render: (value) => (
-        <p className="text-zinc-300">
+        <p className="text-secondary">
           {value ? formatDate(value as string) : '-'}
         </p>
       ),
@@ -142,7 +142,7 @@ export default function FacturesPage() {
       key: 'due_date',
       label: "Échéance",
       render: (value) => (
-        <p className="text-zinc-300">
+        <p className="text-secondary">
           {value ? formatDate(value as string) : '-'}
         </p>
       ),
@@ -153,14 +153,14 @@ export default function FacturesPage() {
       render: (value) => {
         const status = value as string;
         const config =
-          status === 'paid' ? { icon: IconCheck, label: t('paid') || 'Payée', color: 'emerald' } :
-          status === 'sent' ? { icon: IconClock, label: t('sent') || 'Envoyée', color: 'blue' } :
-          { icon: IconClock, label: t('draft') || 'Brouillon', color: 'orange' };
+          status === 'paid' ? { icon: IconCheck, label: t('paid') || 'Payée', colorClass: 'text-success' } :
+          status === 'sent' ? { icon: IconClock, label: t('sent') || 'Envoyée', colorClass: 'text-info' } :
+          { icon: IconClock, label: t('draft') || 'Brouillon', colorClass: 'text-warning' };
 
         const Icon = config.icon;
         return (
-          <div className={`flex items-center gap-2 !text-${config.color}-500`}>
-            <Icon className={`w-4 h-4 !text-${config.color}-500 bg-${config.color}-500/10 p-1 rounded-full`} />
+          <div className={`flex items-center gap-2 ${config.colorClass}`}>
+            <Icon className={`w-4 h-4 ${config.colorClass}`} />
             {config.label}
           </div>
         );
@@ -170,7 +170,7 @@ export default function FacturesPage() {
       key: 'number',
       label: 'Montant',
       render: (value) => (
-        <p className="text-zinc-200 font-medium">
+        <p className="text-primary font-medium">
           {value ? formatCurrency(value as number) : '-'}
         </p>
       ),
@@ -182,7 +182,7 @@ export default function FacturesPage() {
         // Strapi peut retourner "client" ou "client_id"
         const clientData = value || row.client_id;
         return (
-          <p className="text-zinc-300">
+          <p className="text-secondary">
             {clientData && typeof clientData === 'object' ? (clientData as Client).name : '-'}
           </p>
         );
@@ -192,7 +192,7 @@ export default function FacturesPage() {
       key: 'project',
       label: 'Projet',
       render: (value) => (
-        <p className="text-zinc-300">
+        <p className="text-secondary">
           {value && typeof value === 'object' ? (value as Project).title : '-'}
         </p>
       ),
@@ -229,26 +229,26 @@ export default function FacturesPage() {
           {
             label: t('total_invoices'),
             value: stats.total,
-            colorClass: '!text-emerald-400',
-            icon: <IconFileInvoice className="w-6 h-6 !text-emerald-400" />,
+            colorClass: 'text-success',
+            icon: <IconFileInvoice className="w-6 h-6 text-success" />,
           },
           {
             label: t('active_factures'),
             value: stats.paid,
-            colorClass: '!text-blue-400',
-            icon: <IconCheck className="w-6 h-6 !text-blue-400" />,
+            colorClass: 'text-info',
+            icon: <IconCheck className="w-6 h-6 text-info" />,
           },
           {
             label: t('revenue'),
             value: formatCurrency(stats.paidAmount),
-            colorClass: '!text-emerald-400',
-            icon: <IconCurrencyEuro className="w-6 h-6 !text-emerald-400" />,
+            colorClass: 'text-success',
+            icon: <IconCurrencyEuro className="w-6 h-6 text-success" />,
           },
           {
             label: t('new_factures_this_month'),
             value: stats.newThisMonth,
-            colorClass: '!text-purple-400',
-            icon: <IconCalendar className="w-6 h-6 !text-purple-400" />,
+            colorClass: 'text-color-primary',
+            icon: <IconCalendar className="w-6 h-6 text-color-primary" />,
           },
         ]}
         loading={loading}

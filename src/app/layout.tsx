@@ -9,6 +9,7 @@ import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { SidebarProvider } from './context/SidebarContext';
 import { PreferencesProvider } from './context/PreferencesContext';
+import { QuotaProvider } from './context/QuotaContext';
 import TrialExpiredWrapper from './components/TrialExpiredWrapper';
 import ChatbotProvider from './components/ChatbotProvider';
 
@@ -44,21 +45,23 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased" style={{ background: 'var(--background)' }}>
+      <body className="antialiased">
         <ThemeProvider>
           <LanguageProvider>
             <PreferencesProvider>
               <SidebarProvider>
                 <AuthProvider>
-                  <PopupProvider>
-                    <ChatbotProvider>
-                      <TrialExpiredWrapper>
-                        <Header />
-                        {children}
-                        <Footer />
-                      </TrialExpiredWrapper>
-                    </ChatbotProvider>
-                  </PopupProvider>
+                  <QuotaProvider>
+                    <PopupProvider>
+                      <ChatbotProvider>
+                        <TrialExpiredWrapper>
+                          <Header />
+                          {children}
+                          <Footer />
+                        </TrialExpiredWrapper>
+                      </ChatbotProvider>
+                    </PopupProvider>
+                  </QuotaProvider>
                 </AuthProvider>
               </SidebarProvider>
             </PreferencesProvider>

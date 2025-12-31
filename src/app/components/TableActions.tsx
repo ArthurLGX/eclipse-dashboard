@@ -48,12 +48,12 @@ export default function TableActions({
           e.stopPropagation();
           setOpen(o => !o);
         }}
-        className="p-2 rounded hover:bg-zinc-800/60 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+        className="p-2 rounded hover:bg-hover focus:outline-none focus:ring-2 focus:ring-accent"
         title="Actions"
         type="button"
       >
         <svg
-          className="w-5 h-5 text-zinc-400"
+          className="w-5 h-5 text-muted"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -64,7 +64,7 @@ export default function TableActions({
         </svg>
       </button>
       {open && (
-        <div className="absolute rounded-lg right-10 z-[1000] mt-2 p-2 w-fit bg-zinc-900 border border-zinc-700 shadow-lg py-1 animate-fade-in">
+        <div className="absolute rounded-lg right-10 z-[1000] mt-2 p-2 w-fit bg-card border border-default shadow-lg py-1 animate-fade-in">
           {onView && (
             <button
               onClick={e => {
@@ -72,7 +72,7 @@ export default function TableActions({
                 setOpen(false);
                 onView();
               }}
-              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 hover:text-emerald-300 transition-colors"
+              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-primary hover:bg-hover hover:text-accent transition-colors"
               type="button"
             >
               <svg
@@ -104,7 +104,7 @@ export default function TableActions({
                 setOpen(false);
                 onEdit();
               }}
-              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 hover:text-emerald-300 transition-colors"
+              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-primary hover:bg-hover hover:text-accent transition-colors"
               type="button"
             >
               <svg
@@ -131,7 +131,7 @@ export default function TableActions({
                 setOpen(false);
                 onFactures();
               }}
-              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 hover:text-emerald-300 transition-colors"
+              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-primary hover:bg-hover hover:text-accent transition-colors"
               type="button"
             >
               <IconFileInvoice className="w-4 h-4" />
@@ -145,7 +145,7 @@ export default function TableActions({
                 setOpen(false);
                 onProjects();
               }}
-              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 hover:text-emerald-300 transition-colors"
+              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-primary hover:bg-hover hover:text-accent transition-colors"
               type="button"
             >
               <IconBuilding className="w-4 h-4" />
@@ -159,7 +159,7 @@ export default function TableActions({
                 setOpen(false);
                 onDelete();
               }}
-              className="m-1 rounded-lg   w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-800/50 hover:text-red-300 transition-colors"
+              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-danger hover:bg-danger-light hover:text-danger transition-colors"
               type="button"
             >
               <svg

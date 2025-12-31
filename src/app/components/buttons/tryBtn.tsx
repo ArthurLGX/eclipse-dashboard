@@ -8,6 +8,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 
 export const TryBtn = () => {
   const { t } = useLanguage();
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: '5%' }}
@@ -18,18 +19,16 @@ export const TryBtn = () => {
       <Link
         id="tryBtn"
         href="/login?type=register"
-        className={`group flex flex-row md:w-fit w-full items-center  justify-center border border-zinc-200 gap-4 hover:gap-2 text-zinc-900 !text-xs capitalize border border-zinc-700 rounded-full bg-zinc-200 hover:bg-emerald-300/20 hover:text-zinc-900 hover:border-emerald-300 !pl-2 pr-4 !py-2  transition-all ease-in-out duration-300 `}
+        className="btn-primary group flex flex-row md:w-fit w-full items-center justify-center gap-4 hover:gap-2 !text-xs capitalize rounded-full !pl-2 pr-4 !py-2"
       >
         <span>
           <IconArrowRight
             size={30}
             stroke={1}
-            className={
-              'bg-zinc-950 rounded-full w-full h-full p-1 text-zinc-200 group-hover:!text-emerald-300 group-hover:-rotate-45 group-hover:bg-emerald-200/20 transition-all ease-in-out duration-300'
-            }
+            className="rounded-full w-full h-full p-1 transition-all ease-in-out duration-300 group-hover:-rotate-45 bg-white/20"
           />
         </span>
-        <span className={'group-hover:!text-emerald-200 !font-light'}>
+        <span className="!font-light">
           {t('try_for_free')}
         </span>
       </Link>

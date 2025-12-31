@@ -38,25 +38,25 @@ export default function DataTable<T = unknown>({
   if (loading) {
     return (
       <div className={` ${className}`}>
-        <table className="w-full">
+        <table className="table w-full">
           <thead>
-            <tr className="border-b border-zinc-800">
+            <tr className="border-b border-default">
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className="!text-left py-3 px-4 text-zinc-300 font-semibold"
+                  className="!text-left py-3 px-4 text-secondary font-semibold"
                 >
-                  <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse"></div>
+                  <div className="h-4 bg-hover rounded w-24 animate-pulse"></div>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {[1, 2, 3].map(i => (
-              <tr key={i} className="border-b border-zinc-800/50">
+              <tr key={i} className="border-b border-default">
                 {columns.map((column, index) => (
                   <td key={index} className="px-4">
-                    <div className="h-4 bg-zinc-800 rounded w-20 animate-pulse"></div>
+                    <div className="h-4 bg-hover rounded w-20 animate-pulse"></div>
                   </td>
                 ))}
               </tr>
@@ -69,13 +69,13 @@ export default function DataTable<T = unknown>({
 
   return (
     <div className={` h-fit ${className}`}>
-      <table className="w-full ">
+      <table className="table w-full">
         <thead>
-          <tr className="border-b border-zinc-800">
+          <tr className="border-b border-default">
             {columns.map((column, index) => (
               <th
                 key={index}
-                className="!text-left py-3 px-2 lg:px-4 text-zinc-300 font-semibold !capitalize"
+                className="!text-left py-3 px-2 lg:px-4 text-secondary font-semibold !capitalize"
               >
                 {column.label}
               </th>
@@ -88,16 +88,16 @@ export default function DataTable<T = unknown>({
               <tr
                 key={(row as { id: string }).id || index}
                 onClick={() => onRowClick?.(row)}
-                className={`cursor-pointer border-b border-zinc-800/50 !font-light hover:bg-zinc-800/30 transition-colors ${
+                className={`cursor-pointer border-b border-default !font-light transition-colors ${
                   (index + (currentPage - 1) * itemsPerPage) % 2 === 0
-                    ? 'bg-zinc-900/30'
-                    : 'bg-zinc-900/10'
+                    ? ''
+                    : ''
                 }`}
               >
                 {columns.map((column, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`py-4 px-2 lg:px-4 text-zinc-400 !font-light ${column.className || ''}`}
+                    className={`py-4 px-2 lg:px-4 text-muted !font-light ${column.className || ''}`}
                   >
                     {column.render
                       ? column.render(
@@ -115,7 +115,7 @@ export default function DataTable<T = unknown>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="py-8 px-2 lg:px-4 !text-center text-zinc-400"
+                className="py-8 px-2 lg:px-4 !text-center text-muted"
               >
                 {emptyMessage}
               </td>
@@ -129,7 +129,7 @@ export default function DataTable<T = unknown>({
           <button
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="px-3 py-1 rounded border border-zinc-700 bg-zinc-900 text-zinc-300 disabled:opacity-50"
+            className="btn-ghost px-3 py-1 disabled:opacity-50"
           >
             Précédent
           </button>
@@ -137,10 +137,10 @@ export default function DataTable<T = unknown>({
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`px-3 py-1 rounded border border-zinc-700 text-zinc-300 ${
+              className={`px-3 py-1 rounded border ${
                 page === currentPage
-                  ? 'bg-emerald-500 text-white border-emerald-500'
-                  : 'bg-zinc-900'
+                  ? 'btn-primary'
+                  : 'btn-ghost'
               }`}
             >
               {page}
@@ -149,7 +149,7 @@ export default function DataTable<T = unknown>({
           <button
             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 rounded border border-zinc-700 bg-zinc-900 text-zinc-300 disabled:opacity-50"
+            className="btn-ghost px-3 py-1 disabled:opacity-50"
           >
             Suivant
           </button>

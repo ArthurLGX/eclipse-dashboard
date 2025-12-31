@@ -17,14 +17,14 @@ const PopupMessage = ({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -100, scale: 0.5 }}
         transition={{ duration: 0.5 }}
-        className="fixed left-1/2 bottom-2 -translate-x-1/2 z-[1000] !text-black flex flex-col lg:w-fit w-11/12 py-2 h-fit justify-center items-center px-4 rounded-xl bg-white"
+        className="fixed left-1/2 bottom-2 -translate-x-1/2 z-[1000] flex flex-col lg:w-fit w-11/12 py-2 h-fit justify-center items-center px-4 rounded-xl bg-card border border-default"
       >
-        <p className="!text-black">{message}</p>
+        <p className="text-primary">{message}</p>
         <div className="flex gap-4 mt-4">
-          <button className="bg-emerald-300/10   !text-emerald-300 font-bold py-2 px-4 rounded-2xl hover:rounded-sm transition-all ease-in-out delay-50">
+          <button className="btn-success font-bold py-2 px-4 rounded-2xl hover:rounded-sm transition-all ease-in-out delay-50">
             YES
           </button>
-          <button className="bg-red-800/10 text-zinc-200 font-bold py-2 px-4 rounded-2xl hover:rounded-sm transition-all ease-in-out delay-50">
+          <button className="btn-danger font-bold py-2 px-4 rounded-2xl hover:rounded-sm transition-all ease-in-out delay-50">
             NO
           </button>
         </div>
@@ -38,12 +38,12 @@ const PopupMessage = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
-      className={`fixed lg:right-8 right-0 lg:-translate-x-0 lg:bottom-8 top-8  z-[1000] !text-black flex flex-col lg:m-0 m-4 w-11/12 flex-wrap lg:w-fit   h-fit justify-center items-center px-4 py-2 rounded-lg backdrop-blur-xl overflow-hidden ${
+      className={`fixed lg:right-8 right-0 lg:-translate-x-0 lg:bottom-8 top-8 z-[1000] flex flex-col lg:m-0 m-4 w-11/12 flex-wrap lg:w-fit h-fit justify-center items-center px-4 py-2 rounded-lg backdrop-blur-xl overflow-hidden ${
         type === 'success'
-          ? 'bg-emerald-300/20 !border border-emerald-300'
+          ? 'bg-success-light border border-success'
           : type === 'error'
-            ? 'bg-red-800/20 !border border-red-800'
-            : 'bg-orange-500/20 !border border-orange-500'
+            ? 'bg-danger-light border border-danger'
+            : 'bg-warning-light border border-warning'
       }`}
     >
       {/* Barre de progression */}
@@ -53,30 +53,30 @@ const PopupMessage = ({
         transition={{ duration: 2.5, ease: 'linear' }}
         className={`absolute top-0 left-0 h-1 ${
           type === 'success'
-            ? 'bg-emerald-300'
+            ? 'bg-success'
             : type === 'error'
-              ? 'bg-red-500'
-              : 'bg-orange-500'
+              ? 'bg-danger'
+              : 'bg-warning'
         }`}
       />
 
       <p
-        className={`flex flex-row items-center gap-2 ${type === 'success' ? '!text-emerald-300' : type === 'error' ? '!text-red-500' : '!text-orange-500'}`}
+        className={`flex flex-row items-center gap-2 ${type === 'success' ? 'text-success' : type === 'error' ? 'text-danger' : 'text-warning'}`}
       >
         {type === 'success' ? (
           <IconCheck
             size={20}
-            className="!text-emerald-300 rounded-full bg-emerald-300/20 p-1"
+            className="text-success rounded-full bg-success-light p-1"
           />
         ) : type === 'error' ? (
           <IconX
             size={20}
-            className="!text-red-500 rounded-full bg-red-800/20 p-1"
+            className="text-danger rounded-full bg-danger-light p-1"
           />
         ) : (
           <IconAlertCircle
             size={20}
-            className="!text-orange-500 rounded-full bg-orange-500/20 p-1"
+            className="text-warning rounded-full bg-warning-light p-1"
           />
         )}
         {message}

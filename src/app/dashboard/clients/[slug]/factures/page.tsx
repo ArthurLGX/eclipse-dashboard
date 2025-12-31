@@ -62,7 +62,7 @@ export default function ClientFacturesPage() {
       label: t('reference'),
       render: (v, row) => (
         <span
-          className="text-zinc-200 font-medium cursor-pointer hover:text-emerald-400 transition-colors"
+          className="text-primary font-medium cursor-pointer hover:text-accent transition-colors"
           onClick={() => router.push(`/dashboard/factures/${getFactureSlug(row)}`)}
         >
           {v as string}
@@ -73,7 +73,7 @@ export default function ClientFacturesPage() {
       key: 'number',
       label: t('amount'),
       render: v => (
-        <span className="text-zinc-300">
+        <span className="text-secondary">
           {(v as number)?.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) || '-'}
         </span>
       ),
@@ -82,13 +82,13 @@ export default function ClientFacturesPage() {
       key: 'facture_status',
       label: t('status'),
       render: v => (
-        <span className="flex items-center gap-2 text-zinc-400">
+        <span className="flex items-center gap-2 text-secondary">
           {v === 'paid' ? (
-            <IconCheck className="w-4 h-4 !text-emerald-400" />
+            <IconCheck className="w-4 h-4 text-success" />
           ) : v === 'sent' ? (
-            <IconCheck className="w-4 h-4 !text-blue-400" />
+            <IconCheck className="w-4 h-4 text-info" />
           ) : (
-            <IconX className="w-4 h-4 !text-orange-400" />
+            <IconX className="w-4 h-4 text-warning" />
           )}
           {v === 'paid' ? t('paid') : v === 'sent' ? t('sent') : t('draft')}
         </span>
@@ -98,7 +98,7 @@ export default function ClientFacturesPage() {
       key: 'date',
       label: t('date'),
       render: v => (
-        <span className="text-zinc-400">
+        <span className="text-muted">
           {v ? new Date(v as string).toLocaleDateString('fr-FR') : '-'}
         </span>
       ),
@@ -107,7 +107,7 @@ export default function ClientFacturesPage() {
       key: 'due_date',
       label: t('due_date'),
       render: v => (
-        <span className="text-zinc-400">
+        <span className="text-muted">
           {v ? new Date(v as string).toLocaleDateString('fr-FR') : '-'}
         </span>
       ),
@@ -128,7 +128,7 @@ export default function ClientFacturesPage() {
                 <button
                   type="button"
                   title={t('view_invoice') || 'Voir la facture'}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-zinc-800 text-blue-400 border border-zinc-700 hover:bg-zinc-700 hover:text-white transition-colors text-xs font-semibold"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-muted text-info border border-default hover:bg-hover hover:text-primary transition-colors text-xs font-semibold"
                   onClick={() => {
                     setPdfToShow(pdfUrl);
                     setShowPdfModal(true);
@@ -140,14 +140,14 @@ export default function ClientFacturesPage() {
                   href={pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 hover:text-white transition-colors text-xs font-semibold"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-success-light text-success border border-success hover:opacity-80 transition-colors text-xs font-semibold"
                   download
                 >
                   <IconDownload className="w-4 h-4" />
                 </a>
               </>
             )}
-            {!pdfUrl && <span className="text-zinc-500 text-xs">-</span>}
+            {!pdfUrl && <span className="text-muted text-xs">-</span>}
           </div>
         );
       },
@@ -155,7 +155,7 @@ export default function ClientFacturesPage() {
   ];
 
   const handleAddInvoice = () => {
-    router.push(`/dashboard/factures/${t('add')}?clientId=${clientId}&clientName=${encodeURIComponent(clientName)}`);
+    router.push(`/dashboard/factures/ajouter?clientId=${clientId}&clientName=${encodeURIComponent(clientName)}`);
   };
 
   return (
@@ -164,7 +164,7 @@ export default function ClientFacturesPage() {
       <div className="flex items-center gap-4 mb-2">
         <Link
           href={`/dashboard/clients/${params.slug}`}
-          className="flex items-center gap-2 text-zinc-400 hover:text-zinc-200 transition-colors"
+          className="flex items-center gap-2 text-secondary hover:text-primary transition-colors"
         >
           <IconArrowLeft className="w-5 h-5" />
           <span>{t('back') || 'Retour'}</span>
@@ -173,13 +173,13 @@ export default function ClientFacturesPage() {
 
       <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-zinc-100">{t('invoices')}</h1>
-          <p className="text-zinc-400 mt-1">
+          <h1 className="text-3xl font-bold text-primary">{t('invoices')}</h1>
+          <p className="text-secondary mt-1">
             {clientName} • {factures.length} {factures.length > 1 ? 'factures' : 'facture'}
           </p>
         </div>
         <button
-          className="flex items-center gap-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-lg font-semibold hover:bg-emerald-500/30 transition-colors"
+          className="flex items-center gap-2 btn-primary px-4 py-2.5 rounded-lg font-semibold"
           onClick={handleAddInvoice}
           disabled={!clientId}
         >
@@ -189,7 +189,7 @@ export default function ClientFacturesPage() {
       </div>
 
       {/* Table des factures */}
-      <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden">
+      <div className="card overflow-hidden">
         <DataTable
           columns={columns}
           data={factures}
@@ -206,7 +206,7 @@ export default function ClientFacturesPage() {
             <iframe
               src={pdfToShow}
               title={t('invoice_pdf')}
-              className="flex-1 w-full h-full rounded-lg border border-zinc-800 bg-white"
+              className="flex-1 w-full h-full rounded-lg border border-default bg-white"
             />
           </div>
         </FloatingModal>
@@ -214,4 +214,3 @@ export default function ClientFacturesPage() {
     </div>
   );
 }
-

@@ -164,8 +164,9 @@ export default function FacturePage() {
   useEffect(() => {
     const fetchFacture = async () => {
    
-      // Mode création
-      if (rawId === t('add') || rawId === 'add' || rawId === 'ajouter') {
+      // Mode création - comparaison insensible à la casse
+      const rawIdLower = rawId.toLowerCase();
+      if (rawIdLower === 'add' || rawIdLower === 'ajouter' || rawIdLower === t('add').toLowerCase()) {
         setEditing(true);
         
         // Préremplir le client si fourni dans l'URL
@@ -445,7 +446,7 @@ export default function FacturePage() {
       className="min-h-screen p-6"
     >
       {/* Header avec actions */}
-      <div className="max-w-4xl mx-auto rounded-lg flex flex-col gap-4 overflow-hidden shadow-xl ">
+      <div className="max-w-4xl mx-auto rounded-lg flex flex-col gap-4 overflow-hidden  ">
         <div className="flex lg:flex-row flex-col gap-2 justify-end">
           {!editing ? (
             <button
@@ -500,7 +501,7 @@ export default function FacturePage() {
 
         {/* Contenu de la facture */}
         <div ref={factureRef} className="print-area">
-          <div className="p-8 !bg-white rounded-lg flex flex-col gap-4">
+          <div className="p-8 !bg-white rounded-lg flex flex-col gap-4 shadow-lg">
             {/* Champs principaux modifiables */}
             <div className="flex items-center gap-2 mb-4">
               <label className="font-medium">{t('vat_applicable')}</label>

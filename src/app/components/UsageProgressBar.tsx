@@ -192,12 +192,12 @@ export default function UsageProgressBar() {
 
   if (loading || !usageData) {
     return (
-      <div className="bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-lg p-4 mb-6">
+      <div className="card backdrop-blur-sm p-4 mb-6">
         <div className="flex flex-wrap gap-4">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="flex-1 min-w-48">
-              <div className="h-4 bg-zinc-800 rounded animate-pulse mb-2"></div>
-              <div className="h-2 bg-zinc-800 rounded animate-pulse"></div>
+              <div className="h-4 bg-muted rounded animate-pulse mb-2"></div>
+              <div className="h-2 bg-muted rounded animate-pulse"></div>
             </div>
           ))}
         </div>
@@ -207,9 +207,9 @@ export default function UsageProgressBar() {
 
   const getProgressColor = (current: number, limit: number) => {
     const percentage = limit === 0 ? 0 : (current / limit) * 100;
-    if (percentage >= 90) return 'bg-emerald-300';
-    if (percentage >= 75) return 'bg-blue-500';
-    return 'bg-blue-300';
+    if (percentage >= 90) return 'bg-success';
+    if (percentage >= 75) return 'bg-info';
+    return 'bg-info';
   };
 
   const getProgressWidth = (current: number, limit: number) => {
@@ -222,18 +222,18 @@ export default function UsageProgressBar() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col gap-4 w-full bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-lg p-4 lg:!mt-8 !mt-32 !mb-16"
+      className="flex flex-col gap-4 w-full card backdrop-blur-sm p-4 lg:!mt-8 !mt-32 !mb-16"
     >
       {/* Barre de progression du trial pour le plan gratuit */}
       {trialData && (
-        <div className="border-b border-zinc-700 pb-4 mb-4 w-full">
+        <div className="border-b border-default pb-4 mb-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <span className="!text-sm text-zinc-200 font-medium">
+            <span className="!text-sm text-primary font-medium">
               {trialData.isExpired ? t('trial_expired') : t('trial_period')}
             </span>
             <span
               className={`!text-sm font-semibold ${
-                trialData.isExpired ? '!text-red-400' : '!text-emerald-400'
+                trialData.isExpired ? 'text-danger' : 'text-success'
               }`}
             >
               {trialData.isExpired
@@ -241,21 +241,21 @@ export default function UsageProgressBar() {
                 : `${trialData.daysRemaining} ${t('days')} ${t('remaining')}`}
             </span>
           </div>
-          <div className="w-full bg-zinc-800 rounded-full h-2">
+          <div className="w-full bg-muted rounded-full h-2">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${trialData.progress}%` }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
               className={`h-2 rounded-full ${
                 trialData.isExpired
-                  ? 'bg-red-500'
+                  ? 'bg-danger'
                   : trialData.progress >= 80
-                    ? 'bg-orange-500'
-                    : 'bg-emerald-500'
+                    ? 'bg-warning'
+                    : 'bg-success'
               }`}
             />
           </div>
-          <p className="!text-xs text-zinc-500 mt-1">
+          <p className="!text-xs text-muted mt-1">
             {trialData &&
               t('started_at') +
                 ' : ' +
@@ -265,7 +265,7 @@ export default function UsageProgressBar() {
                   year: 'numeric',
                 })}
           </p>
-          <p className="!text-xs text-zinc-500 mt-1">
+          <p className="!text-xs text-muted mt-1">
             {trialData.isExpired
               ? t('trial_expired_description')
               : t('trial_progress_description')}
@@ -277,14 +277,14 @@ export default function UsageProgressBar() {
         {Object.entries(usageData).map(([key, data]) => (
           <div key={key} className="flex-1 min-w-48 w-full">
             <div className="flex justify-between items-center mb-2">
-              <span className="!text-sm text-zinc-400 font-medium">
+              <span className="!text-sm text-secondary font-medium">
                 {data.label}
               </span>
-              <span className="!text-sm text-zinc-300 font-semibold">
+              <span className="!text-sm text-primary font-semibold">
                 {data.current} / {data.limit === 0 ? '∞' : data.limit}
               </span>
             </div>
-            <div className="w-full bg-zinc-800 rounded-full h-2">
+            <div className="w-full bg-muted rounded-full h-2">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{
@@ -303,12 +303,12 @@ export default function UsageProgressBar() {
         usageData.mentors.current >= usageData.mentors.limit ||
         (usageData.newsletters.current >= usageData.newsletters.limit && (
           <div className="flex lg:flex-row flex-col gap-2">
-            <p className="!text-sm text-zinc-400 font-medium">
+            <p className="!text-sm text-secondary font-medium">
               {t('usage_progress_bar_description')}
             </p>
             <Link
               href="/pricing"
-              className="!text-sm text-zinc-400 font-medium underline hover:text-zinc-300 transition-colors"
+              className="!text-sm text-secondary font-medium underline hover:text-primary transition-colors"
             >
               {t('upgrade_now')}
             </Link>

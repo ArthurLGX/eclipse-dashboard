@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { TryBtn } from './components/buttons/tryBtn';
 import { useLanguage } from './context/LanguageContext';
 import { PricingBtn } from './components/buttons/pricingBtn';
+import { useTheme } from './context/ThemeContext';
 import DataTable, { Column } from './components/DataTable';
 import {
   IconHome,
@@ -115,6 +116,8 @@ interface SidebarItem {
 export default function Home() {
   useLenis();
   const { t } = useLanguage();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
   const [isVisible, setIsVisible] = useState(false);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -304,69 +307,59 @@ export default function Home() {
   const renderDashboardContent = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
+        <h1 className="demo-title !text-3xl !uppercase font-extrabold !text-left">
           {t('dashboard')}
         </h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
-            {t('clients')}
-          </h3>
-          <p className="!text-3xl font-bold !text-emerald-400">24</p>
+        <div className="demo-card cursor-pointer p-6 rounded-lg">
+          <h3 className="demo-title !text-lg font-semibold mb-2">{t('clients')}</h3>
+          <p className="demo-stat-primary !text-3xl font-bold">24</p>
         </div>
-        <div className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
-            {t('prospects')}
-          </h3>
-          <p className="!text-3xl font-bold !text-blue-400">12</p>
+        <div className="demo-card cursor-pointer p-6 rounded-lg">
+          <h3 className="demo-title !text-lg font-semibold mb-2">{t('prospects')}</h3>
+          <p className="demo-stat-secondary !text-3xl font-bold">12</p>
         </div>
-        <div className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
-            {t('projects')}
-          </h3>
-          <p className="!text-3xl font-bold !text-purple-400">8</p>
+        <div className="demo-card cursor-pointer p-6 rounded-lg">
+          <h3 className="demo-title !text-lg font-semibold mb-2">{t('projects')}</h3>
+          <p className="demo-stat-tertiary !text-3xl font-bold">8</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold text-zinc-200 mb-4">
-            {t('recent_activity')}
-          </h3>
+        <div className="demo-card p-6 rounded-lg">
+          <h3 className="demo-title !text-lg font-semibold mb-4">{t('recent_activity')}</h3>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-              <p className="text-zinc-300">{t('new_clients_this_month')}</p>
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--demo-stat-primary)' }}></div>
+              <p className="demo-subtitle">{t('new_clients_this_month')}</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-              <p className="text-zinc-300">{t('completed_projects')}</p>
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--demo-stat-secondary)' }}></div>
+              <p className="demo-subtitle">{t('completed_projects')}</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-              <p className="text-zinc-300">{t('new_prospects')}</p>
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--demo-stat-tertiary)' }}></div>
+              <p className="demo-subtitle">{t('new_prospects')}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-          <h3 className="!text-lg font-semibold text-zinc-200 mb-4">
-            {t('statistics')}
-          </h3>
+        <div className="demo-card p-6 rounded-lg">
+          <h3 className="demo-title !text-lg font-semibold mb-4">{t('statistics')}</h3>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <p className="text-zinc-400">{t('conversion_rate')}</p>
-              <p className="!text-emerald-400 font-semibold">67%</p>
+              <p className="demo-muted">{t('conversion_rate')}</p>
+              <p className="demo-stat-primary font-semibold">67%</p>
             </div>
             <div className="flex justify-between">
-              <p className="text-zinc-400">{t('active_clients')}</p>
-              <p className="!text-blue-400 font-semibold">18</p>
+              <p className="demo-muted">{t('active_clients')}</p>
+              <p className="demo-stat-secondary font-semibold">18</p>
             </div>
             <div className="flex justify-between">
-              <p className="text-zinc-400">{t('projects_in_progress')}</p>
-              <p className="!text-purple-400 font-semibold">5</p>
+              <p className="demo-muted">{t('projects_in_progress')}</p>
+              <p className="demo-stat-tertiary font-semibold">5</p>
             </div>
           </div>
         </div>
@@ -377,10 +370,8 @@ export default function Home() {
   const renderClientsContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
-          {t('clients')}
-        </h1>
-        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
+        <h1 className="demo-title !text-3xl !uppercase font-extrabold !text-left">{t('clients')}</h1>
+        <button className="demo-button lg:w-fit w-full px-4 py-2 rounded-lg cursor-pointer">
           {t('add_client')}
         </button>
       </div>
@@ -391,10 +382,8 @@ export default function Home() {
   const renderProjectsContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
-          {t('projects')}
-        </h1>
-        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
+        <h1 className="demo-title !text-3xl !uppercase font-extrabold !text-left">{t('projects')}</h1>
+        <button className="demo-button lg:w-fit w-full px-4 py-2 rounded-lg cursor-pointer">
           {t('add_project')}
         </button>
       </div>
@@ -405,10 +394,8 @@ export default function Home() {
   const renderProspectsContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
-          {t('prospects')}
-        </h1>
-        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
+        <h1 className="demo-title !text-3xl !uppercase font-extrabold !text-left">{t('prospects')}</h1>
+        <button className="demo-button lg:w-fit w-full px-4 py-2 rounded-lg cursor-pointer">
           {t('add_prospect')}
         </button>
       </div>
@@ -419,10 +406,8 @@ export default function Home() {
   const renderMentorsContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
-          {t('mentors')}
-        </h1>
-        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
+        <h1 className="demo-title !text-3xl !uppercase font-extrabold !text-left">{t('mentors')}</h1>
+        <button className="demo-button lg:w-fit w-full px-4 py-2 rounded-lg cursor-pointer">
           {t('add_mentor')}
         </button>
       </div>
@@ -433,10 +418,8 @@ export default function Home() {
   const renderNewslettersContent = () => (
     <div className="space-y-6">
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
-          {t('newsletters')}
-        </h1>
-        <button className="bg-emerald-400/20 lg:w-fit w-full !text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/20 hover:!text-white transition-colors">
+        <h1 className="demo-title !text-3xl !uppercase font-extrabold !text-left">{t('newsletters')}</h1>
+        <button className="demo-button lg:w-fit w-full px-4 py-2 rounded-lg cursor-pointer">
           {t('add_newsletter')}
         </button>
       </div>
@@ -492,16 +475,57 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center !pt-[200px]">
-      <Image
-        src="/images/background.jpg"
-        alt="background"
-        width={1000}
-        height={1000}
-        className="absolute top-0 left-0 w-full h-full object-cover opacity-20"
-      />
+      {/* Background - Image en mode dark, Pattern en mode light */}
+      {isDark ? ( 
+        <>  {/* Dark background */}
+        <div className="absolute top-0  left-0 w-full h-full"></div>
+        <Image
+          src="/images/background.jpg"
+          alt="background"
+          width={1000}
+          height={1000}
+          className="absolute top-0 left-0 w-full h-full object-cover opacity-20"
+        />
+        </>
+      ) : (
+        <div 
+          className="absolute top-0 left-0 w-full h-full"
+          style={{
+            background: `
+              linear-gradient(135deg, rgba(124, 58, 237, 0.03) 0%, transparent 50%),
+              linear-gradient(225deg, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 80% 20%, rgba(167, 139, 250, 0.06) 0%, transparent 40%),
+              linear-gradient(180deg, #fafafa 0%, #f5f3ff 50%, #fafafa 100%)
+            `,
+            backgroundSize: '100% 100%',
+          }}
+        >
+          {/* Subtle grid pattern */}
+          <div 
+            className="absolute inset-0 opacity-30"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(124, 58, 237, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(124, 58, 237, 0.05) 1px, transparent 1px)
+              `,
+              backgroundSize: '60px 60px',
+            }}
+          />
+          {/* Floating gradient orbs */}
+          <div 
+            className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl"
+            style={{ background: 'radial-gradient(circle, rgba(124, 58, 237, 0.3) 0%, transparent 70%)' }}
+          />
+          <div 
+            className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-15 blur-3xl"
+            style={{ background: 'radial-gradient(circle, rgba(167, 139, 250, 0.4) 0%, transparent 70%)' }}
+          />
+        </div>
+      )}
       <div
         className={
-          'text-zinc-200 z-10 flex flex-col gap-16 items-center justify-center w-full p-4  h-full '
+          'text-zinc-800 dark:text-zinc-200 z-10 flex flex-col gap-16 items-center justify-center w-full p-4 h-full'
         }
       >
         <div
@@ -513,13 +537,13 @@ export default function Home() {
             initial={{ opacity: 0, y: '5%' }}
             animate={{ opacity: 1, y: 1 }}
             transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.1 }}
-            className="flex flex-col items-center justify-center gap-2"
+            className="flex flex-col items-center justify-center gap-2 text-zinc-800 dark:text-zinc-200"
           >
             <motion.span
               initial={{ opacity: 0, y: '5%' }}
               animate={{ opacity: 1, y: 1 }}
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.2 }}
-              className="!text-xl text-zinc-200 font-light"
+              className="!text-xl text-zinc-600 dark:text-zinc-200 font-light"
             >
               {t('hero_subtitle_top')}
             </motion.span>
@@ -528,7 +552,7 @@ export default function Home() {
               initial={{ opacity: 0, y: '5%' }}
               animate={{ opacity: 1, y: 1 }}
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
-              className="bg-emerald-300/20 backdrop-blur-xs py-2 px-4 rounded-full !text-emerald-200 font-extrabold shadow-md shadow-emerald-300/20"
+              className="bg-violet-100 dark:bg-emerald-300/20 backdrop-blur-xs py-2 px-4 rounded-full !text-violet-700 dark:!text-emerald-200 font-extrabold shadow-md shadow-violet-200/50 dark:shadow-emerald-300/20"
             >
               {t('hero_subtitle_bottom')}
             </motion.span>
@@ -545,7 +569,7 @@ export default function Home() {
       </div>
 
       {/* Section de démonstration du Dashboard */}
-      <div id="dashboard-demo" className="w-full py-20 px-4 z-10 relative">
+      <div id="dashboard-demo" className="w-full  py-20 px-4 z-10 relative">
         <motion.div
           initial={{ opacity: 0, y: '5%' }}
           animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: '5%' }}
@@ -558,7 +582,7 @@ export default function Home() {
               initial={{ opacity: 0, y: '5%' }}
               animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: '5%' }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-4xl md:text-5xl font-bold text-zinc-200 mb-4"
+              className="text-4xl md:text-5xl font-bold text-zinc-800 dark:text-zinc-200 mb-4"
             >
               {t('dashboard')}
             </motion.h2>
@@ -566,7 +590,7 @@ export default function Home() {
               initial={{ opacity: 0, y: '5%' }}
               animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: '5%' }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-xl text-zinc-400 max-w-2xl mx-auto"
+              className="text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto"
             >
               {t('dashboard_description')}
             </motion.p>
@@ -579,12 +603,12 @@ export default function Home() {
               isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: '5%' }
             }
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden"
+            className="demo-container backdrop-blur-xl rounded-2xl overflow-hidden"
           >
             <div className="flex min-h-[600px]">
               {/* Sidebar */}
               <motion.div
-                className="hidden lg:flex bg-zinc-900/90 border-r border-zinc-800 flex-col items-start justify-start gap-8 p-4"
+                className="demo-sidebar hidden lg:flex flex-col items-start justify-start gap-8 p-4"
                 animate={{
                   width: isSidebarExpanded ? 300 : 64,
                 }}
@@ -594,7 +618,7 @@ export default function Home() {
               >
                 {/* Header de la sidebar */}
                 <div className="flex flex-col items-center w-full justify-between gap-4">
-                  <div className="text-zinc-200 cursor-pointer font-semibold !text-lg">
+                  <div className="demo-title cursor-pointer font-semibold !text-lg">
                     <Image
                       src="/images/logo/eclipse-logo.png"
                       alt="Eclipse Studio"
@@ -610,11 +634,7 @@ export default function Home() {
                     <motion.button
                       key={item.id}
                       onClick={() => setActiveSection(item.id)}
-                      className={`group w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 mb-1 ${
-                        item.active
-                          ? 'bg-emerald-500/20 !text-emerald-400 border border-emerald-500/30'
-                          : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
-                      }`}
+                      className={`demo-nav-item group w-full flex items-center gap-3 p-2 rounded-lg mb-1 ${item.active ? 'active' : ''}`}
                     >
                       <div className="flex-shrink-0">{item.icon}</div>
                       <AnimatePresence mode="wait">
@@ -635,17 +655,13 @@ export default function Home() {
               </motion.div>
 
               {/* Mobile Navigation */}
-              <div className="lg:hidden bg-zinc-900/95 border-b border-zinc-800 p-2">
+              <div className="demo-sidebar lg:hidden p-2 border-b" style={{ borderColor: 'var(--card-border)' }}>
                 <nav className="flex flex-col items-center justify-around">
                   {sidebarItems.slice(0, 4).map(item => (
                     <button
                       key={item.id}
                       onClick={() => setActiveSection(item.id)}
-                      className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 min-w-0 ${
-                        item.active
-                          ? '!text-emerald-400'
-                          : 'text-zinc-400 hover:text-zinc-200'
-                      }`}
+                      className={`demo-nav-item flex flex-col items-center gap-1 p-2 rounded-lg min-w-0 ${item.active ? 'active' : ''}`}
                     >
                       <div className="flex-shrink-0">{item.icon}</div>
                     </button>
@@ -674,7 +690,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 2.4 }}
             className="text-center mt-12"
           >
-            <p className="text-xl text-zinc-300 mb-6">
+            <p className="text-xl text-zinc-600 dark:text-zinc-300 mb-6">
               {t('ready_to_transform')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

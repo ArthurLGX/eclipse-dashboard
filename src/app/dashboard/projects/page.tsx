@@ -22,6 +22,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import { generateSlug } from '@/utils/slug';
 import { useProjects, useClients, clearCache } from '@/hooks/useApi';
 import type { Project, Client } from '@/types';
+import { useQuota } from '@/app/context/QuotaContext';
 
 export default function ProjectsPage() {
   const { t } = useLanguage();
@@ -29,6 +30,7 @@ export default function ProjectsPage() {
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { canAdd, getVisibleCount, limits } = useQuota();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -43,7 +45,14 @@ export default function ProjectsPage() {
   const { data: projectsData, loading: loadingProjects, refetch: refetchProjects } = useProjects(user?.id);
   const { data: clientsData } = useClients(user?.id);
 
-  const projects = useMemo(() => (projectsData as Project[]) || [], [projectsData]);
+  const allProjects = useMemo(() => (projectsData as Project[]) || [], [projectsData]);
+  
+  // Limiter les projets selon le quota
+  const projects = useMemo(() => {
+    const visibleCount = getVisibleCount('projects');
+    return allProjects.slice(0, visibleCount);
+  }, [allProjects, getVisibleCount]);
+
   const clients = useMemo(() => 
     ((clientsData as Client[]) || []).map(c => ({ id: c.id, name: c.name })),
     [clientsData]
@@ -120,9 +129,10 @@ export default function ProjectsPage() {
   // Stats
   const stats = useMemo(() => ({
     total: projects.length,
+    limit: limits.projects,
     completed: projects.filter(p => p.project_status === 'completed').length,
     inProgress: projects.filter(p => p.project_status === 'in_progress').length,
-  }), [projects]);
+  }), [projects, limits]);
 
   // Colonnes du tableau
   const columns: Column<Project>[] = [
@@ -132,7 +142,7 @@ export default function ProjectsPage() {
       render: (value, row) => (
         <div className="relative">
           <div className="flex items-start gap-2">
-            <h4 className="text-zinc-200 font-medium">{value as string}</h4>
+            <h4 className="text-primary font-medium">{value as string}</h4>
             {taskCounts[row.documentId] > 0 && (
               <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-amber-500 rounded-full">
                 {taskCounts[row.documentId]}
@@ -141,7 +151,7 @@ export default function ProjectsPage() {
           </div>
           <div className="flex items-center gap-2 mt-1">
             <ProjectTypeIcon type={row.type} className="w-4 h-4 text-zinc-500" />
-            <p className="text-zinc-500 !text-sm">{row.type}</p>
+            <p className="text-muted !text-sm">{row.type}</p>
           </div>
         </div>
       ),
@@ -150,7 +160,7 @@ export default function ProjectsPage() {
       key: 'client',
       label: 'Client',
       render: (value) => (
-        <p className="text-zinc-300">
+        <p className="text-secondary">
           {(value as { name?: string })?.name || 'N/A'}
         </p>
       ),
@@ -161,15 +171,15 @@ export default function ProjectsPage() {
       render: (value) => {
         const status = value as string;
         const config = 
-          status === 'completed' ? { label: t('completed') || 'Terminé', className: 'bg-emerald-100 !text-emerald-800' } :
-          status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'bg-yellow-100 !text-yellow-800' } :
-          status === 'planning' ? { label: t('planning') || 'Planification', className: 'bg-blue-100 !text-blue-800' } :
-          { label: status, className: 'bg-gray-100 !text-gray-800' };
+          status === 'completed' ? { label: t('completed') || 'Terminé', className: 'badge-success' } :
+          status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'badge-warning' } :
+          status === 'planning' ? { label: t('planning') || 'Planification', className: 'badge-info' } :
+          { label: status, className: 'badge-primary' };
 
         return (
-          <p className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}>
+          <span className={`badge ${config.className}`}>
             {config.label}
-          </p>
+          </span>
         );
       },
     },
@@ -177,7 +187,7 @@ export default function ProjectsPage() {
       key: 'start_date',
       label: 'Début',
       render: (value) => (
-        <p className="text-zinc-300">
+        <p className="text-secondary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
@@ -186,7 +196,7 @@ export default function ProjectsPage() {
       key: 'end_date',
       label: 'Fin',
       render: (value) => (
-        <p className="text-zinc-300">
+        <p className="text-secondary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
@@ -250,26 +260,26 @@ export default function ProjectsPage() {
       <DashboardPageTemplate<Project>
         title={t('projects')}
         onRowClick={row => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}`)}
-        actionButtonLabel={t('new_project')}
-        onActionButtonClick={() => setShowNewProjectModal(true)}
+        actionButtonLabel={canAdd('projects') ? t('new_project') : `${t('new_project')} (${t('quota_reached') || 'Quota atteint'})`}
+        onActionButtonClick={canAdd('projects') ? () => setShowNewProjectModal(true) : () => showGlobalPopup(t('quota_reached_message') || 'Quota atteint. Passez à un plan supérieur.', 'warning')}
         stats={[
           {
             label: t('total_projects'),
-            value: stats.total,
-            colorClass: '!text-emerald-400',
-            icon: <IconBuilding className="w-6 h-6 !text-emerald-400" />,
+            value: stats.limit > 0 ? `${stats.total}/${stats.limit}` : stats.total,
+            colorClass: 'text-success',
+            icon: <IconBuilding className="w-6 h-6 text-success" />,
           },
           {
             label: t('completed_projects'),
             value: stats.completed,
-            colorClass: '!text-blue-400',
-            icon: <IconCheck className="w-6 h-6 !text-blue-400" />,
+            colorClass: 'text-info',
+            icon: <IconCheck className="w-6 h-6 text-info" />,
           },
           {
             label: t('in_progress_projects'),
             value: stats.inProgress,
-            colorClass: '!text-yellow-400',
-            icon: <IconProgressCheck className="w-6 h-6 !text-yellow-400" />,
+            colorClass: 'text-warning',
+            icon: <IconProgressCheck className="w-6 h-6 text-warning" />,
           },
         ]}
         loading={loadingProjects}

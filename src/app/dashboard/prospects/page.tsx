@@ -14,12 +14,14 @@ import { useRouter } from 'next/navigation';
 import { useProspects, clearCache } from '@/hooks/useApi';
 import { IconUsers, IconUserCheck, IconUserPlus } from '@tabler/icons-react';
 import type { Prospect } from '@/types';
+import { useQuota } from '@/app/context/QuotaContext';
 
 export default function ProspectsPage() {
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
   const { user } = useAuth();
   const router = useRouter();
+  const { canAdd, getVisibleCount, limits } = useQuota();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -30,7 +32,13 @@ export default function ProspectsPage() {
 
   // Hook avec cache
   const { data: prospectsData, loading, refetch } = useProspects(user?.id);
-  const prospects = useMemo(() => (prospectsData as Prospect[]) || [], [prospectsData]);
+  const allProspects = useMemo(() => (prospectsData as Prospect[]) || [], [prospectsData]);
+  
+  // Limiter les prospects selon le quota
+  const prospects = useMemo(() => {
+    const visibleCount = getVisibleCount('prospects');
+    return allProspects.slice(0, visibleCount);
+  }, [allProspects, getVisibleCount]);
 
   // Options de filtres
   const statusOptions: FilterOption[] = useMemo(() => [
@@ -74,9 +82,10 @@ export default function ProspectsPage() {
   // Stats
   const stats = useMemo(() => ({
     total: prospects.length,
+    limit: limits.prospects,
     answers: prospects.filter(p => p.prospect_status === 'answer').length,
     contacted: prospects.filter(p => p.prospect_status === 'contacted').length,
-  }), [prospects]);
+  }), [prospects, limits]);
 
   // Colonnes
   const columns: Column<Prospect>[] = [
@@ -84,14 +93,14 @@ export default function ProspectsPage() {
       key: 'title',
       label: t('name'),
       render: (value) => (
-        <p className="text-zinc-200 font-medium">{value as string}</p>
+        <p className="text-primary font-medium">{value as string}</p>
       ),
     },
     {
       key: 'email',
       label: t('email'),
       render: (value) => (
-        <p className="text-zinc-300">{value as string}</p>
+        <p className="text-secondary">{value as string}</p>
       ),
     },
     {
@@ -100,15 +109,15 @@ export default function ProspectsPage() {
       render: (value) => {
         const status = value as string;
         const config =
-          status === 'answer' ? { label: t('answer') || 'Réponse', className: 'bg-emerald-100 !text-emerald-800' } :
-          status === 'to_be_contacted' ? { label: t('to_be_contacted') || 'À contacter', className: 'bg-blue-100 !text-blue-800' } :
-          status === 'contacted' ? { label: t('contacted') || 'Contacté', className: 'bg-yellow-100 !text-yellow-800' } :
-          { label: t('prospect') || 'Prospect', className: 'bg-gray-100 !text-gray-800' };
+          status === 'answer' ? { label: t('answer') || 'Réponse', className: 'badge-success' } :
+          status === 'to_be_contacted' ? { label: t('to_be_contacted') || 'À contacter', className: 'badge-info' } :
+          status === 'contacted' ? { label: t('contacted') || 'Contacté', className: 'badge-warning' } :
+          { label: t('prospect') || 'Prospect', className: 'badge-primary' };
 
         return (
-          <p className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}>
+          <span className={`badge ${config.className}`}>
             {config.label}
-          </p>
+          </span>
         );
       },
     },
@@ -116,7 +125,7 @@ export default function ProspectsPage() {
       key: 'createdAt',
       label: t('creation_date'),
       render: (value) => (
-        <p className="text-zinc-300">
+        <p className="text-secondary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
@@ -147,26 +156,26 @@ export default function ProspectsPage() {
     <DashboardPageTemplate<Prospect>
       title={t('prospects')}
       onRowClick={row => router.push(`/dashboard/prospects/${row.id}`)}
-      actionButtonLabel={t('add_prospect')}
-      onActionButtonClick={() => {}}
+      actionButtonLabel={canAdd('prospects') ? t('add_prospect') : `${t('add_prospect')} (${t('quota_reached') || 'Quota atteint'})`}
+      onActionButtonClick={canAdd('prospects') ? () => {} : () => showGlobalPopup(t('quota_reached_message') || 'Quota atteint. Passez à un plan supérieur.', 'warning')}
       stats={[
         {
           label: t('total_prospects'),
-          value: stats.total,
-          colorClass: '!text-blue-400',
-          icon: <IconUsers className="w-6 h-6 !text-blue-400" />,
+          value: stats.limit > 0 ? `${stats.total}/${stats.limit}` : stats.total,
+          colorClass: 'text-info',
+          icon: <IconUsers className="w-6 h-6 text-info" />,
         },
         {
           label: t('answer') || 'Réponses',
           value: stats.answers,
-          colorClass: '!text-yellow-400',
-          icon: <IconUserCheck className="w-6 h-6 !text-yellow-400" />,
+          colorClass: 'text-warning',
+          icon: <IconUserCheck className="w-6 h-6 text-warning" />,
         },
         {
           label: t('contacted'),
           value: stats.contacted,
-          colorClass: '!text-emerald-400',
-          icon: <IconUserPlus className="w-6 h-6 !text-emerald-400" />,
+          colorClass: 'text-success',
+          icon: <IconUserPlus className="w-6 h-6 text-success" />,
         },
       ]}
       loading={loading}

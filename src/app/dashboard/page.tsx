@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import UsageProgressBar from '@/app/components/UsageProgressBar';
 import { useClients, useProjects, useProspects, useFactures } from '@/hooks/useApi';
 import type { Client, Project, Prospect, Facture } from '@/types';
+import QuotaAlert from '@/app/components/QuotaAlert';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -120,10 +121,10 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-6"
+        className="space-y-6 bg-page"
       >
         <div className="flex items-center justify-between">
-          <h1 className="!text-3xl !uppercase font-extrabold !text-left text-zinc-200">
+          <h1 className="!text-3xl !uppercase font-extrabold !text-left text-primary">
             {t('dashboard')}
           </h1>
         </div>
@@ -133,51 +134,51 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div
             onClick={() => router.push('/dashboard/clients')}
-            className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
+            className="card cursor-pointer p-6"
           >
-            <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
+            <h3 className="!text-lg font-semibold text-primary mb-2">
               {t('clients')}
             </h3>
-            <p className="!text-3xl font-bold !text-emerald-400">
+            <p className="!text-3xl font-bold text-success">
               {loading ? '...' : stats.clientsCount}
             </p>
           </div>
 
           <div
             onClick={() => router.push('/dashboard/prospects')}
-            className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
+            className="card cursor-pointer p-6"
           >
-            <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
+            <h3 className="!text-lg font-semibold text-primary mb-2">
               {t('prospects')}
             </h3>
-            <p className="!text-3xl font-bold !text-blue-400">
+            <p className="!text-3xl font-bold text-info">
               {loading ? '...' : stats.prospectsCount}
             </p>
           </div>
 
           <div
             onClick={() => router.push('/dashboard/projects')}
-            className="bg-zinc-900 cursor-pointer transition-all duration-300 hover:bg-zinc-800 p-6 rounded-lg border border-zinc-800"
+            className="card cursor-pointer p-6"
           >
-            <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
+            <h3 className="!text-lg font-semibold text-primary mb-2">
               {t('projects')}
             </h3>
-            <p className="!text-3xl font-bold !text-purple-400">
+            <p className="!text-3xl font-bold text-color-primary">
               {loading ? '...' : stats.projectsCount}
             </p>
           </div>
 
           <div
-            className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 flex flex-col justify-between cursor-pointer hover:bg-zinc-800 transition-all duration-300"
+            className="card p-6 flex flex-col justify-between cursor-pointer"
             onClick={() => router.push('/dashboard/revenue')}
           >
-            <h3 className="!text-lg font-semibold text-zinc-200 mb-2">
+            <h3 className="!text-lg font-semibold text-primary mb-2">
               {t('revenue')}
             </h3>
             {loading ? (
-              <p className="!text-3xl font-bold text-zinc-400">...</p>
+              <p className="!text-3xl font-bold text-muted">...</p>
             ) : (
-              <p className="!text-3xl font-bold !text-emerald-400">
+              <p className="!text-3xl font-bold text-success">
                 {stats.totalCA.toLocaleString('fr-FR', {
                   style: 'currency',
                   currency: 'EUR',
@@ -189,62 +190,62 @@ export default function DashboardPage() {
 
         {/* Recent Activity & Statistics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-            <h3 className="!text-lg font-semibold text-zinc-200 mb-4">
+          <div className="card p-6">
+            <h3 className="!text-lg font-semibold text-primary mb-4">
               {t('recent_activity')}
             </h3>
             {loading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-zinc-600 rounded-full animate-pulse"></div>
-                    <div className="h-4 bg-zinc-800 rounded w-32 animate-pulse"></div>
+                    <div className="w-2 h-2 bg-muted rounded-full animate-pulse"></div>
+                    <div className="h-4 bg-hover rounded w-32 animate-pulse"></div>
                   </div>
                 ))}
               </div>
             ) : recentActivities.length === 0 ? (
               <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-zinc-600 rounded-full"></div>
-                <p className="text-zinc-400">{t('no_recent_activity')}</p>
+                <div className="w-2 h-2 bg-muted rounded-full"></div>
+                <p className="text-muted">{t('no_recent_activity')}</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {recentActivities.slice(0, 3).map((activity, index) => (
                   <div key={index} className="flex items-center gap-3">
-                    <div className={`w-2 h-2 bg-${activity.color}-400 rounded-full`}></div>
-                    <p className="text-zinc-300">{activity.message}</p>
+                    <div className={`w-2 h-2 rounded-full ${activity.color === 'emerald' ? 'bg-success' : activity.color === 'blue' ? 'bg-info' : 'bg-accent'}`}></div>
+                    <p className="text-secondary">{activity.message}</p>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-            <h3 className="!text-lg font-semibold text-zinc-200 mb-4">
+          <div className="card p-6">
+            <h3 className="!text-lg font-semibold text-primary mb-4">
               {t('statistics')}
             </h3>
             {loading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="flex justify-between">
-                    <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse"></div>
-                    <div className="h-4 bg-zinc-800 rounded w-12 animate-pulse"></div>
+                    <div className="h-4 bg-hover rounded w-24 animate-pulse"></div>
+                    <div className="h-4 bg-hover rounded w-12 animate-pulse"></div>
                   </div>
                 ))}
               </div>
             ) : (
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <p className="text-zinc-400">{t('conversion_rate')}</p>
-                  <p className="!text-emerald-400 font-semibold">{stats.conversionRate}%</p>
+                  <p className="text-muted">{t('conversion_rate')}</p>
+                  <p className="text-success font-semibold">{stats.conversionRate}%</p>
                 </div>
                 <div className="flex justify-between">
-                  <p className="text-zinc-400">{t('active_clients')}</p>
-                  <p className="!text-blue-400 font-semibold">{stats.activeClients.length}</p>
+                  <p className="text-muted">{t('active_clients')}</p>
+                  <p className="text-info font-semibold">{stats.activeClients.length}</p>
                 </div>
                 <div className="flex justify-between">
-                  <p className="text-zinc-400">{t('projects_in_progress')}</p>
-                  <p className="!text-purple-400 font-semibold">{stats.inProgressProjects.length}</p>
+                  <p className="text-muted">{t('projects_in_progress')}</p>
+                  <p className="text-color-primary font-semibold">{stats.inProgressProjects.length}</p>
                 </div>
               </div>
             )}

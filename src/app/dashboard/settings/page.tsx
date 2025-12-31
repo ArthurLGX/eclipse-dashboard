@@ -70,11 +70,11 @@ export default function SettingsPage() {
 
   const Toggle = ({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) => (
     <label className="flex items-center justify-between cursor-pointer group">
-      <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">{label}</span>
+      <span className="text-sm text-secondary group-hover:text-primary transition-colors">{label}</span>
       <button
         type="button"
         onClick={() => onChange(!checked)}
-        className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-violet-500' : 'bg-zinc-700'}`}
+        className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-accent' : 'bg-muted'}`}
       >
         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${checked ? 'translate-x-5' : ''}`} />
       </button>
@@ -90,16 +90,16 @@ export default function SettingsPage() {
     >
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-white">
+        <h1 className="text-2xl font-semibold text-primary">
           {t('settings') || 'Paramètres'}
         </h1>
-        <p className="text-sm text-zinc-500 mt-1">
+        <p className="text-sm text-muted mt-1">
           {t('settings_description') || 'Gérez vos préférences et personnalisez votre expérience'}
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-wrap items-center gap-2 mb-6 pb-4 border-b border-zinc-800">
+      <div className="flex flex-wrap items-center gap-2 mb-6 pb-4 border-b border-default">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -107,8 +107,8 @@ export default function SettingsPage() {
             className={`
               flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all
               ${activeTab === tab.id
-                ? 'bg-violet-500 text-white'
-                : 'bg-zinc-800/50 text-zinc-400 hover:text-white hover:bg-zinc-800'
+                ? 'bg-accent text-accent-text'
+                : 'bg-muted text-secondary hover:text-primary hover:bg-hover'
               }
             `}
           >
@@ -138,7 +138,7 @@ export default function SettingsPage() {
                   </OptionButton>
                 ))}
               </div>
-              <p className="text-xs text-zinc-600 mt-2">
+              <p className="text-xs text-muted mt-2">
                 {t('current_theme') || 'Actuel'}: {resolvedTheme === 'dark' ? (t('theme_dark') || 'Sombre') : (t('theme_light') || 'Clair')}
               </p>
             </SettingsRow>
@@ -222,7 +222,7 @@ export default function SettingsPage() {
                     onClick={() => updateFormat({ dateFormat: fmt.value })}
                   >
                     <span>{fmt.label}</span>
-                    <span className="text-zinc-500 text-xs ml-1">({fmt.example})</span>
+                    <span className="text-muted text-xs ml-1">({fmt.example})</span>
                   </OptionButton>
                 ))}
               </div>
@@ -250,7 +250,7 @@ export default function SettingsPage() {
               title={t('timezone') || 'Fuseau horaire'} 
               description={t('timezone_desc') || 'Votre fuseau horaire actuel'}
             >
-              <p className="text-sm text-zinc-300 bg-zinc-800 px-3 py-2 rounded-lg inline-block">
+              <p className="text-sm text-primary bg-muted px-3 py-2 rounded-lg inline-block">
                 🌍 {preferences.format.timezone}
               </p>
             </SettingsRow>
@@ -302,10 +302,10 @@ export default function SettingsPage() {
                 type="text"
                 value={preferences.invoice.invoicePrefix}
                 onChange={(e) => updateInvoice({ invoicePrefix: e.target.value })}
-                className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white w-32 focus:border-violet-500 focus:outline-none"
+                className="input px-3 py-2 text-sm w-32"
                 placeholder="FAC-"
               />
-              <p className="text-xs text-zinc-500 mt-1">
+              <p className="text-xs text-muted mt-1">
                 {t('example') || 'Exemple'}: {preferences.invoice.invoicePrefix}001
               </p>
             </SettingsRow>
@@ -328,7 +328,7 @@ export default function SettingsPage() {
               <textarea
                 value={preferences.invoice.legalMentions}
                 onChange={(e) => updateInvoice({ legalMentions: e.target.value })}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-violet-500 focus:outline-none resize-none"
+                className="input w-full px-3 py-2 text-sm resize-none"
                 rows={3}
                 placeholder={t('legal_mentions_placeholder') || 'Ex: TVA non applicable, art. 293 B du CGI...'}
               />
@@ -353,7 +353,7 @@ export default function SettingsPage() {
                   );
                 })}
               </div>
-              <p className="text-xs text-zinc-600 mt-2">
+              <p className="text-xs text-muted mt-2">
                 {visibleLinks.length}/{CONFIGURABLE_LINKS.length} {t('links_visible') || 'liens affichés'}
               </p>
             </SettingsRow>
@@ -361,7 +361,7 @@ export default function SettingsPage() {
             <SettingsRow title={t('reset') || 'Réinitialiser'} description={t('reset_desc') || 'Restaurer les valeurs par défaut'}>
               <button
                 onClick={resetToDefault}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-white transition-all text-sm"
+                className="btn-ghost px-4 py-2 text-sm"
               >
                 <IconRefresh className="w-4 h-4" />
                 {t('reset_sidebar') || 'Afficher tous les liens'}
@@ -371,8 +371,8 @@ export default function SettingsPage() {
         )}
 
         {/* Footer info */}
-        <div className="pt-4 border-t border-zinc-800 text-xs text-zinc-500 flex items-center gap-2">
-          <span className="text-blue-400">💡</span>
+        <div className="pt-4 border-t border-default text-xs text-muted flex items-center gap-2">
+          <span className="text-info">💡</span>
           {t('settings_saved_locally') || 'Vos préférences sont enregistrées automatiquement.'}
         </div>
       </div>
@@ -383,10 +383,10 @@ export default function SettingsPage() {
 // Composant réutilisable pour une ligne de paramètre
 function SettingsRow({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 pb-6 border-b border-zinc-800 last:border-0">
+    <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 pb-6 border-b border-default last:border-0">
       <div className="md:w-48 flex-shrink-0">
-        <h3 className="text-sm font-medium text-white">{title}</h3>
-        <p className="text-xs text-zinc-500 mt-0.5">{description}</p>
+        <h3 className="text-sm font-medium text-primary">{title}</h3>
+        <p className="text-xs text-muted mt-0.5">{description}</p>
       </div>
       <div className="flex-1">{children}</div>
     </div>
@@ -401,8 +401,8 @@ function OptionButton({ children, selected, onClick }: { children: React.ReactNo
       className={`
         flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all
         ${selected
-          ? 'border-violet-500 bg-violet-500/10 text-violet-400'
-          : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-white'
+          ? 'border-accent bg-accent-light text-accent-text'
+          : 'border-default text-secondary hover:border-muted hover:text-primary'
         }
       `}
     >

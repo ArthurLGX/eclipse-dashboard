@@ -34,11 +34,11 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 border border-zinc-900 bg-gradient-to-b from-zinc-900 to-black rounded-xl">
-      <div className="bg-zinc-950 z-100 w-full">
+    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
+      <div className="auth-header z-100 w-full rounded-t-xl">
         <BackBtn />
       </div>
-      <div className="flex-1 flex items-center justify-center p-4 md:p-16 bg-gradient-to-b from-zinc-950 to-black">
+      <div className="flex-1 flex items-center justify-center p-4 md:p-16 auth-content rounded-b-xl">
         <div className="md:max-w-md max-w-full w-full">
           {!isSuccess ? (
             <>
@@ -48,13 +48,13 @@ export default function ForgotPassword() {
                 transition={{ duration: 0.6, ease: 'easeInOut' }}
                 className="!text-center mb-8"
               >
-                <div className="w-16 h-16 bg-violet-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <IconMail size={32} className="text-violet-400" />
+                <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
+                  <IconMail size={32} className="text-accent" />
                 </div>
-                <h1 className="!text-4xl font-bold text-zinc-200 mb-2">
+                <h1 className="!text-4xl font-bold auth-title mb-2">
                   Mot de passe oublié
                 </h1>
-                <p className="text-zinc-400">
+                <p className="auth-subtitle">
                   Entrez votre email pour recevoir un lien de réinitialisation
                 </p>
               </motion.div>
@@ -73,14 +73,14 @@ export default function ForgotPassword() {
                     value={email}
                     required
                     onChange={e => setEmail(e.target.value)}
-                    className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
+                    className="w-full p-3 auth-input rounded-lg transition-all duration-200"
                   />
                 </div>
 
                 <motion.button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-violet-500 hover:bg-violet-600 disabled:bg-violet-500/50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
                 >
                   {isLoading ? 'Envoi en cours...' : 'Envoyer le lien'}
                 </motion.button>
@@ -92,11 +92,11 @@ export default function ForgotPassword() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="!text-center mt-6"
               >
-                <p className="text-zinc-400">
+                <p className="text-secondary">
                   Vous vous souvenez de votre mot de passe ?{' '}
                   <Link
                     href="/login"
-                    className="!text-violet-400 hover:!text-violet-300 transition-colors duration-200"
+                    className="auth-link transition-colors duration-200"
                   >
                     Se connecter
                   </Link>
@@ -110,22 +110,22 @@ export default function ForgotPassword() {
               transition={{ duration: 0.5 }}
               className="!text-center"
             >
-              <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <IconCheck size={40} className="text-green-400" />
+              <div className="w-20 h-20 bg-success-light rounded-full flex items-center justify-center mx-auto mb-6">
+                <IconCheck size={40} className="text-success" />
               </div>
-              <h2 className="!text-2xl font-bold text-zinc-200 mb-4">
+              <h2 className="!text-2xl font-bold text-primary mb-4">
                 Email envoyé !
               </h2>
-              <p className="text-zinc-400 mb-6">
-                Si un compte existe avec l&apos;adresse <strong className="text-zinc-200">{email}</strong>,
+              <p className="text-secondary mb-6">
+                Si un compte existe avec l&apos;adresse <strong className="text-primary">{email}</strong>,
                 vous recevrez un email avec les instructions pour réinitialiser votre mot de passe.
               </p>
-              <p className="text-zinc-500 text-sm mb-8">
+              <p className="text-muted text-sm mb-8">
                 N&apos;oubliez pas de vérifier votre dossier spam.
               </p>
               <Link
                 href="/login"
-                className="inline-block bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                className="btn-secondary inline-block font-medium py-3 px-6 rounded-lg transition-colors duration-200"
               >
                 Retour à la connexion
               </Link>
@@ -136,4 +136,3 @@ export default function ForgotPassword() {
     </div>
   );
 }
-

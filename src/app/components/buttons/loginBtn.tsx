@@ -23,17 +23,13 @@ export const LoginBtn = ({ onClick }: LoginBtnProps) => {
         id="loginBtn"
         href="/login?type=login"
         onClick={onClick}
-        className={`group flex flex-row items-center justify-center gap-2 text-zinc-900 capitalize border border-zinc-700 rounded-full bg-zinc-200 hover:bg-zinc-950 hover:text-zinc-200 !px-4 !py-2  transition-all ease-in-out duration-300 lg:w-fit w-full  `}
+        className="btn-primary group flex flex-row items-center justify-center gap-2 capitalize rounded-full !px-4 !py-2 lg:w-fit w-full"
       >
-        <span
-          className={
-            'group-hover:!text-emerald-200 flex flex-row !text-xs lg:w-full w-fit items-center justify-center gap-2'
-          }
-        >
+        <span className="flex flex-row !text-xs lg:w-full w-fit items-center justify-center gap-2">
           {t('login')}
           <IconArrowRight
             size={16}
-            className="group-hover:!text-emerald-200 group-hover:-rotate-45 transition-all ease-in-out duration-300"
+            className="group-hover:-rotate-45 transition-all ease-in-out duration-300"
           />
         </span>
       </Link>

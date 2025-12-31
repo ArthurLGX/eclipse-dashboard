@@ -144,17 +144,17 @@ export default function NewProjectModal({
     <FloatingModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-3xl">
       {/* Header compact */}
       <div className="flex items-center gap-3 mb-5">
-        <div className="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
-          <IconFolderPlus size={22} className="text-emerald-400" />
+        <div className="p-2 bg-accent-light rounded-lg border border-accent">
+          <IconFolderPlus size={22} className="text-accent" />
         </div>
-        <h2 className="text-xl font-bold text-zinc-100">
+        <h2 className="text-xl font-bold text-primary">
           {t('new_project') || 'Nouveau projet'}
         </h2>
       </div>
 
       {/* Message d'erreur */}
       {error && (
-        <div className="mb-3 p-2.5 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+        <div className="mb-3 p-2.5 bg-danger-light border border-danger rounded-lg text-danger text-sm">
           ⚠️ {error}
         </div>
       )}
@@ -163,9 +163,9 @@ export default function NewProjectModal({
         {/* Titre, Type et Client - 3 colonnes */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconFolder size={14} className="text-zinc-500" />
-              {t('title') || 'Titre'} <span className="text-emerald-400">*</span>
+            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+              <IconFolder size={14} className="text-muted" />
+              {t('title') || 'Titre'} <span className="text-accent">*</span>
             </label>
             <input
               ref={titleInputRef}
@@ -174,22 +174,20 @@ export default function NewProjectModal({
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm"
             />
           </div>
 
           <div>
-            <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconCode size={14} className="text-zinc-500" />
-              {t('type') || 'Type'} <span className="text-emerald-400">*</span>
+            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+              <IconCode size={14} className="text-muted" />
+              {t('type') || 'Type'} <span className="text-accent">*</span>
             </label>
             <select
               required
               value={type}
               onChange={(e) => setType(e.target.value as CreateProjectData['type'])}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                cursor-pointer focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm cursor-pointer"
             >
               {PROJECT_TYPES.map(pt => (
                 <option key={pt.value} value={pt.value}>{pt.label}</option>
@@ -198,15 +196,14 @@ export default function NewProjectModal({
           </div>
 
           <div>
-            <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconUsers size={14} className="text-zinc-500" />
-              {t('client') || 'Client'} <span className="text-zinc-600">(optionnel)</span>
+            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+              <IconUsers size={14} className="text-muted" />
+              {t('client') || 'Client'} <span className="text-muted">(optionnel)</span>
             </label>
             <select
               value={selectedClient || ''}
               onChange={(e) => setSelectedClient(e.target.value ? Number(e.target.value) : undefined)}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                cursor-pointer focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm cursor-pointer"
             >
               <option value="">Non assigné</option>
               {clients.map(client => (
@@ -218,9 +215,9 @@ export default function NewProjectModal({
 
         {/* Description - compact */}
         <div>
-          <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-            <IconFileDescription size={14} className="text-zinc-500" />
-            {t('description') || 'Description'} <span className="text-emerald-400">*</span>
+          <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <IconFileDescription size={14} className="text-muted" />
+            {t('description') || 'Description'} <span className="text-accent">*</span>
           </label>
           <textarea
             placeholder="Objectifs, périmètre du projet..."
@@ -228,23 +225,21 @@ export default function NewProjectModal({
             rows={2}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-              placeholder:text-zinc-600 resize-none focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+            className="input w-full px-3 py-2 text-sm resize-none"
           />
         </div>
 
         {/* Statut et Dates - 3 colonnes compact */}
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className="text-zinc-400 text-xs mb-1.5 font-medium block">
-              {t('status') || 'Statut'} <span className="text-emerald-400">*</span>
+            <label className="text-secondary text-xs mb-1.5 font-medium block">
+              {t('status') || 'Statut'} <span className="text-accent">*</span>
             </label>
             <select
               required
               value={projectStatus}
               onChange={(e) => setProjectStatus(e.target.value as CreateProjectData['project_status'])}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                cursor-pointer focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm cursor-pointer"
             >
               {PROJECT_STATUS.map(ps => (
                 <option key={ps.value} value={ps.value}>{ps.label}</option>
@@ -253,24 +248,23 @@ export default function NewProjectModal({
           </div>
 
           <div>
-            <label className="flex items-center gap-1 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconCalendar size={12} className="text-zinc-500" />
-              Début <span className="text-emerald-400">*</span>
+            <label className="flex items-center gap-1 text-secondary text-xs mb-1.5 font-medium">
+              <IconCalendar size={12} className="text-muted" />
+              Début <span className="text-accent">*</span>
             </label>
             <input
               type="date"
               required
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm"
             />
           </div>
 
           <div>
-            <label className="flex items-center gap-1 text-zinc-400 text-xs mb-1.5 font-medium">
-              <IconCalendar size={12} className="text-zinc-500" />
-              Fin <span className="text-emerald-400">*</span>
+            <label className="flex items-center gap-1 text-secondary text-xs mb-1.5 font-medium">
+              <IconCalendar size={12} className="text-muted" />
+              Fin <span className="text-accent">*</span>
             </label>
             <input
               type="date"
@@ -278,18 +272,17 @@ export default function NewProjectModal({
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               min={startDate}
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-                focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              className="input w-full px-3 py-2 text-sm"
             />
           </div>
         </div>
 
         {/* Technologies - compact */}
-        <div className="p-3 bg-zinc-800/30 rounded-lg border border-zinc-700/50">
-          <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-2 font-medium">
-            <IconCode size={14} className="text-zinc-500" />
+        <div className="p-3 bg-muted rounded-lg border border-default">
+          <label className="flex items-center gap-1.5 text-secondary text-xs mb-2 font-medium">
+            <IconCode size={14} className="text-muted" />
             {t('technologies') || 'Technologies'} 
-            <span className="text-zinc-600">(optionnel)</span>
+            <span className="text-muted">(optionnel)</span>
           </label>
           <div className="flex flex-wrap gap-1.5">
             {TECHNOLOGIES.map(tech => (
@@ -299,8 +292,8 @@ export default function NewProjectModal({
                 onClick={() => toggleTechnology(tech)}
                 className={`px-2 py-1 rounded text-xs font-medium transition-colors
                   ${technologies.includes(tech)
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-zinc-700/50 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
+                    ? 'bg-accent text-accent-text'
+                    : 'bg-hover text-secondary hover:bg-card hover:text-primary'
                   }`}
               >
                 {tech}
@@ -311,17 +304,16 @@ export default function NewProjectModal({
 
         {/* Notes - compact */}
         <div>
-          <label className="flex items-center gap-1.5 text-zinc-400 text-xs mb-1.5 font-medium">
-            <IconNote size={14} className="text-zinc-500" />
-            {t('notes') || 'Notes'} <span className="text-zinc-600">(optionnel)</span>
+          <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <IconNote size={14} className="text-muted" />
+            {t('notes') || 'Notes'} <span className="text-muted">(optionnel)</span>
           </label>
           <input
             type="text"
             placeholder="Notes internes..."
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 
-              placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+            className="input w-full px-3 py-2 text-sm"
           />
         </div>
 
@@ -331,22 +323,14 @@ export default function NewProjectModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="flex-1 bg-zinc-800 text-zinc-300 px-4 py-2.5 rounded-lg text-sm
-              hover:bg-zinc-700 transition-colors font-medium
-              disabled:opacity-50 disabled:cursor-not-allowed border border-zinc-700"
+            className="btn-ghost flex-1 px-4 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t('cancel') || 'Annuler'}
           </button>
           <button
             type="submit"
             disabled={loading || !title || !description || !startDate || !endDate}
-            className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold
-              transition-colors flex items-center justify-center gap-2
-              disabled:opacity-50 disabled:cursor-not-allowed
-              ${success 
-                ? 'bg-emerald-500 text-black' 
-                : 'bg-emerald-500 text-black hover:bg-emerald-400'
-              }`}
+            className="btn-primary flex-1 px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
@@ -370,4 +354,3 @@ export default function NewProjectModal({
     </FloatingModal>
   );
 }
-

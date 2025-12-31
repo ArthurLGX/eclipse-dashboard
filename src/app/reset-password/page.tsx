@@ -91,29 +91,29 @@ function ResetPasswordContent() {
   // Si pas de code, afficher un message d'erreur
   if (!code) {
     return (
-      <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 border border-zinc-900 bg-gradient-to-b from-zinc-900 to-black rounded-xl">
-        <div className="bg-zinc-950 z-100 w-full">
+      <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
+        <div className="auth-header z-100 w-full rounded-t-xl">
           <BackBtn />
         </div>
-        <div className="flex-1 flex items-center justify-center p-4 md:p-16 bg-gradient-to-b from-zinc-950 to-black">
+        <div className="flex-1 flex items-center justify-center p-4 md:p-16 auth-content rounded-b-xl">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="!text-center max-w-md"
           >
-            <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <IconAlertTriangle size={40} className="text-red-400" />
+            <div className="w-20 h-20 bg-danger-light rounded-full flex items-center justify-center mx-auto mb-6">
+              <IconAlertTriangle size={40} className="text-danger" />
             </div>
-            <h2 className="!text-2xl font-bold text-zinc-200 mb-4">
+            <h2 className="!text-2xl font-bold text-primary mb-4">
               Lien invalide
             </h2>
-            <p className="text-zinc-400 mb-6">
+            <p className="text-secondary mb-6">
               Ce lien de réinitialisation est invalide ou a expiré.
               Veuillez demander un nouveau lien.
             </p>
             <Link
               href="/forgot-password"
-              className="inline-block bg-violet-500 hover:bg-violet-600 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+              className="btn-primary inline-block font-medium py-3 px-6 rounded-lg transition-colors duration-200"
             >
               Demander un nouveau lien
             </Link>
@@ -124,11 +124,11 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 border border-zinc-900 bg-gradient-to-b from-zinc-900 to-black rounded-xl">
-      <div className="bg-zinc-950 z-100 w-full">
+    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
+      <div className="auth-header z-100 w-full rounded-t-xl">
         <BackBtn />
       </div>
-      <div className="flex-1 flex items-center justify-center p-4 md:p-16 bg-gradient-to-b from-zinc-950 to-black">
+      <div className="flex-1 flex items-center justify-center p-4 md:p-16 auth-content rounded-b-xl">
         <div className="md:max-w-md max-w-full w-full">
           {!isSuccess ? (
             <>
@@ -138,13 +138,13 @@ function ResetPasswordContent() {
                 transition={{ duration: 0.6, ease: 'easeInOut' }}
                 className="!text-center mb-8"
               >
-                <div className="w-16 h-16 bg-violet-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <IconLock size={32} className="text-violet-400" />
+                <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
+                  <IconLock size={32} className="text-accent" />
                 </div>
-                <h1 className="!text-4xl font-bold text-zinc-200 mb-2">
+                <h1 className="!text-4xl font-bold auth-title mb-2">
                   Nouveau mot de passe
                 </h1>
-                <p className="text-zinc-400">
+                <p className="auth-subtitle">
                   Créez un nouveau mot de passe sécurisé
                 </p>
               </motion.div>
@@ -167,18 +167,18 @@ function ResetPasswordContent() {
                         setPassword(e.target.value);
                         setPasswordError(validatePassword(e.target.value));
                       }}
-                      className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
+                      className="w-full p-3 pr-10 auth-input rounded-lg transition-all duration-200"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-primary transition-colors"
                     >
                       {showPassword ? '👁️' : '👁️‍🗨️'}
                     </button>
                   </div>
                   {passwordError && (
-                    <p className="!text-red-400 !text-xs">{passwordError}</p>
+                    <p className="text-danger !text-xs">{passwordError}</p>
                   )}
                 </div>
 
@@ -197,25 +197,25 @@ function ResetPasswordContent() {
                           setConfirmError('');
                         }
                       }}
-                      className="w-full p-3 pr-10 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
+                      className="w-full p-3 pr-10 auth-input rounded-lg transition-all duration-200"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-primary transition-colors"
                     >
                       {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                     </button>
                   </div>
                   {confirmError && (
-                    <p className="!text-red-400 !text-xs">{confirmError}</p>
+                    <p className="text-danger !text-xs">{confirmError}</p>
                   )}
                 </div>
 
                 <motion.button
                   type="submit"
                   disabled={isLoading || !!passwordError || !!confirmError}
-                  className="w-full bg-violet-500 hover:bg-violet-600 disabled:bg-violet-500/50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
                 >
                   {isLoading ? 'Réinitialisation...' : 'Réinitialiser le mot de passe'}
                 </motion.button>
@@ -228,19 +228,19 @@ function ResetPasswordContent() {
               transition={{ duration: 0.5 }}
               className="!text-center"
             >
-              <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <IconCheck size={40} className="text-green-400" />
+              <div className="w-20 h-20 bg-success-light rounded-full flex items-center justify-center mx-auto mb-6">
+                <IconCheck size={40} className="text-success" />
               </div>
-              <h2 className="!text-2xl font-bold text-zinc-200 mb-4">
+              <h2 className="!text-2xl font-bold text-primary mb-4">
                 Mot de passe réinitialisé !
               </h2>
-              <p className="text-zinc-400 mb-6">
+              <p className="text-secondary mb-6">
                 Votre mot de passe a été modifié avec succès.
                 Vous allez être redirigé vers la page de connexion...
               </p>
               <Link
                 href="/login"
-                className="inline-block bg-violet-500 hover:bg-violet-600 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                className="btn-primary inline-block font-medium py-3 px-6 rounded-lg transition-colors duration-200"
               >
                 Se connecter maintenant
               </Link>
@@ -254,18 +254,18 @@ function ResetPasswordContent() {
 
 function ResetPasswordLoading() {
   return (
-    <div className="flex h-fit md:w-3/4 w-full !my-32 border border-zinc-900 bg-gradient-to-b from-zinc-950 to-black rounded-xl">
+    <div className="flex h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
       <div className="flex-1 flex items-center justify-center p-16">
         <div className="w-full max-w-md">
           <div className="!text-center mb-8">
-            <div className="w-16 h-16 bg-zinc-800 rounded-full mx-auto mb-4 animate-pulse"></div>
-            <div className="h-8 bg-zinc-800 rounded w-48 mx-auto mb-2 animate-pulse"></div>
-            <div className="h-4 bg-zinc-800 rounded w-32 mx-auto animate-pulse"></div>
+            <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-4 animate-pulse"></div>
+            <div className="h-8 bg-muted rounded w-48 mx-auto mb-2 animate-pulse"></div>
+            <div className="h-4 bg-muted rounded w-32 mx-auto animate-pulse"></div>
           </div>
           <div className="space-y-6">
-            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
-            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
-            <div className="h-12 bg-zinc-800 rounded animate-pulse"></div>
+            <div className="h-12 bg-muted rounded animate-pulse"></div>
+            <div className="h-12 bg-muted rounded animate-pulse"></div>
+            <div className="h-12 bg-muted rounded animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -280,4 +280,3 @@ export default function ResetPassword() {
     </Suspense>
   );
 }
-

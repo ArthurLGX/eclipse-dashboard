@@ -16,17 +16,21 @@ import {
   IconReceipt2,
 } from '@tabler/icons-react';
 import LanguageToggle from './LanguageToggle';
+import ThemeToggle from './ThemeToggle';
 import { useRouter } from 'next/navigation';
 import { RegisterBtn } from '@/app/components/buttons/registerBtn';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCurrentUser } from '@/hooks/useApi';
+import { useTheme } from '@/app/context/ThemeContext';
 
 export const Header = () => {
   const { t } = useLanguage();
+  const { resolvedTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const { authenticated, logout, user } = useAuth();
   const pathname = usePathname();
+  const isDark = resolvedTheme === 'dark';
 
   // Hook pour l'utilisateur avec profile_picture
   const { data: currentUserData } = useCurrentUser(user?.id);
@@ -89,7 +93,9 @@ export const Header = () => {
           pathname.startsWith('/dashboard') ? 'lg:hidden flex' : 'flex'
         } items-center top-8 left-1/2 -translate-x-1/2 flex-col w-full h-fit items-center justify-center`}
       >
-        <header className="z-[199] flex bg-zinc-900/50 border border-zinc-800 h-fit flex-row w-11/12 backdrop-blur-xl !p-4 rounded-full gap-16 items-center justify-between !text-white">
+        <header 
+          className="z-[199] flex h-fit flex-row w-11/12 backdrop-blur-xl !p-4 rounded-full gap-16 items-center justify-between bg-card border border-default"
+        >
           <div className="flex items-center gap-4 w-fit justify-center">
             <Link href="/" className="flex flex-row w-full gap-2 items-center">
               <Image
@@ -98,7 +104,7 @@ export const Header = () => {
                 width={40}
                 height={40}
               />
-              <span className="sm:flex hidden !text-xs text-zinc-400 w-full !font-normal">
+              <span className="sm:flex hidden !text-xs text-muted w-full !font-normal">
                 Eclipse Studio Dashboard
               </span>
             </Link>
@@ -118,20 +124,21 @@ export const Header = () => {
                     delay: 0.15 * index,
                     ease: 'easeInOut',
                   }}
-                  className={`!flex !flex-row gap-1 items-center justify-center ${
-                    isActive(link.path)
-                      ? '!text-emerald-200 items-center justify-center gap-2 !px-2 border bg-emerald-300/20 border-emerald-200 rounded-full'
-                      : 'text-zinc-200'
-                  } hover:!text-emerald-200 capitalize !text-sm`}
+                  className={`nav-item !flex !flex-row gap-1 items-center justify-center capitalize !text-sm ${
+                    isActive(link.path) ? 'active' : ''
+                  }`}
                   key={link.name}
                   onClick={() => {
                     setIsMenuOpen(false);
                   }}
                 >
-                  <Link href={link.path}>{link.name}</Link>
+                  <Link className={`${isActive(link.path) ? 'text-primary' : 'text-secondary'}`} href={link.path}>{link.name}</Link>
                 </motion.li>
               ))}
-              <LanguageToggle />
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <LanguageToggle />
+              </div>
             </ul>
             {!authenticated ? (
               <div
@@ -158,9 +165,7 @@ export const Header = () => {
                       onClick={() => {
                         router.push('/dashboard/profile/personal-information');
                       }}
-                      className={
-                        'flex w-10 h-10 cursor-pointer hover:scale-[1.05] hover:border-emerald-200 transition-all ease-in-out duration-300 border-orange-300 border-2 rounded-full relative overflow-hidden'
-                      }
+                      className="flex w-10 h-10 cursor-pointer hover:scale-[1.05] hover:border-accent transition-all ease-in-out duration-300 border-warning border-2 rounded-full relative overflow-hidden"
                     >
                       <Image
                         alt={'user profile picture'}
@@ -175,18 +180,14 @@ export const Header = () => {
                         router.push('/dashboard/profile/personal-information');
                       }}
                       stroke={1}
-                      className={
-                        'flex w-8 h-8 cursor-pointer hover:scale-[1.05] hover:border-zinc-200 transition-all ease-in-out duration-300 border-emerald-300 border-2 rounded-full relative overflow-hidden'
-                      }
+                      className="flex w-8 h-8 cursor-pointer hover:scale-[1.05] hover:border-primary transition-all ease-in-out duration-300 border-success border-2 rounded-full relative overflow-hidden"
                       size={40}
                     />
                   )}
                 </div>
                 <IconLogout
                   onClick={handleLogout}
-                  className={
-                    'group-hover:!text-emerald-200 cursor-pointer hover:scale-[1.1] text-zinc-200 transition-all ease-in-out duration-300 group-hover:!-translate-y-[5px]'
-                  }
+                  className="cursor-pointer hover:scale-[1.1] text-secondary hover:text-accent transition-all ease-in-out duration-300"
                   size={24}
                 />
               </div>
@@ -197,7 +198,7 @@ export const Header = () => {
           <div className="lg:hidden">
             <button
               onClick={toggleMenu}
-              className="p-2 text-zinc-200 hover:!text-emerald-200 transition-colors"
+              className="p-2 text-secondary hover:text-accent transition-colors"
             >
               {isMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
             </button>
@@ -233,14 +234,14 @@ export const Header = () => {
                 damping: 30,
                 duration: 0.5,
               }}
-              className="absolute flex flex-col justify-center items-center bottom-0 left-0 right-0 bg-zinc-900/50 backdrop-blur-xl border-t border-zinc-800 h-3/4 z-[1]"
+              className="absolute flex flex-col justify-center items-center bottom-0 left-0 right-0 bg-card backdrop-blur-xl border-t border-default h-3/4 z-[1]"
             >
               <div className="flex flex-col h-full w-11/12 justify-center gap-8">
                 {/* Close button */}
                 <div className="absolute top-4 right-4">
                   <button
                     onClick={closeMenu}
-                    className="p-2 text-zinc-400 hover:!text-white transition-colors"
+                    className="p-2 text-muted hover:text-primary transition-colors"
                   >
                     <IconX size={24} />
                   </button>
@@ -261,11 +262,7 @@ export const Header = () => {
                       <Link
                         href={link.path}
                         onClick={closeMenu}
-                        className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
-                          isActive(link.path)
-                            ? 'bg-emerald-200/10 !text-emerald-200 border border-emerald-200/20'
-                            : 'text-zinc-200 hover:bg-zinc-800/80 hover:!text-emerald-200'
-                        }`}
+                        className={`nav-item flex items-center gap-3 p-3 ${isActive(link.path) ? 'active' : ''}`}
                       >
                         {link.icon}
                         <span className="!text-lg capitalize">{link.name}</span>
@@ -274,13 +271,14 @@ export const Header = () => {
                   ))}
                 </nav>
 
-                {/* Language Toggle */}
+                {/* Theme & Language Toggle */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.4 }}
-                  className="flex justify-center"
+                  className="flex justify-center gap-3"
                 >
+                  <ThemeToggle />
                   <LanguageToggle />
                 </motion.div>
 

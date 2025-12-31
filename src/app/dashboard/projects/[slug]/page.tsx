@@ -87,15 +87,15 @@ export default function ProjectDetailsPage() {
   const [bannerColor, setBannerColor] = useState<string>('auto');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Options de couleurs de bannière
+  // Options de couleurs de bannière - utilise les classes CSS définies dans globals.css
   const BANNER_COLORS = [
-    { value: 'auto', label: 'Automatique (selon statut)', gradient: '' },
-    { value: 'blue', label: 'Bleu', gradient: 'from-blue-950/80 via-zinc-900 to-zinc-900' },
-    { value: 'emerald', label: 'Émeraude', gradient: 'from-emerald-950/60 via-zinc-900 to-zinc-900' },
-    { value: 'amber', label: 'Ambre', gradient: 'from-amber-950/60 via-zinc-900 to-zinc-900' },
-    { value: 'purple', label: 'Violet', gradient: 'from-purple-950/60 via-zinc-900 to-zinc-900' },
-    { value: 'rose', label: 'Rose', gradient: 'from-rose-950/60 via-zinc-900 to-zinc-900' },
-    { value: 'cyan', label: 'Cyan', gradient: 'from-cyan-950/60 via-zinc-900 to-zinc-900' },
+    { value: 'auto', label: 'Automatique (selon statut)', className: '' },
+    { value: 'blue', label: 'Bleu', className: 'banner-blue' },
+    { value: 'emerald', label: 'Émeraude', className: 'banner-emerald' },
+    { value: 'amber', label: 'Ambre', className: 'banner-amber' },
+    { value: 'purple', label: 'Violet', className: 'banner-purple' },
+    { value: 'rose', label: 'Rose', className: 'banner-rose' },
+    { value: 'cyan', label: 'Cyan', className: 'banner-cyan' },
   ];
 
   // Initialiser les valeurs d'édition quand le projet change
@@ -170,9 +170,9 @@ export default function ProjectDetailsPage() {
   const getStatusConfig = (status: string) => {
     const config = PROJECT_STATUS.find(s => s.value === status) || PROJECT_STATUS[0];
     const colorMap: Record<string, { bg: string; text: string; border: string }> = {
-      blue: { bg: 'bg-blue-500/15', text: 'text-blue-400', border: 'border-blue-500/30' },
-      amber: { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-500/30' },
-      emerald: { bg: 'bg-emerald-500/15', text: 'text-emerald-400', border: 'border-emerald-500/30' },
+      blue: { bg: 'bg-info-light', text: 'text-info', border: 'border-info' },
+      amber: { bg: 'bg-warning-light', text: 'text-warning', border: 'border-warning' },
+      emerald: { bg: 'bg-success-light', text: 'text-success', border: 'border-success' },
     };
     return { ...config, colors: colorMap[config.color] };
   };
@@ -237,8 +237,8 @@ export default function ProjectDetailsPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
-          <p className="text-zinc-500">Chargement du projet...</p>
+          <div className="w-12 h-12 border-2 border-success/30 border-t-success rounded-full animate-spin" />
+          <p className="text-muted">Chargement du projet...</p>
         </div>
       </div>
     );
@@ -247,14 +247,14 @@ export default function ProjectDetailsPage() {
   if (!project) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <div className="w-20 h-20 bg-zinc-800/50 rounded-full flex items-center justify-center mb-2">
-          <IconFileText className="w-10 h-10 text-zinc-600" />
+        <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-2">
+          <IconFileText className="w-10 h-10 text-muted" />
         </div>
-        <h1 className="text-2xl font-semibold text-zinc-200">Projet non trouvé</h1>
-        <p className="text-zinc-500">Ce projet n&apos;existe pas ou a été supprimé</p>
+        <h1 className="text-2xl font-semibold text-primary">Projet non trouvé</h1>
+        <p className="text-muted">Ce projet n&apos;existe pas ou a été supprimé</p>
         <Link
           href="/dashboard/projects"
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors mt-2"
+          className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors mt-2"
         >
           <IconArrowLeft className="w-4 h-4" />
           Retour aux projets
@@ -267,16 +267,16 @@ export default function ProjectDetailsPage() {
   const StatusIcon = statusConfig.icon;
   const canEdit = isOwner || collaborators.some(c => c.user?.id === user?.id && c.permission === 'edit');
 
-  // Couleur de bannière - personnalisée ou basée sur le statut
-  const statusGradients: Record<string, string> = {
-    planning: 'from-blue-950/80 via-zinc-900 to-zinc-900',
-    in_progress: 'from-amber-950/60 via-zinc-900 to-zinc-900',
-    completed: 'from-emerald-950/60 via-zinc-900 to-zinc-900',
+  // Couleur de bannière - personnalisée ou basée sur le statut (utilise les classes CSS)
+  const statusBannerClasses: Record<string, string> = {
+    planning: 'banner-blue',
+    in_progress: 'banner-amber',
+    completed: 'banner-emerald',
   };
   
-  const currentBannerGradient = bannerColor === 'auto' 
-    ? statusGradients[selectedStatus] || statusGradients.planning
-    : BANNER_COLORS.find(c => c.value === bannerColor)?.gradient || statusGradients.planning;
+  const currentBannerClass = bannerColor === 'auto' 
+    ? statusBannerClasses[selectedStatus] || statusBannerClasses.planning
+    : BANNER_COLORS.find(c => c.value === bannerColor)?.className || statusBannerClasses.planning;
 
   return (
     <motion.div
@@ -286,7 +286,7 @@ export default function ProjectDetailsPage() {
       className="min-h-screen"
     >
       {/* Hero Header - Couleur personnalisée selon le statut */}
-      <div className={`relative bg-gradient-to-br ${currentBannerGradient} border-b border-zinc-800`}>
+      <div className={`relative ${currentBannerClass} border-b border-default`}>
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-[0.03]">
           <div className="absolute inset-0" style={{
@@ -300,7 +300,7 @@ export default function ProjectDetailsPage() {
           <div className="flex items-center justify-between mb-5">
             <Link
               href="/dashboard/projects"
-              className="flex items-center gap-2 text-zinc-400 hover:text-zinc-200 transition-colors group"
+              className="flex items-center gap-2 text-secondary hover:text-primary transition-colors group"
             >
               <IconArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               <span className="text-sm">Projets</span>
@@ -311,7 +311,7 @@ export default function ProjectDetailsPage() {
               {!isEditMode && (
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="flex items-center gap-2 px-3 py-2 bg-zinc-800/60 backdrop-blur hover:bg-zinc-700/80 text-zinc-300 rounded-lg transition-colors text-sm border border-zinc-700/50"
+                  className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
                 >
                   <IconShare className="w-4 h-4" />
                   <span className="hidden sm:inline">Partager</span>
@@ -328,7 +328,7 @@ export default function ProjectDetailsPage() {
                           setIsEditMode(false);
                           setBannerColor('auto');
                         }}
-                        className="flex items-center gap-2 px-3 py-2 bg-zinc-800/60 backdrop-blur hover:bg-zinc-700/80 text-zinc-300 rounded-lg transition-colors text-sm border border-zinc-700/50"
+                        className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
                       >
                         <IconX className="w-4 h-4" />
                         <span className="hidden sm:inline">Annuler</span>
@@ -337,7 +337,7 @@ export default function ProjectDetailsPage() {
                       <button
                         onClick={() => formRef.current?.requestSubmit()}
                         disabled={isSaving}
-                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-sm border border-emerald-500 disabled:opacity-50"
+                        className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors text-sm disabled:opacity-50"
                       >
                         {isSaving ? (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -350,7 +350,7 @@ export default function ProjectDetailsPage() {
                   ) : (
                     <button
                       onClick={() => setIsEditMode(true)}
-                      className="flex items-center gap-2 px-3 py-2 bg-zinc-800/60 backdrop-blur hover:bg-zinc-700/80 text-zinc-300 rounded-lg transition-colors text-sm border border-zinc-700/50"
+                      className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
                     >
                       <IconEdit className="w-4 h-4" />
                       <span className="hidden sm:inline">Modifier</span>
@@ -375,11 +375,11 @@ export default function ProjectDetailsPage() {
                     type="text"
                     name="title"
                     defaultValue={project.title}
-                    className="text-xl md:text-2xl font-bold bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-1.5 text-zinc-100 focus:outline-none focus:border-emerald-500 w-full max-w-xl"
+                    className="text-xl md:text-2xl font-bold input px-3 py-1.5 w-full max-w-xl"
                   />
                 </form>
               ) : (
-                <h1 className="text-xl md:text-2xl font-bold text-zinc-100 truncate">{project.title}</h1>
+                <h1 className="text-xl md:text-2xl font-bold text-primary truncate">{project.title}</h1>
               )}
             </div>
 
@@ -390,7 +390,7 @@ export default function ProjectDetailsPage() {
                   <select
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-1.5 text-zinc-300 text-sm focus:outline-none focus:border-emerald-500"
+                    className="input px-3 py-1.5 text-sm"
                   >
                     {PROJECT_STATUS.map(status => (
                       <option key={status.value} value={status.value}>{status.label}</option>
@@ -399,18 +399,18 @@ export default function ProjectDetailsPage() {
                   <select
                     value={selectedType}
                     onChange={(e) => setSelectedType(e.target.value)}
-                    className="bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-1.5 text-zinc-300 text-sm focus:outline-none focus:border-emerald-500"
+                    className="input px-3 py-1.5 text-sm"
                   >
                     {PROJECT_TYPES.map(type => (
                       <option key={type.value} value={type.value}>{type.label}</option>
                     ))}
                   </select>
                   <div className="flex items-center gap-2">
-                    <span className="text-zinc-500 text-sm">Couleur :</span>
+                    <span className="text-muted text-sm">Couleur :</span>
                     <select
                       value={bannerColor}
                       onChange={(e) => setBannerColor(e.target.value)}
-                      className="bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-1.5 text-zinc-300 text-sm focus:outline-none focus:border-emerald-500"
+                      className="input px-3 py-1.5 text-sm"
                     >
                       {BANNER_COLORS.map(color => (
                         <option key={color.value} value={color.value}>{color.label}</option>
@@ -424,14 +424,14 @@ export default function ProjectDetailsPage() {
                     <StatusIcon className="w-3.5 h-3.5" />
                     {statusConfig.label}
                   </span>
-                  <span className="text-zinc-400 text-sm flex items-center gap-1.5">
+                  <span className="text-secondary text-sm flex items-center gap-1.5">
                     <ProjectTypeIcon type={project.type} className="w-4 h-4" />
                     {PROJECT_TYPES.find(t => t.value === project.type)?.label}
                   </span>
                   {project.client && (
                     <Link 
                       href={`/dashboard/clients/${generateClientSlug(project.client.name)}`}
-                      className="text-zinc-400 hover:text-emerald-400 text-sm flex items-center gap-1.5 transition-colors"
+                      className="text-secondary hover:text-accent text-sm flex items-center gap-1.5 transition-colors"
                     >
                       <IconBuilding className="w-4 h-4" />
                       {project.client.name}
@@ -443,54 +443,54 @@ export default function ProjectDetailsPage() {
 
             {/* Row 3: Quick Stats Cards */}
             <div className="flex gap-3 flex-wrap md:flex-nowrap mt-2">
-              <div className="flex-1 min-w-[120px] bg-zinc-800/40 backdrop-blur rounded-xl p-4 border border-zinc-700/50">
-                <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
+                <div className="flex items-center gap-2 text-muted text-xs mb-1">
                   <IconCurrencyEuro className="w-3.5 h-3.5" />
                   Facturé
                 </div>
-                <p className="text-xl font-bold text-zinc-100">
+                <p className="text-xl font-bold text-primary">
                   {totalFactures.toLocaleString('fr-FR')} €
                 </p>
-                <p className="text-xs text-emerald-400">
+                <p className="text-xs text-success">
                   {paidFactures.toLocaleString('fr-FR')} € payé
                 </p>
               </div>
               
-              <div className="flex-1 min-w-[120px] bg-zinc-800/40 backdrop-blur rounded-xl p-4 border border-zinc-700/50">
-                <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
+                <div className="flex items-center gap-2 text-muted text-xs mb-1">
                   <IconFileInvoice className="w-3.5 h-3.5" />
                   Factures
                 </div>
-                <p className="text-xl font-bold text-zinc-100">{factures.length}</p>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xl font-bold text-primary">{factures.length}</p>
+                <p className="text-xs text-muted">
                   {factures.filter(f => f.facture_status === 'paid').length} payées
                 </p>
               </div>
 
-              <div className="flex-1 min-w-[120px] bg-zinc-800/40 backdrop-blur rounded-xl p-4 border border-zinc-700/50">
-                <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
+                <div className="flex items-center gap-2 text-muted text-xs mb-1">
                   <IconListCheck className="w-3.5 h-3.5" />
                   Tâches
                 </div>
                 <div className="flex items-center gap-2">
                   {pendingTasks > 0 && (
-<p className="text-xl font-bold !text-orange-400">{pendingTasks} {t('tasks_pending')}</p>
+                    <p className="text-xl font-bold text-warning">{pendingTasks} {t('tasks_pending')}</p>
                   )}
                 </div>
-                <p className="text-xs text-emerald-400">
+                <p className="text-xs text-success">
                   {completedTasks} {t('tasks_completed')} • {tasksProgress}% {t('progress')}
                 </p>
               </div>
               
-              <div className="flex-1 min-w-[120px] bg-zinc-800/40 backdrop-blur rounded-xl p-4 border border-zinc-700/50">
-                <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
+                <div className="flex items-center gap-2 text-muted text-xs mb-1">
                   <IconCalendarEvent className="w-3.5 h-3.5" />
                   Échéance
                 </div>
-                <p className={`text-xl font-bold ${daysRemaining !== null && daysRemaining < 0 ? 'text-red-400' : daysRemaining !== null && daysRemaining < 7 ? 'text-amber-400' : 'text-zinc-100'}`}>
+                <p className={`text-xl font-bold ${daysRemaining !== null && daysRemaining < 0 ? 'text-danger' : daysRemaining !== null && daysRemaining < 7 ? 'text-warning' : 'text-primary'}`}>
                   {daysRemaining !== null ? (daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : `${daysRemaining}j`) : '—'}
                 </p>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-muted">
                   {daysRemaining !== null && daysRemaining < 0 ? 'en retard' : 'restants'}
                 </p>
               </div>
@@ -509,8 +509,8 @@ export default function ProjectDetailsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-t-lg transition-colors ${
                   activeTab === tab.id
-                    ? 'bg-zinc-950 text-emerald-400 border-t border-x border-zinc-700'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                    ? 'bg-page text-accent border-t border-x border-default'
+                    : 'text-secondary hover:text-primary hover:bg-hover'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -518,10 +518,10 @@ export default function ProjectDetailsPage() {
                 {tab.count !== undefined && tab.count > 0 && (
                   <span className={`px-1.5 py-0.5 text-xs rounded-full font-bold ${
                     tab.isOrange 
-                      ? 'bg-amber-500 text-white' 
+                      ? 'bg-warning text-accent-text' 
                       : activeTab === tab.id 
-                        ? 'bg-emerald-500/20 text-emerald-400' 
-                        : 'bg-zinc-700 text-zinc-400'
+                        ? 'bg-accent-light text-accent' 
+                        : 'bg-muted text-secondary'
                   }`}>
                     {tab.count}
                   </span>
@@ -547,9 +547,9 @@ export default function ProjectDetailsPage() {
                   className="space-y-6"
                 >
                   {/* Description */}
-                  <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-                    <h2 className="text-lg font-semibold text-zinc-200 mb-4 flex items-center gap-2">
-                      <IconFileText className="w-5 h-5 text-emerald-400" />
+                  <div className="card p-6">
+                    <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
+                      <IconFileText className="w-5 h-5 text-success" />
                       Description
                     </h2>
                     {isEditMode ? (
@@ -559,12 +559,12 @@ export default function ProjectDetailsPage() {
                         defaultValue={project.description}
                         rows={5}
                         placeholder="Décrivez votre projet..."
-                        className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-4 py-3 text-zinc-300 focus:outline-none focus:border-emerald-500 resize-none"
+                        className="w-full input px-4 py-3 resize-none"
                       />
                     ) : (
-                      <p className="text-zinc-400 leading-relaxed whitespace-pre-wrap">
+                      <p className="text-secondary leading-relaxed whitespace-pre-wrap">
                         {project.description || (
-                          <span className="italic text-zinc-600">Aucune description</span>
+                          <span className="italic text-muted">Aucune description</span>
                         )}
                       </p>
                     )}
@@ -572,9 +572,9 @@ export default function ProjectDetailsPage() {
 
                   {/* Notes */}
                   {(project.notes || isEditMode) && (
-                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-                      <h2 className="text-lg font-semibold text-zinc-200 mb-4 flex items-center gap-2">
-                        <IconFileText className="w-5 h-5 text-blue-400" />
+                    <div className="card p-6">
+                      <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
+                        <IconFileText className="w-5 h-5 text-info" />
                         Notes internes
                       </h2>
                       {isEditMode ? (
@@ -584,10 +584,10 @@ export default function ProjectDetailsPage() {
                           defaultValue={project.notes || ''}
                           rows={3}
                           placeholder="Notes privées..."
-                          className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-4 py-3 text-zinc-300 focus:outline-none focus:border-emerald-500 resize-none"
+                          className="w-full input px-4 py-3 resize-none"
                         />
                       ) : (
-                        <p className="text-zinc-400 leading-relaxed whitespace-pre-wrap">
+                        <p className="text-secondary leading-relaxed whitespace-pre-wrap">
                           {project.notes}
                         </p>
                       )}
@@ -600,14 +600,14 @@ export default function ProjectDetailsPage() {
                       <button
                         type="button"
                         onClick={() => setIsEditMode(false)}
-                        className="px-4 py-2 text-zinc-400 hover:text-zinc-200 transition-colors"
+                        className="px-4 py-2 text-secondary hover:text-primary transition-colors"
                       >
                         Annuler
                       </button>
                       <button
                         type="submit"
                         form="edit-form"
-                        className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors font-medium"
+                        className="px-6 py-2 btn-primary rounded-lg transition-colors font-medium"
                       >
                         Enregistrer les modifications
                       </button>
@@ -623,7 +623,7 @@ export default function ProjectDetailsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+                  <div className="card p-6">
                     <ProjectTasks
                       projectDocumentId={project.documentId}
                       userId={user?.id || 0}
@@ -640,15 +640,15 @@ export default function ProjectDetailsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+                  <div className="card p-6">
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-lg font-semibold text-zinc-200 flex items-center gap-2">
-                        <IconFileInvoice className="w-5 h-5 text-amber-400" />
+                      <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+                        <IconFileInvoice className="w-5 h-5 text-warning" />
                         Factures du projet
                       </h2>
                       <Link
                         href={`/dashboard/factures/ajouter?projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}`}
-                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-sm"
+                        className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors text-sm"
                       >
                         <IconPlus className="w-4 h-4" />
                         Nouvelle facture
@@ -657,7 +657,7 @@ export default function ProjectDetailsPage() {
 
                     {loadingFactures ? (
                       <div className="flex items-center justify-center py-12">
-                        <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+                        <div className="w-8 h-8 border-2 border-success/30 border-t-success rounded-full animate-spin" />
                       </div>
                     ) : factures.length > 0 ? (
                       <div className="space-y-3">
@@ -665,38 +665,38 @@ export default function ProjectDetailsPage() {
                           <Link
                             key={facture.documentId}
                             href={`/dashboard/factures/${generateSlug(`${facture.reference}-${facture.client_id?.name || 'facture'}`, facture.documentId)}`}
-                            className="flex items-center justify-between p-4 bg-zinc-800/30 rounded-xl hover:bg-zinc-800/50 transition-all group border border-transparent hover:border-zinc-700"
+                            className="flex items-center justify-between p-4 bg-hover rounded-xl hover:bg-muted transition-all group border border-transparent hover:border-default"
                           >
                             <div className="flex items-center gap-4">
                               <div className={`p-3 rounded-xl ${
-                                facture.facture_status === 'paid' ? 'bg-emerald-500/10' :
-                                facture.facture_status === 'sent' ? 'bg-blue-500/10' :
-                                'bg-amber-500/10'
+                                facture.facture_status === 'paid' ? 'bg-success-light' :
+                                facture.facture_status === 'sent' ? 'bg-info-light' :
+                                'bg-warning-light'
                               }`}>
                                 <IconFileInvoice className={`w-5 h-5 ${
-                                  facture.facture_status === 'paid' ? 'text-emerald-400' :
-                                  facture.facture_status === 'sent' ? 'text-blue-400' :
-                                  'text-amber-400'
+                                  facture.facture_status === 'paid' ? 'text-success' :
+                                  facture.facture_status === 'sent' ? 'text-info' :
+                                  'text-warning'
                                 }`} />
                               </div>
                               <div>
-                                <p className="text-zinc-200 font-medium group-hover:text-emerald-400 transition-colors">
+                                <p className="text-primary font-medium group-hover:text-accent transition-colors">
                                   {facture.reference}
                                 </p>
-                                <p className="text-sm text-zinc-500">
+                                <p className="text-sm text-muted">
                                   {new Date(facture.date).toLocaleDateString('fr-FR')}
                                   {facture.client_id?.name && ` • ${facture.client_id.name}`}
                                 </p>
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-lg font-semibold text-zinc-100">
+                              <p className="text-lg font-semibold text-primary">
                                 {(facture.number || 0).toLocaleString('fr-FR')} €
                               </p>
                               <span className={`text-xs px-2 py-0.5 rounded-full ${
-                                facture.facture_status === 'paid' ? 'bg-emerald-500/20 text-emerald-400' :
-                                facture.facture_status === 'sent' ? 'bg-blue-500/20 text-blue-400' :
-                                'bg-amber-500/20 text-amber-400'
+                                facture.facture_status === 'paid' ? 'bg-success-light text-success' :
+                                facture.facture_status === 'sent' ? 'bg-info-light text-info' :
+                                'bg-warning-light text-warning'
                               }`}>
                                 {facture.facture_status === 'paid' ? 'Payée' :
                                  facture.facture_status === 'sent' ? 'Envoyée' : 'Brouillon'}
@@ -707,13 +707,13 @@ export default function ProjectDetailsPage() {
                       </div>
                     ) : (
                       <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-zinc-800/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <IconFileInvoice className="w-8 h-8 text-zinc-600" />
+                        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                          <IconFileInvoice className="w-8 h-8 text-muted" />
                         </div>
-                        <p className="text-zinc-500 mb-4">Aucune facture pour ce projet</p>
+                        <p className="text-muted mb-4">Aucune facture pour ce projet</p>
                         <Link
                           href={`/dashboard/factures/ajouter?projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}`}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600/20 text-emerald-400 rounded-lg hover:bg-emerald-600/30 transition-colors"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-accent-light text-accent rounded-lg hover:opacity-80 transition-colors"
                         >
                           <IconPlus className="w-4 h-4" />
                           Créer une facture
@@ -729,26 +729,26 @@ export default function ProjectDetailsPage() {
           {/* Sidebar */}
           <div className="space-y-4">
             {/* Dates Card */}
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">
+            <div className="card p-5">
+              <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
                 Échéances
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-emerald-500/10 rounded-lg">
-                    <IconCalendar className="w-4 h-4 text-emerald-400" />
+                  <div className="p-2 bg-success-light rounded-lg">
+                    <IconCalendar className="w-4 h-4 text-success" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-zinc-500 mb-0.5">Début</p>
+                    <p className="text-xs text-muted mb-0.5">Début</p>
                     {isEditMode ? (
                       <input
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full bg-zinc-800/50 border border-zinc-700 rounded px-2 py-1 text-sm text-zinc-200 focus:outline-none focus:border-emerald-500"
+                        className="w-full input rounded px-2 py-1 text-sm"
                       />
                     ) : (
-                      <p className="text-zinc-200 text-sm font-medium">
+                      <p className="text-primary text-sm font-medium">
                         {project.start_date 
                           ? new Date(project.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
                           : '—'}
@@ -757,20 +757,20 @@ export default function ProjectDetailsPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-red-500/10 rounded-lg">
-                    <IconCalendar className="w-4 h-4 text-red-400" />
+                  <div className="p-2 bg-danger-light rounded-lg">
+                    <IconCalendar className="w-4 h-4 text-danger" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-zinc-500 mb-0.5">Échéance</p>
+                    <p className="text-xs text-muted mb-0.5">Échéance</p>
                     {isEditMode ? (
                       <input
                         type="date"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full bg-zinc-800/50 border border-zinc-700 rounded px-2 py-1 text-sm text-zinc-200 focus:outline-none focus:border-emerald-500"
+                        className="w-full input rounded px-2 py-1 text-sm"
                       />
                     ) : (
-                      <p className={`text-sm font-medium ${daysRemaining !== null && daysRemaining < 0 ? 'text-red-400' : 'text-zinc-200'}`}>
+                      <p className={`text-sm font-medium ${daysRemaining !== null && daysRemaining < 0 ? 'text-danger' : 'text-primary'}`}>
                         {project.end_date 
                           ? new Date(project.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
                           : '—'}
@@ -782,15 +782,15 @@ export default function ProjectDetailsPage() {
             </div>
 
             {/* Client Card */}
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">
+            <div className="card p-5">
+              <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
                 Client
               </h3>
               {isEditMode ? (
                 <select
                   value={selectedClientId}
                   onChange={(e) => setSelectedClientId(e.target.value)}
-                  className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-300 text-sm focus:outline-none focus:border-emerald-500"
+                  className="w-full input px-3 py-2 text-sm"
                 >
                   <option value="">Aucun client</option>
                   {clients.map(client => (
@@ -802,66 +802,66 @@ export default function ProjectDetailsPage() {
               ) : project.client ? (
                 <Link
                   href={`/dashboard/clients/${generateClientSlug(project.client.name)}`}
-                  className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg hover:bg-zinc-800/50 transition-colors group"
+                  className="flex items-center gap-3 p-3 bg-hover rounded-lg hover:bg-muted transition-colors group"
                 >
-                  <div className="w-10 h-10 bg-blue-500/10 rounded-full flex items-center justify-center">
-                    <span className="text-blue-400 font-semibold">
+                  <div className="w-10 h-10 bg-info-light rounded-full flex items-center justify-center">
+                    <span className="text-info font-semibold">
                       {project.client.name[0].toUpperCase()}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-zinc-200 font-medium truncate group-hover:text-emerald-400 transition-colors">
+                    <p className="text-primary font-medium truncate group-hover:text-accent transition-colors">
                       {project.client.name}
                     </p>
                     {project.client.email && (
-                      <p className="text-xs text-zinc-500 truncate">{project.client.email}</p>
+                      <p className="text-xs text-muted truncate">{project.client.email}</p>
                     )}
                   </div>
-                  <IconExternalLink className="w-4 h-4 text-zinc-600 group-hover:text-emerald-400 transition-colors" />
+                  <IconExternalLink className="w-4 h-4 text-muted group-hover:text-accent transition-colors" />
                 </Link>
               ) : (
-                <p className="text-zinc-500 text-sm">Aucun client assigné</p>
+                <p className="text-muted text-sm">Aucun client assigné</p>
               )}
             </div>
 
             {/* Team Card */}
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5">
+            <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                <h3 className="text-xs font-semibold text-muted uppercase tracking-wider">
                   Équipe
                 </h3>
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
+                  className="text-xs text-accent hover:opacity-80 transition-colors"
                 >
                   Gérer
                 </button>
               </div>
               <div className="space-y-2">
                 {/* Owner */}
-                <div className="flex items-center gap-3 p-2 bg-amber-500/5 rounded-lg border border-amber-500/20">
-                  <div className="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
-                    <span className="text-amber-400 text-sm font-medium">
+                <div className="flex items-center gap-3 p-2 bg-warning-light rounded-lg border border-warning">
+                  <div className="w-8 h-8 bg-warning rounded-full flex items-center justify-center">
+                    <span className="text-accent-text text-sm font-medium">
                       {project.user?.username?.[0]?.toUpperCase() || '?'}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-zinc-200 truncate">{project.user?.username}</p>
-                    <p className="text-xs text-amber-400">Propriétaire</p>
+                    <p className="text-sm text-primary truncate">{project.user?.username}</p>
+                    <p className="text-xs text-warning">Propriétaire</p>
                   </div>
                 </div>
                 
                 {/* Collaborators */}
                 {collaborators.filter(c => !c.is_owner).map(collab => (
-                  <div key={collab.documentId} className="flex items-center gap-3 p-2 bg-zinc-800/30 rounded-lg">
-                    <div className="w-8 h-8 bg-emerald-500/20 rounded-full flex items-center justify-center">
-                      <span className="text-emerald-400 text-sm font-medium">
+                  <div key={collab.documentId} className="flex items-center gap-3 p-2 bg-hover rounded-lg">
+                    <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
+                      <span className="text-accent-text text-sm font-medium">
                         {collab.user?.username?.[0]?.toUpperCase() || '?'}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-zinc-200 truncate">{collab.user?.username}</p>
-                      <p className="text-xs text-zinc-500">
+                      <p className="text-sm text-primary truncate">{collab.user?.username}</p>
+                      <p className="text-xs text-muted">
                         {collab.permission === 'edit' ? 'Éditeur' : 'Lecture'}
                       </p>
                     </div>
@@ -869,7 +869,7 @@ export default function ProjectDetailsPage() {
                 ))}
                 
                 {collaborators.filter(c => !c.is_owner).length === 0 && (
-                  <p className="text-xs text-zinc-500 text-center py-2">
+                  <p className="text-xs text-muted text-center py-2">
                     Aucun collaborateur
                   </p>
                 )}
@@ -877,27 +877,27 @@ export default function ProjectDetailsPage() {
             </div>
 
             {/* Meta Card */}
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">
+            <div className="card p-5">
+              <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
                 Informations
               </h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-zinc-500">Créé le</span>
-                  <span className="text-zinc-300">
+                  <span className="text-muted">Créé le</span>
+                  <span className="text-secondary">
                     {new Date(project.createdAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-500">Modifié le</span>
-                  <span className="text-zinc-300">
+                  <span className="text-muted">Modifié le</span>
+                  <span className="text-secondary">
                     {new Date(project.updatedAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
                 {!isOwner && (
-                  <div className="flex justify-between pt-2 border-t border-zinc-800">
-                    <span className="text-zinc-500">Votre rôle</span>
-                    <span className="text-amber-400 font-medium">Collaborateur</span>
+                  <div className="flex justify-between pt-2 border-t border-default">
+                    <span className="text-muted">Votre rôle</span>
+                    <span className="text-warning font-medium">Collaborateur</span>
                   </div>
                 )}
               </div>

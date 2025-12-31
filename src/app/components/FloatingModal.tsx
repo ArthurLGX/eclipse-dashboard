@@ -29,7 +29,7 @@ export default function FloatingModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: -20 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className={`bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full my-auto max-h-[90vh] overflow-y-auto ${maxWidth}`}
+            className={`bg-card border border-default rounded-2xl p-6 w-full my-auto max-h-[90vh] overflow-y-auto ${maxWidth}`}
             onClick={e => e.stopPropagation()}
           >
             {children}
