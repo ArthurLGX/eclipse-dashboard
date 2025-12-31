@@ -60,7 +60,7 @@ export default function YourSubscriptionPage() {
 
       try {
         setLoading(true);
-        const data = await fetchUserById(user.id) as { id: number; username: string };
+        await fetchUserById(user.id);
       } catch (error) {
         console.error('Error fetching profile:', error);
         showGlobalPopup('Erreur lors du chargement du profil', 'error');
