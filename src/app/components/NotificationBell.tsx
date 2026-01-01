@@ -83,6 +83,7 @@ export default function NotificationBell() {
 
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   // Fermer le dropdown quand on clique ailleurs

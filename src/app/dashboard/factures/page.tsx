@@ -40,7 +40,7 @@ export default function FacturesPage() {
 
   // Hook avec cache
   const { data: facturesData, loading, refetch } = useFactures(user?.id);
-  const factures = (facturesData as Facture[]) || [];
+  const factures = useMemo(() => (facturesData as Facture[]) || [], [facturesData]);
 
   // Générer un slug parlant pour une facture
   const getFactureSlug = (facture: Facture) => {

@@ -8,7 +8,6 @@ import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
 import {
   IconMail,
   IconBuilding,
-  IconUser,
   IconWorld,
   IconMapPin,
   IconFileInvoice,

@@ -75,7 +75,8 @@ export default function TrialExpiredGuard({
     // Délai court pour éviter les boucles
     const timer = setTimeout(checkTrialStatus, 100);
     return () => clearTimeout(timer);
-  }, [user?.id, authenticated, pathname]); // Supprimé router, showGlobalPopup, t
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, authenticated, pathname]);
 
   // Afficher un skeleton sur le contenu pendant la vérification
   if (isChecking) {

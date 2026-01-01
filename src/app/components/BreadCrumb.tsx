@@ -85,6 +85,7 @@ export const BreadCrumb = () => {
     if (user?.id) {
       fetchFactureData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, user?.id]);
 
   const breadcrumbItems = pathSegments.map((segment, index) => {

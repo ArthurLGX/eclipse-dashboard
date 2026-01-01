@@ -239,6 +239,7 @@ export default function FacturePage() {
     fetchFacture();
     fetchCompany();
     fetchClientsAndProjects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawId, id, user?.id, prefilledClientId, prefilledClientName]);
 
   useEffect(() => {

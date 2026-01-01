@@ -21,7 +21,7 @@ export default function MentorsPage() {
 
   // Hook avec cache
   const { data: mentorsData, loading } = useMentors(user?.id);
-  const mentors = (mentorsData as Mentor[]) || [];
+  const mentors = useMemo(() => (mentorsData as Mentor[]) || [], [mentorsData]);
 
   // Filtrage
   const filteredMentors = useMemo(() => {

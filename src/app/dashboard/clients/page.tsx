@@ -37,7 +37,7 @@ export default function ClientsPage() {
 
   // Hook avec cache
   const { data: clientsData, loading, refetch } = useClients(user?.id);
-  const clients = (clientsData as Client[]) || [];
+  const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
 
   const handleAddClient = async (clientData: CreateClientData) => {
     if (!user?.id) {

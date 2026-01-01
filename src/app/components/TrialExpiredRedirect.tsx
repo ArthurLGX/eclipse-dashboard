@@ -73,7 +73,8 @@ export default function TrialExpiredRedirect({
     // Délai très court pour éviter le flash
     const timer = setTimeout(checkTrialStatus, 50);
     return () => clearTimeout(timer);
-  }, [user?.id, authenticated, pathname, router, showGlobalPopup, t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, authenticated, pathname]);
 
   // Si on vérifie et qu'on est sur dashboard, ne rien afficher
   if (isChecking && pathname.startsWith('/dashboard')) {

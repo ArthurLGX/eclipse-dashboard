@@ -30,7 +30,6 @@ export const Header = () => {
   const router = useRouter();
   const { authenticated, logout, user } = useAuth();
   const pathname = usePathname();
-  const isDark = resolvedTheme === 'dark';
 
   // Hook pour l'utilisateur avec profile_picture
   const { data: currentUserData } = useCurrentUser(user?.id);

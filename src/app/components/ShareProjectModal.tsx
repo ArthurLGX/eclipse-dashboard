@@ -63,6 +63,7 @@ export default function ShareProjectModal({
     if (isOpen && projectDocumentId) {
       loadData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, projectDocumentId]);
 
   const loadData = async () => {

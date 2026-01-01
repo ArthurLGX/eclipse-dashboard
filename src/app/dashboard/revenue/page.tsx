@@ -137,15 +137,18 @@ export default function RevenuePage() {
   const avgFacture = nbFactures > 0 ? totalCA / nbFactures : 0;
   const progress = maxCA > 0 ? Math.min((totalCA / maxCA) * 100, 100) : 0;
 
-  // Client top CA
-  const clientCA: Record<string, { name: string; ca: number }> = {};
-  factures.forEach(f => {
-    if (f.client_id?.id) {
-      if (!clientCA[f.client_id.id])
-        clientCA[f.client_id.id] = { name: f.client_id.name, ca: 0 };
-      clientCA[f.client_id.id].ca += Number(f.number) || 0;
-    }
-  });
+  // Client top CA (mémoïsé pour éviter les recalculs)
+  const clientCA = useMemo(() => {
+    const result: Record<string, { name: string; ca: number }> = {};
+    factures.forEach(f => {
+      if (f.client_id?.id) {
+        if (!result[f.client_id.id])
+          result[f.client_id.id] = { name: f.client_id.name, ca: 0 };
+        result[f.client_id.id].ca += Number(f.number) || 0;
+      }
+    });
+    return result;
+  }, [factures]);
   const topClient = Object.values(clientCA).sort((a, b) => b.ca - a.ca)[0];
 
   // Données pour les graphiques

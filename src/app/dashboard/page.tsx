@@ -9,7 +9,6 @@ import { useAuth } from '../context/AuthContext';
 import UsageProgressBar from '@/app/components/UsageProgressBar';
 import { useClients, useProjects, useProspects, useFactures } from '@/hooks/useApi';
 import type { Client, Project, Prospect, Facture } from '@/types';
-import QuotaAlert from '@/app/components/QuotaAlert';
 
 export default function DashboardPage() {
   const router = useRouter();

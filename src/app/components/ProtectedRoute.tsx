@@ -76,6 +76,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     };
 
     checkSubscriptionStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authenticated, user?.id]);
 
   if (!hasHydrated || isCheckingSubscription) {

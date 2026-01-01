@@ -82,6 +82,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
 
   useEffect(() => {
     loadTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectDocumentId]);
 
   const loadTasks = async () => {
