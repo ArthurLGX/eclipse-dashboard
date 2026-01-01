@@ -21,11 +21,9 @@ import { useRouter } from 'next/navigation';
 import { RegisterBtn } from '@/app/components/buttons/registerBtn';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCurrentUser } from '@/hooks/useApi';
-import { useTheme } from '@/app/context/ThemeContext';
 
 export const Header = () => {
   const { t } = useLanguage();
-  const { resolvedTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const { authenticated, logout, user } = useAuth();

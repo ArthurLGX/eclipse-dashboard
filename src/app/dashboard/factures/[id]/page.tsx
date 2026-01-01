@@ -1,5 +1,6 @@
 'use client';
 import { useParams, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import Modal from '@/app/components/Modal';
 import FactureApercu from '@/app/components/FactureApercu';
 import { useEffect, useState } from 'react';
@@ -922,10 +923,13 @@ export default function FacturePage() {
                 {/* Logo et nom de l'entreprise */}
                 <div className="flex flex-col items-center gap-2">
                   {company?.logo && (
-                    <img 
+                    <Image 
                       src={company.logo.startsWith('http') ? company.logo : `${process.env.NEXT_PUBLIC_STRAPI_URL}${company.logo}`}
                       alt={company.name || 'Logo'}
+                      width={40}
+                      height={40}
                       className="h-10 w-auto object-contain"
+                      unoptimized
                     />
                   )}
                   {company?.name && (
