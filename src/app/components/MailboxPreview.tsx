@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import DOMPurify from 'dompurify';
 import {
   IconMail,
   IconInbox,
@@ -119,7 +120,13 @@ function EmailPreviewContent({
         {newsletter.content ? (
           <div 
             className="prose prose-sm max-w-none text-gray-700"
-            dangerouslySetInnerHTML={{ __html: newsletter.content }}
+            dangerouslySetInnerHTML={{ 
+              __html: DOMPurify.sanitize(newsletter.content, {
+                ALLOWED_TAGS: ['p', 'br', 'b', 'i', 'u', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'video', 'span', 'div', 'table', 'tr', 'td', 'th', 'thead', 'tbody'],
+                ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'style', 'class', 'target', 'controls', 'width', 'height'],
+                ALLOW_DATA_ATTR: false,
+              })
+            }}
           />
         ) : (
           <p className="text-gray-400 italic text-center py-8">

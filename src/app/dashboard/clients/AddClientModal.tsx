@@ -96,7 +96,7 @@ export default function AddClientModal({
       {/* Header compact */}
       <div className="flex items-center gap-3 mb-5">
         <div className="p-2 bg-accent-light rounded-lg border border-accent">
-          <IconUserPlus size={22} className="text-accent" />
+          <IconUserPlus size={22} className="!text-white" />
         </div>
         <h2 className="text-xl font-bold text-primary">
           {t('add_client')}

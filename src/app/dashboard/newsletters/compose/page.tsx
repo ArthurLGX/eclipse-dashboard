@@ -50,13 +50,17 @@ import {
   IconSearch,
   IconChevronDown,
   IconPaperclip,
+  IconVideo,
+  IconPhotoUp,
 } from '@tabler/icons-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { useClients, useCompany } from '@/hooks/useApi';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
+import ThemeCustomizer from '@/app/components/ThemeCustomizer';
 import type { Client, Company } from '@/types';
 
 // Types
@@ -71,7 +75,11 @@ interface EmailTemplate {
   primaryColor: string;
   accentColor: string;
   borderColor: string;
+  textColor?: string;
   features: string[];
+  useGradient?: boolean;
+  gradientAngle?: number;
+  gradientCSS?: string; // Full CSS gradient string
 }
 
 interface FooterSettings {
@@ -102,6 +110,11 @@ interface EmailPreviewProps {
   footerSettings: FooterSettings;
   footerLogoUrl: string | null;
   userProfilePicture?: string | null;
+  headerTitleColor?: string;
+  buttonColor?: string;
+  buttonTextColor?: string;
+  headerBackgroundUrl?: string;
+  fontFamily?: string;
   translations: {
     specialOffer: string;
     yourTitleHere: string;
@@ -121,18 +134,41 @@ function EmailPreview({
   footerSettings,
   footerLogoUrl,
   userProfilePicture,
+  headerTitleColor,
+  buttonColor,
+  buttonTextColor,
+  headerBackgroundUrl,
+  fontFamily,
   translations,
 }: EmailPreviewProps) {
   const isPromo = template.id === 'promotional';
   const isAnnouncement = template.id === 'announcement';
+  
+  // Use custom colors if provided, otherwise use template defaults
+  const titleColor = headerTitleColor || template.textColor || '#1F2937';
+  const ctaButtonColor = buttonColor || template.primaryColor;
+  const ctaButtonTextColor = buttonTextColor || '#FFFFFF';
+  const emailFontFamily = fontFamily ? `'${fontFamily}', Arial, sans-serif` : 'Arial, sans-serif';
+
+  // Create a style object that will be applied to all text elements
+  const fontStyle = { fontFamily: emailFontFamily };
 
   return (
-    <div className="bg-white rounded-lg shadow-xl overflow-hidden w-full text-gray-800">
+    <div className="bg-white rounded-lg shadow-xl overflow-hidden w-full text-gray-800" style={fontStyle}>
       {/* Header with template-specific styling */}
       <div 
         className={`text-center ${isAnnouncement ? 'py-12' : 'py-8'}`}
         style={{ 
-          background: `linear-gradient(135deg, ${template.primaryColor}, ${template.accentColor})` 
+          backgroundImage: headerBackgroundUrl 
+            ? `url(${headerBackgroundUrl})`
+            : template.gradientCSS 
+              ? template.gradientCSS
+              : template.useGradient 
+                ? `linear-gradient(${template.gradientAngle || 135}deg, ${template.primaryColor}, ${template.accentColor})` 
+                : undefined,
+          backgroundColor: template.primaryColor,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
         {isPromo && (
@@ -141,7 +177,10 @@ function EmailPreview({
           </div>
         )}
         
-        <h1 className={`font-bold !text-gray-800 mb-2 px-6 ${isAnnouncement ? 'text-3xl' : 'text-2xl'}`}>
+        <h1 
+          className={`font-bold mb-2 px-6 ${isAnnouncement ? 'text-3xl' : 'text-2xl'}`}
+          style={{ color: titleColor, fontFamily: emailFontFamily }}
+        >
           {emailTitle || translations.yourTitleHere}
         </h1>
       </div>
@@ -151,6 +190,7 @@ function EmailPreview({
         {/* Content */}
         <div 
           className="prose prose-sm max-w-none text-gray-700 mb-6"
+          style={{ fontFamily: emailFontFamily }}
           dangerouslySetInnerHTML={{ 
             __html: emailContent || `<p style="color: #9CA3AF;">${translations.contentPreviewPlaceholder}</p>` 
           }}
@@ -175,8 +215,9 @@ function EmailPreview({
                 isPromo ? 'text-lg' : ''
               }`}
               style={{ 
-                backgroundColor: template.primaryColor,
-                color: '#1F2937',
+                backgroundColor: ctaButtonColor,
+                color: ctaButtonTextColor,
+                fontFamily: emailFontFamily,
               }}
             >
               {ctaText}
@@ -187,7 +228,7 @@ function EmailPreview({
       </div>
 
       {/* Footer */}
-      <div className="p-6">
+      <div className="p-6" style={{ fontFamily: emailFontFamily }}>
         <div className="flex items-start gap-6">
           {/* Logo / Avatar */}
           <div className="flex-shrink-0">
@@ -297,6 +338,15 @@ interface RichTextEditorProps {
   value: string;
   onChange: (val: string) => void;
   placeholder?: string;
+  onImageFromComputer?: () => void;
+  onImageFromLibrary?: () => void;
+  onImageFromUrl?: (url: string) => void;
+  uploadingImage?: boolean;
+  fontFamily?: string;
+  onVideoFromComputer?: () => void;
+  onVideoFromLibrary?: () => void;
+  onVideoFromUrl?: (url: string) => void;
+  uploadingVideo?: boolean;
   translations: {
     heading1: string;
     heading2: string;
@@ -310,36 +360,335 @@ interface RichTextEditorProps {
     alignRight: string;
     textColor: string;
     insertLink: string;
+    insertImage?: string;
+    insertVideo?: string;
+    fromComputer?: string;
+    fromLibrary?: string;
+    fromUrl?: string;
+    cancel?: string;
   };
+  onMediaDeleted?: (url: string, type: 'image' | 'video') => void;
 }
 
-function RichTextEditor({ value, onChange, placeholder, translations }: RichTextEditorProps) {
+function RichTextEditor({ 
+  value, 
+  onChange, 
+  placeholder, 
+  onImageFromComputer, 
+  onImageFromLibrary,
+  onImageFromUrl,
+  uploadingImage, 
+  onVideoFromComputer, 
+  onVideoFromLibrary,
+  onVideoFromUrl,
+  uploadingVideo, 
+  translations, 
+  fontFamily,
+  onMediaDeleted,
+}: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const isInitialized = useRef(false);
+  const isInternalChange = useRef(false); // Track if change is from inside editor
+  const lastExternalValue = useRef<string>(''); // Track last value from outside
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
+  
+  // Media picker state
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const [showVideoPicker, setShowVideoPicker] = useState(false);
+  const [imageUrlInput, setImageUrlInput] = useState('');
+  const [videoUrlInput, setVideoUrlInput] = useState('');
+  const [showImageUrlInput, setShowImageUrlInput] = useState(false);
+  const [showVideoUrlInput, setShowVideoUrlInput] = useState(false);
+  
+  // Media selection state
+  const [selectedMedia, setSelectedMedia] = useState<HTMLElement | null>(null);
+  const [mediaToolbarPosition, setMediaToolbarPosition] = useState({ top: 0, left: 0 });
+  const [isResizing, setIsResizing] = useState(false);
+  const resizeStartRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
 
-  // Initialiser le contenu une seule fois au montage
-  useEffect(() => {
-    if (editorRef.current && !isInitialized.current) {
-      editorRef.current.innerHTML = value || '';
-      isInitialized.current = true;
-    }
-  }, [value]);
+  // Close all popups
+  const closeAllPopups = () => {
+    setShowColorPicker(false);
+    setShowLinkInput(false);
+    setShowImagePicker(false);
+    setShowVideoPicker(false);
+    setShowImageUrlInput(false);
+    setShowVideoUrlInput(false);
+  };
 
-  const execCommand = useCallback((command: string, val?: string) => {
-    document.execCommand(command, false, val);
-    editorRef.current?.focus();
+  // Internal onChange wrapper - marks change as internal to prevent sync loop
+  const notifyChange = useCallback(() => {
     if (editorRef.current) {
+      isInternalChange.current = true;
+      lastExternalValue.current = editorRef.current.innerHTML;
       onChange(editorRef.current.innerHTML);
     }
   }, [onChange]);
 
-  const handleInput = () => {
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
+  // Toggle color picker (close others)
+  const toggleColorPicker = () => {
+    closeAllPopups();
+    setShowColorPicker(!showColorPicker);
+  };
+
+  // Toggle link input (close others)
+  const toggleLinkInput = () => {
+    closeAllPopups();
+    setShowLinkInput(!showLinkInput);
+  };
+
+  // Toggle image picker (close others)
+  const toggleImagePicker = () => {
+    closeAllPopups();
+    setShowImagePicker(!showImagePicker);
+  };
+
+  // Toggle video picker (close others)
+  const toggleVideoPicker = () => {
+    closeAllPopups();
+    setShowVideoPicker(!showVideoPicker);
+  };
+
+  // Handle image from URL
+  const handleImageUrl = () => {
+    if (imageUrlInput && onImageFromUrl) {
+      onImageFromUrl(imageUrlInput);
+      setImageUrlInput('');
+      setShowImageUrlInput(false);
+      setShowImagePicker(false);
     }
+  };
+
+  // Handle video from URL
+  const handleVideoUrl = () => {
+    if (videoUrlInput && onVideoFromUrl) {
+      onVideoFromUrl(videoUrlInput);
+      setVideoUrlInput('');
+      setShowVideoUrlInput(false);
+      setShowVideoPicker(false);
+    }
+  };
+
+  // Font family CSS
+  const editorFontFamily = fontFamily ? `'${fontFamily}', Arial, sans-serif` : 'Arial, sans-serif';
+
+  // Initialiser le contenu et synchroniser avec les changements externes
+  useEffect(() => {
+    if (editorRef.current) {
+      // Initial mount
+      if (!isInitialized.current) {
+        editorRef.current.innerHTML = value || '';
+        lastExternalValue.current = value || '';
+        isInitialized.current = true;
+      } 
+      // External change (from removeImage/removeVideo)
+      else if (!isInternalChange.current && value !== lastExternalValue.current) {
+        // Only update if content is different (external update)
+        editorRef.current.innerHTML = value || '';
+        lastExternalValue.current = value || '';
+        setSelectedMedia(null); // Deselect any media since DOM changed
+      }
+      // Reset internal change flag
+      isInternalChange.current = false;
+    }
+  }, [value]);
+
+  // Handle click on media elements
+  const handleEditorClick = useCallback((e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    
+    if (target.tagName === 'IMG' || target.tagName === 'VIDEO') {
+      e.preventDefault();
+      setSelectedMedia(target);
+      
+      // Position the toolbar above the media
+      const rect = target.getBoundingClientRect();
+      const editorRect = editorRef.current?.getBoundingClientRect();
+      if (editorRect) {
+        setMediaToolbarPosition({
+          top: rect.top - editorRect.top - 45,
+          left: rect.left - editorRect.left + rect.width / 2,
+        });
+      }
+    } else {
+      setSelectedMedia(null);
+    }
+  }, []);
+
+  // Deselect media when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (selectedMedia && editorRef.current && !editorRef.current.contains(e.target as Node)) {
+        setSelectedMedia(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [selectedMedia]);
+
+  // Media alignment functions
+  const setMediaAlignment = (alignment: 'left' | 'center' | 'right' | 'inline') => {
+    if (!selectedMedia) return;
+    
+    // Reset all styles
+    selectedMedia.style.float = '';
+    selectedMedia.style.display = '';
+    selectedMedia.style.margin = '';
+    selectedMedia.style.marginLeft = '';
+    selectedMedia.style.marginRight = '';
+    
+    switch (alignment) {
+      case 'left':
+        selectedMedia.style.float = 'left';
+        selectedMedia.style.marginRight = '16px';
+        selectedMedia.style.marginBottom = '8px';
+        break;
+      case 'right':
+        selectedMedia.style.float = 'right';
+        selectedMedia.style.marginLeft = '16px';
+        selectedMedia.style.marginBottom = '8px';
+        break;
+      case 'center':
+        selectedMedia.style.display = 'block';
+        selectedMedia.style.marginLeft = 'auto';
+        selectedMedia.style.marginRight = 'auto';
+        selectedMedia.style.marginBottom = '8px';
+        break;
+      case 'inline':
+        selectedMedia.style.display = 'inline';
+        selectedMedia.style.marginBottom = '8px';
+        break;
+    }
+    
+    notifyChange();
+  };
+
+  // Resize functions
+  const startResize = (e: React.MouseEvent, direction: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!selectedMedia) return;
+    
+    setIsResizing(true);
+    resizeStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      width: selectedMedia.offsetWidth,
+      height: selectedMedia.offsetHeight,
+    };
+    
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (!selectedMedia) return;
+      
+      const deltaX = moveEvent.clientX - resizeStartRef.current.x;
+      const deltaY = moveEvent.clientY - resizeStartRef.current.y;
+      
+      let newWidth = resizeStartRef.current.width;
+      let newHeight = resizeStartRef.current.height;
+      
+      if (direction.includes('e')) newWidth += deltaX;
+      if (direction.includes('w')) newWidth -= deltaX;
+      if (direction.includes('s')) newHeight += deltaY;
+      if (direction.includes('n')) newHeight -= deltaY;
+      
+      // Minimum size
+      newWidth = Math.max(50, newWidth);
+      newHeight = Math.max(50, newHeight);
+      
+      // Maintain aspect ratio
+      const aspectRatio = resizeStartRef.current.width / resizeStartRef.current.height;
+      if (direction === 'se' || direction === 'nw' || direction === 'ne' || direction === 'sw') {
+        newHeight = newWidth / aspectRatio;
+      }
+      
+      selectedMedia.style.width = `${newWidth}px`;
+      selectedMedia.style.height = 'auto';
+    };
+    
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      
+      notifyChange();
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
+  // Delete selected media
+  const deleteSelectedMedia = useCallback(() => {
+    if (!selectedMedia) {
+      console.log('No media selected');
+      return;
+    }
+    
+    // Get media info before deleting
+    const mediaUrl = selectedMedia.getAttribute('src') || '';
+    const mediaType: 'image' | 'video' = selectedMedia.tagName === 'IMG' ? 'image' : 'video';
+    
+    // Remove from DOM
+    if (selectedMedia.parentNode) {
+      selectedMedia.parentNode.removeChild(selectedMedia);
+    }
+    
+    setSelectedMedia(null);
+    
+    // Update editor content
+    notifyChange();
+    
+    // Notify parent to update lists
+    if (onMediaDeleted && mediaUrl) {
+      onMediaDeleted(mediaUrl, mediaType);
+    }
+  }, [selectedMedia, notifyChange, onMediaDeleted]);
+
+  // Handle Delete/Backspace key to delete selected media
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedMedia && (e.key === 'Delete' || e.key === 'Backspace')) {
+        e.preventDefault();
+        deleteSelectedMedia();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedMedia, deleteSelectedMedia]);
+
+  // Resize presets
+  const setMediaSize = (size: 'small' | 'medium' | 'large' | 'full') => {
+    if (!selectedMedia) return;
+    
+    switch (size) {
+      case 'small':
+        selectedMedia.style.width = '150px';
+        break;
+      case 'medium':
+        selectedMedia.style.width = '300px';
+        break;
+      case 'large':
+        selectedMedia.style.width = '450px';
+        break;
+      case 'full':
+        selectedMedia.style.width = '100%';
+        break;
+    }
+    selectedMedia.style.height = 'auto';
+    
+    notifyChange();
+  };
+
+  const execCommand = useCallback((command: string, val?: string) => {
+    document.execCommand(command, false, val);
+    editorRef.current?.focus();
+    notifyChange();
+  }, [notifyChange]);
+
+  const handleInput = () => {
+    notifyChange();
   };
 
   const insertLink = () => {
@@ -361,7 +710,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h1')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded cursor-pointer hover:bg-hover transition-colors text-secondary hover:text-primary"
             title={translations.heading1}
           >
             <IconH1 className="w-4 h-4" />
@@ -369,7 +718,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h2')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded cursor-pointer   hover:bg-hover transition-colors text-secondary hover:text-primary"
             title={translations.heading2}
           >
             <IconH2 className="w-4 h-4" />
@@ -377,7 +726,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'p')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded cursor-pointer hover:bg-hover transition-colors text-secondary hover:text-primary"
             title={translations.paragraph}
           >
             <IconTypography className="w-4 h-4" />
@@ -389,7 +738,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           <button
             type="button"
             onClick={() => execCommand('bold')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
             title={translations.bold}
           >
             <IconBold className="w-4 h-4" />
@@ -397,7 +746,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           <button
             type="button"
             onClick={() => execCommand('italic')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
             title={translations.italic}
           >
             <IconItalic className="w-4 h-4" />
@@ -409,7 +758,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           <button
             type="button"
             onClick={() => execCommand('insertUnorderedList')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
             title={translations.bulletList}
           >
             <IconList className="w-4 h-4" />
@@ -417,7 +766,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           <button
             type="button"
             onClick={() => execCommand('insertOrderedList')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
             title={translations.numberedList}
           >
             <IconListNumbers className="w-4 h-4" />
@@ -425,11 +774,11 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
         </div>
 
         {/* Alignment */}
-        <div className="flex items-center gap-0.5 px-1 border-r border-default mr-1">
+        <div className="flex items-center gap-0.5 px-1 border-r border-default mr-1"> 
           <button
             type="button"
             onClick={() => execCommand('justifyLeft')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
             title={translations.alignLeft}
           >
             <IconAlignLeft className="w-4 h-4" />
@@ -437,7 +786,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           <button
             type="button"
             onClick={() => execCommand('justifyCenter')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
             title={translations.alignCenter}
           >
             <IconAlignCenter className="w-4 h-4" />
@@ -445,7 +794,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           <button
             type="button"
             onClick={() => execCommand('justifyRight')}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
             title={translations.alignRight}
           >
             <IconAlignRight className="w-4 h-4" />
@@ -456,8 +805,12 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
         <div className="relative">
           <button
             type="button"
-            onClick={() => setShowColorPicker(!showColorPicker)}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            onClick={toggleColorPicker}
+            className={`p-2 rounded transition-colors ${
+              showColorPicker 
+                ? 'bg-accent text-white' 
+                : 'hover:bg-hover text-secondary cursor-pointer hover:text-primary'
+            }`}
             title={translations.textColor}
           >
             <IconColorSwatch className="w-4 h-4" />
@@ -472,7 +825,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
                     execCommand('foreColor', color);
                     setShowColorPicker(false);
                   }}
-                  className="w-6 h-6 rounded-full border-2 border-white shadow-sm hover:scale-110 transition-transform"
+                  className="w-6 h-6 rounded-full cursor-pointer border-2 border-white shadow-sm hover:scale-110 transition-transform"
                   style={{ backgroundColor: color }}
                 />
               ))}
@@ -484,8 +837,12 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
         <div className="relative">
           <button
             type="button"
-            onClick={() => setShowLinkInput(!showLinkInput)}
-            className="p-2 rounded hover:bg-hover transition-colors text-secondary hover:text-primary"
+            onClick={toggleLinkInput}
+            className={`p-2 rounded transition-colors ${
+              showLinkInput 
+                ? 'bg-accent text-white' 
+                : 'hover:bg-hover text-secondary cursor-pointer hover:text-primary'
+            }`}
             title={translations.insertLink}
           >
             <IconLink className="w-4 h-4" />
@@ -502,32 +859,332 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
               <button
                 type="button"
                 onClick={insertLink}
-                className="px-3 py-1 bg-accent text-white rounded text-sm"
+                className="px-3 py-1 bg-accent text-white rounded cursor-pointer text-sm"
               >
                 OK
               </button>
             </div>
           )}
         </div>
+
+        {/* Image & Video with dropdowns */}
+        <div className="flex items-center gap-0.5 px-1 border-l border-default ml-1">
+          {/* Image picker */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={toggleImagePicker}
+              disabled={uploadingImage}
+              className={`p-2 rounded cursor-pointer transition-colors disabled:opacity-50 ${
+                showImagePicker 
+                  ? 'bg-accent text-white' 
+                  : 'hover:bg-hover text-secondary hover:text-primary'
+              }`}
+              title={translations.insertImage || 'Image'}
+            >
+              {uploadingImage ? (
+                <IconLoader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <IconPhoto className="w-4 h-4" />
+              )}
+            </button>
+            
+            {showImagePicker && (
+              <div className="absolute top-full right-0 mt-1 w-48 bg-card border border-default rounded-lg shadow-xl z-20 overflow-hidden">
+                {!showImageUrlInput ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onImageFromComputer?.();
+                        setShowImagePicker(false);
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary"
+                    >
+                      <IconUpload className="w-4 h-4 text-secondary" />
+                      {translations.fromComputer || 'Depuis l\'ordinateur'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onImageFromLibrary?.();
+                        setShowImagePicker(false);
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary border-t border-default"
+                    >
+                      <IconPhoto className="w-4 h-4 text-secondary" />
+                      {translations.fromLibrary || 'Depuis la bibliothèque'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowImageUrlInput(true)}
+                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary border-t border-default"
+                    >
+                      <IconLink className="w-4 h-4 text-secondary" />
+                      {translations.fromUrl || 'Depuis une URL'}
+                    </button>
+                  </>
+                ) : (
+                  <div className="p-3 space-y-2">
+                    <input
+                      type="url"
+                      value={imageUrlInput}
+                      onChange={(e) => setImageUrlInput(e.target.value)}
+                      placeholder="https://..."
+                      className="input text-sm w-full"
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowImageUrlInput(false)}
+                        className="flex-1 px-3 py-1.5 text-sm text-secondary hover:text-primary transition-colors"
+                      >
+                        {translations.cancel || 'Annuler'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleImageUrl}
+                        className="flex-1 px-3 py-1.5 bg-accent text-white rounded text-sm"
+                      >
+                        OK
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Video picker */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={toggleVideoPicker}
+              disabled={uploadingVideo}
+              className={`p-2 rounded cursor-pointer transition-colors disabled:opacity-50 ${
+                showVideoPicker 
+                  ? 'bg-accent text-white' 
+                  : 'hover:bg-hover text-secondary hover:text-primary'
+              }`}
+              title={translations.insertVideo || 'Video'}
+            >
+              {uploadingVideo ? (
+                <IconLoader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <IconVideo className="w-4 h-4" />
+              )}
+            </button>
+            
+            {showVideoPicker && (
+              <div className="absolute top-full right-0 mt-1 w-48 bg-card border border-default rounded-lg shadow-xl z-20 overflow-hidden">
+                {!showVideoUrlInput ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onVideoFromComputer?.();
+                        setShowVideoPicker(false);
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary"
+                    >
+                      <IconUpload className="w-4 h-4 text-secondary" />
+                      {translations.fromComputer || 'Depuis l\'ordinateur'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onVideoFromLibrary?.();
+                        setShowVideoPicker(false);
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary border-t border-default"
+                    >
+                      <IconVideo className="w-4 h-4 text-secondary" />
+                      {translations.fromLibrary || 'Depuis la bibliothèque'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowVideoUrlInput(true)}
+                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary border-t border-default"
+                    >
+                      <IconLink className="w-4 h-4 text-secondary" />
+                      {translations.fromUrl || 'Depuis une URL'}
+                    </button>
+                  </>
+                ) : (
+                  <div className="p-3 space-y-2">
+                    <input
+                      type="url"
+                      value={videoUrlInput}
+                      onChange={(e) => setVideoUrlInput(e.target.value)}
+                      placeholder="https://..."
+                      className="input text-sm w-full"
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowVideoUrlInput(false)}
+                        className="flex-1 px-3 py-1.5 text-sm text-secondary hover:text-primary transition-colors"
+                      >
+                        {translations.cancel || 'Annuler'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleVideoUrl}
+                        className="flex-1 px-3 py-1.5 bg-accent text-white rounded text-sm"
+                      >
+                        OK
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Editor Area */}
-      <div
-        ref={editorRef}
-        contentEditable
-        dir="ltr"
-        onInput={handleInput}
-        className="min-h-[200px] p-4 text-primary focus:outline-none prose prose-sm max-w-none
-          [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3
-          [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mb-2
-          [&_p]:mb-2
-          [&_ul]:list-disc [&_ul]:pl-5
-          [&_ol]:list-decimal [&_ol]:pl-5
-          [&_a]:text-accent [&_a]:underline
-          empty:before:content-[attr(data-placeholder)] empty:before:text-placeholder empty:before:pointer-events-none"
-        data-placeholder={placeholder}
-        suppressContentEditableWarning
-      />
+      <div className="relative">
+        {/* Media Toolbar - appears when media is selected */}
+        {selectedMedia && !isResizing && (
+          <div 
+            className="absolute z-20 flex items-center gap-1 p-1.5 bg-gray-900 rounded-lg shadow-xl"
+            style={{ 
+              top: mediaToolbarPosition.top,
+              left: mediaToolbarPosition.left,
+              transform: 'translateX(-50%)',
+            }}
+          >
+            {/* Alignment buttons */}
+            <button
+              type="button"
+              onClick={() => setMediaAlignment('left')}
+              className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+              title="Aligner à gauche avec texte"
+            >
+              <IconAlignLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setMediaAlignment('center')}
+              className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+              title="Centrer"
+            >
+              <IconAlignCenter className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setMediaAlignment('right')}
+              className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+              title="Aligner à droite avec texte"
+            >
+              <IconAlignRight className="w-4 h-4" />
+            </button>
+            
+            <div className="w-px h-5 bg-gray-600 mx-1" />
+            
+            {/* Size presets */}
+            <button
+              type="button"
+              onClick={() => setMediaSize('small')}
+              className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors text-xs font-medium"
+              title="Petit"
+            >
+              S
+            </button>
+            <button
+              type="button"
+              onClick={() => setMediaSize('medium')}
+              className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors text-xs font-medium"
+              title="Moyen"
+            >
+              M
+            </button>
+            <button
+              type="button"
+              onClick={() => setMediaSize('large')}
+              className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors text-xs font-medium"
+              title="Grand"
+            >
+              L
+            </button>
+            <button
+              type="button"
+              onClick={() => setMediaSize('full')}
+              className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors text-xs font-medium"
+              title="Pleine largeur"
+            >
+              100%
+            </button>
+            
+            <div className="w-px h-5 bg-gray-600 mx-1" />
+            
+            {/* Delete button */}
+            <button
+              type="button"
+              onClick={deleteSelectedMedia}
+              className="p-1.5 rounded hover:bg-red-600 text-gray-300 hover:text-white transition-colors"
+              title="Supprimer"
+            >
+              <IconTrash className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Resize handles - show when media is selected */}
+        {selectedMedia && (
+          <>
+            {/* Corner handles for resizing */}
+            <div
+              className="absolute w-3 h-3 bg-accent border-2 border-white rounded-sm cursor-se-resize z-30 shadow"
+              style={{
+                top: (selectedMedia.offsetTop || 0) + selectedMedia.offsetHeight - 6,
+                left: (selectedMedia.offsetLeft || 0) + selectedMedia.offsetWidth - 6,
+              }}
+              onMouseDown={(e) => startResize(e, 'se')}
+            />
+          </>
+        )}
+
+        <div
+          ref={editorRef}
+          contentEditable
+          dir="ltr"
+          onInput={handleInput}
+          onClick={handleEditorClick}
+          className="min-h-[200px] p-4 bg-white focus:outline-none prose prose-sm max-w-none
+            [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3
+            [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mb-2
+            [&_p]:mb-2
+            [&_ul]:list-disc [&_ul]:pl-5
+            [&_ol]:list-decimal [&_ol]:pl-5
+            [&_a]:text-accent [&_a]:underline
+            [&_img]:rounded-lg [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
+            [&_video]:rounded-lg [&_video]:cursor-pointer [&_video]:transition-all [&_video]:max-w-full
+            empty:before:content-[attr(data-placeholder)] empty:before:text-gray-400 empty:before:pointer-events-none"
+          style={{ 
+            fontFamily: editorFontFamily,
+            color: '#000000',
+          }}
+          data-placeholder={placeholder}
+          suppressContentEditableWarning
+        />
+
+        {/* Selection indicator */}
+        {selectedMedia && (
+          <div
+            className="absolute pointer-events-none border-2 border-accent rounded-lg"
+            style={{
+              top: selectedMedia.offsetTop,
+              left: selectedMedia.offsetLeft,
+              width: selectedMedia.offsetWidth,
+              height: selectedMedia.offsetHeight,
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }
@@ -556,6 +1213,7 @@ export default function ComposeNewsletterPage() {
   const [emailSubject, setEmailSubject] = useState('');
   const [emailContent, setEmailContent] = useState('');
   const [contentImages, setContentImages] = useState<string[]>([]);
+  const [contentVideos, setContentVideos] = useState<string[]>([]);
   
   // CTA
   const [ctaText, setCtaText] = useState('');
@@ -567,15 +1225,130 @@ export default function ComposeNewsletterPage() {
   // Recipients
   const [selectedRecipients, setSelectedRecipients] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [manualEmails, setManualEmails] = useState<Array<{ email: string; name?: string }>>([]);
+  const [emailInput, setEmailInput] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const emailInputRef = useRef<HTMLInputElement>(null);
   
   // UI State
   const [showPreview, setShowPreview] = useState(false);
   const [sending, setSending] = useState(false);
   const [showFooterSettings, setShowFooterSettings] = useState(false);
   
+  // Custom template colors with gradient stops
+  interface GradientStop {
+    id: string;
+    color: string;
+    position: number; // 0-100%
+    opacity: number;  // 0-100%
+  }
+  
+  // Polices Google disponibles
+  const availableFonts = [
+    { name: 'Inter', family: 'Inter, sans-serif' },
+    { name: 'Roboto', family: 'Roboto, sans-serif' },
+    { name: 'Open Sans', family: "'Open Sans', sans-serif" },
+    { name: 'Lato', family: 'Lato, sans-serif' },
+    { name: 'Montserrat', family: 'Montserrat, sans-serif' },
+    { name: 'Poppins', family: 'Poppins, sans-serif' },
+    { name: 'Nunito', family: 'Nunito, sans-serif' },
+    { name: 'Raleway', family: 'Raleway, sans-serif' },
+    { name: 'Playfair Display', family: "'Playfair Display', serif" },
+    { name: 'Merriweather', family: 'Merriweather, serif' },
+    { name: 'Source Sans Pro', family: "'Source Sans Pro', sans-serif" },
+    { name: 'Oswald', family: 'Oswald, sans-serif' },
+    { name: 'Quicksand', family: 'Quicksand, sans-serif' },
+    { name: 'Work Sans', family: "'Work Sans', sans-serif" },
+    { name: 'DM Sans', family: "'DM Sans', sans-serif" },
+  ];
+
+  const [customColors, setCustomColors] = useState({
+    gradientStops: [
+      { id: '1', color: '#FFFFFF', position: 0, opacity: 100 },
+      { id: '2', color: '#FFFFFF', position: 100, opacity: 100 },
+    ] as GradientStop[],
+    buttonColor: '#3B82F6',
+    buttonTextColor: '#FFFFFF', // Couleur du texte du bouton
+    textColor: '#1F2937',
+    headerTitleColor: '#1F2937', // Couleur du titre sur le header
+    gradientAngle: 90,
+    fontFamily: 'Inter', // Police Google Fonts
+  });
+  
+  // UI State for theme customization in content step
+  const [showThemeSettings, setShowThemeSettings] = useState(false);
+
+  // Generate CSS gradient from stops
+  const generateGradientCSS = (stops: GradientStop[], angle: number) => {
+    if (stops.length === 0) return '#FFFFFF';
+    if (stops.length === 1) {
+      const s = stops[0];
+      return hexToRgba(s.color, s.opacity / 100);
+    }
+    const sortedStops = [...stops].sort((a, b) => a.position - b.position);
+    const colorStops = sortedStops
+      .map(s => `${hexToRgba(s.color, s.opacity / 100)} ${s.position}%`)
+      .join(', ');
+    return `linear-gradient(${angle}deg, ${colorStops})`;
+  };
+
+  // Convert hex to rgba
+  const hexToRgba = (hex: string, alpha: number) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
+  // Add a new stop
+  const addGradientStop = () => {
+    const newId = Date.now().toString();
+    const newPosition = 50;
+    setCustomColors(prev => ({
+      ...prev,
+      gradientStops: [...prev.gradientStops, { id: newId, color: '#9CA3AF', position: newPosition, opacity: 100 }]
+    }));
+  };
+
+  // Remove a stop
+  const removeGradientStop = (id: string) => {
+    if (customColors.gradientStops.length <= 1) return;
+    setCustomColors(prev => ({
+      ...prev,
+      gradientStops: prev.gradientStops.filter(s => s.id !== id)
+    }));
+  };
+
+  // Update a stop
+  const updateGradientStop = (id: string, updates: Partial<GradientStop>) => {
+    setCustomColors(prev => ({
+      ...prev,
+      gradientStops: prev.gradientStops.map(s => s.id === id ? { ...s, ...updates } : s)
+    }));
+  };
+
+  // Load ALL Google Fonts on mount for font preview buttons
+  useEffect(() => {
+    availableFonts.forEach(font => {
+      const fontName = font.name.replace(/\s+/g, '+');
+      const linkId = `google-font-${fontName}`;
+      
+      if (!document.getElementById(linkId)) {
+        const link = document.createElement('link');
+        link.id = linkId;
+        link.rel = 'stylesheet';
+        // Use the correct Google Fonts API v2 format with variable weights
+        link.href = `https://fonts.googleapis.com/css2?family=${fontName}:ital,wght@0,400..900;1,400..900&display=swap`;
+        document.head.appendChild(link);
+      }
+    });
+  }, [availableFonts]);
+  
   // Refs
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const contentImageInputRef = useRef<HTMLInputElement>(null);
+  const contentVideoInputRef = useRef<HTMLInputElement>(null);
+  const headerBackgroundInputRef = useRef<HTMLInputElement>(null);
   
   // Footer settings with company data
   const [footerSettings, setFooterSettings] = useState<FooterSettings>({
@@ -609,7 +1382,7 @@ export default function ComposeNewsletterPage() {
     }
   }, [company, user]);
 
-  // Templates configuration - Palette personnalisée
+  // Templates configuration - Palette personnalisée (pas de gradient par défaut)
   const templates: EmailTemplate[] = useMemo(() => [
     {
       id: 'standard',
@@ -620,6 +1393,7 @@ export default function ComposeNewsletterPage() {
       accentColor: '#A8B5D4',
       borderColor: '#9BA8C7',
       features: [t('feature_clean_design'), t('feature_content_focus'), t('feature_ideal_updates')],
+      useGradient: false, // Couleur unie par défaut
     },
     {
       id: 'promotional',
@@ -630,6 +1404,7 @@ export default function ComposeNewsletterPage() {
       accentColor: '#9DCEF0',
       borderColor: '#8FC4E8',
       features: [t('feature_promo_badge'), t('feature_prominent_cta'), t('feature_ideal_offers')],
+      useGradient: false, // Couleur unie par défaut
     },
     {
       id: 'announcement',
@@ -640,18 +1415,23 @@ export default function ComposeNewsletterPage() {
       accentColor: '#B5DDD8',
       borderColor: '#A8D5CF',
       features: [t('feature_visual_impact'), t('feature_centered_message'), t('feature_ideal_events')],
+      useGradient: false, // Couleur unie par défaut
     },
     {
       id: 'custom',
       name: t('template_custom'),
       description: t('template_custom_desc'),
-      icon: <IconPalette className="w-8 h-8" stroke={1} />,
-      primaryColor: '#E8D9B5',
-      accentColor: '#F9EDD8',
-      borderColor: '#F0E4C8',
+      icon: <IconPalette className="w-8 h-8 !text-primary" stroke={1} />,
+      primaryColor: customColors.gradientStops[0]?.color || '#FFFFFF',
+      accentColor: customColors.gradientStops[customColors.gradientStops.length - 1]?.color || '#FFFFFF',
+      borderColor: customColors.gradientStops[0]?.color || '#FFFFFF',
+      textColor: customColors.textColor,
       features: [t('feature_total_freedom'), t('feature_no_constraints'), t('feature_unique_design')],
+      useGradient: true,
+      gradientAngle: customColors.gradientAngle,
+      gradientCSS: generateGradientCSS(customColors.gradientStops, customColors.gradientAngle),
     },
-  ], [t]);
+  ], [t, customColors]);
 
   const steps: { id: Step; label: string; icon: React.ReactNode }[] = useMemo(() => [
     { id: 'template', label: t('step_template'), icon: <IconTemplate className="w-5 h-5" /> },
@@ -684,6 +1464,73 @@ export default function ComposeNewsletterPage() {
     );
   };
 
+  // Filtrer les clients en fonction de l'input email
+  const filteredSuggestions = useMemo(() => {
+    if (!emailInput.trim()) return [];
+    const search = emailInput.toLowerCase();
+    return clients.filter(client => 
+      (client.email.toLowerCase().includes(search) || 
+       client.name.toLowerCase().includes(search)) &&
+      !selectedRecipients.includes(client.id)
+    ).slice(0, 5); // Limiter à 5 suggestions
+  }, [emailInput, clients, selectedRecipients]);
+
+  // Ajouter un email manuel
+  const handleAddManualEmail = (email: string, name?: string) => {
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail || !trimmedEmail.includes('@')) {
+      showGlobalPopup(t('invalid_email'), 'error');
+      return;
+    }
+    // Vérifier si l'email existe déjà dans les clients
+    const existingClient = clients.find(c => c.email.toLowerCase() === trimmedEmail);
+    if (existingClient) {
+      if (!selectedRecipients.includes(existingClient.id)) {
+        setSelectedRecipients(prev => [...prev, existingClient.id]);
+      }
+    } else {
+      // Vérifier si l'email n'est pas déjà dans les emails manuels
+      if (!manualEmails.some(m => m.email.toLowerCase() === trimmedEmail)) {
+        setManualEmails(prev => [...prev, { email: trimmedEmail, name }]);
+      }
+    }
+    setEmailInput('');
+    setShowSuggestions(false);
+  };
+
+  // Supprimer un email manuel
+  const handleRemoveManualEmail = (email: string) => {
+    setManualEmails(prev => prev.filter(m => m.email !== email));
+  };
+
+  // Obtenir les initiales d'un email
+  const getEmailInitials = (email: string) => {
+    const parts = email.split('@')[0];
+    if (parts.length >= 2) {
+      return (parts[0] + parts[1]).toUpperCase();
+    }
+    return parts[0]?.toUpperCase() || '?';
+  };
+
+  // Gérer la touche Enter dans l'input
+  const handleEmailInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (filteredSuggestions.length > 0) {
+        // Sélectionner le premier client suggéré
+        const firstClient = filteredSuggestions[0];
+        setSelectedRecipients(prev => [...prev, firstClient.id]);
+        setEmailInput('');
+        setShowSuggestions(false);
+      } else if (emailInput.includes('@')) {
+        // Ajouter comme email manuel
+        handleAddManualEmail(emailInput);
+      }
+    } else if (e.key === 'Escape') {
+      setShowSuggestions(false);
+    }
+  };
+
   const handleNextStep = () => {
     const currentIndex = steps.findIndex(s => s.id === currentStep);
     if (currentIndex < steps.length - 1) {
@@ -698,45 +1545,282 @@ export default function ComposeNewsletterPage() {
     }
   };
 
-  // Image upload handlers
-  const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // State pour le chargement des uploads
+  const [uploadingBanner, setUploadingBanner] = useState(false);
+  const [uploadingContentImage, setUploadingContentImage] = useState(false);
+  const [uploadingContentVideo, setUploadingContentVideo] = useState(false);
+  const [uploadingHeaderBackground, setUploadingHeaderBackground] = useState(false);
+  
+  // Library modal state
+  const [showLibraryModal, setShowLibraryModal] = useState<{ type: 'image' | 'video'; isOpen: boolean }>({ type: 'image', isOpen: false });
+  const [libraryMedia, setLibraryMedia] = useState<{ images: string[]; videos: string[] }>({ images: [], videos: [] });
+  const [loadingLibrary, setLoadingLibrary] = useState(false);
+
+  // Load library media when modal opens
+  useEffect(() => {
+    if (showLibraryModal.isOpen) {
+      const loadMedia = async () => {
+        setLoadingLibrary(true);
+        try {
+          const { fetchUserMedia } = await import('@/lib/api');
+          const media = await fetchUserMedia();
+          
+          const images = media
+            .filter(m => m.mime.startsWith('image/'))
+            .map(m => m.url);
+          const videos = media
+            .filter(m => m.mime.startsWith('video/'))
+            .map(m => m.url);
+          
+          setLibraryMedia({ images, videos });
+        } catch (error) {
+          console.error('Error loading media library:', error);
+        } finally {
+          setLoadingLibrary(false);
+        }
+      };
+      loadMedia();
+    }
+  }, [showLibraryModal.isOpen]);
+
+  // Insert media from URL directly into editor
+  const insertMediaFromUrl = useCallback((url: string, type: 'image' | 'video') => {
+    if (!url) return;
+    
+    // Add empty paragraphs before and after to allow cursor placement
+    if (type === 'image') {
+      // Insert image HTML at cursor position with surrounding paragraphs
+      const html = `<p><br></p><img src="${url}" alt="" style="max-width: 100%; height: auto; border-radius: 8px; margin: 8px 0; display: block;" /><p><br></p>`;
+      document.execCommand('insertHTML', false, html);
+      setContentImages(prev => [...prev, url]);
+    } else {
+      // Insert video HTML at cursor position with surrounding paragraphs
+      const html = `<p><br></p><video src="${url}" controls style="max-width: 100%; height: auto; border-radius: 8px; margin: 8px 0; display: block;"></video><p><br></p>`;
+      document.execCommand('insertHTML', false, html);
+      setContentVideos(prev => [...prev, url]);
+    }
+  }, []);
+
+  // Insert media from library
+  const insertMediaFromLibrary = useCallback((url: string) => {
+    insertMediaFromUrl(url, showLibraryModal.type);
+    setShowLibraryModal({ type: 'image', isOpen: false });
+  }, [insertMediaFromUrl, showLibraryModal.type]);
+
+  // Remove image from list AND from editor content
+  const removeImage = useCallback((url: string, idx: number) => {
+    // Remove from list
+    setContentImages(prev => prev.filter((_, i) => i !== idx));
+    
+    // Remove from editor HTML content
+    setEmailContent(prev => {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = prev;
+      const images = tempDiv.querySelectorAll(`img[src="${url}"]`);
+      images.forEach(img => {
+        // Remove surrounding empty paragraphs if any
+        const parent = img.parentElement;
+        img.remove();
+        if (parent && parent.tagName === 'P' && !parent.textContent?.trim()) {
+          parent.remove();
+        }
+      });
+      return tempDiv.innerHTML;
+    });
+  }, []);
+
+  // Remove video from list AND from editor content
+  const removeVideo = useCallback((url: string, idx: number) => {
+    // Remove from list
+    setContentVideos(prev => prev.filter((_, i) => i !== idx));
+    
+    // Remove from editor HTML content
+    setEmailContent(prev => {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = prev;
+      const videos = tempDiv.querySelectorAll(`video[src="${url}"]`);
+      videos.forEach(video => {
+        // Remove surrounding empty paragraphs if any
+        const parent = video.parentElement;
+        video.remove();
+        if (parent && parent.tagName === 'P' && !parent.textContent?.trim()) {
+          parent.remove();
+        }
+      });
+      return tempDiv.innerHTML;
+    });
+  }, []);
+
+  // Handle media deletion from editor (called by RichTextEditor)
+  const handleMediaDeleted = useCallback((url: string, type: 'image' | 'video') => {
+    if (type === 'image') {
+      setContentImages(prev => prev.filter(img => img !== url));
+    } else {
+      setContentVideos(prev => prev.filter(vid => vid !== url));
+    }
+  }, []);
+  
+  // Header background image
+  const [headerBackgroundUrl, setHeaderBackgroundUrl] = useState('');
+
+  // Image upload handlers - Upload vers Strapi pour compatibilité Gmail
+  // Avec validation renforcée pour la sécurité
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (!file.type.startsWith('image/')) {
-        showGlobalPopup(t('please_select_image'), 'error');
+      // Validation renforcée
+      const { validateImageFile } = await import('@/lib/upload-validation');
+      const validation = validateImageFile(file);
+      
+      if (!validation.valid) {
+        showGlobalPopup(validation.error || t('please_select_image'), 'error');
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        showGlobalPopup(t('image_max_size'), 'error');
-        return;
+      
+      setUploadingBanner(true);
+      try {
+        const { uploadImage } = await import('@/lib/api');
+        const result = await uploadImage(file);
+        // Construire l'URL complète
+        const fullUrl = result.url.startsWith('http') 
+          ? result.url 
+          : `${process.env.NEXT_PUBLIC_STRAPI_URL}${result.url}`;
+        setBannerImageUrl(fullUrl);
+        showGlobalPopup(t('image_uploaded_success') || 'Image uploadée avec succès', 'success');
+      } catch (error) {
+        console.error('Error uploading banner:', error);
+        showGlobalPopup(t('image_upload_error') || 'Erreur lors de l\'upload', 'error');
+      } finally {
+        setUploadingBanner(false);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => setBannerImageUrl(reader.result as string);
-      reader.readAsDataURL(file);
     }
   };
 
-  const handleContentImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleContentImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (!file.type.startsWith('image/')) {
-        showGlobalPopup(t('please_select_image'), 'error');
+      // Validation renforcée
+      const { validateImageFile } = await import('@/lib/upload-validation');
+      const validation = validateImageFile(file);
+      
+      if (!validation.valid) {
+        showGlobalPopup(validation.error || t('please_select_image'), 'error');
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        showGlobalPopup(t('image_max_size'), 'error');
+      
+      setUploadingContentImage(true);
+      try {
+        const { uploadImage } = await import('@/lib/api');
+        const result = await uploadImage(file);
+        // Construire l'URL complète
+        const fullUrl = result.url.startsWith('http') 
+          ? result.url 
+          : `${process.env.NEXT_PUBLIC_STRAPI_URL}${result.url}`;
+        
+        // Insérer l'image à la position du curseur dans l'éditeur avec paragraphes pour édition
+        const imgHtml = `<p><br></p><img src="${fullUrl}" alt="Image" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 8px; display: block;" /><p><br></p>`;
+        document.execCommand('insertHTML', false, imgHtml);
+        
+        // Mettre à jour le contenu après insertion
+        const editorElement = document.querySelector('[contenteditable="true"]');
+        if (editorElement) {
+          setEmailContent(editorElement.innerHTML);
+        }
+        
+        // Aussi ajouter à contentImages pour le suivi (optionnel)
+        setContentImages(prev => [...prev, fullUrl]);
+        showGlobalPopup(t('image_uploaded_success') || 'Image uploadée avec succès', 'success');
+      } catch (error) {
+        console.error('Error uploading content image:', error);
+        showGlobalPopup(t('image_upload_error') || 'Erreur lors de l\'upload', 'error');
+      } finally {
+        setUploadingContentImage(false);
+        // Reset input pour permettre de sélectionner la même image
+        e.target.value = '';
+      }
+    }
+  };
+
+  // Video upload handler
+  const handleContentVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validation renforcée
+      const { validateVideoFile } = await import('@/lib/upload-validation');
+      const validation = validateVideoFile(file);
+      
+      if (!validation.valid) {
+        showGlobalPopup(validation.error || t('please_select_video'), 'error');
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setContentImages(prev => [...prev, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
+      
+      setUploadingContentVideo(true);
+      try {
+        const { uploadImage } = await import('@/lib/api');
+        const result = await uploadImage(file);
+        const fullUrl = result.url.startsWith('http') 
+          ? result.url 
+          : `${process.env.NEXT_PUBLIC_STRAPI_URL}${result.url}`;
+        
+        // Insérer la vidéo à la position du curseur avec paragraphes pour édition
+        const videoHtml = `<p><br></p><video src="${fullUrl}" controls style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 8px; display: block;"></video><p><br></p>`;
+        document.execCommand('insertHTML', false, videoHtml);
+        
+        // Mettre à jour le contenu après insertion
+        const editorElement = document.querySelector('[contenteditable="true"]');
+        if (editorElement) {
+          setEmailContent(editorElement.innerHTML);
+        }
+        
+        // Ajouter à contentVideos pour le suivi
+        setContentVideos(prev => [...prev, fullUrl]);
+        
+        showGlobalPopup(t('video_uploaded_success') || 'Vidéo uploadée avec succès', 'success');
+      } catch (error) {
+        console.error('Error uploading video:', error);
+        showGlobalPopup(t('video_upload_error') || 'Erreur lors de l\'upload de la vidéo', 'error');
+      } finally {
+        setUploadingContentVideo(false);
+        e.target.value = '';
+      }
+    }
+  };
+
+  // Header background image upload handler
+  const handleHeaderBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validation renforcée
+      const { validateImageFile } = await import('@/lib/upload-validation');
+      const validation = validateImageFile(file);
+      
+      if (!validation.valid) {
+        showGlobalPopup(validation.error || t('please_select_image'), 'error');
+        return;
+      }
+      
+      setUploadingHeaderBackground(true);
+      try {
+        const { uploadImage } = await import('@/lib/api');
+        const result = await uploadImage(file);
+        const fullUrl = result.url.startsWith('http') 
+          ? result.url 
+          : `${process.env.NEXT_PUBLIC_STRAPI_URL}${result.url}`;
+        
+        setHeaderBackgroundUrl(fullUrl);
+        showGlobalPopup(t('image_uploaded_success') || 'Image uploadée avec succès', 'success');
+      } catch (error) {
+        console.error('Error uploading header background:', error);
+        showGlobalPopup(t('image_upload_error') || 'Erreur lors de l\'upload', 'error');
+      } finally {
+        setUploadingHeaderBackground(false);
+        e.target.value = '';
+      }
     }
   };
 
   const handleSend = async () => {
-    if (selectedRecipients.length === 0) {
+    if (selectedRecipients.length === 0 && manualEmails.length === 0) {
       showGlobalPopup(t('please_select_recipient'), 'error');
       return;
     }
@@ -744,7 +1828,7 @@ export default function ComposeNewsletterPage() {
       showGlobalPopup(t('please_enter_subject'), 'error');
       return;
     }
-    if (!user?.id) {
+    if (!user?.id || !user?.email) {
       showGlobalPopup(t('not_authenticated'), 'error');
       return;
     }
@@ -757,10 +1841,11 @@ export default function ComposeNewsletterPage() {
       // Récupérer les clients sélectionnés
       const selectedClients = clients.filter(c => selectedRecipients.includes(c.id));
       
-      // Créer ou trouver les subscribers correspondants aux clients
+      // Créer ou trouver les subscribers correspondants aux clients ET aux emails manuels
       const subscriberIds: number[] = [];
+      
+      // Créer subscribers pour les clients sélectionnés
       for (const client of selectedClients) {
-        // Séparer le nom en prénom/nom (approximatif)
         const nameParts = client.name.trim().split(' ');
         const firstName = nameParts[0] || '';
         const lastName = nameParts.slice(1).join(' ') || '';
@@ -778,6 +1863,81 @@ export default function ComposeNewsletterPage() {
         }
       }
       
+      // Créer subscribers pour les emails manuels
+      for (const manual of manualEmails) {
+        const nameParts = (manual.name || '').trim().split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+        
+        try {
+          const subscriberId = await findOrCreateSubscriber({
+            email: manual.email,
+            first_name: firstName,
+            last_name: lastName,
+            userId: user.id,
+          });
+          subscriberIds.push(subscriberId);
+        } catch (err) {
+          console.warn(`Could not create subscriber for ${manual.email}:`, err);
+        }
+      }
+
+      // Générer le HTML complet de l'email
+      const templateData = templates.find(t => t.id === selectedTemplate);
+      const fullHtmlContent = generateEmailHtml({
+        template: templateData || templates[0],
+        title: emailTitle || emailSubject,
+        content: emailContent,
+        ctaText,
+        ctaUrl,
+        bannerImageUrl,
+        footerSettings,
+        footerLogoUrl: getFooterLogoUrl(),
+        userProfilePicture: getUserProfilePicture(),
+        headerTitleColor: customColors.headerTitleColor,
+        buttonColor: customColors.buttonColor,
+        buttonTextColor: customColors.buttonTextColor,
+        headerBackgroundUrl,
+        fontFamily: customColors.fontFamily,
+      });
+
+      // Combiner les clients sélectionnés et les emails manuels
+      const allRecipients = [
+        ...selectedClients.map(c => ({
+          email: c.email,
+          firstName: c.name.split(' ')[0],
+          lastName: c.name.split(' ').slice(1).join(' '),
+        })),
+        ...manualEmails.map(m => ({
+          email: m.email,
+          firstName: m.name?.split(' ')[0] || '',
+          lastName: m.name?.split(' ').slice(1).join(' ') || '',
+        })),
+      ];
+
+      // Envoyer les emails via l'API (avec token JWT pour authentification)
+      const token = localStorage.getItem('token');
+      const emailResponse = await fetch('/api/newsletters/send', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          recipients: allRecipients,
+          subject: emailSubject,
+          htmlContent: fullHtmlContent,
+          textContent: emailTitle + '\n\n' + emailContent.replace(/<[^>]*>/g, ''),
+        }),
+      });
+
+      const emailResult = await emailResponse.json();
+      
+      if (!emailResponse.ok) {
+        console.error('Email sending failed:', emailResult);
+        // Continuer quand même pour enregistrer la newsletter
+      }
+      
       // Créer la newsletter dans la base de données
       await createNewsletter({
         title: emailTitle || emailSubject,
@@ -788,9 +1948,21 @@ export default function ComposeNewsletterPage() {
         send_at: new Date().toISOString(),
         author: user.id,
         subscribers: subscriberIds.length > 0 ? subscriberIds : undefined,
+        // Nouveaux champs pour le contenu enrichi
+        custom_colors: selectedTemplate === 'custom' ? customColors : undefined,
+        header_background_url: headerBackgroundUrl || undefined,
+        banner_url: bannerImageUrl || undefined,
+        cta_text: ctaText || undefined,
+        cta_url: ctaUrl || undefined,
       });
 
-      showGlobalPopup(`${t('newsletter_sent_success')} ${selectedRecipients.length} ${t('recipients_count')}`, 'success');
+      if (emailResult.success) {
+        showGlobalPopup(`${t('newsletter_sent_success')} ${emailResult.sent} ${t('recipients_count')}`, 'success');
+      } else if (emailResult.sent > 0) {
+        showGlobalPopup(`${t('newsletter_partially_sent')}: ${emailResult.sent}/${selectedRecipients.length}`, 'warning');
+      } else {
+        showGlobalPopup(`${t('newsletter_saved_not_sent')}`, 'warning');
+      }
       
       // Rediriger vers la liste des newsletters après envoi
       setTimeout(() => {
@@ -804,6 +1976,145 @@ export default function ComposeNewsletterPage() {
     }
   };
 
+  // Générer le HTML complet de l'email pour l'envoi
+  const generateEmailHtml = ({
+    template,
+    title,
+    content,
+    ctaText: cta,
+    ctaUrl: ctaLink,
+    bannerImageUrl: banner,
+    footerSettings: footer,
+    footerLogoUrl,
+    userProfilePicture,
+    headerTitleColor,
+    buttonColor,
+    buttonTextColor,
+    headerBackgroundUrl: headerBgUrl,
+    fontFamily,
+  }: {
+    template: EmailTemplate;
+    title: string;
+    content: string;
+    ctaText: string;
+    ctaUrl: string;
+    bannerImageUrl: string;
+    footerSettings: FooterSettings;
+    footerLogoUrl: string | null;
+    userProfilePicture?: string | null;
+    headerTitleColor?: string;
+    buttonColor?: string;
+    buttonTextColor?: string;
+    headerBackgroundUrl?: string;
+    fontFamily?: string;
+  }) => {
+    const isPromo = template.id === 'promotional';
+    const isAnnouncement = template.id === 'announcement';
+    
+    // Use custom colors if provided
+    const titleColor = headerTitleColor || template.textColor || '#1f2937';
+    const ctaButtonColor = buttonColor || template.primaryColor;
+    const ctaButtonTextColor = buttonTextColor || '#ffffff';
+    const emailFont = fontFamily || 'Arial';
+    const fontFamilyCSS = `'${emailFont}', Arial, Helvetica, sans-serif`;
+    const googleFontUrl = fontFamily 
+      ? `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily).replace(/%20/g, '+')}:wght@400;600;700&display=swap`
+      : null;
+    const headerBackground = headerBgUrl 
+      ? `background-image: url(${headerBgUrl}); background-size: cover; background-position: center; background-color: ${template.primaryColor};`
+      : `background: linear-gradient(135deg, ${template.primaryColor}, ${template.accentColor});`;
+
+    return `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  ${googleFontUrl ? `<link href="${googleFontUrl}" rel="stylesheet">` : ''}
+  <style>
+    @media screen {
+      ${googleFontUrl ? `@import url('${googleFontUrl}');` : ''}
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: ${fontFamilyCSS};">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 20px 0;">
+    <tr>
+      <td align="center">
+        <table width="700" cellpadding="0" cellspacing="0" style="max-width: 700px; width: 100%; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="${headerBackground} padding: ${isAnnouncement ? '48px' : '32px'} 24px; text-align: center;">
+              ${isPromo ? `<div style="display: inline-block; padding: 4px 16px; background-color: rgba(255,255,255,0.4); border-radius: 20px; color: #1f2937; font-size: 14px; font-weight: bold; margin-bottom: 16px;">🎉 ${t('special_offer') || 'Offre Spéciale'}</div>` : ''}
+              <h1 style="margin: 0; color: ${titleColor}; font-size: ${isAnnouncement ? '28px' : '24px'}; font-weight: bold;">${title}</h1>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 32px 24px;">
+              <div style="color: #374151; font-size: 16px; line-height: 1.6;">
+                ${content}
+              </div>
+              
+              ${cta && ctaLink ? `
+              <div style="text-align: center; margin: 32px 0;">
+                <a href="${ctaLink}" style="display: inline-block; padding: 16px 32px; background-color: ${ctaButtonColor}; color: ${ctaButtonTextColor}; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+                  ${cta}${isPromo ? ' →' : ''}
+                </a>
+              </div>
+              ` : ''}
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 24px; border-top: 1px solid #e5e7eb;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td width="80" valign="top">
+                    ${footerLogoUrl 
+                      ? `<img src="${footerLogoUrl}" alt="Logo" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover;">`
+                      : userProfilePicture 
+                        ? `<img src="${userProfilePicture}" alt="Profile" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover;">`
+                        : `<div style="width: 64px; height: 64px; border-radius: 8px; background-color: #e5e7eb;"></div>`
+                    }
+                  </td>
+                  <td valign="top" style="padding-left: 16px;">
+                    <p style="margin: 0 0 4px 0; font-weight: 600; color: #1f2937;">${footer.firstName} ${footer.lastName}</p>
+                    ${footer.email ? `<p style="margin: 0 0 2px 0; color: #FFFFFF; font-size: 14px;">✉️ ${footer.email}</p>` : ''}
+                    ${footer.phone ? `<p style="margin: 0 0 2px 0; color: #FFFFFF; font-size: 14px;">📞 ${footer.phone}</p>` : ''}
+                    ${footer.website ? `<p style="margin: 0; color: #FFFFFF; font-size: 14px;">🌐 <a href="${footer.website}" style="color: #3b82f6;">${footer.website.replace(/^https?:\/\//, '')}</a></p>` : ''}
+                  </td>
+                </tr>
+              </table>
+              
+              ${footer.customText ? `<p style="margin: 16px 0 0 0; padding-top: 16px; border-top: 1px solid #e5e7eb; color: #FFFFFF; font-size: 14px;">${footer.customText}</p>` : ''}
+              
+              <p style="margin: 16px 0 0 0; text-align: center; color: #9ca3af; font-size: 12px;">
+                <a href="#" style="color: #9ca3af;">${footer.unsubscribeText}</a>
+              </p>
+            </td>
+          </tr>
+          
+          ${banner ? `
+          <!-- Banner -->
+          <tr>
+            <td style="padding: 0 24px 24px;">
+              <img src="${banner}" alt="Banner" style="width: 100%; max-height: 192px; object-fit: contain; border-radius: 8px;">
+            </td>
+          </tr>
+          ` : ''}
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+    `.trim();
+  };
+
   const canProceed = () => {
     switch (currentStep) {
       case 'template':
@@ -811,11 +2122,14 @@ export default function ComposeNewsletterPage() {
       case 'content':
         return emailSubject.trim() !== '' && emailContent.trim() !== '';
       case 'recipients':
-        return selectedRecipients.length > 0;
+        return selectedRecipients.length > 0 || manualEmails.length > 0;
       default:
         return true;
     }
   };
+
+  // Nombre total de destinataires
+  const totalRecipients = selectedRecipients.length + manualEmails.length;
 
   const selectedTemplateData = templates.find(t => t.id === selectedTemplate);
 
@@ -851,7 +2165,7 @@ export default function ComposeNewsletterPage() {
     <ProtectedRoute>
       <div className="min-h-screen bg-page">
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-card border-b border-default py-4 rounded-t-xl">
+        <header className="sticky top-0 z-40 bg-card border-b border-default py-8 rounded-t-xl">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -871,7 +2185,7 @@ export default function ComposeNewsletterPage() {
                       {templates.find(tp => tp.id === selectedTemplate)?.name}
                     </span>
                   ) : (
-                    <p className="text-sm text-muted">
+                    <p className="text-sm text-muted my-2">  
                       {t('select_template')}
                     </p>
                   )}
@@ -922,10 +2236,10 @@ export default function ComposeNewsletterPage() {
                     }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all
                       ${currentStep === step.id 
-                        ? 'bg-accent-light' 
+                        ? 'bg-accent-light !text-white' 
                         : index < stepIndex 
                           ? 'bg-success-light text-success' 
-                          : 'text-muted hover:text-secondary'
+                          : '!text-primary hover:text-secondary'
                       }`}
                   >
                     {index < stepIndex ? (
@@ -1026,6 +2340,36 @@ export default function ComposeNewsletterPage() {
                         );
                       })}
                     </div>
+
+                    {/* Custom Template Color Pickers - Below cards, aligned right */}
+                    <AnimatePresence>
+                      {selectedTemplate === 'custom' && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="mt-4"
+                        >
+                          <ThemeCustomizer
+                            customColors={customColors}
+                            setCustomColors={setCustomColors}
+                            headerBackgroundUrl={headerBackgroundUrl}
+                            setHeaderBackgroundUrl={setHeaderBackgroundUrl}
+                            headerBackgroundInputRef={headerBackgroundInputRef}
+                            handleHeaderBackgroundUpload={handleHeaderBackgroundUpload}
+                            uploadingHeaderBackground={uploadingHeaderBackground}
+                            availableFonts={availableFonts}
+                            generateGradientCSS={generateGradientCSS}
+                            addGradientStop={addGradientStop}
+                            removeGradientStop={removeGradientStop}
+                            updateGradientStop={updateGradientStop}
+                            emailTitle={emailTitle}
+                            ctaText={ctaText}
+                            t={t}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 )}
 
@@ -1043,14 +2387,24 @@ export default function ComposeNewsletterPage() {
                         <h2 className="text-2xl font-bold text-primary mb-2">{t('write_content')}</h2>
                         <p className="text-secondary">{t('write_content_desc')}</p>
                       </div>
-                      <button
-                        onClick={() => setShowFooterSettings(!showFooterSettings)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
-                          ${showFooterSettings ? 'bg-accent text-white' : 'bg-muted hover:bg-hover text-secondary'}`}
-                      >
-                        <IconSettings className="w-4 h-4" />
-                        <span>{t('footer')}</span>
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setShowThemeSettings(!showThemeSettings)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
+                            ${showThemeSettings ? 'bg-accent text-white' : 'bg-muted hover:bg-hover text-secondary'}`}
+                        >
+                          <IconPalette className="w-4 h-4 !text-primary" />
+                          <span>{t('theme') || 'Thème'}</span>
+                        </button>
+                        <button
+                          onClick={() => setShowFooterSettings(!showFooterSettings)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
+                            ${showFooterSettings ? 'bg-accent text-white' : 'bg-muted hover:bg-hover text-secondary'}`}
+                        >
+                          <IconSettings className="w-4 h-4" />
+                          <span>{t('footer')}</span>
+                        </button>
+                      </div>
                     </div>
 
                     {/* Footer Settings Panel */}
@@ -1204,6 +2558,36 @@ export default function ComposeNewsletterPage() {
                       )}
                     </AnimatePresence>
 
+                    {/* Theme Settings Panel */}
+                    <AnimatePresence>
+                      {showThemeSettings && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <ThemeCustomizer
+                            customColors={customColors}
+                            setCustomColors={setCustomColors}
+                            headerBackgroundUrl={headerBackgroundUrl}
+                            setHeaderBackgroundUrl={setHeaderBackgroundUrl}
+                            headerBackgroundInputRef={headerBackgroundInputRef}
+                            handleHeaderBackgroundUpload={handleHeaderBackgroundUpload}
+                            uploadingHeaderBackground={uploadingHeaderBackground}
+                            availableFonts={availableFonts}
+                            generateGradientCSS={generateGradientCSS}
+                            addGradientStop={addGradientStop}
+                            removeGradientStop={removeGradientStop}
+                            updateGradientStop={updateGradientStop}
+                            emailTitle={emailTitle}
+                            ctaText={ctaText}
+                            t={t}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
                     {/* Title */}
                     <div className="bg-card rounded-xl p-6 border border-default space-y-4">
                       <div>
@@ -1235,30 +2619,38 @@ export default function ComposeNewsletterPage() {
 
                     {/* Rich Text Editor */}
                     <div className="bg-card rounded-xl p-6 border border-default space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold text-primary">{t('message_label')} *</h3>
-                        <div className="flex items-center gap-2">
-                          <input
-                            ref={contentImageInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={handleContentImageUpload}
-                            className="hidden"
-                          />
-                          <button
-                            onClick={() => contentImageInputRef.current?.click()}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted hover:bg-hover text-secondary text-sm"
-                          >
-                            <IconPhoto className="w-4 h-4" />
-                            {t('add_image')}
-                          </button>
-                        </div>
-                      </div>
+                      <h3 className="font-semibold text-primary">{t('message_label')} *</h3>
+                      
+                      {/* Hidden file inputs for content media */}
+                      <input
+                        ref={contentImageInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleContentImageUpload}
+                        className="hidden"
+                      />
+                      <input
+                        ref={contentVideoInputRef}
+                        type="file"
+                        accept="video/*"
+                        onChange={handleContentVideoUpload}
+                        className="hidden"
+                      />
                       
                       <RichTextEditor 
                         value={emailContent}
                         onChange={setEmailContent}
                         placeholder={t('write_message_placeholder')}
+                        onImageFromComputer={() => contentImageInputRef.current?.click()}
+                        onImageFromLibrary={() => setShowLibraryModal({ type: 'image', isOpen: true })}
+                        onImageFromUrl={(url) => insertMediaFromUrl(url, 'image')}
+                        uploadingImage={uploadingContentImage}
+                        onVideoFromComputer={() => contentVideoInputRef.current?.click()}
+                        onVideoFromLibrary={() => setShowLibraryModal({ type: 'video', isOpen: true })}
+                        onVideoFromUrl={(url) => insertMediaFromUrl(url, 'video')}
+                        uploadingVideo={uploadingContentVideo}
+                        fontFamily={customColors.fontFamily}
+                        onMediaDeleted={handleMediaDeleted}
                         translations={{
                           heading1: t('toolbar_heading1'),
                           heading2: t('toolbar_heading2'),
@@ -1272,24 +2664,73 @@ export default function ComposeNewsletterPage() {
                           alignRight: t('toolbar_align_right'),
                           textColor: t('toolbar_text_color'),
                           insertLink: t('toolbar_insert_link'),
+                          insertImage: t('toolbar_insert_image'),
+                          insertVideo: t('toolbar_insert_video'),
+                          fromComputer: t('from_computer'),
+                          fromLibrary: t('from_library'),
+                          fromUrl: t('from_url'),
+                          cancel: t('cancel'),
                         }}
                       />
 
-                      {/* Content Images Preview */}
-                      {contentImages.length > 0 && (
-                        <div className="flex flex-wrap gap-3 pt-4 border-t border-default">
-                          {contentImages.map((img, idx) => (
-                            <div key={idx} className="relative group">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={img} alt="" className="w-24 h-24 object-cover rounded-lg" />
-                              <button
-                                onClick={() => setContentImages(prev => prev.filter((_, i) => i !== idx))}
-                                className="absolute -top-2 -right-2 p-1 bg-danger text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                              >
-                                <IconX className="w-3 h-3" />
-                              </button>
+                      {/* Content Images & Videos Preview */}
+                      {(contentImages.length > 0 || contentVideos.length > 0) && (
+                        <div className="pt-4 border-t border-default space-y-3">
+                          {/* Images */}
+                          {contentImages.length > 0 && (
+                            <div>
+                              <p className="text-xs text-secondary mb-2 flex items-center gap-1">
+                                <IconPhoto className="w-3 h-3" />
+                                {t('images_used') || 'Images utilisées'} ({contentImages.length})
+                              </p>
+                              <div className="flex flex-wrap gap-3">
+                                {contentImages.map((img, idx) => (
+                                  <div key={idx} className="relative group">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={img} alt="" className="w-24 h-24 object-cover rounded-lg" />
+                                    <button
+                                      onClick={() => removeImage(img, idx)}
+                                      className="absolute -top-2 -right-2 p-1 bg-danger text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                      <IconX className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                          ))}
+                          )}
+                          
+                          {/* Videos */}
+                          {contentVideos.length > 0 && (
+                            <div>
+                              <p className="text-xs text-secondary mb-2 flex items-center gap-1">
+                                <IconVideo className="w-3 h-3" />
+                                {t('videos_used') || 'Vidéos utilisées'} ({contentVideos.length})
+                              </p>
+                              <div className="flex flex-wrap gap-3">
+                                {contentVideos.map((video, idx) => (
+                                  <div key={idx} className="relative group">
+                                    <video 
+                                      src={video} 
+                                      className="w-32 h-24 object-cover rounded-lg bg-gray-900"
+                                      preload="metadata"
+                                    />
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                      <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center">
+                                        <div className="w-0 h-0 border-l-[10px] border-l-gray-800 border-y-[6px] border-y-transparent ml-1" />
+                                      </div>
+                                    </div>
+                                    <button
+                                      onClick={() => removeVideo(video, idx)}
+                                      className="absolute -top-2 -right-2 p-1 bg-danger text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                      <IconX className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -1337,7 +2778,12 @@ export default function ComposeNewsletterPage() {
                         className="hidden"
                       />
                       
-                      {bannerImageUrl ? (
+                      {uploadingBanner ? (
+                        <div className="border-2 border-dashed border-accent rounded-xl p-6 text-center bg-accent/5">
+                          <IconLoader2 className="w-8 h-8 mx-auto mb-2 text-accent animate-spin" />
+                          <p className="text-primary font-medium">{t('uploading') || 'Upload en cours...'}</p>
+                        </div>
+                      ) : bannerImageUrl ? (
                         <div className="relative">
                           <div className="relative rounded-xl overflow-hidden border border-default">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1388,6 +2834,143 @@ export default function ComposeNewsletterPage() {
                     <h2 className="text-2xl font-bold text-primary mb-2">{t('select_recipients')}</h2>
                     <p className="text-secondary mb-6">{t('select_recipients_desc')}</p>
 
+                    {/* Manual email input with suggestions */}
+                    <div className="bg-card rounded-xl border border-default p-4 mb-4">
+                      <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
+                        <IconMail className="w-5 h-5 text-accent" />
+                        {t('add_recipient_manually') || 'Ajouter un destinataire'}
+                      </h3>
+                      
+                      <div className="relative">
+                        <div className="flex gap-2">
+                          <div className="relative flex-1">
+                            <input
+                              ref={emailInputRef}
+                              type="email"
+                              value={emailInput}
+                              onChange={(e) => {
+                                setEmailInput(e.target.value);
+                                setShowSuggestions(true);
+                              }}
+                              onFocus={() => setShowSuggestions(true)}
+                              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                              onKeyDown={handleEmailInputKeyDown}
+                              placeholder={t('enter_email_placeholder') || 'Entrez un email...'}
+                              className="input w-full"
+                            />
+                            
+                            {/* Suggestions dropdown */}
+                            <AnimatePresence>
+                              {showSuggestions && (emailInput.trim() !== '') && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: -10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: -10 }}
+                                  className="absolute bottom-full left-0 right-0 mb-2 bg-card border border-default rounded-xl shadow-xl z-20 overflow-hidden"
+                                >
+                                  {filteredSuggestions.length > 0 ? (
+                                    <div className="max-h-[200px] overflow-y-auto">
+                                      {filteredSuggestions.map((client) => (
+                                        <button
+                                          key={client.id}
+                                          type="button"
+                                          onMouseDown={(e) => e.preventDefault()}
+                                          onClick={() => {
+                                            setSelectedRecipients(prev => [...prev, client.id]);
+                                            setEmailInput('');
+                                            setShowSuggestions(false);
+                                          }}
+                                          className="w-full flex items-center gap-3 p-3 hover:bg-hover transition-colors text-left"
+                                        >
+                                          {client.image?.url ? (
+                                            // eslint-disable-next-line @next/next/no-img-element
+                                            <img 
+                                              src={client.image.url.startsWith('http') ? client.image.url : `${process.env.NEXT_PUBLIC_STRAPI_URL}${client.image.url}`}
+                                              alt={client.name}
+                                              className="w-10 h-10 rounded-full object-cover"
+                                            />
+                                          ) : (
+                                            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold">
+                                              {client.name[0]?.toUpperCase()}
+                                            </div>
+                                          )}
+                                          <div className="flex-1 min-w-0">
+                                            <p className="font-medium text-primary truncate">{client.name}</p>
+                                            <p className="text-sm text-muted truncate">{client.email}</p>
+                                          </div>
+                                          <IconCheck className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100" />
+                                        </button>
+                                      ))}
+                                    </div>
+                                  ) : emailInput.includes('@') ? (
+                                    <button
+                                      type="button"
+                                      onMouseDown={(e) => e.preventDefault()}
+                                      onClick={() => handleAddManualEmail(emailInput)}
+                                      className="w-full flex items-center gap-3 p-3 hover:bg-hover transition-colors text-left"
+                                    >
+                                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-secondary font-semibold">
+                                        {getEmailInitials(emailInput)}
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="font-medium text-primary">{t('add_new_recipient') || 'Ajouter ce destinataire'}</p>
+                                        <p className="text-sm text-muted truncate">{emailInput}</p>
+                                      </div>
+                                      <IconChevronRight className="w-5 h-5 text-muted" />
+                                    </button>
+                                  ) : (
+                                    <div className="p-3 text-center text-muted text-sm">
+                                      {t('type_valid_email') || 'Tapez un email valide...'}
+                                    </div>
+                                  )}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                          
+                          <button
+                            type="button"
+                            onClick={() => handleAddManualEmail(emailInput)}
+                            disabled={!emailInput.includes('@')}
+                            className="px-4 py-2 rounded-lg bg-accent text-white font-medium 
+                              hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                          >
+                            {t('add') || 'Ajouter'}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Manual emails list */}
+                      {manualEmails.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-default">
+                          <p className="text-sm text-secondary mb-2">
+                            {t('manual_recipients') || 'Destinataires ajoutés'} ({manualEmails.length})
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {manualEmails.map((manual) => (
+                              <div
+                                key={manual.email}
+                                className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full group"
+                              >
+                                <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-accent text-xs font-semibold">
+                                  {getEmailInitials(manual.email)}
+                                </div>
+                                <span className="text-sm text-primary">{manual.email}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveManualEmail(manual.email)}
+                                  className="p-0.5 rounded-full hover:bg-danger/20 text-muted hover:text-danger transition-colors"
+                                >
+                                  <IconX className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Existing clients list */}
                     <div className="bg-card rounded-xl border border-default overflow-hidden">
                       <div className="p-4 bg-muted border-b border-default flex items-center justify-between">
                         <label className="flex items-center gap-3 cursor-pointer">
@@ -1402,7 +2985,7 @@ export default function ComposeNewsletterPage() {
                           </span>
                         </label>
                         <span className="text-sm text-secondary">
-                          {selectedRecipients.length} {t('recipients_selected')}
+                          {selectedRecipients.length + manualEmails.length} {t('recipients_selected')}
                         </span>
                       </div>
 
@@ -1424,6 +3007,18 @@ export default function ComposeNewsletterPage() {
                                 onChange={() => handleToggleRecipient(client.id)}
                                 className="w-5 h-5 rounded border-default text-accent focus:ring-accent"
                               />
+                              {client.image?.url ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img 
+                                  src={client.image.url.startsWith('http') ? client.image.url : `${process.env.NEXT_PUBLIC_STRAPI_URL}${client.image.url}`}
+                                  alt={client.name}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold">
+                                  {client.name[0]?.toUpperCase()}
+                                </div>
+                              )}
                               <div className="flex-1">
                                 <p className="font-medium text-primary">{client.name}</p>
                                 <p className="text-sm text-muted">{client.email}</p>
@@ -1486,7 +3081,7 @@ export default function ComposeNewsletterPage() {
                             <span className="text-sm text-secondary">{t('step_recipients')}</span>
                           </div>
                           <p className="font-semibold text-primary">
-                            {selectedRecipients.length} {t('contacts')}
+                            {totalRecipients} {t('contacts')}
                           </p>
                         </div>
                       </div>
@@ -1494,9 +3089,10 @@ export default function ComposeNewsletterPage() {
                       <div className="bg-card rounded-xl p-5 border border-default">
                         <h3 className="font-semibold text-primary mb-3">{t('step_recipients')}</h3>
                         <div className="flex flex-wrap gap-2">
+                          {/* Clients sélectionnés */}
                           {clients
                             .filter(c => selectedRecipients.includes(c.id))
-                            .slice(0, 10)
+                            .slice(0, 8)
                             .map(client => (
                               <span
                                 key={client.id}
@@ -1505,9 +3101,21 @@ export default function ComposeNewsletterPage() {
                                 {client.name}
                               </span>
                             ))}
-                          {selectedRecipients.length > 10 && (
+                          {/* Emails manuels */}
+                          {manualEmails.slice(0, 3).map(manual => (
+                            <span
+                              key={manual.email}
+                              className="px-3 py-1 bg-accent/10 rounded-full text-sm text-accent flex items-center gap-1"
+                            >
+                              <span className="w-4 h-4 rounded-full bg-accent/20 flex items-center justify-center text-[10px] font-bold">
+                                {getEmailInitials(manual.email)}
+                              </span>
+                              {manual.email}
+                            </span>
+                          ))}
+                          {totalRecipients > 11 && (
                             <span className="px-3 py-1 bg-accent-light rounded-full text-sm text-accent">
-                              +{selectedRecipients.length - 10} {t('others')}
+                              +{totalRecipients - 11} {t('others')}
                             </span>
                           )}
                         </div>
@@ -1517,8 +3125,8 @@ export default function ComposeNewsletterPage() {
                         <div className="flex items-center justify-between">
                           <div>
                             <h3 className="font-semibold text-primary mb-1">{t('ready_to_send')}</h3>
-                            <p className="text-sm text-secondary">
-                              {t('newsletter_will_be_sent')} {selectedRecipients.length} {t('recipients_count')}
+                            <p className="text-sm !text-secondary">
+                              {t('newsletter_will_be_sent')} {totalRecipients} {t('recipients_count')}
                             </p>
                           </div>
                           <button
@@ -1773,6 +3381,11 @@ export default function ComposeNewsletterPage() {
                             footerSettings={footerSettings}
                             footerLogoUrl={getFooterLogoUrl()}
                             userProfilePicture={getUserProfilePicture()}
+                            headerTitleColor={customColors.headerTitleColor}
+                            buttonColor={customColors.buttonColor}
+                            buttonTextColor={customColors.buttonTextColor}
+                            headerBackgroundUrl={headerBackgroundUrl}
+                            fontFamily={customColors.fontFamily}
                             translations={emailPreviewTranslations}
                           />
                         ) : (
@@ -1784,6 +3397,104 @@ export default function ComposeNewsletterPage() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+q
+        {/* Library Modal */}
+        <AnimatePresence>
+          {showLibraryModal.isOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+              onClick={() => setShowLibraryModal({ type: 'image', isOpen: false })}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-card rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-default">
+                  <h2 className="text-xl font-bold text-primary">
+                    {t('select_from_library')} - {showLibraryModal.type === 'image' ? t('toolbar_insert_image') : t('toolbar_insert_video')}
+                  </h2>
+                  <button
+                    onClick={() => setShowLibraryModal({ type: 'image', isOpen: false })}
+                    className="p-2 rounded-lg hover:bg-hover transition-colors text-secondary hover:text-primary"
+                  >
+                    <IconX className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Content - Grid of media items */}
+                <div className="p-6 overflow-y-auto max-h-[60vh]">
+                  {loadingLibrary ? (
+                    <div className="flex items-center justify-center py-16">
+                      <IconLoader2 className="w-8 h-8 animate-spin text-accent" />
+                    </div>
+                  ) : showLibraryModal.type === 'image' ? (
+                    libraryMedia.images.length > 0 ? (
+                      <div className="grid grid-cols-4 gap-4">
+                        {libraryMedia.images.map((img, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => insertMediaFromLibrary(img)}
+                            className="relative aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-accent transition-all group"
+                          >
+                            <Image 
+                              src={img} 
+                              alt=""
+                              fill
+                              sizes="(max-width: 768px) 25vw, 200px"
+                              className="object-cover"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                              <IconCheck className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12 text-secondary">
+                        <IconPhoto className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                        <p>{t('no_media_in_library')}</p>
+                      </div>
+                    )
+                  ) : (
+                    libraryMedia.videos.length > 0 ? (
+                      <div className="grid grid-cols-3 gap-4">
+                        {libraryMedia.videos.map((video, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => insertMediaFromLibrary(video)}
+                            className="relative aspect-video rounded-lg overflow-hidden border-2 border-transparent hover:border-accent transition-all group bg-gray-900"
+                          >
+                            <video 
+                              src={video}
+                              className="w-full h-full object-cover"
+                              preload="metadata"
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                              <IconCheck className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12 text-secondary">
+                        <IconVideo className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                        <p>{t('no_media_in_library')}</p>
+                      </div>
+                    )
+                  )}
                 </div>
               </motion.div>
             </motion.div>

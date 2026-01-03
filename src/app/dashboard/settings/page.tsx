@@ -10,7 +10,7 @@ import {
   IconSun, 
   IconMoon, 
   IconDeviceDesktop,
-  IconTrendingUp,
+  IconChartLine,
   IconUsers,
   IconMagnet,
   IconBuilding,
@@ -20,9 +20,17 @@ import {
   IconBell,
   IconCalendar,
   IconFileInvoice,
+  IconPhoto,
+  IconSettings,
+  IconActivity,
+  IconUsersGroup,
+  IconBriefcase,
+  IconFolder,
+  IconUserCog,
 } from '@tabler/icons-react';
+import SmtpConfigSection from '@/app/components/SmtpConfigSection';
 
-type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'sidebar';
+type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'sidebar' | 'email';
 
 export default function SettingsPage() {
   const { t, language, setLanguage } = useLanguage();
@@ -36,16 +44,60 @@ export default function SettingsPage() {
     { id: 'notifications', label: t('notifications') || 'Notifications', icon: <IconBell className="w-4 h-4" /> },
     { id: 'format', label: t('format') || 'Format', icon: <IconCalendar className="w-4 h-4" /> },
     { id: 'invoice', label: t('invoicing') || 'Facturation', icon: <IconFileInvoice className="w-4 h-4" /> },
+    { id: 'email', label: t('email_config') || 'Email', icon: <IconMail className="w-4 h-4" /> },
     { id: 'sidebar', label: t('navigation') || 'Navigation', icon: <IconBuilding className="w-4 h-4" /> },
   ];
 
-  const sidebarLinkOptions: { id: SidebarLinkId; label: string; icon: React.ReactNode }[] = [
-    { id: 'revenue', label: t('revenue') || 'Chiffre d\'affaires', icon: <IconTrendingUp className="w-4 h-4" /> },
-    { id: 'clients', label: t('clients') || 'Clients', icon: <IconUsers className="w-4 h-4" /> },
-    { id: 'prospects', label: t('prospects') || 'Prospects', icon: <IconMagnet className="w-4 h-4" /> },
-    { id: 'projects', label: t('projects') || 'Projets', icon: <IconBuilding className="w-4 h-4" /> },
-    { id: 'mentors', label: t('mentors') || 'Mentors', icon: <IconBrain className="w-4 h-4" /> },
-    { id: 'newsletters', label: t('newsletters') || 'Newsletters', icon: <IconMail className="w-4 h-4" /> },
+  // Organisation des liens par catégories
+  const sidebarCategories: { 
+    id: string; 
+    label: string; 
+    icon: React.ReactNode;
+    links: { id: SidebarLinkId; label: string; icon: React.ReactNode }[];
+  }[] = [
+    {
+      id: 'category_activity',
+      label: t('category_activity') || 'Activité',
+      icon: <IconActivity className="w-4 h-4" />,
+      links: [
+        { id: 'revenue', label: t('revenue') || 'Statistiques & Factures', icon: <IconChartLine className="w-4 h-4" /> },
+      ],
+    },
+    {
+      id: 'category_relations',
+      label: t('category_relations') || 'Relations',
+      icon: <IconUsersGroup className="w-4 h-4" />,
+      links: [
+        { id: 'clients', label: t('clients') || 'Clients', icon: <IconUsers className="w-4 h-4" /> },
+        { id: 'prospects', label: t('prospects') || 'Prospects', icon: <IconMagnet className="w-4 h-4" /> },
+        { id: 'mentors', label: t('mentors') || 'Mentors', icon: <IconBrain className="w-4 h-4" /> },
+      ],
+    },
+    {
+      id: 'category_management',
+      label: t('category_management') || 'Gestion',
+      icon: <IconBriefcase className="w-4 h-4" />,
+      links: [
+        { id: 'projects', label: t('projects') || 'Projets', icon: <IconBuilding className="w-4 h-4" /> },
+        { id: 'newsletters', label: t('newsletters') || 'Newsletters', icon: <IconMail className="w-4 h-4" /> },
+      ],
+    },
+    {
+      id: 'category_resources',
+      label: t('category_resources') || 'Ressources',
+      icon: <IconFolder className="w-4 h-4" />,
+      links: [
+        { id: 'media_library', label: t('media_library') || 'Bibliothèque', icon: <IconPhoto className="w-4 h-4" /> },
+      ],
+    },
+    {
+      id: 'category_account',
+      label: t('category_account') || 'Compte',
+      icon: <IconUserCog className="w-4 h-4" />,
+      links: [
+        { id: 'settings', label: t('settings') || 'Paramètres', icon: <IconSettings className="w-4 h-4" /> },
+      ],
+    },
   ];
 
   const dateFormats: { value: DateFormat; label: string; example: string }[] = [
@@ -86,7 +138,7 @@ export default function SettingsPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="w-full max-w-4xl mx-auto"
+      className="w-full max-w-4xl mx-auto pb-16"
     >
       {/* Header */}
       <div className="mb-6">
@@ -336,24 +388,43 @@ export default function SettingsPage() {
           </motion.div>
         )}
 
+        {/* EMAIL / SMTP */}
+        {activeTab === 'email' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <SmtpConfigSection />
+          </motion.div>
+        )}
+
         {/* NAVIGATION / SIDEBAR */}
         {activeTab === 'sidebar' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
             <SettingsRow 
               title={t('visible_links') || 'Liens visibles'} 
-              description={t('sidebar_management_desc') || 'Sélectionnez les éléments à afficher'}
+              description={t('sidebar_management_desc') || 'Sélectionnez les éléments à afficher dans la sidebar'}
             >
-              <div className="flex flex-wrap gap-2">
-                {sidebarLinkOptions.map((link) => {
-                  const isVisible = visibleLinks.includes(link.id);
-                  return (
-                    <OptionButton key={link.id} selected={isVisible} onClick={() => toggleLink(link.id)}>
-                      {link.icon} {link.label}
-                    </OptionButton>
-                  );
-                })}
+              <div className="space-y-4">
+                {sidebarCategories.map((category) => (
+                  <div key={category.id} className="space-y-2">
+                    {/* Titre de catégorie */}
+                    <div className="flex items-center gap-2 text-xs font-semibold text-muted uppercase tracking-wider">
+                      {category.icon}
+                      <span>{category.label}</span>
+                    </div>
+                    {/* Liens de la catégorie */}
+                    <div className="flex flex-wrap gap-2 ml-6">
+                      {category.links.map((link) => {
+                        const isVisible = visibleLinks.includes(link.id);
+                        return (
+                          <OptionButton key={link.id} selected={isVisible} onClick={() => toggleLink(link.id)}>
+                            {link.icon} {link.label}
+                          </OptionButton>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
-              <p className="text-xs text-muted mt-2">
+              <p className="text-xs text-muted mt-4">
                 {visibleLinks.length}/{CONFIGURABLE_LINKS.length} {t('links_visible') || 'liens affichés'}
               </p>
             </SettingsRow>
@@ -361,7 +432,7 @@ export default function SettingsPage() {
             <SettingsRow title={t('reset') || 'Réinitialiser'} description={t('reset_desc') || 'Restaurer les valeurs par défaut'}>
               <button
                 onClick={resetToDefault}
-                className="btn-ghost px-4 py-2 text-sm"
+                className="btn-ghost px-4 py-2 text-sm flex items-center gap-2"
               >
                 <IconRefresh className="w-4 h-4" />
                 {t('reset_sidebar') || 'Afficher tous les liens'}

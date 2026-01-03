@@ -319,6 +319,7 @@ export interface CreateClientData {
   website?: string;
   processStatus: ProcessStatus;
   isActive?: boolean;
+  image?: number; // ID du fichier uploadé sur Strapi
 }
 
 export interface UpdateClientData extends Partial<CreateClientData> {
@@ -500,3 +501,30 @@ export interface ProjectCollaborator {
   joined_at: string;
   is_owner: boolean;
 }
+
+// SMTP Configuration
+export interface SmtpConfig {
+  id: number;
+  documentId: string;
+  smtp_host: string;
+  smtp_port: number;
+  smtp_user: string;
+  smtp_password?: string; // Ne pas exposer en lecture
+  smtp_secure: boolean;
+  smtp_from_name?: string;
+  is_verified: boolean;
+  user: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateSmtpConfigData {
+  smtp_host: string;
+  smtp_port: number;
+  smtp_user: string;
+  smtp_password: string;
+  smtp_secure: boolean;
+  smtp_from_name?: string;
+}
+
+export interface UpdateSmtpConfigData extends Partial<CreateSmtpConfigData> {}

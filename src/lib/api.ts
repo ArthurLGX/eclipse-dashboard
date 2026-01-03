@@ -109,10 +109,13 @@ export async function fetchCount(
   userId: number,
   filterField: string = 'users'
 ): Promise<number> {
-  const res = await get<ApiResponse<unknown[]>>(
-    `${entity}?filters[${filterField}][$eq]=${userId}`
+  // Utiliser pagination[pageSize]=1 pour éviter de charger tous les éléments
+  // et récupérer le total depuis meta.pagination.total
+  const res = await get<ApiResponse<unknown[]> & { meta?: { pagination?: { total?: number } } }>(
+    `${entity}?pagination[pageSize]=1&filters[${filterField}][$eq]=${userId}`
   );
-  return res.data?.length || 0;
+  // Strapi v4/v5 retourne le total dans meta.pagination.total
+  return res.meta?.pagination?.total ?? res.data?.length ?? 0;
 }
 
 /** Récupère une liste d'entités pour un utilisateur */
@@ -120,10 +123,11 @@ export async function fetchUserEntities<T>(
   entity: string,
   userId: number,
   filterField: string = 'users',
-  additionalFilters: string = ''
+  additionalFilters: string = '',
+  pageSize: number = 1000 // Strapi limite par défaut à 25, on augmente pour récupérer tous les éléments
 ): Promise<ApiResponse<T[]>> {
   return get<ApiResponse<T[]>>(
-    `${entity}?populate=*&filters[${filterField}][$eq]=${userId}${additionalFilters}`
+    `${entity}?populate=*&pagination[pageSize]=${pageSize}&filters[${filterField}][$eq]=${userId}${additionalFilters}`
   );
 }
 
@@ -141,25 +145,57 @@ export async function fetchEntityById<T>(
 // CLIENTS
 // ============================================================================
 
+export type DuplicateCheckMode = 'email_only' | 'name_only' | 'name_and_email' | 'name_or_email';
+
 export async function checkClientDuplicate(
   userId: number,
   name: string,
-  email: string
-): Promise<{ isDuplicate: boolean; duplicateField: 'name' | 'email' | null }> {
+  email: string,
+  mode: DuplicateCheckMode = 'email_only'
+): Promise<{ isDuplicate: boolean; duplicateField: 'name' | 'email' | 'both' | null }> {
+  
+  // Vérifier l'email (pagination pour éviter la limite de 25 par défaut)
+  const emailCheck = await get<ApiResponse<unknown[]>>(
+    `clients?pagination[pageSize]=1&filters[users][$eq]=${userId}&filters[email][$eqi]=${encodeURIComponent(email)}`
+  );
+  const emailExists = (emailCheck.data?.length ?? 0) > 0;
+
   // Vérifier le nom
   const nameCheck = await get<ApiResponse<unknown[]>>(
-    `clients?filters[users][$eq]=${userId}&filters[name][$eqi]=${encodeURIComponent(name)}`
+    `clients?pagination[pageSize]=1&filters[users][$eq]=${userId}&filters[name][$eqi]=${encodeURIComponent(name)}`
   );
-  if (nameCheck.data?.length > 0) {
-    return { isDuplicate: true, duplicateField: 'name' };
-  }
+  const nameExists = (nameCheck.data?.length ?? 0) > 0;
 
-  // Vérifier l'email
-  const emailCheck = await get<ApiResponse<unknown[]>>(
-    `clients?filters[users][$eq]=${userId}&filters[email][$eqi]=${encodeURIComponent(email)}`
-  );
-  if (emailCheck.data?.length > 0) {
-    return { isDuplicate: true, duplicateField: 'email' };
+  switch (mode) {
+    case 'email_only':
+      // Recommandé : l'email est unique par nature
+      if (emailExists) {
+        return { isDuplicate: true, duplicateField: 'email' };
+      }
+      break;
+    
+    case 'name_only':
+      if (nameExists) {
+        return { isDuplicate: true, duplicateField: 'name' };
+      }
+      break;
+    
+    case 'name_and_email':
+      // Très permissif : bloque seulement si les deux existent
+      if (nameExists && emailExists) {
+        return { isDuplicate: true, duplicateField: 'both' };
+      }
+      break;
+    
+    case 'name_or_email':
+      // Ancien comportement, très restrictif
+      if (nameExists) {
+        return { isDuplicate: true, duplicateField: 'name' };
+      }
+      if (emailExists) {
+        return { isDuplicate: true, duplicateField: 'email' };
+      }
+      break;
   }
 
   return { isDuplicate: false, duplicateField: null };
@@ -176,13 +212,24 @@ export async function addClientUser(
     website: string;
     processStatus: string;
     isActive?: boolean;
+    image?: number; // ID du fichier uploadé sur Strapi
   },
-  skipDuplicateCheck = false
+  options: { 
+    skipDuplicateCheck?: boolean; 
+    duplicateCheckMode?: DuplicateCheckMode 
+  } = {}
 ) {
+  const { skipDuplicateCheck = false, duplicateCheckMode = 'email_only' } = options;
+  
   if (!skipDuplicateCheck) {
-    const duplicateCheck = await checkClientDuplicate(userId, data.name, data.email);
+    const duplicateCheck = await checkClientDuplicate(userId, data.name, data.email, duplicateCheckMode);
     if (duplicateCheck.isDuplicate) {
-      const field = duplicateCheck.duplicateField === 'name' ? 'nom' : 'email';
+      const fieldMap = {
+        name: 'nom',
+        email: 'email',
+        both: 'nom et email'
+      };
+      const field = duplicateCheck.duplicateField ? fieldMap[duplicateCheck.duplicateField] : 'champ';
       throw new Error(`Un client avec ce ${field} existe déjà`);
     }
   }
@@ -599,6 +646,20 @@ export async function fetchNewsletterById(documentId: string) {
   return response.json();
 }
 
+export interface GradientStop {
+  id: string;
+  color: string;
+  position: number; // 0-100%
+  opacity: number;  // 0-100%
+}
+
+export interface NewsletterCustomColors {
+  gradientStops: GradientStop[];
+  buttonColor: string;
+  textColor: string;
+  gradientAngle: number;
+}
+
 export interface CreateNewsletterData {
   title: string;
   subject: string;
@@ -608,6 +669,13 @@ export interface CreateNewsletterData {
   send_at?: string; // ISO datetime string
   author: number;
   subscribers?: number[]; // IDs des subscribers
+  // Nouveaux champs pour le contenu enrichi
+  custom_colors?: NewsletterCustomColors; // Couleurs personnalisées (JSON)
+  header_background_url?: string; // URL de l'image de fond du header
+  banner_url?: string; // URL de la bannière
+  cta_text?: string; // Texte du bouton CTA
+  cta_url?: string; // URL du bouton CTA
+  media_ids?: number[]; // IDs des médias utilisés (images/vidéos)
 }
 
 // Trouver ou créer un subscriber par email
@@ -665,13 +733,19 @@ export async function createNewsletter(data: CreateNewsletterData) {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');
 
+  // Préparer les données pour Strapi (convertir custom_colors en JSON string si nécessaire)
+  const strapiData = {
+    ...data,
+    custom_colors: data.custom_colors ? JSON.stringify(data.custom_colors) : undefined,
+  };
+
   const response = await fetch(`${API_URL}/api/newsletters`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ data }),
+    body: JSON.stringify({ data: strapiData }),
   });
 
   if (!response.ok) {
@@ -680,6 +754,66 @@ export async function createNewsletter(data: CreateNewsletterData) {
   }
 
   return response.json();
+}
+
+// ============================================================================
+// NEWSLETTER MEDIA LIBRARY
+// ============================================================================
+
+export interface MediaFile {
+  id: number;
+  documentId: string;
+  name: string;
+  url: string;
+  mime: string;
+  size: number;
+  width?: number;
+  height?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Récupérer tous les fichiers uploadés par l'utilisateur
+export async function fetchUserMedia(): Promise<MediaFile[]> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const response = await fetch(
+    `${API_URL}/api/upload/files?sort=createdAt:desc`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Erreur lors de la récupération des médias');
+  }
+
+  const files = await response.json();
+  
+  // Transformer les URLs relatives en URLs absolues
+  return files.map((file: MediaFile) => ({
+    ...file,
+    url: file.url.startsWith('http') ? file.url : `${API_URL}${file.url}`,
+  }));
+}
+
+// Supprimer un fichier média
+export async function deleteMedia(fileId: number): Promise<void> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const response = await fetch(
+    `${API_URL}/api/upload/files/${fileId}`,
+    {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Erreur lors de la suppression du média');
+  }
 }
 
 // ============================================================================
@@ -1294,3 +1428,66 @@ export const updateTaskProgress = (taskDocumentId: string, progress: number) =>
     task_status: progress >= 100 ? 'completed' : progress > 0 ? 'in_progress' : 'todo',
     ...(progress >= 100 ? { completed_date: new Date().toISOString() } : {}),
   });
+
+// ============================================================================
+// SMTP CONFIGURATION
+// ============================================================================
+
+import type { SmtpConfig, CreateSmtpConfigData, UpdateSmtpConfigData } from '@/types';
+
+/** Récupère la configuration SMTP de l'utilisateur */
+export const fetchSmtpConfig = async (userId: number): Promise<SmtpConfig | null> => {
+  const response = await get<ApiResponse<SmtpConfig[]>>(
+    `smtp-configs?filters[user][$eq]=${userId}`
+  );
+  return response.data?.[0] || null;
+};
+
+/** Crée ou met à jour la configuration SMTP */
+export const saveSmtpConfig = async (
+  userId: number,
+  data: CreateSmtpConfigData
+): Promise<SmtpConfig> => {
+  // Vérifier si une config existe déjà
+  const existing = await fetchSmtpConfig(userId);
+  
+  if (existing) {
+    // Mise à jour
+    const response = await put<ApiResponse<SmtpConfig>>(
+      `smtp-configs/${existing.documentId}`,
+      { ...data, user: userId }
+    );
+    return response.data;
+  } else {
+    // Création
+    const response = await post<ApiResponse<SmtpConfig>>(
+      'smtp-configs',
+      { ...data, user: userId, is_verified: false }
+    );
+    return response.data;
+  }
+};
+
+/** Supprime la configuration SMTP */
+export const deleteSmtpConfig = async (documentId: string): Promise<void> => {
+  await del(`smtp-configs/${documentId}`);
+};
+
+/** Teste la connexion SMTP */
+export const testSmtpConnection = async (
+  config: CreateSmtpConfigData
+): Promise<{ success: boolean; message: string }> => {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const response = await fetch(`/api/smtp/test`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(config),
+  });
+
+  return response.json();
+};

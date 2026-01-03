@@ -110,18 +110,37 @@ function TemplateBadge({ template, t }: { template: string; t: (key: string) => 
 
 // Composant pour afficher un subscriber
 function SubscriberItem({ subscriber }: { subscriber: Subscriber }) {
+  // Déterminer le nom à afficher
+  const displayName = subscriber.first_name || subscriber.last_name
+    ? `${subscriber.first_name || ''} ${subscriber.last_name || ''}`.trim()
+    : null;
+  
+  // Générer les initiales (du nom si disponible, sinon des 2 premières lettres de l'email)
+  const getInitials = () => {
+    if (subscriber.first_name) {
+      return subscriber.last_name 
+        ? `${subscriber.first_name[0]}${subscriber.last_name[0]}`.toUpperCase()
+        : subscriber.first_name[0].toUpperCase();
+    }
+    // Initiales basées sur l'email (avant @)
+    const emailName = subscriber.email.split('@')[0];
+    return emailName.length >= 2 
+      ? `${emailName[0]}${emailName[1]}`.toUpperCase()
+      : emailName[0].toUpperCase();
+  };
+
   return (
     <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-default hover:border-accent/30 transition-colors">
-      <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-semibold">
-        {subscriber.first_name?.[0]?.toUpperCase() || subscriber.email[0].toUpperCase()}
+      <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-semibold text-sm">
+        {getInitials()}
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-medium text-primary truncate">
-          {subscriber.first_name && subscriber.last_name 
-            ? `${subscriber.first_name} ${subscriber.last_name}`
-            : subscriber.email}
+          {displayName || subscriber.email}
         </p>
-        <p className="text-sm text-muted truncate">{subscriber.email}</p>
+        {displayName && (
+          <p className="text-sm text-muted truncate">{subscriber.email}</p>
+        )}
       </div>
     </div>
   );

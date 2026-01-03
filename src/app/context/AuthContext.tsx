@@ -13,13 +13,13 @@ interface User {
   id: number;
   username: string;
   email: string;
-  password: string;
-  profile_picture: {
+  role?: string;
+  profile_picture?: {
     url: string;
   };
-  confirmed: boolean;
-  blocked: boolean;
-  // Add other user properties as needed
+  confirmed?: boolean;
+  blocked?: boolean;
+  // Note: Ne JAMAIS stocker le mot de passe côté client
 }
 
 type AuthContextType = {

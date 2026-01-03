@@ -9,7 +9,9 @@ export type SidebarLinkId =
   | 'prospects'
   | 'projects'
   | 'mentors'
-  | 'newsletters';
+  | 'newsletters'
+  | 'media_library'
+  | 'settings';
 
 // Tous les liens configurables
 export const CONFIGURABLE_LINKS: SidebarLinkId[] = [
@@ -19,6 +21,17 @@ export const CONFIGURABLE_LINKS: SidebarLinkId[] = [
   'projects',
   'mentors',
   'newsletters',
+  'media_library',
+  'settings',
+];
+
+// IDs des catégories (toujours visibles)
+const CATEGORY_IDS = [
+  'category_activity',
+  'category_relations',
+  'category_management',
+  'category_resources',
+  'category_account',
 ];
 
 // Configuration par défaut (tous visibles)
@@ -48,7 +61,12 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(stored) as SidebarLinkId[];
         // Valider que les liens sont valides
         const validLinks = parsed.filter(link => CONFIGURABLE_LINKS.includes(link));
-        setVisibleLinksState(validLinks);
+        
+        // Ajouter les nouveaux liens qui n'existaient pas avant (migration)
+        const newLinks: SidebarLinkId[] = ['media_library', 'settings'];
+        const missingNewLinks = newLinks.filter(link => !validLinks.includes(link));
+        
+        setVisibleLinksState([...validLinks, ...missingNewLinks]);
       }
     } catch (error) {
       console.error('Error loading sidebar preferences:', error);
@@ -68,8 +86,12 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   }, [visibleLinks, isInitialized]);
 
   const isLinkVisible = (linkId: string): boolean => {
-    // Les liens toujours visibles
-    if (['home', 'profile', 'logout'].includes(linkId)) {
+    // Les liens toujours visibles (navigation de base)
+    if (['home', 'profile', 'logout', 'your_subscription', 'your_enterprise', 'personal_information', 'global_revenue_stats', 'factures'].includes(linkId)) {
+      return true;
+    }
+    // Les catégories sont toujours visibles
+    if (CATEGORY_IDS.includes(linkId)) {
       return true;
     }
     return visibleLinks.includes(linkId as SidebarLinkId);

@@ -52,6 +52,7 @@ export default function ClientAvatar({
   className = '',
 }: ClientAvatarProps) {
   const [faviconError, setFaviconError] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const config = sizeConfig[size];
   
   // URL du favicon si disponible
@@ -60,22 +61,51 @@ export default function ClientAvatar({
   // Initiale du nom
   const initial = name?.charAt(0)?.toUpperCase() || '?';
 
-  // Cas 1: Image du client
-  if (imageUrl) {
+  // Nettoyer l'URL de l'image (enlever les préfixes incorrects avant data:)
+  const cleanImageUrl = imageUrl?.includes('data:image') 
+    ? imageUrl.substring(imageUrl.indexOf('data:image'))
+    : imageUrl;
+
+  // Vérifier si c'est une image base64
+  const isBase64 = cleanImageUrl?.startsWith('data:image');
+  
+  // Vérifier si c'est une URL interne (Strapi)
+  const isInternalUrl = cleanImageUrl?.includes('api.dashboard.eclipsestudiodev.fr') || 
+                        cleanImageUrl?.includes('localhost');
+
+  // Cas 1: Image du client (base64 ou URL externe)
+  // Utiliser <img> standard pour base64 et URLs externes (domaines non configurés)
+  if (cleanImageUrl && (isBase64 || !isInternalUrl) && !imageError) {
     return (
       <div className={`${config.container} rounded-full overflow-hidden flex-shrink-0 relative ${className}`}>
-        <Image
-          src={imageUrl}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={cleanImageUrl}
           alt={name}
-          fill
-          sizes="64px"
-          className="object-cover"
+          className="w-full h-full object-cover"
+          onError={() => setImageError(true)}
         />
       </div>
     );
   }
 
-  // Cas 2: Favicon du site web
+  // Cas 2: Image du client (URL interne Strapi)
+  if (cleanImageUrl && isInternalUrl && !imageError) {
+    return (
+      <div className={`${config.container} rounded-full overflow-hidden flex-shrink-0 relative ${className}`}>
+        <Image
+          src={cleanImageUrl}
+          alt={name}
+          fill
+          sizes="64px"
+          className="object-cover"
+          onError={() => setImageError(true)}
+        />
+      </div>
+    );
+  }
+
+  // Cas 3: Favicon du site web
   if (faviconUrl) {
     return (
       <div className={`${config.container} rounded-full overflow-hidden flex-shrink-0 relative bg-white ${className}`}>
@@ -92,7 +122,7 @@ export default function ClientAvatar({
     );
   }
 
-  // Cas 3: Initiale
+  // Cas 4: Initiale
   return (
     <div className={`${config.container} rounded-full bg-zinc-700 flex items-center justify-center flex-shrink-0 ${className}`}>
       <span className={`text-zinc-300 font-medium ${config.text}`}>

@@ -11,10 +11,18 @@ interface StatCard {
   icon?: React.ReactNode;
 }
 
+interface ActionButton {
+  label: string;
+  onClick: () => void;
+  icon?: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'outline';
+}
+
 interface DashboardPageTemplateProps<T> {
   title: string;
   actionButtonLabel: string;
   onActionButtonClick?: () => void;
+  additionalActions?: ActionButton[];
   stats?: StatCard[];
   loading: boolean;
   filterOptions?: FilterOption[];
@@ -28,12 +36,18 @@ interface DashboardPageTemplateProps<T> {
   emptyMessage: string;
   children?: React.ReactNode;
   onRowClick?: (row: T) => void;
+  // Multi-select props
+  selectable?: boolean;
+  onDeleteSelected?: (items: T[]) => Promise<void>;
+  getItemId?: (item: T) => string;
+  getItemName?: (item: T) => string;
 }
 
 export default function DashboardPageTemplate<T>({
   title,
   actionButtonLabel,
   onActionButtonClick,
+  additionalActions = [],
   stats = [],
   loading,
   filterOptions = [],
@@ -47,6 +61,10 @@ export default function DashboardPageTemplate<T>({
   emptyMessage,
   children,
   onRowClick,
+  selectable = false,
+  onDeleteSelected,
+  getItemId,
+  getItemName,
 }: DashboardPageTemplateProps<T>) {
   return (
     <motion.div
@@ -60,12 +78,32 @@ export default function DashboardPageTemplate<T>({
         <h1 className="text-3xl !uppercase font-extrabold text-left text-primary">
           {title}
         </h1>
-        <button
-          className="btn-secondary lg:w-fit w-full rounded-lg px-4 py-2 transition-all duration-300"
-          onClick={onActionButtonClick || (() => {})}
-        >
-          {actionButtonLabel}
-        </button>
+        <div className="flex flex-wrap gap-3 lg:w-fit w-full">
+          {/* Additional action buttons */}
+          {additionalActions.map((action, index) => (
+            <button
+              key={index}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-all duration-300 ${
+                action.variant === 'outline' 
+                  ? 'btn-outline border border-default text-secondary hover:bg-card-hover' 
+                  : action.variant === 'primary'
+                    ? 'btn-primary'
+                    : 'btn-secondary'
+              }`}
+              onClick={action.onClick}
+            >
+              {action.icon}
+              {action.label}
+            </button>
+          ))}
+          {/* Main action button */}
+          <button
+            className="btn-secondary lg:w-fit w-full rounded-lg px-4 py-2 transition-all duration-300"
+            onClick={onActionButtonClick || (() => {})}
+          >
+            {actionButtonLabel}
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -124,6 +162,10 @@ export default function DashboardPageTemplate<T>({
                 loading={loading}
                 emptyMessage={emptyMessage}
                 onRowClick={onRowClick}
+                selectable={selectable}
+                onDeleteSelected={onDeleteSelected}
+                getItemId={getItemId}
+                getItemName={getItemName}
               />
             </div>
           </div>

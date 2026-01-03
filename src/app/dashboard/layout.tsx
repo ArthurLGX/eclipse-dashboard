@@ -13,9 +13,7 @@ import {
   IconPin,
   IconPinFilled,
   IconLogout,
-  IconUser,
   IconCreditCard,
-  IconTrendingUp,
   IconBuildings,
   IconFileInvoice,
   IconChevronDown,
@@ -23,6 +21,12 @@ import {
   IconSun,
   IconMoon,
   IconChartLine,
+  IconPhoto,
+  IconFolder,
+  IconActivity,
+  IconUsersGroup,
+  IconBriefcase,
+  IconUserCog,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -44,6 +48,7 @@ interface SidebarItem {
   path?: string;
   onClick?: () => void;
   menuItems?: SidebarItem[];
+  isCategory?: boolean; // Pour les catégories avec sous-menus
 }
 
 export default function DashboardLayout({
@@ -94,21 +99,24 @@ export default function DashboardLayout({
     };
   }, []);
 
-  // Définir les items de la sidebar avec l'image de profil dynamique
+  // Définir les items de la sidebar avec catégories en menus déroulants
   const sidebarItems: SidebarItem[] = useMemo(() => [
+    // ═══════════════════════════════════════
+    // ACTIVITÉ (Menu déroulant)
+    // ═══════════════════════════════════════
     {
-      id: 'home',
-      label: t('dashboard'),
-      icon: <IconHome size={20} stroke={1} />,
-      path: '/dashboard',
-    },
-    {
-      id: 'revenue',
-      label: t('revenue'),
-      icon: <IconTrendingUp size={20} stroke={1} />,
-      path: '/dashboard/revenue',
+      id: 'category_activity',
+      label: t('category_activity') || 'Activité',
+      icon: <IconActivity size={20} stroke={1} />,
+      isCategory: true,
       menuItems: [
-      {
+        {
+          id: 'home',
+          label: t('dashboard'),
+          icon: <IconHome size={20} stroke={1} />,
+          path: '/dashboard',
+        },
+        {
           id: 'global_revenue_stats',
           label: t('global_revenue_stats'),
           icon: <IconChartLine size={20} stroke={1} />,
@@ -119,57 +127,104 @@ export default function DashboardLayout({
           label: t('factures'),
           icon: <IconFileInvoice size={20} stroke={1} />,
           path: '/dashboard/factures',
-        }
+        },
       ],
     },
+
+    // ═══════════════════════════════════════
+    // RELATIONS (Menu déroulant)
+    // ═══════════════════════════════════════
     {
-      id: 'clients',
-      label: t('clients'),
-      icon: <IconUsers size={20} stroke={1} />,
-      path: '/dashboard/clients',
-    },
-    {
-      id: 'prospects',
-      label: t('prospects'),
-      icon: <IconMagnet size={20} stroke={1} />,
-      path: '/dashboard/prospects',
-    },
-    {
-      id: 'projects',
-      label: t('projects'),
-      icon: <IconBuilding size={20} stroke={1} />,
-      path: '/dashboard/projects',
-    },
-    {
-      id: 'mentors',
-      label: t('mentors'),
-      icon: <IconBrain size={20} stroke={1} />,
-      path: '/dashboard/mentors',
-    },
-    {
-      id: 'newsletters',
-      label: t('newsletters'),
-      icon: <IconMail size={20} stroke={1} />,
-      path: '/dashboard/newsletters',
-    },
-    {
-      id: 'profile',
-      label: t('profile'),
-      icon: (
-        <div className="flex w-5 h-5 cursor-pointer hover:border-accent transition-all ease-in-out duration-300 border-warning border-2 rounded-full relative overflow-hidden">
-          <Image
-            alt="user profile picture"
-            src={profilePictureUrl || '/images/logo/eclipse-logo.png'}
-            fill
-            style={{ objectFit: 'cover' }}
-          />
-        </div>
-      ),
+      id: 'category_relations',
+      label: t('category_relations') || 'Relations',
+      icon: <IconUsersGroup size={20} stroke={1} />,
+      isCategory: true,
       menuItems: [
         {
-          id: 'personal_information',
-          label: t('personal_information'),
-          icon: <IconUser size={20} stroke={1} />,
+          id: 'clients',
+          label: t('clients'),
+          icon: <IconUsers size={20} stroke={1} />,
+          path: '/dashboard/clients',
+        },
+        {
+          id: 'prospects',
+          label: t('prospects'),
+          icon: <IconMagnet size={20} stroke={1} />,
+          path: '/dashboard/prospects',
+        },
+        {
+          id: 'mentors',
+          label: t('mentors'),
+          icon: <IconBrain size={20} stroke={1} />,
+          path: '/dashboard/mentors',
+        },
+      ],
+    },
+
+    // ═══════════════════════════════════════
+    // GESTION (Menu déroulant)
+    // ═══════════════════════════════════════
+    {
+      id: 'category_management',
+      label: t('category_management') || 'Gestion',
+      icon: <IconBriefcase size={20} stroke={1} />,
+      isCategory: true,
+      menuItems: [
+        {
+          id: 'projects',
+          label: t('projects'),
+          icon: <IconBuilding size={20} stroke={1} />,
+          path: '/dashboard/projects',
+        },
+        {
+          id: 'newsletters',
+          label: t('newsletters'),
+          icon: <IconMail size={20} stroke={1} />,
+          path: '/dashboard/newsletters',
+        },
+      ],
+    },
+
+    // ═══════════════════════════════════════
+    // RESSOURCES (Menu déroulant)
+    // ═══════════════════════════════════════
+    {
+      id: 'category_resources',
+      label: t('category_resources') || 'Ressources',
+      icon: <IconFolder size={20} stroke={1} />,
+      isCategory: true,
+      menuItems: [
+        {
+          id: 'media_library',
+          label: t('media_library') || 'Bibliothèque',
+          icon: <IconPhoto size={20} stroke={1} />,
+          path: '/dashboard/newsletters/library',
+        },
+      ],
+    },
+
+    // ═══════════════════════════════════════
+    // COMPTE (Menu déroulant)
+    // ═══════════════════════════════════════
+    {
+      id: 'category_account',
+      label: t('category_account') || 'Compte',
+      icon: <IconUserCog size={20} stroke={1} />,
+      isCategory: true,
+      menuItems: [
+        {
+          id: 'profile',
+          label: t('profile'),
+          icon: (
+            <div className="flex w-5 h-5 cursor-pointer hover:border-accent transition-all ease-in-out duration-300 border-warning border-2 rounded-full relative overflow-hidden">
+              <Image
+                alt="user profile picture"
+                src={profilePictureUrl || '/images/logo/eclipse-logo.png'}
+                fill
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
+          ),
           path: '/dashboard/profile/personal-information',
         },
         {
@@ -192,6 +247,10 @@ export default function DashboardLayout({
         },
       ],
     },
+
+    // ═══════════════════════════════════════
+    // DÉCONNEXION (Toujours visible)
+    // ═══════════════════════════════════════
     {
       id: 'logout',
       label: t('logout'),
@@ -203,26 +262,48 @@ export default function DashboardLayout({
 
   // Filtrer les items selon les préférences de visibilité
   const visibleSidebarItems = useMemo(() => {
-    return sidebarItems.filter(item => isLinkVisible(item.id));
+    return sidebarItems
+      .filter(item => isLinkVisible(item.id))
+      .map(item => {
+        // Si c'est une catégorie, filtrer aussi ses enfants
+        if (item.isCategory && item.menuItems) {
+          return {
+            ...item,
+            menuItems: item.menuItems.filter(child => isLinkVisible(child.id)),
+          };
+        }
+        return item;
+      })
+      // Retirer les catégories vides (sans enfants visibles)
+      .filter(item => !item.isCategory || (item.menuItems && item.menuItems.length > 0));
   }, [sidebarItems, isLinkVisible]);
 
-  // Déterminer l'item actif basé sur l'URL
-  const activeItem = useMemo(() => {
-    // D'abord, chercher si on est sur un sous-menu
+  // Déterminer l'item actif et la catégorie active basés sur l'URL
+  const { activeItem, activeCategory } = useMemo(() => {
+    // Chercher dans les catégories
     for (const item of sidebarItems) {
-      if (item.menuItems) {
+      if (item.isCategory && item.menuItems) {
+        const activeChild = item.menuItems.find(
+          menuItem => menuItem.path === pathname
+        );
+        if (activeChild) {
+          return { activeItem: activeChild.id, activeCategory: item.id };
+        }
+      }
+      // Item normal avec sous-menus (comme profile)
+      if (item.menuItems && !item.isCategory) {
         const isOnMenuItem = item.menuItems.some(
           menuItem => menuItem.path === pathname
         );
         if (isOnMenuItem) {
-          return item.id;
+          return { activeItem: item.id, activeCategory: null };
         }
       }
     }
 
-    // Sinon, chercher un item principal
+    // Sinon, chercher un item principal direct
     const mainItem = sidebarItems.find(item => item.path === pathname);
-    return mainItem?.id || 'home';
+    return { activeItem: mainItem?.id || 'home', activeCategory: null };
   }, [sidebarItems, pathname]);
 
   const handleItemClick = (item: SidebarItem) => {
@@ -327,86 +408,117 @@ export default function DashboardLayout({
             </div>
 
             {/* Navigation items */}
-            <nav className="p-2 flex flex-col gap-1">
+            <nav className="p-2 flex flex-col gap-0.5">
               {visibleSidebarItems.map(item => (
                 <div
                   key={item.id}
                   onMouseEnter={() => setMenuItemHovered(item.id)}
                   onMouseLeave={() => setMenuItemHovered(null)}
                 >
-                  <motion.button
-                    onClick={() => handleItemClick(item)}
-                    className={`nav-item group w-full mb-1 ${activeItem === item.id ? 'active' : ''}`}
-                  >
-                    <div className="flex-shrink-0 transition-colors">{item.icon}</div>
-
-                    <AnimatePresence mode="sync">
-                      {(isExpanded || isPinned) && (
-                        <motion.div
-                          key={`menu-content-${item.id}`}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          className="flex items-center gap-2"
-                        >
-                          <span className="!text-sm font-medium whitespace-nowrap">
-                            {item.label}
-                          </span>
-                          {item.menuItems && (
-                            <IconChevronDown
-                              size={16}
-                              className={`group-hover:rotate-180 transition-all duration-200 ${
-                                pathname === item.path ? 'rotate-180' : ''
-                              }`}
-                            />
-                          )}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
-
-                  {/* Sous-menus */}
-                  {item.menuItems &&
-                    (isExpanded || isPinned) &&
-                    (menuItemHovered === item.id || pathname === item.path) && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2, delay: 0.1 }}
-                        className="ml-6 space-y-1"
+                  {/* Affichage des catégories (menus déroulants) */}
+                  {item.isCategory ? (
+                    <>
+                      <motion.button
+                        className={`nav-item group w-full mb-0.5 ${activeCategory === item.id ? 'active' : ''}`}
                       >
-                        {item.menuItems.map(menuItem => (
-                          <motion.button
-                            key={menuItem.id}
-                            onClick={() => handleItemClick(menuItem)}
-                            className={`nav-item w-full text-xs ${pathname === menuItem.path ? 'active' : ''}`}
+                        <div className="flex-shrink-0 transition-colors">{item.icon}</div>
+
+                        <AnimatePresence mode="sync">
+                          {(isExpanded || isPinned) && (
+                            <motion.div
+                              key={`category-content-${item.id}`}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="flex items-center gap-2"
+                            >
+                              <span className="!text-sm font-medium whitespace-nowrap">
+                                {item.label}
+                              </span>
+                              <IconChevronDown
+                                size={16}
+                                className={`transition-all duration-200 ${
+                                  menuItemHovered === item.id || activeCategory === item.id ? 'rotate-180' : ''
+                                }`}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.button>
+
+                      {/* Sous-menus de catégorie */}
+                      <AnimatePresence>
+                        {item.menuItems &&
+                          (isExpanded || isPinned) &&
+                          (menuItemHovered === item.id || activeCategory === item.id) && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="ml-6 space-y-0.5 overflow-hidden"
+                            >
+                              {item.menuItems.map(menuItem => (
+                                <motion.button
+                                  key={menuItem.id}
+                                  onClick={() => handleItemClick(menuItem)}
+                                  className={`nav-item w-full text-xs ${activeItem === menuItem.id ? 'active' : ''}`}
+                                >
+                                  <div className="flex-shrink-0">{menuItem.icon}</div>
+                                  <span className="!text-sm font-medium whitespace-nowrap">
+                                    {menuItem.label}
+                                  </span>
+                                </motion.button>
+                              ))}
+                            </motion.div>
+                          )}
+                      </AnimatePresence>
+                    </>
+                  ) : (
+                    /* Affichage des items normaux (logout) */
+                    <motion.button
+                      onClick={() => handleItemClick(item)}
+                      className={`nav-item group w-full mb-0.5 ${activeItem === item.id ? 'active' : ''}`}
+                    >
+                      <div className="flex-shrink-0 transition-colors">{item.icon}</div>
+
+                      <AnimatePresence mode="sync">
+                        {(isExpanded || isPinned) && (
+                          <motion.div
+                            key={`menu-content-${item.id}`}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="flex items-center gap-2"
                           >
-                            <div className="flex-shrink-0">{menuItem.icon}</div>
                             <span className="!text-sm font-medium whitespace-nowrap">
-                              {menuItem.label}
+                              {item.label}
                             </span>
-                          </motion.button>
-                        ))}
-                      </motion.div>
-                    )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.button>
+                  )}
                 </div>
               ))}
             </nav>
           </motion.div>
 
-          {/* Mobile Bottom Navigation */}
+          {/* Mobile Bottom Navigation - Ne pas afficher les catégories */}
           <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-card border-t border-default backdrop-blur-sm transition-colors duration-300">
             <nav className="flex items-center justify-around p-2">
-              {visibleSidebarItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => handleItemClick(item)}
-                  className={`nav-item flex-col min-w-0 ${activeItem === item.id ? 'active' : ''}`}
-                >
-                  <div className="flex-shrink-0">{item.icon}</div>
-                </button>
-              ))}
+              {visibleSidebarItems
+                .filter(item => !item.isCategory)
+                .slice(0, 5) // Limiter à 5 items pour mobile
+                .map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleItemClick(item)}
+                    className={`nav-item flex-col min-w-0 ${activeItem === item.id ? 'active' : ''}`}
+                  >
+                    <div className="flex-shrink-0">{item.icon}</div>
+                  </button>
+                ))}
             </nav>
           </div>
 
