@@ -892,15 +892,15 @@ export default function ComposeNewsletterPage() {
                   <button
                     onClick={handleSend}
                     disabled={sending || selectedRecipients.length === 0}
-                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accent text-accent-text font-medium
+                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accent font-medium
                       hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {sending ? (
                       <IconLoader2 className="w-4 h-4 animate-spin" />
                     ) : (
-                      <IconSend className="w-4 h-4" />
+                      <IconSend className="w-4 h-4 !text-white" />
                     )}
-                    <span>{t('send')}</span>
+                    <span className="!text-white">{t('send')}</span>
                   </button>
                 )}
               </div>
@@ -922,7 +922,7 @@ export default function ComposeNewsletterPage() {
                     }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all
                       ${currentStep === step.id 
-                        ? 'bg-accent text-accent-text' 
+                        ? 'bg-accent-light' 
                         : index < stepIndex 
                           ? 'bg-success-light text-success' 
                           : 'text-muted hover:text-secondary'
@@ -933,7 +933,7 @@ export default function ComposeNewsletterPage() {
                     ) : (
                       step.icon
                     )}
-                    <span className="hidden sm:inline font-medium">{step.label}</span>
+                    <span className="hidden sm:inline font-medium !text-accent-text">{step.label}</span>
                   </button>
                   {index < steps.length - 1 && (
                     <div className={`flex-1 h-0.5 mx-2 rounded ${
@@ -1513,7 +1513,7 @@ export default function ComposeNewsletterPage() {
                         </div>
                       </div>
 
-                      <div className="bg-gradient-to-r from-accent/10 to-info/10 rounded-xl p-6 border border-accent/20">
+                      <div className="bg-accent rounded-xl p-6 border border-muted">
                         <div className="flex items-center justify-between">
                           <div>
                             <h3 className="font-semibold text-primary mb-1">{t('ready_to_send')}</h3>
@@ -1524,7 +1524,7 @@ export default function ComposeNewsletterPage() {
                           <button
                             onClick={handleSend}
                             disabled={sending}
-                            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-accent text-accent-text font-semibold
+                            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-page hover:bg-accent-light text-accent-text font-semibold
                               hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-accent/25"
                           >
                             {sending ? (

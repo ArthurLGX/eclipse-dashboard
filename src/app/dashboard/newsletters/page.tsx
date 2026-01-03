@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 
 interface Newsletter {
   id: number;
+  documentId: string;
   title: string;
   subject: string;
   content: string;
@@ -128,7 +129,7 @@ export default function NewslettersPage() {
     <ProtectedRoute>
       <DashboardPageTemplate<Newsletter>
         title={t('newsletters')}
-        onRowClick={row => router.push(`/dashboard/newsletters/${row.id}`)}
+        onRowClick={row => router.push(`/dashboard/newsletters/${row.documentId}`)}
         actionButtonLabel={t('add_newsletter')}
         onActionButtonClick={() => router.push('/dashboard/newsletters/compose')}
         stats={[

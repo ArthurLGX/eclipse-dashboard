@@ -579,6 +579,26 @@ export const fetchNewslettersUser = (userId: number) =>
 export const fetchNumberOfNewslettersUser = (userId: number) =>
   fetchCount('newsletters', userId, 'author');
 
+export async function fetchNewsletterById(documentId: string) {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  // Dans Strapi v5, on utilise le documentId pour récupérer une entité
+  // Format populate pour Strapi v5
+  const response = await fetch(
+    `${API_URL}/api/newsletters/${documentId}?populate=*`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Newsletter non trouvée');
+  }
+
+  return response.json();
+}
+
 export interface CreateNewsletterData {
   title: string;
   subject: string;
