@@ -579,6 +579,38 @@ export const fetchNewslettersUser = (userId: number) =>
 export const fetchNumberOfNewslettersUser = (userId: number) =>
   fetchCount('newsletters', userId, 'author');
 
+export interface CreateNewsletterData {
+  title: string;
+  subject: string;
+  content: string;
+  template: 'standard' | 'promotional' | 'announcement' | 'custom';
+  n_status: 'draft' | 'sent';
+  send_at?: string; // ISO datetime string
+  author: number;
+  subscribers?: number[]; // IDs des subscribers
+}
+
+export async function createNewsletter(data: CreateNewsletterData) {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const response = await fetch(`${API_URL}/api/newsletters`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ data }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Erreur lors de la création de la newsletter');
+  }
+
+  return response.json();
+}
+
 // ============================================================================
 // AUTH & USER
 // ============================================================================

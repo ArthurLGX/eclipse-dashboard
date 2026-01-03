@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconArrowLeft,
@@ -315,12 +315,21 @@ interface RichTextEditorProps {
 
 function RichTextEditor({ value, onChange, placeholder, translations }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const isInitialized = useRef(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
 
-  const execCommand = useCallback((command: string, value?: string) => {
-    document.execCommand(command, false, value);
+  // Initialiser le contenu une seule fois au montage
+  useEffect(() => {
+    if (editorRef.current && !isInitialized.current) {
+      editorRef.current.innerHTML = value || '';
+      isInitialized.current = true;
+    }
+  }, [value]);
+
+  const execCommand = useCallback((command: string, val?: string) => {
+    document.execCommand(command, false, val);
     editorRef.current?.focus();
     if (editorRef.current) {
       onChange(editorRef.current.innerHTML);
@@ -506,6 +515,7 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
       <div
         ref={editorRef}
         contentEditable
+        dir="ltr"
         onInput={handleInput}
         className="min-h-[200px] p-4 text-primary focus:outline-none prose prose-sm max-w-none
           [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3
@@ -515,7 +525,6 @@ function RichTextEditor({ value, onChange, placeholder, translations }: RichText
           [&_ol]:list-decimal [&_ol]:pl-5
           [&_a]:text-accent [&_a]:underline
           empty:before:content-[attr(data-placeholder)] empty:before:text-placeholder empty:before:pointer-events-none"
-        dangerouslySetInnerHTML={{ __html: value || '' }}
         data-placeholder={placeholder}
         suppressContentEditableWarning
       />
@@ -735,12 +744,36 @@ export default function ComposeNewsletterPage() {
       showGlobalPopup(t('please_enter_subject'), 'error');
       return;
     }
+    if (!user?.id) {
+      showGlobalPopup(t('not_authenticated'), 'error');
+      return;
+    }
 
     setSending(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Importer la fonction createNewsletter
+      const { createNewsletter } = await import('@/lib/api');
+      
+      // Créer la newsletter dans la base de données
+      await createNewsletter({
+        title: emailTitle || emailSubject,
+        subject: emailSubject,
+        content: emailContent,
+        template: (selectedTemplate as 'standard' | 'promotional' | 'announcement' | 'custom') || 'standard',
+        n_status: 'sent',
+        send_at: new Date().toISOString(),
+        author: user.id,
+        subscribers: selectedRecipients,
+      });
+
       showGlobalPopup(`${t('newsletter_sent_success')} ${selectedRecipients.length} ${t('recipients_count')}`, 'success');
-    } catch {
+      
+      // Rediriger vers la liste des newsletters après envoi
+      setTimeout(() => {
+        window.location.href = '/dashboard/newsletters';
+      }, 1500);
+    } catch (error) {
+      console.error('Error sending newsletter:', error);
       showGlobalPopup(t('newsletter_send_error'), 'error');
     } finally {
       setSending(false);
