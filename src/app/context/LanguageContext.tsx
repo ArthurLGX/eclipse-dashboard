@@ -117,6 +117,11 @@ const translations = {
     smtp_saved_success: 'Configuration SMTP enregistrée',
     smtp_deleted_success: 'Configuration SMTP supprimée',
     smtp_delete_confirm: 'Êtes-vous sûr de vouloir supprimer cette configuration ?',
+    smtp_config_required: 'Configuration email requise',
+    smtp_config_required_desc: 'Configurez votre SMTP pour envoyer des newsletters',
+    smtp_not_verified_warning: 'Votre configuration SMTP n\'a pas été vérifiée. Testez la connexion et enregistrez pour continuer.',
+    smtp_not_configured_warning: 'Vous n\'avez pas encore configuré votre serveur SMTP. Les newsletters seront envoyées depuis votre adresse email personnelle.',
+    configure_smtp: 'Configurer',
 
     // Invoice settings
     invoicing: 'Facturation',
@@ -1202,6 +1207,11 @@ const translations = {
     smtp_saved_success: 'SMTP configuration saved',
     smtp_deleted_success: 'SMTP configuration deleted',
     smtp_delete_confirm: 'Are you sure you want to delete this configuration?',
+    smtp_config_required: 'Email configuration required',
+    smtp_config_required_desc: 'Configure your SMTP to send newsletters',
+    smtp_not_verified_warning: 'Your SMTP configuration has not been verified. Test the connection and save to continue.',
+    smtp_not_configured_warning: 'You have not yet configured your SMTP server. Newsletters will be sent from your personal email address.',
+    configure_smtp: 'Configure',
 
     // Invoice settings
     invoicing: 'Invoicing',

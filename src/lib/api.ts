@@ -1446,23 +1446,24 @@ export const fetchSmtpConfig = async (userId: number): Promise<SmtpConfig | null
 /** Crée ou met à jour la configuration SMTP */
 export const saveSmtpConfig = async (
   userId: number,
-  data: CreateSmtpConfigData
+  data: CreateSmtpConfigData,
+  isVerified: boolean = false
 ): Promise<SmtpConfig> => {
   // Vérifier si une config existe déjà
   const existing = await fetchSmtpConfig(userId);
   
   if (existing) {
-    // Mise à jour - pas besoin de changer la relation user
+    // Mise à jour - inclure is_verified
     const response = await put<ApiResponse<SmtpConfig>>(
       `smtp-configs/${existing.documentId}`,
-      { ...data }
+      { ...data, is_verified: isVerified }
     );
     return response.data;
   } else {
     // Création - utiliser connect pour la relation Strapi v5
     const response = await post<ApiResponse<SmtpConfig>>(
       'smtp-configs',
-      { ...data, is_verified: false, users: { connect: [{ id: userId }] } }
+      { ...data, is_verified: isVerified, users: { connect: [{ id: userId }] } }
     );
     return response.data;
   }

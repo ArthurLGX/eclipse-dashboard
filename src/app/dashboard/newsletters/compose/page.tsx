@@ -1321,6 +1321,27 @@ export default function ComposeNewsletterPage() {
     }));
   };
 
+  // Load SMTP config on mount
+  useEffect(() => {
+    const loadSmtpConfig = async () => {
+      if (!user?.id) {
+        setSmtpLoading(false);
+        return;
+      }
+      
+      try {
+        const config = await fetchSmtpConfig(user.id);
+        setSmtpConfig(config);
+      } catch (error) {
+        console.error('Error loading SMTP config:', error);
+      } finally {
+        setSmtpLoading(false);
+      }
+    };
+    
+    loadSmtpConfig();
+  }, [user?.id]);
+
   // Load ALL Google Fonts on mount for font preview buttons
   useEffect(() => {
     availableFonts.forEach(font => {
@@ -1814,6 +1835,12 @@ export default function ComposeNewsletterPage() {
   };
 
   const handleSend = async () => {
+    // Vérifier la configuration SMTP
+    if (!smtpConfig || !smtpConfig.is_verified) {
+      setShowSmtpWarning(true);
+      return;
+    }
+    
     if (selectedRecipients.length === 0 && manualEmails.length === 0) {
       showGlobalPopup(t('please_select_recipient'), 'error');
       return;
@@ -3171,6 +3198,67 @@ export default function ComposeNewsletterPage() {
 
           </div>
         </main>
+
+        {/* SMTP Warning Modal */}
+        <AnimatePresence>
+          {showSmtpWarning && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+              onClick={() => setShowSmtpWarning(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-card rounded-2xl p-6 max-w-md w-full shadow-2xl border border-default"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-warning/10 flex items-center justify-center">
+                    <IconSettings className="w-6 h-6 text-warning" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary">
+                      {t('smtp_config_required') || 'Configuration email requise'}
+                    </h3>
+                    <p className="text-sm text-secondary">
+                      {t('smtp_config_required_desc') || 'Configurez votre SMTP pour envoyer des newsletters'}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="p-4 rounded-xl bg-warning/5 border border-warning/20 mb-6">
+                  <p className="text-sm text-secondary">
+                    {smtpConfig ? (
+                      t('smtp_not_verified_warning') || 'Votre configuration SMTP n\'a pas été vérifiée. Testez la connexion et enregistrez pour continuer.'
+                    ) : (
+                      t('smtp_not_configured_warning') || 'Vous n\'avez pas encore configuré votre serveur SMTP. Les newsletters seront envoyées depuis votre adresse email personnelle.'
+                    )}
+                  </p>
+                </div>
+                
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowSmtpWarning(false)}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-default text-secondary hover:bg-muted transition-colors"
+                  >
+                    {t('cancel') || 'Annuler'}
+                  </button>
+                  <Link
+                    href="/dashboard/settings?tab=email"
+                    className="flex-1 px-4 py-2.5 rounded-xl btn-primary flex items-center justify-center gap-2"
+                  >
+                    <IconSettings className="w-4 h-4" />
+                    {t('configure_smtp') || 'Configurer'}
+                  </Link>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Email Preview Modal - Full Screen Mailbox Simulation */}
         <AnimatePresence>

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useTheme } from '@/app/context/ThemeContext';
 import { useSidebar, CONFIGURABLE_LINKS, SidebarLinkId } from '@/app/context/SidebarContext';
@@ -37,7 +38,16 @@ export default function SettingsPage() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { visibleLinks, toggleLink, resetToDefault } = useSidebar();
   const { preferences, updateNotifications, updateInvoice, updateFormat } = usePreferences();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
+  
+  // Set active tab from URL parameter
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['appearance', 'notifications', 'format', 'invoice', 'email', 'sidebar'].includes(tabParam)) {
+      setActiveTab(tabParam as SettingsTab);
+    }
+  }, [searchParams]);
 
   const tabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
     { id: 'appearance', label: t('appearance') || 'Apparence', icon: <IconSun className="w-4 h-4" /> },

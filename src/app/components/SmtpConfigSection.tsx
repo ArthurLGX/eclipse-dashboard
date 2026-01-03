@@ -149,7 +149,9 @@ export default function SmtpConfigSection() {
         delete (dataToSave as Partial<CreateSmtpConfigData>).smtp_password;
       }
 
-      await saveSmtpConfig(user.id, dataToSave as CreateSmtpConfigData);
+      // Passer is_verified basé sur le résultat du test
+      const isVerified = testResult?.success === true;
+      await saveSmtpConfig(user.id, dataToSave as CreateSmtpConfigData, isVerified);
       showGlobalPopup(t('smtp_saved_success') || 'Configuration SMTP enregistrée', 'success');
       await loadConfig();
     } catch (error) {
