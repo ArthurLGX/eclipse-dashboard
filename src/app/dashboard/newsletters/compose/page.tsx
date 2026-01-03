@@ -51,7 +51,6 @@ import {
   IconChevronDown,
   IconPaperclip,
   IconVideo,
-  IconPhotoUp,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -583,25 +582,14 @@ function RichTextEditor({
       if (!selectedMedia) return;
       
       const deltaX = moveEvent.clientX - resizeStartRef.current.x;
-      const deltaY = moveEvent.clientY - resizeStartRef.current.y;
       
       let newWidth = resizeStartRef.current.width;
-      let newHeight = resizeStartRef.current.height;
       
       if (direction.includes('e')) newWidth += deltaX;
       if (direction.includes('w')) newWidth -= deltaX;
-      if (direction.includes('s')) newHeight += deltaY;
-      if (direction.includes('n')) newHeight -= deltaY;
       
       // Minimum size
       newWidth = Math.max(50, newWidth);
-      newHeight = Math.max(50, newHeight);
-      
-      // Maintain aspect ratio
-      const aspectRatio = resizeStartRef.current.width / resizeStartRef.current.height;
-      if (direction === 'se' || direction === 'nw' || direction === 'ne' || direction === 'sw') {
-        newHeight = newWidth / aspectRatio;
-      }
       
       selectedMedia.style.width = `${newWidth}px`;
       selectedMedia.style.height = 'auto';

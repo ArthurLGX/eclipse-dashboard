@@ -6,7 +6,6 @@ import {
   IconCheck, 
   IconX, 
   IconLoader2,
-  IconUser,
   IconAlertCircle,
   IconPlayerSkipForward
 } from '@tabler/icons-react';

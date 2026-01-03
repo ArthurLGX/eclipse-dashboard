@@ -212,7 +212,7 @@ export const isUserAdmin = (userEmail: string): boolean => {
 // Vérifier la configuration SMTP
 export const checkSmtpConfig = (): { configured: boolean; missing: string[] } => {
   const required = ['SMTP_USER', 'SMTP_PASSWORD'];
-  const optional = ['SMTP_SERVICE', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_SECURE', 'SMTP_FROM', 'ADMIN_EMAIL'];
+  // Optional: 'SMTP_SERVICE', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_SECURE', 'SMTP_FROM', 'ADMIN_EMAIL'
   
   const missing: string[] = [];
   

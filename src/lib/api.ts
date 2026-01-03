@@ -1433,7 +1433,7 @@ export const updateTaskProgress = (taskDocumentId: string, progress: number) =>
 // SMTP CONFIGURATION
 // ============================================================================
 
-import type { SmtpConfig, CreateSmtpConfigData, UpdateSmtpConfigData } from '@/types';
+import type { SmtpConfig, CreateSmtpConfigData } from '@/types';
 
 /** Récupère la configuration SMTP de l'utilisateur */
 export const fetchSmtpConfig = async (userId: number): Promise<SmtpConfig | null> => {

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IconTrash, IconX, IconCheck, IconSquare, IconSquareCheck, IconSquareMinus } from '@tabler/icons-react';
+import { IconTrash, IconX, IconSquare, IconSquareCheck, IconSquareMinus } from '@tabler/icons-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export interface Column<T = unknown> {

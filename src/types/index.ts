@@ -527,4 +527,4 @@ export interface CreateSmtpConfigData {
   smtp_from_name?: string;
 }
 
-export interface UpdateSmtpConfigData extends Partial<CreateSmtpConfigData> {}
+export type UpdateSmtpConfigData = Partial<CreateSmtpConfigData>;
