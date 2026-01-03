@@ -590,6 +590,57 @@ export interface CreateNewsletterData {
   subscribers?: number[]; // IDs des subscribers
 }
 
+// Trouver ou créer un subscriber par email
+export async function findOrCreateSubscriber(data: {
+  email: string;
+  first_name: string;
+  last_name: string;
+  userId: number;
+}): Promise<number> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  // Chercher si le subscriber existe déjà
+  const searchResponse = await fetch(
+    `${API_URL}/api/subscribers?filters[email][$eq]=${encodeURIComponent(data.email)}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  if (searchResponse.ok) {
+    const searchResult = await searchResponse.json();
+    if (searchResult.data && searchResult.data.length > 0) {
+      return searchResult.data[0].id;
+    }
+  }
+
+  // Créer le subscriber s'il n'existe pas
+  const createResponse = await fetch(`${API_URL}/api/subscribers`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      data: {
+        email: data.email,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        user: data.userId,
+      },
+    }),
+  });
+
+  if (!createResponse.ok) {
+    const error = await createResponse.json();
+    throw new Error(error.error?.message || 'Erreur lors de la création du subscriber');
+  }
+
+  const createResult = await createResponse.json();
+  return createResult.data.id;
+}
+
 export async function createNewsletter(data: CreateNewsletterData) {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');

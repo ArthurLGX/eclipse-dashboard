@@ -751,8 +751,32 @@ export default function ComposeNewsletterPage() {
 
     setSending(true);
     try {
-      // Importer la fonction createNewsletter
-      const { createNewsletter } = await import('@/lib/api');
+      // Importer les fonctions API
+      const { createNewsletter, findOrCreateSubscriber } = await import('@/lib/api');
+      
+      // Récupérer les clients sélectionnés
+      const selectedClients = clients.filter(c => selectedRecipients.includes(c.id));
+      
+      // Créer ou trouver les subscribers correspondants aux clients
+      const subscriberIds: number[] = [];
+      for (const client of selectedClients) {
+        // Séparer le nom en prénom/nom (approximatif)
+        const nameParts = client.name.trim().split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+        
+        try {
+          const subscriberId = await findOrCreateSubscriber({
+            email: client.email,
+            first_name: firstName,
+            last_name: lastName,
+            userId: user.id,
+          });
+          subscriberIds.push(subscriberId);
+        } catch (err) {
+          console.warn(`Could not create subscriber for ${client.email}:`, err);
+        }
+      }
       
       // Créer la newsletter dans la base de données
       await createNewsletter({
@@ -763,7 +787,7 @@ export default function ComposeNewsletterPage() {
         n_status: 'sent',
         send_at: new Date().toISOString(),
         author: user.id,
-        subscribers: selectedRecipients,
+        subscribers: subscriberIds.length > 0 ? subscriberIds : undefined,
       });
 
       showGlobalPopup(`${t('newsletter_sent_success')} ${selectedRecipients.length} ${t('recipients_count')}`, 'success');
