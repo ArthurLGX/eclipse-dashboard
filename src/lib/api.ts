@@ -261,7 +261,6 @@ export async function fetchAllUserProjects(userId: number) {
       };
       permission: string;
       is_owner: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }[]>>(`project-collaborators?populate[project][populate]=*&filters[user][$eq]=${userId}&filters[is_owner][$eq]=false`);
     
     const collaborations = collaborationsResponse.data || [];

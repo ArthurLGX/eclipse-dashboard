@@ -1074,80 +1074,84 @@ function TaskGanttView({
   const [exportFileName, setExportFileName] = useState(`gantt-${projectName || 'project'}-${new Date().toISOString().split('T')[0]}`);
 
   // Fonction utilitaire pour normaliser une date à minuit (début de journée)
-  const normalizeDate = (date: Date): Date => {
+  const normalizeDate = useCallback((date: Date): Date => {
     const normalized = new Date(date);
     normalized.setHours(0, 0, 0, 0);
     return normalized;
-  };
+  }, []);
 
   // Fonction pour calculer le numéro de semaine ISO
-  const getISOWeekNumber = (date: Date): number => {
+  const getISOWeekNumber = useCallback((date: Date): number => {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     const dayNum = d.getUTCDay() || 7;
     d.setUTCDate(d.getUTCDate() + 4 - dayNum);
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
     return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
-  };
+  }, []);
 
   // Calculer la plage de dates - normaliser aujourd'hui à minuit
-  const today = normalizeDate(new Date());
-  const tasksWithDates = tasks.filter(task => task.start_date || task.due_date);
-  
-  if (tasksWithDates.length === 0) {
-    return (
-      <div className="text-center py-12 bg-muted rounded-xl border border-default">
-        <IconTimeline className="w-12 h-12 text-muted mx-auto mb-3" />
-        <p className="text-muted">{t('no_tasks_with_dates_for_gantt') || 'Aucune tâche avec des dates pour afficher le Gantt'}</p>
-        <p className="text-xs text-muted mt-1">{t('add_dates_to_tasks') || 'Ajoutez des dates de début et d&apos;échéance à vos tâches'}</p>
-      </div>
-    );
-  }
+  const today = useMemo(() => normalizeDate(new Date()), [normalizeDate]);
+  const tasksWithDates = useMemo(() => tasks.filter(task => task.start_date || task.due_date), [tasks]);
 
-  // Trouver les dates min et max - normaliser toutes les dates
-  const allDates = tasksWithDates.flatMap(task => [
-    task.start_date ? normalizeDate(new Date(task.start_date)) : null,
-    task.due_date ? normalizeDate(new Date(task.due_date)) : null,
-  ]).filter((d): d is Date => d !== null);
-
-  const minDateRaw = new Date(Math.min(...allDates.map(d => d.getTime()), today.getTime()));
-  const maxDateRaw = new Date(Math.max(...allDates.map(d => d.getTime()), today.getTime()));
-  
-  // Ajouter quelques jours de marge et normaliser
-  const minDate = normalizeDate(new Date(minDateRaw));
-  minDate.setDate(minDate.getDate() - 3);
-  const maxDate = normalizeDate(new Date(maxDateRaw));
-  maxDate.setDate(maxDate.getDate() + 14);
-
-  // Calculer le nombre total de jours (utiliser des jours entiers)
-  const totalDays = Math.round((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
-  
-  // Générer les en-têtes de colonnes (jours) - chaque jour normalisé
-  const dayHeaders: Date[] = [];
-  for (let i = 0; i <= totalDays; i++) {
-    const date = new Date(minDate);
-    date.setDate(date.getDate() + i);
-    dayHeaders.push(normalizeDate(date));
-  }
-
-  // Grouper par semaines pour l'affichage
-  const weeks: { start: Date; days: Date[] }[] = [];
-  let currentWeek: Date[] = [];
-  let weekStart = dayHeaders[0];
-
-  dayHeaders.forEach((date, i) => {
-    if (date.getDay() === 1 && currentWeek.length > 0) {
-      weeks.push({ start: weekStart, days: currentWeek });
-      currentWeek = [];
-      weekStart = date;
+  // Calculer toutes les données du Gantt avec useMemo
+  const ganttData = useMemo(() => {
+    if (tasksWithDates.length === 0) {
+      return null;
     }
-    currentWeek.push(date);
-    if (i === dayHeaders.length - 1) {
-      weeks.push({ start: weekStart, days: currentWeek });
+
+    // Trouver les dates min et max - normaliser toutes les dates
+    const allDates = tasksWithDates.flatMap(task => [
+      task.start_date ? normalizeDate(new Date(task.start_date)) : null,
+      task.due_date ? normalizeDate(new Date(task.due_date)) : null,
+    ]).filter((d): d is Date => d !== null);
+
+    const minDateRaw = new Date(Math.min(...allDates.map(d => d.getTime()), today.getTime()));
+    const maxDateRaw = new Date(Math.max(...allDates.map(d => d.getTime()), today.getTime()));
+    
+    // Ajouter quelques jours de marge et normaliser
+    const minDate = normalizeDate(new Date(minDateRaw));
+    minDate.setDate(minDate.getDate() - 3);
+    const maxDate = normalizeDate(new Date(maxDateRaw));
+    maxDate.setDate(maxDate.getDate() + 14);
+
+    // Calculer le nombre total de jours (utiliser des jours entiers)
+    const totalDays = Math.round((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    // Générer les en-têtes de colonnes (jours) - chaque jour normalisé
+    const dayHeaders: Date[] = [];
+    for (let i = 0; i <= totalDays; i++) {
+      const date = new Date(minDate);
+      date.setDate(date.getDate() + i);
+      dayHeaders.push(normalizeDate(date));
     }
-  });
+
+    // Grouper par semaines pour l'affichage
+    const weeks: { start: Date; days: Date[] }[] = [];
+    let currentWeek: Date[] = [];
+    let weekStart = dayHeaders[0];
+
+    dayHeaders.forEach((date, i) => {
+      if (date.getDay() === 1 && currentWeek.length > 0) {
+        weeks.push({ start: weekStart, days: currentWeek });
+        currentWeek = [];
+        weekStart = date;
+      }
+      currentWeek.push(date);
+      if (i === dayHeaders.length - 1) {
+        weeks.push({ start: weekStart, days: currentWeek });
+      }
+    });
+
+    // Trouver l'index du jour d'aujourd'hui dans dayHeaders
+    const todayIndex = dayHeaders.findIndex(d => d.getTime() === today.getTime());
+
+    return { minDate, maxDate, totalDays, dayHeaders, weeks, todayIndex };
+  }, [tasksWithDates, today, normalizeDate]);
 
   // Calculer la position d'une tâche (en nombre de jours depuis minDate)
-  const getTaskPosition = (task: ProjectTask) => {
+  const getTaskPosition = useCallback((task: ProjectTask) => {
+    if (!ganttData) return { startOffset: 0, duration: 1 };
+    const { minDate, totalDays } = ganttData;
     const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
     const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
     
@@ -1155,26 +1159,29 @@ function TaskGanttView({
     const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
     
     return { startOffset: Math.max(0, startOffset), duration };
-  };
+  }, [ganttData, normalizeDate, today]);
 
-  // Trouver l'index du jour d'aujourd'hui dans dayHeaders
-  const todayIndex = dayHeaders.findIndex(d => d.getTime() === today.getTime());
-
-  const isToday = (date: Date) => {
+  const isToday = useCallback((date: Date) => {
     return date.getTime() === today.getTime();
-  };
+  }, [today]);
 
-  const getStatusColor = (status: TaskStatus) => {
+  const getStatusColor = useCallback((status: TaskStatus) => {
     switch (status) {
       case 'completed': return 'bg-accent';
       case 'in_progress': return 'bg-blue-500';
       case 'cancelled': return 'bg-red-500/50';
       default: return 'bg-secondary';
     }
-  };
+  }, []);
 
   // Fonction pour générer le HTML d'export (réutilisable pour aperçu et export)
   const generateExportHTML = useCallback((mode: 'light' | 'dark') => {
+    if (!ganttData) {
+      return { html: '', colors: { bg: '#ffffff' } };
+    }
+
+    const { minDate, totalDays, dayHeaders } = ganttData;
+
     const lightColors = {
       bg: '#ffffff',
       bgSecondary: '#f9fafb',
@@ -1297,7 +1304,7 @@ function TaskGanttView({
       `,
       colors
     };
-  }, [tasks, taskStatusOptions, dayHeaders, today, minDate, totalDays, projectName, t, normalizeDate]);
+  }, [ganttData, tasks, taskStatusOptions, today, projectName, t, normalizeDate]);
 
   // Fonction d'export PDF - utilise generateExportHTML
   const handleExportPDF = useCallback(async (mode: 'light' | 'dark') => {
@@ -1338,6 +1345,19 @@ function TaskGanttView({
   const previewHTML = useMemo(() => {
     return generateExportHTML(exportMode).html;
   }, [generateExportHTML, exportMode]);
+
+  // Early return si pas de données Gantt (après tous les hooks)
+  if (!ganttData) {
+    return (
+      <div className="text-center py-12 bg-muted rounded-xl border border-default">
+        <IconTimeline className="w-12 h-12 text-muted mx-auto mb-3" />
+        <p className="text-muted">{t('no_tasks_with_dates_for_gantt') || 'Aucune tâche avec des dates pour afficher le Gantt'}</p>
+        <p className="text-xs text-muted mt-1">{t('add_dates_to_tasks') || 'Ajoutez des dates de début et d&apos;échéance à vos tâches'}</p>
+      </div>
+    );
+  }
+
+  const { dayHeaders, weeks, todayIndex, totalDays } = ganttData;
 
   return (
     <div className="space-y-2">
