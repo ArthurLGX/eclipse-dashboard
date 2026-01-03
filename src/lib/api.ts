@@ -1438,7 +1438,7 @@ import type { SmtpConfig, CreateSmtpConfigData } from '@/types';
 /** Récupère la configuration SMTP de l'utilisateur */
 export const fetchSmtpConfig = async (userId: number): Promise<SmtpConfig | null> => {
   const response = await get<ApiResponse<SmtpConfig[]>>(
-    `smtp-configs?filters[user][$eq]=${userId}`
+    `smtp-configs?filters[users][$eq]=${userId}&populate=*`
   );
   return response.data?.[0] || null;
 };
@@ -1452,17 +1452,17 @@ export const saveSmtpConfig = async (
   const existing = await fetchSmtpConfig(userId);
   
   if (existing) {
-    // Mise à jour
+    // Mise à jour - pas besoin de changer la relation user
     const response = await put<ApiResponse<SmtpConfig>>(
       `smtp-configs/${existing.documentId}`,
-      { ...data, user: userId }
+      { ...data }
     );
     return response.data;
   } else {
-    // Création
+    // Création - utiliser connect pour la relation Strapi v5
     const response = await post<ApiResponse<SmtpConfig>>(
       'smtp-configs',
-      { ...data, user: userId, is_verified: false }
+      { ...data, is_verified: false, users: { connect: [{ id: userId }] } }
     );
     return response.data;
   }

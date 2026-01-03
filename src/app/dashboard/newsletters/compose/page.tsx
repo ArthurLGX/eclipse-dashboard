@@ -60,7 +60,8 @@ import { usePopup } from '@/app/context/PopupContext';
 import { useClients, useCompany } from '@/hooks/useApi';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import ThemeCustomizer from '@/app/components/ThemeCustomizer';
-import type { Client, Company } from '@/types';
+import { fetchSmtpConfig } from '@/lib/api';
+import type { Client, Company, SmtpConfig } from '@/types';
 
 // Types
 type TemplateType = 'standard' | 'promotional' | 'announcement' | 'custom';
@@ -1222,6 +1223,11 @@ export default function ComposeNewsletterPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [sending, setSending] = useState(false);
   const [showFooterSettings, setShowFooterSettings] = useState(false);
+  
+  // SMTP Config State
+  const [smtpConfig, setSmtpConfig] = useState<SmtpConfig | null>(null);
+  const [smtpLoading, setSmtpLoading] = useState(true);
+  const [showSmtpWarning, setShowSmtpWarning] = useState(false);
   
   // Custom template colors with gradient stops
   interface GradientStop {

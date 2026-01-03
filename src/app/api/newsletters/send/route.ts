@@ -62,7 +62,7 @@ async function verifyToken(token: string): Promise<StrapiUser | null> {
 async function getUserSmtpConfig(userId: number, token: string): Promise<StrapiSmtpConfig | null> {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/smtp-configs?filters[user][$eq]=${userId}`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/smtp-configs?filters[users][$eq]=${userId}&populate=*`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -513,7 +513,7 @@ export interface SmtpConfig {
   smtp_secure: boolean;
   smtp_from_name?: string;
   is_verified: boolean;
-  user: number;
+  users?: number | { id: number }; // Relation avec User
   createdAt: string;
   updatedAt: string;
 }
