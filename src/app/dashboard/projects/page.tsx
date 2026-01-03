@@ -47,10 +47,20 @@ export default function ProjectsPage() {
 
   const allProjects = useMemo(() => (projectsData as Project[]) || [], [projectsData]);
   
-  // Limiter les projets selon le quota
+  // Séparer les projets possédés et les projets collaborés
+  // Les projets collaborés ne comptent PAS dans le quota
   const projects = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ownedProjects = allProjects.filter((p: any) => !p._isCollaborator);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const collaboratedProjects = allProjects.filter((p: any) => p._isCollaborator);
+    
+    // Appliquer le quota uniquement aux projets possédés
     const visibleCount = getVisibleCount('projects');
-    return allProjects.slice(0, visibleCount);
+    const visibleOwnedProjects = ownedProjects.slice(0, visibleCount);
+    
+    // Toujours afficher tous les projets collaborés (pas de quota pour eux)
+    return [...visibleOwnedProjects, ...collaboratedProjects];
   }, [allProjects, getVisibleCount]);
 
   const clients = useMemo(() => 
@@ -138,7 +148,7 @@ export default function ProjectsPage() {
   const columns: Column<Project>[] = [
     {
       key: 'title',
-      label: 'Projet',
+      label: t('project') || 'Projet',
       render: (value, row) => (
         <div className="relative">
           <div className="flex items-start gap-2">
@@ -158,7 +168,7 @@ export default function ProjectsPage() {
     },
     {
       key: 'client',
-      label: 'Client',
+      label: t('client'),
       render: (value) => (
         <p className="text-secondary">
           {(value as { name?: string })?.name || 'N/A'}
@@ -167,7 +177,7 @@ export default function ProjectsPage() {
     },
     {
       key: 'project_status',
-      label: 'Statut',
+      label: t('status'),
       render: (value) => {
         const status = value as string;
         const config = 
@@ -185,7 +195,7 @@ export default function ProjectsPage() {
     },
     {
       key: 'start_date',
-      label: 'Début',
+      label: t('start_date'),
       render: (value) => (
         <p className="text-secondary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
@@ -194,7 +204,7 @@ export default function ProjectsPage() {
     },
     {
       key: 'end_date',
-      label: 'Fin',
+      label: t('end_date'),
       render: (value) => (
         <p className="text-secondary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
@@ -203,7 +213,7 @@ export default function ProjectsPage() {
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('actions'),
       render: (_, row) => (
         <TableActions
           onEdit={() => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}?edit=1`)}

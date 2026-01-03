@@ -59,7 +59,7 @@ export default function MentorsPage() {
     },
     {
       key: 'email',
-      label: 'Email',
+      label: t('email'),
       render: (value) => (
         <p className="text-zinc-300">{value as string}</p>
       ),
@@ -87,7 +87,7 @@ export default function MentorsPage() {
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('actions'),
       render: (_, row) => (
         <TableActions
           onEdit={() => console.log('Edit mentor:', row.id)}
@@ -112,7 +112,7 @@ export default function MentorsPage() {
             icon: <IconBrain className="w-6 h-6 !text-indigo-400" />,
           },
           {
-            label: t('available') || 'Disponibles',
+            label: t('available'),
             value: mentors.length,
             colorClass: '!text-emerald-400',
             icon: <IconUserStar className="w-6 h-6 !text-emerald-400" />,

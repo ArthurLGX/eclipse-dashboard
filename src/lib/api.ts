@@ -243,6 +243,7 @@ export async function fetchAllUserProjects(userId: number) {
   
   // 2. Récupérer les collaborations de l'utilisateur
   try {
+    // Utiliser populate[project][populate]=* pour avoir tous les champs du projet
     const collaborationsResponse = await get<ApiResponse<{
       project: {
         id: number;
@@ -250,19 +251,24 @@ export async function fetchAllUserProjects(userId: number) {
         title: string;
         description: string;
         project_status: string;
+        type: string;
         deadline: string;
+        start_date: string;
+        end_date: string;
         createdAt: string;
         updatedAt: string;
+        client?: { id: number; documentId: string; name: string };
       };
       permission: string;
       is_owner: boolean;
-    }[]>>(`project-collaborators?populate=project&filters[user][id][$eq]=${userId}`);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }[]>>(`project-collaborators?populate[project][populate]=*&filters[user][$eq]=${userId}&filters[is_owner][$eq]=false`);
     
     const collaborations = collaborationsResponse.data || [];
     
     // Extraire les projets des collaborations
     const collaboratedProjects = collaborations
-      .filter(c => c.project && !c.is_owner) // Exclure les projets dont l'utilisateur est propriétaire
+      .filter(c => c.project) // S'assurer que le projet existe
       .map(c => ({
         ...c.project,
         _isCollaborator: true,

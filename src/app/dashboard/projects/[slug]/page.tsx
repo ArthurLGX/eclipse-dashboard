@@ -21,6 +21,9 @@ import {
   IconX,
   IconExternalLink,
   IconCalendarEvent,
+  IconCode,
+  IconPalette,
+  IconTool,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
@@ -35,21 +38,12 @@ import ProjectTasks from '@/app/components/ProjectTasks';
 import { canDeleteProject, fetchProjectCollaborators } from '@/lib/api';
 import type { Project, Client, Facture, ProjectCollaborator, ProjectTask } from '@/types';
 
-const PROJECT_STATUS = [
-  { value: 'planning', label: 'Planification', color: 'blue', icon: IconClockPause },
-  { value: 'in_progress', label: 'En cours', color: 'amber', icon: IconProgress },
-  { value: 'completed', label: 'Terminé', color: 'emerald', icon: IconCheck },
-];
 
-const PROJECT_TYPES = [
-  { value: 'development', label: 'Développement' },
-  { value: 'design', label: 'Design' },
-  { value: 'maintenance', label: 'Maintenance' },
-];
 
 type TabType = 'overview' | 'tasks' | 'invoices';
 
 export default function ProjectDetailsPage() {
+  
   const params = useParams();
   const router = useRouter();
   const { t } = useLanguage();
@@ -87,15 +81,27 @@ export default function ProjectDetailsPage() {
   const [bannerColor, setBannerColor] = useState<string>('auto');
   const [isSaving, setIsSaving] = useState(false);
 
+  const PROJECT_STATUS = [
+  { value: 'planning', label: t('planning'), color: 'blue', icon: IconClockPause },
+  { value: 'in_progress', label: t('in_progress'), color: 'amber', icon: IconProgress },
+  { value: 'completed', label: t('completed'), color: 'emerald', icon: IconCheck },
+];
+
+const PROJECT_TYPES = [
+    { value: 'development', label: t('development'), color: 'blue', icon: IconCode },
+    { value: 'design', label: t('design'), color: 'amber', icon: IconPalette },
+    { value: 'maintenance', label: t('maintenance'), color: 'emerald', icon: IconTool },
+];
+
   // Options de couleurs de bannière - utilise les classes CSS définies dans globals.css
   const BANNER_COLORS = [
-    { value: 'auto', label: 'Automatique (selon statut)', className: '' },
-    { value: 'blue', label: 'Bleu', className: 'banner-blue' },
-    { value: 'emerald', label: 'Émeraude', className: 'banner-emerald' },
-    { value: 'amber', label: 'Ambre', className: 'banner-amber' },
-    { value: 'purple', label: 'Violet', className: 'banner-purple' },
-    { value: 'rose', label: 'Rose', className: 'banner-rose' },
-    { value: 'cyan', label: 'Cyan', className: 'banner-cyan' },
+    { value: 'auto', label: t('automatic_status') || 'Automatique (selon statut)', className: '' },
+    { value: 'blue', label: t('blue') || 'Bleu', className: 'banner-blue' },
+    { value: 'emerald', label: t('emerald') || 'Émeraude', className: 'banner-emerald' },
+    { value: 'amber', label: t('amber') || 'Ambre', className: 'banner-amber' },
+    { value: 'purple', label: t('purple') || 'Violet', className: 'banner-purple' },
+    { value: 'rose', label: t('rose') || 'Rose', className: 'banner-rose' },
+    { value: 'cyan', label: t('cyan') || 'Cyan', className: 'banner-cyan' },
   ];
 
   // Initialiser les valeurs d'édition quand le projet change
@@ -303,7 +309,7 @@ export default function ProjectDetailsPage() {
               className="flex items-center gap-2 text-secondary hover:text-primary transition-colors group"
             >
               <IconArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-sm">Projets</span>
+              <span className="text-sm">{t('projects') || 'Projets'}</span>
             </Link>
 
             {/* Actions */}
@@ -314,7 +320,7 @@ export default function ProjectDetailsPage() {
                   className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
                 >
                   <IconShare className="w-4 h-4" />
-                  <span className="hidden sm:inline">Partager</span>
+                  <span className="hidden sm:inline">{t('share') || 'Partager'}</span>
                 </button>
               )}
               
@@ -331,7 +337,7 @@ export default function ProjectDetailsPage() {
                         className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
                       >
                         <IconX className="w-4 h-4" />
-                        <span className="hidden sm:inline">Annuler</span>
+                        <span className="hidden sm:inline">{t('cancel') || 'Annuler'}</span>
                       </button>
                       {/* Bouton Sauvegarder */}
                       <button
@@ -344,7 +350,7 @@ export default function ProjectDetailsPage() {
                         ) : (
                           <IconCheck className="w-4 h-4" />
                         )}
-                        <span className="hidden sm:inline">{isSaving ? 'Sauvegarde...' : 'Sauvegarder'}</span>
+                        <span className="hidden sm:inline">{isSaving ? t('saving') || 'Sauvegarde...' : t('save') || 'Sauvegarder'}</span>
                       </button>
                     </>
                   ) : (
@@ -353,7 +359,7 @@ export default function ProjectDetailsPage() {
                       className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
                     >
                       <IconEdit className="w-4 h-4" />
-                      <span className="hidden sm:inline">Modifier</span>
+                      <span className="hidden sm:inline">{t('edit') || 'Modifier'}</span>
                     </button>
                   )}
                 </>
@@ -446,31 +452,31 @@ export default function ProjectDetailsPage() {
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
                 <div className="flex items-center gap-2 text-muted text-xs mb-1">
                   <IconCurrencyEuro className="w-3.5 h-3.5" />
-                  Facturé
+                  {t('billed') || 'Facturé'}
                 </div>
                 <p className="text-xl font-bold text-primary">
                   {totalFactures.toLocaleString('fr-FR')} €
                 </p>
                 <p className="text-xs text-success">
-                  {paidFactures.toLocaleString('fr-FR')} € payé
+                  {paidFactures.toLocaleString('fr-FR')} € {t('paid') || 'payé'}
                 </p>
               </div>
               
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
                 <div className="flex items-center gap-2 text-muted text-xs mb-1">
                   <IconFileInvoice className="w-3.5 h-3.5" />
-                  Factures
+                  {t('invoices') || 'Factures'}
                 </div>
                 <p className="text-xl font-bold text-primary">{factures.length}</p>
                 <p className="text-xs text-muted">
-                  {factures.filter(f => f.facture_status === 'paid').length} payées
+                  {factures.filter(f => f.facture_status === 'paid').length} {t('paid') || 'payées'}
                 </p>
               </div>
 
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
                 <div className="flex items-center gap-2 text-muted text-xs mb-1">
                   <IconListCheck className="w-3.5 h-3.5" />
-                  Tâches
+                  {t('tasks')}
                 </div>
                 <div className="flex items-center gap-2">
                   {pendingTasks > 0 && (
@@ -485,14 +491,14 @@ export default function ProjectDetailsPage() {
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
                 <div className="flex items-center gap-2 text-muted text-xs mb-1">
                   <IconCalendarEvent className="w-3.5 h-3.5" />
-                  Échéance
+                  {t('due_date')}
                 </div>
                 <p className={`text-xl font-bold ${daysRemaining !== null && daysRemaining < 0 ? 'text-danger' : daysRemaining !== null && daysRemaining < 7 ? 'text-warning' : 'text-primary'}`}>
-                  {daysRemaining !== null ? (daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : `${daysRemaining}j`) : '—'}
+                  {daysRemaining !== null ? (daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : `${daysRemaining}j`) : t('no_date') || 'Aucune date' || '—'}
                 </p>
                 <p className="text-xs text-muted">
-                  {daysRemaining !== null && daysRemaining < 0 ? 'en retard' : 'restants'}
-                </p>
+                  {daysRemaining !== null && daysRemaining < 0 ? t('overdue') || 'En retard' : t('remaining') || 'Restant'}
+                </p> 
               </div>
             </div>
           </div>
@@ -500,9 +506,9 @@ export default function ProjectDetailsPage() {
           {/* Tabs Navigation */}
           <div className="flex gap-1 mt-8 -mb-px">
             {[
-              { id: 'overview' as TabType, label: 'Aperçu', icon: IconChartBar },
-              { id: 'tasks' as TabType, label: 'Tâches', icon: IconListCheck, count: pendingTasks, isOrange: true },
-              { id: 'invoices' as TabType, label: 'Factures', icon: IconFileInvoice, count: factures.length },
+              { id: 'overview' as TabType, label: t('overview'), icon: IconChartBar },
+              { id: 'tasks' as TabType, label: t('tasks'), icon: IconListCheck, count: pendingTasks, isOrange: true },
+              { id: 'invoices' as TabType, label: t('invoices'), icon: IconFileInvoice, count: factures.length },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -550,7 +556,7 @@ export default function ProjectDetailsPage() {
                   <div className="card p-6">
                     <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
                       <IconFileText className="w-5 h-5 text-success" />
-                      Description
+                      {t('description')}
                     </h2>
                     {isEditMode ? (
                       <textarea
@@ -558,13 +564,13 @@ export default function ProjectDetailsPage() {
                         form="edit-form"
                         defaultValue={project.description}
                         rows={5}
-                        placeholder="Décrivez votre projet..."
+                        placeholder={t('describe_your_project')}
                         className="w-full input px-4 py-3 resize-none"
                       />
                     ) : (
                       <p className="text-secondary leading-relaxed whitespace-pre-wrap">
                         {project.description || (
-                          <span className="italic text-muted">Aucune description</span>
+                              <span className="italic text-muted">{t('no_description_available')}</span>
                         )}
                       </p>
                     )}
@@ -575,7 +581,7 @@ export default function ProjectDetailsPage() {
                     <div className="card p-6">
                       <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
                         <IconFileText className="w-5 h-5 text-info" />
-                        Notes internes
+                        {t('internal_notes')}
                       </h2>
                       {isEditMode ? (
                         <textarea
@@ -583,8 +589,8 @@ export default function ProjectDetailsPage() {
                           form="edit-form"
                           defaultValue={project.notes || ''}
                           rows={3}
-                          placeholder="Notes privées..."
-                          className="w-full input px-4 py-3 resize-none"
+                          placeholder={t('private_notes')}
+                          className="w-full  px-4 py-3 resize-none"
                         />
                       ) : (
                         <p className="text-secondary leading-relaxed whitespace-pre-wrap">
@@ -602,14 +608,14 @@ export default function ProjectDetailsPage() {
                         onClick={() => setIsEditMode(false)}
                         className="px-4 py-2 text-secondary hover:text-primary transition-colors"
                       >
-                        Annuler
+                        {t('cancel')}
                       </button>
                       <button
                         type="submit"
                         form="edit-form"
                         className="px-6 py-2 btn-primary rounded-lg transition-colors font-medium"
                       >
-                        Enregistrer les modifications
+                        {t('save_changes')}
                       </button>
                     </div>
                   )}
@@ -644,14 +650,14 @@ export default function ProjectDetailsPage() {
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
                         <IconFileInvoice className="w-5 h-5 text-warning" />
-                        Factures du projet
+                        {t('project_invoices')}
                       </h2>
                       <Link
                         href={`/dashboard/factures/ajouter?projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}`}
                         className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors text-sm"
                       >
                         <IconPlus className="w-4 h-4" />
-                        Nouvelle facture
+                        {t('new_invoice')}
                       </Link>
                     </div>
 
@@ -710,13 +716,13 @@ export default function ProjectDetailsPage() {
                         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                           <IconFileInvoice className="w-8 h-8 text-muted" />
                         </div>
-                        <p className="text-muted mb-4">Aucune facture pour ce projet</p>
+                        <p className="text-muted mb-4">{t('no_invoices_for_this_project')}</p>
                         <Link
                           href={`/dashboard/factures/ajouter?projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}`}
                           className="inline-flex items-center gap-2 px-4 py-2 bg-accent-light text-accent rounded-lg hover:opacity-80 transition-colors"
                         >
                           <IconPlus className="w-4 h-4" />
-                          Créer une facture
+                          {t('create_invoice')}
                         </Link>
                       </div>
                     )}
@@ -731,7 +737,7 @@ export default function ProjectDetailsPage() {
             {/* Dates Card */}
             <div className="card p-5">
               <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
-                Échéances
+                {t('due_dates')}
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
@@ -739,7 +745,7 @@ export default function ProjectDetailsPage() {
                     <IconCalendar className="w-4 h-4 text-success" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-muted mb-0.5">Début</p>
+                    <p className="text-xs text-muted mb-0.5">{t('start_date')}</p>
                     {isEditMode ? (
                       <input
                         type="date"
@@ -761,7 +767,7 @@ export default function ProjectDetailsPage() {
                     <IconCalendar className="w-4 h-4 text-danger" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-muted mb-0.5">Échéance</p>
+                    <p className="text-xs text-muted mb-0.5">{t('due_date')}</p>
                     {isEditMode ? (
                       <input
                         type="date"
@@ -784,7 +790,7 @@ export default function ProjectDetailsPage() {
             {/* Client Card */}
             <div className="card p-5">
               <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
-                Client
+                {t('client')}
               </h3>
               {isEditMode ? (
                 <select
@@ -792,7 +798,7 @@ export default function ProjectDetailsPage() {
                   onChange={(e) => setSelectedClientId(e.target.value)}
                   className="w-full input px-3 py-2 text-sm"
                 >
-                  <option value="">Aucun client</option>
+                    <option value="">{t('no_client_assigned')}</option>
                   {clients.map(client => (
                     <option key={client.documentId} value={client.documentId}>
                       {client.name}
@@ -820,7 +826,7 @@ export default function ProjectDetailsPage() {
                   <IconExternalLink className="w-4 h-4 text-muted group-hover:text-accent transition-colors" />
                 </Link>
               ) : (
-                <p className="text-muted text-sm">Aucun client assigné</p>
+                <p className="text-muted text-sm">{t('no_client_assigned')}</p>
               )}
             </div>
 
@@ -828,13 +834,13 @@ export default function ProjectDetailsPage() {
             <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xs font-semibold text-muted uppercase tracking-wider">
-                  Équipe
+                  {t('team')}
                 </h3>
                 <button
                   onClick={() => setShowShareModal(true)}
                   className="text-xs text-accent hover:opacity-80 transition-colors"
                 >
-                  Gérer
+                  {t('manage')}
                 </button>
               </div>
               <div className="space-y-2">
@@ -847,7 +853,7 @@ export default function ProjectDetailsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-primary truncate">{project.user?.username}</p>
-                    <p className="text-xs text-warning">Propriétaire</p>
+                    <p className="text-xs text-warning">{t('owner')}</p>
                   </div>
                 </div>
                 
@@ -862,7 +868,7 @@ export default function ProjectDetailsPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-primary truncate">{collab.user?.username}</p>
                       <p className="text-xs text-muted">
-                        {collab.permission === 'edit' ? 'Éditeur' : 'Lecture'}
+                        {collab.permission === 'edit' ? t('editor') : t('reader')}
                       </p>
                     </div>
                   </div>
@@ -870,7 +876,7 @@ export default function ProjectDetailsPage() {
                 
                 {collaborators.filter(c => !c.is_owner).length === 0 && (
                   <p className="text-xs text-muted text-center py-2">
-                    Aucun collaborateur
+                    {t('no_collaborators')}
                   </p>
                 )}
               </div>
@@ -879,25 +885,25 @@ export default function ProjectDetailsPage() {
             {/* Meta Card */}
             <div className="card p-5">
               <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
-                Informations
+                {t('information')}
               </h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted">Créé le</span>
+                  <span className="text-muted">{t('created_at')}</span>
                   <span className="text-secondary">
                     {new Date(project.createdAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted">Modifié le</span>
+                  <span className="text-muted">{t('updated_at')}</span>
                   <span className="text-secondary">
                     {new Date(project.updatedAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
                 {!isOwner && (
                   <div className="flex justify-between pt-2 border-t border-default">
-                    <span className="text-muted">Votre rôle</span>
-                    <span className="text-warning font-medium">Collaborateur</span>
+                    <span className="text-muted">{t('your_role')}</span>
+                    <span className="text-warning font-medium">{t('collaborator')}</span>
                   </div>
                 )}
               </div>

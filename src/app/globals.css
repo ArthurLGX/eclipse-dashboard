@@ -621,7 +621,8 @@ h2 {
 
 h3, h4 {
   list-style: none;
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
+  font-weight: 800;
   color: var(--text-primary);
 }
 

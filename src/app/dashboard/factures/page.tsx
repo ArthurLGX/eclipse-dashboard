@@ -131,7 +131,7 @@ export default function FacturesPage() {
     },
     {
       key: 'date',
-      label: 'Date',
+      label: t('date'),
       render: (value) => (
         <p className="text-secondary">
           {value ? formatDate(value as string) : '-'}
@@ -140,7 +140,7 @@ export default function FacturesPage() {
     },
     {
       key: 'due_date',
-      label: "Échéance",
+      label: t('due_date'),
       render: (value) => (
         <p className="text-secondary">
           {value ? formatDate(value as string) : '-'}
@@ -149,7 +149,7 @@ export default function FacturesPage() {
     },
     {
       key: 'facture_status',
-      label: 'Statut',
+      label: t('status'),
       render: (value) => {
         const status = value as string;
         const config =
@@ -168,7 +168,7 @@ export default function FacturesPage() {
     },
     {
       key: 'number',
-      label: 'Montant',
+      label: t('amount'),
       render: (value) => (
         <p className="text-primary font-medium">
           {value ? formatCurrency(value as number) : '-'}
@@ -177,7 +177,7 @@ export default function FacturesPage() {
     },
     {
       key: 'client',
-      label: 'Client',
+      label: t('client'),
       render: (value, row) => {
         // Strapi peut retourner "client" ou "client_id"
         const clientData = value || row.client_id;
@@ -190,7 +190,7 @@ export default function FacturesPage() {
     },
     {
       key: 'project',
-      label: 'Projet',
+      label: t('project'),
       render: (value) => (
         <p className="text-secondary">
           {value && typeof value === 'object' ? (value as Project).title : '-'}
@@ -199,7 +199,7 @@ export default function FacturesPage() {
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('actions'),
       render: (_, row) => (
         <TableActions
           onEdit={() => router.push(`/dashboard/factures/${getFactureSlug(row)}?edit=1`)}

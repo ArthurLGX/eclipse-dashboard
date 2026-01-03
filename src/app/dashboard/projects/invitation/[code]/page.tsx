@@ -14,6 +14,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { fetchInvitationByCode, acceptInvitation, rejectInvitation } from '@/lib/api';
+import { clearCache } from '@/hooks/useApi';
 import { generateSlug } from '@/utils/slug';
 import type { ProjectInvitation } from '@/types';
 
@@ -92,6 +93,10 @@ export default function InvitationPage() {
     setProcessing(true);
     try {
       await acceptInvitation(invitation.documentId, user.id);
+      
+      // Invalider le cache des projets pour afficher le nouveau projet partagé
+      clearCache('projects');
+      
       showGlobalPopup(
         t('invitation_accepted') || 'Invitation acceptée ! Le projet a été ajouté à votre liste.',
         'success'

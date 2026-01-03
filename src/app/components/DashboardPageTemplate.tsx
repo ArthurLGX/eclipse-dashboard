@@ -105,9 +105,6 @@ export default function DashboardPageTemplate<T>({
 
           {/* Filtres + Table */}
           <div className="card">
-            <div className="p-6 border-b border-default">
-              <h2 className="text-xl font-semibold text-primary">{title}</h2>
-            </div>
             <div className="p-6">
               <TableFilters
                 searchPlaceholder={searchPlaceholder}

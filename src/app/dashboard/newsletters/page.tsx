@@ -130,7 +130,7 @@ export default function NewslettersPage() {
         title={t('newsletters')}
         onRowClick={row => router.push(`/dashboard/newsletters/${row.id}`)}
         actionButtonLabel={t('add_newsletter')}
-        onActionButtonClick={() => {}}
+        onActionButtonClick={() => router.push('/dashboard/newsletters/compose')}
         stats={[
           {
             label: t('total_newsletters'),

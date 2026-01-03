@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconPlus,
@@ -18,6 +18,7 @@ import {
   IconLayoutCards,
   IconTable,
   IconTimeline,
+  IconFileTypePdf,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -37,31 +38,36 @@ interface ProjectTasksProps {
   canEdit: boolean;
 }
 
-const TASK_STATUS_OPTIONS: { value: TaskStatus; label: string; color: string; icon: React.ReactNode }[] = [
-  { value: 'todo', label: 'À faire', color: 'zinc', icon: <IconClock className="w-4 h-4" /> },
-  { value: 'in_progress', label: 'En cours', color: 'blue', icon: <IconProgress className="w-4 h-4" /> },
-  { value: 'completed', label: 'Terminé', color: 'emerald', icon: <IconCheck className="w-4 h-4" /> },
-  { value: 'cancelled', label: 'Annulé', color: 'red', icon: <IconX className="w-4 h-4" /> },
-];
-
-const PRIORITY_OPTIONS: { value: TaskPriority; label: string; color: string }[] = [
-  { value: 'low', label: 'Basse', color: 'zinc' },
-  { value: 'medium', label: 'Moyenne', color: 'blue' },
-  { value: 'high', label: 'Haute', color: 'amber' },
-  { value: 'urgent', label: 'Urgente', color: 'red' },
-];
-
 type ViewMode = 'cards' | 'table' | 'gantt';
 
-const VIEW_OPTIONS: { value: ViewMode; label: string; icon: React.ReactNode }[] = [
-  { value: 'cards', label: 'Cartes', icon: <IconLayoutCards className="w-4 h-4" /> },
-  { value: 'table', label: 'Tableau', icon: <IconTable className="w-4 h-4" /> },
-  { value: 'gantt', label: 'Gantt', icon: <IconTimeline className="w-4 h-4" /> },
-];
+// Types pour les options
+type TaskStatusOption = { value: TaskStatus; label: string; color: string; icon: React.ReactNode };
+type TaskPriorityOption = { value: TaskPriority; label: string; color: string };
 
 export default function ProjectTasks({ projectDocumentId, userId, canEdit }: ProjectTasksProps) {
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
+
+  // Options définies à l'intérieur du composant pour accéder à t()
+  const VIEW_OPTIONS: { value: ViewMode; label: string; icon: React.ReactNode }[] = [
+    { value: 'cards', label: t('cards') || 'Cartes', icon: <IconLayoutCards className="w-4 h-4" /> },
+    { value: 'table', label: t('table') || 'Tableau', icon: <IconTable className="w-4 h-4" /> },
+    { value: 'gantt', label: t('gantt') || 'Gantt', icon: <IconTimeline className="w-4 h-4" /> },
+  ];
+
+  const TASK_STATUS_OPTIONS: { value: TaskStatus; label: string; color: string; icon: React.ReactNode }[] = [
+    { value: 'todo', label: t('todo') || 'À faire', color: 'zinc', icon: <IconClock className="w-4 h-4" /> },
+    { value: 'in_progress', label: t('in_progress') || 'En cours', color: 'blue', icon: <IconProgress className="w-4 h-4" /> },
+    { value: 'completed', label: t('completed') || 'Terminé', color: 'emerald', icon: <IconCheck className="w-4 h-4" /> },
+    { value: 'cancelled', label: t('cancelled') || 'Annulé', color: 'red', icon: <IconX className="w-4 h-4" /> },
+  ];
+
+  const PRIORITY_OPTIONS: { value: TaskPriority; label: string; color: string }[] = [
+    { value: 'low', label: t('low') || 'Basse', color: 'zinc' },
+    { value: 'medium', label: t('medium') || 'Moyenne', color: 'blue' },
+    { value: 'high', label: t('high') || 'Haute', color: 'amber' },
+    { value: 'urgent', label: t('urgent') || 'Urgente', color: 'red' },
+  ];
 
   const [tasks, setTasks] = useState<ProjectTask[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,6 +76,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
   const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<TaskStatus | 'all'>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
+
 
   // Formulaire nouvelle tâche
   const [newTask, setNewTask] = useState({
@@ -217,7 +224,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
       </div>
     );
   }
@@ -227,19 +234,19 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
       {/* Header avec stats */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
-            <IconProgress className="w-5 h-5 text-emerald-400" />
-            {t('project_tasks') || 'Tâches du projet'}
+          <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+            <IconProgress className="w-5 h-5 text-accent" />
+            {t('project_tasks')}
           </h3>
-          <p className="text-sm text-zinc-500 mt-1">
-            {taskStats.completed}/{taskStats.total} {t('tasks_completed') || 'tâches terminées'} • {overallProgress}% {t('progress') || 'progression'}
+          <p className="text-sm text-muted mt-1">
+            {taskStats.completed}/{taskStats.total} {t('tasks_completed')} • {overallProgress}% {t('progress')}
           </p>
         </div>
 
         {canEdit && (
           <button
             onClick={() => setShowNewTaskForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors"
           >
             <IconPlus className="w-4 h-4" />
             {t('add_task') || 'Nouvelle tâche'}
@@ -249,17 +256,17 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
 
       {/* Barre de progression globale */}
       {tasks.length > 0 && (
-        <div className="bg-zinc-800/50 rounded-lg p-4">
+        <div className="bg-muted rounded-lg p-4 border border-default">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-zinc-400">{t('overall_progress') || 'Progression globale'}</span>
-            <span className="text-sm font-medium text-emerald-400">{overallProgress}%</span>
+            <span className="text-sm text-secondary">{t('overall_progress') || 'Progression globale'}</span>
+            <span className="text-sm font-medium text-accent">{overallProgress}%</span>
           </div>
-          <div className="h-2 bg-zinc-700 rounded-full overflow-hidden">
+          <div className="h-2 bg-hover rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${overallProgress}%` }}
               transition={{ duration: 0.5 }}
-              className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full"
+              className="h-full bg-gradient-to-r from-accent to-accent/80 rounded-full"
             />
           </div>
         </div>
@@ -274,8 +281,8 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
               onClick={() => setFilter('all')}
               className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                 filter === 'all'
-                  ? 'bg-zinc-700 text-zinc-100'
-                  : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800'
+                  ? 'bg-accent text-white'
+                  : 'bg-muted text-secondary hover:bg-hover'
               }`}
             >
               Toutes ({taskStats.total})
@@ -287,7 +294,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1.5 ${
                   filter === option.value
                     ? getStatusStyle(option.value)
-                    : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800'
+                    : 'bg-muted text-secondary hover:bg-hover'
                 }`}
               >
                 {option.icon}
@@ -297,15 +304,15 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
           </div>
 
           {/* Sélecteur de vue */}
-          <div className="flex items-center gap-1 bg-zinc-800/50 p-1 rounded-lg">
+          <div className="flex items-center gap-1 bg-muted p-1 rounded-lg border border-default">
             {VIEW_OPTIONS.map(option => (
               <button
                 key={option.value}
                 onClick={() => setViewMode(option.value)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors ${
                   viewMode === option.value
-                    ? 'bg-zinc-700 text-zinc-100'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    ? 'bg-accent text-white'
+                    : 'text-secondary hover:text-primary'
                 }`}
                 title={option.label}
               >
@@ -325,14 +332,14 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             onSubmit={handleCreateTask}
-            className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-4 space-y-4"
+            className="bg-card border border-default rounded-xl p-4 space-y-4"
           >
             <div className="flex items-center justify-between">
-              <h4 className="font-medium text-zinc-200">{t('new_task') || 'Nouvelle tâche'}</h4>
+              <h4 className="font-medium text-primary">{t('new_task') || 'Nouvelle tâche'}</h4>
               <button
                 type="button"
                 onClick={() => setShowNewTaskForm(false)}
-                className="p-1 text-zinc-400 hover:text-zinc-200"
+                className="p-1 text-secondary hover:text-primary"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -344,7 +351,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
                 placeholder={t('task_title') || 'Titre de la tâche *'}
                 value={newTask.title}
                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                className="w-full px-4 py-3 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-emerald-500"
+                className="input w-full"
                 required
               />
 
@@ -353,16 +360,16 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
                 value={newTask.description}
                 onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
                 rows={2}
-                className="w-full px-4 py-3 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-emerald-500 resize-none"
+                className="input w-full resize-none"
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm text-zinc-400 mb-1">{t('priority') || 'Priorité'}</label>
+                  <label className="block text-sm text-secondary mb-1">{t('priority') || 'Priorité'}</label>
                   <select
                     value={newTask.priority}
                     onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as TaskPriority })}
-                    className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                    className="input w-full"
                   >
                     {PRIORITY_OPTIONS.map(option => (
                       <option key={option.value} value={option.value}>{option.label}</option>
@@ -371,17 +378,17 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
                 </div>
 
                 <div>
-                  <label className="block text-sm text-zinc-400 mb-1">{t('due_date') || 'Échéance'}</label>
+                  <label className="block text-sm text-secondary mb-1">{t('due_date') || 'Échéance'}</label>
                   <input
                     type="date"
                     value={newTask.due_date}
                     onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                    className="input w-full"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm text-zinc-400 mb-1">{t('estimated_hours') || 'Heures estimées'}</label>
+                  <label className="block text-sm text-secondary mb-1">{t('estimated_hours') || 'Heures estimées'}</label>
                   <input
                     type="number"
                     step="0.5"
@@ -389,7 +396,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
                     value={newTask.estimated_hours}
                     onChange={(e) => setNewTask({ ...newTask, estimated_hours: e.target.value })}
                     placeholder="0"
-                    className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                    className="input w-full"
                   />
                 </div>
               </div>
@@ -399,14 +406,14 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
               <button
                 type="button"
                 onClick={() => setShowNewTaskForm(false)}
-                className="px-4 py-2 text-zinc-400 hover:text-zinc-200 transition-colors"
+                className="px-4 py-2 text-secondary hover:text-primary transition-colors"
               >
                 {t('cancel') || 'Annuler'}
               </button>
               <button
                 type="submit"
                 disabled={!newTask.title.trim()}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-accent hover:bg-accent/90 disabled:opacity-50 text-white rounded-lg transition-colors"
               >
                 {t('create') || 'Créer'}
               </button>
@@ -417,9 +424,9 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
 
       {/* Liste des tâches selon la vue */}
       {filteredTasks.length === 0 ? (
-        <div className="text-center py-12 bg-zinc-800/30 rounded-xl">
-          <IconProgress className="w-12 h-12 text-zinc-700 mx-auto mb-3" />
-          <p className="text-zinc-500">
+        <div className="text-center py-12 bg-muted rounded-xl border border-default">
+          <IconProgress className="w-12 h-12 text-muted mx-auto mb-3" />
+          <p className="text-muted">
             {filter === 'all' 
               ? (t('no_tasks') || 'Aucune tâche pour ce projet')
               : (t('no_tasks_filter') || 'Aucune tâche avec ce statut')}
@@ -427,7 +434,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
           {canEdit && filter === 'all' && (
             <button
               onClick={() => setShowNewTaskForm(true)}
-              className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg transition-colors inline-flex items-center gap-2"
+              className="mt-4 px-4 py-2 bg-card hover:bg-hover text-secondary rounded-lg transition-colors inline-flex items-center gap-2 border border-default"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_first_task') || 'Ajouter une tâche'}
@@ -452,6 +459,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
                   onDelete={() => handleDeleteTask(task.documentId)}
                   getStatusStyle={getStatusStyle}
                   getPriorityStyle={getPriorityStyle}
+                  taskStatusOptions={TASK_STATUS_OPTIONS}
                   t={t}
                 />
               ))}
@@ -468,6 +476,8 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
               onDelete={handleDeleteTask}
               getStatusStyle={getStatusStyle}
               getPriorityStyle={getPriorityStyle}
+              taskStatusOptions={TASK_STATUS_OPTIONS}
+              priorityOptions={PRIORITY_OPTIONS}
               t={t}
             />
           )}
@@ -479,6 +489,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
               onEdit={setEditingTask}
               getStatusStyle={getStatusStyle}
               getPriorityStyle={getPriorityStyle}
+              taskStatusOptions={TASK_STATUS_OPTIONS}
               t={t}
             />
           )}
@@ -492,6 +503,8 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
             task={editingTask}
             onClose={() => setEditingTask(null)}
             onSave={(updates) => handleUpdateTask(editingTask.documentId, updates)}
+            taskStatusOptions={TASK_STATUS_OPTIONS}
+            priorityOptions={PRIORITY_OPTIONS}
             t={t}
           />
         )}
@@ -512,6 +525,7 @@ interface TaskCardProps {
   onDelete: () => void;
   getStatusStyle: (status: TaskStatus) => string;
   getPriorityStyle: (priority: TaskPriority) => string;
+  taskStatusOptions: TaskStatusOption[];
   t: (key: string) => string;
 }
 
@@ -526,6 +540,7 @@ function TaskCard({
   onDelete,
   getStatusStyle,
   getPriorityStyle,
+  taskStatusOptions,
   t: _t,
 }: TaskCardProps) {
   void _t; // Utilisé pour éviter l'erreur de lint
@@ -536,8 +551,8 @@ function TaskCard({
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`bg-zinc-800/50 border rounded-xl overflow-hidden transition-colors ${
-        isOverdue ? 'border-red-500/50' : 'border-zinc-700/50'
+      className={`bg-card border rounded-xl overflow-hidden transition-colors ${
+        isOverdue ? 'border-red-500/50' : 'border-default'
       }`}
     >
       <div className="p-4">
@@ -548,8 +563,8 @@ function TaskCard({
             disabled={!canEdit}
             className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
               task.task_status === 'completed'
-                ? 'bg-emerald-500 border-emerald-500 text-white'
-                : 'border-zinc-600 hover:border-emerald-500'
+                ? 'bg-accent border-accent text-white'
+                : 'border-default hover:border-accent'
             } ${!canEdit ? 'cursor-not-allowed opacity-50' : ''}`}
           >
             {task.task_status === 'completed' && <IconCheck className="w-4 h-4" />}
@@ -559,7 +574,7 @@ function TaskCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h4 className={`font-medium ${
-                task.task_status === 'completed' ? 'text-zinc-500 line-through' : 'text-zinc-200'
+                task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'
               }`}>
                 {task.title}
               </h4>
@@ -569,7 +584,7 @@ function TaskCard({
               
               {/* Badge statut */}
               <span className={`px-2 py-0.5 text-xs rounded-full border ${getStatusStyle(task.task_status)}`}>
-                {TASK_STATUS_OPTIONS.find(o => o.value === task.task_status)?.label}
+                {taskStatusOptions.find(o => o.value === task.task_status)?.label}
               </span>
 
               {/* Indicateur retard */}
@@ -584,22 +599,22 @@ function TaskCard({
             {/* Barre de progression */}
             {task.task_status !== 'cancelled' && (
               <div className="mt-2 flex items-center gap-3">
-                <div className="flex-1 h-1.5 bg-zinc-700 rounded-full overflow-hidden">
+                <div className="flex-1 h-1.5 bg-hover rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${task.progress}%` }}
                     className={`h-full rounded-full ${
-                      task.progress >= 100 ? 'bg-emerald-500' : 'bg-blue-500'
+                      task.progress >= 100 ? 'bg-accent' : 'bg-blue-500'
                     }`}
                   />
                 </div>
-                <span className="text-xs text-zinc-500 w-10">{task.progress}%</span>
+                <span className="text-xs text-muted w-10">{task.progress}%</span>
               </div>
             )}
 
             {/* Dates */}
             {(task.due_date || task.estimated_hours) && (
-              <div className="mt-2 flex flex-wrap gap-3 text-xs text-zinc-500">
+              <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted">
                 {task.due_date && (
                   <span className={`flex items-center gap-1 ${isOverdue ? 'text-red-400' : ''}`}>
                     <IconCalendar className="w-3.5 h-3.5" />
@@ -621,7 +636,7 @@ function TaskCard({
             {task.description && (
               <button
                 onClick={onToggleExpand}
-                className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors"
+                className="p-1.5 text-muted hover:text-primary transition-colors"
               >
                 {isExpanded ? <IconChevronUp className="w-4 h-4" /> : <IconChevronDown className="w-4 h-4" />}
               </button>
@@ -630,13 +645,13 @@ function TaskCard({
               <>
                 <button
                   onClick={onEdit}
-                  className="p-1.5 text-zinc-500 hover:text-blue-400 transition-colors"
+                  className="p-1.5 text-muted hover:text-blue-400 transition-colors"
                 >
                   <IconEdit className="w-4 h-4" />
                 </button>
                 <button
                   onClick={onDelete}
-                  className="p-1.5 text-zinc-500 hover:text-red-400 transition-colors"
+                  className="p-1.5 text-muted hover:text-red-400 transition-colors"
                 >
                   <IconTrash className="w-4 h-4" />
                 </button>
@@ -652,9 +667,9 @@ function TaskCard({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="mt-3 pt-3 border-t border-zinc-700/50"
+              className="mt-3 pt-3 border-t border-default"
             >
-              <p className="text-sm text-zinc-400 whitespace-pre-wrap">{task.description}</p>
+              <p className="text-sm text-secondary whitespace-pre-wrap">{task.description}</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -669,7 +684,7 @@ function TaskCard({
             max="100"
             value={task.progress}
             onChange={(e) => onProgressChange(parseInt(e.target.value))}
-            className="w-full h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider-thumb"
+            className="w-full h-1 bg-hover rounded-lg appearance-none cursor-pointer slider-thumb"
           />
         </div>
       )}
@@ -682,10 +697,12 @@ interface TaskEditModalProps {
   task: ProjectTask;
   onClose: () => void;
   onSave: (updates: Partial<ProjectTask>) => void;
+  taskStatusOptions: TaskStatusOption[];
+  priorityOptions: TaskPriorityOption[];
   t: (key: string) => string;
 }
 
-function TaskEditModal({ task, onClose, onSave, t }: TaskEditModalProps) {
+function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptions, t }: TaskEditModalProps) {
   const [formData, setFormData] = useState({
     title: task.title,
     description: task.description || '',
@@ -725,18 +742,18 @@ function TaskEditModal({ task, onClose, onSave, t }: TaskEditModalProps) {
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden"
+        className="bg-card border border-default rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <form onSubmit={handleSubmit}>
-          <div className="flex items-center justify-between p-6 border-b border-zinc-800">
-            <h2 className="text-xl font-semibold text-zinc-100">
+          <div className="flex items-center justify-between p-6 border-b border-default">
+            <h2 className="text-xl font-semibold text-primary">
               {t('edit_task') || 'Modifier la tâche'}
             </h2>
             <button
               type="button"
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors"
+              className="p-2 rounded-lg hover:bg-hover text-secondary hover:text-primary transition-colors"
             >
               <IconX className="w-5 h-5" />
             </button>
@@ -744,56 +761,56 @@ function TaskEditModal({ task, onClose, onSave, t }: TaskEditModalProps) {
 
           <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-1">
+              <label className="block text-sm font-medium text-secondary mb-1">
                 {t('title') || 'Titre'} *
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                className="input w-full"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-1">
+              <label className="block text-sm font-medium text-secondary mb-1">
                 {t('description') || 'Description'}
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
-                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500 resize-none"
+                className="input w-full resize-none"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">
+                <label className="block text-sm font-medium text-secondary mb-1">
                   {t('status') || 'Statut'}
                 </label>
                 <select
                   value={formData.task_status}
                   onChange={(e) => setFormData({ ...formData, task_status: e.target.value as TaskStatus })}
-                  className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                  className="input w-full"
                 >
-                  {TASK_STATUS_OPTIONS.map(option => (
+                  {taskStatusOptions.map(option => (    
                     <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">
+                <label className="block text-sm font-medium text-secondary mb-1">
                   {t('priority') || 'Priorité'}
                 </label>
                 <select
                   value={formData.priority}
                   onChange={(e) => setFormData({ ...formData, priority: e.target.value as TaskPriority })}
-                  className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                  className="input w-full"
                 >
-                  {PRIORITY_OPTIONS.map(option => (
+                  {priorityOptions.map(option => (
                     <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
@@ -801,7 +818,7 @@ function TaskEditModal({ task, onClose, onSave, t }: TaskEditModalProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-1">
+              <label className="block text-sm font-medium text-secondary mb-1">
                 {t('progress') || 'Progression'}: {formData.progress}%
               </label>
               <input
@@ -816,33 +833,33 @@ function TaskEditModal({ task, onClose, onSave, t }: TaskEditModalProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">
+                <label className="block text-sm font-medium text-secondary mb-1">
                   {t('start_date') || 'Date de début'}
                 </label>
                 <input
                   type="date"
                   value={formData.start_date}
                   onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                  className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                  className="input w-full"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">
+                <label className="block text-sm font-medium text-secondary mb-1">
                   {t('due_date') || 'Échéance'}
                 </label>
                 <input
                   type="date"
                   value={formData.due_date}
                   onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-                  className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                  className="input w-full"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">
+                <label className="block text-sm font-medium text-secondary mb-1">
                   {t('estimated_hours') || 'Heures estimées'}
                 </label>
                 <input
@@ -851,12 +868,12 @@ function TaskEditModal({ task, onClose, onSave, t }: TaskEditModalProps) {
                   min="0"
                   value={formData.estimated_hours}
                   onChange={(e) => setFormData({ ...formData, estimated_hours: e.target.value })}
-                  className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                  className="input w-full"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">
+                <label className="block text-sm font-medium text-secondary mb-1">
                   {t('actual_hours') || 'Heures réelles'}
                 </label>
                 <input
@@ -865,23 +882,23 @@ function TaskEditModal({ task, onClose, onSave, t }: TaskEditModalProps) {
                   min="0"
                   value={formData.actual_hours}
                   onChange={(e) => setFormData({ ...formData, actual_hours: e.target.value })}
-                  className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:border-emerald-500"
+                  className="input w-full"
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 p-6 border-t border-zinc-800">
+          <div className="flex justify-end gap-3 p-6 border-t border-default">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-zinc-400 hover:text-zinc-200 transition-colors"
+              className="px-4 py-2 text-secondary hover:text-primary transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors"
             >
               {t('save') || 'Enregistrer'}
             </button>
@@ -904,6 +921,8 @@ interface TaskTableViewProps {
   onDelete: (documentId: string) => void;
   getStatusStyle: (status: TaskStatus) => string;
   getPriorityStyle: (priority: TaskPriority) => string;
+  taskStatusOptions: TaskStatusOption[];
+  priorityOptions: TaskPriorityOption[];
   t: (key: string) => string;
 }
 
@@ -915,6 +934,8 @@ function TaskTableView({
   onDelete,
   getStatusStyle,
   getPriorityStyle,
+  taskStatusOptions,
+  priorityOptions,
   t: _t,
 }: TaskTableViewProps) {
   void _t; // Utilisé pour éviter l'erreur de lint
@@ -924,30 +945,30 @@ function TaskTableView({
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto bg-card rounded-xl border border-default">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-zinc-800">
-            <th className="text-left py-3 px-4 text-xs font-medium text-zinc-500 uppercase tracking-wider">Tâche</th>
-            <th className="text-left py-3 px-4 text-xs font-medium text-zinc-500 uppercase tracking-wider">Statut</th>
-            <th className="text-left py-3 px-4 text-xs font-medium text-zinc-500 uppercase tracking-wider">Priorité</th>
-            <th className="text-left py-3 px-4 text-xs font-medium text-zinc-500 uppercase tracking-wider">Progression</th>
-            <th className="text-left py-3 px-4 text-xs font-medium text-zinc-500 uppercase tracking-wider">Échéance</th>
-            <th className="text-left py-3 px-4 text-xs font-medium text-zinc-500 uppercase tracking-wider">Heures</th>
-            {canEdit && <th className="text-right py-3 px-4 text-xs font-medium text-zinc-500 uppercase tracking-wider">Actions</th>}
+          <tr className="border-b border-default">
+            <th className="text-left py-3 px-4 text-xs font-medium text-muted uppercase tracking-wider">Tâche</th>
+            <th className="text-left py-3 px-4 text-xs font-medium text-muted uppercase tracking-wider">Statut</th>
+            <th className="text-left py-3 px-4 text-xs font-medium text-muted uppercase tracking-wider">Priorité</th>
+            <th className="text-left py-3 px-4 text-xs font-medium text-muted uppercase tracking-wider">Progression</th>
+            <th className="text-left py-3 px-4 text-xs font-medium text-muted uppercase tracking-wider">Échéance</th>
+            <th className="text-left py-3 px-4 text-xs font-medium text-muted uppercase tracking-wider">Heures</th>
+            {canEdit && <th className="text-right py-3 px-4 text-xs font-medium text-muted uppercase tracking-wider">Actions</th>}
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-800/50">
+        <tbody>
           {tasks.map((task, index) => (
             <tr 
               key={`${task.documentId}-${index}`}
-              className="hover:bg-zinc-800/30 transition-colors"
+              className="hover:bg-hover transition-colors"
             >
               <td className="py-3 px-4">
                 <div>
-                  <p className="text-zinc-200 font-medium">{task.title}</p>
+                  <p className="text-primary font-medium">{task.title}</p>
                   {task.description && (
-                    <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{task.description}</p>
+                    <p className="text-xs text-muted mt-0.5 line-clamp-1">{task.description}</p>
                   )}
                 </div>
               </td>
@@ -958,43 +979,43 @@ function TaskTableView({
                     onChange={(e) => onStatusChange(task.documentId, e.target.value as TaskStatus)}
                     className={`text-xs px-2 py-1 rounded-full border-0 cursor-pointer ${getStatusStyle(task.task_status)}`}
                   >
-                    {TASK_STATUS_OPTIONS.map(option => (
+                    {taskStatusOptions.map(option => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
                   </select>
                 ) : (
                   <span className={`text-xs px-2 py-1 rounded-full ${getStatusStyle(task.task_status)}`}>
-                    {TASK_STATUS_OPTIONS.find(o => o.value === task.task_status)?.label}
+                    {taskStatusOptions.find(o => o.value === task.task_status)?.label}
                   </span>
                 )}
               </td>
               <td className="py-3 px-4">
                 <span className={`text-xs px-2 py-1 rounded-full ${getPriorityStyle(task.priority)}`}>
-                  {PRIORITY_OPTIONS.find(o => o.value === task.priority)?.label}
+                  {priorityOptions.find(o => o.value === task.priority)?.label}
                 </span>
               </td>
               <td className="py-3 px-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-16 h-1.5 bg-zinc-700 rounded-full overflow-hidden">
+                  <div className="w-16 h-1.5 bg-hover rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-emerald-500 rounded-full transition-all"
+                      className="h-full bg-accent rounded-full transition-all"
                       style={{ width: `${task.progress || 0}%` }}
                     />
                   </div>
-                  <span className="text-xs text-zinc-400">{task.progress || 0}%</span>
+                  <span className="text-xs text-secondary">{task.progress || 0}%</span>
                 </div>
               </td>
               <td className="py-3 px-4">
                 <span className={`text-sm ${
                   task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed'
                     ? 'text-red-400'
-                    : 'text-zinc-400'
+                    : 'text-secondary'
                 }`}>
                   {formatDate(task.due_date)}
                 </span>
               </td>
               <td className="py-3 px-4">
-                <span className="text-sm text-zinc-400">
+                <span className="text-sm text-secondary">
                   {task.actual_hours || 0}/{task.estimated_hours || 0}h
                 </span>
               </td>
@@ -1003,13 +1024,13 @@ function TaskTableView({
                   <div className="flex items-center justify-end gap-1">
                     <button
                       onClick={() => onEdit(task)}
-                      className="p-1.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
+                      className="p-1.5 text-secondary hover:text-primary hover:bg-hover rounded transition-colors"
                     >
                       <IconEdit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => onDelete(task.documentId)}
-                      className="p-1.5 text-zinc-400 hover:text-red-400 hover:bg-zinc-800 rounded transition-colors"
+                      className="p-1.5 text-secondary hover:text-red-400 hover:bg-hover rounded transition-colors"
                     >
                       <IconTrash className="w-4 h-4" />
                     </button>
@@ -1033,6 +1054,8 @@ interface TaskGanttViewProps {
   onEdit: (task: ProjectTask) => void;
   getStatusStyle: (status: TaskStatus) => string;
   getPriorityStyle: (priority: TaskPriority) => string;
+  taskStatusOptions: TaskStatusOption[];
+  projectName?: string;
   t: (key: string) => string;
 }
 
@@ -1040,42 +1063,70 @@ function TaskGanttView({
   tasks,
   onEdit,
   getStatusStyle,
+  taskStatusOptions,
+  projectName,
+  t,
 }: TaskGanttViewProps) {
-  // Calculer la plage de dates
-  const today = new Date();
-  const tasksWithDates = tasks.filter(t => t.start_date || t.due_date);
+  const ganttRef = useRef<HTMLDivElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportMode, setExportMode] = useState<'light' | 'dark'>('light');
+  const [exportFileName, setExportFileName] = useState(`gantt-${projectName || 'project'}-${new Date().toISOString().split('T')[0]}`);
+
+  // Fonction utilitaire pour normaliser une date à minuit (début de journée)
+  const normalizeDate = (date: Date): Date => {
+    const normalized = new Date(date);
+    normalized.setHours(0, 0, 0, 0);
+    return normalized;
+  };
+
+  // Fonction pour calculer le numéro de semaine ISO
+  const getISOWeekNumber = (date: Date): number => {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+  };
+
+  // Calculer la plage de dates - normaliser aujourd'hui à minuit
+  const today = normalizeDate(new Date());
+  const tasksWithDates = tasks.filter(task => task.start_date || task.due_date);
   
   if (tasksWithDates.length === 0) {
     return (
-      <div className="text-center py-12 bg-zinc-800/30 rounded-xl">
-        <IconTimeline className="w-12 h-12 text-zinc-700 mx-auto mb-3" />
-        <p className="text-zinc-500">Aucune tâche avec des dates pour afficher le Gantt</p>
-        <p className="text-xs text-zinc-600 mt-1">Ajoutez des dates de début et d&apos;échéance à vos tâches</p>
+      <div className="text-center py-12 bg-muted rounded-xl border border-default">
+        <IconTimeline className="w-12 h-12 text-muted mx-auto mb-3" />
+        <p className="text-muted">{t('no_tasks_with_dates_for_gantt') || 'Aucune tâche avec des dates pour afficher le Gantt'}</p>
+        <p className="text-xs text-muted mt-1">{t('add_dates_to_tasks') || 'Ajoutez des dates de début et d&apos;échéance à vos tâches'}</p>
       </div>
     );
   }
 
-  // Trouver les dates min et max
-  const allDates = tasksWithDates.flatMap(t => [
-    t.start_date ? new Date(t.start_date) : null,
-    t.due_date ? new Date(t.due_date) : null,
+  // Trouver les dates min et max - normaliser toutes les dates
+  const allDates = tasksWithDates.flatMap(task => [
+    task.start_date ? normalizeDate(new Date(task.start_date)) : null,
+    task.due_date ? normalizeDate(new Date(task.due_date)) : null,
   ]).filter((d): d is Date => d !== null);
 
-  const minDate = new Date(Math.min(...allDates.map(d => d.getTime()), today.getTime()));
-  const maxDate = new Date(Math.max(...allDates.map(d => d.getTime()), today.getTime()));
+  const minDateRaw = new Date(Math.min(...allDates.map(d => d.getTime()), today.getTime()));
+  const maxDateRaw = new Date(Math.max(...allDates.map(d => d.getTime()), today.getTime()));
   
-  // Ajouter quelques jours de marge
+  // Ajouter quelques jours de marge et normaliser
+  const minDate = normalizeDate(new Date(minDateRaw));
   minDate.setDate(minDate.getDate() - 3);
-  maxDate.setDate(maxDate.getDate() + 7);
+  const maxDate = normalizeDate(new Date(maxDateRaw));
+  maxDate.setDate(maxDate.getDate() + 14);
 
-  const totalDays = Math.ceil((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
+  // Calculer le nombre total de jours (utiliser des jours entiers)
+  const totalDays = Math.round((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
   
-  // Générer les en-têtes de colonnes (jours)
+  // Générer les en-têtes de colonnes (jours) - chaque jour normalisé
   const dayHeaders: Date[] = [];
   for (let i = 0; i <= totalDays; i++) {
     const date = new Date(minDate);
     date.setDate(date.getDate() + i);
-    dayHeaders.push(date);
+    dayHeaders.push(normalizeDate(date));
   }
 
   // Grouper par semaines pour l'affichage
@@ -1095,42 +1146,340 @@ function TaskGanttView({
     }
   });
 
+  // Calculer la position d'une tâche (en nombre de jours depuis minDate)
   const getTaskPosition = (task: ProjectTask) => {
-    const start = task.start_date ? new Date(task.start_date) : new Date(task.due_date || today);
-    const end = task.due_date ? new Date(task.due_date) : start;
+    const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
+    const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
     
-    const startOffset = Math.max(0, Math.ceil((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)));
-    const duration = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+    const startOffset = Math.round((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
+    const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
     
-    return { startOffset, duration };
+    return { startOffset: Math.max(0, startOffset), duration };
   };
 
+  // Trouver l'index du jour d'aujourd'hui dans dayHeaders
+  const todayIndex = dayHeaders.findIndex(d => d.getTime() === today.getTime());
+
   const isToday = (date: Date) => {
-    return date.toDateString() === today.toDateString();
+    return date.getTime() === today.getTime();
   };
 
   const getStatusColor = (status: TaskStatus) => {
     switch (status) {
-      case 'completed': return 'bg-emerald-500';
+      case 'completed': return 'bg-accent';
       case 'in_progress': return 'bg-blue-500';
       case 'cancelled': return 'bg-red-500/50';
-      default: return 'bg-zinc-500';
+      default: return 'bg-secondary';
     }
   };
 
-  return (
-    <div className="overflow-x-auto">
-      <div className="min-w-[800px]">
-        {/* En-tête avec les dates */}
-        <div className="flex border-b border-zinc-800">
-          <div className="w-48 flex-shrink-0 py-2 px-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">
-            Tâche
+  // Fonction pour générer le HTML d'export (réutilisable pour aperçu et export)
+  const generateExportHTML = useCallback((mode: 'light' | 'dark') => {
+    const lightColors = {
+      bg: '#ffffff',
+      bgSecondary: '#f9fafb',
+      bgTertiary: '#f3f4f6',
+      border: '#e5e7eb',
+      textPrimary: '#111827',
+      textSecondary: '#374151',
+      textMuted: '#6b7280',
+      blue: '#3b82f6',
+      green: '#22c55e',
+      red: '#ef4444',
+      gray: '#9ca3af',
+      accent: '#7c3aed',
+      accentLight: '#ede9fe',
+      headerBg: '#f3f4f6',
+      headerText: '#374151',
+    };
+    
+    const darkColors = {
+      bg: '#111827',
+      bgSecondary: '#1f2937',
+      bgTertiary: '#374151',
+      border: '#374151',
+      textPrimary: '#f9fafb',
+      textSecondary: '#e5e7eb',
+      textMuted: '#9ca3af',
+      blue: '#60a5fa',
+      green: '#4ade80',
+      red: '#f87171',
+      gray: '#6b7280',
+      accent: '#a78bfa',
+      accentLight: '#4c1d95',
+      headerBg: '#1f2937',
+      headerText: '#e5e7eb',
+    };
+    
+    const colors = mode === 'dark' ? darkColors : lightColors;
+
+    let tasksHTML = '';
+    tasks.forEach((task) => {
+      const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
+      const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
+      const startOffset = Math.round((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
+      const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+      const leftPercent = Math.max(0, (startOffset / totalDays) * 100);
+      const widthPercent = (duration / totalDays) * 100;
+      
+      const statusColor = task.task_status === 'completed' ? colors.green 
+        : task.task_status === 'in_progress' ? colors.blue 
+        : task.task_status === 'cancelled' ? colors.red 
+        : colors.gray;
+      
+      const statusLabel = taskStatusOptions.find(o => o.value === task.task_status)?.label || task.task_status;
+      
+      tasksHTML += `
+        <tr style="border-bottom: 1px solid ${colors.border};">
+          <td style="padding: 12px; width: 200px; font-size: 13px; background: ${colors.bg};">
+            <div style="font-weight: 600; color: ${colors.textPrimary};">${task.title}</div>
+            <div style="font-size: 11px; color: ${colors.textMuted}; margin-top: 2px;">${statusLabel}</div>
+          </td>
+          <td style="padding: 8px 0; position: relative; background: ${colors.bg};">
+            <div style="position: relative; height: 24px;">
+              <div style="position: absolute; left: ${leftPercent}%; width: ${widthPercent}%; min-width: 40px; height: 24px; background: ${statusColor}; border-radius: 4px; display: table; table-layout: fixed;">
+                <span style="display: table-cell; vertical-align: middle; text-align: center; color: #ffffff; font-size: 11px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.3); white-space: nowrap; padding: 0 4px;">${task.progress || 0}%</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+
+    let datesHTML = '';
+    dayHeaders.forEach((day) => {
+      const isWeekend = day.getDay() === 0 || day.getDay() === 6;
+      const isTodayDate = day.getTime() === today.getTime();
+      const bgColor = isTodayDate ? colors.accentLight : isWeekend ? colors.bgTertiary : colors.headerBg;
+      const textColor = isTodayDate ? colors.accent : colors.headerText;
+      datesHTML += `<th style="padding: 4px 2px; text-align: center; font-size: 11px; font-weight: ${isTodayDate ? '700' : '500'}; background: ${bgColor}; color: ${textColor}; min-width: 28px; border-left: 1px solid ${colors.border};">${day.getDate()}</th>`;
+    });
+
+    return {
+      html: `
+        <div style="font-family: Arial, Helvetica, sans-serif; background: ${colors.bg}; padding: 20px;">
+          <h2 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 700; color: ${colors.textPrimary};">
+            ${projectName || t('project_tasks') || 'Projet'} - Gantt
+          </h2>
+          <p style="margin: 0 0 16px 0; font-size: 12px; color: ${colors.textMuted};">
+            ${t('exported_on') || 'Exporté le'} ${new Date().toLocaleDateString()}
+          </p>
+          <table style="width: 100%; border-collapse: collapse; border: 1px solid ${colors.border};">
+            <thead>
+              <tr style="background: ${colors.headerBg};">
+                <th style="padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 700; color: ${colors.headerText}; text-transform: uppercase; width: 200px; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg};">
+                  ${t('task') || 'Tâche'}
+                </th>
+                <th style="padding: 0; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg};">
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>${datesHTML}</tr>
+                  </table>
+                </th>
+              </tr>
+            </thead>
+            <tbody>${tasksHTML}</tbody>
+          </table>
+          <div style="margin-top: 16px; display: flex; gap: 20px; font-size: 12px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="width: 14px; height: 14px; background: ${colors.blue}; border-radius: 3px;"></div>
+              <span style="color: ${colors.textSecondary}; font-weight: 500;">${t('in_progress') || 'En cours'}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="width: 14px; height: 14px; background: ${colors.green}; border-radius: 3px;"></div>
+              <span style="color: ${colors.textSecondary}; font-weight: 500;">${t('completed') || 'Terminé'}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="width: 14px; height: 14px; background: ${colors.gray}; border-radius: 3px;"></div>
+              <span style="color: ${colors.textSecondary}; font-weight: 500;">${t('todo') || 'À faire'}</span>
+            </div>
           </div>
+        </div>
+      `,
+      colors
+    };
+  }, [tasks, taskStatusOptions, dayHeaders, today, minDate, totalDays, projectName, t, normalizeDate]);
+
+  // Fonction d'export PDF - utilise generateExportHTML
+  const handleExportPDF = useCallback(async (mode: 'light' | 'dark') => {
+    setIsExporting(true);
+    setShowExportModal(false);
+    
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+      const { html, colors } = generateExportHTML(mode);
+      
+      const tempContainer = document.createElement('div');
+      tempContainer.innerHTML = html;
+      tempContainer.style.cssText = 'position: absolute; left: -9999px; top: 0; width: 1100px;';
+      document.body.appendChild(tempContainer);
+      
+      const exportElement = tempContainer.querySelector('div');
+      if (!exportElement) {
+        throw new Error('Export element not found');
+      }
+      
+      await html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: `${exportFileName}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: colors.bg },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' as const },
+      }).from(exportElement).save();
+      
+      document.body.removeChild(tempContainer);
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [generateExportHTML, exportFileName]);
+
+  // Générer l'aperçu HTML en temps réel
+  const previewHTML = useMemo(() => {
+    return generateExportHTML(exportMode).html;
+  }, [generateExportHTML, exportMode]);
+
+  return (
+    <div className="space-y-2">
+      {/* Modal de sélection du mode d'export avec aperçu */}
+      {showExportModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card border border-default rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="p-4 border-b border-default flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-primary">
+                {t('export_pdf') || 'Export PDF'}
+              </h3>
+              <button
+                onClick={() => setShowExportModal(false)}
+                className="p-1 text-secondary hover:text-primary transition-colors"
+              >
+                <IconX className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-hidden flex">
+              {/* Options panel */}
+              <div className="w-72 flex-shrink-0 p-4 border-r border-default space-y-4 overflow-y-auto">
+                {/* Nom du fichier */}
+                <div>
+                  <label className="block text-sm font-medium text-primary mb-2">
+                    {t('file_name') || 'Nom du fichier'}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={exportFileName}
+                      onChange={(e) => setExportFileName(e.target.value)}
+                      className="flex-1 px-3 py-2 text-sm bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+                    />
+                    <span className="text-secondary text-sm">.pdf</span>
+                  </div>
+                </div>
+
+                {/* Thème */}
+                <div>
+                  <label className="block text-sm font-medium text-primary mb-2">
+                    {t('choose_export_theme') || 'Thème'}
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setExportMode('light')}
+                      className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
+                        exportMode === 'light' 
+                          ? 'border-accent bg-accent/10' 
+                          : 'border-default bg-muted/50 hover:border-accent/50'
+                      }`}
+                    >
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="w-6 h-6 rounded bg-white border border-gray-300 flex items-center justify-center">
+                          <div className="w-3 h-0.5 bg-gray-800 rounded"></div>
+                        </div>
+                        <span className="text-xs font-medium text-primary">{t('light') || 'Clair'}</span>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setExportMode('dark')}
+                      className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
+                        exportMode === 'dark' 
+                          ? 'border-accent bg-accent/10' 
+                          : 'border-default bg-muted/50 hover:border-accent/50'
+                      }`}
+                    >
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="w-6 h-6 rounded bg-gray-800 border border-gray-600 flex items-center justify-center">
+                          <div className="w-3 h-0.5 bg-gray-100 rounded"></div>
+                        </div>
+                        <span className="text-xs font-medium text-primary">{t('dark') || 'Sombre'}</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="pt-4 space-y-2">
+                  <button
+                    onClick={() => handleExportPDF(exportMode)}
+                    disabled={isExporting}
+                    className="w-full py-2.5 px-4 text-sm bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    <IconFileTypePdf className="w-4 h-4" />
+                    {isExporting ? (t('exporting') || 'Export...') : (t('export') || 'Exporter')}
+                  </button>
+                  <button
+                    onClick={() => setShowExportModal(false)}
+                    className="w-full py-2 px-4 text-sm border border-default rounded-lg text-secondary hover:bg-hover transition-colors"
+                  >
+                    {t('cancel') || 'Annuler'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Aperçu */}
+              <div className="flex-1 p-4 overflow-auto bg-muted/30">
+                <p className="text-xs text-muted mb-2 uppercase tracking-wider">{t('preview') || 'Aperçu'}</p>
+                <div 
+                  className="border !border-default rounded-lg shadow-lg overflow-auto"
+                  style={{ 
+                    maxHeight: 'calc(90vh - 180px)',
+                    transform: 'scale(0.7)',
+                    transformOrigin: 'top left',
+                    width: '142%'
+                  }}
+                >
+                  <div dangerouslySetInnerHTML={{ __html: previewHTML }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bouton d'export */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setShowExportModal(true)}
+          disabled={isExporting}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-card border border-default rounded-lg text-secondary hover:text-primary hover:bg-hover transition-colors disabled:opacity-50"
+        >
+          <IconFileTypePdf className="w-4 h-4" />
+          {isExporting ? (t('exporting') || 'Export...') : (t('export_pdf') || 'Export PDF')}
+        </button>
+      </div>
+
+      <div className="overflow-x-auto bg-card rounded-xl border border-default" ref={ganttRef}>
+        <div className="min-w-[800px]">
+          {/* En-tête avec les dates */}
+          <div className="flex border-b border-default bg-card">
+            <div className="w-48 flex-shrink-0 py-2 px-3 text-xs font-medium text-muted uppercase tracking-wider">
+              {t('task') || 'Tâche'}
+            </div>
           <div className="flex-1 flex">
             {weeks.map((week, i) => (
-              <div key={i} className="flex-1 min-w-0">
-                <div className="text-xs text-zinc-500 text-center py-1 border-b border-zinc-800/50">
-                  Sem. {Math.ceil((week.start.getTime() - new Date(week.start.getFullYear(), 0, 1).getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1}
+              <div key={i} style={{ flex: week.days.length }} className="min-w-0">
+                <div className="text-xs text-muted text-center py-1 border-b border-default">
+                  {t('week_short') || 'Sem.'} {getISOWeekNumber(week.days[0])}
                 </div>
                 <div className="flex">
                   {week.days.map((day, j) => (
@@ -1138,10 +1487,10 @@ function TaskGanttView({
                       key={j}
                       className={`flex-1 text-center py-1 text-xs ${
                         isToday(day) 
-                          ? 'bg-emerald-500/20 text-emerald-400 font-medium' 
+                          ? 'bg-accent/20 text-accent font-medium' 
                           : day.getDay() === 0 || day.getDay() === 6
-                            ? 'text-zinc-600'
-                            : 'text-zinc-500'
+                            ? 'text-muted'
+                            : 'text-secondary'
                       }`}
                     >
                       {day.getDate()}
@@ -1153,80 +1502,84 @@ function TaskGanttView({
           </div>
         </div>
 
-        {/* Lignes des tâches */}
-        {tasks.map((task, index) => {
-          const { startOffset, duration } = getTaskPosition(task);
-          const widthPercent = (duration / totalDays) * 100;
-          const leftPercent = (startOffset / totalDays) * 100;
-
-          return (
+        {/* Zone des tâches avec marqueur aujourd'hui */}
+        <div className="relative">
+          {/* Ligne de marqueur aujourd'hui */}
+          {todayIndex >= 0 && (
             <div 
-              key={`${task.documentId}-${index}`}
-              className="flex border-b border-zinc-800/50 hover:bg-zinc-800/20 group"
-            >
-              {/* Nom de la tâche */}
+              className="absolute w-0.5 bg-accent z-20 pointer-events-none"
+              style={{
+                left: `calc(192px + ((100% - 192px) * ${todayIndex} / ${dayHeaders.length}) + ((100% - 192px) / ${dayHeaders.length} / 2))`,
+                top: 0,
+                bottom: 0,
+              }}
+            />
+          )}
+
+          {/* Lignes des tâches */}
+          {tasks.map((task, index) => {
+            const { startOffset, duration } = getTaskPosition(task);
+            const widthPercent = (duration / totalDays) * 100;
+            const leftPercent = (startOffset / totalDays) * 100;
+
+            return (
               <div 
-                className="w-48 flex-shrink-0 py-3 px-3 cursor-pointer"
-                onClick={() => onEdit(task)}
+                key={`${task.documentId}-${index}`}
+                className="flex border-b border-muted hover:bg-hover group"
               >
-                <p className="text-sm text-zinc-300 truncate group-hover:text-emerald-400 transition-colors">
-                  {task.title}
-                </p>
-                <span className={`text-xs px-1.5 py-0.5 rounded ${getStatusStyle(task.task_status)}`}>
-                  {TASK_STATUS_OPTIONS.find(o => o.value === task.task_status)?.label}
-                </span>
-              </div>
-
-              {/* Barre de Gantt */}
-              <div className="flex-1 relative py-2">
-                {/* Grille des jours */}
-                <div className="absolute inset-0 flex">
-                  {dayHeaders.map((day, i) => (
-                    <div 
-                      key={i}
-                      className={`flex-1 border-l border-zinc-800/30 ${
-                        isToday(day) ? 'bg-emerald-500/10' : ''
-                      } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-zinc-800/20' : ''}`}
-                    />
-                  ))}
-                </div>
-
-                {/* Barre de la tâche */}
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 h-6 rounded cursor-pointer transition-all hover:h-7"
-                  style={{
-                    left: `${leftPercent}%`,
-                    width: `${widthPercent}%`,
-                    minWidth: '20px',
-                  }}
+                {/* Nom de la tâche */}
+                <div 
+                  className="w-48 flex-shrink-0 py-3 px-3 cursor-pointer"
                   onClick={() => onEdit(task)}
                 >
-                  <div className={`w-full h-full ${getStatusColor(task.task_status)} rounded relative overflow-hidden`}>
-                    {/* Progression */}
-                    <div 
-                      className="absolute inset-y-0 left-0 bg-white/20"
-                      style={{ width: `${task.progress || 0}%` }}
-                    />
-                    <span className="absolute inset-0 flex items-center justify-center text-xs text-white font-medium px-2 truncate">
-                      {task.progress || 0}%
-                    </span>
+                  <p className="text-sm text-primary truncate group-hover:text-accent transition-colors">
+                    {task.title}
+                  </p>
+                  <span className={`text-xs px-1.5 py-0.5 rounded ${getStatusStyle(task.task_status)}`}>
+                    {taskStatusOptions.find(o => o.value === task.task_status)?.label}
+                  </span>
+                </div>
+
+                {/* Barre de Gantt */}
+                <div className="flex-1 relative py-2">
+                  {/* Grille des jours */}
+                  <div className="absolute inset-0 flex">
+                    {dayHeaders.map((day, i) => (
+                      <div 
+                        key={i}
+                        className={`flex-1 border-l border-muted ${
+                          isToday(day) ? 'bg-accent/10' : ''
+                        } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/50' : ''}`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Barre de la tâche */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 h-6 rounded cursor-pointer transition-all hover:h-7"
+                    style={{
+                      left: `${leftPercent}%`,
+                      width: `${widthPercent}%`,
+                      minWidth: '20px',
+                    }}
+                    onClick={() => onEdit(task)}
+                  >
+                    <div className={`w-full h-full ${getStatusColor(task.task_status)} rounded relative overflow-hidden`}>
+                      {/* Progression */}
+                      <div 
+                        className="absolute inset-y-0 left-0 bg-white/20"
+                        style={{ width: `${task.progress || 0}%` }}
+                      />
+                      <span className="absolute inset-0 flex items-center justify-center text-xs text-white font-medium px-2 truncate">
+                        {task.progress || 0}%
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-
-        {/* Ligne de marqueur aujourd'hui */}
-        <div className="relative h-0">
-          <div 
-            className="absolute top-0 w-0.5 bg-emerald-500 z-10"
-            style={{
-              left: `calc(192px + ${((today.getTime() - minDate.getTime()) / (maxDate.getTime() - minDate.getTime())) * 100}% * (100% - 192px) / 100%)`,
-              height: `${tasks.length * 52}px`,
-              transform: 'translateY(-100%)',
-            }}
-          />
+            );
+          })}
+        </div>
         </div>
       </div>
     </div>

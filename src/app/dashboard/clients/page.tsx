@@ -144,22 +144,22 @@ export default function ClientsPage() {
     },
     {
       key: 'email',
-      label: 'Email',
+      label: t('email'),
       render: (value) => <p className="text-secondary">{value as string}</p>,
     },
     {
       key: 'enterprise',
-      label: 'Entreprise',
+      label: t('enterprise'),
       render: (value) => <p className="text-zinc-300">{(value as string) || 'N/A'}</p>,
     },
     {
       key: 'website',
-      label: 'Site web',
+      label: t('website'),
       render: (value) => <p className="text-zinc-300">{(value as string) || 'N/A'}</p>,
     },
     {
       key: 'processStatus',
-      label: 'Statut',
+      label: t('status'),
       render: (value) => {
         const status = value as string;
         const config = status === 'client'
@@ -177,7 +177,7 @@ export default function ClientsPage() {
     },
     {
       key: 'createdAt',
-      label: 'Date de création',
+      label: t('creation_date'),
       render: (value) => (
         <p className="text-zinc-300">
           {new Date(value as string).toLocaleDateString('fr-FR')}
@@ -186,7 +186,7 @@ export default function ClientsPage() {
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('actions'),
       render: (_, row) => {
         const clientSlug = generateClientSlug(row.name);
         return (
