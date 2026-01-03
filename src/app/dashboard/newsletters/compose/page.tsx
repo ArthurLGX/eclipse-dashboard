@@ -1226,7 +1226,6 @@ export default function ComposeNewsletterPage() {
   
   // SMTP Config State
   const [smtpConfig, setSmtpConfig] = useState<SmtpConfig | null>(null);
-  const [smtpLoading, setSmtpLoading] = useState(true);
   const [showSmtpWarning, setShowSmtpWarning] = useState(false);
   
   // Custom template colors with gradient stops
@@ -1325,7 +1324,6 @@ export default function ComposeNewsletterPage() {
   useEffect(() => {
     const loadSmtpConfig = async () => {
       if (!user?.id) {
-        setSmtpLoading(false);
         return;
       }
       
@@ -1334,8 +1332,6 @@ export default function ComposeNewsletterPage() {
         setSmtpConfig(config);
       } catch (error) {
         console.error('Error loading SMTP config:', error);
-      } finally {
-        setSmtpLoading(false);
       }
     };
     
