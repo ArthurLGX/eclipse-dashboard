@@ -54,7 +54,7 @@ function EmailAnalytics() {
       
       setLoading(true);
       try {
-        const data = await fetchSentEmails(user.id, 100);
+        const data = await fetchSentEmails(user.id, undefined, 100);
         setEmails(data);
       } catch (error) {
         console.error('Error loading emails:', error);
