@@ -12,7 +12,6 @@ import {
   IconCalendar,
   IconUsers,
   IconTrendingUp,
-  IconFilter,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';

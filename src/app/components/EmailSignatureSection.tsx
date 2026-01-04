@@ -36,7 +36,7 @@ export default function EmailSignatureSection() {
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [signature, setSignature] = useState<EmailSignature | null>(null);
+  const [, setSignature] = useState<EmailSignature | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [footerLanguage, setFooterLanguage] = useState<FooterLanguage>('fr');

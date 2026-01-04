@@ -1372,10 +1372,12 @@ export default function ComposeNewsletterPage() {
   }, [availableFonts]);
   
   // Refs
-  const bannerInputRef = useRef<HTMLInputElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _bannerInputRef = useRef<HTMLInputElement>(null);
   const contentImageInputRef = useRef<HTMLInputElement>(null);
   const contentVideoInputRef = useRef<HTMLInputElement>(null);
-  const headerBackgroundInputRef = useRef<HTMLInputElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _headerBackgroundInputRef = useRef<HTMLInputElement>(null);
   
   // Footer settings with company data
   const [footerSettings, setFooterSettings] = useState<FooterSettings>({
@@ -1578,10 +1580,12 @@ export default function ComposeNewsletterPage() {
   };
 
   // State pour le chargement des uploads
-  const [uploadingBanner, setUploadingBanner] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_uploadingBanner, setUploadingBanner] = useState(false);
   const [uploadingContentImage, setUploadingContentImage] = useState(false);
   const [uploadingContentVideo, setUploadingContentVideo] = useState(false);
-  const [uploadingHeaderBackground, setUploadingHeaderBackground] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_uploadingHeaderBackground, setUploadingHeaderBackground] = useState(false);
   
   // MediaPickerModal state - modal unifié pour tous les uploads
   const [mediaPickerConfig, setMediaPickerConfig] = useState<{
@@ -1704,7 +1708,8 @@ export default function ComposeNewsletterPage() {
 
   // Image upload handlers - Upload vers Strapi pour compatibilité Gmail
   // Avec validation renforcée pour la sécurité
-  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Validation renforcée
@@ -1826,7 +1831,8 @@ export default function ComposeNewsletterPage() {
   };
 
   // Header background image upload handler (legacy - kept for ThemeCustomizer file input)
-  const handleHeaderBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _handleHeaderBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Validation renforcée

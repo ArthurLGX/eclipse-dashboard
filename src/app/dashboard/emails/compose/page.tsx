@@ -12,7 +12,6 @@ import {
   IconPaperclip,
   IconTrash,
   IconX,
-  IconCheck,
   IconAlertCircle,
   IconEye,
   IconEyeOff,

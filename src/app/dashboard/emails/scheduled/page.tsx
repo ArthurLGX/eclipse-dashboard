@@ -9,7 +9,6 @@ import {
   IconTrash,
   IconLoader2,
   IconArrowLeft,
-  IconSend,
   IconX,
   IconCalendar,
   IconAlertTriangle,
@@ -19,7 +18,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import { fetchSentEmails, apiRequest, getToken } from '@/lib/api';
+import { fetchSentEmails, updateSentEmailStatus } from '@/lib/api';
 import type { SentEmail } from '@/types';
 
 export default function ScheduledEmailsPage() {
@@ -70,20 +69,7 @@ function ScheduledEmails() {
   const handleCancelEmail = async (emailId: number) => {
     setCancellingId(emailId);
     try {
-      const token = getToken();
-      await apiRequest(`/api/sent-emails/${emailId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          data: {
-            status_mail: 'cancelled',
-          },
-        }),
-      });
-
+      await updateSentEmailStatus(emailId, 'cancelled');
       showGlobalPopup(t('email_cancelled') || 'Email annulé', 'success');
       setConfirmCancel(null);
       loadScheduledEmails();

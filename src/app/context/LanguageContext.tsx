@@ -1137,6 +1137,54 @@ const translations = {
 
     overview: 'Aperçu',
     tasks: 'Tâches',
+
+    // Email Analytics
+    email_analytics: 'Analytics',
+    email_analytics_desc: 'Suivez les ouvertures et clics de vos emails',
+    email_history_desc: 'Consultez tous vos emails envoyés',
+    
+    // Scheduled Emails
+    scheduled_emails: 'Emails planifiés',
+    scheduled_emails_desc: 'Gérez vos emails programmés pour plus tard',
+    no_scheduled_emails: 'Aucun email planifié',
+    no_scheduled_emails_desc: 'Vous n\'avez aucun email en attente d\'envoi. Créez un nouvel email et utilisez la planification pour l\'envoyer plus tard.',
+    schedule_email: 'Planifier un email',
+    emails_scheduled: 'email(s) planifié(s)',
+    email_cancelled: 'Email annulé',
+    cancel_error: 'Erreur lors de l\'annulation',
+    confirm_cancel: 'Confirmer ?',
+    scheduled_info_title: 'Comment ça marche ?',
+    scheduled_info_desc: 'Les emails planifiés sont envoyés automatiquement à la date et l\'heure prévues. Vous pouvez annuler un email planifié à tout moment avant son envoi.',
+    schedule: 'Planifier',
+    email_scheduled: 'Email planifié',
+    newsletter_scheduled: 'Newsletter planifiée pour le',
+    newsletter_scheduled_for: 'La newsletter sera envoyée le',
+    schedule_send: 'Planifier l\'envoi',
+    
+    // Analytics page
+    analytics_overview: 'Vue d\'ensemble Analytics',
+    total_sent: 'Total envoyés',
+    total_opens: 'Total ouvertures',
+    total_clicks: 'Total clics',
+    open_rate: 'Taux d\'ouverture',
+    click_rate: 'Taux de clics',
+    recent_emails_performance: 'Performance des emails récents',
+    no_tracking_data: 'Aucune donnée de suivi',
+    no_tracking_data_desc: 'Envoyez des emails et suivez les ouvertures et clics',
+    opens: 'Ouvertures',
+    clicks: 'Clics',
+    
+    // SMTP Status
+    smtp_configured: 'SMTP configuré',
+    smtp_not_configured: 'SMTP non configuré',
+    smtp_not_verified_short: 'SMTP non vérifié',
+    smtp_config_required_title: 'Configuration SMTP requise',
+    smtp_config_required_message: 'Vous devez configurer votre serveur SMTP pour envoyer des emails.',
+    smtp_not_verified_title: 'Configuration SMTP non vérifiée',
+    smtp_not_verified_message: 'Votre configuration SMTP n\'a pas été testée. Les emails pourraient ne pas être envoyés.',
+    verify: 'Vérifier',
+    configure: 'Configurer',
+    checking: 'Vérification...',
   },
 
   en: {
@@ -2219,6 +2267,54 @@ const translations = {
 
     overview: 'Overview',
     tasks: 'Tasks',
+
+    // Email Analytics
+    email_analytics: 'Analytics',
+    email_analytics_desc: 'Track opens and clicks on your emails',
+    email_history_desc: 'View all your sent emails',
+    
+    // Scheduled Emails
+    scheduled_emails: 'Scheduled Emails',
+    scheduled_emails_desc: 'Manage your emails scheduled for later',
+    no_scheduled_emails: 'No scheduled emails',
+    no_scheduled_emails_desc: 'You have no pending emails. Create a new email and use scheduling to send it later.',
+    schedule_email: 'Schedule an email',
+    emails_scheduled: 'email(s) scheduled',
+    email_cancelled: 'Email cancelled',
+    cancel_error: 'Error cancelling',
+    confirm_cancel: 'Confirm?',
+    scheduled_info_title: 'How does it work?',
+    scheduled_info_desc: 'Scheduled emails are sent automatically at the scheduled date and time. You can cancel a scheduled email at any time before it is sent.',
+    schedule: 'Schedule',
+    email_scheduled: 'Email scheduled',
+    newsletter_scheduled: 'Newsletter scheduled for',
+    newsletter_scheduled_for: 'The newsletter will be sent on',
+    schedule_send: 'Schedule sending',
+    
+    // Analytics page
+    analytics_overview: 'Analytics Overview',
+    total_sent: 'Total sent',
+    total_opens: 'Total opens',
+    total_clicks: 'Total clicks',
+    open_rate: 'Open rate',
+    click_rate: 'Click rate',
+    recent_emails_performance: 'Recent emails performance',
+    no_tracking_data: 'No tracking data yet',
+    no_tracking_data_desc: 'Send emails and track opens and clicks',
+    opens: 'Opens',
+    clicks: 'Clicks',
+    
+    // SMTP Status
+    smtp_configured: 'SMTP configured',
+    smtp_not_configured: 'SMTP not configured',
+    smtp_not_verified_short: 'SMTP not verified',
+    smtp_config_required_title: 'SMTP configuration required',
+    smtp_config_required_message: 'You need to configure your SMTP server to send emails.',
+    smtp_not_verified_title: 'SMTP configuration not verified',
+    smtp_not_verified_message: 'Your SMTP configuration has not been tested. Emails may not be sent.',
+    verify: 'Verify',
+    configure: 'Configure',
+    checking: 'Checking...',
   },
 };
 

@@ -43,7 +43,7 @@ export interface ImageFile {
 
 export type ProjectStatus = 'planning' | 'in_progress' | 'completed';
 export type ProjectType = 'development' | 'design' | 'maintenance';
-export type FactureStatus = 'draft' | 'sent' | 'paid';
+export type FactureStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 export type Currency = 'EUR' | 'USD' | 'GBP' | 'CHF';
 export type ProcessStatus = 'client' | 'prospect';
 export type ProspectStatus = 'prospect' | 'answer' | 'to_be_contacted' | 'contacted';

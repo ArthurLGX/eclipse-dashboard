@@ -18,7 +18,6 @@ import {
   IconCheck,
   IconX,
   IconAlertCircle,
-  IconEye,
   IconPaperclip,
   IconChevronRight,
 } from '@tabler/icons-react';

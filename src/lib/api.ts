@@ -12,7 +12,7 @@ import type { Client } from '@/types';
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 /** Récupère le token d'authentification */
-const getToken = (): string | null => {
+export const getToken = (): string | null => {
   return typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 };
 
@@ -1662,6 +1662,33 @@ export const createSentEmail = async (
     { ...data, users: { connect: [{ id: userId }] } }
   );
   return response.data;
+};
+
+/** Met à jour le statut d'un email envoyé */
+export const updateSentEmailStatus = async (
+  emailId: number,
+  status: 'sent' | 'failed' | 'pending' | 'scheduled' | 'cancelled'
+): Promise<void> => {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+  
+  const response = await fetch(`${API_URL}/api/sent-emails/${emailId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      data: {
+        status_mail: status,
+      },
+    }),
+  });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Erreur lors de la mise à jour');
+  }
 };
 
 /** Compte les emails par catégorie */

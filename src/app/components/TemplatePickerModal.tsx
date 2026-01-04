@@ -8,12 +8,10 @@ import {
   IconPalette,
   IconBriefcase,
   IconSparkles,
-  IconLeaf,
   IconSnowflake,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import {
-  newsletterTemplates,
   templateCategories,
   getTemplatesByCategory,
   type NewsletterTemplate,

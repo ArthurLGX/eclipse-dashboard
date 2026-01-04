@@ -3,7 +3,7 @@
  * @description Templates prédéfinis pour les newsletters
  */
 
-import type { CreateCustomTemplateData, GradientStop } from '@/types';
+import type { CreateCustomTemplateData } from '@/types';
 
 export interface NewsletterTemplate extends CreateCustomTemplateData {
   id: string;

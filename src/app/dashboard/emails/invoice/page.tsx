@@ -10,7 +10,6 @@ import {
   IconLoader2,
   IconUser,
   IconX,
-  IconCheck,
   IconAlertCircle,
   IconEye,
   IconEyeOff,
@@ -18,7 +17,6 @@ import {
   IconSearch,
   IconPaperclip,
   IconFileText,
-  IconCurrencyEuro,
   IconCalendar,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -154,8 +152,8 @@ function InvoiceEmail() {
   
   // Helper functions
   const calculateTotal = (invoice: Facture): number => {
-    if (!invoice.lines) return 0;
-    const lines = typeof invoice.lines === 'string' ? JSON.parse(invoice.lines) : invoice.lines;
+    if (!invoice.invoice_lines) return 0;
+    const lines = typeof invoice.invoice_lines === 'string' ? JSON.parse(invoice.invoice_lines) : invoice.invoice_lines;
     return lines.reduce((sum: number, line: { total?: number; quantity?: number; unit_price?: number }) => {
       return sum + (line.total || (line.quantity || 0) * (line.unit_price || 0));
     }, 0);
@@ -325,8 +323,8 @@ Cordialement`;
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex flex-row items-center justify-between gap-4 p-4">
             <button
               onClick={() => router.back()}
               className="p-2 text-muted hover:text-primary hover:bg-accent/10 rounded-lg transition-colors"
@@ -335,9 +333,11 @@ Cordialement`;
             </button>
             
             <h1 className="text-xl font-semibold text-primary flex items-center gap-2">
-              <IconFileInvoice className="w-6 h-6 text-amber-500" />
+              <IconFileInvoice className="w-6 h-6 text-accent" />
               {t('send_invoice') || 'Envoyer une facture'}
             </h1>
+            
+            <SmtpStatusIndicator />
           </div>
           
           <div className="flex items-center gap-3">
@@ -367,6 +367,9 @@ Cordialement`;
       
       {/* Content */}
       <div className="max-w-4xl mx-auto p-6">
+        {/* SMTP Warning Banner */}
+        <SmtpWarningBanner className="mb-6" />
+        
         <AnimatePresence mode="wait">
           {showPreview ? (
             <motion.div
