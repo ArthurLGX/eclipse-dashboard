@@ -388,8 +388,17 @@ export default function FacturePage() {
   };
 
   const handleSendEmail = () => {
-    showGlobalPopup('Facture envoyée par email', 'success');
-    // Logique d'envoi email à implémenter
+    if (!facture) {
+      showGlobalPopup('Erreur: facture non trouvée', 'error');
+      return;
+    }
+    
+    // Rediriger vers la page d'envoi d'email avec la facture pré-sélectionnée
+    const params = new URLSearchParams({
+      invoiceId: facture.documentId || facture.id.toString(),
+    });
+    
+    window.location.href = `/dashboard/emails/invoice?${params.toString()}`;
   };
 
   const handleDownloadPDF = async () => {
@@ -453,7 +462,7 @@ export default function FacturePage() {
           {!editing ? (
             <button
               onClick={handleEdit}
-              className="flex items-center justify-center gap-2 bg-blue-500/20 !text-blue-400 border border-blue-500/20 px-4 py-2 rounded-lg hover:bg-blue-500/30 transition-colors"
+              className="flex items-center justify-center gap-2 bg-accent/10 text-accent border border-accent/20 px-4 py-2 rounded-lg hover:bg-accent/20 transition-colors"
             >
               <IconEdit className="w-4 h-4" />
               {t('edit')}
@@ -462,13 +471,13 @@ export default function FacturePage() {
             <>
               <button
                 onClick={handleSave}
-                className="flex items-center justify-center gap-2 bg-emerald-500/20 !text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500/30 transition-colors"
+                className="flex items-center justify-center gap-2 bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-colors"
               >
                 {t('save')}
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center justify-center gap-2 bg-orange-500/20 !text-orange-400 border border-orange-500/20 px-4 py-2 rounded-lg hover:bg-orange-500/30 transition-colors"
+                className="flex items-center justify-center gap-2 bg-muted text-secondary border border-default px-4 py-2 rounded-lg hover:bg-card transition-colors"
               >
                 {t('cancel')}
               </button>
@@ -478,21 +487,21 @@ export default function FacturePage() {
             <>
               <button
                 onClick={handleSendEmail}
-                className="flex items-center justify-center gap-2 bg-emerald-500/20 !text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500/30 transition-colors"
+                className="flex items-center justify-center gap-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 px-4 py-2 rounded-lg hover:bg-amber-500/20 transition-colors"
               >
                 <IconMail className="w-4 h-4" />
                 {t('send_email')}
               </button>
               <button
                 onClick={handleDownloadPDF}
-                className="flex items-center justify-center gap-2 bg-purple-500/20 !text-purple-400 border border-purple-500/20 px-4 py-2 rounded-lg hover:bg-purple-500/30 transition-colors"
+                className="flex items-center justify-center gap-2 bg-purple-500/10 text-purple-400 border border-purple-500/20 px-4 py-2 rounded-lg hover:bg-purple-500/20 transition-colors"
               >
                 <IconDownload className="w-4 h-4" />
                 {t('download_pdf')}
               </button>
               <button
                 onClick={handleDelete}
-                className="flex items-center justify-center gap-2 bg-red-500/20 !text-red-400 border border-red-500/20 px-4 py-2 rounded-lg hover:bg-red-500/30 transition-colors"
+                className="flex items-center justify-center gap-2 bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-2 rounded-lg hover:bg-red-500/20 transition-colors"
               >
                 <IconTrash className="w-4 h-4" />
                 {t('delete')}
@@ -1002,13 +1011,13 @@ export default function FacturePage() {
             <>
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 bg-emerald-500/20 !text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500/30 transition-colors"
+                className="flex items-center gap-2 bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-colors"
               >
                 {t('save')}
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 bg-orange-500/20 !text-orange-400 border border-orange-500/20 px-4 py-2 rounded-lg hover:bg-orange-500/30 transition-colors"
+                className="flex items-center gap-2 bg-muted text-secondary border border-default px-4 py-2 rounded-lg hover:bg-card transition-colors"
               >
                 {t('cancel')}
               </button>

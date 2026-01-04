@@ -76,8 +76,8 @@ export default function EmailFooter({
   onLanguageChange,
   showLanguageToggle = false,
 }: EmailFooterProps) {
-  const hasSocialLinks = data.linkedin_url || data.twitter_url || data.instagram_url || data.facebook_url;
-  const hasContactInfo = data.phone || data.website || data.address;
+  const hasSocialLinks = !!(data.linkedin_url || data.twitter_url || data.instagram_url || data.facebook_url);
+  const hasContactInfo = !!(data.phone || data.website || data.address);
   
   // Textes traduits
   const t = footerTexts[language];
@@ -102,25 +102,21 @@ export default function EmailFooter({
     );
   }
   
-  // Mode preview (React avec classes)
+  // Mode preview (React avec classes) - Disposition horizontale comme la signature
   return (
     <div 
-      className={`w-full ${compact ? 'py-6' : 'py-10'}`}
-      style={{ backgroundColor }}
+      className={`w-full ${compact ? 'py-4' : 'py-6'}`}
+      style={{ backgroundColor: '#ffffff' }}
     >
       <div className="max-w-[600px] mx-auto px-6">
         {/* Language Toggle (preview mode only) */}
         {showLanguageToggle && onLanguageChange && (
           <div className="flex justify-center mb-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-white/50 rounded-lg text-sm">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg text-sm">
               <IconLanguage className="w-4 h-4" style={{ color: textColor }} />
               <button
                 onClick={() => onLanguageChange('fr')}
-                className={`px-2 py-0.5 rounded transition-colors ${
-                  language === 'fr' 
-                    ? 'text-white' 
-                    : ''
-                }`}
+                className="px-2 py-0.5 rounded transition-colors"
                 style={{ 
                   backgroundColor: language === 'fr' ? accentColor : 'transparent',
                   color: language === 'fr' ? 'white' : textColor,
@@ -130,7 +126,7 @@ export default function EmailFooter({
               </button>
               <button
                 onClick={() => onLanguageChange('en')}
-                className={`px-2 py-0.5 rounded transition-colors`}
+                className="px-2 py-0.5 rounded transition-colors"
                 style={{ 
                   backgroundColor: language === 'en' ? accentColor : 'transparent',
                   color: language === 'en' ? 'white' : textColor,
@@ -142,134 +138,144 @@ export default function EmailFooter({
           </div>
         )}
         
-        {/* Logo & Company */}
-        <div className="text-center mb-6">
+        {/* Signature horizontale : Logo à gauche, infos à droite */}
+        <div className="flex items-start gap-4">
+          {/* Logo */}
           {data.logo_url && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img 
-              src={data.logo_url} 
-              alt="Logo" 
-              className="h-12 mx-auto mb-4 object-contain"
-            />
-          )}
-          {data.company_name && (
-            <div 
-              className="text-lg font-semibold mb-1"
-              style={{ color: accentColor }}
-            >
-              {data.company_name}
+            <div className="flex-shrink-0 pr-4 border-r-2 border-gray-200">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={data.logo_url} 
+                alt="Logo" 
+                className="h-20 w-auto object-contain"
+                style={{ maxWidth: '80px' }}
+              />
             </div>
           )}
-          {data.sender_name && (
-            <div style={{ color: textColor }}>
-              {data.sender_name}
-              {data.sender_title && ` - ${data.sender_title}`}
-            </div>
-          )}
+          
+          {/* Infos */}
+          <div className="flex-1 min-w-0">
+            {/* Nom & Titre */}
+            {data.sender_name && (
+              <div className="font-bold text-base" style={{ color: '#111' }}>
+                {data.sender_name}
+              </div>
+            )}
+            {data.sender_title && (
+              <div className="text-sm mb-2" style={{ color: textColor }}>
+                {data.sender_title}
+              </div>
+            )}
+            
+            {/* Entreprise */}
+            {data.company_name && (
+              <div className="font-semibold mb-1" style={{ color: accentColor }}>
+                {data.company_name}
+              </div>
+            )}
+            
+            {/* Contact */}
+            {hasContactInfo && (
+              <div className={`${compact ? 'text-xs' : 'text-sm'} space-y-0.5`} style={{ color: textColor }}>
+                {data.phone && (
+                  <div className="flex items-center gap-1">
+                    <IconPhone className="w-3.5 h-3.5" />
+                    <span>{data.phone}</span>
+                  </div>
+                )}
+                {data.website && (
+                  <a 
+                    href={data.website} 
+                    className="flex items-center gap-1 hover:underline"
+                    style={{ color: accentColor }}
+                  >
+                    <IconWorld className="w-3.5 h-3.5" />
+                    <span>{data.website.replace(/^https?:\/\//, '')}</span>
+                  </a>
+                )}
+                {data.address && (
+                  <div className="flex items-center gap-1">
+                    <IconMapPin className="w-3.5 h-3.5" />
+                    <span>{data.address}</span>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* Social Links - Plus compacts */}
+            {hasSocialLinks && (
+              <div className="flex gap-2 mt-2">
+                {data.linkedin_url && (
+                  <a 
+                    href={data.linkedin_url}
+                    className="w-6 h-6 rounded flex items-center justify-center transition-colors hover:opacity-80"
+                    style={{ backgroundColor: '#0A66C2', color: 'white' }}
+                  >
+                    <IconBrandLinkedin className="w-4 h-4" />
+                  </a>
+                )}
+                {data.twitter_url && (
+                  <a 
+                    href={data.twitter_url}
+                    className="w-6 h-6 rounded flex items-center justify-center transition-colors hover:opacity-80"
+                    style={{ backgroundColor: '#1DA1F2', color: 'white' }}
+                  >
+                    <IconBrandTwitter className="w-4 h-4" />
+                  </a>
+                )}
+                {data.instagram_url && (
+                  <a 
+                    href={data.instagram_url}
+                    className="w-6 h-6 rounded flex items-center justify-center transition-colors hover:opacity-80"
+                    style={{ backgroundColor: '#E4405F', color: 'white' }}
+                  >
+                    <IconBrandInstagram className="w-4 h-4" />
+                  </a>
+                )}
+                {data.facebook_url && (
+                  <a 
+                    href={data.facebook_url}
+                    className="w-6 h-6 rounded flex items-center justify-center transition-colors hover:opacity-80"
+                    style={{ backgroundColor: '#1877F2', color: 'white' }}
+                  >
+                    <IconBrandFacebook className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
         </div>
         
-        {/* Contact Info */}
-        {hasContactInfo && (
+        {/* Legal & Unsubscribe - Séparateur fin */}
+        {(finalLegalText || unsubscribeUrl) && (
           <div 
-            className={`flex flex-wrap justify-center gap-4 ${compact ? 'text-xs' : 'text-sm'} mb-6`}
-            style={{ color: textColor }}
+            className="text-center text-xs mt-4 pt-4 border-t border-gray-100"
+            style={{ color: textColor, opacity: 0.7 }}
           >
-            {data.phone && (
-              <div className="flex items-center gap-1">
-                <IconPhone className="w-4 h-4" />
-                <span>{data.phone}</span>
-              </div>
-            )}
-            {data.website && (
-              <a 
-                href={data.website} 
-                className="flex items-center gap-1 hover:underline"
-                style={{ color: accentColor }}
-              >
-                <IconWorld className="w-4 h-4" />
-                <span>{data.website.replace(/^https?:\/\//, '')}</span>
-              </a>
-            )}
-            {data.address && (
-              <div className="flex items-center gap-1">
-                <IconMapPin className="w-4 h-4" />
-                <span>{data.address}</span>
-              </div>
+            {finalLegalText && <p className="mb-1">{finalLegalText}</p>}
+            {unsubscribeUrl && (
+              <p>
+                <a 
+                  href={unsubscribeUrl}
+                  style={{ color: accentColor }}
+                  className="hover:underline"
+                >
+                  {finalUnsubscribeText}
+                </a>
+              </p>
             )}
           </div>
         )}
-        
-        {/* Social Links */}
-        {hasSocialLinks && (
-          <div className="flex justify-center gap-4 mb-6">
-            {data.linkedin_url && (
-              <a 
-                href={data.linkedin_url}
-                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                style={{ backgroundColor: '#0A66C2', color: 'white' }}
-              >
-                <IconBrandLinkedin className="w-5 h-5" />
-              </a>
-            )}
-            {data.twitter_url && (
-              <a 
-                href={data.twitter_url}
-                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                style={{ backgroundColor: '#1DA1F2', color: 'white' }}
-              >
-                <IconBrandTwitter className="w-5 h-5" />
-              </a>
-            )}
-            {data.instagram_url && (
-              <a 
-                href={data.instagram_url}
-                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                style={{ backgroundColor: '#E4405F', color: 'white' }}
-              >
-                <IconBrandInstagram className="w-5 h-5" />
-              </a>
-            )}
-            {data.facebook_url && (
-              <a 
-                href={data.facebook_url}
-                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                style={{ backgroundColor: '#1877F2', color: 'white' }}
-              >
-                <IconBrandFacebook className="w-5 h-5" />
-              </a>
-            )}
-          </div>
-        )}
-        
-        {/* Legal & Unsubscribe */}
-        <div 
-          className={`text-center ${compact ? 'text-xs' : 'text-xs'} space-y-2`}
-          style={{ color: textColor, opacity: 0.8 }}
-        >
-          {finalLegalText && <p>{finalLegalText}</p>}
-          {unsubscribeUrl && (
-            <p>
-              <a 
-                href={unsubscribeUrl}
-                style={{ color: accentColor }}
-                className="hover:underline"
-              >
-                {finalUnsubscribeText}
-              </a>
-            </p>
-          )}
-        </div>
       </div>
     </div>
   );
 }
 
-// Version avec styles inline pour les emails
+// Version avec styles inline pour les emails - Disposition horizontale
 function EmailFooterInline({
   data,
   textColor,
   accentColor,
-  backgroundColor,
   compact,
   unsubscribeText,
   unsubscribeUrl,
@@ -283,8 +289,8 @@ function EmailFooterInline({
       cellPadding={0} 
       cellSpacing={0}
       style={{ 
-        backgroundColor,
-        padding: compact ? '24px 0' : '40px 0',
+        backgroundColor: '#ffffff',
+        padding: compact ? '16px 0' : '24px 0',
       }}
     >
       <tbody>
@@ -297,186 +303,232 @@ function EmailFooterInline({
               style={{ maxWidth: '600px', padding: '0 24px' }}
             >
               <tbody>
-                {/* Logo & Company */}
+                {/* Signature horizontale */}
                 <tr>
-                  <td align="center" style={{ paddingBottom: '24px' }}>
-                    {data.logo_url && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img 
-                        src={data.logo_url} 
-                        alt="Logo" 
-                        style={{ 
-                          height: '48px', 
-                          display: 'block',
-                          margin: '0 auto 16px',
-                        }}
-                      />
-                    )}
-                    {data.company_name && (
-                      <div style={{ 
-                        fontSize: '18px', 
-                        fontWeight: 600,
-                        color: accentColor,
-                        marginBottom: '4px',
-                      }}>
-                        {data.company_name}
-                      </div>
-                    )}
-                    {data.sender_name && (
-                      <div style={{ color: textColor }}>
-                        {data.sender_name}
-                        {data.sender_title && ` - ${data.sender_title}`}
-                      </div>
-                    )}
+                  <td>
+                    <table cellPadding={0} cellSpacing={0} style={{ borderCollapse: 'collapse' }}>
+                      <tbody>
+                        <tr>
+                          {/* Logo à gauche */}
+                          {data.logo_url && (
+                            <td style={{ 
+                              paddingRight: '16px', 
+                              verticalAlign: 'middle',
+                              borderRight: '2px solid #e5e7eb',
+                            }}>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img 
+                                src={data.logo_url} 
+                                alt="Logo" 
+                                style={{ 
+                                  height: '80px', 
+                                  width: 'auto',
+                                  maxWidth: '80px',
+                                  objectFit: 'contain',
+                                  display: 'block',
+                                }}
+                              />
+                            </td>
+                          )}
+                          
+                          {/* Infos à droite */}
+                          <td style={{ 
+                            verticalAlign: 'middle', 
+                            paddingLeft: data.logo_url ? '16px' : '0',
+                          }}>
+                            {/* Nom */}
+                            {data.sender_name && (
+                              <div style={{ 
+                                fontWeight: 'bold', 
+                                fontSize: '16px', 
+                                color: '#111',
+                                marginBottom: '2px',
+                              }}>
+                                {data.sender_name}
+                              </div>
+                            )}
+                            {/* Titre */}
+                            {data.sender_title && (
+                              <div style={{ 
+                                color: textColor, 
+                                fontSize: '14px',
+                                marginBottom: '8px',
+                              }}>
+                                {data.sender_title}
+                              </div>
+                            )}
+                            
+                            {/* Entreprise */}
+                            {data.company_name && (
+                              <div style={{ 
+                                fontWeight: 600,
+                                color: accentColor,
+                                marginBottom: '4px',
+                              }}>
+                                {data.company_name}
+                              </div>
+                            )}
+                            
+                            {/* Contact */}
+                            {hasContactInfo && (
+                              <div style={{ 
+                                fontSize: compact ? '12px' : '13px',
+                                color: textColor,
+                              }}>
+                                {data.phone && (
+                                  <div style={{ marginBottom: '2px' }}>
+                                    📞 {data.phone}
+                                  </div>
+                                )}
+                                {data.website && (
+                                  <div style={{ marginBottom: '2px' }}>
+                                    🌐 <a 
+                                      href={data.website}
+                                      style={{ 
+                                        color: accentColor, 
+                                        textDecoration: 'none',
+                                      }}
+                                    >
+                                      {data.website.replace(/^https?:\/\//, '')}
+                                    </a>
+                                  </div>
+                                )}
+                                {data.address && (
+                                  <div>📍 {data.address}</div>
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Social Links */}
+                            {hasSocialLinks && (
+                              <div style={{ marginTop: '8px' }}>
+                                <table cellPadding={0} cellSpacing={0}>
+                                  <tbody>
+                                    <tr>
+                                      {data.linkedin_url && (
+                                        <td style={{ paddingRight: '6px' }}>
+                                          <a 
+                                            href={data.linkedin_url}
+                                            style={{
+                                              display: 'inline-block',
+                                              width: '24px',
+                                              height: '24px',
+                                              backgroundColor: '#0A66C2',
+                                              borderRadius: '4px',
+                                              textAlign: 'center',
+                                              lineHeight: '24px',
+                                              color: 'white',
+                                              textDecoration: 'none',
+                                              fontSize: '12px',
+                                            }}
+                                          >
+                                            in
+                                          </a>
+                                        </td>
+                                      )}
+                                      {data.twitter_url && (
+                                        <td style={{ paddingRight: '6px' }}>
+                                          <a 
+                                            href={data.twitter_url}
+                                            style={{
+                                              display: 'inline-block',
+                                              width: '24px',
+                                              height: '24px',
+                                              backgroundColor: '#1DA1F2',
+                                              borderRadius: '4px',
+                                              textAlign: 'center',
+                                              lineHeight: '24px',
+                                              color: 'white',
+                                              textDecoration: 'none',
+                                              fontSize: '12px',
+                                            }}
+                                          >
+                                            X
+                                          </a>
+                                        </td>
+                                      )}
+                                      {data.instagram_url && (
+                                        <td style={{ paddingRight: '6px' }}>
+                                          <a 
+                                            href={data.instagram_url}
+                                            style={{
+                                              display: 'inline-block',
+                                              width: '24px',
+                                              height: '24px',
+                                              backgroundColor: '#E4405F',
+                                              borderRadius: '4px',
+                                              textAlign: 'center',
+                                              lineHeight: '24px',
+                                              color: 'white',
+                                              textDecoration: 'none',
+                                              fontSize: '11px',
+                                            }}
+                                          >
+                                            📷
+                                          </a>
+                                        </td>
+                                      )}
+                                      {data.facebook_url && (
+                                        <td>
+                                          <a 
+                                            href={data.facebook_url}
+                                            style={{
+                                              display: 'inline-block',
+                                              width: '24px',
+                                              height: '24px',
+                                              backgroundColor: '#1877F2',
+                                              borderRadius: '4px',
+                                              textAlign: 'center',
+                                              lineHeight: '24px',
+                                              color: 'white',
+                                              textDecoration: 'none',
+                                              fontSize: '12px',
+                                            }}
+                                          >
+                                            f
+                                          </a>
+                                        </td>
+                                      )}
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </td>
                 </tr>
                 
-                {/* Contact Info */}
-                {hasContactInfo && (
+                {/* Legal & Unsubscribe */}
+                {(legalText || (unsubscribeUrl && unsubscribeText)) && (
                   <tr>
                     <td 
                       align="center" 
                       style={{ 
-                        fontSize: compact ? '12px' : '14px',
+                        fontSize: '12px',
                         color: textColor,
-                        paddingBottom: '24px',
+                        opacity: 0.7,
+                        paddingTop: '16px',
+                        borderTop: '1px solid #f0f0f0',
+                        marginTop: '16px',
                       }}
                     >
-                      {data.phone && <span style={{ marginRight: '16px' }}>📞 {data.phone}</span>}
-                      {data.website && (
-                        <a 
-                          href={data.website}
-                          style={{ 
-                            color: accentColor, 
-                            textDecoration: 'none',
-                            marginRight: '16px',
-                          }}
-                        >
-                          🌐 {data.website.replace(/^https?:\/\//, '')}
-                        </a>
+                      {legalText && <p style={{ margin: '0 0 4px' }}>{legalText}</p>}
+                      {unsubscribeUrl && unsubscribeText && (
+                        <p style={{ margin: 0 }}>
+                          <a 
+                            href={unsubscribeUrl}
+                            style={{ color: accentColor, textDecoration: 'none' }}
+                          >
+                            {unsubscribeText}
+                          </a>
+                        </p>
                       )}
-                      {data.address && <span>📍 {data.address}</span>}
                     </td>
                   </tr>
                 )}
-                
-                {/* Social Links */}
-                {hasSocialLinks && (
-                  <tr>
-                    <td align="center" style={{ paddingBottom: '24px' }}>
-                      <table cellPadding={0} cellSpacing={0}>
-                        <tbody>
-                          <tr>
-                            {data.linkedin_url && (
-                              <td style={{ padding: '0 8px' }}>
-                                <a 
-                                  href={data.linkedin_url}
-                                  style={{
-                                    display: 'inline-block',
-                                    width: '32px',
-                                    height: '32px',
-                                    backgroundColor: '#0A66C2',
-                                    borderRadius: '50%',
-                                    textAlign: 'center',
-                                    lineHeight: '32px',
-                                    color: 'white',
-                                    textDecoration: 'none',
-                                  }}
-                                >
-                                  in
-                                </a>
-                              </td>
-                            )}
-                            {data.twitter_url && (
-                              <td style={{ padding: '0 8px' }}>
-                                <a 
-                                  href={data.twitter_url}
-                                  style={{
-                                    display: 'inline-block',
-                                    width: '32px',
-                                    height: '32px',
-                                    backgroundColor: '#1DA1F2',
-                                    borderRadius: '50%',
-                                    textAlign: 'center',
-                                    lineHeight: '32px',
-                                    color: 'white',
-                                    textDecoration: 'none',
-                                  }}
-                                >
-                                  X
-                                </a>
-                              </td>
-                            )}
-                            {data.instagram_url && (
-                              <td style={{ padding: '0 8px' }}>
-                                <a 
-                                  href={data.instagram_url}
-                                  style={{
-                                    display: 'inline-block',
-                                    width: '32px',
-                                    height: '32px',
-                                    backgroundColor: '#E4405F',
-                                    borderRadius: '50%',
-                                    textAlign: 'center',
-                                    lineHeight: '32px',
-                                    color: 'white',
-                                    textDecoration: 'none',
-                                  }}
-                                >
-                                  📷
-                                </a>
-                              </td>
-                            )}
-                            {data.facebook_url && (
-                              <td style={{ padding: '0 8px' }}>
-                                <a 
-                                  href={data.facebook_url}
-                                  style={{
-                                    display: 'inline-block',
-                                    width: '32px',
-                                    height: '32px',
-                                    backgroundColor: '#1877F2',
-                                    borderRadius: '50%',
-                                    textAlign: 'center',
-                                    lineHeight: '32px',
-                                    color: 'white',
-                                    textDecoration: 'none',
-                                  }}
-                                >
-                                  f
-                                </a>
-                              </td>
-                            )}
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
-                )}
-                
-                {/* Legal & Unsubscribe */}
-                <tr>
-                  <td 
-                    align="center" 
-                    style={{ 
-                      fontSize: '12px',
-                      color: textColor,
-                      opacity: 0.8,
-                    }}
-                  >
-                    {legalText && <p style={{ margin: '0 0 8px' }}>{legalText}</p>}
-                    {unsubscribeUrl && unsubscribeText && (
-                      <p style={{ margin: 0 }}>
-                        <a 
-                          href={unsubscribeUrl}
-                          style={{ color: accentColor, textDecoration: 'none' }}
-                        >
-                          {unsubscribeText}
-                        </a>
-                      </p>
-                    )}
-                  </td>
-                </tr>
               </tbody>
             </table>
           </td>

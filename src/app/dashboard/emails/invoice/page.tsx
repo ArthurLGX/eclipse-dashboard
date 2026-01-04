@@ -102,8 +102,8 @@ function InvoiceEmail() {
               // Pre-fill message
               setMessage(getDefaultMessage(invoice));
               // Pre-fill recipient from client
-              if (invoice.client?.email) {
-                setRecipients([{ id: crypto.randomUUID(), email: invoice.client.email, name: invoice.client.name }]);
+              if (invoice.client_id?.email) {
+                setRecipients([{ id: crypto.randomUUID(), email: invoice.client_id.email, name: invoice.client_id.name }]);
               }
             }
           }
@@ -191,11 +191,11 @@ Cordialement`;
     setMessage(getDefaultMessage(invoice));
     
     // Pre-fill recipient from client
-    if (invoice.client?.email && !recipients.some(r => r.email === invoice.client?.email)) {
+    if (invoice.client_id?.email && !recipients.some(r => r.email === invoice.client_id?.email)) {
       setRecipients(prev => [...prev, { 
         id: crypto.randomUUID(), 
-        email: invoice.client!.email!, 
-        name: invoice.client!.name 
+        email: invoice.client_id!.email!, 
+        name: invoice.client_id!.name 
       }]);
     }
   };
@@ -538,7 +538,7 @@ Cordialement`;
                                 <div className="flex-1 min-w-0">
                                   <div className="font-medium text-primary truncate">{invoice.reference}</div>
                                   <div className="text-sm text-muted truncate">
-                                    {invoice.client?.name || 'Client'} • {formatDate(invoice.date)}
+                                    {invoice.client_id?.name || 'Client'} • {formatDate(invoice.date)}
                                   </div>
                                 </div>
                                 <div className="text-right">
