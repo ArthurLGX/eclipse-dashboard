@@ -15,7 +15,10 @@ import {
   IconRotate,
   IconCrop,
   IconWorld,
-  IconUpload
+  IconUpload,
+  IconPhoto,
+  IconLink,
+  IconAlertCircle,
 } from '@tabler/icons-react';
 import { uploadImage } from '@/lib/api';
 import { motion, AnimatePresence } from 'motion/react';
@@ -176,6 +179,14 @@ export default function ImageUpload({
   const [rotation, setRotation] = useState(0);
   const [faviconError, setFaviconError] = useState(false);
   
+  // États pour la bibliothèque et URL
+  const [showLibrary, setShowLibrary] = useState(false);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const [urlError, setUrlError] = useState('');
+  const [libraryImages, setLibraryImages] = useState<Array<{ id: number; url: string }>>([]);
+  const [loadingLibrary, setLoadingLibrary] = useState(false);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -280,6 +291,106 @@ export default function ImageUpload({
     if (disabled) return;
     setShowMenu(false);
     fileInputRef.current?.click();
+  };
+
+  // Handler pour ouvrir la bibliothèque
+  const handleOpenLibrary = async () => {
+    if (disabled) return;
+    setShowMenu(false);
+    setShowLibrary(true);
+    setLoadingLibrary(true);
+    
+    try {
+      const token = localStorage.getItem('token');
+      const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+      const res = await fetch(
+        `${API_URL}/api/upload/files?sort=createdAt:desc&pagination[pageSize]=50&filters[mime][$contains]=image`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      if (res.ok) {
+        const data = await res.json();
+        setLibraryImages(data.map((item: { id: number; url: string }) => ({
+          id: item.id,
+          url: item.url.startsWith('http') ? item.url : `${API_URL}${item.url}`,
+        })));
+      }
+    } catch (error) {
+      console.error('Error loading library:', error);
+    } finally {
+      setLoadingLibrary(false);
+    }
+  };
+
+  // Handler pour sélectionner une image de la bibliothèque
+  const handleSelectFromLibrary = async (image: { id: number; url: string }) => {
+    setUploading(true);
+    try {
+      await onUpload(image.id, image.url);
+      setShowLibrary(false);
+    } catch (error) {
+      console.error('Library select error:', error);
+      alert('Erreur lors de la sélection de l\'image');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Handler pour ouvrir l'input URL
+  const handleOpenUrlInput = () => {
+    if (disabled) return;
+    setShowMenu(false);
+    setShowUrlInput(true);
+    setUrlInput('');
+    setUrlError('');
+  };
+
+  // Handler pour valider l'URL
+  const handleSubmitUrl = async () => {
+    if (!urlInput.trim()) {
+      setUrlError('URL requise');
+      return;
+    }
+
+    try {
+      new URL(urlInput);
+    } catch {
+      setUrlError('URL invalide');
+      return;
+    }
+
+    const lowerUrl = urlInput.toLowerCase();
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.avif', '.jfif'];
+    const isImage = imageExtensions.some(ext => lowerUrl.includes(ext)) || lowerUrl.includes('image');
+    
+    if (!isImage) {
+      setUrlError('L\'URL doit pointer vers une image');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      // Télécharger l'image depuis l'URL et l'uploader sur Strapi
+      const response = await fetch(urlInput);
+      const blob = await response.blob();
+      const file = new File([blob], 'image-from-url.jpg', { type: blob.type || 'image/jpeg' });
+      
+      const result = await uploadImage(file);
+      const fullUrl = process.env.NEXT_PUBLIC_STRAPI_URL + result.url;
+      await onUpload(result.id, fullUrl);
+      
+      setShowUrlInput(false);
+      setUrlInput('');
+    } catch (error) {
+      console.error('URL upload error:', error);
+      setUrlError('Erreur lors du téléchargement de l\'image');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -460,11 +571,11 @@ export default function ImageUpload({
                 </button>
               )}
               
-              {/* Option Importer */}
+              {/* Option Importer depuis l'ordinateur */}
               <button
                 onClick={handleChooseFile}
                 disabled={disabled}
-                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left ${
+                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-zinc-800 ${
                   disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-800'
                 }`}
               >
@@ -472,8 +583,42 @@ export default function ImageUpload({
                   <IconUpload size={18} className="text-emerald-400" />
                 </div>
                 <div>
-                  <p className="text-zinc-200 font-medium text-sm">Importer une image</p>
-                  <p className="text-zinc-500 text-xs">Depuis votre ordinateur</p>
+                  <p className="text-zinc-200 font-medium text-sm">Depuis l&apos;ordinateur</p>
+                  <p className="text-zinc-500 text-xs">Importer un fichier</p>
+                </div>
+              </button>
+
+              {/* Option Bibliothèque */}
+              <button
+                onClick={handleOpenLibrary}
+                disabled={disabled}
+                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-zinc-800 ${
+                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-800'
+                }`}
+              >
+                <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center">
+                  <IconPhoto size={18} className="text-purple-400" />
+                </div>
+                <div>
+                  <p className="text-zinc-200 font-medium text-sm">Depuis la bibliothèque</p>
+                  <p className="text-zinc-500 text-xs">Images déjà uploadées</p>
+                </div>
+              </button>
+
+              {/* Option URL */}
+              <button
+                onClick={handleOpenUrlInput}
+                disabled={disabled}
+                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left ${
+                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-800'
+                }`}
+              >
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center">
+                  <IconLink size={18} className="text-cyan-400" />
+                </div>
+                <div>
+                  <p className="text-zinc-200 font-medium text-sm">Depuis une URL</p>
+                  <p className="text-zinc-500 text-xs">Lien vers une image</p>
                 </div>
               </button>
               
@@ -642,6 +787,158 @@ export default function ImageUpload({
                     </>
                   )}
                 </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Bibliothèque */}
+      <AnimatePresence>
+        {showLibrary && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={(e) => e.target === e.currentTarget && setShowLibrary(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-zinc-800">
+                <h3 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
+                  <IconPhoto className="w-5 h-5 text-purple-400" />
+                  Bibliothèque d&apos;images
+                </h3>
+                <button
+                  onClick={() => setShowLibrary(false)}
+                  className="p-2 rounded-lg hover:bg-zinc-800 transition-colors"
+                >
+                  <IconX className="w-5 h-5 text-zinc-400" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 overflow-auto p-4">
+                {loadingLibrary ? (
+                  <div className="flex items-center justify-center h-48">
+                    <IconLoader2 className="w-8 h-8 text-purple-400 animate-spin" />
+                  </div>
+                ) : libraryImages.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-48 text-zinc-500">
+                    <IconPhoto className="w-12 h-12 mb-4 opacity-50" />
+                    <p>Aucune image dans la bibliothèque</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                    {libraryImages.map((image) => (
+                      <button
+                        key={image.id}
+                        onClick={() => handleSelectFromLibrary(image)}
+                        disabled={uploading}
+                        className="relative aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-purple-500 transition-all group"
+                      >
+                        <Image
+                          src={image.url}
+                          alt="Library image"
+                          fill
+                          sizes="120px"
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                          <IconCheck className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal URL */}
+      <AnimatePresence>
+        {showUrlInput && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={(e) => e.target === e.currentTarget && setShowUrlInput(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-zinc-800">
+                <h3 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
+                  <IconLink className="w-5 h-5 text-cyan-400" />
+                  Image depuis URL
+                </h3>
+                <button
+                  onClick={() => setShowUrlInput(false)}
+                  className="p-2 rounded-lg hover:bg-zinc-800 transition-colors"
+                >
+                  <IconX className="w-5 h-5 text-zinc-400" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="p-4 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">
+                    URL de l&apos;image
+                  </label>
+                  <input
+                    type="url"
+                    value={urlInput}
+                    onChange={(e) => {
+                      setUrlInput(e.target.value);
+                      setUrlError('');
+                    }}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSubmitUrl()}
+                    placeholder="https://example.com/image.jpg"
+                    className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500"
+                  />
+                  {urlError && (
+                    <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                      <IconAlertCircle className="w-4 h-4" />
+                      {urlError}
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  onClick={handleSubmitUrl}
+                  disabled={!urlInput.trim() || uploading}
+                  className="w-full px-4 py-3 bg-cyan-500 text-white rounded-lg hover:bg-cyan-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {uploading ? (
+                    <>
+                      <IconLoader2 className="w-4 h-4 animate-spin" />
+                      Téléchargement...
+                    </>
+                  ) : (
+                    <>
+                      <IconCheck className="w-4 h-4" />
+                      Utiliser cette image
+                    </>
+                  )}
+                </button>
+
+                <p className="text-xs text-zinc-500 text-center">
+                  L&apos;image sera téléchargée et uploadée sur le serveur
+                </p>
               </div>
             </motion.div>
           </motion.div>

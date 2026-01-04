@@ -11,6 +11,8 @@ export const ALLOWED_IMAGE_TYPES = [
   'image/gif',
   'image/webp',
   'image/svg+xml',
+  'image/avif',
+  'image/jfif',
 ];
 
 // Types MIME autorisés pour les vidéos
@@ -22,12 +24,12 @@ export const ALLOWED_VIDEO_TYPES = [
 ];
 
 // Extensions autorisées
-export const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+export const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.avif', '.jfif'];
 export const ALLOWED_VIDEO_EXTENSIONS = ['.mp4', '.webm', '.ogg', '.mov'];
 
 // Limites de taille (en bytes)
 export const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
-export const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50 MB
+export const MAX_VIDEO_SIZE = 5 * 1024 * 1024; // 5 MB
 
 interface ValidationResult {
   valid: boolean;

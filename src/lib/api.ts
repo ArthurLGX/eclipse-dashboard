@@ -156,13 +156,13 @@ export async function checkClientDuplicate(
   
   // Vérifier l'email (pagination pour éviter la limite de 25 par défaut)
   const emailCheck = await get<ApiResponse<unknown[]>>(
-    `clients?pagination[pageSize]=1&filters[users][$eq]=${userId}&filters[email][$eqi]=${encodeURIComponent(email)}`
+    `clients?pagination[pageSize]=1&filters[users][id][$eq]=${userId}&filters[email][$eqi]=${encodeURIComponent(email)}`
   );
   const emailExists = (emailCheck.data?.length ?? 0) > 0;
 
   // Vérifier le nom
   const nameCheck = await get<ApiResponse<unknown[]>>(
-    `clients?pagination[pageSize]=1&filters[users][$eq]=${userId}&filters[name][$eqi]=${encodeURIComponent(name)}`
+    `clients?pagination[pageSize]=1&filters[users][id][$eq]=${userId}&filters[name][$eqi]=${encodeURIComponent(name)}`
   );
   const nameExists = (nameCheck.data?.length ?? 0) > 0;
 
@@ -308,7 +308,7 @@ export async function fetchAllUserProjects(userId: number) {
       };
       permission: string;
       is_owner: boolean;
-    }[]>>(`project-collaborators?populate[project][populate]=*&filters[user][$eq]=${userId}&filters[is_owner][$eq]=false`);
+    }[]>>(`project-collaborators?populate[project][populate]=*&filters[user][id][$eq]=${userId}&filters[is_owner][$eq]=false`);
     
     const collaborations = collaborationsResponse.data || [];
     
@@ -351,7 +351,7 @@ export const fetchNumberOfProjectsUser = (userId: number) =>
   fetchCount('projects', userId, 'user');
 
 export const fetchUnassignedProjects = (userId: number) =>
-  get(`projects?populate=*&filters[user][$eq]=${userId}&filters[client][$null]=true`);
+  get(`projects?populate=*&filters[user][id][$eq]=${userId}&filters[client][$null]=true`);
 
 export async function updateProject(
   projectDocumentId: string,
@@ -474,13 +474,13 @@ export const fetchFacturesUser = (userId: number) =>
   fetchUserEntities('factures', userId, 'user');
 
 export const fetchFacturesByClient = (userId: number, clientId: number) =>
-  get(`factures?populate=*&filters[user][$eq]=${userId}&filters[client][id][$eq]=${clientId}`);
+  get(`factures?populate=*&filters[user][id][$eq]=${userId}&filters[client][id][$eq]=${clientId}`);
 
 export const fetchFacturesByProject = (userId: number, projectId: number) =>
-  get(`factures?populate=*&filters[user][$eq]=${userId}&filters[project][id][$eq]=${projectId}`);
+  get(`factures?populate=*&filters[user][id][$eq]=${userId}&filters[project][id][$eq]=${projectId}`);
 
 export const fetchFacturesUserById = (userId: number, factureId: string) =>
-  get(`factures?populate=*&filters[user][$eq]=${userId}&filters[documentId][$eq]=${factureId}`);
+  get(`factures?populate=*&filters[user][id][$eq]=${userId}&filters[documentId][$eq]=${factureId}`);
 
 export const fetchFactureFromId = (id: string) =>
   fetchEntityById('factures', id);
@@ -665,7 +665,7 @@ export interface CreateNewsletterData {
   subject: string;
   content: string;
   template: 'standard' | 'promotional' | 'announcement' | 'custom';
-  n_status: 'draft' | 'sent';
+  n_status: 'draft' | 'sent' | 'scheduled' | 'failed';
   send_at?: string; // ISO datetime string
   author: number;
   subscribers?: number[]; // IDs des subscribers
@@ -676,6 +676,7 @@ export interface CreateNewsletterData {
   cta_text?: string; // Texte du bouton CTA
   cta_url?: string; // URL du bouton CTA
   media_ids?: number[]; // IDs des médias utilisés (images/vidéos)
+  html_content?: string; // Contenu HTML complet pour l'envoi différé
 }
 
 // Trouver ou créer un subscriber par email
@@ -1237,7 +1238,7 @@ export const fetchProjectCollaborators = (projectDocumentId: string) =>
 
 /** Récupère les projets partagés avec un utilisateur */
 export const fetchSharedProjects = (userId: number) =>
-  get(`project-collaborators?populate=*&filters[user][$eq]=${userId}&filters[is_owner][$eq]=false`);
+  get(`project-collaborators?populate=*&filters[user][id][$eq]=${userId}&filters[is_owner][$eq]=false`);
 
 /** Supprime un collaborateur d'un projet */
 export const removeProjectCollaborator = (collaboratorDocumentId: string) =>
@@ -1246,7 +1247,7 @@ export const removeProjectCollaborator = (collaboratorDocumentId: string) =>
 /** Vérifie si l'utilisateur peut supprimer un projet (propriétaire uniquement) */
 export async function canDeleteProject(projectDocumentId: string, userId: number): Promise<boolean> {
   const collaborator = await get<ApiResponse<{ is_owner: boolean }[]>>(
-    `project-collaborators?filters[project][documentId][$eq]=${projectDocumentId}&filters[user][$eq]=${userId}`
+    `project-collaborators?filters[project][documentId][$eq]=${projectDocumentId}&filters[user][id][$eq]=${userId}`
   );
   // Si pas de collaborateur trouvé, vérifier si c'est le créateur original
   if (!collaborator.data?.length) {
@@ -1438,7 +1439,7 @@ import type { SmtpConfig, CreateSmtpConfigData } from '@/types';
 /** Récupère la configuration SMTP de l'utilisateur */
 export const fetchSmtpConfig = async (userId: number): Promise<SmtpConfig | null> => {
   const response = await get<ApiResponse<SmtpConfig[]>>(
-    `smtp-configs?filters[users][$eq]=${userId}&populate=*`
+    `smtp-configs?filters[users][id][$eq]=${userId}&populate=*`
   );
   return response.data?.[0] || null;
 };
@@ -1491,4 +1492,196 @@ export const testSmtpConnection = async (
   });
 
   return response.json();
+};
+
+// ============================================================================
+// CUSTOM TEMPLATES (Thèmes personnalisés)
+// ============================================================================
+
+import type { CustomTemplate, CreateCustomTemplateData, UpdateCustomTemplateData } from '@/types';
+
+/** Récupère tous les templates personnalisés d'un utilisateur */
+export const fetchUserCustomTemplates = async (userId: number): Promise<CustomTemplate[]> => {
+  const response = await get<ApiResponse<CustomTemplate[]>>(
+    `custom-templates?filters[users][id][$eq]=${userId}&sort=createdAt:desc&populate=*`
+  );
+  return response.data || [];
+};
+
+/** Récupère un template personnalisé par son ID */
+export const fetchCustomTemplate = async (documentId: string): Promise<CustomTemplate | null> => {
+  try {
+    const response = await get<ApiResponse<CustomTemplate>>(`custom-templates/${documentId}`);
+    return response.data || null;
+  } catch {
+    return null;
+  }
+};
+
+/** Crée un nouveau template personnalisé */
+export const createCustomTemplate = async (
+  userId: number,
+  data: CreateCustomTemplateData
+): Promise<CustomTemplate> => {
+  // Si is_default est true, désactiver les autres templates par défaut
+  if (data.is_default) {
+    const existingTemplates = await fetchUserCustomTemplates(userId);
+    for (const template of existingTemplates) {
+      if (template.is_default) {
+        await updateCustomTemplate(template.documentId, { is_default: false });
+      }
+    }
+  }
+  
+  const response = await post<ApiResponse<CustomTemplate>>(
+    'custom-templates',
+    { ...data, users: { connect: [{ id: userId }] } }
+  );
+  return response.data;
+};
+
+/** Met à jour un template personnalisé */
+export const updateCustomTemplate = async (
+  documentId: string,
+  data: UpdateCustomTemplateData
+): Promise<CustomTemplate> => {
+  const response = await put<ApiResponse<CustomTemplate>>(
+    `custom-templates/${documentId}`,
+    data
+  );
+  return response.data;
+};
+
+/** Supprime un template personnalisé */
+export const deleteCustomTemplate = async (documentId: string): Promise<void> => {
+  await del(`custom-templates/${documentId}`);
+};
+
+/** Définit un template comme template par défaut */
+export const setDefaultCustomTemplate = async (
+  userId: number,
+  documentId: string
+): Promise<void> => {
+  // Désactiver tous les autres templates par défaut
+  const templates = await fetchUserCustomTemplates(userId);
+  for (const template of templates) {
+    if (template.is_default && template.documentId !== documentId) {
+      await updateCustomTemplate(template.documentId, { is_default: false });
+    }
+  }
+  
+  // Activer le nouveau template par défaut
+  await updateCustomTemplate(documentId, { is_default: true });
+};
+
+// ============================================================================
+// EMAIL SIGNATURE
+// ============================================================================
+
+import type { EmailSignature, CreateEmailSignatureData, UpdateEmailSignatureData, SentEmail, CreateSentEmailData, EmailCategory } from '@/types';
+
+/** Récupère la signature email d'un utilisateur */
+export const fetchEmailSignature = async (userId: number): Promise<EmailSignature | null> => {
+  const response = await get<ApiResponse<EmailSignature[]>>(
+    `email-signatures?filters[user][id][$eq]=${userId}&populate=*`
+  );
+  return response.data?.[0] || null;
+};
+
+/** Crée ou met à jour la signature email */
+export const saveEmailSignature = async (
+  userId: number,
+  data: CreateEmailSignatureData
+): Promise<EmailSignature> => {
+  const existing = await fetchEmailSignature(userId);
+  
+  if (existing) {
+    const response = await put<ApiResponse<EmailSignature>>(
+      `email-signatures/${existing.documentId}`,
+      data
+    );
+    return response.data;
+  } else {
+    const response = await post<ApiResponse<EmailSignature>>(
+      'email-signatures',
+      { ...data, user: { connect: [{ id: userId }] } }
+    );
+    return response.data;
+  }
+};
+
+/** Met à jour partiellement la signature email */
+export const updateEmailSignature = async (
+  documentId: string,
+  data: UpdateEmailSignatureData
+): Promise<EmailSignature> => {
+  const response = await put<ApiResponse<EmailSignature>>(
+    `email-signatures/${documentId}`,
+    data
+  );
+  return response.data;
+};
+
+// ============================================================================
+// SENT EMAILS (Historique)
+// ============================================================================
+
+/** Récupère l'historique des emails envoyés */
+export const fetchSentEmails = async (
+  userId: number,
+  category?: EmailCategory,
+  limit: number = 50
+): Promise<SentEmail[]> => {
+  let url = `sent-emails?filters[users][id][$eq]=${userId}&sort=sent_at:desc&pagination[pageSize]=${limit}`;
+  
+  if (category) {
+    url += `&filters[category][$eq]=${category}`;
+  }
+  
+  const response = await get<ApiResponse<SentEmail[]>>(url);
+  return response.data || [];
+};
+
+/** Récupère un email envoyé par son ID */
+export const fetchSentEmail = async (documentId: string): Promise<SentEmail | null> => {
+  try {
+    const response = await get<ApiResponse<SentEmail>>(`sent-emails/${documentId}`);
+    return response.data || null;
+  } catch {
+    return null;
+  }
+};
+
+/** Enregistre un email envoyé dans l'historique */
+export const createSentEmail = async (
+  userId: number,
+  data: CreateSentEmailData
+): Promise<SentEmail> => {
+  const response = await post<ApiResponse<SentEmail>>(
+    'sent-emails',
+    { ...data, users: { connect: [{ id: userId }] } }
+  );
+  return response.data;
+};
+
+/** Compte les emails par catégorie */
+export const countSentEmailsByCategory = async (
+  userId: number
+): Promise<Record<EmailCategory, number>> => {
+  const categories: EmailCategory[] = ['newsletter', 'invoice', 'quote', 'classic'];
+  const counts: Record<EmailCategory, number> = {
+    newsletter: 0,
+    invoice: 0,
+    quote: 0,
+    classic: 0,
+  };
+  
+  for (const category of categories) {
+    const response = await get<ApiResponse<SentEmail[]>>(
+      `sent-emails?filters[users][id][$eq]=${userId}&filters[category][$eq]=${category}&pagination[pageSize]=1`
+    );
+    counts[category] = response.meta?.pagination?.total || 0;
+  }
+  
+  return counts;
 };

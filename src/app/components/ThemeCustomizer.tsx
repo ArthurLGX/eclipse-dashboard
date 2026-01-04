@@ -7,6 +7,8 @@ import {
   IconPhotoUp,
   IconX,
   IconInfoCircle,
+  IconDeviceFloppy,
+  IconFolderOpen,
 } from '@tabler/icons-react';
 
 // Types
@@ -37,9 +39,10 @@ interface ThemeCustomizerProps {
   setCustomColors: React.Dispatch<React.SetStateAction<CustomColors>>;
   headerBackgroundUrl: string;
   setHeaderBackgroundUrl: (url: string) => void;
-  headerBackgroundInputRef: React.RefObject<HTMLInputElement | null>;
-  handleHeaderBackgroundUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  uploadingHeaderBackground: boolean;
+  headerBackgroundInputRef?: React.RefObject<HTMLInputElement | null>;
+  handleHeaderBackgroundUpload?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  uploadingHeaderBackground?: boolean;
+  onOpenMediaPicker?: () => void; // Nouvelle prop pour ouvrir le MediaPickerModal
   availableFonts: FontOption[];
   generateGradientCSS: (stops: GradientStop[], angle: number) => string;
   addGradientStop: () => void;
@@ -49,6 +52,11 @@ interface ThemeCustomizerProps {
   ctaText?: string;
   t: (key: string) => string;
   compact?: boolean; // Mode compact pour l'étape template
+  // Template save/load callbacks
+  bannerUrl?: string; // URL de la bannière pour la sauvegarde
+  onSaveTemplate?: () => void;
+  onLoadTemplate?: () => void;
+  hasSavedTemplates?: boolean;
 }
 
 // Liste des clients email et leur compatibilité
@@ -170,7 +178,8 @@ export default function ThemeCustomizer({
   setHeaderBackgroundUrl,
   headerBackgroundInputRef,
   handleHeaderBackgroundUpload,
-  uploadingHeaderBackground,
+  uploadingHeaderBackground = false,
+  onOpenMediaPicker,
   availableFonts,
   generateGradientCSS,
   addGradientStop,
@@ -180,7 +189,19 @@ export default function ThemeCustomizer({
   ctaText,
   t,
   compact = false,
+  bannerUrl,
+  onSaveTemplate,
+  onLoadTemplate,
+  hasSavedTemplates = false,
 }: ThemeCustomizerProps) {
+  // Handler pour ouvrir le sélecteur d'image
+  const handleOpenImagePicker = () => {
+    if (onOpenMediaPicker) {
+      onOpenMediaPicker();
+    } else if (headerBackgroundInputRef?.current) {
+      headerBackgroundInputRef.current.click();
+    }
+  };
   // Load all available Google Fonts on mount
   useEffect(() => {
     availableFonts.forEach(font => {
@@ -198,12 +219,54 @@ export default function ThemeCustomizer({
     });
   }, [availableFonts]);
 
+  // Marquer bannerUrl comme utilisé (sera passé via les props pour la sauvegarde)
+  void bannerUrl;
+  
   return (
     <div className="bg-muted rounded-xl p-6 space-y-6 border border-default">
-      <h3 className="font-semibold text-primary flex items-center gap-2">
-        <IconPalette className="w-5 h-5" />
-        {t('customize_theme') || 'Personnaliser le thème'}
-      </h3>
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold text-primary flex items-center gap-2">
+          <IconPalette className="w-5 h-5" />
+          {t('customize_theme') || 'Personnaliser le thème'}
+        </h3>
+        
+        {/* Template actions */}
+        {!compact && (onSaveTemplate || onLoadTemplate) && (
+          <div className="flex items-center gap-2">
+            {/* Load template */}
+            {onLoadTemplate && (
+              <button
+                onClick={onLoadTemplate}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                  hasSavedTemplates 
+                    ? 'text-accent hover:bg-accent/10' 
+                    : 'text-muted cursor-not-allowed'
+                }`}
+                disabled={!hasSavedTemplates}
+                title={hasSavedTemplates 
+                  ? (t('load_template') || 'Charger un thème') 
+                  : (t('no_saved_templates') || 'Aucun thème sauvegardé')
+                }
+              >
+                <IconFolderOpen className="w-4 h-4" />
+                <span className="hidden sm:inline">{t('load') || 'Charger'}</span>
+              </button>
+            )}
+            
+            {/* Save template */}
+            {onSaveTemplate && (
+              <button
+                onClick={onSaveTemplate}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-accent/10 text-accent hover:bg-accent/20 rounded-lg transition-colors"
+                title={t('save_template') || 'Sauvegarder le thème'}
+              >
+                <IconDeviceFloppy className="w-4 h-4" />
+                <span className="hidden sm:inline">{t('save') || 'Sauvegarder'}</span>
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Font Family Selection */}
       <div className="space-y-3 relative">
@@ -379,13 +442,16 @@ export default function ThemeCustomizer({
           {t('header_background_image_desc') || 'Optionnel : ajouter une image en plus de la couleur du thème'}
         </p>
         
-        <input
-          ref={headerBackgroundInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleHeaderBackgroundUpload}
-          className="hidden"
-        />
+        {/* Hidden file input for legacy support */}
+        {headerBackgroundInputRef && handleHeaderBackgroundUpload && (
+          <input
+            ref={headerBackgroundInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleHeaderBackgroundUpload}
+            className="hidden"
+          />
+        )}
         
         {headerBackgroundUrl ? (
           <div className="relative inline-block">
@@ -397,9 +463,10 @@ export default function ThemeCustomizer({
             />
             <div className="absolute top-2 right-2 flex gap-1">
               <button
-                onClick={() => headerBackgroundInputRef.current?.click()}
+                onClick={handleOpenImagePicker}
                 disabled={uploadingHeaderBackground}
                 className="p-1.5 bg-card/90 text-secondary hover:text-primary rounded-full transition-colors"
+                title={t('change_image') || 'Changer l\'image'}
               >
                 {uploadingHeaderBackground ? (
                   <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -410,6 +477,7 @@ export default function ThemeCustomizer({
               <button
                 onClick={() => setHeaderBackgroundUrl('')}
                 className="p-1.5 bg-danger/90 text-white rounded-full hover:bg-danger transition-colors"
+                title={t('remove_image') || 'Supprimer'}
               >
                 <IconX className="w-4 h-4" />
               </button>
@@ -417,7 +485,7 @@ export default function ThemeCustomizer({
           </div>
         ) : (
           <button
-            onClick={() => headerBackgroundInputRef.current?.click()}
+            onClick={handleOpenImagePicker}
             disabled={uploadingHeaderBackground}
             className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-default rounded-lg hover:border-accent/50 transition-colors text-secondary hover:text-primary"
           >

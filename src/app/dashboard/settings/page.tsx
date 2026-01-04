@@ -30,6 +30,7 @@ import {
   IconUserCog,
 } from '@tabler/icons-react';
 import SmtpConfigSection from '@/app/components/SmtpConfigSection';
+import EmailSignatureSection from '@/app/components/EmailSignatureSection';
 
 type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'sidebar' | 'email';
 
@@ -90,6 +91,7 @@ export default function SettingsPage() {
       links: [
         { id: 'projects', label: t('projects') || 'Projets', icon: <IconBuilding className="w-4 h-4" /> },
         { id: 'newsletters', label: t('newsletters') || 'Newsletters', icon: <IconMail className="w-4 h-4" /> },
+        { id: 'emails', label: t('emails') || 'Emails', icon: <IconMail className="w-4 h-4" /> },
       ],
     },
     {
@@ -402,6 +404,7 @@ export default function SettingsPage() {
         {activeTab === 'email' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
             <SmtpConfigSection />
+            <EmailSignatureSection />
           </motion.div>
         )}
 

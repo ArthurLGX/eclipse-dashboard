@@ -528,3 +528,141 @@ export interface CreateSmtpConfigData {
 }
 
 export type UpdateSmtpConfigData = Partial<CreateSmtpConfigData>;
+
+// ============================================================================
+// CUSTOM TEMPLATES (Thèmes personnalisés pour newsletters)
+// ============================================================================
+
+export interface GradientStop {
+  id: string;
+  color: string;
+  position: number;
+  opacity: number;
+}
+
+export interface CustomTemplate {
+  id: number;
+  documentId: string;
+  name: string;
+  description?: string;
+  gradient_stops: GradientStop[];
+  gradient_angle: number;
+  button_color: string;
+  button_text_color: string;
+  text_color: string;
+  header_title_color: string;
+  font_family: string;
+  header_background_url?: string;
+  banner_url?: string;
+  is_default: boolean;
+  users?: number | { id: number };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCustomTemplateData {
+  name: string;
+  description?: string;
+  gradient_stops: GradientStop[];
+  gradient_angle: number;
+  button_color: string;
+  button_text_color: string;
+  text_color: string;
+  header_title_color: string;
+  font_family: string;
+  header_background_url?: string;
+  banner_url?: string;
+  is_default?: boolean;
+}
+
+export type UpdateCustomTemplateData = Partial<CreateCustomTemplateData>;
+
+// ============================================================================
+// EMAIL SIGNATURE (Signature email personnalisée)
+// ============================================================================
+
+export interface EmailSignature {
+  id: number;
+  documentId: string;
+  company_name?: string;
+  sender_name?: string;
+  sender_title?: string;
+  phone?: string;
+  website?: string;
+  address?: string;
+  linkedin_url?: string;
+  twitter_url?: string;
+  instagram_url?: string;
+  facebook_url?: string;
+  logo_url?: string;
+  users?: number | { id: number };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEmailSignatureData {
+  company_name?: string;
+  sender_name?: string;
+  sender_title?: string;
+  phone?: string;
+  website?: string;
+  address?: string;
+  linkedin_url?: string;
+  twitter_url?: string;
+  instagram_url?: string;
+  facebook_url?: string;
+  logo_url?: string;
+}
+
+export type UpdateEmailSignatureData = Partial<CreateEmailSignatureData>;
+
+// ============================================================================
+// SENT EMAILS (Historique des emails envoyés)
+// ============================================================================
+
+export type EmailCategory = 'newsletter' | 'invoice' | 'quote' | 'classic';
+export type EmailStatus = 'sent' | 'failed' | 'pending' | 'scheduled' | 'cancelled';
+
+export interface ClickDetail {
+  url: string;
+  count: number;
+  first_clicked_at: string;
+  last_clicked_at: string;
+}
+
+export interface SentEmail {
+  id: number;
+  documentId: string;
+  subject: string;
+  recipients: string[]; // Liste des emails destinataires
+  content: string;
+  category: EmailCategory;
+  attachments?: { name: string; url: string }[];
+  sent_at: string;
+  status_mail: EmailStatus;
+  error_message?: string;
+  // Tracking fields
+  tracking_id?: string;
+  opens_count?: number;
+  clicks_count?: number;
+  opened_at?: string;
+  click_details?: ClickDetail[];
+  // Scheduling fields
+  scheduled_at?: string;
+  // Relations
+  users?: number | { id: number };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateSentEmailData {
+  subject: string;
+  recipients: string[];
+  content: string;
+  category: EmailCategory;
+  attachments?: { name: string; url: string }[];
+  sent_at: string;
+  status_mail: EmailStatus;
+  error_message?: string;
+  scheduled_at?: string;
+}

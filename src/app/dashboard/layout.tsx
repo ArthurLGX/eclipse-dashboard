@@ -3,6 +3,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useRouter, usePathname } from 'next/navigation';
+import { OnboardingProvider } from '@/app/context/OnboardingContext';
+import OnboardingWizard from '@/app/components/OnboardingWizard';
 import {
   IconHome,
   IconUsers,
@@ -10,6 +12,7 @@ import {
   IconMagnet,
   IconBrain,
   IconMail,
+  IconSend,
   IconPin,
   IconPinFilled,
   IconLogout,
@@ -182,6 +185,12 @@ export default function DashboardLayout({
           icon: <IconMail size={20} stroke={1} />,
           path: '/dashboard/newsletters',
         },
+        {
+          id: 'emails',
+          label: t('emails') || 'Emails',
+          icon: <IconSend size={20} stroke={1} />,
+          path: '/dashboard/emails',
+        },
       ],
     },
 
@@ -346,8 +355,12 @@ export default function DashboardLayout({
   return (
     <ProtectedRoute>
       <TrialExpiredGuard>
-        {/* Notification Bell - Fixed en haut à droite */}
-        <NotificationBell />
+        <OnboardingProvider>
+          {/* Onboarding Wizard Modal */}
+          <OnboardingWizard />
+          
+          {/* Notification Bell - Fixed en haut à droite */}
+          <NotificationBell />
         
         <div className="flex h-screen w-full">
           {/* Sidebar Desktop - Fixed height */}
@@ -536,6 +549,7 @@ export default function DashboardLayout({
             </div>
           </motion.main>
         </div>
+        </OnboardingProvider>
       </TrialExpiredGuard>
     </ProtectedRoute>
   );

@@ -51,6 +51,7 @@ import {
   IconChevronDown,
   IconPaperclip,
   IconVideo,
+  IconClock,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -60,7 +61,12 @@ import { usePopup } from '@/app/context/PopupContext';
 import { useClients, useCompany } from '@/hooks/useApi';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import ThemeCustomizer from '@/app/components/ThemeCustomizer';
-import { fetchSmtpConfig } from '@/lib/api';
+import MediaPickerModal from '@/app/components/MediaPickerModal';
+import SaveTemplateModal from '@/app/components/SaveTemplateModal';
+import LoadTemplateModal from '@/app/components/LoadTemplateModal';
+import EmailScheduler from '@/app/components/EmailScheduler';
+import { fetchSmtpConfig, fetchUserCustomTemplates, createCustomTemplate, deleteCustomTemplate, setDefaultCustomTemplate } from '@/lib/api';
+import type { CustomTemplate } from '@/types';
 import type { Client, Company, SmtpConfig } from '@/types';
 
 // Types
@@ -1223,10 +1229,20 @@ export default function ComposeNewsletterPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [sending, setSending] = useState(false);
   const [showFooterSettings, setShowFooterSettings] = useState(false);
+  const [scheduledAt, setScheduledAt] = useState<Date | null>(null);
   
   // SMTP Config State
   const [smtpConfig, setSmtpConfig] = useState<SmtpConfig | null>(null);
   const [showSmtpWarning, setShowSmtpWarning] = useState(false);
+  
+  // Custom templates state
+  const [customTemplates, setCustomTemplates] = useState<CustomTemplate[]>([]);
+  const [loadingTemplates, setLoadingTemplates] = useState(false);
+  const [showSaveTemplateModal, setShowSaveTemplateModal] = useState(false);
+  const [showLoadTemplateModal, setShowLoadTemplateModal] = useState(false);
+  const [activeCustomTemplateId, setActiveCustomTemplateId] = useState<string | null>(null);
+  const [updatingTemplateId, setUpdatingTemplateId] = useState<string | null>(null);
+  const [deletingTemplateId, setDeletingTemplateId] = useState<string | null>(null);
   
   // Custom template colors with gradient stops
   interface GradientStop {
@@ -1455,7 +1471,12 @@ export default function ComposeNewsletterPage() {
 
   // Handlers
   const handleSelectTemplate = (templateId: TemplateType) => {
-    setSelectedTemplate(templateId);
+    // Toggle selection - si on clique sur le même template, on le désélectionne
+    if (selectedTemplate === templateId) {
+      setSelectedTemplate(null);
+    } else {
+      setSelectedTemplate(templateId);
+    }
   };
 
   const handleSelectAllRecipients = () => {
@@ -1562,7 +1583,14 @@ export default function ComposeNewsletterPage() {
   const [uploadingContentVideo, setUploadingContentVideo] = useState(false);
   const [uploadingHeaderBackground, setUploadingHeaderBackground] = useState(false);
   
-  // Library modal state
+  // MediaPickerModal state - modal unifié pour tous les uploads
+  const [mediaPickerConfig, setMediaPickerConfig] = useState<{
+    isOpen: boolean;
+    type: 'image' | 'video' | 'all';
+    target: 'banner' | 'header' | 'content-image' | 'content-video' | null;
+  }>({ isOpen: false, type: 'image', target: null });
+  
+  // Library modal state (legacy - kept for RichTextEditor)
   const [showLibraryModal, setShowLibraryModal] = useState<{ type: 'image' | 'video'; isOpen: boolean }>({ type: 'image', isOpen: false });
   const [libraryMedia, setLibraryMedia] = useState<{ images: string[]; videos: string[] }>({ images: [], videos: [] });
   const [loadingLibrary, setLoadingLibrary] = useState(false);
@@ -1797,7 +1825,7 @@ export default function ComposeNewsletterPage() {
     }
   };
 
-  // Header background image upload handler
+  // Header background image upload handler (legacy - kept for ThemeCustomizer file input)
   const handleHeaderBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -1829,6 +1857,201 @@ export default function ComposeNewsletterPage() {
       }
     }
   };
+
+  // Handler pour MediaPickerModal - gestion centralisée des sélections de médias
+  const handleMediaPickerSelect = useCallback((url: string) => {
+    const target = mediaPickerConfig.target;
+    
+    switch (target) {
+      case 'banner':
+        setBannerImageUrl(url);
+        showGlobalPopup(t('image_uploaded_success') || 'Bannière ajoutée avec succès', 'success');
+        break;
+      case 'header':
+        setHeaderBackgroundUrl(url);
+        showGlobalPopup(t('image_uploaded_success') || 'Image d\'en-tête ajoutée avec succès', 'success');
+        break;
+      case 'content-image':
+        // Insérer l'image dans l'éditeur
+        const imgHtml = `<p><br></p><img src="${url}" alt="Image" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 8px; display: block;" /><p><br></p>`;
+        document.execCommand('insertHTML', false, imgHtml);
+        const editorElement = document.querySelector('[contenteditable="true"]');
+        if (editorElement) {
+          setEmailContent(editorElement.innerHTML);
+        }
+        setContentImages(prev => [...prev, url]);
+        showGlobalPopup(t('image_uploaded_success') || 'Image ajoutée avec succès', 'success');
+        break;
+      case 'content-video':
+        // Insérer la vidéo dans l'éditeur
+        const videoHtml = `<p><br></p><video src="${url}" controls style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 8px; display: block;"></video><p><br></p>`;
+        document.execCommand('insertHTML', false, videoHtml);
+        const editorEl = document.querySelector('[contenteditable="true"]');
+        if (editorEl) {
+          setEmailContent(editorEl.innerHTML);
+        }
+        setContentVideos(prev => [...prev, url]);
+        showGlobalPopup(t('video_uploaded_success') || 'Vidéo ajoutée avec succès', 'success');
+        break;
+    }
+    
+    setMediaPickerConfig({ isOpen: false, type: 'image', target: null });
+  }, [mediaPickerConfig.target, showGlobalPopup, t]);
+
+  // Fonctions pour ouvrir le MediaPicker pour différents usages
+  const openBannerPicker = useCallback(() => {
+    setMediaPickerConfig({ isOpen: true, type: 'image', target: 'banner' });
+  }, []);
+
+  const openHeaderBackgroundPicker = useCallback(() => {
+    setMediaPickerConfig({ isOpen: true, type: 'image', target: 'header' });
+  }, []);
+
+  // Load custom templates on mount
+  useEffect(() => {
+    if (user?.id) {
+      const loadTemplates = async () => {
+        setLoadingTemplates(true);
+        try {
+          const templates = await fetchUserCustomTemplates(user.id);
+          setCustomTemplates(templates);
+          
+          // If there's a default template, apply it
+          const defaultTemplate = templates.find(t => t.is_default);
+          if (defaultTemplate) {
+            applyTemplate(defaultTemplate);
+          }
+        } catch (error) {
+          console.error('Error loading custom templates:', error);
+        } finally {
+          setLoadingTemplates(false);
+        }
+      };
+      loadTemplates();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
+  // Apply a template to the current settings
+  const applyTemplate = useCallback((template: CustomTemplate) => {
+    setCustomColors({
+      gradientStops: template.gradient_stops || [],
+      gradientAngle: template.gradient_angle || 135,
+      buttonColor: template.button_color || '#10b981',
+      buttonTextColor: template.button_text_color || '#ffffff',
+      textColor: template.text_color || '#374151',
+      headerTitleColor: template.header_title_color || '#ffffff',
+      fontFamily: template.font_family || 'Inter, sans-serif',
+    });
+    if (template.header_background_url) {
+      setHeaderBackgroundUrl(template.header_background_url);
+    }
+    if (template.banner_url) {
+      setBannerImageUrl(template.banner_url);
+    }
+    setActiveCustomTemplateId(template.documentId);
+    showGlobalPopup(t('template_loaded_success') || 'Thème appliqué avec succès', 'success');
+  }, [setCustomColors, setHeaderBackgroundUrl, showGlobalPopup, t]);
+
+  // Update an existing template with current settings
+  const handleUpdateTemplate = useCallback(async (templateId: string) => {
+    if (!user?.id) return;
+    
+    setUpdatingTemplateId(templateId);
+    try {
+      const { updateCustomTemplate } = await import('@/lib/api');
+      
+      await updateCustomTemplate(templateId, {
+        gradient_stops: customColors.gradientStops,
+        gradient_angle: customColors.gradientAngle,
+        button_color: customColors.buttonColor,
+        button_text_color: customColors.buttonTextColor,
+        text_color: customColors.textColor,
+        header_title_color: customColors.headerTitleColor,
+        font_family: customColors.fontFamily,
+        header_background_url: headerBackgroundUrl || undefined,
+        banner_url: bannerImageUrl || undefined,
+      });
+      
+      // Reload templates
+      const templates = await fetchUserCustomTemplates(user.id);
+      setCustomTemplates(templates);
+      
+      showGlobalPopup(t('template_updated_success') || 'Thème mis à jour avec succès', 'success');
+    } catch (error) {
+      console.error('Error updating template:', error);
+      showGlobalPopup(t('template_update_error') || 'Erreur lors de la mise à jour', 'error');
+    } finally {
+      setUpdatingTemplateId(null);
+    }
+  }, [user?.id, customColors, headerBackgroundUrl, bannerImageUrl, showGlobalPopup, t]);
+
+  // Delete a template
+  const handleDeleteTemplate = useCallback(async (templateId: string) => {
+    if (!user?.id) return;
+    
+    setDeletingTemplateId(templateId);
+    try {
+      await deleteCustomTemplate(templateId);
+      
+      // Reload templates
+      const templates = await fetchUserCustomTemplates(user.id);
+      setCustomTemplates(templates);
+      
+      // Clear active template if it was deleted
+      if (activeCustomTemplateId === templateId) {
+        setActiveCustomTemplateId(null);
+      }
+      
+      showGlobalPopup(t('template_deleted_success') || 'Thème supprimé avec succès', 'success');
+    } catch (error) {
+      console.error('Error deleting template:', error);
+      showGlobalPopup(t('template_delete_error') || 'Erreur lors de la suppression', 'error');
+    } finally {
+      setDeletingTemplateId(null);
+    }
+  }, [user?.id, activeCustomTemplateId, showGlobalPopup, t]);
+
+  // Save template handler
+  const handleSaveTemplate = useCallback(async (name: string, description: string, isDefault: boolean) => {
+    if (!user?.id) throw new Error('User not authenticated');
+    
+    const templateData = {
+      name,
+      description,
+      gradient_stops: customColors.gradientStops,
+      gradient_angle: customColors.gradientAngle,
+      button_color: customColors.buttonColor,
+      button_text_color: customColors.buttonTextColor,
+      text_color: customColors.textColor,
+      header_title_color: customColors.headerTitleColor,
+      font_family: customColors.fontFamily,
+      header_background_url: headerBackgroundUrl || undefined,
+      banner_url: bannerImageUrl || undefined,
+      is_default: isDefault,
+    };
+    
+    await createCustomTemplate(user.id, templateData);
+    
+    // Refresh templates list
+    const templates = await fetchUserCustomTemplates(user.id);
+    setCustomTemplates(templates);
+    
+    showGlobalPopup(t('template_saved_success') || 'Thème sauvegardé avec succès', 'success');
+  }, [user?.id, customColors, headerBackgroundUrl, bannerImageUrl, showGlobalPopup, t]);
+
+  // Set default template handler
+  const handleSetDefaultTemplate = useCallback(async (documentId: string) => {
+    if (!user?.id) return;
+    
+    await setDefaultCustomTemplate(user.id, documentId);
+    
+    // Refresh templates list
+    const templates = await fetchUserCustomTemplates(user.id);
+    setCustomTemplates(templates);
+    
+    showGlobalPopup(t('default_template_set') || 'Thème défini par défaut', 'success');
+  }, [user?.id, showGlobalPopup, t]);
 
   const handleSend = async () => {
     // Vérifier la configuration SMTP
@@ -1932,27 +2155,32 @@ export default function ComposeNewsletterPage() {
         })),
       ];
 
-      // Envoyer les emails via l'API (avec token JWT pour authentification)
-      const token = localStorage.getItem('token');
-      const emailResponse = await fetch('/api/newsletters/send', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          recipients: allRecipients,
-          subject: emailSubject,
-          htmlContent: fullHtmlContent,
-          textContent: emailTitle + '\n\n' + emailContent.replace(/<[^>]*>/g, ''),
-        }),
-      });
-
-      const emailResult = await emailResponse.json();
+      const isScheduled = scheduledAt !== null;
+      let emailResult = { success: false, sent: 0 };
       
-      if (!emailResponse.ok) {
-        console.error('Email sending failed:', emailResult);
-        // Continuer quand même pour enregistrer la newsletter
+      // Envoyer les emails uniquement si ce n'est pas planifié
+      if (!isScheduled) {
+        const token = localStorage.getItem('token');
+        const emailResponse = await fetch('/api/newsletters/send', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            recipients: allRecipients,
+            subject: emailSubject,
+            htmlContent: fullHtmlContent,
+            textContent: emailTitle + '\n\n' + emailContent.replace(/<[^>]*>/g, ''),
+          }),
+        });
+
+        emailResult = await emailResponse.json();
+        
+        if (!emailResponse.ok) {
+          console.error('Email sending failed:', emailResult);
+          // Continuer quand même pour enregistrer la newsletter
+        }
       }
       
       // Créer la newsletter dans la base de données
@@ -1961,8 +2189,8 @@ export default function ComposeNewsletterPage() {
         subject: emailSubject,
         content: emailContent,
         template: (selectedTemplate as 'standard' | 'promotional' | 'announcement' | 'custom') || 'standard',
-        n_status: 'sent',
-        send_at: new Date().toISOString(),
+        n_status: isScheduled ? 'scheduled' : 'sent',
+        send_at: isScheduled ? scheduledAt.toISOString() : new Date().toISOString(),
         author: user.id,
         subscribers: subscriberIds.length > 0 ? subscriberIds : undefined,
         // Nouveaux champs pour le contenu enrichi
@@ -1971,9 +2199,16 @@ export default function ComposeNewsletterPage() {
         banner_url: bannerImageUrl || undefined,
         cta_text: ctaText || undefined,
         cta_url: ctaUrl || undefined,
+        // Stockage du HTML complet pour l'envoi différé
+        html_content: isScheduled ? fullHtmlContent : undefined,
       });
 
-      if (emailResult.success) {
+      if (isScheduled) {
+        showGlobalPopup(
+          `${t('newsletter_scheduled') || 'Newsletter planifiée pour le'} ${scheduledAt.toLocaleDateString('fr-FR')} à ${scheduledAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`, 
+          'success'
+        );
+      } else if (emailResult.success) {
         showGlobalPopup(`${t('newsletter_sent_success')} ${emailResult.sent} ${t('recipients_count')}`, 'success');
       } else if (emailResult.sent > 0) {
         showGlobalPopup(`${t('newsletter_partially_sent')}: ${emailResult.sent}/${selectedRecipients.length}`, 'warning');
@@ -2223,15 +2458,20 @@ export default function ComposeNewsletterPage() {
                   <button
                     onClick={handleSend}
                     disabled={sending || selectedRecipients.length === 0}
-                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accent font-medium
-                      hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium
+                      hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed
+                      ${scheduledAt ? 'bg-purple-600' : 'bg-accent'}`}
                   >
                     {sending ? (
                       <IconLoader2 className="w-4 h-4 animate-spin" />
+                    ) : scheduledAt ? (
+                      <IconClock className="w-4 h-4 !text-white" />
                     ) : (
                       <IconSend className="w-4 h-4 !text-white" />
                     )}
-                    <span className="!text-white">{t('send')}</span>
+                    <span className="!text-white">
+                      {scheduledAt ? (t('schedule') || 'Planifier') : t('send')}
+                    </span>
                   </button>
                 )}
               </div>
@@ -2358,6 +2598,148 @@ export default function ComposeNewsletterPage() {
                       })}
                     </div>
 
+                    {/* Mes thèmes sauvegardés */}
+                    {customTemplates.length > 0 && (
+                      <div className="mt-8">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                            <IconPalette className="w-5 h-5 text-accent" />
+                            {t('my_saved_themes') || 'Mes thèmes'}
+                          </h3>
+                          <span className="text-sm text-muted">
+                            {customTemplates.length} {customTemplates.length === 1 ? t('theme') || 'thème' : t('themes') || 'thèmes'}
+                          </span>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+                          {customTemplates.map((template) => {
+                            const isActive = activeCustomTemplateId === template.documentId;
+                            const isUpdating = updatingTemplateId === template.documentId;
+                            const isDeleting = deletingTemplateId === template.documentId;
+                            
+                            return (
+                              <motion.div
+                                key={template.documentId}
+                                whileHover={{ scale: 1.02 }}
+                                className={`relative p-4 rounded-xl border transition-all text-left bg-card group ${
+                                  isActive 
+                                    ? 'border-accent ring-2 ring-accent/30' 
+                                    : 'border-default hover:border-accent/50'
+                                }`}
+                              >
+                                {/* Badge défaut */}
+                                {template.is_default && (
+                                  <div className="absolute -top-2 -right-2 bg-yellow-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 z-10">
+                                    <IconStarFilled className="w-2.5 h-2.5" />
+                                  </div>
+                                )}
+                                
+                                {/* Active badge */}
+                                {isActive && (
+                                  <div className="absolute -top-2 -left-2 bg-accent text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 z-10">
+                                    <IconCheck className="w-2.5 h-2.5" />
+                                    {t('active') || 'Actif'}
+                                  </div>
+                                )}
+                                
+                                {/* Clickable area */}
+                                <button
+                                  onClick={() => {
+                                    setSelectedTemplate('custom');
+                                    applyTemplate(template);
+                                  }}
+                                  className="w-full text-left"
+                                >
+                                  {/* Preview */}
+                                  <div className="flex items-center gap-2 mb-2">
+                                    {/* Gradient preview */}
+                                    <div 
+                                      className="w-10 h-6 rounded-md border border-default flex-shrink-0"
+                                      style={{
+                                        background: template.gradient_stops?.length > 0
+                                          ? `linear-gradient(${template.gradient_angle}deg, ${
+                                              [...template.gradient_stops]
+                                                .sort((a, b) => a.position - b.position)
+                                                .map(s => `${s.color}${Math.round(s.opacity * 255).toString(16).padStart(2, '0')} ${s.position}%`)
+                                                .join(', ')
+                                            })`
+                                          : '#333'
+                                      }}
+                                    />
+                                    {/* Colors */}
+                                    <div className="flex gap-1">
+                                      <div 
+                                        className="w-4 h-4 rounded-full border border-white/20"
+                                        style={{ backgroundColor: template.button_color }}
+                                      />
+                                      <div 
+                                        className="w-4 h-4 rounded-full border border-white/20"
+                                        style={{ backgroundColor: template.header_title_color }}
+                                      />
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Nom */}
+                                  <p className="font-medium text-primary text-sm truncate group-hover:text-accent transition-colors">
+                                    {template.name}
+                                  </p>
+                                  
+                                  {/* Font */}
+                                  <p className="text-[10px] text-muted truncate">
+                                    <span style={{ fontFamily: template.font_family }}>
+                                      {template.font_family.split(',')[0]}
+                                    </span>
+                                  </p>
+                                </button>
+                                
+                                {/* Action buttons - visible on hover or when active */}
+                                <div className={`flex items-center gap-1 mt-2 pt-2 border-t border-default ${
+                                  isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                                } transition-opacity`}>
+                                  {/* Update button */}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleUpdateTemplate(template.documentId);
+                                    }}
+                                    disabled={isUpdating || isDeleting}
+                                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors disabled:opacity-50"
+                                    title={t('update_theme') || 'Mettre à jour avec les paramètres actuels'}
+                                  >
+                                    {isUpdating ? (
+                                      <IconLoader2 className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                      <IconRefresh className="w-3 h-3" />
+                                    )}
+                                    {t('update') || 'Màj'}
+                                  </button>
+                                  
+                                  {/* Delete button */}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (confirm(t('confirm_delete_theme') || 'Supprimer ce thème ?')) {
+                                        handleDeleteTemplate(template.documentId);
+                                      }
+                                    }}
+                                    disabled={isUpdating || isDeleting}
+                                    className="flex items-center justify-center p-1.5 text-xs rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                                    title={t('delete_theme') || 'Supprimer ce thème'}
+                                  >
+                                    {isDeleting ? (
+                                      <IconLoader2 className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                      <IconTrash className="w-3 h-3" />
+                                    )}
+                                  </button>
+                                </div>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Custom Template Color Pickers - Below cards, aligned right */}
                     <AnimatePresence>
                       {selectedTemplate === 'custom' && (
@@ -2365,16 +2747,14 @@ export default function ComposeNewsletterPage() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="mt-4"
+                          className="mt-6"
                         >
                           <ThemeCustomizer
                             customColors={customColors}
                             setCustomColors={setCustomColors}
                             headerBackgroundUrl={headerBackgroundUrl}
                             setHeaderBackgroundUrl={setHeaderBackgroundUrl}
-                            headerBackgroundInputRef={headerBackgroundInputRef}
-                            handleHeaderBackgroundUpload={handleHeaderBackgroundUpload}
-                            uploadingHeaderBackground={uploadingHeaderBackground}
+                            onOpenMediaPicker={openHeaderBackgroundPicker}
                             availableFonts={availableFonts}
                             generateGradientCSS={generateGradientCSS}
                             addGradientStop={addGradientStop}
@@ -2383,6 +2763,10 @@ export default function ComposeNewsletterPage() {
                             emailTitle={emailTitle}
                             ctaText={ctaText}
                             t={t}
+                            bannerUrl={bannerImageUrl}
+                            onSaveTemplate={() => setShowSaveTemplateModal(true)}
+                            onLoadTemplate={() => setShowLoadTemplateModal(true)}
+                            hasSavedTemplates={customTemplates.length > 0}
                           />
                         </motion.div>
                       )}
@@ -2589,9 +2973,7 @@ export default function ComposeNewsletterPage() {
                             setCustomColors={setCustomColors}
                             headerBackgroundUrl={headerBackgroundUrl}
                             setHeaderBackgroundUrl={setHeaderBackgroundUrl}
-                            headerBackgroundInputRef={headerBackgroundInputRef}
-                            handleHeaderBackgroundUpload={handleHeaderBackgroundUpload}
-                            uploadingHeaderBackground={uploadingHeaderBackground}
+                            onOpenMediaPicker={openHeaderBackgroundPicker}
                             availableFonts={availableFonts}
                             generateGradientCSS={generateGradientCSS}
                             addGradientStop={addGradientStop}
@@ -2600,6 +2982,10 @@ export default function ComposeNewsletterPage() {
                             emailTitle={emailTitle}
                             ctaText={ctaText}
                             t={t}
+                            bannerUrl={bannerImageUrl}
+                            onSaveTemplate={() => setShowSaveTemplateModal(true)}
+                            onLoadTemplate={() => setShowLoadTemplateModal(true)}
+                            hasSavedTemplates={customTemplates.length > 0}
                           />
                         </motion.div>
                       )}
@@ -2787,20 +3173,7 @@ export default function ComposeNewsletterPage() {
                     <div className="bg-card rounded-xl p-6 border border-default space-y-4">
                       <h3 className="font-semibold text-primary">{t('banner_section_title')}</h3>
                       
-                      <input
-                        ref={bannerInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleBannerUpload}
-                        className="hidden"
-                      />
-                      
-                      {uploadingBanner ? (
-                        <div className="border-2 border-dashed border-accent rounded-xl p-6 text-center bg-accent/5">
-                          <IconLoader2 className="w-8 h-8 mx-auto mb-2 text-accent animate-spin" />
-                          <p className="text-primary font-medium">{t('uploading') || 'Upload en cours...'}</p>
-                        </div>
-                      ) : bannerImageUrl ? (
+                      {bannerImageUrl ? (
                         <div className="relative">
                           <div className="relative rounded-xl overflow-hidden border border-default">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -2812,14 +3185,16 @@ export default function ComposeNewsletterPage() {
                           </div>
                           <div className="absolute top-3 right-3 flex gap-2">
                             <button
-                              onClick={() => bannerInputRef.current?.click()}
+                              onClick={openBannerPicker}
                               className="p-2 rounded-lg bg-white/90 hover:bg-white text-gray-700 shadow-lg transition-all"
+                              title={t('change_image') || 'Changer l\'image'}
                             >
                               <IconPhoto className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => setBannerImageUrl('')}
                               className="p-2 rounded-lg bg-red-500/90 hover:bg-red-500 text-white shadow-lg transition-all"
+                              title={t('remove_image') || 'Supprimer'}
                             >
                               <IconX className="w-4 h-4" />
                             </button>
@@ -2827,7 +3202,7 @@ export default function ComposeNewsletterPage() {
                         </div>
                       ) : (
                         <div 
-                          onClick={() => bannerInputRef.current?.click()}
+                          onClick={openBannerPicker}
                           className="border-2 border-dashed border-default rounded-xl p-6 text-center 
                             hover:border-accent hover:bg-accent-light/30 transition-all cursor-pointer group"
                         >
@@ -3138,26 +3513,50 @@ export default function ComposeNewsletterPage() {
                         </div>
                       </div>
 
-                      <div className="bg-accent rounded-xl p-6 border border-muted">
+                      {/* Planification d'envoi */}
+                      <EmailScheduler
+                        onSchedule={setScheduledAt}
+                        initialDate={scheduledAt}
+                        disabled={sending}
+                      />
+
+                      <div className={`rounded-xl p-6 border ${scheduledAt ? 'bg-purple-600 border-purple-500' : 'bg-accent border-muted'}`}>
                         <div className="flex items-center justify-between">
                           <div>
-                            <h3 className="font-semibold text-primary mb-1">{t('ready_to_send')}</h3>
-                            <p className="text-sm !text-secondary">
-                              {t('newsletter_will_be_sent')} {totalRecipients} {t('recipients_count')}
+                            <h3 className="font-semibold text-white mb-1">
+                              {scheduledAt 
+                                ? (t('schedule_send') || 'Planifier l\'envoi')
+                                : t('ready_to_send')
+                              }
+                            </h3>
+                            <p className="text-sm text-white/80">
+                              {scheduledAt 
+                                ? `${t('newsletter_scheduled_for') || 'La newsletter sera envoyée le'} ${scheduledAt.toLocaleDateString('fr-FR')} à ${scheduledAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
+                                : `${t('newsletter_will_be_sent')} ${totalRecipients} ${t('recipients_count')}`
+                              }
                             </p>
                           </div>
                           <button
                             onClick={handleSend}
                             disabled={sending}
-                            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-page hover:bg-accent-light text-accent-text font-semibold
+                            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-page hover:bg-accent-light text-primary font-semibold
                               hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-accent/25"
                           >
                             {sending ? (
                               <IconLoader2 className="w-5 h-5 animate-spin" />
+                            ) : scheduledAt ? (
+                              <IconClock className="w-5 h-5" />
                             ) : (
                               <IconSend className="w-5 h-5" />
                             )}
-                            <span>{sending ? t('sending') : t('send_now')}</span>
+                            <span>
+                              {sending 
+                                ? t('sending') 
+                                : scheduledAt 
+                                  ? (t('schedule') || 'Planifier')
+                                  : t('send_now')
+                              }
+                            </span>
                           </button>
                         </div>
                       </div>
@@ -3480,7 +3879,6 @@ export default function ComposeNewsletterPage() {
             </motion.div>
           )}
         </AnimatePresence>
-q
         {/* Library Modal */}
         <AnimatePresence>
           {showLibraryModal.isOpen && (
@@ -3578,6 +3976,50 @@ q
             </motion.div>
           )}
         </AnimatePresence>
+        
+        {/* SaveTemplateModal */}
+        <SaveTemplateModal
+          isOpen={showSaveTemplateModal}
+          onClose={() => setShowSaveTemplateModal(false)}
+          onSave={handleSaveTemplate}
+          templateData={{
+            gradientStops: customColors.gradientStops,
+            gradientAngle: customColors.gradientAngle,
+            buttonColor: customColors.buttonColor,
+            buttonTextColor: customColors.buttonTextColor,
+            textColor: customColors.textColor,
+            headerTitleColor: customColors.headerTitleColor,
+            fontFamily: customColors.fontFamily,
+            headerBackgroundUrl: headerBackgroundUrl || undefined,
+            bannerUrl: bannerImageUrl || undefined,
+          }}
+        />
+        
+        {/* LoadTemplateModal */}
+        <LoadTemplateModal
+          isOpen={showLoadTemplateModal}
+          onClose={() => setShowLoadTemplateModal(false)}
+          onLoad={applyTemplate}
+          onDelete={handleDeleteTemplate}
+          onSetDefault={handleSetDefaultTemplate}
+          templates={customTemplates}
+          loading={loadingTemplates}
+        />
+        
+        {/* MediaPickerModal - Modal unifié pour sélection de médias */}
+        <MediaPickerModal
+          isOpen={mediaPickerConfig.isOpen}
+          onClose={() => setMediaPickerConfig({ isOpen: false, type: 'image', target: null })}
+          onSelect={handleMediaPickerSelect}
+          mediaType={mediaPickerConfig.type}
+          title={
+            mediaPickerConfig.target === 'banner' 
+              ? t('select_banner_image') || 'Sélectionner une bannière'
+              : mediaPickerConfig.target === 'header'
+              ? t('select_header_image') || 'Sélectionner une image d\'en-tête'
+              : undefined
+          }
+        />
       </div>
     </ProtectedRoute>
   );
