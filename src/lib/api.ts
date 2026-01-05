@@ -1634,6 +1634,25 @@ export const testSmtpConnection = async (
   return response.json();
 };
 
+/** Teste la connexion IMAP */
+export const testImapConnection = async (
+  config: { imap_host: string; imap_port: number; imap_user: string; imap_password: string; imap_secure: boolean }
+): Promise<{ success: boolean; message: string }> => {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const response = await fetch(`/api/imap/test`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(config),
+  });
+
+  return response.json();
+};
+
 // ============================================================================
 // CUSTOM TEMPLATES (Thèmes personnalisés)
 // ============================================================================

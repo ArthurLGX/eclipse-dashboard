@@ -233,7 +233,7 @@ function EmailHistory() {
                 </p>
               </div>
             ) : (
-              <div className="bg-card border border-default rounded-xl overflow-hidden divide-y divide-default">
+              <div className="bg-card border border-default rounded-xl overflow-hidden ">
                 {filteredEmails.map((email) => {
                   const catInfo = getCategoryInfo(email.category);
                   

@@ -513,6 +513,15 @@ export interface SmtpConfig {
   smtp_secure: boolean;
   smtp_from_name?: string;
   is_verified: boolean;
+  // IMAP fields for reply tracking
+  imap_enabled?: boolean;
+  imap_host?: string;
+  imap_port?: number;
+  imap_user?: string;
+  imap_password?: string;
+  imap_secure?: boolean;
+  imap_verified?: boolean;
+  imap_last_sync?: string;
   users?: number | { id: number }; // Relation avec User
   createdAt: string;
   updatedAt: string;
@@ -525,6 +534,13 @@ export interface CreateSmtpConfigData {
   smtp_password: string;
   smtp_secure: boolean;
   smtp_from_name?: string;
+  // IMAP fields
+  imap_enabled?: boolean;
+  imap_host?: string;
+  imap_port?: number;
+  imap_user?: string;
+  imap_password?: string;
+  imap_secure?: boolean;
 }
 
 export type UpdateSmtpConfigData = Partial<CreateSmtpConfigData>;

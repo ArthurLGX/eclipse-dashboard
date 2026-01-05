@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   IconMail, 
   IconServer, 
@@ -15,12 +15,16 @@ import {
   IconEyeOff,
   IconPlugConnected,
   IconExternalLink,
-  IconKey
+  IconKey,
+  IconInbox,
+  IconChevronDown,
+  IconChevronUp,
+  IconMessageCircle,
 } from '@tabler/icons-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { usePopup } from '../context/PopupContext';
-import { fetchSmtpConfig, saveSmtpConfig, deleteSmtpConfig, testSmtpConnection } from '@/lib/api';
+import { fetchSmtpConfig, saveSmtpConfig, deleteSmtpConfig, testSmtpConnection, testImapConnection } from '@/lib/api';
 import type { SmtpConfig, CreateSmtpConfigData } from '@/types';
 
 export default function SmtpConfigSection() {
@@ -31,9 +35,13 @@ export default function SmtpConfigSection() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
+  const [testingImap, setTestingImap] = useState(false);
   const [existingConfig, setExistingConfig] = useState<SmtpConfig | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showImapPassword, setShowImapPassword] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [imapTestResult, setImapTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [showImapConfig, setShowImapConfig] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState<CreateSmtpConfigData>({
@@ -43,6 +51,13 @@ export default function SmtpConfigSection() {
     smtp_password: '',
     smtp_secure: false,
     smtp_from_name: '',
+    // IMAP fields
+    imap_enabled: false,
+    imap_host: '',
+    imap_port: 993,
+    imap_user: '',
+    imap_password: '',
+    imap_secure: true,
   });
 
   // Preset configurations with app password help links
@@ -113,7 +128,18 @@ export default function SmtpConfigSection() {
           smtp_password: '', // Ne pas exposer le mot de passe
           smtp_secure: config.smtp_secure,
           smtp_from_name: config.smtp_from_name || '',
+          // IMAP fields
+          imap_enabled: config.imap_enabled || false,
+          imap_host: config.imap_host || '',
+          imap_port: config.imap_port || 993,
+          imap_user: config.imap_user || '',
+          imap_password: '', // Ne pas exposer le mot de passe
+          imap_secure: config.imap_secure !== false,
         });
+        // Show IMAP section if already enabled
+        if (config.imap_enabled) {
+          setShowImapConfig(true);
+        }
       }
     } catch (error) {
       console.error('Error loading SMTP config:', error);
@@ -140,9 +166,13 @@ export default function SmtpConfigSection() {
   const handleChange = (field: keyof CreateSmtpConfigData, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setTestResult(null);
+    // Clear IMAP test result if IMAP fields change
+    if (field.startsWith('imap_')) {
+      setImapTestResult(null);
+    }
   };
 
-  // Test connection
+  // Test SMTP connection
   const handleTest = async () => {
     if (!formData.smtp_host || !formData.smtp_user || !formData.smtp_password) {
       showGlobalPopup(t('smtp_fill_all_fields') || 'Veuillez remplir tous les champs obligatoires', 'warning');
@@ -167,6 +197,64 @@ export default function SmtpConfigSection() {
       showGlobalPopup(message, 'error');
     } finally {
       setTesting(false);
+    }
+  };
+
+  // Test IMAP connection
+  const handleTestImap = async () => {
+    const imapHost = formData.imap_host || '';
+    const imapUser = formData.imap_user || formData.smtp_user;
+    // For password: use IMAP password if provided, otherwise use SMTP password if provided
+    // If editing existing config and no new password entered, we need at least one password
+    const imapPassword = formData.imap_password || formData.smtp_password;
+
+    if (!imapHost) {
+      showGlobalPopup(t('imap_host_required') || 'Le serveur IMAP est obligatoire', 'warning');
+      return;
+    }
+
+    if (!imapUser) {
+      showGlobalPopup(t('imap_user_required') || 'L\'email IMAP est obligatoire (ou configurez d\'abord votre SMTP)', 'warning');
+      return;
+    }
+
+    // If no password provided and we have an existing config, tell user to enter password for testing
+    if (!imapPassword) {
+      if (existingConfig) {
+        showGlobalPopup(
+          t('imap_password_required_for_test') || 'Pour tester, veuillez saisir le mot de passe IMAP ou SMTP (il ne sera pas réenregistré si vous ne sauvegardez pas)', 
+          'warning'
+        );
+      } else {
+        showGlobalPopup(t('imap_password_required') || 'Le mot de passe est obligatoire', 'warning');
+      }
+      return;
+    }
+
+    setTestingImap(true);
+    setImapTestResult(null);
+
+    try {
+      const result = await testImapConnection({
+        imap_host: imapHost,
+        imap_port: formData.imap_port || 993,
+        imap_user: imapUser,
+        imap_password: imapPassword,
+        imap_secure: formData.imap_secure !== false,
+      });
+      setImapTestResult(result);
+      
+      if (result.success) {
+        showGlobalPopup(result.message, 'success');
+      } else {
+        showGlobalPopup(result.message, 'error');
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Erreur de test IMAP';
+      setImapTestResult({ success: false, message });
+      showGlobalPopup(message, 'error');
+    } finally {
+      setTestingImap(false);
     }
   };
 
@@ -225,7 +313,15 @@ export default function SmtpConfigSection() {
         smtp_password: '',
         smtp_secure: false,
         smtp_from_name: '',
+        imap_enabled: false,
+        imap_host: '',
+        imap_port: 993,
+        imap_user: '',
+        imap_password: '',
+        imap_secure: true,
       });
+      setShowImapConfig(false);
+      setImapTestResult(null);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Erreur de suppression';
       showGlobalPopup(message, 'error');
@@ -478,6 +574,249 @@ export default function SmtpConfigSection() {
           </p>
         </div>
       )}
+
+      {/* IMAP Configuration Section */}
+      <div className="border-t border-default pt-6 mt-6">
+        <button
+          type="button"
+          onClick={() => setShowImapConfig(!showImapConfig)}
+          className="w-full flex items-center justify-between p-4 rounded-xl bg-secondary/5 hover:bg-secondary/10 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+              <IconMessageCircle className="w-5 h-5 text-purple-500" />
+            </div>
+            <div className="text-left">
+              <h4 className="font-medium text-primary">
+                {t('imap_config_title') || 'Détection des réponses (IMAP)'}
+              </h4>
+              <p className="text-sm text-secondary">
+                {t('imap_config_description') || 'Activez pour suivre les réponses à vos emails dans les analytics'}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            {existingConfig?.imap_verified && (
+              <span className="px-2 py-1 rounded-full bg-success/10 text-success text-xs flex items-center gap-1">
+                <IconCheck className="w-3 h-3" />
+                {t('verified') || 'Vérifié'}
+              </span>
+            )}
+            {showImapConfig ? (
+              <IconChevronUp className="w-5 h-5 text-muted" />
+            ) : (
+              <IconChevronDown className="w-5 h-5 text-muted" />
+            )}
+          </div>
+        </button>
+
+        <AnimatePresence>
+          {showImapConfig && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="pt-6 space-y-4">
+                {/* IMAP Info */}
+                <div className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20">
+                  <div className="flex gap-3">
+                    <IconInbox className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-secondary space-y-2">
+                      <p>{t('imap_info_1') || 'IMAP permet de scanner votre boîte de réception pour détecter les réponses à vos emails.'}</p>
+                      <p>{t('imap_info_2') || 'Les réponses détectées apparaîtront dans la page Analytics de vos emails.'}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Enable IMAP Toggle */}
+                <div className="flex items-center justify-between p-4 bg-secondary/5 rounded-xl">
+                  <div>
+                    <h5 className="font-medium text-primary">
+                      {t('enable_imap') || 'Activer la détection des réponses'}
+                    </h5>
+                    <p className="text-sm text-secondary">
+                      {t('enable_imap_desc') || 'Scanne automatiquement votre boîte mail pour les réponses'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleChange('imap_enabled', !formData.imap_enabled)}
+                    className={`relative w-12 h-6 rounded-full transition-colors ${
+                      formData.imap_enabled ? 'bg-purple-500' : 'bg-secondary/30'
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                        formData.imap_enabled ? 'left-7' : 'left-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* IMAP Fields (shown only if enabled) */}
+                {formData.imap_enabled && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="space-y-4"
+                  >
+                    {/* Use same credentials option */}
+                    <div className="p-3 bg-info/5 rounded-lg border border-info/20 text-sm text-secondary">
+                      <p>{existingConfig 
+                        ? (t('imap_existing_config_hint') || 'Pour tester la connexion, vous devez re-saisir le mot de passe (SMTP ou IMAP). À l\'enregistrement, les mots de passe vides seront conservés.')
+                        : (t('imap_same_credentials_hint') || 'Astuce: Si vous utilisez le même compte email, vous pouvez laisser les champs email et mot de passe vides pour utiliser ceux du SMTP.')
+                      }</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* IMAP Host */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-primary flex items-center gap-2">
+                          <IconServer className="w-4 h-4 text-secondary" />
+                          {t('imap_host') || 'Serveur IMAP'} *
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.imap_host || ''}
+                          onChange={(e) => handleChange('imap_host', e.target.value)}
+                          placeholder="imap.gmail.com"
+                          className="input w-full"
+                        />
+                        <p className="text-xs text-muted">
+                          {t('imap_host_hint') || 'Gmail: imap.gmail.com, Outlook: outlook.office365.com'}
+                        </p>
+                      </div>
+
+                      {/* IMAP Port */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-primary">
+                          {t('imap_port') || 'Port IMAP'}
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.imap_port || 993}
+                          onChange={(e) => handleChange('imap_port', parseInt(e.target.value) || 993)}
+                          placeholder="993"
+                          className="input w-full"
+                        />
+                      </div>
+
+                      {/* IMAP User */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-primary flex items-center gap-2">
+                          <IconMail className="w-4 h-4 text-secondary" />
+                          {t('imap_email') || 'Email IMAP'}
+                        </label>
+                        <input
+                          type="email"
+                          value={formData.imap_user || ''}
+                          onChange={(e) => handleChange('imap_user', e.target.value)}
+                          placeholder={formData.smtp_user || 'votre@email.com'}
+                          className="input w-full"
+                        />
+                        <p className="text-xs text-muted">
+                          {t('imap_user_hint') || 'Laissez vide pour utiliser l\'email SMTP'}
+                        </p>
+                      </div>
+
+                      {/* IMAP Password */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-primary flex items-center gap-2">
+                          <IconLock className="w-4 h-4 text-secondary" />
+                          {t('imap_password') || 'Mot de passe IMAP'}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type={showImapPassword ? 'text' : 'password'}
+                            value={formData.imap_password || ''}
+                            onChange={(e) => handleChange('imap_password', e.target.value)}
+                            placeholder={existingConfig?.imap_enabled ? '••••••••' : 'App password'}
+                            className="input w-full pr-10"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowImapPassword(!showImapPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary"
+                          >
+                            {showImapPassword ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                        <p className="text-xs text-muted">
+                          {t('imap_password_hint') || 'Laissez vide pour utiliser le mot de passe SMTP'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* IMAP Security */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-primary">
+                        {t('imap_security') || 'Sécurité IMAP'}
+                      </label>
+                      <div className="flex items-center gap-4">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            checked={formData.imap_secure !== false}
+                            onChange={() => handleChange('imap_secure', true)}
+                            className="accent-purple-500"
+                          />
+                          <span className="text-sm text-primary">SSL/TLS (Port 993)</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            checked={formData.imap_secure === false}
+                            onChange={() => handleChange('imap_secure', false)}
+                            className="accent-purple-500"
+                          />
+                          <span className="text-sm text-primary">STARTTLS (Port 143)</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* IMAP Test Result */}
+                    {imapTestResult && (
+                      <div className={`p-4 rounded-xl flex items-center gap-3 ${
+                        imapTestResult.success 
+                          ? 'bg-purple-300/80 !text-white border border-purple-500' 
+                          : 'bg-danger/10 border border-danger/20'
+                      }`}>
+                        {imapTestResult.success ? (
+                          <IconCheck className="w-5 h-5 !text-purple-900" />
+                        ) : (
+                          <IconX className="w-5 h-5 text-danger" />
+                        )}
+                        <p className={`text-sm ${imapTestResult.success ? '!text-purple-900' : 'text-danger'}`}>
+                          {imapTestResult.message}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Test IMAP Button */}
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={handleTestImap}
+                        disabled={testingImap || !formData.imap_host}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/10 text-purple-500 hover:bg-purple-500/20 border border-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {testingImap ? (
+                          <IconLoader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <IconPlugConnected className="w-4 h-4" />
+                        )}
+                        {t('imap_test') || 'Tester la connexion IMAP'}
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Actions */}
       <div className="flex items-center gap-3 pt-4 border-t border-default">
