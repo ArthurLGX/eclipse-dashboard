@@ -164,6 +164,7 @@ export default function AdminSubscriptionsPage() {
             price_monthly: editingPlan.price_monthly,
             price_yearly: editingPlan.price_yearly,
             description: editingPlan.description,
+            features: editingPlan.features,
           },
         }),
       });
@@ -558,30 +559,55 @@ export default function AdminSubscriptionsPage() {
                   />
                 </div>
 
-                {/* Features Preview (read-only) */}
+                {/* Features Editor */}
                 {editingPlan.features && Object.keys(editingPlan.features).length > 0 && (
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">
                       {t('features') || 'Fonctionnalités'}
                     </label>
-                    <div className="bg-muted/10 rounded-lg p-3 max-h-40 overflow-y-auto">
-                      <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-muted/10 rounded-lg p-3 max-h-60 overflow-y-auto">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {Object.entries(editingPlan.features).map(([key, value]) => (
-                          <div key={key} className="flex items-center justify-between p-1.5 rounded bg-card">
-                            <span className="text-muted truncate">{key.replace(/_/g, ' ')}</span>
-                            <span className={`font-medium ${
-                              typeof value === 'boolean' 
-                                ? value ? 'text-success' : 'text-danger'
-                                : 'text-primary'
-                            }`}>
-                              {typeof value === 'boolean' ? (value ? '✓' : '✗') : String(value)}
+                          <div key={key} className="flex items-center justify-between p-2 rounded-lg bg-card border border-default">
+                            <span className="text-sm text-primary truncate capitalize" title={key}>
+                              {key.replace(/_/g, ' ')}
                             </span>
+                            {typeof value === 'boolean' ? (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newFeatures = { ...editingPlan.features, [key]: !value };
+                                  setEditingPlan({ ...editingPlan, features: newFeatures });
+                                }}
+                                className={`relative w-10 h-5 rounded-full transition-all duration-200 ${
+                                  value ? 'bg-success' : 'bg-gray-300 dark:bg-gray-600'
+                                }`}
+                              >
+                                <div
+                                  className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all duration-200 ${
+                                    value ? 'left-5' : 'left-0.5'
+                                  }`}
+                                />
+                              </button>
+                            ) : (
+                              <input
+                                type="number"
+                                value={value as number}
+                                onChange={(e) => {
+                                  const newValue = e.target.value === '' ? 0 : parseInt(e.target.value);
+                                  const newFeatures = { ...editingPlan.features, [key]: newValue };
+                                  setEditingPlan({ ...editingPlan, features: newFeatures });
+                                }}
+                                className="input w-20 text-right text-sm py-1 px-2"
+                                min="0"
+                              />
+                            )}
                           </div>
                         ))}
                       </div>
                     </div>
-                    <p className="text-xs text-muted mt-1">
-                      {t('features_edit_in_strapi') || 'Les fonctionnalités se modifient dans Strapi'}
+                    <p className="text-xs text-muted mt-2">
+                      💡 {t('features_help') || '0 = illimité pour les quotas numériques'}
                     </p>
                   </div>
                 )}

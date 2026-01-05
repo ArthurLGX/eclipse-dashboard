@@ -23,6 +23,8 @@ import { generateClientSlug } from '@/utils/slug';
 import type { Client, CreateClientData } from '@/types';
 import { useQuota } from '@/app/context/QuotaContext';
 import { uploadImage } from '@/lib/api';
+import QuotaExceededModal from '@/app/components/QuotaExceededModal';
+import { useQuotaExceeded } from '@/hooks/useQuotaExceeded';
 
 export default function ClientsPage() {
   const { showGlobalPopup } = usePopup();
@@ -56,6 +58,40 @@ export default function ClientsPage() {
   // Hook avec cache
   const { data: clientsData, loading, refetch } = useClients(user?.id);
   const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
+
+  // Quota exceeded detection
+  const { 
+    showModal: showQuotaModal, 
+    setShowModal: setShowQuotaModal, 
+    quota: clientsQuota,
+    markAsHandled: markQuotaHandled 
+  } = useQuotaExceeded('clients', clients, !loading && clients.length > 0);
+
+  // Handle quota exceeded selection
+  const handleQuotaSelection = async (itemsToKeep: Client[], itemsToRemove: Client[]) => {
+    // Désactiver les clients non sélectionnés
+    let deactivatedCount = 0;
+    for (const client of itemsToRemove) {
+      if (!client.documentId) continue;
+      try {
+        await updateClientStatus(client.documentId, 'inactive');
+        deactivatedCount++;
+      } catch (error) {
+        console.error(`Error deactivating client ${client.name}:`, error);
+      }
+    }
+    
+    if (deactivatedCount > 0) {
+      showGlobalPopup(
+        `${deactivatedCount} ${t('items_deactivated') || 'éléments désactivés'}`,
+        'success'
+      );
+    }
+    
+    markQuotaHandled();
+    clearCache('clients');
+    await refetch();
+  };
 
   const handleAddClient = async (clientData: CreateClientData) => {
     if (!user?.id) {
@@ -670,6 +706,27 @@ export default function ClientsPage() {
             ? `Ce client a ${deleteModal.client?.factures?.length} facture(s) associée(s). Ces données seront conservées.`
             : undefined
         }
+      />
+
+      {/* Quota Exceeded Modal */}
+      <QuotaExceededModal<Client>
+        isOpen={showQuotaModal}
+        onClose={() => setShowQuotaModal(false)}
+        items={clients}
+        quota={clientsQuota}
+        entityName={t('clients') || 'clients'}
+        getItemId={(client) => client.documentId || ''}
+        getItemName={(client) => client.name}
+        getItemSubtitle={(client) => client.enterprise || client.email || ''}
+        onConfirmSelection={handleQuotaSelection}
+        renderItemIcon={(client) => (
+          <ClientAvatar 
+            name={client.name} 
+            imageUrl={client.image?.url ? apiUrl + client.image.url : null}
+            website={client.website}
+            size="sm"
+          />
+        )}
       />
     </ProtectedRoute>
   );

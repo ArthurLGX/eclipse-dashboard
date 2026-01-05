@@ -1370,9 +1370,25 @@ const translations = {
     price_yearly: 'Prix annuel',
     plan_description_placeholder: 'Description du plan...',
     features_edit_in_strapi: 'Les fonctionnalités se modifient dans Strapi',
+    features_help: '0 = illimité pour les quotas numériques',
     plan_updated: 'Plan mis à jour avec succès',
     error_updating_plan: 'Erreur lors de la mise à jour du plan',
     plan_subscribers: 'abonnés',
+    
+    // Quota Exceeded Modal
+    quota_exceeded_title: 'Quota dépassé',
+    quota_exceeded_description: 'Votre plan a changé. Vous avez',
+    but_your_limit_is: 'mais votre limite est de',
+    select_items_to_keep: 'Sélectionnez les éléments à conserver. Les autres seront désactivés.',
+    remaining_to_select: 'Encore',
+    to_select: 'à sélectionner',
+    select_first: 'Sélectionner les premiers',
+    deselect_all: 'Tout désélectionner',
+    will_be_deactivated: 'Sera désactivé',
+    will_be_deactivated_plural: 'seront désactivés',
+    confirm_selection: 'Confirmer la sélection',
+    quota_selection_saved: 'Sélection enregistrée avec succès',
+    items_deactivated: 'éléments désactivés',
   },
 
   en: {
@@ -2679,9 +2695,25 @@ const translations = {
     price_yearly: 'Yearly price',
     plan_description_placeholder: 'Plan description...',
     features_edit_in_strapi: 'Features can be edited in Strapi',
+    features_help: '0 = unlimited for numeric quotas',
     plan_updated: 'Plan updated successfully',
     error_updating_plan: 'Error updating plan',
     plan_subscribers: 'subscribers',
+    
+    // Quota Exceeded Modal
+    quota_exceeded_title: 'Quota exceeded',
+    quota_exceeded_description: 'Your plan has changed. You have',
+    but_your_limit_is: 'but your limit is',
+    select_items_to_keep: 'Select the items to keep. The others will be deactivated.',
+    remaining_to_select: 'Still',
+    to_select: 'to select',
+    select_first: 'Select first',
+    deselect_all: 'Deselect all',
+    will_be_deactivated: 'Will be deactivated',
+    will_be_deactivated_plural: 'will be deactivated',
+    confirm_selection: 'Confirm selection',
+    quota_selection_saved: 'Selection saved successfully',
+    items_deactivated: 'items deactivated',
   },
 };
 

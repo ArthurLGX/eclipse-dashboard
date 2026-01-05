@@ -23,6 +23,9 @@ import { generateSlug } from '@/utils/slug';
 import { useProjects, useClients, clearCache } from '@/hooks/useApi';
 import type { Project, Client } from '@/types';
 import { useQuota } from '@/app/context/QuotaContext';
+import QuotaExceededModal from '@/app/components/QuotaExceededModal';
+import { useQuotaExceeded } from '@/hooks/useQuotaExceeded';
+import { updateProject } from '@/lib/api';
 
 export default function ProjectsPage() {
   const { t } = useLanguage();
@@ -73,6 +76,46 @@ export default function ProjectsPage() {
     ((clientsData as Client[]) || []).map(c => ({ id: c.id, name: c.name })),
     [clientsData]
   );
+
+  // Quota exceeded detection (only for owned projects)
+  const ownedProjects = useMemo(() => 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    allProjects.filter((p: any) => !p._isCollaborator),
+    [allProjects]
+  );
+  
+  const { 
+    showModal: showQuotaModal, 
+    setShowModal: setShowQuotaModal, 
+    quota: projectsQuota,
+    markAsHandled: markQuotaHandled 
+  } = useQuotaExceeded('projects', ownedProjects, !loadingProjects && ownedProjects.length > 0);
+
+  // Handle quota exceeded selection
+  const handleQuotaSelection = async (itemsToKeep: Project[], itemsToRemove: Project[]) => {
+    // Archive les projets non sélectionnés
+    let archivedCount = 0;
+    for (const project of itemsToRemove) {
+      if (!project.documentId) continue;
+      try {
+        await updateProject(project.documentId, { project_status: 'archived' });
+        archivedCount++;
+      } catch (error) {
+        console.error(`Error archiving project ${project.title}:`, error);
+      }
+    }
+    
+    if (archivedCount > 0) {
+      showGlobalPopup(
+        `${archivedCount} ${t('items_deactivated') || 'projets archivés'}`,
+        'success'
+      );
+    }
+    
+    markQuotaHandled();
+    clearCache('projects');
+    await refetchProjects();
+  };
 
   // Ouvrir le modal si ?new=1 dans l'URL
   useEffect(() => {
@@ -464,6 +507,22 @@ export default function ProjectsPage() {
         title={t('delete_project') || 'Supprimer le projet'}
         itemName={deleteModal.project?.title || ''}
         itemType="project"
+      />
+
+      {/* Quota Exceeded Modal */}
+      <QuotaExceededModal<Project>
+        isOpen={showQuotaModal}
+        onClose={() => setShowQuotaModal(false)}
+        items={ownedProjects}
+        quota={projectsQuota}
+        entityName={t('projects') || 'projets'}
+        getItemId={(project) => project.documentId || ''}
+        getItemName={(project) => project.title}
+        getItemSubtitle={(project) => project.client?.name || ''}
+        onConfirmSelection={handleQuotaSelection}
+        renderItemIcon={(project) => (
+          <ProjectTypeIcon type={project.type} className="w-6 h-6" />
+        )}
       />
     </ProtectedRoute>
   );

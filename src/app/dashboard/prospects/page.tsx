@@ -15,6 +15,9 @@ import { useProspects, clearCache } from '@/hooks/useApi';
 import { IconUsers, IconUserCheck, IconUserPlus } from '@tabler/icons-react';
 import type { Prospect } from '@/types';
 import { useQuota } from '@/app/context/QuotaContext';
+import QuotaExceededModal from '@/app/components/QuotaExceededModal';
+import { useQuotaExceeded } from '@/hooks/useQuotaExceeded';
+import { updateProspect } from '@/lib/api';
 
 export default function ProspectsPage() {
   const { t } = useLanguage();
@@ -43,6 +46,40 @@ export default function ProspectsPage() {
     const visibleCount = getVisibleCount('prospects');
     return allProspects.slice(0, visibleCount);
   }, [allProspects, getVisibleCount]);
+
+  // Quota exceeded detection
+  const { 
+    showModal: showQuotaModal, 
+    setShowModal: setShowQuotaModal, 
+    quota: prospectsQuota,
+    markAsHandled: markQuotaHandled 
+  } = useQuotaExceeded('prospects', allProspects, !loading && allProspects.length > 0);
+
+  // Handle quota exceeded selection
+  const handleQuotaSelection = async (itemsToKeep: Prospect[], itemsToRemove: Prospect[]) => {
+    // Désactiver les prospects non sélectionnés
+    let deactivatedCount = 0;
+    for (const prospect of itemsToRemove) {
+      if (!prospect.documentId) continue;
+      try {
+        await updateProspect(prospect.documentId, { isActive: false });
+        deactivatedCount++;
+      } catch (error) {
+        console.error(`Error deactivating prospect ${prospect.title}:`, error);
+      }
+    }
+    
+    if (deactivatedCount > 0) {
+      showGlobalPopup(
+        `${deactivatedCount} ${t('items_deactivated') || 'prospects désactivés'}`,
+        'success'
+      );
+    }
+    
+    markQuotaHandled();
+    clearCache('prospects');
+    await refetch();
+  };
 
   // Options de filtres
   const statusOptions: FilterOption[] = useMemo(() => [
@@ -277,6 +314,19 @@ export default function ProspectsPage() {
       title={t('delete_prospect') || 'Supprimer le prospect'}
       itemName={deleteModal.prospect?.title || deleteModal.prospect?.email || ''}
       itemType="prospect"
+    />
+
+    {/* Quota Exceeded Modal */}
+    <QuotaExceededModal<Prospect>
+      isOpen={showQuotaModal}
+      onClose={() => setShowQuotaModal(false)}
+      items={allProspects}
+      quota={prospectsQuota}
+      entityName={t('prospects') || 'prospects'}
+      getItemId={(prospect) => prospect.documentId || ''}
+      getItemName={(prospect) => prospect.title || prospect.email || ''}
+      getItemSubtitle={(prospect) => prospect.email || ''}
+      onConfirmSelection={handleQuotaSelection}
     />
     </>
     

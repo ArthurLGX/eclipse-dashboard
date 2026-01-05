@@ -493,6 +493,14 @@ export const fetchNumberOfProspectsUser = (userId: number) =>
 export const deleteProspect = (documentId: string) =>
   del(`prospects/${documentId}`);
 
+/** Met à jour un prospect par son documentId */
+export const updateProspect = (documentId: string, data: Partial<{ 
+  prospect_status: string;
+  isActive: boolean;
+  [key: string]: unknown;
+}>) =>
+  put(`prospects/${documentId}`, data);
+
 // ============================================================================
 // FACTURES
 // ============================================================================

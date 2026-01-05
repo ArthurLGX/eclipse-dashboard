@@ -302,7 +302,7 @@ export default function NotificationBell() {
             <div className="max-h-96 overflow-y-auto">
               {/* Alertes de quota */}
               {visibleQuotaAlerts.length > 0 && (
-                <div className="divide-y divide-default">
+                <div >
                   {visibleQuotaAlerts.map((alert: QuotaNotification) => (
                     <div
                       key={alert.id}
@@ -362,7 +362,7 @@ export default function NotificationBell() {
                   </p>
                 </div>
               ) : filteredNotifications.length > 0 && (
-                <div className="divide-y divide-default">
+                <div >
                   {filteredNotifications.map((notification) => (
                     <div
                       key={notification.documentId}
