@@ -1130,7 +1130,6 @@ const translations = {
     from_url: 'Depuis une URL',
     select_from_library: 'Sélectionner depuis la bibliothèque',
     no_media_in_library: 'Aucun média dans la bibliothèque',
-    selected: 'Sélectionné',
     confirm_selection: 'Confirmer',
     double_click_to_select: 'Double-cliquez pour sélectionner',
     select_banner_image: 'Sélectionner une bannière',
@@ -1242,6 +1241,20 @@ const translations = {
     no_tracking_data_desc: 'Envoyez des emails et suivez les ouvertures et clics',
     opens: 'Ouvertures',
     clicks: 'Clics',
+    
+    // Email detail modal
+    delivered: 'Délivré',
+    not_opened: 'Non ouvert',
+    no_clicks: 'Aucun clic',
+    replies: 'Réponses',
+    opened: 'Ouvert',
+    clicked: 'Cliqué',
+    no_clicks_recorded: 'Aucun clic enregistré',
+    clicks_info: 'Les clics sont enregistrés quand les destinataires cliquent sur les liens de votre email',
+    no_replies_yet: 'Aucune réponse reçue',
+    replies_info: 'Les réponses seront affichées ici lorsque vos destinataires répondront à cet email. Cette fonctionnalité nécessite une intégration avec votre service email.',
+    reply_received: 'Réponse reçue',
+    view_reply: 'Voir la réponse',
     
     // SMTP Status
     smtp_configured: 'SMTP configuré',
@@ -1411,7 +1424,6 @@ const translations = {
     deselect_all: 'Tout désélectionner',
     will_be_deactivated: 'Sera désactivé',
     will_be_deactivated_plural: 'seront désactivés',
-    confirm_selection: 'Confirmer la sélection',
     quota_selection_saved: 'Sélection enregistrée avec succès',
     items_deactivated: 'éléments désactivés',
   },
@@ -2482,7 +2494,6 @@ const translations = {
     from_url: 'From URL',
     select_from_library: 'Select from library',
     no_media_in_library: 'No media in library',
-    selected: 'Selected',
     confirm_selection: 'Confirm',
     double_click_to_select: 'Double-click to select',
     select_banner_image: 'Select a banner',
@@ -2592,6 +2603,20 @@ const translations = {
     opens: 'Opens',
     clicks: 'Clicks',
     no_clicks_yet: 'No clicks yet for this period',
+    
+    // Email detail modal
+    delivered: 'Delivered',
+    not_opened: 'Not opened',
+    no_clicks: 'No clicks',
+    replies: 'Replies',
+    opened: 'Opened',
+    clicked: 'Clicked',
+    no_clicks_recorded: 'No clicks recorded',
+    clicks_info: 'Clicks are recorded when recipients click on links in your email',
+    no_replies_yet: 'No replies received yet',
+    replies_info: 'Replies will be displayed here when your recipients respond to this email. This feature requires integration with your email service.',
+    reply_received: 'Reply received',
+    view_reply: 'View reply',
     
     // SMTP Status
     smtp_configured: 'SMTP configured',
@@ -2761,7 +2786,6 @@ const translations = {
     deselect_all: 'Deselect all',
     will_be_deactivated: 'Will be deactivated',
     will_be_deactivated_plural: 'will be deactivated',
-    confirm_selection: 'Confirm selection',
     quota_selection_saved: 'Selection saved successfully',
     items_deactivated: 'items deactivated',
   },

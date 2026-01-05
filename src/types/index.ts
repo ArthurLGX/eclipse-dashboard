@@ -659,6 +659,29 @@ export interface ClickDetail {
   last_clicked_at: string;
 }
 
+// Tracking détaillé par destinataire
+export interface RecipientTracking {
+  email: string;
+  status: 'delivered' | 'bounced' | 'pending';
+  delivered_at?: string;
+  opened: boolean;
+  opened_at?: string;
+  open_count?: number;
+  clicked: boolean;
+  clicked_at?: string;
+  click_count?: number;
+  clicks?: { url: string; clicked_at: string }[];
+}
+
+// Réponse à un email
+export interface EmailReply {
+  from: string;
+  subject: string;
+  content: string;
+  received_at: string;
+  snippet?: string; // Aperçu du contenu
+}
+
 export interface SentEmail {
   id: number;
   documentId: string;
@@ -676,6 +699,10 @@ export interface SentEmail {
   clicks_count?: number;
   opened_at?: string;
   click_details?: ClickDetail[];
+  // Tracking détaillé par destinataire
+  recipient_tracking?: RecipientTracking[];
+  // Réponses reçues
+  replies?: EmailReply[];
   // Scheduling fields
   scheduled_at?: string;
   // Relations
