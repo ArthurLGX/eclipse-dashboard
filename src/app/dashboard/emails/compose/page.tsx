@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconMail,
@@ -19,6 +20,7 @@ import {
   IconClock,
   IconDeviceMobile,
   IconDeviceDesktop,
+  IconPencil,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -649,6 +651,17 @@ function ComposeEmail() {
                     />
                   </button>
                 </div>
+                
+                {/* Bouton modifier la signature */}
+                {signatureData && (
+                  <Link
+                    href="/dashboard/settings?tab=email"
+                    className="mt-3 inline-flex items-center gap-1.5 text-sm text-accent hover:text-accent/80 transition-colors"
+                  >
+                    <IconPencil className="w-3.5 h-3.5" />
+                    {t('edit_signature') || 'Modifier la signature'}
+                  </Link>
+                )}
                 
                 {!signatureData && !loadingSignature && (
                   <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg flex items-start gap-2">

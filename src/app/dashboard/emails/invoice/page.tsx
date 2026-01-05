@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconFileInvoice,
@@ -18,6 +19,7 @@ import {
   IconPaperclip,
   IconFileText,
   IconCalendar,
+  IconPencil,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -138,6 +140,16 @@ function InvoiceEmail() {
             instagram_url: sig.instagram_url || '',
             facebook_url: sig.facebook_url || '',
             logo_url: sig.logo_url || '',
+            banner_url: sig.banner_url || '',
+            banner_link: sig.banner_link || '',
+            banner_alt: sig.banner_alt || '',
+            // Champs de personnalisation
+            logo_size: sig.logo_size || 100,
+            primary_color: sig.primary_color || '#10b981',
+            text_color: sig.text_color || '#333333',
+            secondary_color: sig.secondary_color || '#666666',
+            font_family: sig.font_family || 'Inter',
+            social_links: sig.social_links || [],
           });
         }
       } catch (error) {
@@ -670,6 +682,17 @@ Cordialement`;
                   </button>
                 </div>
                 
+                {/* Bouton modifier la signature */}
+                {signatureData && (
+                  <Link
+                    href="/dashboard/settings?tab=email"
+                    className="mt-3 inline-flex items-center gap-1.5 text-sm text-accent hover:text-accent/80 transition-colors"
+                  >
+                    <IconPencil className="w-3.5 h-3.5" />
+                    {t('edit_signature') || 'Modifier la signature'}
+                  </Link>
+                )}
+                
                 {!signatureData && !loadingSignature && (
                   <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg flex items-start gap-2">
                     <IconAlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
@@ -694,47 +717,99 @@ Cordialement`;
 }
 
 // Helper function to render signature as HTML for email
+// Labels par défaut pour les plateformes sociales
+const SOCIAL_PLATFORM_LABELS: Record<string, string> = {
+  linkedin: 'LinkedIn',
+  twitter: 'Twitter',
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+  youtube: 'YouTube',
+  tiktok: 'TikTok',
+  github: 'GitHub',
+  custom: 'Lien',
+};
+
 function renderSignatureHtml(data: CreateEmailSignatureData): string {
-  const hasSocialLinks = data.linkedin_url || data.twitter_url || data.instagram_url || data.facebook_url;
+  // Utiliser les valeurs personnalisées ou les valeurs par défaut
+  const logoSize = data.logo_size || 100;
+  const primaryColor = data.primary_color || '#10b981';
+  const textColor = data.text_color || '#333333';
+  const secondaryColor = data.secondary_color || '#666666';
+  const baseFontFamily = data.font_family || 'Inter';
+  const fontFamily = `'${baseFontFamily}', Arial, sans-serif`;
   
-  let html = '<table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">';
+  // Utiliser uniquement le nouveau système de liens sociaux
+  const socialLinks = data.social_links || [];
+  
+  // Web-safe fonts n'ont pas besoin de Google Fonts import
+  const webSafe = ['Arial', 'Helvetica', 'Georgia', 'Verdana', 'Times New Roman', 'Tahoma', 'Trebuchet MS'];
+  const needsGoogleFont = !webSafe.includes(baseFontFamily);
+  
+  // Ajouter l'import Google Font si nécessaire
+  let html = '';
+  if (needsGoogleFont) {
+    const fontName = baseFontFamily.replace(/ /g, '+');
+    html += `<link href="https://fonts.googleapis.com/css2?family=${fontName}:wght@400;500;600;700&display=swap" rel="stylesheet">`;
+  }
+  
+  html += `<table cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-family: ${fontFamily};">`;
   html += '<tr>';
   
   if (data.logo_url) {
-    html += `<td style="padding-right: 16px; vertical-align: middle;">
-      <img src="${data.logo_url}" alt="Logo" style="width: 80px; height: 80px; object-fit: contain; border-radius: 8px; display: block;" />
+    html += `<td style="padding-right: 12px; vertical-align: top;">
+      <img src="${data.logo_url}" alt="Logo" style="width: ${logoSize}px; height: ${logoSize}px; object-fit: contain; border-radius: 8px; display: block;" />
     </td>`;
   }
   
-  html += '<td style="vertical-align: middle;">';
+  html += '<td style="vertical-align: top;">';
   
   if (data.sender_name) {
-    html += `<div style="font-weight: bold; font-size: 16px; color: #111;">${data.sender_name}</div>`;
+    html += `<div style="font-weight: bold; font-size: 16px; color: ${textColor};">${data.sender_name}</div>`;
   }
   if (data.sender_title) {
-    html += `<div style="color: #666; margin-bottom: 8px;">${data.sender_title}</div>`;
+    html += `<div style="color: ${secondaryColor}; margin-bottom: 6px; font-size: 14px;">${data.sender_title}</div>`;
   }
   
   if (data.company_name) {
-    html += `<div style="font-weight: 600; color: #10b981; margin-bottom: 4px;">${data.company_name}</div>`;
+    html += `<div style="font-weight: 600; color: ${primaryColor}; margin-bottom: 4px;">${data.company_name}</div>`;
   }
   
-  html += '<div style="font-size: 13px; color: #666;">';
+  html += `<div style="font-size: 13px; color: ${secondaryColor};">`;
   if (data.phone) html += `<div>📞 ${data.phone}</div>`;
-  if (data.website) html += `<div>🌐 <a href="${data.website}" style="color: #10b981; text-decoration: none;">${data.website.replace(/^https?:\/\//, '')}</a></div>`;
+  if (data.website) html += `<div>🌐 <a href="${data.website}" style="color: ${primaryColor}; text-decoration: none;">${data.website.replace(/^https?:\/\//, '')}</a></div>`;
   if (data.address) html += `<div>📍 ${data.address}</div>`;
   html += '</div>';
   
-  if (hasSocialLinks) {
-    html += '<div style="margin-top: 12px;">';
-    if (data.linkedin_url) html += `<a href="${data.linkedin_url}" style="color: #0A66C2; margin-right: 8px; text-decoration: none;">LinkedIn</a>`;
-    if (data.twitter_url) html += `<a href="${data.twitter_url}" style="color: #1DA1F2; margin-right: 8px; text-decoration: none;">Twitter</a>`;
-    if (data.instagram_url) html += `<a href="${data.instagram_url}" style="color: #E4405F; margin-right: 8px; text-decoration: none;">Instagram</a>`;
-    if (data.facebook_url) html += `<a href="${data.facebook_url}" style="color: #1877F2; text-decoration: none;">Facebook</a>`;
+  // Social links - nouveau système dynamique
+  if (socialLinks.length > 0) {
+    html += '<div style="margin-top: 10px;">';
+    socialLinks.forEach((link) => {
+      if (link && typeof link === 'object' && 'url' in link) {
+        const platform = SOCIAL_PLATFORM_LABELS[link.platform] || SOCIAL_PLATFORM_LABELS.custom;
+        const label = ('label' in link && link.label) ? link.label : platform;
+        const color = link.color || primaryColor;
+        html += `<a href="${link.url}" style="color: ${color}; margin-right: 8px; text-decoration: none; font-weight: 500;">${label}</a>`;
+      }
+    });
     html += '</div>';
   }
   
   html += '</td></tr></table>';
+  
+  // Bannière promotionnelle
+  if (data.banner_url) {
+    html += `
+      <div style="margin-top: 16px;">
+        ${data.banner_link ? `<a href="${data.banner_link}" target="_blank" rel="noopener noreferrer">` : ''}
+        <img 
+          src="${data.banner_url}" 
+          alt="${data.banner_alt || 'Banner'}" 
+          style="max-width: 100%; height: auto; display: block; border-radius: 8px;"
+        />
+        ${data.banner_link ? '</a>' : ''}
+      </div>
+    `;
+  }
   
   return html;
 }
