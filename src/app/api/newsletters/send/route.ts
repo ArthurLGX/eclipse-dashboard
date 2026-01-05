@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 
 interface Recipient {
   email: string;
@@ -11,6 +12,7 @@ interface SendNewsletterRequest {
   subject: string;
   htmlContent: string;
   textContent?: string;
+  trackingId?: string;
 }
 
 interface StrapiUser {
@@ -38,6 +40,41 @@ async function verifyToken(token: string): Promise<StrapiUser | null> {
   } catch {
     return null;
   }
+}
+
+// Injecte le pixel de tracking dans le HTML de l'email
+function injectTrackingPixel(html: string, trackingId: string, strapiUrl: string): string {
+  // Pixel transparent 1x1 avec styles multiples pour assurer l'invisibilité dans tous les clients email
+  const trackingPixel = `<img src="${strapiUrl}/api/track/open/${trackingId}" width="1" height="1" border="0" style="height:1px!important;width:1px!important;border-width:0!important;margin:0!important;padding:0!important;opacity:0;visibility:hidden;position:absolute;left:-9999px;" alt="" />`;
+  
+  // Injecter avant </body> si présent, sinon à la fin
+  if (html.includes('</body>')) {
+    return html.replace('</body>', `${trackingPixel}</body>`);
+  }
+  return html + trackingPixel;
+}
+
+// Enveloppe les liens pour le tracking des clics
+function wrapLinksForTracking(html: string, trackingId: string, strapiUrl: string): string {
+  // Regex pour trouver les liens href="..." en évitant les liens de tracking et unsubscribe
+  const linkRegex = /<a\s+([^>]*href=["'])([^"']+)(["'][^>]*)>/gi;
+  
+  return html.replace(linkRegex, (match, prefix, url, suffix) => {
+    // Ne pas wrapper les liens de tracking, mailto, tel, ou # (ancres)
+    if (
+      url.startsWith('#') ||
+      url.startsWith('mailto:') ||
+      url.startsWith('tel:') ||
+      url.includes('/track/') ||
+      url.includes('unsubscribe')
+    ) {
+      return match;
+    }
+    
+    const encodedUrl = encodeURIComponent(url);
+    const trackingUrl = `${strapiUrl}/api/track/click/${trackingId}?url=${encodedUrl}`;
+    return `<a ${prefix}${trackingUrl}${suffix}>`;
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -87,8 +124,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 4. Appeler l'API Strapi pour envoyer la newsletter
+    // 4. Générer le tracking ID et injecter le pixel
+    const trackingId = body.trackingId || randomUUID();
     const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+    
+    // Injecter le pixel de tracking et wrapper les liens
+    let trackedHtmlContent = injectTrackingPixel(htmlContent, trackingId, strapiUrl);
+    trackedHtmlContent = wrapLinksForTracking(trackedHtmlContent, trackingId, strapiUrl);
+    
+    // 5. Appeler l'API Strapi pour envoyer la newsletter
     const response = await fetch(`${strapiUrl}/api/smtp-configs/send-newsletter`, {
       method: 'POST',
       headers: {
@@ -98,7 +142,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         recipients,
         subject,
-        htmlContent,
+        htmlContent: trackedHtmlContent,
         textContent,
       }),
     });
@@ -113,12 +157,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 5. Retourner le résultat
+    // 6. Retourner le résultat avec le tracking ID
     return NextResponse.json({
       success: data.success,
       sent: data.sent,
       failed: data.failed,
       errors: data.errors,
+      trackingId,
     });
 
   } catch (error) {

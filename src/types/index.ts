@@ -665,4 +665,5 @@ export interface CreateSentEmailData {
   status_mail: EmailStatus;
   error_message?: string;
   scheduled_at?: string;
+  tracking_id?: string;
 }

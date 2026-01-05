@@ -256,11 +256,13 @@ function ComposeEmail() {
           }),
         });
         
+        const result = await response.json();
+        
         if (!response.ok) {
-          throw new Error('Failed to send email');
+          throw new Error(result.error || 'Failed to send email');
         }
         
-        // Enregistrer dans l'historique
+        // Enregistrer dans l'historique avec le tracking_id
         await createSentEmail(user.id, {
           subject,
           recipients: recipients.map(r => r.email),
@@ -269,6 +271,7 @@ function ComposeEmail() {
           attachments: attachments.length > 0 ? attachments.map(a => ({ name: a.name, url: a.url })) : undefined,
           sent_at: new Date().toISOString(),
           status_mail: 'sent',
+          tracking_id: result.trackingId,
         });
         
         showGlobalPopup(t('email_sent') || 'Email envoyé avec succès', 'success');
@@ -296,7 +299,7 @@ function ComposeEmail() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+        <div className="max-w-4xl mx-auto flex items-center justify-between p-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.back()}

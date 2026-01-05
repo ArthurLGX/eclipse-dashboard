@@ -123,7 +123,7 @@ function EmailsDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           onClick={() => router.push('/dashboard/emails/analytics')}
-          className="group cursor-pointer bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
+        className="group cursor-pointer bg-gradient-to-br from-purple-600/10 to-purple-500/5 border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl bg-accent/20 flex items-center justify-center">
@@ -147,7 +147,7 @@ function EmailsDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           onClick={() => router.push('/dashboard/emails/history')}
-          className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
+        className="group cursor-pointer bg-gradient-to-br from-purple-600/10 to-purple-500/5 border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl bg-secondary/10 flex items-center justify-center">

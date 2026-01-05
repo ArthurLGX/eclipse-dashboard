@@ -294,11 +294,13 @@ Cordialement`;
         }),
       });
       
+      const result = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Failed to send email');
+        throw new Error(result.error || 'Failed to send email');
       }
       
-      // Enregistrer dans l'historique
+      // Enregistrer dans l'historique avec le tracking_id
       await createSentEmail(user.id, {
         subject,
         recipients: recipients.map(r => r.email),
@@ -307,6 +309,7 @@ Cordialement`;
         attachments: [{ name: `Facture-${selectedInvoice.reference}.pdf`, url: pdfUrl }],
         sent_at: new Date().toISOString(),
         status_mail: 'sent',
+        tracking_id: result.trackingId,
       });
       
       showGlobalPopup(t('email_sent') || 'Email envoyé avec succès', 'success');

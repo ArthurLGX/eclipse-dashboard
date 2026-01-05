@@ -1128,6 +1128,10 @@ const translations = {
     email_analytics: 'Analytics',
     email_analytics_desc: 'Suivez les ouvertures et clics de vos emails',
     email_history_desc: 'Consultez tous vos emails envoyés',
+    emails_sent: 'Emails envoyés',
+    recent_emails: 'Emails récents',
+    top_clinked_links: 'Liens cliqués',
+    all_categories: 'Toutes catégories',
     
     // Scheduled Emails
     scheduled_emails: 'Emails planifiés',
@@ -1153,6 +1157,8 @@ const translations = {
     total_opens: 'Total ouvertures',
     total_clicks: 'Total clics',
     click_rate: 'Taux de clics',
+    top_clicked_links: 'Liens les plus cliqués',
+    no_clicks_yet: 'Aucun clic enregistré pour cette période',
     recent_emails_performance: 'Performance des emails récents',
     no_tracking_data: 'Aucune donnée de suivi',
     no_tracking_data_desc: 'Envoyez des emails et suivez les ouvertures et clics',
@@ -2243,6 +2249,10 @@ const translations = {
     email_analytics: 'Analytics',
     email_analytics_desc: 'Track opens and clicks on your emails',
     email_history_desc: 'View all your sent emails',
+    emails_sent: 'Emails sent',
+    recent_emails: 'Recent emails',
+    top_clinked_links: 'Top clicked links',
+    all_categories: 'All categories',
     
     // Scheduled Emails
     scheduled_emails: 'Scheduled Emails',
@@ -2269,10 +2279,12 @@ const translations = {
     total_clicks: 'Total clicks',
     click_rate: 'Click rate',
     recent_emails_performance: 'Recent emails performance',
+    top_clicked_links: 'Top clicked links',
     no_tracking_data: 'No tracking data yet',
     no_tracking_data_desc: 'Send emails and track opens and clicks',
     opens: 'Opens',
     clicks: 'Clicks',
+    no_clicks_yet: 'No clicks yet for this period',
     
     // SMTP Status
     smtp_configured: 'SMTP configured',
