@@ -11,7 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
 import { Column } from '@/app/components/DataTable';
-import { FilterOption } from '@/app/components/TableFilters';
+import { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
 import {
   IconCheck,
   IconClock,
@@ -37,6 +37,13 @@ export default function FacturesPage() {
     isOpen: false,
     facture: null,
   });
+
+  // Advanced filters state
+  const [clientFilter, setClientFilter] = useState('');
+  const [projectFilter, setProjectFilter] = useState('');
+  const [amountRangeFilter, setAmountRangeFilter] = useState<{ min: string; max: string }>({ min: '', max: '' });
+  const [dateRangeFilter, setDateRangeFilter] = useState<DateRangeFilter>({ from: '', to: '' });
+  const [isOverdueFilter, setIsOverdueFilter] = useState<boolean | undefined>(undefined);
 
   // Hook avec cache
   const { data: facturesData, loading, refetch } = useFactures(user?.id);
@@ -89,8 +96,107 @@ export default function FacturesPage() {
     },
   ], [factures, t]);
 
+  // Get unique clients with invoices
+  const clientOptions: FilterOption[] = useMemo(() => {
+    const clientMap = new Map<string, { name: string; count: number }>();
+    factures.forEach(f => {
+      const clientData = f.client || f.client_id;
+      if (clientData && typeof clientData === 'object') {
+        const client = clientData as Client;
+        if (client.documentId && client.name) {
+          const existing = clientMap.get(client.documentId);
+          if (existing) {
+            existing.count++;
+          } else {
+            clientMap.set(client.documentId, { name: client.name, count: 1 });
+          }
+        }
+      }
+    });
+    return Array.from(clientMap.entries()).map(([id, { name, count }]) => ({
+      value: id,
+      label: name,
+      count,
+    }));
+  }, [factures]);
+
+  // Get unique projects with invoices
+  const projectOptions: FilterOption[] = useMemo(() => {
+    const projectMap = new Map<string, { title: string; count: number }>();
+    factures.forEach(f => {
+      if (f.project && typeof f.project === 'object') {
+        const project = f.project as Project;
+        if (project.documentId && project.title) {
+          const existing = projectMap.get(project.documentId);
+          if (existing) {
+            existing.count++;
+          } else {
+            projectMap.set(project.documentId, { title: project.title, count: 1 });
+          }
+        }
+      }
+    });
+    return Array.from(projectMap.entries()).map(([id, { title, count }]) => ({
+      value: id,
+      label: title,
+      count,
+    }));
+  }, [factures]);
+
+  // Advanced filters configuration
+  const advancedFilters: AdvancedFilter[] = useMemo(() => [
+    {
+      id: 'client',
+      type: 'select',
+      label: t('client'),
+      options: clientOptions,
+      value: clientFilter,
+      placeholder: t('all_clients') || 'Tous les clients',
+    },
+    {
+      id: 'project',
+      type: 'select',
+      label: t('project'),
+      options: projectOptions,
+      value: projectFilter,
+      placeholder: t('all_projects') || 'Tous les projets',
+    },
+    {
+      id: 'isOverdue',
+      type: 'toggle',
+      label: t('overdue') || 'En retard',
+      value: isOverdueFilter,
+    },
+    {
+      id: 'dateRange',
+      type: 'date-range',
+      label: t('invoice_date') || 'Date de facture',
+      value: dateRangeFilter,
+    },
+  ], [t, clientOptions, projectOptions, clientFilter, projectFilter, isOverdueFilter, dateRangeFilter]);
+
+  // Handle advanced filter changes
+  const handleAdvancedFilterChange = (filterId: string, value: string | string[] | boolean | DateRangeFilter) => {
+    switch (filterId) {
+      case 'client':
+        setClientFilter(value as string);
+        break;
+      case 'project':
+        setProjectFilter(value as string);
+        break;
+      case 'isOverdue':
+        setIsOverdueFilter(value as boolean ? true : undefined);
+        break;
+      case 'dateRange':
+        setDateRangeFilter(value as DateRangeFilter);
+        break;
+    }
+  };
+
   // Filtrage
   const filteredFactures = useMemo(() => {
+    const now = new Date();
+    
     return factures.filter(facture => {
       // Strapi peut retourner "client" ou "client_id" selon la config
       const clientData = facture.client || facture.client_id;
@@ -106,9 +212,38 @@ export default function FacturesPage() {
       const matchesStatus =
         statusFilter === '' || facture.facture_status === statusFilter;
 
-      return matchesSearch && matchesStatus;
+      // Client filter
+      const matchesClient =
+        clientFilter === '' ||
+        (clientData && typeof clientData === 'object' && (clientData as Client).documentId === clientFilter);
+
+      // Project filter
+      const matchesProject =
+        projectFilter === '' ||
+        (facture.project && typeof facture.project === 'object' && (facture.project as Project).documentId === projectFilter);
+
+      // Overdue filter (due_date is in the past and not paid)
+      const matchesOverdue =
+        isOverdueFilter === undefined ||
+        (isOverdueFilter && facture.due_date && new Date(facture.due_date) < now && facture.facture_status !== 'paid');
+
+      // Date range filter
+      let matchesDateRange = true;
+      if (dateRangeFilter.from || dateRangeFilter.to) {
+        const factureDate = facture.date ? new Date(facture.date) : null;
+        if (factureDate) {
+          if (dateRangeFilter.from) {
+            matchesDateRange = matchesDateRange && factureDate >= new Date(dateRangeFilter.from);
+          }
+          if (dateRangeFilter.to) {
+            matchesDateRange = matchesDateRange && factureDate <= new Date(dateRangeFilter.to);
+          }
+        }
+      }
+
+      return matchesSearch && matchesStatus && matchesClient && matchesProject && matchesOverdue && matchesDateRange;
     });
-  }, [factures, searchTerm, statusFilter]);
+  }, [factures, searchTerm, statusFilter, clientFilter, projectFilter, isOverdueFilter, dateRangeFilter]);
 
   // Colonnes
   const columns: Column<Facture>[] = [
@@ -218,6 +353,32 @@ export default function FacturesPage() {
     await refetch();
   };
 
+  // Handle multiple deletion
+  const handleDeleteMultipleFactures = async (facturesToDelete: Facture[]) => {
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const facture of facturesToDelete) {
+      if (!facture.documentId) continue;
+      try {
+        await deleteFacture(facture.documentId);
+        successCount++;
+      } catch (error) {
+        console.error(`Error deleting facture ${facture.reference}:`, error);
+        errorCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      showGlobalPopup(`${successCount} facture(s) supprimée(s) avec succès`, 'success');
+      clearCache('factures');
+      await refetch();
+    }
+    if (errorCount > 0) {
+      showGlobalPopup(`${errorCount} erreur(s) lors de la suppression`, 'error');
+    }
+  };
+
   return (
     <ProtectedRoute>
       <DashboardPageTemplate<Facture>
@@ -258,9 +419,15 @@ export default function FacturesPage() {
         onSearchChange={setSearchTerm}
         statusValue={statusFilter}
         onStatusChange={setStatusFilter}
+        advancedFilters={advancedFilters}
+        onAdvancedFilterChange={handleAdvancedFilterChange}
         columns={columns}
         data={filteredFactures}
         emptyMessage={t('no_facture_found')}
+        selectable={true}
+        onDeleteSelected={handleDeleteMultipleFactures}
+        getItemId={(facture) => facture.documentId || ''}
+        getItemName={(facture) => facture.reference}
       />
 
       <DeleteConfirmModal

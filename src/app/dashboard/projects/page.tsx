@@ -5,7 +5,7 @@ import { createProject, deleteProject, fetchProjectTasks } from '@/lib/api';
 import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
-import { FilterOption } from '@/app/components/TableFilters';
+import { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
@@ -40,6 +40,12 @@ export default function ProjectsPage() {
     project: null,
   });
   const [taskCounts, setTaskCounts] = useState<Record<string, number>>({});
+
+  // Advanced filters state
+  const [typeFilter, setTypeFilter] = useState('');
+  const [clientFilter, setClientFilter] = useState('');
+  const [dateRangeFilter, setDateRangeFilter] = useState<DateRangeFilter>({ from: '', to: '' });
+  const [hasPendingTasksFilter, setHasPendingTasksFilter] = useState<boolean | undefined>(undefined);
 
   // Hooks avec cache
   const { data: projectsData, loading: loadingProjects, refetch: refetchProjects } = useProjects(user?.id);
@@ -121,6 +127,86 @@ export default function ProjectsPage() {
     },
   ], [projects, t]);
 
+  // Get unique project types
+  const typeOptions: FilterOption[] = useMemo(() => {
+    const types = [...new Set(projects.map(p => p.type).filter(Boolean))] as string[];
+    return types.map(type => ({
+      value: type,
+      label: type,
+      count: projects.filter(p => p.type === type).length,
+    }));
+  }, [projects]);
+
+  // Get unique clients with projects
+  const clientOptions: FilterOption[] = useMemo(() => {
+    const clientMap = new Map<number, { name: string; count: number }>();
+    projects.forEach(p => {
+      if (p.client?.id && p.client?.name) {
+        const existing = clientMap.get(p.client.id);
+        if (existing) {
+          existing.count++;
+        } else {
+          clientMap.set(p.client.id, { name: p.client.name, count: 1 });
+        }
+      }
+    });
+    return Array.from(clientMap.entries()).map(([id, { name, count }]) => ({
+      value: id.toString(),
+      label: name,
+      count,
+    }));
+  }, [projects]);
+
+  // Advanced filters configuration
+  const advancedFilters: AdvancedFilter[] = useMemo(() => [
+    {
+      id: 'type',
+      type: 'select',
+      label: t('project_type') || 'Type de projet',
+      options: typeOptions,
+      value: typeFilter,
+      placeholder: t('all_types') || 'Tous les types',
+    },
+    {
+      id: 'client',
+      type: 'select',
+      label: t('client'),
+      options: clientOptions,
+      value: clientFilter,
+      placeholder: t('all_clients') || 'Tous les clients',
+    },
+    {
+      id: 'hasPendingTasks',
+      type: 'toggle',
+      label: t('with_pending_tasks') || 'Avec tâches en cours',
+      value: hasPendingTasksFilter,
+    },
+    {
+      id: 'dateRange',
+      type: 'date-range',
+      label: t('start_date') || 'Date de début',
+      value: dateRangeFilter,
+    },
+  ], [t, typeOptions, clientOptions, typeFilter, clientFilter, hasPendingTasksFilter, dateRangeFilter]);
+
+  // Handle advanced filter changes
+  const handleAdvancedFilterChange = (filterId: string, value: string | string[] | boolean | DateRangeFilter) => {
+    switch (filterId) {
+      case 'type':
+        setTypeFilter(value as string);
+        break;
+      case 'client':
+        setClientFilter(value as string);
+        break;
+      case 'hasPendingTasks':
+        setHasPendingTasksFilter(value as boolean ? true : undefined);
+        break;
+      case 'dateRange':
+        setDateRangeFilter(value as DateRangeFilter);
+        break;
+    }
+  };
+
   // Filtrage des données
   const filteredProjects = useMemo(() => {
     return projects.filter(project => {
@@ -132,9 +218,36 @@ export default function ProjectsPage() {
       const matchesStatus =
         statusFilter === '' || project.project_status === statusFilter;
 
-      return matchesSearch && matchesStatus;
+      // Type filter
+      const matchesType =
+        typeFilter === '' || project.type === typeFilter;
+
+      // Client filter
+      const matchesClient =
+        clientFilter === '' || project.client?.id?.toString() === clientFilter;
+
+      // Pending tasks filter
+      const matchesPendingTasks =
+        hasPendingTasksFilter === undefined || 
+        (hasPendingTasksFilter && (taskCounts[project.documentId] || 0) > 0);
+
+      // Date range filter
+      let matchesDateRange = true;
+      if (dateRangeFilter.from || dateRangeFilter.to) {
+        const projectDate = project.start_date ? new Date(project.start_date) : null;
+        if (projectDate) {
+          if (dateRangeFilter.from) {
+            matchesDateRange = matchesDateRange && projectDate >= new Date(dateRangeFilter.from);
+          }
+          if (dateRangeFilter.to) {
+            matchesDateRange = matchesDateRange && projectDate <= new Date(dateRangeFilter.to);
+          }
+        }
+      }
+
+      return matchesSearch && matchesStatus && matchesType && matchesClient && matchesPendingTasks && matchesDateRange;
     });
-  }, [projects, searchTerm, statusFilter]);
+  }, [projects, searchTerm, statusFilter, typeFilter, clientFilter, hasPendingTasksFilter, taskCounts, dateRangeFilter]);
 
   // Stats
   const stats = useMemo(() => ({
@@ -265,6 +378,32 @@ export default function ProjectsPage() {
     await refetchProjects();
   };
 
+  // Handle multiple deletion
+  const handleDeleteMultipleProjects = async (projectsToDelete: Project[]) => {
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const project of projectsToDelete) {
+      if (!project.documentId) continue;
+      try {
+        await deleteProject(project.documentId);
+        successCount++;
+      } catch (error) {
+        console.error(`Error deleting project ${project.title}:`, error);
+        errorCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      showGlobalPopup(`${successCount} projet(s) supprimé(s) avec succès`, 'success');
+      clearCache('projects');
+      await refetchProjects();
+    }
+    if (errorCount > 0) {
+      showGlobalPopup(`${errorCount} erreur(s) lors de la suppression`, 'error');
+    }
+  };
+
   return (
     <ProtectedRoute>
       <DashboardPageTemplate<Project>
@@ -299,9 +438,15 @@ export default function ProjectsPage() {
         onSearchChange={setSearchTerm}
         statusValue={statusFilter}
         onStatusChange={setStatusFilter}
+        advancedFilters={advancedFilters}
+        onAdvancedFilterChange={handleAdvancedFilterChange}
         columns={columns}
         data={filteredProjects}
         emptyMessage={t('no_project_found')}
+        selectable={true}
+        onDeleteSelected={handleDeleteMultipleProjects}
+        getItemId={(project) => project.documentId || ''}
+        getItemName={(project) => project.title}
       />
 
       <NewProjectModal

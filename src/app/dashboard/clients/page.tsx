@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import ClientAvatar from '@/app/components/ClientAvatar';
-import { addClientUser, deleteClient, DuplicateCheckMode } from '@/lib/api';
+import { addClientUser, deleteClient, updateClientStatus, DuplicateCheckMode } from '@/lib/api';
 import TableActions from '@/app/components/TableActions';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import { usePopup } from '@/app/context/PopupContext';
@@ -11,8 +11,9 @@ import { useAuth } from '../../context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
 import { Column } from '@/app/components/DataTable';
-import { FilterOption } from '@/app/components/TableFilters';
-import { IconUsers, IconUserCheck, IconUserPlus, IconFileImport } from '@tabler/icons-react';
+import { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
+import { IconUsers, IconUserCheck, IconUserPlus, IconFileImport, IconArrowRight } from '@tabler/icons-react';
+import { CustomAction } from '@/app/components/DataTable';
 import { useRouter } from 'next/navigation';
 import AddClientModal from './AddClientModal';
 import ImportClientsModal from './ImportClientsModal';
@@ -33,6 +34,12 @@ export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  
+  // Advanced filters state
+  const [enterpriseFilter, setEnterpriseFilter] = useState('');
+  const [isActiveFilter, setIsActiveFilter] = useState<boolean | undefined>(undefined);
+  const [dateRangeFilter, setDateRangeFilter] = useState<DateRangeFilter>({ from: '', to: '' });
+  const [hasWebsiteFilter, setHasWebsiteFilter] = useState<boolean | undefined>(undefined);
   const [showImportModal, setShowImportModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; client: Client | null }>({
     isOpen: false,
@@ -122,6 +129,53 @@ export default function ClientsPage() {
     clearCache('clients');
     await refetch();
   };
+
+  // Convertir les prospects/autres en clients
+  const handleConvertToClient = async (clientsToConvert: Client[]) => {
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const client of clientsToConvert) {
+      if (!client.documentId) continue;
+      // Ne pas convertir si déjà client
+      if (client.processStatus === 'client') continue;
+      
+      try {
+        await updateClientStatus(client.documentId, 'client');
+        successCount++;
+      } catch (error) {
+        console.error(`Error converting ${client.name} to client:`, error);
+        errorCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      showGlobalPopup(
+        `${successCount} ${t('converted_to_client') || 'contact(s) converti(s) en client'}`,
+        errorCount > 0 ? 'warning' : 'success'
+      );
+    }
+
+    if (errorCount > 0) {
+      showGlobalPopup(
+        `${errorCount} ${t('conversion_failed') || 'erreur(s) lors de la conversion'}`,
+        'error'
+      );
+    }
+
+    clearCache('clients');
+    await refetch();
+  };
+
+  // Actions personnalisées pour la sélection multiple
+  const customActions: CustomAction<Client>[] = useMemo(() => [
+    {
+      label: t('convert_to_client') || 'Convertir en client',
+      icon: <IconArrowRight className="w-4 h-4" />,
+      onClick: handleConvertToClient,
+      variant: 'success',
+    },
+  ], [t]);
 
   // Convert base64 to File
   const base64ToFile = (base64String: string, filename: string): File | null => {
@@ -279,13 +333,65 @@ export default function ClientsPage() {
     setIsImportComplete(false);
   };
 
-  const statusOptions: FilterOption[] = useMemo(() => [
+  // Les options de statut seront définies après visibleClients
+
+  // Get unique enterprises for filter
+  const enterpriseOptions: FilterOption[] = useMemo(() => {
+    const enterprises = [...new Set(clients.map(c => c.enterprise).filter(Boolean))] as string[];
+    return enterprises.map(enterprise => ({
+      value: enterprise,
+      label: enterprise,
+      count: clients.filter(c => c.enterprise === enterprise).length,
+    }));
+  }, [clients]);
+
+  // Advanced filters configuration
+  const advancedFilters: AdvancedFilter[] = useMemo(() => [
     {
-      value: 'client',
-      label: 'Client',
-      count: clients.filter(client => client.processStatus === 'client').length,
+      id: 'enterprise',
+      type: 'select',
+      label: t('enterprise') || 'Entreprise',
+      options: enterpriseOptions,
+      value: enterpriseFilter,
+      placeholder: t('all_enterprises') || 'Toutes les entreprises',
     },
-  ], [clients]);
+    {
+      id: 'isActive',
+      type: 'toggle',
+      label: t('active_only') || 'Actifs uniquement',
+      value: isActiveFilter,
+    },
+    {
+      id: 'hasWebsite',
+      type: 'toggle',
+      label: t('with_website') || 'Avec site web',
+      value: hasWebsiteFilter,
+    },
+    {
+      id: 'dateRange',
+      type: 'date-range',
+      label: t('creation_date') || 'Date de création',
+      value: dateRangeFilter,
+    },
+  ], [t, enterpriseOptions, enterpriseFilter, isActiveFilter, hasWebsiteFilter, dateRangeFilter]);
+
+  // Handle advanced filter changes
+  const handleAdvancedFilterChange = (filterId: string, value: string | string[] | boolean | DateRangeFilter) => {
+    switch (filterId) {
+      case 'enterprise':
+        setEnterpriseFilter(value as string);
+        break;
+      case 'isActive':
+        setIsActiveFilter(value as boolean ? true : undefined);
+        break;
+      case 'hasWebsite':
+        setHasWebsiteFilter(value as boolean ? true : undefined);
+        break;
+      case 'dateRange':
+        setDateRangeFilter(value as DateRangeFilter);
+        break;
+    }
+  };
 
   // Limiter les clients selon le quota
   const visibleClients = useMemo(() => {
@@ -293,20 +399,87 @@ export default function ClientsPage() {
     return clients.slice(0, visibleCount);
   }, [clients, getVisibleCount]);
 
+  // Générer les options de statut (toujours afficher Client et Prospect + autres dynamiques)
+  const statusOptions: FilterOption[] = useMemo(() => {
+    const statusMap = new Map<string, number>();
+    
+    // Initialiser avec les statuts standards
+    statusMap.set('client', 0);
+    statusMap.set('prospect', 0);
+    
+    // Compter tous les statuts existants dans les clients visibles
+    visibleClients.forEach(client => {
+      const status = client.processStatus || 'non_defini';
+      statusMap.set(status, (statusMap.get(status) || 0) + 1);
+    });
+    
+    // Définir les labels pour chaque statut
+    const statusLabels: Record<string, string> = {
+      client: 'Client',
+      prospect: 'Prospect',
+      lead: 'Lead',
+      non_defini: t('undefined') || 'Non défini',
+    };
+    
+    // Ordre de priorité des statuts
+    const statusOrder = ['client', 'prospect', 'lead', 'non_defini'];
+    
+    return Array.from(statusMap.entries())
+      .map(([value, count]) => ({
+        value,
+        label: statusLabels[value] || value,
+        count,
+      }))
+      .sort((a, b) => {
+        const orderA = statusOrder.indexOf(a.value);
+        const orderB = statusOrder.indexOf(b.value);
+        if (orderA !== -1 && orderB !== -1) return orderA - orderB;
+        if (orderA !== -1) return -1;
+        if (orderB !== -1) return 1;
+        return b.count - a.count;
+      });
+  }, [visibleClients, t]);
+
   const filteredClients = useMemo(() => {
     return visibleClients.filter(client => {
+      // Search filter
       const matchesSearch =
         searchTerm === '' ||
         client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (client.enterprise?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
 
+      // Status filter
       const matchesStatus =
         statusFilter === '' || client.processStatus === statusFilter;
 
-      return matchesSearch && matchesStatus;
+      // Enterprise filter
+      const matchesEnterprise =
+        enterpriseFilter === '' || client.enterprise === enterpriseFilter;
+
+      // Active filter (based on processStatus === 'client')
+      const matchesActive =
+        isActiveFilter === undefined || (isActiveFilter && client.processStatus === 'client');
+
+      // Website filter
+      const matchesWebsite =
+        hasWebsiteFilter === undefined || (hasWebsiteFilter && client.website && client.website.length > 0);
+
+      // Date range filter
+      let matchesDateRange = true;
+      if (dateRangeFilter.from || dateRangeFilter.to) {
+        const clientDate = new Date(client.createdAt);
+        if (dateRangeFilter.from) {
+          matchesDateRange = matchesDateRange && clientDate >= new Date(dateRangeFilter.from);
+        }
+        if (dateRangeFilter.to) {
+          matchesDateRange = matchesDateRange && clientDate <= new Date(dateRangeFilter.to);
+        }
+      }
+
+      return matchesSearch && matchesStatus && matchesEnterprise && matchesActive && matchesWebsite && matchesDateRange;
     });
-  }, [visibleClients, searchTerm, statusFilter]);
+  }, [visibleClients, searchTerm, statusFilter, enterpriseFilter, isActiveFilter, hasWebsiteFilter, dateRangeFilter]);
 
   const stats = useMemo(() => {
     const now = new Date();
@@ -449,11 +622,14 @@ export default function ClientsPage() {
         onSearchChange={setSearchTerm}
         statusValue={statusFilter}
         onStatusChange={setStatusFilter}
+        advancedFilters={advancedFilters}
+        onAdvancedFilterChange={handleAdvancedFilterChange}
         columns={columns}
         data={filteredClients}
         emptyMessage={t('no_client_found')}
         selectable={true}
         onDeleteSelected={handleDeleteMultipleClients}
+        customActions={customActions}
         getItemId={(client) => client.documentId || ''}
         getItemName={(client) => client.name}
       />

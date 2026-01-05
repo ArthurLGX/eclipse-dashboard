@@ -87,12 +87,23 @@ export function QuotaProvider({ children }: { children: React.ReactNode }) {
             ? JSON.parse(sub.plan.features) 
             : sub.plan.features;
 
+          // Helper pour convertir les valeurs de quota
+          // 0 = illimité, null/undefined/"∞"/Infinity = illimité, sinon la valeur numérique
+          const parseQuotaValue = (value: unknown, defaultValue: number): number => {
+            if (value === null || value === undefined) return 0; // illimité
+            if (value === '∞' || value === 'Infinity' || value === Infinity) return 0; // illimité
+            if (typeof value === 'boolean' && value === true) return 0; // "true" = illimité
+            const num = Number(value);
+            if (isNaN(num)) return defaultValue;
+            return num;
+          };
+
           planLimits = {
-            projects: features.max_active_projects ?? 1,
-            clients: features.max_active_clients ?? 5,
-            prospects: features.max_prospects_active ?? 10,
-            mentors: features.max_handle_mentors ?? 0,
-            newsletters: features.max_newsletters ?? 0,
+            projects: parseQuotaValue(features.max_active_projects, 1),
+            clients: parseQuotaValue(features.max_active_clients, 5),
+            prospects: parseQuotaValue(features.max_prospects_active, 10),
+            mentors: parseQuotaValue(features.max_handle_mentors, 0),
+            newsletters: parseQuotaValue(features.max_newsletters, 0),
           };
 
           if (sub.plan.name === 'free' && sub.trial) {
@@ -141,6 +152,7 @@ export function QuotaProvider({ children }: { children: React.ReactNode }) {
   }, [limits, usage]);
 
   const getVisibleCount = useCallback((resource: keyof QuotaLimits): number => {
+    // 0 = illimité, donc retourner tous les éléments
     if (limits[resource] === 0) return usage[resource];
     return Math.min(usage[resource], limits[resource]);
   }, [limits, usage]);

@@ -121,8 +121,8 @@
   /* Accent colors - Solid colors for light mode */
   --color-accent: #7C3AED;
   --color-accent-light: #A78BFA;
-  --color-accent-bg: #7C3AED;
-  --color-accent-border: #6D28D9;
+  --color-accent-bg: rgba(124, 58, 237, 0.1);
+  --color-accent-border: #C4B5FD;
   --color-accent-text: #FFFFFF;
   
   

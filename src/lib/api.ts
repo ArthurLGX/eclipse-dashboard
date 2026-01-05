@@ -118,17 +118,39 @@ export async function fetchCount(
   return res.meta?.pagination?.total ?? res.data?.length ?? 0;
 }
 
-/** Récupère une liste d'entités pour un utilisateur */
+/** Récupère une liste d'entités pour un utilisateur (avec pagination automatique pour récupérer TOUS les éléments) */
 export async function fetchUserEntities<T>(
   entity: string,
   userId: number,
   filterField: string = 'users',
   additionalFilters: string = '',
-  pageSize: number = 1000 // Strapi limite par défaut à 25, on augmente pour récupérer tous les éléments
+  pageSize: number = 100 // Strapi limite par défaut à 100 max
 ): Promise<ApiResponse<T[]>> {
-  return get<ApiResponse<T[]>>(
-    `${entity}?populate=*&pagination[pageSize]=${pageSize}&filters[${filterField}][$eq]=${userId}${additionalFilters}`
-  );
+  const allData: T[] = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await get<ApiResponse<T[]> & { meta?: { pagination?: { pageCount?: number; page?: number } } }>(
+      `${entity}?populate=*&pagination[pageSize]=${pageSize}&pagination[page]=${page}&filters[${filterField}][$eq]=${userId}${additionalFilters}`
+    );
+
+    if (response.data && response.data.length > 0) {
+      allData.push(...response.data);
+    }
+
+    // Vérifier s'il y a plus de pages
+    const pagination = response.meta?.pagination;
+    if (pagination && pagination.page && pagination.pageCount) {
+      hasMore = pagination.page < pagination.pageCount;
+    } else {
+      hasMore = response.data && response.data.length === pageSize;
+    }
+    
+    page++;
+  }
+
+  return { data: allData };
 }
 
 /** Récupère une entité par ID */
@@ -270,6 +292,11 @@ export async function updateClientById(
   }
 ) {
   return put(`clients/${clientId}`, data);
+}
+
+/** Met à jour le statut d'un client */
+export async function updateClientStatus(clientDocumentId: string, processStatus: string) {
+  return put(`clients/${clientDocumentId}`, { processStatus });
 }
 
 /** Supprime un client par son documentId */

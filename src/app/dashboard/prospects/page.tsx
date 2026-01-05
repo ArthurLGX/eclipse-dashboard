@@ -9,7 +9,7 @@ import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
-import { FilterOption } from '@/app/components/TableFilters';
+import { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
 import { useRouter } from 'next/navigation';
 import { useProspects, clearCache } from '@/hooks/useApi';
 import { IconUsers, IconUserCheck, IconUserPlus } from '@tabler/icons-react';
@@ -29,6 +29,10 @@ export default function ProspectsPage() {
     isOpen: false,
     prospect: null,
   });
+
+  // Advanced filters state
+  const [dateRangeFilter, setDateRangeFilter] = useState<DateRangeFilter>({ from: '', to: '' });
+  const [hasEmailFilter, setHasEmailFilter] = useState<boolean | undefined>(undefined);
 
   // Hook avec cache
   const { data: prospectsData, loading, refetch } = useProspects(user?.id);
@@ -64,6 +68,34 @@ export default function ProspectsPage() {
     },
   ], [prospects, t]);
 
+  // Advanced filters configuration
+  const advancedFilters: AdvancedFilter[] = useMemo(() => [
+    {
+      id: 'hasEmail',
+      type: 'toggle',
+      label: t('with_email') || 'Avec email',
+      value: hasEmailFilter,
+    },
+    {
+      id: 'dateRange',
+      type: 'date-range',
+      label: t('creation_date') || 'Date de création',
+      value: dateRangeFilter,
+    },
+  ], [t, hasEmailFilter, dateRangeFilter]);
+
+  // Handle advanced filter changes
+  const handleAdvancedFilterChange = (filterId: string, value: string | string[] | boolean | DateRangeFilter) => {
+    switch (filterId) {
+      case 'hasEmail':
+        setHasEmailFilter(value as boolean ? true : undefined);
+        break;
+      case 'dateRange':
+        setDateRangeFilter(value as DateRangeFilter);
+        break;
+    }
+  };
+
   // Filtrage
   const filteredProspects = useMemo(() => {
     return prospects.filter(prospect => {
@@ -75,9 +107,25 @@ export default function ProspectsPage() {
       const matchesStatus =
         statusFilter === '' || prospect.prospect_status === statusFilter;
 
-      return matchesSearch && matchesStatus;
+      // Email filter
+      const matchesEmail =
+        hasEmailFilter === undefined || (hasEmailFilter && prospect.email && prospect.email.length > 0);
+
+      // Date range filter
+      let matchesDateRange = true;
+      if (dateRangeFilter.from || dateRangeFilter.to) {
+        const prospectDate = new Date(prospect.createdAt);
+        if (dateRangeFilter.from) {
+          matchesDateRange = matchesDateRange && prospectDate >= new Date(dateRangeFilter.from);
+        }
+        if (dateRangeFilter.to) {
+          matchesDateRange = matchesDateRange && prospectDate <= new Date(dateRangeFilter.to);
+        }
+      }
+
+      return matchesSearch && matchesStatus && matchesEmail && matchesDateRange;
     });
-  }, [prospects, searchTerm, statusFilter]);
+  }, [prospects, searchTerm, statusFilter, hasEmailFilter, dateRangeFilter]);
 
   // Stats
   const stats = useMemo(() => ({
@@ -151,6 +199,32 @@ export default function ProspectsPage() {
     await refetch();
   };
 
+  // Handle multiple deletion
+  const handleDeleteMultipleProspects = async (prospectsToDelete: Prospect[]) => {
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const prospect of prospectsToDelete) {
+      if (!prospect.documentId) continue;
+      try {
+        await deleteProspect(prospect.documentId);
+        successCount++;
+      } catch (error) {
+        console.error(`Error deleting prospect ${prospect.title}:`, error);
+        errorCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      showGlobalPopup(`${successCount} prospect(s) supprimé(s) avec succès`, 'success');
+      clearCache('prospects');
+      await refetch();
+    }
+    if (errorCount > 0) {
+      showGlobalPopup(`${errorCount} erreur(s) lors de la suppression`, 'error');
+    }
+  };
+
   return (
     <>
     <DashboardPageTemplate<Prospect>
@@ -185,9 +259,15 @@ export default function ProspectsPage() {
       onSearchChange={setSearchTerm}
       statusValue={statusFilter}
       onStatusChange={setStatusFilter}
+      advancedFilters={advancedFilters}
+      onAdvancedFilterChange={handleAdvancedFilterChange}
       columns={columns}
       data={filteredProspects}
       emptyMessage={t('no_prospects_found')}
+      selectable={true}
+      onDeleteSelected={handleDeleteMultipleProspects}
+      getItemId={(prospect) => prospect.documentId || ''}
+      getItemName={(prospect) => prospect.title || prospect.email || ''}
     />
 
     <DeleteConfirmModal

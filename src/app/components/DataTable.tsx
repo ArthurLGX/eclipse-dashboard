@@ -12,6 +12,14 @@ export interface Column<T = unknown> {
   className?: string;
 }
 
+export interface CustomAction<T = unknown> {
+  label: string;
+  icon?: React.ReactNode;
+  onClick: (items: T[]) => Promise<void>;
+  className?: string;
+  variant?: 'primary' | 'success' | 'warning' | 'danger';
+}
+
 export interface DataTableProps<T = unknown> {
   columns: Column<T>[];
   data: T[];
@@ -22,6 +30,7 @@ export interface DataTableProps<T = unknown> {
   // Multi-select props
   selectable?: boolean;
   onDeleteSelected?: (items: T[]) => Promise<void>;
+  customActions?: CustomAction<T>[];
   getItemId?: (item: T) => string;
   getItemName?: (item: T) => string;
 }
@@ -35,6 +44,7 @@ export default function DataTable<T = unknown>({
   onRowClick,
   selectable = false,
   onDeleteSelected,
+  customActions = [],
   getItemId = (item) => (item as { id?: string; documentId?: string }).documentId || (item as { id?: string }).id || '',
   getItemName = (item) => (item as { name?: string }).name || '',
 }: DataTableProps<T>) {
@@ -201,15 +211,42 @@ export default function DataTable<T = unknown>({
                 {t('clear_selection') || 'Annuler la sélection'}
               </button>
             </div>
-            {onDeleteSelected && (
-              <button
-                onClick={() => setShowDeleteModal(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger text-white hover:bg-danger/80 transition-colors"
-              >
-                <IconTrash className="w-4 h-4" />
-                {t('delete_selected') || 'Supprimer'} ({selectedIds.size})
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              {/* Custom actions */}
+              {customActions.map((action, index) => {
+                const variantClasses = {
+                  primary: 'bg-accent text-white hover:bg-accent/80',
+                  success: 'bg-success text-white hover:bg-success/80',
+                  warning: 'bg-warning text-white hover:bg-warning/80',
+                  danger: 'bg-danger text-white hover:bg-danger/80',
+                };
+                return (
+                  <button
+                    key={index}
+                    onClick={async () => {
+                      await action.onClick(selectedItems);
+                      clearSelection();
+                    }}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                      action.className || variantClasses[action.variant || 'primary']
+                    }`}
+                  >
+                    {action.icon}
+                    {action.label} ({selectedIds.size})
+                  </button>
+                );
+              })}
+              {/* Delete action */}
+              {onDeleteSelected && (
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger text-white hover:bg-danger/80 transition-colors"
+                >
+                  <IconTrash className="w-4 h-4" />
+                  {t('delete_selected') || 'Supprimer'} ({selectedIds.size})
+                </button>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

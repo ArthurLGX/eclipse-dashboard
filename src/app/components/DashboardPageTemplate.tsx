@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import TableFilters, { FilterOption } from '@/app/components/TableFilters';
-import DataTable, { Column } from '@/app/components/DataTable';
+import TableFilters, { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
+import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
 import LandingPageSkeleton from './LandingPageSkeleton';
 
 interface StatCard {
@@ -31,6 +31,11 @@ interface DashboardPageTemplateProps<T> {
   onSearchChange?: (value: string) => void;
   statusValue?: string;
   onStatusChange?: (value: string) => void;
+  // Advanced filters
+  advancedFilters?: AdvancedFilter[];
+  onAdvancedFilterChange?: (filterId: string, value: string | string[] | boolean | DateRangeFilter) => void;
+  showAdvancedToggle?: boolean;
+  // Table props
   columns: Column<T>[];
   data: T[];
   emptyMessage: string;
@@ -39,6 +44,7 @@ interface DashboardPageTemplateProps<T> {
   // Multi-select props
   selectable?: boolean;
   onDeleteSelected?: (items: T[]) => Promise<void>;
+  customActions?: CustomAction<T>[];
   getItemId?: (item: T) => string;
   getItemName?: (item: T) => string;
 }
@@ -56,6 +62,9 @@ export default function DashboardPageTemplate<T>({
   onSearchChange,
   statusValue = '',
   onStatusChange,
+  advancedFilters = [],
+  onAdvancedFilterChange,
+  showAdvancedToggle = true,
   columns,
   data,
   emptyMessage,
@@ -63,6 +72,7 @@ export default function DashboardPageTemplate<T>({
   onRowClick,
   selectable = false,
   onDeleteSelected,
+  customActions = [],
   getItemId,
   getItemName,
 }: DashboardPageTemplateProps<T>) {
@@ -155,6 +165,9 @@ export default function DashboardPageTemplate<T>({
                 }
                 searchValue={searchValue}
                 statusValue={statusValue}
+                advancedFilters={advancedFilters}
+                onAdvancedFilterChange={onAdvancedFilterChange}
+                showAdvancedToggle={showAdvancedToggle}
               />
               <DataTable<T>
                 columns={columns}
@@ -164,6 +177,7 @@ export default function DashboardPageTemplate<T>({
                 onRowClick={onRowClick}
                 selectable={selectable}
                 onDeleteSelected={onDeleteSelected}
+                customActions={customActions}
                 getItemId={getItemId}
                 getItemName={getItemName}
               />

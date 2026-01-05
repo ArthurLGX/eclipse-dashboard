@@ -468,6 +468,21 @@ const translations = {
     hero_subtitle_bottom: 'Sans effort',
     try_for_free: 'Essayer gratuitement',
     all_statuses: 'Tous les statuts',
+    
+    // Advanced Filters
+    advanced_filters: 'Filtres avancés',
+    clear_filters: 'Effacer',
+    filter_by: 'Filtrer par',
+    all_enterprises: 'Toutes les entreprises',
+    active_only: 'Actifs uniquement',
+    with_website: 'Avec site web',
+    with_email: 'Avec email',
+    all_clients: 'Tous les clients',
+    all_projects: 'Tous les projets',
+    with_pending_tasks: 'Avec tâches en cours',
+    project_type: 'Type de projet',
+    invoice_date: 'Date de facture',
+    
     no_recent_activity: 'Aucune activité récente',
     // Clients
     add_client: 'Nouveau client',
@@ -684,6 +699,10 @@ const translations = {
     client_deleted_success: 'Client supprimé avec succès',
     clients_deleted_success: 'client(s) supprimé(s) avec succès',
     clients_delete_failed: 'erreur(s) lors de la suppression',
+    convert_to_client: 'Convertir en client',
+    converted_to_client: 'contact(s) converti(s) en client',
+    conversion_failed: 'erreur(s) lors de la conversion',
+    undefined: 'Non défini',
     
     // Import clients
     import_list: 'Importer une liste',
@@ -1712,6 +1731,21 @@ const translations = {
     hero_subtitle_bottom: 'With ease',
     try_for_free: 'Try for free',
     all_statuses: 'All statuses',
+    
+    // Advanced Filters
+    advanced_filters: 'Advanced filters',
+    clear_filters: 'Clear',
+    filter_by: 'Filter by',
+    all_enterprises: 'All companies',
+    active_only: 'Active only',
+    with_website: 'With website',
+    with_email: 'With email',
+    all_clients: 'All clients',
+    all_projects: 'All projects',
+    with_pending_tasks: 'With pending tasks',
+    project_type: 'Project type',
+    invoice_date: 'Invoice date',
+    
     // Clients
     add_client: 'Add Client',
     search_placeholder_clients: 'Search by name, email or company...',
@@ -1839,6 +1873,10 @@ const translations = {
     client_deleted_success: 'Client deleted successfully',
     clients_deleted_success: 'client(s) deleted successfully',
     clients_delete_failed: 'error(s) during deletion',
+    convert_to_client: 'Convert to client',
+    converted_to_client: 'contact(s) converted to client',
+    conversion_failed: 'error(s) during conversion',
+    undefined: 'Undefined',
     
     // Import clients
     import_list: 'Import list',
