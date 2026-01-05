@@ -1,17 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
-  IconBrandLinkedin,
-  IconBrandTwitter,
-  IconBrandInstagram,
-  IconBrandFacebook,
   IconPhone,
   IconWorld,
   IconMapPin,
   IconLanguage,
 } from '@tabler/icons-react';
-import type { CreateEmailSignatureData } from '@/types';
+import type { CreateEmailSignatureData, SocialLink } from '@/types';
 
 export type FooterLanguage = 'fr' | 'en';
 
@@ -31,12 +27,33 @@ const footerTexts = {
   },
 };
 
+// Labels par défaut pour les plateformes sociales
+const SOCIAL_PLATFORM_LABELS: Record<string, string> = {
+  linkedin: 'LinkedIn',
+  twitter: 'Twitter',
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+  youtube: 'YouTube',
+  tiktok: 'TikTok',
+  github: 'GitHub',
+  custom: 'Lien',
+};
+
+// Helper pour obtenir l'URL Google Fonts
+const getGoogleFontUrl = (fontFamily: string) => {
+  const webSafe = ['Arial', 'Helvetica', 'Georgia', 'Verdana', 'Times New Roman', 'Tahoma', 'Trebuchet MS'];
+  if (webSafe.includes(fontFamily)) return null;
+  
+  const fontName = fontFamily.replace(/ /g, '+');
+  return `https://fonts.googleapis.com/css2?family=${fontName}:wght@400;500;600;700&display=swap`;
+};
+
 export interface EmailFooterProps {
   /** Données de la signature */
   data: CreateEmailSignatureData;
-  /** Couleur de texte principale */
+  /** Couleur de texte principale (override) */
   textColor?: string;
-  /** Couleur d'accent (liens) */
+  /** Couleur d'accent (liens) (override) */
   accentColor?: string;
   /** Couleur de fond */
   backgroundColor?: string;
@@ -56,17 +73,19 @@ export interface EmailFooterProps {
   onLanguageChange?: (language: FooterLanguage) => void;
   /** Afficher le toggle de langue */
   showLanguageToggle?: boolean;
+  /** Mode mobile (taille plus petite) */
+  isMobile?: boolean;
 }
 
 /**
  * Composant de footer réutilisable pour newsletters et emails
- * Peut être utilisé en mode preview (React) ou email (inline styles pour compatibilité)
+ * Utilise les données de signature email avec personnalisation
  */
 export default function EmailFooter({
   data,
-  textColor = '#666666',
-  accentColor = '#10b981',
-  backgroundColor = '#f8f8f8',
+  textColor: textColorOverride,
+  accentColor: accentColorOverride,
+  backgroundColor = '#ffffff',
   compact = false,
   unsubscribeText,
   unsubscribeUrl,
@@ -75,8 +94,19 @@ export default function EmailFooter({
   language = 'fr',
   onLanguageChange,
   showLanguageToggle = false,
+  isMobile = false,
 }: EmailFooterProps) {
-  const hasSocialLinks = !!(data.linkedin_url || data.twitter_url || data.instagram_url || data.facebook_url);
+  // Utiliser les valeurs personnalisées de la signature ou les overrides/défauts
+  const primaryColor = accentColorOverride || data.primary_color || '#10b981';
+  const textColor = textColorOverride || data.text_color || '#333333';
+  const secondaryColor = data.secondary_color || '#666666';
+  const baseFontFamily = data.font_family || 'Inter';
+  const fontFamily = `'${baseFontFamily}', Arial, sans-serif`;
+  const logoSize = isMobile ? Math.min(60, (data.logo_size || 100) * 0.6) : (data.logo_size || 100);
+  
+  // Vérifier s'il y a des liens sociaux (nouveau système uniquement)
+  const socialLinks = data.social_links || [];
+  const hasSocialLinks = socialLinks.length > 0;
   const hasContactInfo = !!(data.phone || data.website || data.address);
   
   // Textes traduits
@@ -84,19 +114,40 @@ export default function EmailFooter({
   const finalUnsubscribeText = unsubscribeText || t.unsubscribe;
   const finalLegalText = legalText || (data.company_name ? `${t.legal} ${data.company_name}. ${t.allRightsReserved}` : undefined);
   
+  // Charger la Google Font si nécessaire (mode preview)
+  useEffect(() => {
+    if (mode === 'preview') {
+      const fontUrl = getGoogleFontUrl(baseFontFamily);
+      if (fontUrl) {
+        const fontName = baseFontFamily.replace(/\s+/g, '-');
+        const linkId = `google-font-footer-${fontName}`;
+        
+        if (!document.getElementById(linkId)) {
+          const link = document.createElement('link');
+          link.id = linkId;
+          link.rel = 'stylesheet';
+          link.href = fontUrl;
+          document.head.appendChild(link);
+        }
+      }
+    }
+  }, [baseFontFamily, mode]);
+  
   // Pour les emails, on utilise des styles inline pour la compatibilité
   if (mode === 'email') {
     return (
       <EmailFooterInline
         data={data}
         textColor={textColor}
-        accentColor={accentColor}
-        backgroundColor={backgroundColor}
+        secondaryColor={secondaryColor}
+        accentColor={primaryColor}
+        fontFamily={fontFamily}
+        logoSize={logoSize}
         compact={compact}
         unsubscribeText={finalUnsubscribeText}
         unsubscribeUrl={unsubscribeUrl}
         legalText={finalLegalText}
-        hasSocialLinks={hasSocialLinks}
+        socialLinks={socialLinks}
         hasContactInfo={hasContactInfo}
       />
     );
@@ -106,20 +157,20 @@ export default function EmailFooter({
   return (
     <div 
       className={`w-full ${compact ? 'py-4' : 'py-6'}`}
-      style={{ backgroundColor: '#ffffff' }}
+      style={{ backgroundColor, fontFamily }}
     >
       <div className="max-w-[600px] mx-auto px-6">
         {/* Language Toggle (preview mode only) */}
         {showLanguageToggle && onLanguageChange && (
           <div className="flex justify-center mb-4">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg text-sm">
-              <IconLanguage className="w-4 h-4" style={{ color: textColor }} />
+              <IconLanguage className="w-4 h-4" style={{ color: secondaryColor }} />
               <button
                 onClick={() => onLanguageChange('fr')}
                 className="px-2 py-0.5 rounded transition-colors"
                 style={{ 
-                  backgroundColor: language === 'fr' ? accentColor : 'transparent',
-                  color: language === 'fr' ? 'white' : textColor,
+                  backgroundColor: language === 'fr' ? primaryColor : 'transparent',
+                  color: language === 'fr' ? 'white' : secondaryColor,
                 }}
               >
                 FR
@@ -128,8 +179,8 @@ export default function EmailFooter({
                 onClick={() => onLanguageChange('en')}
                 className="px-2 py-0.5 rounded transition-colors"
                 style={{ 
-                  backgroundColor: language === 'en' ? accentColor : 'transparent',
-                  color: language === 'en' ? 'white' : textColor,
+                  backgroundColor: language === 'en' ? primaryColor : 'transparent',
+                  color: language === 'en' ? 'white' : secondaryColor,
                 }}
               >
                 EN
@@ -139,16 +190,20 @@ export default function EmailFooter({
         )}
         
         {/* Signature horizontale : Logo à gauche, infos à droite */}
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-3">
           {/* Logo */}
           {data.logo_url && (
-            <div className="flex-shrink-0 pr-4 border-r-2 border-gray-200">
+            <div className="flex-shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={data.logo_url} 
                 alt="Logo" 
-                className="h-20 w-auto object-contain"
-                style={{ maxWidth: '80px' }}
+                style={{ 
+                  width: `${logoSize}px`, 
+                  height: `${logoSize}px`, 
+                  objectFit: 'contain',
+                  borderRadius: '8px',
+                }}
               />
             </div>
           )}
@@ -157,26 +212,26 @@ export default function EmailFooter({
           <div className="flex-1 min-w-0">
             {/* Nom & Titre */}
             {data.sender_name && (
-              <div className="font-bold text-base" style={{ color: '#111' }}>
+              <div className="font-bold text-base" style={{ color: textColor }}>
                 {data.sender_name}
               </div>
             )}
             {data.sender_title && (
-              <div className="text-sm mb-2" style={{ color: textColor }}>
+              <div className="text-sm mb-1" style={{ color: secondaryColor }}>
                 {data.sender_title}
               </div>
             )}
             
             {/* Entreprise */}
             {data.company_name && (
-              <div className="font-semibold mb-1" style={{ color: accentColor }}>
+              <div className="font-semibold mb-1" style={{ color: primaryColor }}>
                 {data.company_name}
               </div>
             )}
             
             {/* Contact */}
             {hasContactInfo && (
-              <div className={`${compact ? 'text-xs' : 'text-sm'} space-y-0.5`} style={{ color: textColor }}>
+              <div className={`${compact ? 'text-xs' : 'text-sm'} space-y-0.5`} style={{ color: secondaryColor }}>
                 {data.phone && (
                   <div className="flex items-center gap-1">
                     <IconPhone className="w-3.5 h-3.5" />
@@ -187,7 +242,7 @@ export default function EmailFooter({
                   <a 
                     href={data.website} 
                     className="flex items-center gap-1 hover:underline"
-                    style={{ color: accentColor }}
+                    style={{ color: primaryColor }}
                   >
                     <IconWorld className="w-3.5 h-3.5" />
                     <span>{data.website.replace(/^https?:\/\//, '')}</span>
@@ -202,62 +257,74 @@ export default function EmailFooter({
               </div>
             )}
             
-            {/* Social Links - Plus compacts */}
+            {/* Social Links - Nouveau système dynamique */}
             {hasSocialLinks && (
-              <div className="flex gap-2 mt-2">
-                {data.linkedin_url && (
-                  <a 
-                    href={data.linkedin_url}
-                    className="w-6 h-6 rounded flex items-center justify-center transition-colors hover:opacity-80"
-                    style={{ backgroundColor: '#0A66C2', color: 'white' }}
-                  >
-                    <IconBrandLinkedin className="w-4 h-4" />
-                  </a>
-                )}
-                {data.twitter_url && (
-                  <a 
-                    href={data.twitter_url}
-                    className="w-6 h-6 rounded flex items-center justify-center transition-colors hover:opacity-80"
-                    style={{ backgroundColor: '#1DA1F2', color: 'white' }}
-                  >
-                    <IconBrandTwitter className="w-4 h-4" />
-                  </a>
-                )}
-                {data.instagram_url && (
-                  <a 
-                    href={data.instagram_url}
-                    className="w-6 h-6 rounded flex items-center justify-center transition-colors hover:opacity-80"
-                    style={{ backgroundColor: '#E4405F', color: 'white' }}
-                  >
-                    <IconBrandInstagram className="w-4 h-4" />
-                  </a>
-                )}
-                {data.facebook_url && (
-                  <a 
-                    href={data.facebook_url}
-                    className="w-6 h-6 rounded flex items-center justify-center transition-colors hover:opacity-80"
-                    style={{ backgroundColor: '#1877F2', color: 'white' }}
-                  >
-                    <IconBrandFacebook className="w-4 h-4" />
-                  </a>
-                )}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {socialLinks.map((link, index) => {
+                  const label = link.label || SOCIAL_PLATFORM_LABELS[link.platform] || link.platform;
+                  const color = link.color || primaryColor;
+                  
+                  return (
+                    <a 
+                      key={link.id || index}
+                      href={link.url}
+                      className="text-sm font-medium hover:underline"
+                      style={{ color }}
+                    >
+                      {label}
+                    </a>
+                  );
+                })}
               </div>
             )}
           </div>
         </div>
         
+        {/* Banner */}
+        {data.banner_url && (
+          <div className="mt-4">
+            {data.banner_link ? (
+              <a href={data.banner_link} target="_blank" rel="noopener noreferrer">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={data.banner_url} 
+                  alt={data.banner_alt || 'Banner'} 
+                  style={{ 
+                    maxWidth: '100%',
+                    height: 'auto',
+                    display: 'block',
+                    borderRadius: '8px',
+                  }}
+                />
+              </a>
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img 
+                src={data.banner_url} 
+                alt={data.banner_alt || 'Banner'} 
+                style={{ 
+                  maxWidth: '100%',
+                  height: 'auto',
+                  display: 'block',
+                  borderRadius: '8px',
+                }}
+              />
+            )}
+          </div>
+        )}
+        
         {/* Legal & Unsubscribe - Séparateur fin */}
         {(finalLegalText || unsubscribeUrl) && (
           <div 
             className="text-center text-xs mt-4 pt-4 border-t border-gray-100"
-            style={{ color: textColor, opacity: 0.7 }}
+            style={{ color: secondaryColor, opacity: 0.7 }}
           >
             {finalLegalText && <p className="mb-1">{finalLegalText}</p>}
             {unsubscribeUrl && (
               <p>
                 <a 
                   href={unsubscribeUrl}
-                  style={{ color: accentColor }}
+                  style={{ color: primaryColor }}
                   className="hover:underline"
                 >
                   {finalUnsubscribeText}
@@ -272,269 +339,259 @@ export default function EmailFooter({
 }
 
 // Version avec styles inline pour les emails - Disposition horizontale
+interface EmailFooterInlineProps {
+  data: CreateEmailSignatureData;
+  textColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  fontFamily: string;
+  logoSize: number;
+  compact: boolean;
+  unsubscribeText: string;
+  unsubscribeUrl?: string;
+  legalText?: string;
+  socialLinks: SocialLink[];
+  hasContactInfo: boolean;
+}
+
 function EmailFooterInline({
   data,
   textColor,
+  secondaryColor,
   accentColor,
+  fontFamily,
+  logoSize,
   compact,
   unsubscribeText,
   unsubscribeUrl,
   legalText,
-  hasSocialLinks,
+  socialLinks,
   hasContactInfo,
-}: EmailFooterProps & { hasSocialLinks: boolean; hasContactInfo: boolean }) {
+}: EmailFooterInlineProps) {
+  const baseFontFamily = data.font_family || 'Inter';
+  const webSafe = ['Arial', 'Helvetica', 'Georgia', 'Verdana', 'Times New Roman', 'Tahoma', 'Trebuchet MS'];
+  const needsGoogleFont = !webSafe.includes(baseFontFamily);
+  
   return (
-    <table 
-      width="100%" 
-      cellPadding={0} 
-      cellSpacing={0}
-      style={{ 
-        backgroundColor: '#ffffff',
-        padding: compact ? '16px 0' : '24px 0',
-      }}
-    >
-      <tbody>
-        <tr>
-          <td align="center">
-            <table 
-              width="600" 
-              cellPadding={0} 
-              cellSpacing={0}
-              style={{ maxWidth: '600px', padding: '0 24px' }}
-            >
-              <tbody>
-                {/* Signature horizontale */}
-                <tr>
-                  <td>
-                    <table cellPadding={0} cellSpacing={0} style={{ borderCollapse: 'collapse' }}>
-                      <tbody>
-                        <tr>
-                          {/* Logo à gauche */}
-                          {data.logo_url && (
-                            <td style={{ 
-                              paddingRight: '16px', 
-                              verticalAlign: 'middle',
-                              borderRight: '2px solid #e5e7eb',
-                            }}>
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img 
-                                src={data.logo_url} 
-                                alt="Logo" 
-                                style={{ 
-                                  height: '80px', 
-                                  width: 'auto',
-                                  maxWidth: '80px',
-                                  objectFit: 'contain',
-                                  display: 'block',
-                                }}
-                              />
-                            </td>
-                          )}
-                          
-                          {/* Infos à droite */}
-                          <td style={{ 
-                            verticalAlign: 'middle', 
-                            paddingLeft: data.logo_url ? '16px' : '0',
-                          }}>
-                            {/* Nom */}
-                            {data.sender_name && (
-                              <div style={{ 
-                                fontWeight: 'bold', 
-                                fontSize: '16px', 
-                                color: '#111',
-                                marginBottom: '2px',
-                              }}>
-                                {data.sender_name}
-                              </div>
-                            )}
-                            {/* Titre */}
-                            {data.sender_title && (
-                              <div style={{ 
-                                color: textColor, 
-                                fontSize: '14px',
-                                marginBottom: '8px',
-                              }}>
-                                {data.sender_title}
-                              </div>
-                            )}
-                            
-                            {/* Entreprise */}
-                            {data.company_name && (
-                              <div style={{ 
-                                fontWeight: 600,
-                                color: accentColor,
-                                marginBottom: '4px',
-                              }}>
-                                {data.company_name}
-                              </div>
-                            )}
-                            
-                            {/* Contact */}
-                            {hasContactInfo && (
-                              <div style={{ 
-                                fontSize: compact ? '12px' : '13px',
-                                color: textColor,
-                              }}>
-                                {data.phone && (
-                                  <div style={{ marginBottom: '2px' }}>
-                                    📞 {data.phone}
-                                  </div>
-                                )}
-                                {data.website && (
-                                  <div style={{ marginBottom: '2px' }}>
-                                    🌐 <a 
-                                      href={data.website}
-                                      style={{ 
-                                        color: accentColor, 
-                                        textDecoration: 'none',
-                                      }}
-                                    >
-                                      {data.website.replace(/^https?:\/\//, '')}
-                                    </a>
-                                  </div>
-                                )}
-                                {data.address && (
-                                  <div>📍 {data.address}</div>
-                                )}
-                              </div>
-                            )}
-                            
-                            {/* Social Links */}
-                            {hasSocialLinks && (
-                              <div style={{ marginTop: '8px' }}>
-                                <table cellPadding={0} cellSpacing={0}>
-                                  <tbody>
-                                    <tr>
-                                      {data.linkedin_url && (
-                                        <td style={{ paddingRight: '6px' }}>
-                                          <a 
-                                            href={data.linkedin_url}
-                                            style={{
-                                              display: 'inline-block',
-                                              width: '24px',
-                                              height: '24px',
-                                              backgroundColor: '#0A66C2',
-                                              borderRadius: '4px',
-                                              textAlign: 'center',
-                                              lineHeight: '24px',
-                                              color: 'white',
-                                              textDecoration: 'none',
-                                              fontSize: '12px',
-                                            }}
-                                          >
-                                            in
-                                          </a>
-                                        </td>
-                                      )}
-                                      {data.twitter_url && (
-                                        <td style={{ paddingRight: '6px' }}>
-                                          <a 
-                                            href={data.twitter_url}
-                                            style={{
-                                              display: 'inline-block',
-                                              width: '24px',
-                                              height: '24px',
-                                              backgroundColor: '#1DA1F2',
-                                              borderRadius: '4px',
-                                              textAlign: 'center',
-                                              lineHeight: '24px',
-                                              color: 'white',
-                                              textDecoration: 'none',
-                                              fontSize: '12px',
-                                            }}
-                                          >
-                                            X
-                                          </a>
-                                        </td>
-                                      )}
-                                      {data.instagram_url && (
-                                        <td style={{ paddingRight: '6px' }}>
-                                          <a 
-                                            href={data.instagram_url}
-                                            style={{
-                                              display: 'inline-block',
-                                              width: '24px',
-                                              height: '24px',
-                                              backgroundColor: '#E4405F',
-                                              borderRadius: '4px',
-                                              textAlign: 'center',
-                                              lineHeight: '24px',
-                                              color: 'white',
-                                              textDecoration: 'none',
-                                              fontSize: '11px',
-                                            }}
-                                          >
-                                            📷
-                                          </a>
-                                        </td>
-                                      )}
-                                      {data.facebook_url && (
-                                        <td>
-                                          <a 
-                                            href={data.facebook_url}
-                                            style={{
-                                              display: 'inline-block',
-                                              width: '24px',
-                                              height: '24px',
-                                              backgroundColor: '#1877F2',
-                                              borderRadius: '4px',
-                                              textAlign: 'center',
-                                              lineHeight: '24px',
-                                              color: 'white',
-                                              textDecoration: 'none',
-                                              fontSize: '12px',
-                                            }}
-                                          >
-                                            f
-                                          </a>
-                                        </td>
-                                      )}
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-                
-                {/* Legal & Unsubscribe */}
-                {(legalText || (unsubscribeUrl && unsubscribeText)) && (
+    <>
+      {/* Google Font import si nécessaire */}
+      {needsGoogleFont && (
+        <link 
+          href={`https://fonts.googleapis.com/css2?family=${baseFontFamily.replace(/ /g, '+')}:wght@400;500;600;700&display=swap`} 
+          rel="stylesheet" 
+        />
+      )}
+      
+      <table 
+        width="100%" 
+        cellPadding={0} 
+        cellSpacing={0}
+        style={{ 
+          backgroundColor: '#ffffff',
+          padding: compact ? '16px 0' : '24px 0',
+          fontFamily,
+        }}
+      >
+        <tbody>
+          <tr>
+            <td align="center">
+              <table 
+                width="600" 
+                cellPadding={0} 
+                cellSpacing={0}
+                style={{ maxWidth: '600px', padding: '0 24px' }}
+              >
+                <tbody>
+                  {/* Signature horizontale */}
                   <tr>
-                    <td 
-                      align="center" 
-                      style={{ 
-                        fontSize: '12px',
-                        color: textColor,
-                        opacity: 0.7,
-                        paddingTop: '16px',
-                        borderTop: '1px solid #f0f0f0',
-                        marginTop: '16px',
-                      }}
-                    >
-                      {legalText && <p style={{ margin: '0 0 4px' }}>{legalText}</p>}
-                      {unsubscribeUrl && unsubscribeText && (
-                        <p style={{ margin: 0 }}>
-                          <a 
-                            href={unsubscribeUrl}
-                            style={{ color: accentColor, textDecoration: 'none' }}
-                          >
-                            {unsubscribeText}
-                          </a>
-                        </p>
-                      )}
+                    <td>
+                      <table cellPadding={0} cellSpacing={0} style={{ borderCollapse: 'collapse' }}>
+                        <tbody>
+                          <tr>
+                            {/* Logo à gauche */}
+                            {data.logo_url && (
+                              <td style={{ 
+                                paddingRight: '12px', 
+                                verticalAlign: 'top',
+                              }}>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img 
+                                  src={data.logo_url} 
+                                  alt="Logo" 
+                                  style={{ 
+                                    width: `${logoSize}px`,
+                                    height: `${logoSize}px`,
+                                    objectFit: 'contain',
+                                    borderRadius: '8px',
+                                    display: 'block',
+                                  }}
+                                />
+                              </td>
+                            )}
+                            
+                            {/* Infos à droite */}
+                            <td style={{ verticalAlign: 'top' }}>
+                              {/* Nom */}
+                              {data.sender_name && (
+                                <div style={{ 
+                                  fontWeight: 'bold', 
+                                  fontSize: '16px', 
+                                  color: textColor,
+                                }}>
+                                  {data.sender_name}
+                                </div>
+                              )}
+                              {/* Titre */}
+                              {data.sender_title && (
+                                <div style={{ 
+                                  color: secondaryColor, 
+                                  fontSize: '14px',
+                                  marginBottom: '6px',
+                                }}>
+                                  {data.sender_title}
+                                </div>
+                              )}
+                              
+                              {/* Entreprise */}
+                              {data.company_name && (
+                                <div style={{ 
+                                  fontWeight: 600,
+                                  color: accentColor,
+                                  marginBottom: '4px',
+                                }}>
+                                  {data.company_name}
+                                </div>
+                              )}
+                              
+                              {/* Contact */}
+                              {hasContactInfo && (
+                                <div style={{ 
+                                  fontSize: compact ? '12px' : '13px',
+                                  color: secondaryColor,
+                                }}>
+                                  {data.phone && (
+                                    <div>📞 {data.phone}</div>
+                                  )}
+                                  {data.website && (
+                                    <div>
+                                      🌐 <a 
+                                        href={data.website}
+                                        style={{ 
+                                          color: accentColor, 
+                                          textDecoration: 'none',
+                                        }}
+                                      >
+                                        {data.website.replace(/^https?:\/\//, '')}
+                                      </a>
+                                    </div>
+                                  )}
+                                  {data.address && (
+                                    <div>📍 {data.address}</div>
+                                  )}
+                                </div>
+                              )}
+                              
+                              {/* Social Links - Nouveau système dynamique */}
+                              {socialLinks.length > 0 && (
+                                <div style={{ marginTop: '10px' }}>
+                                  {socialLinks.map((link, index) => {
+                                    const label = link.label || SOCIAL_PLATFORM_LABELS[link.platform] || link.platform;
+                                    const color = link.color || accentColor;
+                                    
+                                    return (
+                                      <a 
+                                        key={link.id || index}
+                                        href={link.url}
+                                        style={{ 
+                                          color, 
+                                          marginRight: '8px', 
+                                          textDecoration: 'none',
+                                          fontWeight: 500,
+                                        }}
+                                      >
+                                        {label}
+                                      </a>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                  
+                  {/* Banner */}
+                  {data.banner_url && (
+                    <tr>
+                      <td style={{ paddingTop: '16px' }}>
+                        {data.banner_link ? (
+                          <a href={data.banner_link} target="_blank" rel="noopener noreferrer">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img 
+                              src={data.banner_url} 
+                              alt={data.banner_alt || 'Banner'} 
+                              style={{ 
+                                maxWidth: '100%',
+                                height: 'auto',
+                                display: 'block',
+                                borderRadius: '8px',
+                              }}
+                            />
+                          </a>
+                        ) : (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img 
+                            src={data.banner_url} 
+                            alt={data.banner_alt || 'Banner'} 
+                            style={{ 
+                              maxWidth: '100%',
+                              height: 'auto',
+                              display: 'block',
+                              borderRadius: '8px',
+                            }}
+                          />
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                  
+                  {/* Legal & Unsubscribe */}
+                  {(legalText || (unsubscribeUrl && unsubscribeText)) && (
+                    <tr>
+                      <td 
+                        align="center" 
+                        style={{ 
+                          fontSize: '12px',
+                          color: secondaryColor,
+                          opacity: 0.7,
+                          paddingTop: '16px',
+                          borderTop: '1px solid #f0f0f0',
+                          marginTop: '16px',
+                        }}
+                      >
+                        {legalText && <p style={{ margin: '0 0 4px' }}>{legalText}</p>}
+                        {unsubscribeUrl && unsubscribeText && (
+                          <p style={{ margin: 0 }}>
+                            <a 
+                              href={unsubscribeUrl}
+                              style={{ color: accentColor, textDecoration: 'none' }}
+                            >
+                              {unsubscribeText}
+                            </a>
+                          </p>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </>
   );
 }
 

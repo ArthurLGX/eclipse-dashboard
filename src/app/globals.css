@@ -821,6 +821,30 @@ nav button:hover svg, nav a:hover svg {
 }
 
 /* ============================================
+   EMAIL PREVIEW - Force light theme for realistic email preview
+   ============================================ */
+
+.email-preview-light {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+.email-preview-light div,
+.email-preview-light table,
+.email-preview-light tbody,
+.email-preview-light tr,
+.email-preview-light td,
+.email-preview-light p,
+.email-preview-light span {
+  background-color: transparent !important;
+}
+
+/* Ensure the preview container itself stays white */
+.email-preview-light > div {
+  background-color: #ffffff !important;
+}
+
+/* ============================================
    PRINT STYLES
    ============================================ */
 

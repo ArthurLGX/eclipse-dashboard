@@ -150,7 +150,7 @@ export default function SettingsPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="w-full max-w-4xl mx-auto pb-16"
+      className="w-full max-w-7xl mx-auto pb-16"
     >
       {/* Header */}
       <div className="mb-6">
@@ -485,7 +485,7 @@ function OptionButton({ children, selected, onClick }: { children: React.ReactNo
       className={`
         flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all
         ${selected
-          ? 'border-accent bg-accent-light text-accent-text'
+          ? 'border-accent bg-accent text-accent-text'
           : 'border-default text-secondary hover:border-muted hover:text-primary'
         }
       `}

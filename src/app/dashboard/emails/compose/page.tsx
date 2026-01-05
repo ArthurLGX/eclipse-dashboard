@@ -17,6 +17,8 @@ import {
   IconEyeOff,
   IconSignature,
   IconClock,
+  IconDeviceMobile,
+  IconDeviceDesktop,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -69,6 +71,7 @@ function ComposeEmail() {
   // UI state
   const [sending, setSending] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
   
@@ -119,6 +122,16 @@ function ComposeEmail() {
             instagram_url: sig.instagram_url || '',
             facebook_url: sig.facebook_url || '',
             logo_url: sig.logo_url || '',
+            banner_url: sig.banner_url || '',
+            banner_link: sig.banner_link || '',
+            banner_alt: sig.banner_alt || '',
+            // Champs de personnalisation
+            logo_size: sig.logo_size || 100,
+            primary_color: sig.primary_color || '#10b981',
+            text_color: sig.text_color || '#333333',
+            secondary_color: sig.secondary_color || '#666666',
+            font_family: sig.font_family || 'Inter',
+            social_links: sig.social_links || [],
           });
         }
       } catch (error) {
@@ -383,50 +396,83 @@ function ComposeEmail() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="bg-white rounded-xl shadow-lg overflow-hidden"
             >
-              <div className="p-4 bg-gray-50 border-b border-gray-200">
-                <div className="text-sm text-gray-500 mb-1">{t('to') || 'À'}: {recipients.map(r => r.email).join(', ')}</div>
-                <div className="font-semibold text-gray-800">{subject || '(Sans objet)'}</div>
+              {/* Preview Mode Toggle */}
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <button
+                  onClick={() => setPreviewMode('desktop')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    previewMode === 'desktop'
+                      ? 'bg-accent text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  <IconDeviceDesktop className="w-4 h-4" />
+                  Desktop
+                </button>
+                <button
+                  onClick={() => setPreviewMode('mobile')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    previewMode === 'mobile'
+                      ? 'bg-accent text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  <IconDeviceMobile className="w-4 h-4" />
+                  Mobile
+                </button>
               </div>
               
-              <div className="p-6">
-                <div style={{ fontFamily: 'Arial, sans-serif' }}>
-                  {message.split('\n').map((line, i) => (
-                    <p key={i} style={{ margin: '0 0 10px', lineHeight: 1.6 }}>
-                      {line || '\u00A0'}
-                    </p>
-                  ))}
-                </div>
-                
-                {includeSignature && signatureData && (
-                  <div className="mt-8 pt-6 border-t border-gray-200">
-                    <EmailFooter 
-                      data={signatureData} 
-                      mode="preview" 
-                      compact 
-                      language={footerLanguage}
-                      onLanguageChange={setFooterLanguage}
-                      showLanguageToggle
-                    />
+              {/* Preview Container - Always white background for email preview */}
+              <div className={`mx-auto transition-all duration-300 ${
+                previewMode === 'mobile' ? 'max-w-[375px]' : 'max-w-full'
+              }`}>
+                <div className="email-preview-light rounded-xl shadow-lg overflow-hidden">
+                  <div className="p-4 border-b border-gray-200 bg-gray-50">
+                    <div className="text-sm mb-1 text-gray-500">{t('to') || 'À'}: {recipients.map(r => r.email).join(', ')}</div>
+                    <div className="font-semibold text-gray-800">{subject || '(Sans objet)'}</div>
                   </div>
-                )}
-                
-                {attachments.length > 0 && (
-                  <div className="mt-6 pt-4 border-t border-gray-200">
-                    <div className="text-sm font-medium text-gray-700 mb-2">
-                      {t('attachments') || 'Pièces jointes'} ({attachments.length})
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {attachments.map(att => (
-                        <div key={att.id} className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg text-sm">
-                          <IconPaperclip className="w-4 h-4 text-gray-500" />
-                          <span>{att.name}</span>
-                        </div>
+                  
+                  <div className={`p-6 ${previewMode === 'mobile' ? 'text-sm' : ''}`}>
+                    <div style={{ fontFamily: 'Arial, sans-serif' }}>
+                      {message.split('\n').map((line, i) => (
+                        <p key={i} style={{ margin: '0 0 10px', lineHeight: 1.6 }}>
+                          {line || '\u00A0'}
+                        </p>
                       ))}
                     </div>
+                    
+                    {includeSignature && signatureData && (
+                      <div className="mt-8 pt-6 border-t border-gray-200">
+                        <EmailFooter 
+                          data={signatureData} 
+                          mode="preview" 
+                          compact 
+                          language={footerLanguage}
+                          onLanguageChange={setFooterLanguage}
+                          showLanguageToggle
+                          isMobile={previewMode === 'mobile'}
+                        />
+                      </div>
+                    )}
+                    
+                    {attachments.length > 0 && (
+                      <div className="mt-6 pt-4 border-t border-gray-200">
+                        <div className="text-sm font-medium text-gray-700 mb-2">
+                          {t('attachments') || 'Pièces jointes'} ({attachments.length})
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {attachments.map(att => (
+                            <div key={att.id} className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg text-sm">
+                              <IconPaperclip className="w-4 h-4 text-gray-500" />
+                              <span>{att.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </motion.div>
           ) : (
@@ -644,53 +690,109 @@ function ComposeEmail() {
   );
 }
 
+// Plateformes sociales pour les labels
+const SOCIAL_PLATFORMS_MAP: Record<string, { label: string; color: string }> = {
+  linkedin: { label: 'LinkedIn', color: '#0A66C2' },
+  twitter: { label: 'Twitter', color: '#1DA1F2' },
+  instagram: { label: 'Instagram', color: '#E4405F' },
+  facebook: { label: 'Facebook', color: '#1877F2' },
+  youtube: { label: 'YouTube', color: '#FF0000' },
+  tiktok: { label: 'TikTok', color: '#000000' },
+  github: { label: 'GitHub', color: '#333333' },
+  custom: { label: 'Lien', color: '#7C3AED' },
+};
+
 // Helper function to render signature as HTML for email
-function renderSignatureHtml(data: CreateEmailSignatureData): string {
-  const hasSocialLinks = data.linkedin_url || data.twitter_url || data.instagram_url || data.facebook_url;
+function renderSignatureHtml(data: CreateEmailSignatureData, bannerOverride?: { url?: string; link?: string; alt?: string }): string {
+  // Use banner override if provided, otherwise use signature banner
+  const bannerUrl = bannerOverride?.url ?? data.banner_url;
+  const bannerLink = bannerOverride?.link ?? data.banner_link;
+  const bannerAlt = bannerOverride?.alt ?? data.banner_alt ?? 'Banner';
   
-  let html = '<table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">';
+  // Utiliser les valeurs personnalisées ou les valeurs par défaut
+  const logoSize = data.logo_size || 100;
+  const primaryColor = data.primary_color || '#10b981';
+  const textColor = data.text_color || '#333333';
+  const secondaryColor = data.secondary_color || '#666666';
+  const baseFontFamily = data.font_family || 'Inter';
+  const fontFamily = `'${baseFontFamily}', Arial, sans-serif`;
+  
+  // Web-safe fonts n'ont pas besoin de Google Fonts import
+  const webSafe = ['Arial', 'Helvetica', 'Georgia', 'Verdana', 'Times New Roman', 'Tahoma', 'Trebuchet MS'];
+  const needsGoogleFont = !webSafe.includes(baseFontFamily);
+  
+  // Utiliser uniquement le nouveau système de liens sociaux
+  const socialLinks = data.social_links || [];
+  
+  // Ajouter l'import Google Font si nécessaire
+  let html = '';
+  if (needsGoogleFont) {
+    const fontName = baseFontFamily.replace(/ /g, '+');
+    html += `<link href="https://fonts.googleapis.com/css2?family=${fontName}:wght@400;500;600;700&display=swap" rel="stylesheet">`;
+  }
+  
+  html += `<table cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-family: ${fontFamily};">`;
   html += '<tr>';
   
   // Logo
   if (data.logo_url) {
-    html += `<td style="padding-right: 16px; vertical-align: middle;">
-      <img src="${data.logo_url}" alt="Logo" style="width: 80px; height: 80px; object-fit: contain; border-radius: 8px; display: block;" />
+    html += `<td style="padding-right: 12px; vertical-align: top;">
+      <img src="${data.logo_url}" alt="Logo" style="width: ${logoSize}px; height: ${logoSize}px; object-fit: contain; border-radius: 8px; display: block;" />
     </td>`;
   }
   
-  html += '<td style="vertical-align: middle;">';
+  html += '<td style="vertical-align: top;">';
   
   // Name & Title
   if (data.sender_name) {
-    html += `<div style="font-weight: bold; font-size: 16px; color: #111;">${data.sender_name}</div>`;
+    html += `<div style="font-weight: bold; font-size: 16px; color: ${textColor};">${data.sender_name}</div>`;
   }
   if (data.sender_title) {
-    html += `<div style="color: #666; margin-bottom: 8px;">${data.sender_title}</div>`;
+    html += `<div style="color: ${secondaryColor}; margin-bottom: 6px; font-size: 14px;">${data.sender_title}</div>`;
   }
   
   // Company
   if (data.company_name) {
-    html += `<div style="font-weight: 600; color: #10b981; margin-bottom: 4px;">${data.company_name}</div>`;
+    html += `<div style="font-weight: 600; color: ${primaryColor}; margin-bottom: 4px;">${data.company_name}</div>`;
   }
   
   // Contact
-  html += '<div style="font-size: 13px; color: #666;">';
+  html += `<div style="font-size: 13px; color: ${secondaryColor};">`;
   if (data.phone) html += `<div>📞 ${data.phone}</div>`;
-  if (data.website) html += `<div>🌐 <a href="${data.website}" style="color: #10b981; text-decoration: none;">${data.website.replace(/^https?:\/\//, '')}</a></div>`;
+  if (data.website) html += `<div>🌐 <a href="${data.website}" style="color: ${primaryColor}; text-decoration: none;">${data.website.replace(/^https?:\/\//, '')}</a></div>`;
   if (data.address) html += `<div>📍 ${data.address}</div>`;
   html += '</div>';
   
   // Social links
-  if (hasSocialLinks) {
-    html += '<div style="margin-top: 12px;">';
-    if (data.linkedin_url) html += `<a href="${data.linkedin_url}" style="color: #0A66C2; margin-right: 8px; text-decoration: none;">LinkedIn</a>`;
-    if (data.twitter_url) html += `<a href="${data.twitter_url}" style="color: #1DA1F2; margin-right: 8px; text-decoration: none;">Twitter</a>`;
-    if (data.instagram_url) html += `<a href="${data.instagram_url}" style="color: #E4405F; margin-right: 8px; text-decoration: none;">Instagram</a>`;
-    if (data.facebook_url) html += `<a href="${data.facebook_url}" style="color: #1877F2; text-decoration: none;">Facebook</a>`;
+  if (socialLinks.length > 0) {
+    html += '<div style="margin-top: 10px;">';
+    socialLinks.forEach((link) => {
+      if (link && typeof link === 'object' && 'url' in link) {
+        const platform = SOCIAL_PLATFORMS_MAP[link.platform] || SOCIAL_PLATFORMS_MAP.custom;
+        const label = ('label' in link && link.label) ? link.label : platform.label;
+        const color = link.color || platform.color;
+        html += `<a href="${link.url}" style="color: ${color}; margin-right: 8px; text-decoration: none; font-weight: 500;">${label}</a>`;
+      }
+    });
     html += '</div>';
   }
   
   html += '</td></tr></table>';
+  
+  // Promotional Banner
+  if (bannerUrl) {
+    html += `
+      <div style="margin-top: 16px;">
+        ${bannerLink ? `<a href="${bannerLink}" target="_blank" rel="noopener noreferrer">` : ''}
+        <img 
+          src="${bannerUrl}" 
+          alt="${bannerAlt}" 
+          style="max-width: 100%; height: auto; display: block; border-radius: 8px;"
+        />
+        ${bannerLink ? '</a>' : ''}
+      </div>
+    `;
+  }
   
   return html;
 }

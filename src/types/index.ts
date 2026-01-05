@@ -581,6 +581,15 @@ export type UpdateCustomTemplateData = Partial<CreateCustomTemplateData>;
 // EMAIL SIGNATURE (Signature email personnalisée)
 // ============================================================================
 
+// Interface pour les liens sociaux personnalisés
+export interface SocialLink {
+  id: string;
+  platform: string; // 'linkedin' | 'twitter' | 'instagram' | 'facebook' | 'youtube' | 'tiktok' | 'github' | 'custom'
+  url: string;
+  label?: string; // Label personnalisé pour 'custom'
+  color?: string; // Couleur personnalisée
+}
+
 export interface EmailSignature {
   id: number;
   documentId: string;
@@ -595,6 +604,16 @@ export interface EmailSignature {
   instagram_url?: string;
   facebook_url?: string;
   logo_url?: string;
+  banner_url?: string;
+  banner_link?: string;
+  banner_alt?: string;
+  // Nouveaux champs de personnalisation
+  logo_size?: number;
+  primary_color?: string;
+  text_color?: string;
+  secondary_color?: string;
+  font_family?: string;
+  social_links?: SocialLink[];
   users?: number | { id: number };
   createdAt: string;
   updatedAt: string;
@@ -612,6 +631,16 @@ export interface CreateEmailSignatureData {
   instagram_url?: string;
   facebook_url?: string;
   logo_url?: string;
+  banner_url?: string;
+  banner_link?: string;
+  banner_alt?: string;
+  // Nouveaux champs de personnalisation
+  logo_size?: number;
+  primary_color?: string;
+  text_color?: string;
+  secondary_color?: string;
+  font_family?: string;
+  social_links?: SocialLink[];
 }
 
 export type UpdateEmailSignatureData = Partial<CreateEmailSignatureData>;

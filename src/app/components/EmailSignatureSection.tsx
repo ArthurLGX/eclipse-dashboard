@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   IconSignature,
   IconLoader2,
@@ -15,19 +15,125 @@ import {
   IconBrandTwitter,
   IconBrandInstagram,
   IconBrandFacebook,
+  IconBrandYoutube,
+  IconBrandTiktok,
+  IconBrandGithub,
   IconPhoto,
   IconTrash,
   IconEye,
   IconLanguage,
+  IconLink,
+  IconDeviceMobile,
+  IconDeviceDesktop,
+  IconPalette,
+  IconPlus,
+  IconGripVertical,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { fetchEmailSignature, saveEmailSignature, fetchCompanyUser } from '@/lib/api';
-import type { EmailSignature, CreateEmailSignatureData, Company } from '@/types';
+import type { EmailSignature, CreateEmailSignatureData, Company, SocialLink } from '@/types';
 import MediaPickerModal from './MediaPickerModal';
 
 type FooterLanguage = 'fr' | 'en';
+
+// Plateformes sociales disponibles
+const SOCIAL_PLATFORMS = [
+  { id: 'linkedin', label: 'LinkedIn', color: '#0A66C2', icon: IconBrandLinkedin },
+  { id: 'twitter', label: 'Twitter / X', color: '#1DA1F2', icon: IconBrandTwitter },
+  { id: 'instagram', label: 'Instagram', color: '#E4405F', icon: IconBrandInstagram },
+  { id: 'facebook', label: 'Facebook', color: '#1877F2', icon: IconBrandFacebook },
+  { id: 'youtube', label: 'YouTube', color: '#FF0000', icon: IconBrandYoutube },
+  { id: 'tiktok', label: 'TikTok', color: '#000000', icon: IconBrandTiktok },
+  { id: 'github', label: 'GitHub', color: '#333333', icon: IconBrandGithub },
+  { id: 'custom', label: 'Personnalisé', color: '#7C3AED', icon: IconLink },
+];
+
+// Google Fonts populaires
+const GOOGLE_FONTS = [
+  // Sans-serif modernes
+  { value: 'Inter', label: 'Inter', category: 'Sans-serif' },
+  { value: 'Roboto', label: 'Roboto', category: 'Sans-serif' },
+  { value: 'Open Sans', label: 'Open Sans', category: 'Sans-serif' },
+  { value: 'Lato', label: 'Lato', category: 'Sans-serif' },
+  { value: 'Montserrat', label: 'Montserrat', category: 'Sans-serif' },
+  { value: 'Poppins', label: 'Poppins', category: 'Sans-serif' },
+  { value: 'Nunito', label: 'Nunito', category: 'Sans-serif' },
+  { value: 'Nunito Sans', label: 'Nunito Sans', category: 'Sans-serif' },
+  { value: 'Raleway', label: 'Raleway', category: 'Sans-serif' },
+  { value: 'Work Sans', label: 'Work Sans', category: 'Sans-serif' },
+  { value: 'Outfit', label: 'Outfit', category: 'Sans-serif' },
+  { value: 'DM Sans', label: 'DM Sans', category: 'Sans-serif' },
+  { value: 'Plus Jakarta Sans', label: 'Plus Jakarta Sans', category: 'Sans-serif' },
+  { value: 'Source Sans 3', label: 'Source Sans 3', category: 'Sans-serif' },
+  { value: 'Manrope', label: 'Manrope', category: 'Sans-serif' },
+  { value: 'Space Grotesk', label: 'Space Grotesk', category: 'Sans-serif' },
+  { value: 'Figtree', label: 'Figtree', category: 'Sans-serif' },
+  { value: 'Quicksand', label: 'Quicksand', category: 'Sans-serif' },
+  { value: 'Mulish', label: 'Mulish', category: 'Sans-serif' },
+  { value: 'Barlow', label: 'Barlow', category: 'Sans-serif' },
+  { value: 'Urbanist', label: 'Urbanist', category: 'Sans-serif' },
+  { value: 'Sora', label: 'Sora', category: 'Sans-serif' },
+  { value: 'Albert Sans', label: 'Albert Sans', category: 'Sans-serif' },
+  { value: 'Cabin', label: 'Cabin', category: 'Sans-serif' },
+  { value: 'Karla', label: 'Karla', category: 'Sans-serif' },
+  { value: 'Lexend', label: 'Lexend', category: 'Sans-serif' },
+  { value: 'Rubik', label: 'Rubik', category: 'Sans-serif' },
+  { value: 'Josefin Sans', label: 'Josefin Sans', category: 'Sans-serif' },
+  { value: 'Fira Sans', label: 'Fira Sans', category: 'Sans-serif' },
+  { value: 'Exo 2', label: 'Exo 2', category: 'Sans-serif' },
+  // Serif élégantes
+  { value: 'Playfair Display', label: 'Playfair Display', category: 'Serif' },
+  { value: 'Merriweather', label: 'Merriweather', category: 'Serif' },
+  { value: 'Lora', label: 'Lora', category: 'Serif' },
+  { value: 'PT Serif', label: 'PT Serif', category: 'Serif' },
+  { value: 'Libre Baskerville', label: 'Libre Baskerville', category: 'Serif' },
+  { value: 'Source Serif 4', label: 'Source Serif 4', category: 'Serif' },
+  { value: 'Crimson Text', label: 'Crimson Text', category: 'Serif' },
+  { value: 'Cormorant Garamond', label: 'Cormorant Garamond', category: 'Serif' },
+  { value: 'EB Garamond', label: 'EB Garamond', category: 'Serif' },
+  { value: 'Bitter', label: 'Bitter', category: 'Serif' },
+  { value: 'Spectral', label: 'Spectral', category: 'Serif' },
+  { value: 'DM Serif Display', label: 'DM Serif Display', category: 'Serif' },
+  { value: 'Fraunces', label: 'Fraunces', category: 'Serif' },
+  // Display / Créatives
+  { value: 'Bebas Neue', label: 'Bebas Neue', category: 'Display' },
+  { value: 'Oswald', label: 'Oswald', category: 'Display' },
+  { value: 'Anton', label: 'Anton', category: 'Display' },
+  { value: 'Archivo Black', label: 'Archivo Black', category: 'Display' },
+  { value: 'Righteous', label: 'Righteous', category: 'Display' },
+  // Monospace
+  { value: 'Fira Code', label: 'Fira Code', category: 'Monospace' },
+  { value: 'JetBrains Mono', label: 'JetBrains Mono', category: 'Monospace' },
+  { value: 'Source Code Pro', label: 'Source Code Pro', category: 'Monospace' },
+  { value: 'IBM Plex Mono', label: 'IBM Plex Mono', category: 'Monospace' },
+  // Handwriting / Script
+  { value: 'Dancing Script', label: 'Dancing Script', category: 'Handwriting' },
+  { value: 'Pacifico', label: 'Pacifico', category: 'Handwriting' },
+  { value: 'Caveat', label: 'Caveat', category: 'Handwriting' },
+  { value: 'Satisfy', label: 'Satisfy', category: 'Handwriting' },
+  { value: 'Great Vibes', label: 'Great Vibes', category: 'Handwriting' },
+  // Web-safe fallbacks
+  { value: 'Arial', label: 'Arial (Web-safe)', category: 'Web-safe' },
+  { value: 'Helvetica', label: 'Helvetica (Web-safe)', category: 'Web-safe' },
+  { value: 'Georgia', label: 'Georgia (Web-safe)', category: 'Web-safe' },
+  { value: 'Verdana', label: 'Verdana (Web-safe)', category: 'Web-safe' },
+  { value: 'Times New Roman', label: 'Times New Roman (Web-safe)', category: 'Web-safe' },
+];
+
+// Grouper les fonts par catégorie
+const FONT_CATEGORIES = ['Sans-serif', 'Serif', 'Display', 'Monospace', 'Handwriting', 'Web-safe'];
+
+// Helper pour obtenir l'URL Google Fonts
+const getGoogleFontUrl = (fontFamily: string) => {
+  // Web-safe fonts n'ont pas besoin de Google Fonts
+  const webSafe = ['Arial', 'Helvetica', 'Georgia', 'Verdana', 'Times New Roman', 'Tahoma', 'Trebuchet MS'];
+  if (webSafe.includes(fontFamily)) return null;
+  
+  const fontName = fontFamily.replace(/ /g, '+');
+  return `https://fonts.googleapis.com/css2?family=${fontName}:wght@400;500;600;700&display=swap`;
+};
 
 export default function EmailSignatureSection() {
   const { t } = useLanguage();
@@ -39,7 +145,9 @@ export default function EmailSignatureSection() {
   const [, setSignature] = useState<EmailSignature | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [showBannerPicker, setShowBannerPicker] = useState(false);
   const [footerLanguage, setFooterLanguage] = useState<FooterLanguage>('fr');
+  const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   
   // Form state
   const [formData, setFormData] = useState<CreateEmailSignatureData>({
@@ -54,7 +162,20 @@ export default function EmailSignatureSection() {
     instagram_url: '',
     facebook_url: '',
     logo_url: '',
+    banner_url: '',
+    banner_link: '',
+    banner_alt: '',
+    // Nouveaux champs de personnalisation
+    logo_size: 100,
+    primary_color: '#10b981',
+    text_color: '#333333',
+    secondary_color: '#666666',
+    font_family: 'Inter',
+    social_links: [],
   });
+  
+  // État pour la personnalisation avancée
+  const [showCustomization, setShowCustomization] = useState(false);
   
   // Charger la signature existante et les données entreprise
   const loadSignature = useCallback(async () => {
@@ -87,6 +208,16 @@ export default function EmailSignatureSection() {
           instagram_url: sig.instagram_url || '',
           facebook_url: sig.facebook_url || '',
           logo_url: sig.logo_url || '',
+          banner_url: sig.banner_url || '',
+          banner_link: sig.banner_link || '',
+          banner_alt: sig.banner_alt || '',
+          // Champs de personnalisation
+          logo_size: sig.logo_size || 100,
+          primary_color: sig.primary_color || '#10b981',
+          text_color: sig.text_color || '#333333',
+          secondary_color: sig.secondary_color || '#666666',
+          font_family: sig.font_family || 'Inter',
+          social_links: sig.social_links || [],
         });
       } else if (companyData) {
         // Sinon, pré-remplir avec les données entreprise
@@ -102,6 +233,15 @@ export default function EmailSignatureSection() {
           instagram_url: '',
           facebook_url: '',
           logo_url: companyData.logo || '',
+          banner_url: '',
+          banner_link: '',
+          banner_alt: '',
+          logo_size: 100,
+          primary_color: '#10b981',
+          text_color: '#333333',
+          secondary_color: '#666666',
+          font_family: 'Inter',
+          social_links: [],
         });
       } else {
         // Aucune donnée, juste mettre le nom de l'utilisateur
@@ -121,6 +261,23 @@ export default function EmailSignatureSection() {
     loadSignature();
   }, [loadSignature]);
   
+  // Charger la Google Font sélectionnée
+  useEffect(() => {
+    const fontUrl = getGoogleFontUrl(formData.font_family || 'Inter');
+    if (fontUrl) {
+      const fontName = (formData.font_family || 'Inter').replace(/\s+/g, '-');
+      const linkId = `google-font-signature-${fontName}`;
+      
+      if (!document.getElementById(linkId)) {
+        const link = document.createElement('link');
+        link.id = linkId;
+        link.rel = 'stylesheet';
+        link.href = fontUrl;
+        document.head.appendChild(link);
+      }
+    }
+  }, [formData.font_family]);
+  
   // Sauvegarder la signature
   const handleSave = async () => {
     if (!user?.id) return;
@@ -139,7 +296,7 @@ export default function EmailSignatureSection() {
   };
   
   // Update form field
-  const updateField = (field: keyof CreateEmailSignatureData, value: string) => {
+  const updateField = (field: keyof CreateEmailSignatureData, value: string | number | SocialLink[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
   
@@ -147,6 +304,47 @@ export default function EmailSignatureSection() {
   const handleLogoSelect = (url: string) => {
     updateField('logo_url', url);
     setShowMediaPicker(false);
+  };
+  
+  // Handle banner selection
+  const handleBannerSelect = (url: string) => {
+    updateField('banner_url', url);
+    setShowBannerPicker(false);
+  };
+  
+  // Gestion des liens sociaux
+  const addSocialLink = () => {
+    const newLink: SocialLink = {
+      id: `social-${Date.now()}`,
+      platform: 'linkedin',
+      url: '',
+      color: '#0A66C2',
+    };
+    updateField('social_links', [...(formData.social_links || []), newLink]);
+  };
+  
+  const updateSocialLink = (id: string, updates: Partial<SocialLink>) => {
+    const links = formData.social_links || [];
+    const updatedLinks = links.map(link => 
+      link.id === id ? { ...link, ...updates } : link
+    );
+    updateField('social_links', updatedLinks);
+  };
+  
+  const removeSocialLink = (id: string) => {
+    const links = formData.social_links || [];
+    updateField('social_links', links.filter(link => link.id !== id));
+  };
+  
+  const moveSocialLink = (id: string, direction: 'up' | 'down') => {
+    const links = [...(formData.social_links || [])];
+    const index = links.findIndex(link => link.id === id);
+    if (direction === 'up' && index > 0) {
+      [links[index], links[index - 1]] = [links[index - 1], links[index]];
+    } else if (direction === 'down' && index < links.length - 1) {
+      [links[index], links[index + 1]] = [links[index + 1], links[index]];
+    }
+    updateField('social_links', links);
   };
   
   if (loading) {
@@ -216,9 +414,41 @@ export default function EmailSignatureSection() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="p-6 bg-white rounded-xl border border-default"
           >
-            <SignaturePreview data={formData} language={footerLanguage} />
+            {/* Preview Mode Toggle */}
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <button
+                onClick={() => setPreviewMode('desktop')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  previewMode === 'desktop'
+                    ? 'bg-accent text-white'
+                    : 'bg-muted/10 text-muted hover:bg-muted/20'
+                }`}
+              >
+                <IconDeviceDesktop className="w-4 h-4" />
+                Desktop
+              </button>
+              <button
+                onClick={() => setPreviewMode('mobile')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  previewMode === 'mobile'
+                    ? 'bg-accent text-white'
+                    : 'bg-muted/10 text-muted hover:bg-muted/20'
+                }`}
+              >
+                <IconDeviceMobile className="w-4 h-4" />
+                Mobile
+              </button>
+            </div>
+            
+            {/* Preview Container - Always white background for email preview */}
+            <div className={`mx-auto transition-all duration-300 ${
+              previewMode === 'mobile' ? 'max-w-[375px]' : 'max-w-full'
+            }`}>
+              <div className="email-preview-light p-6 rounded-xl border border-gray-200">
+                <SignaturePreview data={formData} language={footerLanguage} isMobile={previewMode === 'mobile'} />
+              </div>
+            </div>
           </motion.div>
         )}
         
@@ -368,69 +598,384 @@ export default function EmailSignatureSection() {
           </div>
         </div>
         
-        {/* Social links */}
+        {/* Social links - Nouveau système dynamique */}
         <div className="pt-4 border-t border-default">
-          <h4 className="font-medium text-primary mb-4">
-            {t('social_links') || 'Réseaux sociaux'}
-          </h4>
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="font-medium text-primary flex items-center gap-2">
+              <IconLink className="w-4 h-4 text-accent" />
+              {t('social_links') || 'Réseaux sociaux'}
+            </h4>
+            <button
+              onClick={addSocialLink}
+              className="flex items-center gap-1 px-3 py-1.5 text-sm bg-accent/10 text-accent hover:bg-accent/20 rounded-lg transition-colors"
+            >
+              <IconPlus className="w-4 h-4" />
+              {t('add_social') || 'Ajouter'}
+            </button>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* LinkedIn */}
+          {/* Liste des liens sociaux */}
+          <div className="space-y-3">
+            <AnimatePresence mode="popLayout">
+              {(formData.social_links || []).map((link, index) => {
+                const platform = SOCIAL_PLATFORMS.find(p => p.id === link.platform);
+                const PlatformIcon = platform?.icon || IconLink;
+                
+                return (
+                  <motion.div
+                    key={link.id}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-center gap-3 p-3 bg-muted/5 rounded-lg border border-default"
+                  >
+                    {/* Drag handle */}
+                    <div className="flex flex-col gap-0.5">
+                      <button
+                        onClick={() => moveSocialLink(link.id, 'up')}
+                        disabled={index === 0}
+                        className="text-muted hover:text-primary disabled:opacity-30 transition-colors"
+                      >
+                        <IconGripVertical className="w-4 h-4 rotate-180" />
+                      </button>
+                      <button
+                        onClick={() => moveSocialLink(link.id, 'down')}
+                        disabled={index === (formData.social_links?.length || 0) - 1}
+                        className="text-muted hover:text-primary disabled:opacity-30 transition-colors"
+                      >
+                        <IconGripVertical className="w-4 h-4" />
+                      </button>
+                    </div>
+                    
+                    {/* Platform selector */}
+                    <select
+                      value={link.platform}
+                      onChange={(e) => {
+                        const newPlatform = SOCIAL_PLATFORMS.find(p => p.id === e.target.value);
+                        updateSocialLink(link.id, { 
+                          platform: e.target.value,
+                          color: newPlatform?.color || link.color,
+                        });
+                      }}
+                      className="input py-2 pr-8"
+                    >
+                      {SOCIAL_PLATFORMS.map(p => (
+                        <option key={p.id} value={p.id}>{p.label}</option>
+                      ))}
+                    </select>
+                    
+                    {/* Icon preview */}
+                    <div 
+                      className="w-8 h-8 rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: `${link.color}20` }}
+                    >
+                      <PlatformIcon className="w-4 h-4" style={{ color: link.color }} />
+                    </div>
+                    
+                    {/* URL input */}
+                    <input
+                      type="url"
+                      value={link.url}
+                      onChange={(e) => updateSocialLink(link.id, { url: e.target.value })}
+                      placeholder={link.platform === 'custom' ? 'https://...' : `https://${link.platform}.com/...`}
+                      className="input flex-1"
+                    />
+                    
+                    {/* Custom label (only for custom platform) */}
+                    {link.platform === 'custom' && (
+                      <input
+                        type="text"
+                        value={link.label || ''}
+                        onChange={(e) => updateSocialLink(link.id, { label: e.target.value })}
+                        placeholder={t('label') || 'Label'}
+                        className="input w-24"
+                      />
+                    )}
+                    
+                    {/* Color picker */}
+                    <input
+                      type="color"
+                      value={link.color || '#7C3AED'}
+                      onChange={(e) => updateSocialLink(link.id, { color: e.target.value })}
+                      className="w-8 h-8 rounded cursor-pointer border-0"
+                      title={t('choose_color') || 'Choisir une couleur'}
+                    />
+                    
+                    {/* Remove button */}
+                    <button
+                      onClick={() => removeSocialLink(link.id)}
+                      className="p-2 text-danger/70 hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
+                    >
+                      <IconTrash className="w-4 h-4" />
+                    </button>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+            
+            {(!formData.social_links || formData.social_links.length === 0) && (
+              <p className="text-sm text-muted text-center py-4">
+                {t('no_social_links') || 'Aucun réseau social ajouté. Cliquez sur "Ajouter" pour en ajouter un.'}
+              </p>
+            )}
+          </div>
+        </div>
+        
+        {/* Customization section */}
+        <div className="pt-4 border-t border-default">
+          <button
+            onClick={() => setShowCustomization(!showCustomization)}
+            className="flex items-center justify-between w-full p-3 bg-accent/5 hover:bg-accent/10 rounded-lg transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <IconPalette className="w-5 h-5 text-accent" />
+              <span className="font-medium text-primary">
+                {t('customization') || 'Personnalisation avancée'}
+              </span>
+            </div>
+            <motion.div
+              animate={{ rotate: showCustomization ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <IconGripVertical className="w-5 h-5 text-muted rotate-90" />
+            </motion.div>
+          </button>
+          
+          <AnimatePresence>
+            {showCustomization && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-4 space-y-6">
+                  {/* Logo size */}
+                  <div>
+                    <label className="block text-sm font-medium text-secondary mb-2">
+                      {t('logo_size') || 'Taille du logo'} ({formData.logo_size || 100}px)
+                    </label>
+                    <input
+                      type="range"
+                      min="40"
+                      max="150"
+                      value={formData.logo_size || 100}
+                      onChange={(e) => updateField('logo_size', parseInt(e.target.value))}
+                      className="w-full h-2 bg-muted/20 rounded-lg appearance-none cursor-pointer accent-accent"
+                    />
+                    <div className="flex justify-between text-xs text-muted mt-1">
+                      <span>40px</span>
+                      <span>150px</span>
+                    </div>
+                  </div>
+                  
+                  {/* Colors */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Primary color */}
+                    <div>
+                      <label className="block text-sm font-medium text-secondary mb-2">
+                        {t('primary_color') || 'Couleur principale'}
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={formData.primary_color || '#10b981'}
+                          onChange={(e) => updateField('primary_color', e.target.value)}
+                          className="w-10 h-10 rounded cursor-pointer border-0"
+                        />
+                        <input
+                          type="text"
+                          value={formData.primary_color || '#10b981'}
+                          onChange={(e) => updateField('primary_color', e.target.value)}
+                          className="input flex-1"
+                          placeholder="#10b981"
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Text color */}
+                    <div>
+                      <label className="block text-sm font-medium text-secondary mb-2">
+                        {t('signature_text_color') || 'Couleur du texte'}
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={formData.text_color || '#333333'}
+                          onChange={(e) => updateField('text_color', e.target.value)}
+                          className="w-10 h-10 rounded cursor-pointer border-0"
+                        />
+                        <input
+                          type="text"
+                          value={formData.text_color || '#333333'}
+                          onChange={(e) => updateField('text_color', e.target.value)}
+                          className="input flex-1"
+                          placeholder="#333333"
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Secondary color */}
+                    <div>
+                      <label className="block text-sm font-medium text-secondary mb-2">
+                        {t('secondary_color') || 'Couleur secondaire'}
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={formData.secondary_color || '#666666'}
+                          onChange={(e) => updateField('secondary_color', e.target.value)}
+                          className="w-10 h-10 rounded cursor-pointer border-0"
+                        />
+                        <input
+                          type="text"
+                          value={formData.secondary_color || '#666666'}
+                          onChange={(e) => updateField('secondary_color', e.target.value)}
+                          className="input flex-1"
+                          placeholder="#666666"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Font family */}
+                  <div>
+                    <label className="block text-sm font-medium text-secondary mb-2">
+                      {t('signature_font_family') || 'Police'}
+                    </label>
+                    <select
+                      value={formData.font_family || 'Inter'}
+                      onChange={(e) => updateField('font_family', e.target.value)}
+                      className="input w-full md:w-2/3"
+                      style={{ fontFamily: formData.font_family }}
+                    >
+                      {FONT_CATEGORIES.map(category => (
+                        <optgroup key={category} label={category}>
+                          {GOOGLE_FONTS.filter(f => f.category === category).map(font => (
+                            <option key={font.value} value={font.value}>
+                              {font.label}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                    <p className="text-xs text-muted mt-1">
+                      {t('google_fonts_note') || 'Note : Les Google Fonts peuvent ne pas s\'afficher sur tous les clients email (Outlook, etc.)'}
+                    </p>
+                  </div>
+                  
+                  {/* Preview of customization */}
+                  <div className="p-4 bg-muted/5 rounded-lg border border-default">
+                    <p className="text-sm text-muted mb-2">{t('preview') || 'Aperçu des couleurs'}:</p>
+                    <div className="flex items-center gap-4" style={{ fontFamily: formData.font_family }}>
+                      <span style={{ color: formData.text_color, fontWeight: 'bold' }}>
+                        Texte principal
+                      </span>
+                      <span style={{ color: formData.secondary_color }}>
+                        Texte secondaire
+                      </span>
+                      <span style={{ color: formData.primary_color, fontWeight: 600 }}>
+                        Accent
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        
+        {/* Banner section */}
+        <div className="pt-4 border-t border-default">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h4 className="font-medium text-primary flex items-center gap-2">
+                <IconPhoto className="w-4 h-4 text-accent" />
+                {t('promotional_banner') || 'Bannière promotionnelle'}
+              </h4>
+              <p className="text-xs text-muted mt-1">
+                {t('banner_desc') || 'Optionnel : ajoutez une bannière sous votre signature'}
+              </p>
+            </div>
+          </div>
+          
+          {/* Banner size recommendations */}
+          <div className="mb-4 p-3 rounded-lg bg-info-light border border-info">
+            <p className="text-xs text-info">
+              <strong>{t('recommended_sizes') || 'Tailles recommandées'}</strong>:
+              <br />• Desktop : 600×150 px (max)
+              <br />• Mobile : 320×100 px (min)
+            </p>
+          </div>
+          
+          <div className="space-y-4">
+            {/* Banner preview/upload */}
             <div>
               <label className="block text-sm font-medium text-secondary mb-2">
-                <IconBrandLinkedin className="w-4 h-4 inline mr-1 text-[#0A66C2]" />
-                LinkedIn
+                {t('banner_image') || 'Image de la bannière'}
               </label>
-              <input
-                type="url"
-                value={formData.linkedin_url}
-                onChange={(e) => updateField('linkedin_url', e.target.value)}
-                placeholder="https://linkedin.com/in/username"
-                className="input w-full"
-              />
+              {formData.banner_url ? (
+                <div className="relative inline-block">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src={formData.banner_url} 
+                    alt={formData.banner_alt || 'Banner'} 
+                    className="max-w-full h-auto max-h-32 object-contain rounded-lg border border-default bg-white"
+                  />
+                  <button
+                    onClick={() => updateField('banner_url', '')}
+                    className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                  >
+                    <IconTrash className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowBannerPicker(true)}
+                  className="w-full h-24 border-2 border-dashed border-default rounded-lg flex flex-col items-center justify-center text-muted hover:border-accent hover:text-accent transition-colors"
+                >
+                  <IconPhoto className="w-6 h-6 mb-1" />
+                  <span className="text-sm">{t('add_banner') || 'Ajouter une bannière'}</span>
+                </button>
+              )}
+              {formData.banner_url && (
+                <button
+                  onClick={() => setShowBannerPicker(true)}
+                  className="mt-2 text-sm text-accent hover:underline"
+                >
+                  {t('change_banner') || 'Changer la bannière'}
+                </button>
+              )}
             </div>
             
-            {/* Twitter */}
+            {/* Banner link */}
             <div>
               <label className="block text-sm font-medium text-secondary mb-2">
-                <IconBrandTwitter className="w-4 h-4 inline mr-1 text-[#1DA1F2]" />
-                Twitter / X
+                <IconLink className="w-4 h-4 inline mr-1" />
+                {t('banner_link') || 'Lien de la bannière'}
               </label>
               <input
                 type="url"
-                value={formData.twitter_url}
-                onChange={(e) => updateField('twitter_url', e.target.value)}
-                placeholder="https://twitter.com/username"
+                value={formData.banner_link || ''}
+                onChange={(e) => updateField('banner_link', e.target.value)}
+                placeholder="https://example.com/promo"
                 className="input w-full"
               />
+              <p className="text-xs text-muted mt-1">
+                {t('banner_link_desc') || 'URL vers laquelle rediriger au clic sur la bannière'}
+              </p>
             </div>
             
-            {/* Instagram */}
+            {/* Banner alt text */}
             <div>
               <label className="block text-sm font-medium text-secondary mb-2">
-                <IconBrandInstagram className="w-4 h-4 inline mr-1 text-[#E4405F]" />
-                Instagram
+                {t('banner_alt') || 'Texte alternatif'}
               </label>
               <input
-                type="url"
-                value={formData.instagram_url}
-                onChange={(e) => updateField('instagram_url', e.target.value)}
-                placeholder="https://instagram.com/username"
-                className="input w-full"
-              />
-            </div>
-            
-            {/* Facebook */}
-            <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
-                <IconBrandFacebook className="w-4 h-4 inline mr-1 text-[#1877F2]" />
-                Facebook
-              </label>
-              <input
-                type="url"
-                value={formData.facebook_url}
-                onChange={(e) => updateField('facebook_url', e.target.value)}
-                placeholder="https://facebook.com/page"
+                type="text"
+                value={formData.banner_alt || ''}
+                onChange={(e) => updateField('banner_alt', e.target.value)}
+                placeholder={t('banner_alt_placeholder') || 'Promotion de fin d\'année'}
                 className="input w-full"
               />
             </div>
@@ -459,7 +1004,7 @@ export default function EmailSignatureSection() {
         </div>
       </div>
       
-      {/* Media Picker Modal */}
+      {/* Media Picker Modal for Logo */}
       <MediaPickerModal
         isOpen={showMediaPicker}
         onClose={() => setShowMediaPicker(false)}
@@ -467,49 +1012,72 @@ export default function EmailSignatureSection() {
         mediaType="image"
         title={t('select_logo') || 'Sélectionner un logo'}
       />
+      
+      {/* Media Picker Modal for Banner */}
+      <MediaPickerModal
+        isOpen={showBannerPicker}
+        onClose={() => setShowBannerPicker(false)}
+        onSelect={handleBannerSelect}
+        mediaType="image"
+        title={t('select_banner') || 'Sélectionner une bannière'}
+      />
     </>
   );
 }
 
-// Composant de prévisualisation de la signature avec logo pleine hauteur
-function SignaturePreview({ data, language }: { data: CreateEmailSignatureData; language: FooterLanguage }) {
-  const hasSocialLinks = data.linkedin_url || data.twitter_url || data.instagram_url || data.facebook_url;
+// Composant de prévisualisation - COPIE CONFORME du HTML envoyé par email
+function SignaturePreview({ 
+  data, 
+  language, 
+  isMobile = false 
+}: { 
+  data: CreateEmailSignatureData; 
+  language: FooterLanguage;
+  isMobile?: boolean;
+}) {
+  // Vérifier s'il y a des liens sociaux (uniquement le nouveau système)
+  const socialLinks = data.social_links || [];
+  const hasSocialLinks = socialLinks.length > 0;
   
   // Textes selon la langue
   const texts = {
     fr: {
-      unsubscribe: 'Se désinscrire',
       legal: 'Cet email a été envoyé par',
     },
     en: {
-      unsubscribe: 'Unsubscribe',
       legal: 'This email was sent by',
     },
   };
   
   const t = texts[language];
   
+  // Utiliser les valeurs personnalisées ou les valeurs par défaut
+  const logoSize = isMobile ? Math.min(60, (data.logo_size || 100) * 0.6) : (data.logo_size || 100);
+  const primaryColor = data.primary_color || '#10b981';
+  const textColor = data.text_color || '#333333';
+  const secondaryColor = data.secondary_color || '#666666';
+  const baseFontFamily = data.font_family || 'Inter';
+  // Ajouter les fallbacks pour les emails
+  const fontFamily = `'${baseFontFamily}', Arial, sans-serif`;
+  
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px', color: '#333' }}>
+    <div style={{ fontFamily, fontSize: '14px', color: textColor, backgroundColor: '#ffffff' }}>
+      {/* Signature - Alignée à gauche avec espacement faible */}
       <table cellPadding={0} cellSpacing={0} style={{ borderCollapse: 'collapse' }}>
         <tbody>
           <tr>
-            {/* Logo - prend la hauteur totale */}
+            {/* Logo */}
             {data.logo_url && (
-              <td style={{ 
-                paddingRight: '16px', 
-                verticalAlign: 'middle',
-                borderRight: '2px solid #e5e7eb',
-              }}>
+              <td style={{ paddingRight: '12px', verticalAlign: 'top' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={data.logo_url} 
                   alt="Logo" 
                   style={{ 
-                    height: '100px', 
-                    width: 'auto',
-                    maxWidth: '100px',
-                    objectFit: 'contain',
+                    width: `${logoSize}px`, 
+                    height: `${logoSize}px`, 
+                    objectFit: 'contain', 
+                    borderRadius: '8px', 
                     display: 'block',
                   }}
                 />
@@ -517,32 +1085,32 @@ function SignaturePreview({ data, language }: { data: CreateEmailSignatureData; 
             )}
             
             {/* Info */}
-            <td style={{ verticalAlign: 'middle', paddingLeft: data.logo_url ? '16px' : '0' }}>
+            <td style={{ verticalAlign: 'top' }}>
               {/* Name & Title */}
               {data.sender_name && (
-                <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#111' }}>
+                <div style={{ fontWeight: 'bold', fontSize: '16px', color: textColor }}>
                   {data.sender_name}
                 </div>
               )}
               {data.sender_title && (
-                <div style={{ color: '#666', marginBottom: '8px' }}>
+                <div style={{ color: secondaryColor, marginBottom: '6px', fontSize: '14px' }}>
                   {data.sender_title}
                 </div>
               )}
               
               {/* Company */}
               {data.company_name && (
-                <div style={{ fontWeight: '600', color: '#10b981', marginBottom: '4px' }}>
+                <div style={{ fontWeight: '600', color: primaryColor, marginBottom: '4px' }}>
                   {data.company_name}
                 </div>
               )}
               
               {/* Contact */}
-              <div style={{ fontSize: '13px', color: '#666' }}>
+              <div style={{ fontSize: '13px', color: secondaryColor }}>
                 {data.phone && <div>📞 {data.phone}</div>}
                 {data.website && (
                   <div>
-                    🌐 <a href={data.website} style={{ color: '#10b981', textDecoration: 'none' }}>
+                    🌐 <a href={data.website} style={{ color: primaryColor, textDecoration: 'none' }}>
                       {data.website.replace(/^https?:\/\//, '')}
                     </a>
                   </div>
@@ -551,28 +1119,28 @@ function SignaturePreview({ data, language }: { data: CreateEmailSignatureData; 
               </div>
               
               {/* Social links */}
-              {hasSocialLinks && (
-                <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
-                  {data.linkedin_url && (
-                    <a href={data.linkedin_url} style={{ color: '#0A66C2' }}>
-                      <IconBrandLinkedin style={{ width: '20px', height: '20px' }} />
-                    </a>
-                  )}
-                  {data.twitter_url && (
-                    <a href={data.twitter_url} style={{ color: '#1DA1F2' }}>
-                      <IconBrandTwitter style={{ width: '20px', height: '20px' }} />
-                    </a>
-                  )}
-                  {data.instagram_url && (
-                    <a href={data.instagram_url} style={{ color: '#E4405F' }}>
-                      <IconBrandInstagram style={{ width: '20px', height: '20px' }} />
-                    </a>
-                  )}
-                  {data.facebook_url && (
-                    <a href={data.facebook_url} style={{ color: '#1877F2' }}>
-                      <IconBrandFacebook style={{ width: '20px', height: '20px' }} />
-                    </a>
-                  )}
+              {hasSocialLinks && socialLinks.length > 0 && (
+                <div style={{ marginTop: '10px' }}>
+                  {socialLinks.map((link, index) => {
+                    const platform = SOCIAL_PLATFORMS.find(p => p.id === link.platform);
+                    const label = link.label || platform?.label || link.platform;
+                    const color = link.color || platform?.color || primaryColor;
+                    
+                    return (
+                      <a 
+                        key={link.id || index}
+                        href={link.url} 
+                        style={{ 
+                          color, 
+                          marginRight: '8px', 
+                          textDecoration: 'none',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {label}
+                      </a>
+                    );
+                  })}
                 </div>
               )}
             </td>
@@ -580,13 +1148,46 @@ function SignaturePreview({ data, language }: { data: CreateEmailSignatureData; 
         </tbody>
       </table>
       
+      {/* Promotional Banner */}
+      {data.banner_url && (
+        <div style={{ marginTop: '16px' }}>
+          {data.banner_link ? (
+            <a href={data.banner_link} target="_blank" rel="noopener noreferrer">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={data.banner_url} 
+                alt={data.banner_alt || 'Banner'} 
+                style={{ 
+                  maxWidth: '100%',
+                  height: 'auto',
+                  display: 'block',
+                  borderRadius: '8px',
+                }}
+              />
+            </a>
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img 
+              src={data.banner_url} 
+              alt={data.banner_alt || 'Banner'} 
+              style={{ 
+                maxWidth: '100%',
+                height: 'auto',
+                display: 'block',
+                borderRadius: '8px',
+              }}
+            />
+          )}
+        </div>
+      )}
+      
       {/* Footer legal text */}
       <div style={{ 
         marginTop: '16px', 
         paddingTop: '12px', 
         borderTop: '1px solid #e5e7eb',
         fontSize: '11px',
-        color: '#999',
+        color: '#999999',
         textAlign: 'center',
       }}>
         {data.company_name && (
@@ -598,3 +1199,6 @@ function SignaturePreview({ data, language }: { data: CreateEmailSignatureData; 
     </div>
   );
 }
+
+// Export for use in email composition
+export { SignaturePreview };

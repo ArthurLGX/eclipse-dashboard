@@ -349,7 +349,7 @@ export default function MediaPickerModal({
 
             {/* Tab: Bibliothèque */}
             {activeTab === 'library' && (
-              <div className="min-h-[300px]">
+              <div className="min-h-[300px] pb-16">
                 {loadingLibrary ? (
                   <div className="flex items-center justify-center h-[300px]">
                     <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
@@ -360,63 +360,56 @@ export default function MediaPickerModal({
                     <p>{t('no_media_in_library') || 'Aucun média dans la bibliothèque'}</p>
                   </div>
                 ) : (
-                  <>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                      {libraryMedia.map((media) => {
-                        const isVideo = media.mime?.startsWith('video/');
-                        const fullUrl = media.url.startsWith('http')
-                          ? media.url
-                          : `${API_URL}${media.url}`;
-                        
-                        return (
-                          <button
-                            key={media.id}
-                            onClick={() => setSelectedLibraryItem(media)}
-                            className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                              selectedLibraryItem?.id === media.id
-                                ? 'border-accent ring-2 ring-accent/30'
-                                : 'border-transparent hover:border-accent/50'
-                            }`}
-                          >
-                            {isVideo ? (
-                              <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
-                                <IconVideo className="w-8 h-8 text-zinc-400" />
-                              </div>
-                            ) : (
-                              <Image
-                                src={fullUrl}
-                                alt={media.name || 'Media'}
-                                fill
-                                sizes="120px"
-                                className="object-cover"
-                              />
-                            )}
-                            
-                            {selectedLibraryItem?.id === media.id && (
-                              <div className="absolute inset-0 bg-accent/20 flex items-center justify-center">
-                                <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
-                                  <IconCheck className="w-5 h-5 text-white" />
-                                </div>
-                              </div>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    
-                    {/* Bouton de sélection */}
-                    {selectedLibraryItem && (
-                      <div className="mt-4 pt-4 border-t border-default flex justify-end">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                    {libraryMedia.map((media) => {
+                      const isVideo = media.mime?.startsWith('video/');
+                      const fullUrl = media.url.startsWith('http')
+                        ? media.url
+                        : `${API_URL}${media.url}`;
+                      
+                      return (
                         <button
-                          onClick={handleLibrarySelect}
-                          className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2"
+                          key={media.id}
+                          onClick={() => setSelectedLibraryItem(media)}
+                          onDoubleClick={() => {
+                            // Double-clic = sélection directe
+                            const url = media.url.startsWith('http')
+                              ? media.url
+                              : `${API_URL}${media.url}`;
+                            onSelect(url, media.id);
+                            onClose();
+                          }}
+                          className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                            selectedLibraryItem?.id === media.id
+                              ? 'border-accent ring-2 ring-accent/30'
+                              : 'border-transparent hover:border-accent/50'
+                          }`}
                         >
-                          <IconCheck className="w-4 h-4" />
-                          {t('select') || 'Sélectionner'}
+                          {isVideo ? (
+                            <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
+                              <IconVideo className="w-8 h-8 text-zinc-400" />
+                            </div>
+                          ) : (
+                            <Image
+                              src={fullUrl}
+                              alt={media.name || 'Media'}
+                              fill
+                              sizes="120px"
+                              className="object-cover"
+                            />
+                          )}
+                          
+                          {selectedLibraryItem?.id === media.id && (
+                            <div className="absolute inset-0 bg-accent/20 flex items-center justify-center">
+                              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+                                <IconCheck className="w-5 h-5 text-white" />
+                              </div>
+                            </div>
+                          )}
                         </button>
-                      </div>
-                    )}
-                  </>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
             )}
@@ -474,6 +467,22 @@ export default function MediaPickerModal({
               </div>
             )}
           </div>
+
+          {/* Footer fixe avec bouton de sélection (pour la bibliothèque) */}
+          {activeTab === 'library' && selectedLibraryItem && (
+            <div className="border-t border-default bg-card p-4 flex items-center justify-between">
+              <p className="text-sm text-muted">
+                {t('selected') || 'Sélectionné'}: <span className="text-primary font-medium">{selectedLibraryItem.name || 'Media'}</span>
+              </p>
+              <button
+                onClick={handleLibrarySelect}
+                className="px-6 py-2.5 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 font-medium"
+              >
+                <IconCheck className="w-4 h-4" />
+                {t('confirm_selection') || 'Confirmer'}
+              </button>
+            </div>
+          )}
         </motion.div>
       </motion.div>
     </AnimatePresence>

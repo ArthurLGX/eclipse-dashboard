@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import ClientAvatar from '@/app/components/ClientAvatar';
 import { addClientUser, deleteClient, updateClientStatus, DuplicateCheckMode } from '@/lib/api';
 import TableActions from '@/app/components/TableActions';
@@ -31,7 +31,12 @@ export default function ClientsPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
-  const { canAdd, getVisibleCount, limits } = useQuota();
+  const { canAdd, getVisibleCount, limits, refreshQuotas } = useQuota();
+
+  // Rafraîchir les quotas au chargement pour avoir les dernières valeurs
+  useEffect(() => {
+    refreshQuotas();
+  }, [refreshQuotas]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
