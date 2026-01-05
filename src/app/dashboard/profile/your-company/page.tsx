@@ -227,7 +227,7 @@ export default function YourCompanyPage() {
             {companyProfile ? (
               <button
                 onClick={() => setEditing(true)}
-                className="btn-primary lg:w-fit w-full px-4 py-2 rounded-lg"
+                className="btn-primary lg:w-fit w-full px-4 py-2 rounded-lg transition-all ease-in-out duration-300"
               >
                 {t('edit_enterprise')}
               </button>
@@ -249,7 +249,7 @@ export default function YourCompanyPage() {
                     website: '',
                   });
                 }}
-                className="btn-primary px-4 py-2"
+                className="btn-primary px-4 py-2 rounded-lg transition-all ease-in-out duration-300"
               >
                 {t('create_your_enterprise')}
               </button>
@@ -259,13 +259,13 @@ export default function YourCompanyPage() {
           <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={handleCancel}
-              className="bg-warning-light lg:w-fit w-full text-warning border border-warning px-4 py-2 hover:opacity-80 rounded-lg cursor-pointer transition-colors"
+              className="bg-warning-light lg:w-fit w-full text-warning border border-warning px-4 py-2 hover:opacity-80 rounded-lg cursor-pointer transition-colors ease-in-out duration-300"
             >
               {t('cancel')}
             </button>
             <button
               onClick={handleSave}
-              className="btn-primary px-4 py-2 rounded-lg"
+              className="btn-primary px-4 py-2 rounded-lg transition-all ease-in-out duration-300 "
             >
               {t('save')}
             </button>

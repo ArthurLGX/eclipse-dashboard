@@ -293,7 +293,7 @@ export default function ImageUpload({
     fileInputRef.current?.click();
   };
 
-  // Handler pour ouvrir la bibliothèque
+  // Handler pour ouvrir la bibliothèque (utilise user-medias pour la bibliothèque privée)
   const handleOpenLibrary = async () => {
     if (disabled) return;
     setShowMenu(false);
@@ -303,8 +303,9 @@ export default function ImageUpload({
     try {
       const token = localStorage.getItem('token');
       const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+      // Utiliser l'API user-medias pour récupérer uniquement les médias de l'utilisateur
       const res = await fetch(
-        `${API_URL}/api/upload/files?sort=createdAt:desc&pagination[pageSize]=50&filters[mime][$contains]=image`,
+        `${API_URL}/api/user-medias?sort=createdAt:desc&populate=file&filters[type][$eq]=image`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -313,11 +314,12 @@ export default function ImageUpload({
       );
       
       if (res.ok) {
-        const data = await res.json();
-        setLibraryImages(data.map((item: { id: number; url: string }) => ({
-          id: item.id,
-          url: item.url.startsWith('http') ? item.url : `${API_URL}${item.url}`,
-        })));
+        const result = await res.json();
+        const userMedias = result.data || [];
+        setLibraryImages(userMedias.map((item: { file: { id: number; url: string } }) => ({
+          id: item.file?.id,
+          url: item.file?.url?.startsWith('http') ? item.file.url : `${API_URL}${item.file?.url}`,
+        })).filter((img: { id: number; url: string }) => img.id && img.url));
       }
     } catch (error) {
       console.error('Error loading library:', error);

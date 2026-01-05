@@ -27,6 +27,7 @@ import MediaPickerModal from '@/app/components/MediaPickerModal';
 import EmailScheduler from '@/app/components/EmailScheduler';
 import { fetchEmailSignature, createSentEmail } from '@/lib/api';
 import { uploadToStrapi } from '@/lib/strapi-upload';
+import { useDraftSave } from '@/hooks/useDraftSave';
 import type { CreateEmailSignatureData } from '@/types';
 
 interface Attachment {
@@ -75,6 +76,28 @@ function ComposeEmail() {
   const [signatureData, setSignatureData] = useState<CreateEmailSignatureData | null>(null);
   const [loadingSignature, setLoadingSignature] = useState(true);
   const [footerLanguage, setFooterLanguage] = useState<FooterLanguage>('fr');
+  
+  // Draft management
+  const { clearDraft } = useDraftSave({
+    draftKey: 'email-compose-draft',
+    data: {
+      subject,
+      message,
+      recipients,
+      attachments,
+      includeSignature,
+      footerLanguage,
+    },
+    onRestore: (draft) => {
+      if (draft.subject) setSubject(draft.subject as string);
+      if (draft.message) setMessage(draft.message as string);
+      if (draft.recipients) setRecipients(draft.recipients as Recipient[]);
+      if (draft.attachments) setAttachments(draft.attachments as Attachment[]);
+      if (typeof draft.includeSignature === 'boolean') setIncludeSignature(draft.includeSignature);
+      if (draft.footerLanguage) setFooterLanguage(draft.footerLanguage as FooterLanguage);
+    },
+    autoSaveDelay: 10000, // Sauvegarde toutes les 10 secondes
+  });
   
   // Charger la signature email
   useEffect(() => {
@@ -276,6 +299,9 @@ function ComposeEmail() {
         
         showGlobalPopup(t('email_sent') || 'Email envoyé avec succès', 'success');
       }
+      
+      // Supprimer le brouillon après envoi réussi
+      clearDraft();
       
       router.push('/dashboard/emails');
     } catch (error) {
@@ -627,12 +653,12 @@ function renderSignatureHtml(data: CreateEmailSignatureData): string {
   
   // Logo
   if (data.logo_url) {
-    html += `<td style="padding-right: 16px; vertical-align: top;">
-      <img src="${data.logo_url}" alt="Logo" style="width: 80px; height: auto; border-radius: 8px;" />
+    html += `<td style="padding-right: 16px; vertical-align: middle;">
+      <img src="${data.logo_url}" alt="Logo" style="width: 80px; height: 80px; object-fit: contain; border-radius: 8px; display: block;" />
     </td>`;
   }
   
-  html += '<td style="vertical-align: top;">';
+  html += '<td style="vertical-align: middle;">';
   
   // Name & Title
   if (data.sender_name) {

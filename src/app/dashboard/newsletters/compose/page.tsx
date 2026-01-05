@@ -66,6 +66,7 @@ import SaveTemplateModal from '@/app/components/SaveTemplateModal';
 import LoadTemplateModal from '@/app/components/LoadTemplateModal';
 import EmailScheduler from '@/app/components/EmailScheduler';
 import { fetchSmtpConfig, fetchUserCustomTemplates, createCustomTemplate, deleteCustomTemplate, setDefaultCustomTemplate } from '@/lib/api';
+import { useDraftSave } from '@/hooks/useDraftSave';
 import type { CustomTemplate } from '@/types';
 import type { Client, Company, SmtpConfig } from '@/types';
 
@@ -1287,6 +1288,40 @@ export default function ComposeNewsletterPage() {
   // UI State for theme customization in content step
   const [showThemeSettings, setShowThemeSettings] = useState(false);
 
+  // Draft management for newsletter
+  const { clearDraft: clearNewsletterDraft } = useDraftSave({
+    draftKey: 'newsletter-compose-draft',
+    data: {
+      selectedTemplate,
+      emailTitle,
+      emailSubject,
+      emailContent,
+      contentImages,
+      ctaText,
+      ctaUrl,
+      bannerImageUrl,
+      selectedRecipients,
+      manualEmails,
+      customColors,
+    },
+    onRestore: (draft) => {
+      if (draft.selectedTemplate) setSelectedTemplate(draft.selectedTemplate as TemplateType);
+      if (draft.emailTitle) setEmailTitle(draft.emailTitle as string);
+      if (draft.emailSubject) setEmailSubject(draft.emailSubject as string);
+      if (draft.emailContent) setEmailContent(draft.emailContent as string);
+      if (draft.contentImages) setContentImages(draft.contentImages as string[]);
+      if (draft.ctaText) setCtaText(draft.ctaText as string);
+      if (draft.ctaUrl) setCtaUrl(draft.ctaUrl as string);
+      if (draft.bannerImageUrl) setBannerImageUrl(draft.bannerImageUrl as string);
+      if (draft.selectedRecipients) setSelectedRecipients(draft.selectedRecipients as number[]);
+      if (draft.manualEmails) setManualEmails(draft.manualEmails as Array<{ email: string; name?: string }>);
+      if (draft.customColors) setCustomColors(draft.customColors as typeof customColors);
+      // Go to content step if template was selected
+      if (draft.selectedTemplate) setCurrentStep('content');
+    },
+    autoSaveDelay: 15000, // Sauvegarde toutes les 15 secondes
+  });
+
   // Generate CSS gradient from stops
   const generateGradientCSS = (stops: GradientStop[], angle: number) => {
     if (stops.length === 0) return '#FFFFFF';
@@ -1723,13 +1758,9 @@ export default function ComposeNewsletterPage() {
       
       setUploadingBanner(true);
       try {
-        const { uploadImage } = await import('@/lib/api');
-        const result = await uploadImage(file);
-        // Construire l'URL complète
-        const fullUrl = result.url.startsWith('http') 
-          ? result.url 
-          : `${process.env.NEXT_PUBLIC_STRAPI_URL}${result.url}`;
-        setBannerImageUrl(fullUrl);
+        const { uploadImageToLibrary } = await import('@/lib/api');
+        const result = await uploadImageToLibrary(file, 'newsletters');
+        setBannerImageUrl(result.url);
         showGlobalPopup(t('image_uploaded_success') || 'Image uploadée avec succès', 'success');
       } catch (error) {
         console.error('Error uploading banner:', error);
@@ -1754,15 +1785,11 @@ export default function ComposeNewsletterPage() {
       
       setUploadingContentImage(true);
       try {
-        const { uploadImage } = await import('@/lib/api');
-        const result = await uploadImage(file);
-        // Construire l'URL complète
-        const fullUrl = result.url.startsWith('http') 
-          ? result.url 
-          : `${process.env.NEXT_PUBLIC_STRAPI_URL}${result.url}`;
+        const { uploadImageToLibrary } = await import('@/lib/api');
+        const result = await uploadImageToLibrary(file, 'newsletters');
         
         // Insérer l'image à la position du curseur dans l'éditeur avec paragraphes pour édition
-        const imgHtml = `<p><br></p><img src="${fullUrl}" alt="Image" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 8px; display: block;" /><p><br></p>`;
+        const imgHtml = `<p><br></p><img src="${result.url}" alt="Image" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 8px; display: block;" /><p><br></p>`;
         document.execCommand('insertHTML', false, imgHtml);
         
         // Mettre à jour le contenu après insertion
@@ -1800,14 +1827,11 @@ export default function ComposeNewsletterPage() {
       
       setUploadingContentVideo(true);
       try {
-        const { uploadImage } = await import('@/lib/api');
-        const result = await uploadImage(file);
-        const fullUrl = result.url.startsWith('http') 
-          ? result.url 
-          : `${process.env.NEXT_PUBLIC_STRAPI_URL}${result.url}`;
+        const { uploadImageToLibrary } = await import('@/lib/api');
+        const result = await uploadImageToLibrary(file, 'newsletters');
         
         // Insérer la vidéo à la position du curseur avec paragraphes pour édition
-        const videoHtml = `<p><br></p><video src="${fullUrl}" controls style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 8px; display: block;"></video><p><br></p>`;
+        const videoHtml = `<p><br></p><video src="${result.url}" controls style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 8px; display: block;"></video><p><br></p>`;
         document.execCommand('insertHTML', false, videoHtml);
         
         // Mettre à jour le contenu après insertion
@@ -1817,7 +1841,7 @@ export default function ComposeNewsletterPage() {
         }
         
         // Ajouter à contentVideos pour le suivi
-        setContentVideos(prev => [...prev, fullUrl]);
+        setContentVideos(prev => [...prev, result.url]);
         
         showGlobalPopup(t('video_uploaded_success') || 'Vidéo uploadée avec succès', 'success');
       } catch (error) {
@@ -1846,13 +1870,10 @@ export default function ComposeNewsletterPage() {
       
       setUploadingHeaderBackground(true);
       try {
-        const { uploadImage } = await import('@/lib/api');
-        const result = await uploadImage(file);
-        const fullUrl = result.url.startsWith('http') 
-          ? result.url 
-          : `${process.env.NEXT_PUBLIC_STRAPI_URL}${result.url}`;
+        const { uploadImageToLibrary } = await import('@/lib/api');
+        const result = await uploadImageToLibrary(file, 'newsletters');
         
-        setHeaderBackgroundUrl(fullUrl);
+        setHeaderBackgroundUrl(result.url);
         showGlobalPopup(t('image_uploaded_success') || 'Image uploadée avec succès', 'success');
       } catch (error) {
         console.error('Error uploading header background:', error);
@@ -2221,6 +2242,9 @@ export default function ComposeNewsletterPage() {
       } else {
         showGlobalPopup(`${t('newsletter_saved_not_sent')}`, 'warning');
       }
+      
+      // Supprimer le brouillon après envoi réussi
+      clearNewsletterDraft();
       
       // Rediriger vers la liste des newsletters après envoi
       setTimeout(() => {

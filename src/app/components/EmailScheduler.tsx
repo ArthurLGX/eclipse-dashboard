@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { IconClock, IconCheck, IconAlertTriangle } from '@tabler/icons-react';
 
 interface EmailSchedulerProps {
   onSchedule: (scheduledAt: Date | null) => void;
@@ -106,17 +108,15 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
     new Date(`${scheduledDate}T${scheduledTime}`) > new Date();
 
   return (
-    <div className="bg-gray-800/50 rounded-xl p-5 border border-gray-700/50">
+    <div className="bg-card rounded-xl p-5 border border-default hover:border-accent/30 transition-all duration-300 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-            <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+          <div className="w-10 h-10 rounded-lg bg-warning/20 flex items-center justify-center">
+            <IconClock className="w-5 h-5 text-warning" />
           </div>
           <div>
-            <h3 className="text-white font-medium">Planifier l&apos;envoi</h3>
-            <p className="text-gray-400 text-sm">Programmer l&apos;envoi pour plus tard</p>
+            <h3 className="text-primary font-medium">Planifier l&apos;envoi</h3>
+            <p className="text-muted text-sm">Programmer l&apos;envoi pour plus tard</p>
           </div>
         </div>
         
@@ -128,97 +128,99 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
             disabled={disabled}
             className="sr-only peer"
           />
-          <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+          <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-accent/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
         </label>
       </div>
 
-      {isScheduled && (
-        <div className="space-y-4 animate-fadeIn">
-          {/* Quick options */}
-          <div className="flex flex-wrap gap-2">
-            {quickScheduleOptions.map((option, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => applyQuickSchedule(option)}
-                disabled={disabled}
-                className="px-3 py-1.5 text-xs bg-gray-700/50 text-gray-300 rounded-lg hover:bg-gray-600/50 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      <AnimatePresence>
+        {isScheduled && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="space-y-4 overflow-hidden"
+          >
+            {/* Quick options */}
+            <div className="flex flex-wrap gap-2">
+              {quickScheduleOptions.map((option, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => applyQuickSchedule(option)}
+                  disabled={disabled}
+                  className="px-3 py-1.5 text-xs bg-muted text-secondary rounded-lg hover:bg-hover hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-default"
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Date/Time inputs */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm text-muted mb-1">Date</label>
+                <input
+                  type="date"
+                  value={scheduledDate}
+                  min={getMinDate()}
+                  onChange={(e) => handleDateTimeChange(e.target.value, scheduledTime)}
+                  disabled={disabled}
+                  className="input w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-muted mb-1">Heure</label>
+                <input
+                  type="time"
+                  value={scheduledTime}
+                  min={getMinTime()}
+                  onChange={(e) => handleDateTimeChange(scheduledDate, e.target.value)}
+                  disabled={disabled}
+                  className="input w-full"
+                />
+              </div>
+            </div>
+
+            {/* Preview - Success */}
+            {isValidSchedule && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-2 p-3 bg-success/10 border border-success/30 rounded-lg"
               >
-                {option.label}
-              </button>
-            ))}
-          </div>
+                <IconCheck className="w-5 h-5 text-success" />
+                <span className="text-success text-sm">
+                  Envoi programmé le{' '}
+                  <strong>
+                    {new Date(`${scheduledDate}T${scheduledTime}`).toLocaleDateString('fr-FR', {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </strong>
+                  {' '}à{' '}
+                  <strong>{scheduledTime}</strong>
+                </span>
+              </motion.div>
+            )}
 
-          {/* Date/Time inputs */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1">Date</label>
-              <input
-                type="date"
-                value={scheduledDate}
-                min={getMinDate()}
-                onChange={(e) => handleDateTimeChange(e.target.value, scheduledTime)}
-                disabled={disabled}
-                className="w-full px-4 py-2.5 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all disabled:opacity-50"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1">Heure</label>
-              <input
-                type="time"
-                value={scheduledTime}
-                min={getMinTime()}
-                onChange={(e) => handleDateTimeChange(scheduledDate, e.target.value)}
-                disabled={disabled}
-                className="w-full px-4 py-2.5 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all disabled:opacity-50"
-              />
-            </div>
-          </div>
-
-          {/* Preview */}
-          {isValidSchedule && (
-            <div className="flex items-center gap-2 p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-              <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span className="text-purple-300 text-sm">
-                Envoi programmé le{' '}
-                <strong>
-                  {new Date(`${scheduledDate}T${scheduledTime}`).toLocaleDateString('fr-FR', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
-                </strong>
-                {' '}à{' '}
-                <strong>{scheduledTime}</strong>
-              </span>
-            </div>
-          )}
-
-          {scheduledDate && scheduledTime && !isValidSchedule && (
-            <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-              <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <span className="text-red-300 text-sm">
-                La date/heure doit être dans le futur
-              </span>
-            </div>
-          )}
-        </div>
-      )}
-
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out;
-        }
-      `}</style>
+            {/* Preview - Error */}
+            {scheduledDate && scheduledTime && !isValidSchedule && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-2 p-3 bg-danger/10 border border-danger/30 rounded-lg"
+              >
+                <IconAlertTriangle className="w-5 h-5 text-danger" />
+                <span className="text-danger text-sm">
+                  La date/heure doit être dans le futur
+                </span>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

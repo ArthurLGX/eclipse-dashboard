@@ -701,12 +701,12 @@ function renderSignatureHtml(data: CreateEmailSignatureData): string {
   html += '<tr>';
   
   if (data.logo_url) {
-    html += `<td style="padding-right: 16px; vertical-align: top;">
-      <img src="${data.logo_url}" alt="Logo" style="width: 80px; height: auto; border-radius: 8px;" />
+    html += `<td style="padding-right: 16px; vertical-align: middle;">
+      <img src="${data.logo_url}" alt="Logo" style="width: 80px; height: 80px; object-fit: contain; border-radius: 8px; display: block;" />
     </td>`;
   }
   
-  html += '<td style="vertical-align: top;">';
+  html += '<td style="vertical-align: middle;">';
   
   if (data.sender_name) {
     html += `<div style="font-weight: bold; font-size: 16px; color: #111;">${data.sender_name}</div>`;

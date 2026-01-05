@@ -17,6 +17,38 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 // Dictionnaire de traductions
 const translations = {
   fr: {
+
+
+    //Onboarding
+    onboarding_welcome: 'Bienvenue sur Eclipse !',
+    onboarding_subtitle: 'Configurons votre espace en quelques étapes',
+    steps_completed: 'étapes complétées',
+    skip_for_now: 'Passer pour le moment',
+    start_using: 'Commencer à utiliser Eclipse',
+    
+    onboarding_company_title: 'Votre entreprise',
+    onboarding_company_desc: 'Configurez les informations de votre entreprise pour personnaliser vos documents.',
+    onboarding_company_action: 'Configurer',
+    
+    onboarding_smtp_title: 'Configuration email',
+    onboarding_smtp_desc: 'Connectez votre compte email (Gmail, Outlook...) pour envoyer des emails.',
+    onboarding_smtp_action: 'Connecter',
+    
+    onboarding_signature_title: 'Signature email',
+    onboarding_signature_desc: 'Créez une signature professionnelle pour vos emails et newsletters.',
+    onboarding_signature_action: 'Créer',
+    
+    onboarding_email_title: 'Premier envoi',
+    onboarding_email_desc: 'Envoyez votre première newsletter ou email à vos contacts.',
+    onboarding_email_action: 'Envoyer',
+    
+    onboarding_company_name: 'Nom de l\'entreprise',
+    onboarding_company_name_placeholder: 'Ex: Eclipse Studio',
+    onboarding_company_address: 'Adresse',
+    onboarding_company_address_placeholder: 'Ex: 123 Rue de la Paix, Paris, France',
+    onboarding_company_phone: 'Téléphone',
+    onboarding_company_phone_placeholder: 'Ex: +33 1 23 45 67 89',
+    onboarding_company_email: 'Email',
     // Navigation
     about: 'À propos',
     pricing: 'Tarifs',
@@ -102,6 +134,8 @@ const translations = {
     smtp_not_verified: 'Non vérifié',
     smtp_info_1: 'Les newsletters seront envoyées depuis votre adresse email personnelle.',
     smtp_info_2: 'Pour Gmail, vous devez créer un "mot de passe d\'application" dans les paramètres de sécurité de votre compte Google.',
+    smtp_app_password_title: 'Mot de passe d\'application requis',
+    smtp_app_password_desc: 'Pour des raisons de sécurité, la plupart des fournisseurs exigent un mot de passe d\'application au lieu de votre mot de passe habituel.',
     
     // Email Signature
     email_signature: 'Signature email',
@@ -1179,6 +1213,29 @@ const translations = {
   },
 
   en: {
+    // Onboarding
+    onboarding_welcome: 'Welcome to Eclipse!',
+    onboarding_subtitle: 'Let\'s set up your workspace in a few steps',
+    steps_completed: 'steps completed',
+    skip_for_now: 'Skip for now',
+    start_using: 'Start using Eclipse',
+    
+    onboarding_company_title: 'Your company',
+    onboarding_company_desc: 'Set up your company information to personalize your documents.',
+    onboarding_company_action: 'Configure',
+    
+    onboarding_smtp_title: 'Email configuration',
+    onboarding_smtp_desc: 'Connect your email account (Gmail, Outlook...) to send emails.',
+    onboarding_smtp_action: 'Connect',
+    
+    onboarding_signature_title: 'Email signature',
+    onboarding_signature_desc: 'Create a professional signature for your emails and newsletters.',
+    onboarding_signature_action: 'Create',
+    
+    onboarding_email_title: 'First send',
+    onboarding_email_desc: 'Send your first newsletter or email to your contacts.',
+    onboarding_email_action: 'Send',
+    
     // Navigation
     dashboard: 'Dashboard',
     category_activity: 'Activity',
@@ -1361,6 +1418,8 @@ const translations = {
     smtp_not_verified: 'Not verified',
     smtp_info_1: 'Newsletters will be sent from your personal email address.',
     smtp_info_2: 'For Gmail, you must create an "app password" in your Google account security settings.',
+    smtp_app_password_title: 'App password required',
+    smtp_app_password_desc: 'For security reasons, most providers require an app password instead of your regular password.',
     
     // Email Signature
     email_signature: 'Email Signature',

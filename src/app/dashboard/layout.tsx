@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { OnboardingProvider } from '@/app/context/OnboardingContext';
 import OnboardingWizard from '@/app/components/OnboardingWizard';
+import useLenis from '@/utils/useLenis';
 import {
   IconHome,
   IconUsers,
@@ -92,15 +93,8 @@ export default function DashboardLayout({
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
 
-  // Désactiver le scroll du body sur le dashboard pour éviter le double scroll
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    document.body.style.height = '100vh';
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.height = '';
-    };
-  }, []);
+  // Activer Lenis pour le smooth scroll
+  useLenis();
 
   // Définir les items de la sidebar avec catégories en menus déroulants
   const sidebarItems: SidebarItem[] = useMemo(() => [
@@ -362,8 +356,8 @@ export default function DashboardLayout({
           {/* Notification Bell - Fixed en haut à droite */}
           <NotificationBell />
         
-        <div className="flex h-screen w-full">
-          {/* Sidebar Desktop - Fixed height */}
+        <div className="dashboard-wrapper flex min-h-screen w-full">
+          {/* Sidebar Desktop - Fixed */}
           <motion.div
             className="sidebar hidden lg:flex fixed left-0 top-0 backdrop-blur-sm flex-col items-start justify-start gap-8 h-screen z-[1000] overflow-hidden transition-colors duration-300"
             animate={{
@@ -535,15 +529,15 @@ export default function DashboardLayout({
             </nav>
           </div>
 
-          {/* Contenu principal - seul élément scrollable */}
+          {/* Contenu principal - scroll géré par Lenis sur le body */}
           <motion.main
-            className="h-screen overflow-y-scroll overflow-x-hidden w-full"
+            className="min-h-screen w-full "
             animate={{
               marginLeft: isDesktop ? (isExpanded || isPinned ? 300 : 64) : 0,
             }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
           >
-            <div className="w-full lg:p-6 p-4 pb-32 lg:my-24 min-h-full">
+            <div className="w-full lg:p-6 p-4">
               <BreadCrumb />
               {children}
             </div>

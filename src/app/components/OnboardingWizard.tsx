@@ -12,6 +12,7 @@ import {
   IconX,
   IconSparkles,
   IconRocket,
+  IconArrowRight,
 } from '@tabler/icons-react';
 import { useOnboarding, OnboardingStep } from '@/app/context/OnboardingContext';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -55,7 +56,7 @@ export default function OnboardingWizard() {
       title: t('onboarding_smtp_title') || 'Configuration email',
       description: t('onboarding_smtp_desc') || 'Connectez votre compte email (Gmail, Outlook...) pour envoyer des emails.',
       action: t('onboarding_smtp_action') || 'Connecter',
-      route: '/dashboard/profile/settings',
+      route: '/dashboard/settings?tab=email',
     },
     {
       id: 'signature',
@@ -63,7 +64,7 @@ export default function OnboardingWizard() {
       title: t('onboarding_signature_title') || 'Signature email',
       description: t('onboarding_signature_desc') || 'Créez une signature professionnelle pour vos emails et newsletters.',
       action: t('onboarding_signature_action') || 'Créer',
-      route: '/dashboard/profile/settings',
+      route: '/dashboard/settings?tab=email',
     },
     {
       id: 'first-email',
@@ -176,10 +177,10 @@ export default function OnboardingWizard() {
                     className={`
                       relative flex items-center gap-4 p-4 rounded-xl border transition-all cursor-pointer
                       ${status === 'completed' 
-                        ? 'bg-green-500/10 border-green-500/30' 
+                        ? 'bg-success-light border-success' 
                         : status === 'current'
-                          ? 'bg-accent/10 border-accent/50 shadow-lg shadow-accent/10'
-                          : 'bg-secondary/5 border-default hover:border-accent/30'
+                          ? 'bg-accent/10 border-accent shadow-lg shadow-accent/20'
+                          : 'bg-card border-default hover:border-accent/30'
                       }
                     `}
                     onClick={() => handleStepClick(step)}
@@ -188,10 +189,10 @@ export default function OnboardingWizard() {
                     <div className={`
                       flex items-center justify-center w-12 h-12 rounded-xl shrink-0
                       ${status === 'completed'
-                        ? 'bg-green-500 text-white'
+                        ? 'bg-success text-white'
                         : status === 'current'
                           ? 'bg-accent text-white'
-                          : 'bg-secondary/20 text-muted'
+                          : 'bg-muted text-muted'
                       }
                     `}>
                       {status === 'completed' ? (
@@ -203,10 +204,18 @@ export default function OnboardingWizard() {
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <h3 className={`font-semibold ${status === 'pending' ? 'text-muted' : 'text-primary'}`}>
+                      <h3 className={`font-semibold ${
+                        status === 'completed' ? 'text-primary' 
+                        : status === 'current' ? 'text-accent' 
+                        : 'text-muted'
+                      }`}>
                         {step.title}
                       </h3>
-                      <p className="text-sm text-muted line-clamp-1">
+                      <p className={`text-sm line-clamp-1 ${
+                        status === 'completed' ? 'text-secondary' 
+                        : status === 'current' ? 'text-secondary' 
+                        : 'text-muted'
+                      }`}>
                         {step.description}
                       </p>
                     </div>
@@ -214,7 +223,7 @@ export default function OnboardingWizard() {
                     {/* Action */}
                     <div className="shrink-0">
                       {status === 'completed' ? (
-                        <span className="text-sm text-green-500 font-medium">
+                        <span className="text-sm text-success font-medium">
                           {t('completed') || 'Terminé'}
                         </span>
                       ) : (
@@ -236,9 +245,10 @@ export default function OnboardingWizard() {
             <div className="px-8 pb-8 flex items-center justify-between">
               <button
                 onClick={handleSkip}
-                className="text-sm text-muted hover:text-primary transition-colors"
+                className="group text-sm flex items-center gap-1 text-muted hover:!text-primary transition-all ease-in-out duration-300 cursor-pointer underline hover:no-underline"
               >
                 {t('skip_for_now') || 'Passer pour le moment'}
+                <IconArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
 
               {completedCount >= 3 && (

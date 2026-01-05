@@ -772,40 +772,102 @@ export interface MediaFile {
   height?: number;
   createdAt: string;
   updatedAt: string;
+  // ID du user-media pour la suppression (bibliothèque privée)
+  userMediaDocumentId?: string;
 }
 
-// Récupérer tous les fichiers uploadés par l'utilisateur
+// Interface pour user-media
+interface UserMedia {
+  id: number;
+  documentId: string;
+  name: string;
+  type: 'image' | 'video' | 'document';
+  folder: string;
+  file: MediaFile;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Récupérer tous les fichiers uploadés par l'utilisateur (via user-media - privé)
 export async function fetchUserMedia(): Promise<MediaFile[]> {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');
 
   const response = await fetch(
-    `${API_URL}/api/upload/files?sort=createdAt:desc`,
+    `${API_URL}/api/user-medias?sort=createdAt:desc&populate=file`,
     {
       headers: { Authorization: `Bearer ${token}` },
     }
   );
 
   if (!response.ok) {
-    throw new Error('Erreur lors de la récupération des médias');
+    const errorData = await response.json().catch(() => ({}));
+    console.error('Erreur API user-medias:', response.status, errorData);
+    throw new Error(errorData?.error?.message || 'Erreur lors de la récupération des médias');
   }
 
-  const files = await response.json();
+  const result = await response.json();
+  console.log('API user-medias response:', result);
+  const userMedias = result.data || [];
   
-  // Transformer les URLs relatives en URLs absolues
-  return files.map((file: MediaFile) => ({
-    ...file,
-    url: file.url.startsWith('http') ? file.url : `${API_URL}${file.url}`,
-  }));
+  // Transformer en MediaFile avec URLs absolues
+  return userMedias.map((um: UserMedia) => {
+    const file = um.file;
+    if (!file) return null;
+    return {
+      ...file,
+      // Utiliser le documentId de user-media pour la suppression
+      userMediaDocumentId: um.documentId,
+      url: file.url?.startsWith('http') ? file.url : `${API_URL}${file.url}`,
+    };
+  }).filter(Boolean) as MediaFile[];
 }
 
-// Supprimer un fichier média
-export async function deleteMedia(fileId: number): Promise<void> {
+// Créer un enregistrement user-media après upload
+export async function createUserMedia(
+  fileId: number, 
+  name: string, 
+  type: 'image' | 'video' | 'document' = 'image',
+  folder: string = 'general'
+): Promise<UserMedia> {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');
 
   const response = await fetch(
-    `${API_URL}/api/upload/files/${fileId}`,
+    `${API_URL}/api/user-medias`,
+    {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}` 
+      },
+      body: JSON.stringify({
+        data: {
+          name,
+          type,
+          folder,
+          file: fileId,
+        }
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error?.error?.message || 'Erreur lors de la création du média');
+  }
+
+  const result = await response.json();
+  return result.data;
+}
+
+// Supprimer un fichier média (via user-media)
+export async function deleteMedia(documentId: string): Promise<void> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const response = await fetch(
+    `${API_URL}/api/user-medias/${documentId}`,
     {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -1001,7 +1063,7 @@ export async function createSubscription(
 
 const API_URL_BASE = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-/** Upload une image vers Strapi */
+/** Upload une image vers Strapi (sans tracker dans la bibliothèque) */
 export async function uploadImage(file: File): Promise<{ id: number; url: string }> {
   const token = getToken();
   const formData = new FormData();
@@ -1021,6 +1083,49 @@ export async function uploadImage(file: File): Promise<{ id: number; url: string
 
   const data = await res.json();
   return { id: data[0].id, url: data[0].url };
+}
+
+/** Upload une image vers Strapi ET l'ajouter à la bibliothèque privée de l'utilisateur */
+export async function uploadImageToLibrary(
+  file: File, 
+  folder: string = 'general'
+): Promise<{ id: number; url: string; userMediaDocumentId: string }> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+  
+  const formData = new FormData();
+  formData.append('files', file);
+
+  // 1. Upload le fichier
+  const res = await fetch(`${API_URL_BASE}/api/upload`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new Error('Erreur lors de l\'upload de l\'image');
+  }
+
+  const data = await res.json();
+  const uploadedFile = data[0];
+  
+  // 2. Déterminer le type de fichier
+  const mimeType = file.type;
+  let mediaType: 'image' | 'video' | 'document' = 'document';
+  if (mimeType.startsWith('image/')) mediaType = 'image';
+  else if (mimeType.startsWith('video/')) mediaType = 'video';
+  
+  // 3. Créer l'enregistrement user-media pour tracker ce fichier
+  const userMedia = await createUserMedia(uploadedFile.id, file.name, mediaType, folder);
+  
+  return { 
+    id: uploadedFile.id, 
+    url: uploadedFile.url.startsWith('http') ? uploadedFile.url : `${API_URL_BASE}${uploadedFile.url}`,
+    userMediaDocumentId: userMedia.documentId,
+  };
 }
 
 /** Met à jour la profile picture d'un utilisateur */

@@ -123,7 +123,7 @@ function EmailsDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           onClick={() => router.push('/dashboard/emails/analytics')}
-        className="group cursor-pointer bg-gradient-to-br from-purple-600/10 to-purple-500/5 border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 hover:shadow-lg transition-all duration-300"
+          className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl bg-accent/20 flex items-center justify-center">
@@ -147,11 +147,11 @@ function EmailsDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           onClick={() => router.push('/dashboard/emails/history')}
-        className="group cursor-pointer bg-gradient-to-br from-purple-600/10 to-purple-500/5 border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 hover:shadow-lg transition-all duration-300"
+          className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl bg-secondary/10 flex items-center justify-center">
-              <IconHistory className="w-7 h-7 text-secondary" />
+            <div className="w-14 h-14 rounded-xl bg-info/20 flex items-center justify-center">
+              <IconHistory className="w-7 h-7 text-info" />
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-primary group-hover:text-accent transition-colors">
@@ -172,21 +172,21 @@ function EmailsDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
         onClick={() => router.push('/dashboard/emails/scheduled')}
-        className="group cursor-pointer bg-gradient-to-br from-purple-600/10 to-purple-500/5 border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 hover:shadow-lg transition-all duration-300"
+        className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
       >
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-xl bg-purple-500/20 flex items-center justify-center">
-            <IconClock className="w-7 h-7 text-purple-400" />
+          <div className="w-14 h-14 rounded-xl bg-warning/20 flex items-center justify-center">
+            <IconClock className="w-7 h-7 text-warning" />
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-primary group-hover:text-purple-400 transition-colors">
+            <h3 className="text-lg font-semibold text-primary group-hover:text-accent transition-colors">
               {t('scheduled_emails') || 'Emails planifiés'}
             </h3>
             <p className="text-sm text-muted">
               {t('scheduled_emails_desc') || 'Gérez vos emails programmés pour plus tard'}
             </p>
           </div>
-          <IconArrowRight className="w-5 h-5 text-purple-400 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
+          <IconArrowRight className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
         </div>
       </motion.div>
     </div>

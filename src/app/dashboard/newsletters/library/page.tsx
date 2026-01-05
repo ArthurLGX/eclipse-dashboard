@@ -98,9 +98,15 @@ export default function MediaLibraryPage() {
       return;
     }
 
+    // Utiliser userMediaDocumentId pour la suppression via user-media
+    if (!file.userMediaDocumentId) {
+      showGlobalPopup(t('delete_error') || 'Erreur lors de la suppression', 'error');
+      return;
+    }
+
     setDeletingId(file.id);
     try {
-      await deleteMedia(file.id);
+      await deleteMedia(file.userMediaDocumentId);
       setMedia(prev => prev.filter(m => m.id !== file.id));
       showGlobalPopup(t('media_deleted') || 'Média supprimé', 'success');
       if (selectedMedia?.id === file.id) {
@@ -226,7 +232,7 @@ export default function MediaLibraryPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('search_media') || 'Rechercher un média...'}
-              className="input w-full pl-10"
+              className="input w-full !pl-10"
             />
           </div>
           

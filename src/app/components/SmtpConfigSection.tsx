@@ -13,7 +13,9 @@ import {
   IconTrash,
   IconEye,
   IconEyeOff,
-  IconPlugConnected
+  IconPlugConnected,
+  IconExternalLink,
+  IconKey
 } from '@tabler/icons-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
@@ -43,14 +45,56 @@ export default function SmtpConfigSection() {
     smtp_from_name: '',
   });
 
-  // Preset configurations
+  // Preset configurations with app password help links
   const presets = [
-    { name: 'Gmail', host: 'smtp.gmail.com', port: 587, secure: false },
-    { name: 'Outlook', host: 'smtp-mail.outlook.com', port: 587, secure: false },
-    { name: 'Yahoo', host: 'smtp.mail.yahoo.com', port: 587, secure: false },
-    { name: 'OVH', host: 'ssl0.ovh.net', port: 465, secure: true },
-    { name: 'Ionos', host: 'smtp.ionos.fr', port: 587, secure: false },
-    { name: 'Hostinger', host: 'smtp.hostinger.com', port: 587, secure: false },
+    { 
+      name: 'Gmail', 
+      host: 'smtp.gmail.com', 
+      port: 587, 
+      secure: false,
+      appPasswordUrl: 'https://myaccount.google.com/apppasswords',
+      appPasswordLabel: 'Créer un mot de passe d\'application Google'
+    },
+    { 
+      name: 'Outlook', 
+      host: 'smtp-mail.outlook.com', 
+      port: 587, 
+      secure: false,
+      appPasswordUrl: 'https://account.live.com/proofs/AppPassword',
+      appPasswordLabel: 'Créer un mot de passe d\'application Microsoft'
+    },
+    { 
+      name: 'Yahoo', 
+      host: 'smtp.mail.yahoo.com', 
+      port: 587, 
+      secure: false,
+      appPasswordUrl: 'https://login.yahoo.com/account/security/app-passwords',
+      appPasswordLabel: 'Créer un mot de passe d\'application Yahoo'
+    },
+    { 
+      name: 'OVH', 
+      host: 'ssl0.ovh.net', 
+      port: 465, 
+      secure: true,
+      appPasswordUrl: 'https://www.ovh.com/manager/',
+      appPasswordLabel: 'Accéder à l\'espace client OVH'
+    },
+    { 
+      name: 'Ionos', 
+      host: 'smtp.ionos.fr', 
+      port: 587, 
+      secure: false,
+      appPasswordUrl: 'https://my.ionos.fr/',
+      appPasswordLabel: 'Accéder à l\'espace client Ionos'
+    },
+    { 
+      name: 'Hostinger', 
+      host: 'smtp.hostinger.com', 
+      port: 587, 
+      secure: false,
+      appPasswordUrl: 'https://hpanel.hostinger.com/',
+      appPasswordLabel: 'Accéder au panel Hostinger'
+    },
   ];
 
   // Load existing config
@@ -235,7 +279,7 @@ export default function SmtpConfigSection() {
       </div>
 
       {/* Info box */}
-      <div className="p-4 rounded-xl bg-info/5 border border-info/20">
+      <div className="p-4 rounded-xl bg-info-light border border-info">
         <div className="flex gap-3">
           <IconInfoCircle className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
           <div className="text-sm text-secondary space-y-2">
@@ -246,8 +290,8 @@ export default function SmtpConfigSection() {
       </div>
 
       {/* Presets */}
-      <div>
-        <p className="text-sm font-medium text-primary mb-3">
+      <div className="space-y-3">
+        <p className="text-sm font-medium text-primary">
           {t('smtp_presets') || 'Configurations prédéfinies'}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -265,6 +309,36 @@ export default function SmtpConfigSection() {
             </button>
           ))}
         </div>
+        
+        {/* App Password Help Link - Only show if no existing config */}
+        {!existingConfig && presets.find(p => p.host === formData.smtp_host) && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="p-3 rounded-lg bg-warning-light border border-warning"
+          >
+            <div className="flex items-start gap-3">
+              <IconKey className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm !font-bold text-warning font-medium mb-1">
+                  {t('smtp_app_password_title') || 'Mot de passe d\'application requis'}
+                </p>
+                <p className="text-xs text-warning mb-4">
+                  {t('smtp_app_password_desc') || 'Pour des raisons de sécurité, la plupart des fournisseurs exigent un mot de passe d\'application au lieu de votre mot de passe habituel.'}
+                </p>
+                <a
+                  href={presets.find(p => p.host === formData.smtp_host)?.appPasswordUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex btn-outline transition-all ease-in-out duration-300 items-center gap-1.5 text-sm text-warning underline hover:underline font-medium"
+                >
+                  <IconExternalLink className="w-4 h-4" />
+                  {presets.find(p => p.host === formData.smtp_host)?.appPasswordLabel}
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
 
       {/* Form */}
