@@ -1799,7 +1799,7 @@ export default function ComposeNewsletterPage() {
         }
         
         // Aussi ajouter à contentImages pour le suivi (optionnel)
-        setContentImages(prev => [...prev, fullUrl]);
+        setContentImages(prev => [...prev, result.url]);
         showGlobalPopup(t('image_uploaded_success') || 'Image uploadée avec succès', 'success');
       } catch (error) {
         console.error('Error uploading content image:', error);
