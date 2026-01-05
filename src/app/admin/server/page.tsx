@@ -5,7 +5,6 @@ import { motion } from 'motion/react';
 import {
   IconServer,
   IconDatabase,
-  IconClock,
   IconRefresh,
   IconCheck,
   IconX,

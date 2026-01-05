@@ -89,7 +89,7 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
 
   const isLinkVisible = (linkId: string): boolean => {
     // Les liens toujours visibles (navigation de base)
-    if (['home', 'profile', 'logout', 'your_subscription', 'your_enterprise', 'personal_information', 'global_revenue_stats', 'factures'].includes(linkId)) {
+    if (['home', 'profile', 'logout', 'your_subscription', 'your_enterprise', 'personal_information', 'global_revenue_stats', 'factures', 'admin'].includes(linkId)) {
       return true;
     }
     // Les catégories sont toujours visibles

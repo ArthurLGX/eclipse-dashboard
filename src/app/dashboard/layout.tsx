@@ -31,6 +31,7 @@ import {
   IconUsersGroup,
   IconBriefcase,
   IconUserCog,
+  IconShield,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -84,6 +85,39 @@ export default function DashboardLayout({
     }
     return null;
   }, [currentUserData]);
+
+  // Vérifier si l'utilisateur est admin
+  const isAdmin = useMemo(() => {
+    const adminEmails = ['admin@eclipsestudio.dev', 'arthur@eclipsestudio.dev', 'arthur.legoux@gmail.com'];
+    if (!user) return false;
+    
+    // Vérifier par email
+    if (adminEmails.includes(user.email)) return true;
+    
+    // Vérifier par rôle - supporter différentes structures
+    const userRole = user.role;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const currentUserRole = (currentUserData as any)?.role;
+    
+    // Vérifier le rôle depuis currentUserData (plus complet)
+    if (currentUserRole) {
+      if (typeof currentUserRole === 'string' && currentUserRole.toLowerCase() === 'admin') return true;
+      if (typeof currentUserRole === 'object') {
+        const roleName = currentUserRole.name?.toLowerCase() || currentUserRole.type?.toLowerCase();
+        if (roleName === 'admin') return true;
+      }
+    }
+    
+    // Vérifier le rôle depuis user
+    if (typeof userRole === 'string' && userRole.toLowerCase() === 'admin') return true;
+    if (typeof userRole === 'object' && userRole) {
+      const roleName = (userRole as { name?: string; type?: string }).name?.toLowerCase() || 
+                       (userRole as { name?: string; type?: string }).type?.toLowerCase();
+      if (roleName === 'admin') return true;
+    }
+    
+    return false;
+  }, [user, currentUserData]);
 
   // Détecter si on est sur desktop (lg breakpoint = 1024px)
   useEffect(() => {
@@ -252,6 +286,16 @@ export default function DashboardLayout({
     },
 
     // ═══════════════════════════════════════
+    // ADMINISTRATION (Visible uniquement pour les admins)
+    // ═══════════════════════════════════════
+    ...(isAdmin ? [{
+      id: 'admin',
+      label: t('admin_dashboard') || 'Administration',
+      icon: <IconShield size={20} stroke={1} />,
+      path: '/admin',
+    }] : []),
+
+    // ═══════════════════════════════════════
     // DÉCONNEXION (Toujours visible)
     // ═══════════════════════════════════════
     {
@@ -261,7 +305,7 @@ export default function DashboardLayout({
       onClick: logout,
       path: '/login?type=login',
     },
-  ], [t, profilePictureUrl, logout]);
+  ], [t, profilePictureUrl, logout, isAdmin]);
 
   // Filtrer les items selon les préférences de visibilité
   const visibleSidebarItems = useMemo(() => {

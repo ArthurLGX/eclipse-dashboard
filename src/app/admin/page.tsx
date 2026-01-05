@@ -148,28 +148,47 @@ export default function AdminOverviewPage() {
   };
 
   const fetchRecentActivity = async () => {
-    setRecentActivity([
-      {
-        id: '1',
-        type: 'user_registered',
-        message: t('new_user_registered') || 'Nouvel utilisateur inscrit',
-        timestamp: new Date().toISOString(),
-        user: 'john@example.com',
-      },
-      {
-        id: '2',
-        type: 'subscription_changed',
-        message: t('upgraded_to_pro') || 'Passage au plan Pro',
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-        user: 'jane@example.com',
-      },
-      {
-        id: '3',
-        type: 'email_sent',
-        message: t('emails_sent_count') || '150 emails envoyés',
-        timestamp: new Date(Date.now() - 7200000).toISOString(),
-      },
-    ]);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/audit-logs?page=1&pageSize=10`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const activities: RecentActivity[] = (data.data || []).map((log: {
+          id: number;
+          documentId?: string;
+          type: string;
+          action: string;
+          createdAt: string;
+          user?: { email?: string; username?: string };
+        }) => ({
+          id: log.documentId || log.id.toString(),
+          type: mapLogTypeToActivityType(log.type),
+          message: log.action,
+          timestamp: log.createdAt,
+          user: log.user?.email || log.user?.username,
+        }));
+        setRecentActivity(activities);
+      } else {
+        // Fallback si l'API n'est pas disponible
+        setRecentActivity([]);
+      }
+    } catch (error) {
+      console.error('Error fetching recent activity:', error);
+      setRecentActivity([]);
+    }
+  };
+
+  const mapLogTypeToActivityType = (type: string): RecentActivity['type'] => {
+    switch (type) {
+      case 'register': return 'user_registered';
+      case 'update': return 'subscription_changed';
+      case 'email': return 'email_sent';
+      case 'error': return 'error';
+      default: return 'email_sent';
+    }
   };
 
   const refreshData = async () => {

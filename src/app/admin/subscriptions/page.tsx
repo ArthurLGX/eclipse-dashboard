@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   IconCreditCard,
   IconSearch,
@@ -12,22 +12,29 @@ import {
   IconEdit,
   IconRefresh,
   IconChevronRight,
+  IconX,
+  IconDeviceFloppy,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { usePopup } from '@/app/context/PopupContext';
 
 interface Plan {
   id: number;
   documentId: string;
   name: string;
-  price: number;
-  interval: string;
+  price_monthly: number;
+  price_yearly?: number;
+  billing_type?: string;
+  description?: string;
   features?: Record<string, unknown>;
+  rank?: string;
 }
 
 interface Subscription {
   id: number;
   documentId: string;
-  status: string;
+  status?: string;
+  subscription_status?: string; // Strapi field name
   start_date: string;
   end_date?: string;
   plan?: Plan;
@@ -55,23 +62,43 @@ export default function AdminSubscriptionsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPlan, setFilterPlan] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
+  const [savingPlan, setSavingPlan] = useState(false);
   const { t } = useLanguage();
+  const { showGlobalPopup } = usePopup();
 
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
 
+      // Récupérer les plans avec tous leurs champs
       const plansRes = await fetch(`${API_URL}/api/plans?populate=*`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const plansData = await plansRes.json();
+      console.log('Plans data:', plansData);
       setPlans(plansData.data || []);
 
-      const subsRes = await fetch(`${API_URL}/api/subscriptions?populate=*`, {
+      // Récupérer les subscriptions avec le plan et les users
+      const subsRes = await fetch(`${API_URL}/api/subscriptions?populate[plan][populate]=*&populate[users][populate]=*`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const subsData = await subsRes.json();
-      setSubscriptions(subsData.data || []);
+      console.log('Subscriptions data:', subsData);
+      
+      // Mapper les subscriptions pour inclure le prix du plan
+      const mappedSubs = (subsData.data || []).map((sub: Subscription & { plan?: Plan }) => {
+        // Si le plan n'a pas de price_monthly, chercher dans la liste des plans
+        if (sub.plan && !sub.plan.price_monthly) {
+          const fullPlan = plansData.data?.find((p: Plan) => p.id === sub.plan?.id || p.documentId === sub.plan?.documentId);
+          if (fullPlan) {
+            return { ...sub, plan: fullPlan };
+          }
+        }
+        return sub;
+      });
+      
+      setSubscriptions(mappedSubs);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -83,19 +110,27 @@ export default function AdminSubscriptionsPage() {
     fetchData();
   }, []);
 
+  // Helper pour obtenir le statut (supporte les deux noms de champs)
+  const getSubStatus = (sub: Subscription) => sub.subscription_status || sub.status || '';
+
   const planStats = useMemo((): PlanStats[] => {
     const stats: Record<string, { count: number; revenue: number }> = {};
 
     subscriptions.forEach(sub => {
       const planName = sub.plan?.name || 'Sans plan';
-      const price = sub.plan?.price || 0;
+      // Chercher le prix dans la liste des plans si non disponible dans la subscription
+      let price = sub.plan?.price_monthly;
+      if (price === undefined && sub.plan) {
+        const fullPlan = plans.find(p => p.id === sub.plan?.id || p.documentId === sub.plan?.documentId);
+        price = fullPlan?.price_monthly || 0;
+      }
 
       if (!stats[planName]) {
         stats[planName] = { count: 0, revenue: 0 };
       }
       stats[planName].count++;
-      if (sub.status === 'active') {
-        stats[planName].revenue += price;
+      if (getSubStatus(sub).toLowerCase() === 'active') {
+        stats[planName].revenue += price || 0;
       }
     });
 
@@ -109,7 +144,45 @@ export default function AdminSubscriptionsPage() {
       color: colors[index % colors.length],
       icon: icons[index % icons.length],
     }));
-  }, [subscriptions]);
+  }, [subscriptions, plans]);
+
+  const handleSavePlan = async () => {
+    if (!editingPlan) return;
+    
+    setSavingPlan(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/plans/${editingPlan.documentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          data: {
+            name: editingPlan.name,
+            price_monthly: editingPlan.price_monthly,
+            price_yearly: editingPlan.price_yearly,
+            description: editingPlan.description,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        showGlobalPopup(t('plan_updated') || 'Plan mis à jour avec succès', 'success');
+        setEditingPlan(null);
+        fetchData(); // Refresh data
+      } else {
+        const error = await response.json();
+        showGlobalPopup(error.error?.message || t('error_updating_plan') || 'Erreur lors de la mise à jour', 'error');
+      }
+    } catch (error) {
+      console.error('Error updating plan:', error);
+      showGlobalPopup(t('error_updating_plan') || 'Erreur lors de la mise à jour', 'error');
+    } finally {
+      setSavingPlan(false);
+    }
+  };
 
   const filteredSubscriptions = useMemo(() => {
     return subscriptions.filter(sub => {
@@ -120,17 +193,32 @@ export default function AdminSubscriptionsPage() {
         );
 
       const matchesPlan = filterPlan === 'all' || sub.plan?.name === filterPlan;
-      const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
+      const subStatus = getSubStatus(sub).toLowerCase();
+      const matchesStatus = filterStatus === 'all' || subStatus === filterStatus.toLowerCase();
 
       return matchesSearch && matchesPlan && matchesStatus;
     });
   }, [subscriptions, searchTerm, filterPlan, filterStatus]);
 
   const totalMRR = useMemo(() => {
-    return subscriptions
-      .filter(sub => sub.status === 'active')
-      .reduce((total, sub) => total + (sub.plan?.price || 0), 0);
-  }, [subscriptions]);
+    const activeSubs = subscriptions.filter(sub => 
+      getSubStatus(sub).toLowerCase() === 'active'
+    );
+    
+    return activeSubs.reduce((total, sub) => {
+      // Chercher le prix dans la liste des plans si non disponible dans la subscription
+      let price = sub.plan?.price_monthly;
+      if ((price === undefined || price === null) && sub.plan) {
+        const fullPlan = plans.find(p => 
+          p.id === sub.plan?.id || 
+          p.documentId === sub.plan?.documentId ||
+          p.name?.toLowerCase() === sub.plan?.name?.toLowerCase()
+        );
+        price = fullPlan?.price_monthly || 0;
+      }
+      return total + (price || 0);
+    }, 0);
+  }, [subscriptions, plans]);
 
   if (loading) {
     return (
@@ -213,16 +301,25 @@ export default function AdminSubscriptionsPage() {
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="font-semibold text-primary">{plan.name}</span>
-                <button className="p-1.5 rounded-lg hover:bg-hover transition-colors">
-                  <IconEdit className="w-4 h-4 text-muted" />
+                <button 
+                  onClick={() => setEditingPlan({ ...plan })}
+                  className="p-1.5 rounded-lg hover:bg-hover transition-colors"
+                  title={t('edit_plan') || 'Modifier le plan'}
+                >
+                  <IconEdit className="w-4 h-4 text-muted hover:text-accent" />
                 </button>
               </div>
               <p className="text-2xl font-bold text-accent">
-                {plan.price}€
-                <span className="text-sm font-normal text-muted">/{plan.interval || t('month') || 'mois'}</span>
+                {plan.price_monthly || 0}€
+                <span className="text-sm font-normal text-muted">/{t('month') || 'mois'}</span>
               </p>
+              {plan.price_yearly !== undefined && plan.price_yearly > 0 && (
+                <p className="text-sm text-muted">
+                  {plan.price_yearly}€/{t('year') || 'an'}
+                </p>
+              )}
               <p className="text-xs text-muted mt-2">
-                {subscriptions.filter(s => s.plan?.id === plan.id).length} {t('subscribers') || 'abonnés'}
+                {subscriptions.filter(s => s.plan?.id === plan.id).length} {t('plan_subscribers') || 'abonnés'}
               </p>
             </div>
           ))}
@@ -324,22 +421,27 @@ export default function AdminSubscriptionsPage() {
                       <IconCrown className="w-4 h-4 text-accent" />
                       <span className="font-medium text-primary text-sm">{sub.plan?.name || t('no_plan') || 'Sans plan'}</span>
                     </div>
-                    {sub.plan?.price !== undefined && (
-                      <p className="text-xs text-muted mt-0.5">{sub.plan.price}€/{t('month') || 'mois'}</p>
+                    {sub.plan?.price_monthly !== undefined && (
+                      <p className="text-xs text-muted mt-0.5">{sub.plan.price_monthly}€/{t('month') || 'mois'}</p>
                     )}
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                      sub.status === 'active' ? 'bg-success/10 text-success' :
-                      sub.status === 'trial' ? 'bg-info/10 text-info' :
-                      sub.status === 'canceled' ? 'bg-danger/10 text-danger' :
-                      'bg-warning/10 text-warning'
-                    }`}>
-                      {sub.status === 'active' ? t('active') || 'Actif' :
-                       sub.status === 'trial' ? t('trial') || 'Essai' :
-                       sub.status === 'canceled' ? t('canceled') || 'Annulé' :
-                       sub.status}
-                    </span>
+                    {(() => {
+                      const status = getSubStatus(sub).toLowerCase();
+                      return (
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                          status === 'active' ? 'bg-success/10 text-success' :
+                          status === 'trial' ? 'bg-info/10 text-info' :
+                          status === 'canceled' ? 'bg-danger/10 text-danger' :
+                          'bg-warning/10 text-warning'
+                        }`}>
+                          {status === 'active' ? t('active') || 'Actif' :
+                           status === 'trial' ? t('trial') || 'Essai' :
+                           status === 'canceled' ? t('canceled') || 'Annulé' :
+                           getSubStatus(sub)}
+                        </span>
+                      );
+                    })()}
                   </td>
                   <td className="px-4 py-4 text-sm text-secondary">
                     {sub.start_date
@@ -371,6 +473,144 @@ export default function AdminSubscriptionsPage() {
           </div>
         )}
       </div>
+
+      {/* Edit Plan Modal */}
+      <AnimatePresence>
+        {editingPlan && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setEditingPlan(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="card p-6 w-full max-w-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+                  <IconEdit className="w-5 h-5 text-accent" />
+                  {t('edit_plan') || 'Modifier le plan'}
+                </h2>
+                <button
+                  onClick={() => setEditingPlan(null)}
+                  className="p-2 rounded-lg hover:bg-hover transition-colors"
+                >
+                  <IconX className="w-5 h-5 text-muted" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-1">
+                    {t('plan_name') || 'Nom du plan'}
+                  </label>
+                  <input
+                    type="text"
+                    value={editingPlan.name}
+                    onChange={(e) => setEditingPlan({ ...editingPlan, name: e.target.value })}
+                    className="input w-full"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-secondary mb-1">
+                      {t('price_monthly') || 'Prix mensuel'} (€)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={editingPlan.price_monthly || 0}
+                      onChange={(e) => setEditingPlan({ ...editingPlan, price_monthly: parseFloat(e.target.value) || 0 })}
+                      className="input w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-secondary mb-1">
+                      {t('price_yearly') || 'Prix annuel'} (€)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={editingPlan.price_yearly || 0}
+                      onChange={(e) => setEditingPlan({ ...editingPlan, price_yearly: parseFloat(e.target.value) || 0 })}
+                      className="input w-full"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-1">
+                    {t('description') || 'Description'}
+                  </label>
+                  <textarea
+                    value={editingPlan.description || ''}
+                    onChange={(e) => setEditingPlan({ ...editingPlan, description: e.target.value })}
+                    className="input w-full h-24 resize-none"
+                    placeholder={t('plan_description_placeholder') || 'Description du plan...'}
+                  />
+                </div>
+
+                {/* Features Preview (read-only) */}
+                {editingPlan.features && Object.keys(editingPlan.features).length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-secondary mb-2">
+                      {t('features') || 'Fonctionnalités'}
+                    </label>
+                    <div className="bg-muted/10 rounded-lg p-3 max-h-40 overflow-y-auto">
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        {Object.entries(editingPlan.features).map(([key, value]) => (
+                          <div key={key} className="flex items-center justify-between p-1.5 rounded bg-card">
+                            <span className="text-muted truncate">{key.replace(/_/g, ' ')}</span>
+                            <span className={`font-medium ${
+                              typeof value === 'boolean' 
+                                ? value ? 'text-success' : 'text-danger'
+                                : 'text-primary'
+                            }`}>
+                              {typeof value === 'boolean' ? (value ? '✓' : '✗') : String(value)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted mt-1">
+                      {t('features_edit_in_strapi') || 'Les fonctionnalités se modifient dans Strapi'}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-muted">
+                <button
+                  onClick={() => setEditingPlan(null)}
+                  className="btn-secondary px-4 py-2 rounded-lg"
+                >
+                  {t('cancel') || 'Annuler'}
+                </button>
+                <button
+                  onClick={handleSavePlan}
+                  disabled={savingPlan}
+                  className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                >
+                  {savingPlan ? (
+                    <IconRefresh className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <IconDeviceFloppy className="w-4 h-4" />
+                  )}
+                  {savingPlan ? t('saving') || 'Enregistrement...' : t('save') || 'Enregistrer'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
