@@ -1844,3 +1844,79 @@ export const countSentEmailsByCategory = async (
   
   return counts;
 };
+
+// ============================================================================
+// AUDIT LOGS (Admin)
+// ============================================================================
+
+export interface AuditLog {
+  id: number;
+  documentId: string;
+  type: 'login' | 'logout' | 'register' | 'update' | 'delete' | 'email' | 'error' | 'system';
+  action: string;
+  status: 'success' | 'error' | 'warning';
+  user?: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  details?: string;
+  ip?: string;
+  userAgent?: string;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+}
+
+interface AuditLogsResponse {
+  data: AuditLog[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
+
+interface FetchAuditLogsParams {
+  page?: number;
+  pageSize?: number;
+  type?: string;
+  status?: string;
+  search?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+/** Récupère les logs d'audit (admin uniquement) */
+export const fetchAuditLogs = async (
+  params: FetchAuditLogsParams = {}
+): Promise<AuditLogsResponse> => {
+  const queryParams = new URLSearchParams();
+  
+  if (params.page) queryParams.append('page', params.page.toString());
+  if (params.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+  if (params.type && params.type !== 'all') queryParams.append('type', params.type);
+  if (params.status && params.status !== 'all') queryParams.append('status', params.status);
+  if (params.search) queryParams.append('search', params.search);
+  if (params.startDate) queryParams.append('startDate', params.startDate);
+  if (params.endDate) queryParams.append('endDate', params.endDate);
+  
+  const queryString = queryParams.toString();
+  const endpoint = `audit-logs${queryString ? `?${queryString}` : ''}`;
+  
+  return get<AuditLogsResponse>(endpoint);
+};
+
+/** Crée un log d'audit */
+export const createAuditLog = async (data: {
+  type: AuditLog['type'];
+  action: string;
+  status?: AuditLog['status'];
+  details?: string;
+  metadata?: Record<string, unknown>;
+}): Promise<AuditLog> => {
+  const response = await post<ApiResponse<AuditLog>>('audit-logs', data);
+  return response.data;
+};

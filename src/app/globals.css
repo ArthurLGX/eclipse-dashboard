@@ -250,12 +250,8 @@
 .card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-default);
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   transition: all 0.2s ease;
-}
-
-.card:hover {
-  background-color: var(--bg-card-hover);
 }
 
 /* Buttons */

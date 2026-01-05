@@ -7,9 +7,9 @@ import {
   IconFilter, 
   IconX, 
   IconChevronDown,
-  IconCalendar,
   IconAdjustments
 } from '@tabler/icons-react';
+import ToggleButton from './ToggleButton';
 
 export interface FilterOption {
   value: string;
@@ -303,25 +303,14 @@ export default function TableFilters({
                 {toggleFilters.length > 0 && (
                   <div className="flex flex-wrap items-center gap-4 lg:gap-6">
                     {toggleFilters.map(filter => (
-                      <div key={filter.id} className="flex items-center gap-3">
-                        <label className="text-sm font-medium text-secondary whitespace-nowrap">
-                          {filter.label}
-                        </label>
-                        <button
-                          onClick={() => onAdvancedFilterChange?.(filter.id, !filter.value)}
-                          className={`relative w-11 h-6 rounded-full transition-all duration-200 ${
-                            filter.value 
-                              ? 'bg-accent' 
-                              : 'bg-gray-300 dark:bg-gray-600'
-                          }`}
-                        >
-                          <div
-                            className={`absolute top-[1.5px] left-[1.5px] w-5 h-5 rounded-full bg-white shadow-md transition-transform duration-200 ${
-                              filter.value ? 'translate-x-5' : 'translate-x-0'
-                            }`}
-                          />
-                        </button>
-                      </div>
+                      <ToggleButton
+                        key={filter.id}
+                        checked={!!filter.value}
+                        onChange={(value) => onAdvancedFilterChange?.(filter.id, value)}
+                        label={filter.label}
+                        labelPosition="left"
+                        size="md"
+                      />
                     ))}
                   </div>
                 )}

@@ -41,7 +41,6 @@ export default function FacturesPage() {
   // Advanced filters state
   const [clientFilter, setClientFilter] = useState('');
   const [projectFilter, setProjectFilter] = useState('');
-  const [amountRangeFilter, setAmountRangeFilter] = useState<{ min: string; max: string }>({ min: '', max: '' });
   const [dateRangeFilter, setDateRangeFilter] = useState<DateRangeFilter>({ from: '', to: '' });
   const [isOverdueFilter, setIsOverdueFilter] = useState<boolean | undefined>(undefined);
 

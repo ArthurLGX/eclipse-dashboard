@@ -17,8 +17,8 @@ export const Footer = () => {
     { name: 'privacy', path: '/privacy' },
   ];
 
-  // Ne pas afficher le footer sur les pages du dashboard
-  const isDashboard = pathname?.startsWith('/dashboard');
+  // Ne pas afficher le footer sur les pages du dashboard et admin
+  const isDashboard = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin');
   if (isDashboard) return null;
 
   return (
