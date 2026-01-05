@@ -13,8 +13,6 @@ import {
   IconUsers,
   IconTrendingUp,
   IconX,
-  IconCheck,
-  IconAlertCircle,
   IconMessageCircle,
   IconSend,
   IconClock,
