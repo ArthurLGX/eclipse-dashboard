@@ -6,6 +6,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { useTheme } from '@/app/context/ThemeContext';
 import { useSidebar, CONFIGURABLE_LINKS, SidebarLinkId } from '@/app/context/SidebarContext';
 import { usePreferences, DateFormat, Currency, NotificationFrequency } from '@/app/context/PreferencesContext';
+import { useUserPreferences } from '@/app/context/UserPreferencesContext';
 import { motion } from 'framer-motion';
 import { 
   IconSun, 
@@ -28,36 +29,95 @@ import {
   IconBriefcase,
   IconFolder,
   IconUserCog,
+  IconPuzzle,
+  IconCheck,
 } from '@tabler/icons-react';
 import SmtpConfigSection from '@/app/components/SmtpConfigSection';
 import EmailSignatureSection from '@/app/components/EmailSignatureSection';
+import { BusinessTypeSelector, ModuleSelector } from '@/app/components/BusinessTypeSelector';
+import { BusinessType, getDefaultModules } from '@/config/business-modules';
+import { usePopup } from '@/app/context/PopupContext';
 
-type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'sidebar' | 'email';
+type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'sidebar' | 'email' | 'modules';
 
 export default function SettingsPage() {
   const { t, language, setLanguage } = useLanguage();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { visibleLinks, toggleLink, resetToDefault } = useSidebar();
   const { preferences, updateNotifications, updateInvoice, updateFormat } = usePreferences();
+  const { 
+    businessType, 
+    enabledModules, 
+    updateBusinessType, 
+    updateEnabledModules,
+    loading: loadingPrefs 
+  } = useUserPreferences();
+  const { showGlobalPopup } = usePopup();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
+  const [localBusinessType, setLocalBusinessType] = useState<BusinessType | null>(null);
+  const [localModules, setLocalModules] = useState<string[]>([]);
+  const [isSavingModules, setIsSavingModules] = useState(false);
+  
+  // Initialiser les valeurs locales depuis les préférences
+  useEffect(() => {
+    if (!loadingPrefs) {
+      setLocalBusinessType(businessType);
+      setLocalModules(enabledModules);
+    }
+  }, [businessType, enabledModules, loadingPrefs]);
   
   // Set active tab from URL parameter
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['appearance', 'notifications', 'format', 'invoice', 'email', 'sidebar'].includes(tabParam)) {
+    if (tabParam && ['appearance', 'notifications', 'format', 'invoice', 'email', 'sidebar', 'modules'].includes(tabParam)) {
       setActiveTab(tabParam as SettingsTab);
     }
   }, [searchParams]);
 
   const tabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
     { id: 'appearance', label: t('appearance') || 'Apparence', icon: <IconSun className="w-4 h-4" /> },
+    { id: 'modules', label: t('modules') || 'Modules', icon: <IconPuzzle className="w-4 h-4" /> },
     { id: 'notifications', label: t('notifications') || 'Notifications', icon: <IconBell className="w-4 h-4" /> },
     { id: 'format', label: t('format') || 'Format', icon: <IconCalendar className="w-4 h-4" /> },
     { id: 'invoice', label: t('invoicing') || 'Facturation', icon: <IconFileInvoice className="w-4 h-4" /> },
     { id: 'email', label: t('email_config') || 'Email', icon: <IconMail className="w-4 h-4" /> },
     { id: 'sidebar', label: t('navigation') || 'Navigation', icon: <IconBuilding className="w-4 h-4" /> },
   ];
+  
+  // Handlers pour les modules
+  const handleBusinessTypeChange = (type: BusinessType) => {
+    setLocalBusinessType(type);
+    // Mettre à jour les modules par défaut pour ce type
+    setLocalModules(getDefaultModules(type));
+  };
+  
+  const handleToggleModule = (moduleId: string) => {
+    setLocalModules(prev => 
+      prev.includes(moduleId)
+        ? prev.filter(m => m !== moduleId)
+        : [...prev, moduleId]
+    );
+  };
+  
+  const handleSaveModules = async () => {
+    if (!localBusinessType) return;
+    
+    setIsSavingModules(true);
+    try {
+      await updateBusinessType(localBusinessType);
+      await updateEnabledModules(localModules);
+      showGlobalPopup(t('modules_saved') || 'Préférences enregistrées avec succès !', 'success');
+    } catch (error) {
+      console.error('Error saving modules:', error);
+      showGlobalPopup(t('modules_save_error') || 'Erreur lors de l\'enregistrement', 'error');
+    } finally {
+      setIsSavingModules(false);
+    }
+  };
+  
+  const hasModulesChanges = localBusinessType !== businessType || 
+    JSON.stringify(localModules.sort()) !== JSON.stringify(enabledModules.sort());
 
   // Organisation des liens par catégories
   const sidebarCategories: { 
@@ -405,6 +465,85 @@ export default function SettingsPage() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
             <SmtpConfigSection />
             <EmailSignatureSection />
+          </motion.div>
+        )}
+
+        {/* MODULES */}
+        {activeTab === 'modules' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+            {loadingPrefs ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />
+              </div>
+            ) : (
+              <>
+                {/* Section : Type de métier */}
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary">
+                      {t('your_business') || 'Votre métier'}
+                    </h3>
+                    <p className="text-sm text-muted mt-1">
+                      {t('business_type_desc') || 'Nous adapterons votre interface en conséquence'}
+                    </p>
+                  </div>
+                  <BusinessTypeSelector
+                    selectedType={localBusinessType}
+                    onSelect={handleBusinessTypeChange}
+                  />
+                </div>
+
+                {/* Section : Modules activés */}
+                {localBusinessType && (
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-primary">
+                        {t('enabled_modules') || 'Modules activés'}
+                      </h3>
+                      <p className="text-sm text-muted mt-1">
+                        {t('modules_desc') || 'Sélectionnez les fonctionnalités que vous souhaitez utiliser'}
+                      </p>
+                    </div>
+                    <ModuleSelector
+                      businessType={localBusinessType}
+                      selectedModules={localModules}
+                      onToggle={handleToggleModule}
+                    />
+                  </div>
+                )}
+
+                {/* Bouton de sauvegarde */}
+                {hasModulesChanges && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center justify-end gap-4 pt-4 border-t border-default"
+                  >
+                    <button
+                      onClick={() => {
+                        setLocalBusinessType(businessType);
+                        setLocalModules(enabledModules);
+                      }}
+                      className="btn-ghost px-4 py-2"
+                    >
+                      {t('cancel') || 'Annuler'}
+                    </button>
+                    <button
+                      onClick={handleSaveModules}
+                      disabled={isSavingModules}
+                      className="btn-primary px-6 py-2 flex items-center gap-2 rounded-lg"
+                    >
+                      {isSavingModules ? (
+                        <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                      ) : (
+                        <IconCheck className="w-4 h-4" />
+                      )}
+                      {t('save_changes') || 'Enregistrer'}
+                    </button>
+                  </motion.div>
+                )}
+              </>
+            )}
           </motion.div>
         )}
 

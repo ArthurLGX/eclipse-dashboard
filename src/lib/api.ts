@@ -3,7 +3,7 @@
  * @description API centralisée pour les requêtes Strapi
  */
 
-import type { Client } from '@/types';
+import type { Client, Facture, CreateFactureData } from '@/types';
 
 // ============================================================================
 // CONFIGURATION & HELPERS
@@ -2155,5 +2155,439 @@ export const updateShareLink = async (
     `project-share-links/${shareLinkDocumentId}`,
     data
   );
+  return response.data;
+};
+
+// ============================================================================
+// USER PREFERENCES (Préférences métier et modules)
+// ============================================================================
+
+export interface UserPreference {
+  id: number;
+  documentId: string;
+  business_type: string;
+  enabled_modules: string[];
+  terminology: Record<string, string> | null;
+  onboarding_completed: boolean;
+  onboarding_step: number;
+  dashboard_layout: Record<string, unknown> | null;
+  users?: { id: number };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateUserPreferenceData {
+  business_type: string;
+  enabled_modules: string[];
+  terminology?: Record<string, string>;
+  onboarding_completed?: boolean;
+  onboarding_step?: number;
+  dashboard_layout?: Record<string, unknown>;
+}
+
+export type UpdateUserPreferenceData = Partial<CreateUserPreferenceData>;
+
+/** Récupère les préférences d'un utilisateur */
+export const fetchUserPreferences = async (
+  userId: number
+): Promise<UserPreference | null> => {
+  try {
+    const response = await get<ApiResponse<UserPreference[]>>(
+      `user-preferences?filters[users][id][$eq]=${userId}&populate=*`
+    );
+    return response.data?.[0] || null;
+  } catch {
+    return null;
+  }
+};
+
+/** Crée les préférences pour un utilisateur */
+export const createUserPreferences = async (
+  userId: number,
+  data: CreateUserPreferenceData
+): Promise<UserPreference> => {
+  const response = await post<ApiResponse<UserPreference>>(
+    'user-preferences',
+    {
+      ...data,
+      users: { connect: [{ id: userId }] },
+    }
+  );
+  return response.data;
+};
+
+/** Met à jour les préférences d'un utilisateur */
+export const updateUserPreferences = async (
+  documentId: string,
+  data: UpdateUserPreferenceData
+): Promise<UserPreference> => {
+  const response = await put<ApiResponse<UserPreference>>(
+    `user-preferences/${documentId}`,
+    data
+  );
+  return response.data;
+};
+
+/** Initialise les préférences avec les valeurs par défaut pour un business type */
+export const initializeUserPreferences = async (
+  userId: number,
+  businessType: string,
+  enabledModules: string[]
+): Promise<UserPreference> => {
+  // Vérifier si des préférences existent déjà
+  const existing = await fetchUserPreferences(userId);
+  
+  if (existing) {
+    // Mettre à jour les préférences existantes
+    return updateUserPreferences(existing.documentId, {
+      business_type: businessType,
+      enabled_modules: enabledModules,
+      onboarding_completed: true,
+    });
+  }
+  
+  // Créer de nouvelles préférences
+  return createUserPreferences(userId, {
+    business_type: businessType,
+    enabled_modules: enabledModules,
+    onboarding_completed: true,
+    onboarding_step: 0,
+  });
+};
+
+/** Active ou désactive un module */
+export const toggleModule = async (
+  documentId: string,
+  currentModules: string[],
+  moduleId: string,
+  enabled: boolean
+): Promise<UserPreference> => {
+  const newModules = enabled
+    ? [...new Set([...currentModules, moduleId])]
+    : currentModules.filter(m => m !== moduleId);
+  
+  return updateUserPreferences(documentId, {
+    enabled_modules: newModules,
+  });
+};
+
+// ============================================================================
+// MONITORING (Sites surveillés)
+// ============================================================================
+
+import type { 
+  MonitoredSite, 
+  CreateMonitoredSiteData, 
+  UpdateMonitoredSiteData,
+  TimeEntry,
+  CreateTimeEntryData,
+  UpdateTimeEntryData,
+  CalendarEvent,
+  CreateCalendarEventData,
+  UpdateCalendarEventData,
+} from '@/types';
+
+/** Récupère tous les sites surveillés d'un utilisateur */
+export const fetchMonitoredSites = async (userId: number): Promise<MonitoredSite[]> => {
+  const response = await get<ApiResponse<MonitoredSite[]>>(
+    `monitored-sites?filters[users][id][$eq]=${userId}&populate=client&sort=createdAt:desc`
+  );
+  return response.data || [];
+};
+
+/** Récupère un site surveillé par documentId */
+export const fetchMonitoredSite = async (documentId: string): Promise<MonitoredSite | null> => {
+  const response = await get<ApiResponse<MonitoredSite>>(
+    `monitored-sites/${documentId}?populate=client`
+  );
+  return response.data || null;
+};
+
+/** Crée un nouveau site à surveiller */
+export const createMonitoredSite = async (
+  userId: number,
+  data: CreateMonitoredSiteData
+): Promise<MonitoredSite> => {
+  const response = await post<ApiResponse<MonitoredSite>>(
+    'monitored-sites',
+    {
+      ...data,
+      site_status: 'unknown',
+      users: { connect: [{ id: userId }] },
+      ...(data.client && { client: { connect: [{ id: data.client }] } }),
+    }
+  );
+  return response.data;
+};
+
+/** Met à jour un site surveillé */
+export const updateMonitoredSite = async (
+  documentId: string,
+  data: UpdateMonitoredSiteData
+): Promise<MonitoredSite> => {
+  const response = await put<ApiResponse<MonitoredSite>>(
+    `monitored-sites/${documentId}`,
+    data
+  );
+  return response.data;
+};
+
+/** Supprime un site surveillé */
+export const deleteMonitoredSite = async (documentId: string): Promise<void> => {
+  await del(`monitored-sites/${documentId}`);
+};
+
+// ============================================================================
+// TIME TRACKING (Suivi du temps)
+// ============================================================================
+
+/** Récupère toutes les entrées de temps d'un utilisateur */
+export const fetchTimeEntries = async (
+  userId: number,
+  filters?: {
+    projectId?: string;
+    clientId?: string;
+    from?: string;
+    to?: string;
+    billable?: boolean;
+  }
+): Promise<TimeEntry[]> => {
+  let query = `time-entries?filters[users][id][$eq]=${userId}&populate=project,task,client&sort=start_time:desc`;
+  
+  if (filters?.projectId) {
+    query += `&filters[project][documentId][$eq]=${filters.projectId}`;
+  }
+  if (filters?.clientId) {
+    query += `&filters[client][documentId][$eq]=${filters.clientId}`;
+  }
+  if (filters?.from) {
+    query += `&filters[start_time][$gte]=${filters.from}`;
+  }
+  if (filters?.to) {
+    query += `&filters[start_time][$lte]=${filters.to}`;
+  }
+  if (filters?.billable !== undefined) {
+    query += `&filters[billable][$eq]=${filters.billable}`;
+  }
+  
+  const response = await get<ApiResponse<TimeEntry[]>>(query);
+  return response.data || [];
+};
+
+/** Récupère l'entrée de temps en cours (timer actif) */
+export const fetchRunningTimeEntry = async (userId: number): Promise<TimeEntry | null> => {
+  const response = await get<ApiResponse<TimeEntry[]>>(
+    `time-entries?filters[users][id][$eq]=${userId}&filters[is_running][$eq]=true&populate=project,task,client`
+  );
+  return response.data?.[0] || null;
+};
+
+/** Crée une nouvelle entrée de temps */
+export const createTimeEntry = async (
+  userId: number,
+  data: CreateTimeEntryData
+): Promise<TimeEntry> => {
+  const response = await post<ApiResponse<TimeEntry>>(
+    'time-entries',
+    {
+      ...data,
+      users: { connect: [{ id: userId }] },
+      ...(data.project && { project: { connect: [{ id: data.project }] } }),
+      ...(data.task && { task: { connect: [{ id: data.task }] } }),
+      ...(data.client && { client: { connect: [{ id: data.client }] } }),
+    }
+  );
+  return response.data;
+};
+
+/** Met à jour une entrée de temps */
+export const updateTimeEntry = async (
+  documentId: string,
+  data: UpdateTimeEntryData
+): Promise<TimeEntry> => {
+  const response = await put<ApiResponse<TimeEntry>>(
+    `time-entries/${documentId}`,
+    data
+  );
+  return response.data;
+};
+
+/** Arrête le timer en cours */
+export const stopTimeEntry = async (documentId: string): Promise<TimeEntry> => {
+  const now = new Date().toISOString();
+  const entry = await fetchTimeEntryByDocumentId(documentId);
+  
+  if (!entry) throw new Error('Time entry not found');
+  
+  const startTime = new Date(entry.start_time);
+  const endTime = new Date(now);
+  const duration = Math.round((endTime.getTime() - startTime.getTime()) / 60000); // en minutes
+  
+  return updateTimeEntry(documentId, {
+    end_time: now,
+    duration,
+    is_running: false,
+  });
+};
+
+/** Récupère une entrée de temps par documentId */
+const fetchTimeEntryByDocumentId = async (documentId: string): Promise<TimeEntry | null> => {
+  const response = await get<ApiResponse<TimeEntry>>(
+    `time-entries/${documentId}?populate=project,task,client`
+  );
+  return response.data || null;
+};
+
+/** Supprime une entrée de temps */
+export const deleteTimeEntry = async (documentId: string): Promise<void> => {
+  await del(`time-entries/${documentId}`);
+};
+
+// ============================================================================
+// CALENDAR (Événements)
+// ============================================================================
+
+/** Récupère tous les événements d'un utilisateur */
+export const fetchCalendarEvents = async (
+  userId: number,
+  filters?: {
+    from?: string;
+    to?: string;
+    eventType?: string;
+    projectId?: string;
+    clientId?: string;
+  }
+): Promise<CalendarEvent[]> => {
+  let query = `calendar-events?filters[users][id][$eq]=${userId}&populate=project,client&sort=start_date:asc`;
+  
+  if (filters?.from) {
+    query += `&filters[start_date][$gte]=${filters.from}`;
+  }
+  if (filters?.to) {
+    query += `&filters[start_date][$lte]=${filters.to}`;
+  }
+  if (filters?.eventType) {
+    query += `&filters[event_type][$eq]=${filters.eventType}`;
+  }
+  if (filters?.projectId) {
+    query += `&filters[project][documentId][$eq]=${filters.projectId}`;
+  }
+  if (filters?.clientId) {
+    query += `&filters[client][documentId][$eq]=${filters.clientId}`;
+  }
+  
+  const response = await get<ApiResponse<CalendarEvent[]>>(query);
+  return response.data || [];
+};
+
+/** Crée un nouvel événement */
+export const createCalendarEvent = async (
+  userId: number,
+  data: CreateCalendarEventData
+): Promise<CalendarEvent> => {
+  const response = await post<ApiResponse<CalendarEvent>>(
+    'calendar-events',
+    {
+      ...data,
+      users: { connect: [{ id: userId }] },
+      ...(data.project && { project: { connect: [{ id: data.project }] } }),
+      ...(data.client && { client: { connect: [{ id: data.client }] } }),
+    }
+  );
+  return response.data;
+};
+
+/** Met à jour un événement */
+export const updateCalendarEvent = async (
+  documentId: string,
+  data: UpdateCalendarEventData
+): Promise<CalendarEvent> => {
+  const response = await put<ApiResponse<CalendarEvent>>(
+    `calendar-events/${documentId}`,
+    data
+  );
+  return response.data;
+};
+
+/** Supprime un événement */
+export const deleteCalendarEvent = async (documentId: string): Promise<void> => {
+  await del(`calendar-events/${documentId}`);
+};
+
+/** Marque un événement comme complété */
+export const completeCalendarEvent = async (documentId: string): Promise<CalendarEvent> => {
+  return updateCalendarEvent(documentId, { is_completed: true } as UpdateCalendarEventData);
+};
+
+// ============================================================================
+// QUOTES (Devis - utilise la table factures)
+// ============================================================================
+
+/** Récupère tous les devis d'un utilisateur */
+export const fetchQuotes = async (userId: number): Promise<Facture[]> => {
+  const response = await get<ApiResponse<Facture[]>>(
+    `factures?filters[user][id][$eq]=${userId}&filters[document_type][$eq]=quote&populate=client_id,project,invoice_lines&sort=createdAt:desc`
+  );
+  return response.data || [];
+};
+
+/** Crée un nouveau devis */
+export const createQuote = async (
+  data: CreateFactureData & { valid_until?: string; terms?: string }
+): Promise<Facture> => {
+  const response = await post<ApiResponse<Facture>>(
+    'factures',
+    {
+      ...data,
+      document_type: 'quote',
+      quote_status: 'draft',
+      client_id: data.client_id ? { connect: [{ id: data.client_id }] } : undefined,
+      project: data.project ? { connect: [{ id: data.project }] } : undefined,
+      user: { connect: [{ id: data.user }] },
+    }
+  );
+  return response.data;
+};
+
+/** Convertit un devis en facture */
+export const convertQuoteToInvoice = async (
+  quoteDocumentId: string,
+  userId: number
+): Promise<Facture> => {
+  // Récupérer le devis
+  const quoteResponse = await get<ApiResponse<Facture>>(
+    `factures/${quoteDocumentId}?populate=client_id,project,invoice_lines`
+  );
+  const quote = quoteResponse.data;
+  
+  if (!quote) throw new Error('Quote not found');
+  
+  // Créer la facture à partir du devis
+  const clientId = quote.client_id?.id || quote.client?.id;
+  const projectId = quote.project?.id;
+  
+  const invoiceData = {
+    document_type: 'invoice',
+    reference: quote.reference.replace('DEV', 'FAC'),
+    date: new Date().toISOString().split('T')[0],
+    due_date: quote.due_date,
+    facture_status: 'draft',
+    number: quote.number,
+    currency: quote.currency,
+    description: quote.description,
+    notes: quote.notes,
+    tva_applicable: quote.tva_applicable,
+    invoice_lines: quote.invoice_lines,
+    converted_from_quote: { connect: [{ documentId: quoteDocumentId }] },
+    ...(clientId && { client_id: { connect: [{ id: clientId }] } }),
+    ...(projectId && { project: { connect: [{ id: projectId }] } }),
+    user: { connect: [{ id: userId }] },
+  };
+  
+  const response = await post<ApiResponse<Facture>>('factures', invoiceData);
+  
+  // Marquer le devis comme accepté
+  await put(`factures/${quoteDocumentId}`, { quote_status: 'accepted' });
+  
   return response.data;
 };

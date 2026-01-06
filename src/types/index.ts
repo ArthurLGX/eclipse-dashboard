@@ -44,6 +44,8 @@ export interface ImageFile {
 export type ProjectStatus = 'planning' | 'in_progress' | 'completed';
 export type ProjectType = 'development' | 'design' | 'maintenance';
 export type FactureStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+export type DocumentType = 'invoice' | 'quote';
+export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
 export type Currency = 'EUR' | 'USD' | 'GBP' | 'CHF';
 export type ProcessStatus = 'client' | 'prospect';
 export type ProspectStatus = 'prospect' | 'answer' | 'to_be_contacted' | 'contacted';
@@ -185,6 +187,7 @@ export interface InvoiceLine {
 export interface Facture {
   id: number;
   documentId: string;
+  document_type: DocumentType;
   reference: string;
   date: string;
   due_date: string;
@@ -206,6 +209,13 @@ export interface Facture {
   tva_applicable: boolean;
   total_ht?: number;
   total_ttc?: number;
+  // Champs spécifiques aux devis
+  valid_until?: string;
+  quote_status?: QuoteStatus;
+  signed_at?: string;
+  signature_token?: string;
+  converted_from_quote?: Facture;
+  terms?: string;
 }
 
 export interface Company {
@@ -741,3 +751,127 @@ export interface CreateSentEmailData {
   scheduled_at?: string;
   tracking_id?: string;
 }
+
+// ============================================================================
+// MONITORING (Sites surveillés)
+// ============================================================================
+
+export type SiteStatus = 'up' | 'down' | 'slow' | 'unknown';
+
+export interface MonitoredSite {
+  id: number;
+  documentId: string;
+  name: string;
+  url: string;
+  check_interval: number;
+  site_status: SiteStatus;
+  last_check: string | null;
+  last_response_time: number | null;
+  uptime_percentage: number;
+  ssl_expiry: string | null;
+  ssl_valid: boolean;
+  alert_email: boolean;
+  alert_threshold: number;
+  total_checks: number;
+  successful_checks: number;
+  last_down_at: string | null;
+  client?: Client;
+  users?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateMonitoredSiteData {
+  name: string;
+  url: string;
+  check_interval?: number;
+  alert_email?: boolean;
+  alert_threshold?: number;
+  client?: number;
+}
+
+export type UpdateMonitoredSiteData = Partial<CreateMonitoredSiteData>;
+
+// ============================================================================
+// TIME TRACKING (Suivi du temps)
+// ============================================================================
+
+export interface TimeEntry {
+  id: number;
+  documentId: string;
+  start_time: string;
+  end_time: string | null;
+  duration: number; // minutes
+  description: string | null;
+  billable: boolean;
+  billed: boolean;
+  hourly_rate: number | null;
+  is_running: boolean;
+  project?: Project;
+  task?: ProjectTask;
+  client?: Client;
+  users?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateTimeEntryData {
+  start_time: string;
+  end_time?: string;
+  duration?: number;
+  description?: string;
+  billable?: boolean;
+  hourly_rate?: number;
+  is_running?: boolean;
+  project?: number;
+  task?: number;
+  client?: number;
+}
+
+export type UpdateTimeEntryData = Partial<CreateTimeEntryData>;
+
+// ============================================================================
+// CALENDAR (Événements)
+// ============================================================================
+
+export type EventType = 'meeting' | 'deadline' | 'reminder' | 'delivery' | 'call' | 'personal';
+export type RecurrenceType = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
+
+export interface CalendarEvent {
+  id: number;
+  documentId: string;
+  title: string;
+  description: string | null;
+  start_date: string;
+  end_date: string | null;
+  all_day: boolean;
+  event_type: EventType;
+  color: string;
+  location: string | null;
+  reminder_minutes: number;
+  is_completed: boolean;
+  recurrence: RecurrenceType;
+  project?: Project;
+  client?: Client;
+  users?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCalendarEventData {
+  title: string;
+  description?: string;
+  start_date: string;
+  end_date?: string;
+  all_day?: boolean;
+  event_type?: EventType;
+  color?: string;
+  location?: string;
+  reminder_minutes?: number;
+  recurrence?: RecurrenceType;
+  project?: number;
+  client?: number;
+}
+
+export type UpdateCalendarEventData = Partial<CreateCalendarEventData>;
+

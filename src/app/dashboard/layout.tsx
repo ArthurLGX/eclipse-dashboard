@@ -4,7 +4,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { OnboardingProvider } from '@/app/context/OnboardingContext';
+import { UserPreferencesProvider, useUserPreferencesOptional } from '@/app/context/UserPreferencesContext';
 import OnboardingWizard from '@/app/components/OnboardingWizard';
+import BusinessSetupModal from '@/app/components/BusinessSetupModal';
 import useLenis from '@/utils/useLenis';
 import {
   IconHome,
@@ -32,6 +34,10 @@ import {
   IconBriefcase,
   IconUserCog,
   IconShield,
+  IconServer,
+  IconClock,
+  IconFileDescription,
+  IconCalendar,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -54,6 +60,7 @@ interface SidebarItem {
   onClick?: () => void;
   menuItems?: SidebarItem[];
   isCategory?: boolean; // Pour les catégories avec sous-menus
+  moduleId?: string; // ID du module pour le filtrage dynamique
 }
 
 export default function DashboardLayout({
@@ -72,6 +79,9 @@ export default function DashboardLayout({
   const { resolvedTheme, setTheme } = useTheme();
   const { isLinkVisible } = useSidebar();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
+  
+  // Hook pour les préférences utilisateur (modules activés)
+  const userPreferences = useUserPreferencesOptional();
 
   // Hook pour l'utilisateur avec profile_picture
   const { data: currentUserData } = useCurrentUser(user?.id);
@@ -206,18 +216,50 @@ export default function DashboardLayout({
           label: t('projects'),
           icon: <IconBuilding size={20} stroke={1} />,
           path: '/dashboard/projects',
+          moduleId: 'projects',
         },
         {
           id: 'newsletters',
           label: t('newsletters'),
           icon: <IconMail size={20} stroke={1} />,
           path: '/dashboard/newsletters',
+          moduleId: 'newsletters',
         },
         {
           id: 'emails',
           label: t('emails') || 'Emails',
           icon: <IconSend size={20} stroke={1} />,
           path: '/dashboard/emails',
+          moduleId: 'emails',
+        },
+        // Modules optionnels (visibles selon les préférences)
+        {
+          id: 'monitoring',
+          label: t('monitoring') || 'Monitoring',
+          icon: <IconServer size={20} stroke={1} />,
+          path: '/dashboard/monitoring',
+          moduleId: 'monitoring',
+        },
+        {
+          id: 'time_tracking',
+          label: t('time_tracking') || 'Suivi du temps',
+          icon: <IconClock size={20} stroke={1} />,
+          path: '/dashboard/time-tracking',
+          moduleId: 'time_tracking',
+        },
+        {
+          id: 'quotes',
+          label: t('quotes') || 'Devis',
+          icon: <IconFileDescription size={20} stroke={1} />,
+          path: '/dashboard/devis',
+          moduleId: 'quotes',
+        },
+        {
+          id: 'calendar',
+          label: t('calendar') || 'Calendrier',
+          icon: <IconCalendar size={20} stroke={1} />,
+          path: '/dashboard/calendar',
+          moduleId: 'calendar',
         },
       ],
     },
@@ -307,8 +349,10 @@ export default function DashboardLayout({
     },
   ], [t, profilePictureUrl, logout, isAdmin]);
 
-  // Filtrer les items selon les préférences de visibilité
+  // Filtrer les items selon les préférences de visibilité ET les modules activés
   const visibleSidebarItems = useMemo(() => {
+    const isModuleEnabled = userPreferences?.isModuleEnabled ?? (() => true);
+    
     return sidebarItems
       .filter(item => isLinkVisible(item.id))
       .map(item => {
@@ -316,14 +360,20 @@ export default function DashboardLayout({
         if (item.isCategory && item.menuItems) {
           return {
             ...item,
-            menuItems: item.menuItems.filter(child => isLinkVisible(child.id)),
+            menuItems: item.menuItems.filter(child => {
+              // Vérifier la visibilité de base
+              if (!isLinkVisible(child.id)) return false;
+              // Vérifier si le module est activé (si moduleId est défini)
+              if (child.moduleId && !isModuleEnabled(child.moduleId)) return false;
+              return true;
+            }),
           };
         }
         return item;
       })
       // Retirer les catégories vides (sans enfants visibles)
       .filter(item => !item.isCategory || (item.menuItems && item.menuItems.length > 0));
-  }, [sidebarItems, isLinkVisible]);
+  }, [sidebarItems, isLinkVisible, userPreferences]);
 
   // Déterminer l'item actif et la catégorie active basés sur l'URL
   const { activeItem, activeCategory } = useMemo(() => {
@@ -393,6 +443,10 @@ export default function DashboardLayout({
   return (
     <ProtectedRoute>
       <TrialExpiredGuard>
+        <UserPreferencesProvider>
+          {/* Business Setup Modal - S'affiche si les préférences ne sont pas configurées */}
+          <BusinessSetupModal />
+          
         <OnboardingProvider>
           {/* Onboarding Wizard Modal */}
           <OnboardingWizard />
@@ -588,6 +642,7 @@ export default function DashboardLayout({
           </motion.main>
         </div>
         </OnboardingProvider>
+        </UserPreferencesProvider>
       </TrialExpiredGuard>
     </ProtectedRoute>
   );
