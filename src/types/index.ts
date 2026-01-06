@@ -448,7 +448,7 @@ export type KeysOfType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[ke
 
 export type InvitationStatus = 'pending' | 'accepted' | 'rejected' | 'expired';
 export type InvitationPermission = 'view' | 'edit';
-export type NotificationType = 'project_invitation' | 'project_update' | 'system';
+export type NotificationType = 'project_invitation' | 'project_update' | 'system' | 'collaboration_request';
 
 export interface ProjectInvitation {
   id: number;
