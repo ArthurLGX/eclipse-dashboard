@@ -32,13 +32,14 @@ function wrapLinksForTracking(html: string, trackingId: string, strapiUrl: strin
   const linkRegex = /<a\s+([^>]*href=["'])([^"']+)(["'][^>]*)>/gi;
   
   return html.replace(linkRegex, (match, prefix, url, suffix) => {
-    // Ne pas wrapper les liens de tracking, mailto, tel, ou # (ancres)
+    // Ne pas wrapper les liens de tracking, mailto, tel, # (ancres), ou liens de partage de projet
     if (
       url.startsWith('#') ||
       url.startsWith('mailto:') ||
       url.startsWith('tel:') ||
       url.includes('/track/') ||
-      url.includes('unsubscribe')
+      url.includes('unsubscribe') ||
+      url.includes('/share/project/') // Les liens de partage public ne doivent pas être trackés
     ) {
       return match;
     }

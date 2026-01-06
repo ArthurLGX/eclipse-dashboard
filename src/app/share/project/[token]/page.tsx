@@ -678,10 +678,10 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
 
   const getStatusColor = useCallback((status: TaskStatus) => {
     switch (status) {
-      case 'completed': return 'bg-success';
-      case 'in_progress': return 'bg-info';
-      case 'cancelled': return 'bg-danger/50';
-      default: return 'bg-muted';
+      case 'completed': return 'bg-accent';
+      case 'in_progress': return 'bg-blue-500';
+      case 'cancelled': return 'bg-red-500/50';
+      default: return 'bg-secondary';
     }
   }, []);
 
@@ -1116,7 +1116,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
                     </div>
 
                     <div
-                      className="absolute top-1/2 -translate-y-1/2 h-6 rounded"
+                      className="absolute top-1/2 -translate-y-1/2 h-6 rounded transition-all hover:h-7"
                       style={{
                         left: `${leftPercent}%`,
                         width: `${widthPercent}%`,
