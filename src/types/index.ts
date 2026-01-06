@@ -715,7 +715,8 @@ export interface SentEmail {
   opens_count?: number;
   clicks_count?: number;
   opened_at?: string;
-  click_details?: ClickDetail[];
+  clicks?: ClickDetail[]; // Strapi field name
+  click_details?: ClickDetail[]; // Alias for compatibility
   // Tracking détaillé par destinataire
   recipient_tracking?: RecipientTracking[];
   // Réponses reçues

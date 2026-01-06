@@ -664,8 +664,8 @@ function EmailDetailModal({
             {/* Tab Clics */}
             {activeTab === 'clicks' && (
               <div className="space-y-3">
-                {email.click_details && email.click_details.length > 0 ? (
-                  email.click_details.map((click, index) => (
+                {email.clicks && email.clicks.length > 0 ? (
+                  email.clicks.map((click, index) => (
                     <div
                       key={index}
                       className="flex items-center gap-4 p-4 bg-background rounded-lg"
