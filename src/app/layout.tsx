@@ -14,8 +14,24 @@ import TrialExpiredWrapper from './components/TrialExpiredWrapper';
 import ChatbotProvider from './components/ChatbotProvider';
 
 export const metadata: Metadata = {
-  title: 'Eclipse Development Dashboard',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://dashboard.eclipsestudiodev.fr'),
+  title: {
+    default: 'Eclipse Dashboard',
+    template: '%s | Eclipse Dashboard',
+  },
   description: 'Gère ton entreprise de manière efficace et rapide',
+  applicationName: 'Eclipse Dashboard',
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'fr_FR',
+    siteName: 'Eclipse Dashboard',
+    title: 'Eclipse Dashboard',
+    description: 'Gère ton entreprise de manière efficace et rapide',
+  }
 };
 
 export default function RootLayout({
@@ -27,6 +43,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#000000" />
+        <meta name="apple-mobile-web-app-title" content="Eclipse Dashboard" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
