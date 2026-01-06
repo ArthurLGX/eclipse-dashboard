@@ -1061,10 +1061,12 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
                         : day.getDay() === 0 || day.getDay() === 6
                           ? 'text-muted bg-muted/30'
                           : 'text-secondary'
-                    }`}>
-                  {day.getDate()}
-                </div>
-              ))}
+                    }`}
+                  >
+                    {day.getDate()}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1140,7 +1142,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
           </div>
         </div>
       </div>
-      </div>
-    </div>
+      </div>  
+      
   );
 }
