@@ -586,6 +586,14 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     return normalized;
   }, []);
 
+  const getISOWeekNumber = useCallback((date: Date): number => {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+  }, []);
+
   const today = useMemo(() => normalizeDate(new Date()), [normalizeDate]);
   const tasksWithDates = useMemo(() => tasks.filter(task => task.start_date || task.due_date), [tasks]);
 
@@ -614,9 +622,42 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
       dayHeaders.push(normalizeDate(date));
     }
 
+    // Grouper par semaines
+    const weeks: { start: Date; days: Date[] }[] = [];
+    let currentWeek: Date[] = [];
+    let weekStart = dayHeaders[0];
+    dayHeaders.forEach((date, i) => {
+      if (date.getDay() === 1 && currentWeek.length > 0) {
+        weeks.push({ start: weekStart, days: currentWeek });
+        currentWeek = [];
+        weekStart = date;
+      }
+      currentWeek.push(date);
+      if (i === dayHeaders.length - 1) {
+        weeks.push({ start: weekStart, days: currentWeek });
+      }
+    });
+
+    // Grouper par mois
+    const months: { month: number; year: number; label: string; days: number }[] = [];
+    let currentMonth = -1;
+    let currentYear = -1;
+    const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    dayHeaders.forEach((date) => {
+      const month = date.getMonth();
+      const year = date.getFullYear();
+      if (month !== currentMonth || year !== currentYear) {
+        months.push({ month, year, label: `${monthNames[month]} ${year}`, days: 1 });
+        currentMonth = month;
+        currentYear = year;
+      } else {
+        months[months.length - 1].days++;
+      }
+    });
+
     const todayIndex = dayHeaders.findIndex(d => d.getTime() === today.getTime());
 
-    return { minDate, totalDays, dayHeaders, todayIndex };
+    return { minDate, totalDays, dayHeaders, weeks, months, todayIndex };
   }, [tasksWithDates, today, normalizeDate]);
 
   const getTaskPosition = useCallback((task: ProjectTask) => {
@@ -723,13 +764,35 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
       `;
     });
 
+    // Générer les en-têtes de mois pour l'export
+    const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const monthsForExport: { label: string; days: number }[] = [];
+    let currentMonthExport = -1;
+    let currentYearExport = -1;
+    dayHeaders.forEach((date) => {
+      const month = date.getMonth();
+      const year = date.getFullYear();
+      if (month !== currentMonthExport || year !== currentYearExport) {
+        monthsForExport.push({ label: `${monthNames[month]} ${year}`, days: 1 });
+        currentMonthExport = month;
+        currentYearExport = year;
+      } else {
+        monthsForExport[monthsForExport.length - 1].days++;
+      }
+    });
+
+    let monthsHTML = '';
+    monthsForExport.forEach((month) => {
+      monthsHTML += `<th colspan="${month.days}" style="padding: 6px 4px; text-align: center; font-size: 12px; font-weight: 700; background: ${colors.bgTertiary}; color: ${colors.textPrimary}; border-left: 1px solid ${colors.border}; border-bottom: 1px solid ${colors.border};">${month.label}</th>`;
+    });
+
     let datesHTML = '';
     dayHeaders.forEach((day) => {
       const isWeekend = day.getDay() === 0 || day.getDay() === 6;
       const isTodayDate = day.getTime() === today.getTime();
       const bgColor = isTodayDate ? colors.accentLight : isWeekend ? colors.bgTertiary : colors.headerBg;
       const textColor = isTodayDate ? colors.accent : colors.headerText;
-      datesHTML += `<th style="padding: 4px 2px; text-align: center; font-size: 11px; font-weight: ${isTodayDate ? '700' : '500'}; background: ${bgColor}; color: ${textColor}; min-width: 28px; border-left: 1px solid ${colors.border};">${day.getDate()}</th>`;
+      datesHTML += `<th style="padding: 4px 2px; text-align: center; font-size: 11px; font-weight: ${isTodayDate ? '700' : '500'}; background: ${bgColor}; color: ${textColor}; min-width: 20px; border-left: 1px solid ${colors.border};">${day.getDate()}</th>`;
     });
 
     return {
@@ -743,15 +806,14 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
           </p>
           <table style="width: 100%; border-collapse: collapse; border: 1px solid ${colors.border};">
             <thead>
-              <tr style="background: ${colors.headerBg};">
-                <th style="padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 700; color: ${colors.headerText}; text-transform: uppercase; width: 200px; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg};">
+              <tr style="background: ${colors.bgTertiary};">
+                <th rowspan="2" style="padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 700; color: ${colors.headerText}; text-transform: uppercase; width: 180px; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg}; vertical-align: bottom;">
                   ${t('task') || 'Tâche'}
                 </th>
-                <th style="padding: 0; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg};">
-                  <table style="width: 100%; border-collapse: collapse;">
-                    <tr>${datesHTML}</tr>
-                  </table>
-                </th>
+                ${monthsHTML}
+              </tr>
+              <tr style="background: ${colors.headerBg};">
+                ${datesHTML}
               </tr>
             </thead>
             <tbody>${tasksHTML}</tbody>
@@ -825,7 +887,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     );
   }
 
-  const { dayHeaders, todayIndex, totalDays } = ganttData;
+  const { dayHeaders, weeks, months, todayIndex, totalDays } = ganttData;
 
   return (
     <div className="space-y-2">
@@ -952,23 +1014,54 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
       </div>
 
       <div className="overflow-x-auto card" ref={ganttRef}>
-        <div className="min-w-[800px]">
+        <div style={{ minWidth: `${Math.max(800, 200 + dayHeaders.length * 32)}px` }}>
           {/* Header */}
-          <div className="flex border-b border-default">
-            <div className="w-48 flex-shrink-0 py-2 px-3 text-xs font-medium text-secondary uppercase tracking-wider">
-              {t('task')}
+          <div className="flex border-b border-default sticky top-0 z-10 bg-card">
+            {/* Colonne titre sticky */}
+            <div className="w-48 flex-shrink-0 bg-card sticky left-0 z-20 border-r border-default">
+              <div className="py-2 px-3 text-xs font-medium text-secondary uppercase tracking-wider h-full flex items-end">
+                {t('task')}
+              </div>
             </div>
-            <div className="flex-1 flex">
-              {dayHeaders.map((day, i) => (
-                <div 
-                  key={i}
-                  className={`flex-1 text-center py-2 text-xs ${
-                    isToday(day) 
-                      ? 'bg-accent-light text-accent-light font-medium' 
-                      : day.getDay() === 0 || day.getDay() === 6
-                        ? 'text-muted'
-                        : 'text-secondary'
-                  }`}
+            {/* Colonnes dates */}
+            <div className="flex-1 flex flex-col">
+              {/* Ligne des mois */}
+              <div className="flex border-b border-default">
+                {months.map((month, i) => (
+                  <div 
+                    key={i} 
+                    style={{ flex: month.days, minWidth: `${month.days * 32}px` }}
+                    className="text-xs font-semibold text-primary text-center py-1.5 bg-muted/50 border-l border-default first:border-l-0"
+                  >
+                    {month.label}
+                  </div>
+                ))}
+              </div>
+              {/* Ligne des semaines */}
+              <div className="flex border-b border-default">
+                {weeks.map((week, i) => (
+                  <div 
+                    key={i} 
+                    style={{ flex: week.days.length, minWidth: `${week.days.length * 32}px` }} 
+                    className="text-xs text-muted text-center py-1 border-l border-default first:border-l-0"
+                  >
+                    {t('week_short') || 'Sem.'} {getISOWeekNumber(week.days[0])}
+                  </div>
+                ))}
+              </div>
+              {/* Ligne des jours */}
+              <div className="flex">
+                {dayHeaders.map((day, i) => (
+                  <div 
+                    key={i}
+                    style={{ width: '32px', minWidth: '32px' }}
+                    className={`text-center py-1 text-xs border-l border-default first:border-l-0 ${
+                      isToday(day) 
+                        ? 'bg-accent/20 text-accent font-medium' 
+                        : day.getDay() === 0 || day.getDay() === 6
+                          ? 'text-muted bg-muted/30'
+                          : 'text-secondary'
+                    }`}
                 >
                   {day.getDate()}
                 </div>
@@ -999,7 +1092,8 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
                   key={task.documentId || index}
                   className="flex border-b border-muted hover:bg-hover group"
                 >
-                  <div className="w-48 flex-shrink-0 py-3 px-3">
+                  {/* Titre de la tâche - sticky */}
+                  <div className="w-48 flex-shrink-0 py-3 px-3 bg-card sticky left-0 z-10 border-r border-default group-hover:bg-hover">
                     <p className="text-sm text-primary truncate">{task.title}</p>
                     <span className={`text-xs ${
                       task.task_status === 'completed' ? 'text-success' :
@@ -1009,14 +1103,15 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
                     </span>
                   </div>
 
-                  <div className="flex-1 relative py-2">
+                  <div className="flex-1 relative py-2" style={{ minWidth: `${dayHeaders.length * 32}px` }}>
                     <div className="absolute inset-0 flex">
                       {dayHeaders.map((day, i) => (
                         <div 
                           key={i}
-                          className={`flex-1 border-l border-muted ${
-                            isToday(day) ? 'bg-accent-light' : ''
-                          } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-hover/50' : ''}`}
+                          style={{ width: '32px', minWidth: '32px' }}
+                          className={`border-l border-muted first:border-l-0 ${
+                            isToday(day) ? 'bg-accent/10' : ''
+                          } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/30' : ''}`}
                         />
                       ))}
                     </div>
@@ -1026,7 +1121,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
                       style={{
                         left: `${leftPercent}%`,
                         width: `${widthPercent}%`,
-                        minWidth: '20px',
+                        minWidth: '40px',
                       }}
                     >
                       <div className={`w-full h-full ${getStatusColor(task.task_status)} rounded relative overflow-hidden`}>

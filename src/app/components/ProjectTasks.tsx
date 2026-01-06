@@ -1309,10 +1309,33 @@ function TaskGanttView({
       }
     });
 
+    // Grouper par mois pour l'affichage
+    const months: { month: number; year: number; label: string; days: number }[] = [];
+    let currentMonth = -1;
+    let currentYear = -1;
+    const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    
+    dayHeaders.forEach((date) => {
+      const month = date.getMonth();
+      const year = date.getFullYear();
+      if (month !== currentMonth || year !== currentYear) {
+        months.push({
+          month,
+          year,
+          label: `${monthNames[month]} ${year}`,
+          days: 1,
+        });
+        currentMonth = month;
+        currentYear = year;
+      } else {
+        months[months.length - 1].days++;
+      }
+    });
+
     // Trouver l'index du jour d'aujourd'hui dans dayHeaders
     const todayIndex = dayHeaders.findIndex(d => d.getTime() === today.getTime());
 
-    return { minDate, maxDate, totalDays, dayHeaders, weeks, todayIndex };
+    return { minDate, maxDate, totalDays, dayHeaders, weeks, months, todayIndex };
   }, [tasksWithDates, today, normalizeDate]);
 
   // Calculer la position d'une tâche (en nombre de jours depuis minDate)
@@ -1420,13 +1443,35 @@ function TaskGanttView({
       `;
     });
 
+    // Générer les en-têtes de mois
+    const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const monthsForExport: { label: string; days: number }[] = [];
+    let currentMonth = -1;
+    let currentYear = -1;
+    dayHeaders.forEach((date) => {
+      const month = date.getMonth();
+      const year = date.getFullYear();
+      if (month !== currentMonth || year !== currentYear) {
+        monthsForExport.push({ label: `${monthNames[month]} ${year}`, days: 1 });
+        currentMonth = month;
+        currentYear = year;
+      } else {
+        monthsForExport[monthsForExport.length - 1].days++;
+      }
+    });
+
+    let monthsHTML = '';
+    monthsForExport.forEach((month) => {
+      monthsHTML += `<th colspan="${month.days}" style="padding: 6px 4px; text-align: center; font-size: 12px; font-weight: 700; background: ${colors.bgTertiary}; color: ${colors.textPrimary}; border-left: 1px solid ${colors.border}; border-bottom: 1px solid ${colors.border};">${month.label}</th>`;
+    });
+
     let datesHTML = '';
     dayHeaders.forEach((day) => {
       const isWeekend = day.getDay() === 0 || day.getDay() === 6;
       const isTodayDate = day.getTime() === today.getTime();
       const bgColor = isTodayDate ? colors.accentLight : isWeekend ? colors.bgTertiary : colors.headerBg;
       const textColor = isTodayDate ? colors.accent : colors.headerText;
-      datesHTML += `<th style="padding: 4px 2px; text-align: center; font-size: 11px; font-weight: ${isTodayDate ? '700' : '500'}; background: ${bgColor}; color: ${textColor}; min-width: 28px; border-left: 1px solid ${colors.border};">${day.getDate()}</th>`;
+      datesHTML += `<th style="padding: 4px 2px; text-align: center; font-size: 11px; font-weight: ${isTodayDate ? '700' : '500'}; background: ${bgColor}; color: ${textColor}; min-width: 20px; border-left: 1px solid ${colors.border};">${day.getDate()}</th>`;
     });
 
     return {
@@ -1440,15 +1485,14 @@ function TaskGanttView({
           </p>
           <table style="width: 100%; border-collapse: collapse; border: 1px solid ${colors.border};">
             <thead>
-              <tr style="background: ${colors.headerBg};">
-                <th style="padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 700; color: ${colors.headerText}; text-transform: uppercase; width: 200px; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg};">
+              <tr style="background: ${colors.bgTertiary};">
+                <th rowspan="2" style="padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 700; color: ${colors.headerText}; text-transform: uppercase; width: 180px; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg}; vertical-align: bottom;">
                   ${t('task') || 'Tâche'}
                 </th>
-                <th style="padding: 0; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg};">
-                  <table style="width: 100%; border-collapse: collapse;">
-                    <tr>${datesHTML}</tr>
-                  </table>
-                </th>
+                ${monthsHTML}
+              </tr>
+              <tr style="background: ${colors.headerBg};">
+                ${datesHTML}
               </tr>
             </thead>
             <tbody>${tasksHTML}</tbody>
@@ -1524,7 +1568,7 @@ function TaskGanttView({
     );
   }
 
-  const { dayHeaders, weeks, todayIndex, totalDays } = ganttData;
+  const { dayHeaders, weeks, months, todayIndex, totalDays } = ganttData;
 
   return (
     <div className="space-y-2">
@@ -1656,38 +1700,61 @@ function TaskGanttView({
       </div>
 
       <div className="overflow-x-auto bg-card rounded-xl border border-default" ref={ganttRef}>
-        <div className="min-w-[800px]">
+        <div style={{ minWidth: `${Math.max(800, 200 + dayHeaders.length * 32)}px` }}>
           {/* En-tête avec les dates */}
-          <div className="flex border-b border-default bg-card">
-            <div className="w-48 flex-shrink-0 py-2 px-3 text-xs font-medium text-muted uppercase tracking-wider">
-              {t('task') || 'Tâche'}
-            </div>
-          <div className="flex-1 flex">
-            {weeks.map((week, i) => (
-              <div key={i} style={{ flex: week.days.length }} className="min-w-0">
-                <div className="text-xs text-muted text-center py-1 border-b border-default">
-                  {t('week_short') || 'Sem.'} {getISOWeekNumber(week.days[0])}
-                </div>
-                <div className="flex">
-                  {week.days.map((day, j) => (
-                    <div 
-                      key={j}
-                      className={`flex-1 text-center py-1 text-xs ${
-                        isToday(day) 
-                          ? 'bg-accent/20 text-accent font-medium' 
-                          : day.getDay() === 0 || day.getDay() === 6
-                            ? 'text-muted'
-                            : 'text-secondary'
-                      }`}
-                    >
-                      {day.getDate()}
-                    </div>
-                  ))}
-                </div>
+          <div className="flex border-b border-default bg-card sticky top-0 z-10">
+            {/* Colonne titre sticky */}
+            <div className="w-48 flex-shrink-0 bg-card sticky left-0 z-20 border-r border-default">
+              <div className="py-2 px-3 text-xs font-medium text-muted uppercase tracking-wider h-full flex items-end">
+                {t('task') || 'Tâche'}
               </div>
-            ))}
+            </div>
+            {/* Colonnes dates */}
+            <div className="flex-1 flex flex-col">
+              {/* Ligne des mois */}
+              <div className="flex border-b border-default">
+                {months.map((month, i) => (
+                  <div 
+                    key={i} 
+                    style={{ flex: month.days, minWidth: `${month.days * 32}px` }}
+                    className="text-xs font-semibold text-primary text-center py-1.5 bg-muted/50 border-l border-default first:border-l-0"
+                  >
+                    {month.label}
+                  </div>
+                ))}
+              </div>
+              {/* Ligne des semaines */}
+              <div className="flex border-b border-default">
+                {weeks.map((week, i) => (
+                  <div 
+                    key={i} 
+                    style={{ flex: week.days.length, minWidth: `${week.days.length * 32}px` }} 
+                    className="text-xs text-muted text-center py-1 border-l border-default first:border-l-0"
+                  >
+                    {t('week_short') || 'Sem.'} {getISOWeekNumber(week.days[0])}
+                  </div>
+                ))}
+              </div>
+              {/* Ligne des jours */}
+              <div className="flex">
+                {dayHeaders.map((day, j) => (
+                  <div 
+                    key={j}
+                    style={{ width: '32px', minWidth: '32px' }}
+                    className={`text-center py-1 text-xs border-l border-default first:border-l-0 ${
+                      isToday(day) 
+                        ? 'bg-accent/20 text-accent font-medium' 
+                        : day.getDay() === 0 || day.getDay() === 6
+                          ? 'text-muted bg-muted/30'
+                          : 'text-secondary'
+                    }`}
+                  >
+                    {day.getDate()}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
 
         {/* Zone des tâches avec marqueur aujourd'hui */}
         <div className="relative">
@@ -1714,9 +1781,9 @@ function TaskGanttView({
                 key={`${task.documentId}-${index}`}
                 className="flex border-b border-muted hover:bg-hover group"
               >
-                {/* Nom de la tâche */}
+                {/* Nom de la tâche - sticky */}
                 <div 
-                  className="w-48 flex-shrink-0 py-3 px-3 cursor-pointer"
+                  className="w-48 flex-shrink-0 py-3 px-3 cursor-pointer bg-card sticky left-0 z-10 border-r border-default group-hover:bg-hover"
                   onClick={() => onEdit(task)}
                 >
                   <p className="text-sm text-primary truncate group-hover:text-accent transition-colors">
@@ -1728,15 +1795,16 @@ function TaskGanttView({
                 </div>
 
                 {/* Barre de Gantt */}
-                <div className="flex-1 relative py-2">
+                <div className="flex-1 relative py-2" style={{ minWidth: `${dayHeaders.length * 32}px` }}>
                   {/* Grille des jours */}
                   <div className="absolute inset-0 flex">
                     {dayHeaders.map((day, i) => (
                       <div 
                         key={i}
-                        className={`flex-1 border-l border-muted ${
+                        style={{ width: '32px', minWidth: '32px' }}
+                        className={`border-l border-muted first:border-l-0 ${
                           isToday(day) ? 'bg-accent/10' : ''
-                        } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/50' : ''}`}
+                        } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/30' : ''}`}
                       />
                     ))}
                   </div>
@@ -1747,7 +1815,7 @@ function TaskGanttView({
                     style={{
                       left: `${leftPercent}%`,
                       width: `${widthPercent}%`,
-                      minWidth: '20px',
+                      minWidth: '40px',
                     }}
                     onClick={() => onEdit(task)}
                   >
