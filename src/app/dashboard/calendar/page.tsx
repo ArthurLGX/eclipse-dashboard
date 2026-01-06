@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   IconCalendar,
   IconPlus,
@@ -14,7 +14,6 @@ import {
   IconTrash,
   IconEdit,
   IconCheck,
-  IconX,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -63,7 +62,6 @@ export default function CalendarPage() {
     isOpen: false,
     event: null,
   });
-  const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
 
   // Fetch data
   const { data: projectsData } = useProjects(user?.id);
@@ -80,7 +78,7 @@ export default function CalendarPage() {
   }, [currentDate]);
 
   // Fetch events
-  const { data: events, mutate, isLoading } = useSWR(
+  const { data: events, mutate } = useSWR(
     user?.id ? ['calendar-events', user.id, currentDate.getMonth(), currentDate.getFullYear()] : null,
     () => fetchCalendarEvents(user!.id, monthRange)
   );

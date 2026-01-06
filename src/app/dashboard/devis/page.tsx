@@ -13,7 +13,6 @@ import {
   IconTrash,
   IconEdit,
   IconEye,
-  IconCopy,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -21,9 +20,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import { usePreferences } from '@/app/context/PreferencesContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
-import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
 import { Column } from '@/app/components/DataTable';
-import TableActions from '@/app/components/TableActions';
 import { FilterOption } from '@/app/components/TableFilters';
 import { 
   fetchQuotes, 

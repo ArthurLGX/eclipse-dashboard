@@ -97,7 +97,6 @@ interface ModuleSelectorProps {
 export function ModuleSelector({ businessType, selectedModules, onToggle }: ModuleSelectorProps) {
   const { language, t } = useLanguage();
   
-  const availableModules = getAvailableModules(businessType);
   const defaultModules = getDefaultModules(businessType);
 
   return (
@@ -109,11 +108,11 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
         </h4>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {defaultModules.map((moduleId) => {
-            const module = ALL_MODULES[moduleId];
-            if (!module) return null;
+            const moduleConfig = ALL_MODULES[moduleId];
+            if (!moduleConfig) return null;
             
             const isSelected = selectedModules.includes(moduleId);
-            const label = language === 'en' ? module.labelEn : module.label;
+            const label = language === 'en' ? moduleConfig.labelEn : moduleConfig.label;
             
             return (
               <ModuleCard
@@ -121,7 +120,7 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
                 moduleId={moduleId}
                 label={label}
                 isSelected={isSelected}
-                isCore={module.core}
+                isCore={moduleConfig.core}
                 onToggle={onToggle}
               />
             );
@@ -137,11 +136,11 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {BUSINESS_CONFIGS[businessType].availableModules.map((moduleId) => {
-              const module = ALL_MODULES[moduleId];
-              if (!module) return null;
+              const moduleConfig = ALL_MODULES[moduleId];
+              if (!moduleConfig) return null;
               
               const isSelected = selectedModules.includes(moduleId);
-              const label = language === 'en' ? module.labelEn : module.label;
+              const label = language === 'en' ? moduleConfig.labelEn : moduleConfig.label;
               
               return (
                 <ModuleCard

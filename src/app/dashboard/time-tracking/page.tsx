@@ -5,15 +5,12 @@ import { motion } from 'framer-motion';
 import {
   IconClock,
   IconPlayerPlay,
-  IconPlayerPause,
   IconPlayerStop,
   IconPlus,
-  IconCalendar,
   IconCurrencyEuro,
   IconBriefcase,
   IconTrash,
   IconEdit,
-  IconFilter,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -24,7 +21,6 @@ import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import { 
   fetchTimeEntries, 
   createTimeEntry, 
-  updateTimeEntry,
   stopTimeEntry,
   deleteTimeEntry,
   fetchRunningTimeEntry,
@@ -39,8 +35,6 @@ export default function TimeTrackingPage() {
   const { showGlobalPopup } = usePopup();
   const { formatCurrency } = usePreferences();
   
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; entry: TimeEntry | null }>({
     isOpen: false,
     entry: null,
@@ -59,7 +53,7 @@ export default function TimeTrackingPage() {
   const projects = useMemo(() => (projectsData as Project[]) || [], [projectsData]);
   
   const { data: clientsData } = useClients(user?.id);
-  const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
+  const _clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
 
   // Calculate date range
   const dateRange = useMemo(() => {
