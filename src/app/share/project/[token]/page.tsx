@@ -189,37 +189,50 @@ export default function SharedProjectPage() {
 
   return (
     <div className="min-h-screen bg-page">
-      {/* Header */}
-      <div className="bg-card/50 border-b border-default backdrop-blur-sm sticky top-0 z-10">
+      {/* Header fixe */}
+      <header className="bg-card border-b border-default fixed top-0 left-0 right-0 z-50 shadow-theme-sm">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-primary">{project.title}</h1>
-              <div className="flex items-center gap-3 mt-1">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${statusConfig.colorClass}`}>
-                  {statusConfig.label}
-                </span>
-                {project.user?.username && (
-                  <span className="text-secondary text-sm">
-                    {t('by')} {project.user.username}
+            <div className="flex items-center gap-4">
+              {/* Logo Eclipse Studio */}
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+                  <IconTimeline className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-sm font-medium text-muted hidden sm:block">Eclipse Studio</span>
+              </div>
+              <div className="h-6 w-px bg-default hidden sm:block" />
+              <div>
+                <h1 className="text-lg sm:text-xl font-bold text-primary line-clamp-1">{project.title}</h1>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${statusConfig.colorClass}`}>
+                    {statusConfig.label}
                   </span>
-                )}
+                  {project.user?.username && (
+                    <span className="text-muted text-xs hidden sm:block">
+                      {t('by')} {project.user.username}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <a
                 href={`mailto:?subject=${t('project_progress')} - ${project.title}&body=${t('view_project_progress')} : ${typeof window !== 'undefined' ? window.location.href : ''}`}
-                className="btn btn-ghost flex items-center gap-2 px-4 py-2 text-sm"
+                className="btn btn-ghost flex items-center gap-2 px-3 py-2 text-sm"
               >
                 <IconMail className="w-4 h-4" />
-                {t('share_button')}
+                <span className="hidden sm:inline">{t('share_button')}</span>
               </a>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      {/* Spacer pour le header fixe */}
+      <div className="h-20 sm:h-24" />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Description */}
         {project.description && (
           <motion.div
@@ -294,7 +307,7 @@ export default function SharedProjectPage() {
         )}
 
         {/* Gantt Chart */}
-        {shareConfig.showGantt && tasks.length > 0 && (
+        {shareConfig.showGantt && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -305,11 +318,18 @@ export default function SharedProjectPage() {
               <IconTimeline className="w-5 h-5 text-accent-light" />
               {t('gantt_diagram')}
             </h2>
-            <PublicGanttView 
-              tasks={tasks} 
-              projectName={project.title}
-              taskStatusOptions={TASK_STATUS_OPTIONS}
-            />
+            {tasks.length > 0 ? (
+              <PublicGanttView 
+                tasks={tasks} 
+                projectName={project.title}
+                taskStatusOptions={TASK_STATUS_OPTIONS}
+              />
+            ) : (
+              <div className="card p-8 text-center">
+                <IconTimeline className="w-12 h-12 text-muted mx-auto mb-3" />
+                <p className="text-secondary">{t('no_tasks_yet') || 'Aucune tâche dans ce projet pour le moment'}</p>
+              </div>
+            )}
           </motion.div>
         )}
 
