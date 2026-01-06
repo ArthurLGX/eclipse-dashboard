@@ -22,6 +22,7 @@ import {
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
+import RichTextEditor from './RichTextEditor';
 import {
   fetchProjectTasks,
   createProjectTask,
@@ -457,13 +458,16 @@ export default function ProjectTasks({
                 required
               />
 
-              <textarea
-                placeholder={t('task_description') || 'Description (optionnel)'}
-                value={newTask.description}
-                onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                rows={2}
-                className="input w-full resize-none"
-              />
+              <div>
+                <label className="block text-sm text-secondary mb-1">{t('description') || 'Description'}</label>
+                <RichTextEditor
+                  value={newTask.description}
+                  onChange={(val) => setNewTask({ ...newTask, description: val })}
+                  placeholder={t('task_description') || 'Description (optionnel)'}
+                  minHeight="100px"
+                  maxHeight="200px"
+                />
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
@@ -815,7 +819,14 @@ function TaskCard({
               exit={{ opacity: 0, height: 0 }}
               className="mt-3 pt-3 border-t border-default"
             >
-              <p className="text-sm text-secondary whitespace-pre-wrap">{task.description}</p>
+              <div 
+                className="text-sm text-secondary prose prose-sm max-w-none dark:prose-invert
+                  [&_h1]:text-lg [&_h1]:font-bold [&_h1]:mb-2
+                  [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mb-2
+                  [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
+                  [&_a]:text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                dangerouslySetInnerHTML={{ __html: task.description || '' }}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -923,11 +934,12 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
               <label className="block text-sm font-medium text-secondary mb-1">
                 {t('description') || 'Description'}
               </label>
-              <textarea
+              <RichTextEditor
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={3}
-                className="input w-full resize-none"
+                onChange={(val) => setFormData({ ...formData, description: val })}
+                placeholder={t('task_description') || 'Description (optionnel)'}
+                minHeight="100px"
+                maxHeight="200px"
               />
             </div>
 
@@ -1114,7 +1126,10 @@ function TaskTableView({
                 <div>
                   <p className="text-primary font-medium">{task.title}</p>
                   {task.description && (
-                    <p className="text-xs text-muted mt-0.5 line-clamp-1">{task.description}</p>
+                    <div 
+                      className="text-xs text-muted mt-0.5 line-clamp-1 [&_*]:inline"
+                      dangerouslySetInnerHTML={{ __html: task.description }}
+                    />
                   )}
                 </div>
               </td>

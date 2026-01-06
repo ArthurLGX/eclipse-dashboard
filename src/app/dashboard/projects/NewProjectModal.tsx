@@ -222,10 +222,10 @@ export default function NewProjectModal({
           <textarea
             placeholder="Objectifs, périmètre du projet..."
             required
-            rows={2}
+            rows={6}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="input w-full px-3 py-2 text-sm resize-none"
+            className="input w-full px-3 py-2 text-sm resize-y"
           />
         </div>
 

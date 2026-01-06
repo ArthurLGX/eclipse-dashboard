@@ -113,7 +113,7 @@ export default function EmailContentForm({
             onChange={(e) => onChange({ message: e.target.value })}
             placeholder={l.messagePlaceholder}
             rows={12}
-            className="input w-full resize-none"
+            className="input w-full resize-y"
           />
         )}
       </div>

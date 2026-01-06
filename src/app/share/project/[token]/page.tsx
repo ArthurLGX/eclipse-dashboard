@@ -20,6 +20,7 @@ import {
 import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import useLenis from '@/utils/useLenis';
+// Rich text description is now HTML from RichTextEditor
 
 // API call pour récupérer les données du projet partagé
 async function fetchSharedProject(token: string, t: (key: string) => string) {
@@ -442,7 +443,10 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
           </div>
           
           {task.description && (
-            <p className="text-sm text-secondary mt-1 line-clamp-1">{task.description}</p>
+            <div 
+              className="text-sm text-secondary mt-1 line-clamp-1 [&_*]:inline"
+              dangerouslySetInnerHTML={{ __html: task.description }}
+            />
           )}
           
           <div className="flex items-center gap-4 mt-2 text-xs text-muted">

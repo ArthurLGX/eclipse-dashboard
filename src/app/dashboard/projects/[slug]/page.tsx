@@ -35,6 +35,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useProjectByDocumentId, useClients, clearCache } from '@/hooks/useApi';
 import ShareProjectModal from '@/app/components/ShareProjectModal';
 import ProjectTasks from '@/app/components/ProjectTasks';
+import RichTextEditor from '@/app/components/RichTextEditor';
 import { canDeleteProject, fetchProjectCollaborators } from '@/lib/api';
 import type { Project, Client, Facture, ProjectCollaborator, ProjectTask } from '@/types';
 
@@ -69,6 +70,8 @@ export default function ProjectDetailsPage() {
   const [selectedType, setSelectedType] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  const [editDescription, setEditDescription] = useState<string>('');
+  const [editNotes, setEditNotes] = useState<string>('');
   const [factures, setFactures] = useState<Facture[]>([]);
   const [loadingFactures, setLoadingFactures] = useState(false);
   const [tasks, setTasks] = useState<ProjectTask[]>([]);
@@ -195,8 +198,8 @@ const PROJECT_TYPES = [
     try {
       await updateProject(project.documentId, {
         title: newTitle,
-        description: (formData.get('description') as string) || '',
-        notes: (formData.get('notes') as string) || '',
+        description: editDescription || '',
+        notes: editNotes || '',
         project_status: selectedStatus,
         type: selectedType,
         start_date: startDate || undefined,
@@ -355,7 +358,11 @@ const PROJECT_TYPES = [
                     </>
                   ) : (
                     <button
-                      onClick={() => setIsEditMode(true)}
+                      onClick={() => {
+                        setEditDescription(project?.description || '');
+                        setEditNotes(project?.notes || '');
+                        setIsEditMode(true);
+                      }}
                       className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
                     >
                       <IconEdit className="w-4 h-4" />
@@ -559,19 +566,25 @@ const PROJECT_TYPES = [
                       {t('description')}
                     </h2>
                     {isEditMode ? (
-                      <textarea
-                        name="description"
-                        form="edit-form"
-                        defaultValue={project.description}
-                        rows={5}
+                      <RichTextEditor
+                        value={editDescription}
+                        onChange={setEditDescription}
                         placeholder={t('describe_your_project')}
-                        className="w-full input px-4 py-3 resize-none"
+                        minHeight="150px"
+                        maxHeight="400px"
+                      />
+                    ) : project.description ? (
+                      <div 
+                        className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+                          [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2
+                          [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2
+                          [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
+                          [&_a]:text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                        dangerouslySetInnerHTML={{ __html: project.description }}
                       />
                     ) : (
-                      <p className="text-secondary leading-relaxed whitespace-pre-wrap">
-                        {project.description || (
-                              <span className="italic text-muted">{t('no_description_available')}</span>
-                        )}
+                      <p className="text-secondary leading-relaxed italic text-muted">
+                        {t('no_description_available')}
                       </p>
                     )}
                   </div>
@@ -584,18 +597,22 @@ const PROJECT_TYPES = [
                         {t('internal_notes')}
                       </h2>
                       {isEditMode ? (
-                        <textarea
-                          name="notes"
-                          form="edit-form"
-                          defaultValue={project.notes || ''}
-                          rows={3}
+                        <RichTextEditor
+                          value={editNotes}
+                          onChange={setEditNotes}
                           placeholder={t('private_notes')}
-                          className="w-full  px-4 py-3 resize-none"
+                          minHeight="100px"
+                          maxHeight="300px"
                         />
                       ) : (
-                        <p className="text-secondary leading-relaxed whitespace-pre-wrap">
-                          {project.notes}
-                        </p>
+                        <div 
+                          className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+                            [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2
+                            [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2
+                            [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
+                            [&_a]:text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                          dangerouslySetInnerHTML={{ __html: project.notes || '' }}
+                        />
                       )}
                     </div>
                   )}

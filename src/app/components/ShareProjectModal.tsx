@@ -16,7 +16,10 @@ import {
   IconTimeline,
   IconExternalLink,
   IconLoader2,
+  IconPhoto,
+  IconPalette,
 } from '@tabler/icons-react';
+import MediaPickerModal from './MediaPickerModal';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import {
@@ -28,9 +31,10 @@ import {
   createProjectShareLink,
   fetchProjectShareLinks,
   deactivateShareLink,
+  fetchEmailSignature,
   type ProjectShareLink,
 } from '@/lib/api';
-import type { ProjectInvitation, ProjectCollaborator, InvitationPermission } from '@/types';
+import type { ProjectInvitation, ProjectCollaborator, InvitationPermission, EmailSignature } from '@/types';
 
 interface ShareProjectModalProps {
   isOpen: boolean;
@@ -82,6 +86,21 @@ export default function ShareProjectModal({
   const [emailMessage, setEmailMessage] = useState('');
   const [sendingEmail, setSendingEmail] = useState(false);
   const [currentShareToken, setCurrentShareToken] = useState<string | null>(null);
+  
+  // État pour la signature et la bannière
+  const [emailSignature, setEmailSignature] = useState<EmailSignature | null>(null);
+  const [includeSignature, setIncludeSignature] = useState(true);
+  const [includeBanner, setIncludeBanner] = useState(true);
+  const [emailSubject, setEmailSubject] = useState('');
+  const [showBannerTitle, setShowBannerTitle] = useState(true);
+  const [customBannerTitle, setCustomBannerTitle] = useState('');
+  
+  // Personnalisation avancée de la bannière
+  const [bannerType, setBannerType] = useState<'color' | 'image'>('color');
+  const [bannerBackgroundColor, setBannerBackgroundColor] = useState('#7c3aed');
+  const [bannerTitleColor, setBannerTitleColor] = useState('#ffffff');
+  const [customBannerImage, setCustomBannerImage] = useState('');
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
 
   // Nombre total de membres (propriétaire + collaborateurs)
   const totalMembers = 1 + collaborators.length;
@@ -275,11 +294,138 @@ export default function ShareProjectModal({
   };
 
   // Ouvrir le modal d'envoi d'email
-  const handleOpenEmailModal = (token: string) => {
+  const handleOpenEmailModal = async (token: string) => {
     setCurrentShareToken(token);
     setEmailRecipient('');
     setEmailMessage(t('default_share_message') || `Bonjour,\n\nVoici le lien pour suivre l'avancement du projet "${projectTitle}".\n\nCordialement`);
+    setEmailSubject(`${t('project_progress') || 'Suivi du projet'} : ${projectTitle}`);
+    setCustomBannerTitle(projectTitle);
+    setIncludeSignature(true);
+    setIncludeBanner(true);
+    setShowBannerTitle(true);
+    
+    // Charger la signature de l'utilisateur
+    try {
+      const signature = await fetchEmailSignature(userId);
+      setEmailSignature(signature);
+    } catch (error) {
+      console.error('Error loading signature:', error);
+      setEmailSignature(null);
+    }
+    
     setShowEmailModal(true);
+  };
+
+  // Générer le HTML de la signature
+  const generateSignatureHTML = () => {
+    if (!emailSignature) return '';
+    
+    const sig = emailSignature;
+    const primaryColor = sig.primary_color || '#10b981';
+    const textColor = sig.text_color || '#333333';
+    const secondaryColor = sig.secondary_color || '#666666';
+    const fontFamily = sig.font_family ? `'${sig.font_family}', Arial, sans-serif` : 'Arial, sans-serif';
+    const logoSize = sig.logo_size || 80;
+    
+    let signatureHTML = `
+      <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-top: 20px; font-family: ${fontFamily};">
+        <tbody>
+          <tr>
+    `;
+    
+    // Logo
+    if (sig.logo_url) {
+      signatureHTML += `
+        <td style="padding-right: 12px; vertical-align: top;">
+          <img src="${sig.logo_url}" alt="Logo" style="width: ${logoSize}px; height: ${logoSize}px; object-fit: contain; border-radius: 8px; display: block;" />
+        </td>
+      `;
+    }
+    
+    // Info
+    signatureHTML += `<td style="vertical-align: top;">`;
+    
+    if (sig.sender_name) {
+      signatureHTML += `<div style="font-weight: bold; font-size: 16px; color: ${textColor};">${sig.sender_name}</div>`;
+    }
+    if (sig.sender_title) {
+      signatureHTML += `<div style="color: ${secondaryColor}; margin-bottom: 6px; font-size: 14px;">${sig.sender_title}</div>`;
+    }
+    if (sig.company_name) {
+      signatureHTML += `<div style="font-weight: 600; color: ${primaryColor}; margin-bottom: 4px;">${sig.company_name}</div>`;
+    }
+    
+    signatureHTML += `<div style="font-size: 13px; color: ${secondaryColor};">`;
+    if (sig.phone) signatureHTML += `<div>📞 ${sig.phone}</div>`;
+    if (sig.website) signatureHTML += `<div>🌐 <a href="${sig.website}" style="color: ${primaryColor}; text-decoration: none;">${sig.website.replace(/^https?:\/\//, '')}</a></div>`;
+    if (sig.address) signatureHTML += `<div>📍 ${sig.address}</div>`;
+    signatureHTML += `</div>`;
+    
+    // Social links
+    if (sig.social_links && sig.social_links.length > 0) {
+      signatureHTML += `<div style="margin-top: 10px;">`;
+      sig.social_links.forEach(link => {
+        const color = link.color || primaryColor;
+        const label = link.label || link.platform;
+        signatureHTML += `<a href="${link.url}" style="color: ${color}; margin-right: 8px; text-decoration: none; font-weight: 500;">${label}</a>`;
+      });
+      signatureHTML += `</div>`;
+    }
+    
+    signatureHTML += `</td></tr></tbody></table>`;
+    
+    return signatureHTML;
+  };
+
+  // Générer le HTML de la bannière avec titre
+  const generateBannerHTML = () => {
+    let bannerHTML = '';
+    
+    if (bannerType === 'color') {
+      // Bannière avec couleur de fond
+      if (showBannerTitle && customBannerTitle) {
+        bannerHTML += `
+          <div style="background: ${bannerBackgroundColor}; border-radius: 12px 12px 0 0; padding: 32px 24px; text-align: center;">
+            <h1 style="margin: 0; color: ${bannerTitleColor}; font-size: 24px; font-weight: 700;">${customBannerTitle}</h1>
+            <p style="margin: 8px 0 0 0; color: ${bannerTitleColor}; opacity: 0.9; font-size: 14px;">${t('project_progress') || 'Suivi du projet'}</p>
+          </div>
+        `;
+      }
+    } else if (bannerType === 'image') {
+      // Bannière avec image personnalisée ou de la signature
+      const imageUrl = customBannerImage || emailSignature?.banner_url;
+      
+      if (imageUrl) {
+        // Si on a un titre, on le superpose sur l'image
+        if (showBannerTitle && customBannerTitle) {
+          bannerHTML += `
+            <div style="position: relative; border-radius: 12px 12px 0 0; overflow: hidden;">
+              <img src="${imageUrl}" alt="Banner" style="width: 100%; height: auto; display: block;" />
+              <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6)); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px;">
+                <h1 style="margin: 0; color: ${bannerTitleColor}; font-size: 24px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${customBannerTitle}</h1>
+                <p style="margin: 8px 0 0 0; color: ${bannerTitleColor}; opacity: 0.9; font-size: 14px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">${t('project_progress') || 'Suivi du projet'}</p>
+              </div>
+            </div>
+          `;
+        } else {
+          bannerHTML += `
+            <div style="border-radius: 12px 12px 0 0; overflow: hidden;">
+              <img src="${imageUrl}" alt="Banner" style="width: 100%; height: auto; display: block;" />
+            </div>
+          `;
+        }
+      } else if (showBannerTitle && customBannerTitle) {
+        // Pas d'image mais un titre, on utilise la couleur de fond par défaut
+        bannerHTML += `
+          <div style="background: ${bannerBackgroundColor}; border-radius: 12px 12px 0 0; padding: 32px 24px; text-align: center;">
+            <h1 style="margin: 0; color: ${bannerTitleColor}; font-size: 24px; font-weight: 700;">${customBannerTitle}</h1>
+            <p style="margin: 8px 0 0 0; color: ${bannerTitleColor}; opacity: 0.9; font-size: 14px;">${t('project_progress') || 'Suivi du projet'}</p>
+          </div>
+        `;
+      }
+    }
+    
+    return bannerHTML;
   };
 
   // Envoyer le lien par email via SMTP
@@ -296,21 +442,28 @@ export default function ShareProjectModal({
         return;
       }
       
-      // Construire le HTML de l'email
+      // Construire le HTML de l'email avec bannière et signature
+      const bannerHTML = includeBanner ? generateBannerHTML() : '';
+      const signatureHTML = includeSignature ? generateSignatureHTML() : '';
+      const hasBanner = bannerHTML.length > 0;
+      
       const htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #7c3aed; margin-bottom: 20px;">${t('project_progress') || 'Suivi du projet'} : ${projectTitle}</h2>
-          <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-            <p style="white-space: pre-wrap; margin: 0; color: #374151; line-height: 1.6;">${emailMessage}</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+          ${bannerHTML}
+          <div style="padding: 24px; ${hasBanner ? 'border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;' : ''}">
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+              <p style="white-space: pre-wrap; margin: 0; color: #374151; line-height: 1.6;">${emailMessage}</p>
+            </div>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${shareUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                ${t('view_project_progress') || 'Voir l\'avancement du projet'}
+              </a>
+            </div>
+            <p style="color: #6b7280; font-size: 12px; text-align: center; margin-top: 20px;">
+              ${t('link_valid_info') || 'Ce lien vous permet de consulter l\'avancement du projet à tout moment.'}
+            </p>
+            ${signatureHTML}
           </div>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${shareUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
-              ${t('view_project_progress') || 'Voir l\'avancement du projet'}
-            </a>
-          </div>
-          <p style="color: #6b7280; font-size: 12px; text-align: center; margin-top: 20px;">
-            ${t('link_valid_info') || 'Ce lien vous permet de consulter l\'avancement du projet à tout moment.'}
-          </p>
         </div>
       `;
       
@@ -322,7 +475,7 @@ export default function ShareProjectModal({
         },
         body: JSON.stringify({
           to: [emailRecipient.trim()],
-          subject: `${t('project_progress') || 'Suivi du projet'} : ${projectTitle}`,
+          subject: emailSubject || `${t('project_progress') || 'Suivi du projet'} : ${projectTitle}`,
           html: htmlContent,
         }),
       });
@@ -868,7 +1021,7 @@ export default function ShareProjectModal({
               </div>
 
               {/* Content */}
-              <div className="p-4 space-y-4">
+              <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
                 {/* Email destinataire */}
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">
@@ -886,6 +1039,283 @@ export default function ShareProjectModal({
                   </div>
                 </div>
 
+                {/* Objet de l'email */}
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-2">
+                    {t('email_subject') || 'Objet'}
+                  </label>
+                  <input
+                    type="text"
+                    value={emailSubject}
+                    onChange={(e) => setEmailSubject(e.target.value)}
+                    placeholder={`${t('project_progress') || 'Suivi du projet'} : ${projectTitle}`}
+                    className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
+                  />
+                </div>
+
+                {/* Options bannière et signature */}
+                <div className="space-y-4">
+                  {/* Option bannière */}
+                  <div className="bg-hover rounded-xl p-4 border border-default">
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-sm font-medium text-primary">
+                        {t('include_banner') || 'Inclure une bannière'}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setIncludeBanner(!includeBanner)}
+                        className={`relative w-11 h-6 rounded-full transition-colors ${
+                          includeBanner ? 'bg-accent' : 'bg-muted'
+                        }`}
+                      >
+                        <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                          includeBanner ? 'translate-x-5' : 'translate-x-0'
+                        }`} />
+                      </button>
+                    </div>
+                    
+                    {includeBanner && (
+                      <div className="space-y-4">
+                        {/* Type de bannière */}
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setBannerType('color')}
+                            className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
+                              bannerType === 'color' 
+                                ? 'border-accent bg-accent/10 text-accent' 
+                                : 'border-default bg-muted/50 text-secondary hover:border-accent/50'
+                            }`}
+                          >
+                            <IconPalette className="w-4 h-4" />
+                            <span className="text-sm">{t('color') || 'Couleur'}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setBannerType('image')}
+                            className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
+                              bannerType === 'image' 
+                                ? 'border-accent bg-accent/10 text-accent' 
+                                : 'border-default bg-muted/50 text-secondary hover:border-accent/50'
+                            }`}
+                          >
+                            <IconPhoto className="w-4 h-4" />
+                            <span className="text-sm">{t('image') || 'Image'}</span>
+                          </button>
+                        </div>
+
+                        {/* Options selon le type */}
+                        {bannerType === 'color' && (
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs text-secondary mb-1">
+                                {t('background_color') || 'Couleur de fond'}
+                              </label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="color"
+                                  value={bannerBackgroundColor}
+                                  onChange={(e) => setBannerBackgroundColor(e.target.value)}
+                                  className="w-8 h-8 rounded cursor-pointer border-0"
+                                />
+                                <input
+                                  type="text"
+                                  value={bannerBackgroundColor}
+                                  onChange={(e) => setBannerBackgroundColor(e.target.value)}
+                                  className="flex-1 px-2 py-1.5 text-xs bg-input border border-input rounded text-primary"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-xs text-secondary mb-1">
+                                {t('title_color') || 'Couleur du titre'}
+                              </label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="color"
+                                  value={bannerTitleColor}
+                                  onChange={(e) => setBannerTitleColor(e.target.value)}
+                                  className="w-8 h-8 rounded cursor-pointer border-0"
+                                />
+                                <input
+                                  type="text"
+                                  value={bannerTitleColor}
+                                  onChange={(e) => setBannerTitleColor(e.target.value)}
+                                  className="flex-1 px-2 py-1.5 text-xs bg-input border border-input rounded text-primary"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {bannerType === 'image' && (
+                          <div className="space-y-2">
+                            {customBannerImage ? (
+                              <div className="relative">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img 
+                                  src={customBannerImage} 
+                                  alt="Banner preview" 
+                                  className="w-full h-24 object-cover rounded-lg"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setCustomBannerImage('')}
+                                  className="absolute top-2 right-2 p-1 bg-danger text-white rounded-full hover:bg-danger/80"
+                                >
+                                  <IconX className="w-3 h-3" />
+                                </button>
+                              </div>
+                            ) : emailSignature?.banner_url ? (
+                              <div className="relative">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img 
+                                  src={emailSignature.banner_url} 
+                                  alt="Signature banner" 
+                                  className="w-full h-24 object-cover rounded-lg"
+                                />
+                                <div className="absolute bottom-2 left-2 text-xs bg-black/60 text-white px-2 py-1 rounded">
+                                  {t('from_signature') || 'De votre signature'}
+                                </div>
+                              </div>
+                            ) : null}
+                            <button
+                              type="button"
+                              onClick={() => setShowMediaPicker(true)}
+                              className="w-full py-2 px-3 border-2 border-dashed border-default rounded-lg text-sm text-secondary hover:border-accent hover:text-accent transition-colors flex items-center justify-center gap-2"
+                            >
+                              <IconPhoto className="w-4 h-4" />
+                              {customBannerImage 
+                                ? (t('change_image') || 'Changer l\'image')
+                                : (t('select_image') || 'Sélectionner une image')
+                              }
+                            </button>
+                            {bannerType === 'image' && (
+                              <div>
+                                <label className="block text-xs text-secondary mb-1">
+                                  {t('title_color') || 'Couleur du titre'}
+                                </label>
+                                <div className="flex items-center gap-2">
+                                  <input
+                                    type="color"
+                                    value={bannerTitleColor}
+                                    onChange={(e) => setBannerTitleColor(e.target.value)}
+                                    className="w-8 h-8 rounded cursor-pointer border-0"
+                                  />
+                                  <input
+                                    type="text"
+                                    value={bannerTitleColor}
+                                    onChange={(e) => setBannerTitleColor(e.target.value)}
+                                    className="flex-1 px-2 py-1.5 text-xs bg-input border border-input rounded text-primary"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Titre */}
+                        <div className="border-t border-default pt-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <input
+                              type="checkbox"
+                              id="showBannerTitle"
+                              checked={showBannerTitle}
+                              onChange={(e) => setShowBannerTitle(e.target.checked)}
+                              className="w-4 h-4 text-accent border-default rounded focus:ring-accent"
+                            />
+                            <label htmlFor="showBannerTitle" className="text-sm text-secondary">
+                              {t('show_banner_title') || 'Afficher un titre'}
+                            </label>
+                          </div>
+                          
+                          {showBannerTitle && (
+                            <input
+                              type="text"
+                              value={customBannerTitle}
+                              onChange={(e) => setCustomBannerTitle(e.target.value)}
+                              placeholder={projectTitle}
+                              className="w-full px-3 py-2 text-sm bg-input border border-input rounded-lg text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
+                            />
+                          )}
+                        </div>
+
+                        {/* Aperçu de la bannière */}
+                        {(showBannerTitle || customBannerImage || (bannerType === 'image' && emailSignature?.banner_url)) && (
+                          <div className="border-t border-default pt-3">
+                            <p className="text-xs text-secondary mb-2">{t('preview') || 'Aperçu'}</p>
+                            <div 
+                              className="rounded-lg overflow-hidden"
+                              style={{ 
+                                background: bannerType === 'color' ? bannerBackgroundColor : undefined,
+                              }}
+                            >
+                              {bannerType === 'image' && (customBannerImage || emailSignature?.banner_url) ? (
+                                <div className="relative h-20">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img 
+                                    src={customBannerImage || emailSignature?.banner_url} 
+                                    alt="Preview" 
+                                    className="w-full h-full object-cover"
+                                  />
+                                  {showBannerTitle && (
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                      <span style={{ color: bannerTitleColor }} className="font-bold text-lg">
+                                        {customBannerTitle || projectTitle}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              ) : showBannerTitle && (
+                                <div className="py-4 px-3 text-center">
+                                  <span style={{ color: bannerTitleColor }} className="font-bold text-lg">
+                                    {customBannerTitle || projectTitle}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Option signature */}
+                  <div className="bg-hover rounded-xl p-4 border border-default">
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-sm font-medium text-primary">
+                        {t('include_signature') || 'Inclure ma signature'}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setIncludeSignature(!includeSignature)}
+                        className={`relative w-11 h-6 rounded-full transition-colors ${
+                          includeSignature ? 'bg-accent' : 'bg-muted'
+                        }`}
+                      >
+                        <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                          includeSignature ? 'translate-x-5' : 'translate-x-0'
+                        }`} />
+                      </button>
+                    </div>
+                    
+                    {includeSignature && (
+                      <div>
+                        {emailSignature ? (
+                          <div className="flex items-center gap-2 text-xs text-success">
+                            <IconCheck className="w-4 h-4" />
+                            {emailSignature.sender_name || emailSignature.company_name || t('signature_loaded') || 'Signature chargée'}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-warning">
+                            {t('no_signature_configured') || 'Aucune signature configurée'}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* Message personnalisé */}
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">
@@ -894,8 +1324,8 @@ export default function ShareProjectModal({
                   <textarea
                     value={emailMessage}
                     onChange={(e) => setEmailMessage(e.target.value)}
-                    rows={10}
-                    className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors resize-none"
+                    rows={6}
+                    className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors resize-y"
                   />
                 </div>
 
@@ -937,6 +1367,18 @@ export default function ShareProjectModal({
             </motion.div>
           </motion.div>
         )}
+
+        {/* Media Picker Modal pour la bannière */}
+        <MediaPickerModal
+          isOpen={showMediaPicker}
+          onClose={() => setShowMediaPicker(false)}
+          onSelect={(url) => {
+            setCustomBannerImage(url);
+            setShowMediaPicker(false);
+          }}
+          mediaType="image"
+          title={t('select_banner_image') || 'Sélectionner une image de bannière'}
+        />
       </motion.div>
     </AnimatePresence>
   );

@@ -392,8 +392,8 @@ export default function SettingsPage() {
               <textarea
                 value={preferences.invoice.legalMentions}
                 onChange={(e) => updateInvoice({ legalMentions: e.target.value })}
-                className="input w-full px-3 py-2 text-sm resize-none"
-                rows={3}
+                className="input w-full px-3 py-2 text-sm resize-y"
+                rows={6}
                 placeholder={t('legal_mentions_placeholder') || 'Ex: TVA non applicable, art. 293 B du CGI...'}
               />
             </SettingsRow>

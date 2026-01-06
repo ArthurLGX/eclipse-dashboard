@@ -524,7 +524,7 @@ function ComposeEmail() {
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={t('message_placeholder') || 'Rédigez votre message...'}
                   rows={12}
-                  className="input w-full resize-none"
+                  className="input w-full resize-y"
                 />
               </div>
               
