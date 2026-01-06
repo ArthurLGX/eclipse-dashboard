@@ -36,7 +36,8 @@
     "react-image-crop": "^11.0.10",
     "react-markdown": "^10.1.0",
     "react-pdf-html": "^2.1.5",
-    "stripe": "^18.3.0"
+    "stripe": "^18.3.0",
+    "swr": "^2.3.8"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-x64-gnu": "^4.1.3",
