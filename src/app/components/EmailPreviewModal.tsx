@@ -362,12 +362,22 @@ export default function EmailPreviewModal({
                         {/* Content */}
                         {emailData.htmlContent ? (
                           <div 
-                            className="prose prose-sm max-w-none text-gray-700"
+                            className="prose prose-sm max-w-none text-gray-700
+                              [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3 [&_h1]:text-gray-900
+                              [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:text-gray-800
+                              [&_p]:mb-3 [&_p]:leading-relaxed
+                              [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-3 [&_ul]:space-y-1
+                              [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-3 [&_ol]:space-y-1
+                              [&_li]:text-gray-700
+                              [&_a]:text-blue-600 [&_a]:underline [&_a]:hover:text-blue-800
+                              [&_img]:rounded-lg [&_img]:max-w-full [&_img]:h-auto [&_img]:my-3
+                              [&_strong]:font-bold [&_b]:font-bold
+                              [&_em]:italic [&_i]:italic"
                             style={{ fontFamily: emailFontFamily }}
                             dangerouslySetInnerHTML={{ 
                               __html: DOMPurify.sanitize(emailData.htmlContent, {
-                                ALLOWED_TAGS: ['p', 'br', 'b', 'i', 'u', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'video', 'span', 'div', 'table', 'tr', 'td', 'th', 'thead', 'tbody'],
-                                ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'style', 'class', 'target', 'controls', 'width', 'height'],
+                                ALLOWED_TAGS: ['p', 'br', 'b', 'i', 'u', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'video', 'span', 'div', 'table', 'tr', 'td', 'th', 'thead', 'tbody', 'blockquote'],
+                                ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'style', 'class', 'target', 'controls', 'width', 'height', 'rel'],
                                 ALLOW_DATA_ATTR: false,
                               })
                             }}

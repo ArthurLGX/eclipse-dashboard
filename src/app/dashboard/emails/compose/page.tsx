@@ -27,6 +27,7 @@ import ProtectedRoute from '@/app/components/ProtectedRoute';
 import MediaPickerModal from '@/app/components/MediaPickerModal';
 import EmailScheduler from '@/app/components/EmailScheduler';
 import EmailPreviewModal from '@/app/components/EmailPreviewModal';
+import RichTextEditor, { cleanRichTextForEmail } from '@/app/components/RichTextEditor';
 import { fetchEmailSignature, createSentEmail } from '@/lib/api';
 import { uploadToStrapi } from '@/lib/strapi-upload';
 import { useDraftSave } from '@/hooks/useDraftSave';
@@ -263,6 +264,9 @@ function ComposeEmail() {
         ? `'${signatureData.font_family}', Arial, sans-serif` 
         : 'Arial, sans-serif';
       
+      // Nettoyer le HTML du message (supprimer les classes/attributs de l'éditeur)
+      const cleanedMessage = cleanRichTextForEmail(message);
+      
       // Construire le contenu HTML de l'email
       let htmlContent = `
         <div style="font-family: ${fontFamily}; max-width: 600px; margin: 0 auto;">
@@ -278,9 +282,19 @@ function ComposeEmail() {
         `;
       }
       
+      // Ajouter le message HTML (déjà formaté par le RichTextEditor)
       htmlContent += `
-          <div style="padding: 20px;">
-            ${message.split('\n').map(line => `<p style="margin: 0 0 10px; line-height: 1.6;">${line || '&nbsp;'}</p>`).join('')}
+          <div style="padding: 20px; line-height: 1.6;">
+            <style>
+              h1 { font-size: 24px; font-weight: bold; margin: 0 0 16px; }
+              h2 { font-size: 20px; font-weight: 600; margin: 0 0 12px; }
+              p { margin: 0 0 12px; }
+              ul, ol { margin: 0 0 12px; padding-left: 24px; }
+              li { margin: 0 0 4px; }
+              a { color: #3b82f6; text-decoration: underline; }
+              img { max-width: 100%; height: auto; border-radius: 8px; margin: 12px 0; }
+            </style>
+            ${cleanedMessage}
           </div>
       `;
       
@@ -302,7 +316,7 @@ function ComposeEmail() {
         await createSentEmail(user.id, {
           subject,
           recipients: recipients.map(r => r.email),
-          content: message,
+          content: cleanedMessage, // Utiliser le message nettoyé
           category: 'classic',
           attachments: attachments.length > 0 ? attachments.map(a => ({ name: a.name, url: a.url })) : undefined,
           sent_at: new Date().toISOString(),
@@ -340,7 +354,7 @@ function ComposeEmail() {
         await createSentEmail(user.id, {
           subject,
           recipients: recipients.map(r => r.email),
-          content: message,
+          content: cleanedMessage, // Utiliser le message nettoyé
           category: 'classic',
           attachments: attachments.length > 0 ? attachments.map(a => ({ name: a.name, url: a.url })) : undefined,
           sent_at: new Date().toISOString(),
@@ -519,14 +533,15 @@ function ComposeEmail() {
             <label className="block text-sm font-medium text-secondary mb-3">
               {t('message') || 'Message'} *
             </label>
-            <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder={t('message_placeholder') || 'Rédigez votre message...'}
-                  rows={12}
-                  className="input w-full resize-y"
-                />
-              </div>
+            <RichTextEditor
+              value={message}
+              onChange={setMessage}
+              placeholder={t('message_placeholder') || 'Rédigez votre message...'}
+              minHeight="250px"
+              maxHeight="500px"
+              showMediaOptions={true}
+            />
+          </div>
               
               {/* Attachments */}
               <div className="bg-card border border-default rounded-xl p-6">

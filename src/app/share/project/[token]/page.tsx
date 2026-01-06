@@ -240,7 +240,14 @@ export default function SharedProjectPage() {
             animate={{ opacity: 1, y: 0 }}
             className="card p-6 mb-6"
           >
-            <p className="text-secondary leading-relaxed">{project.description}</p>
+            <div 
+              className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+                [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2
+                [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2
+                [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
+                [&_a]:text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+              dangerouslySetInnerHTML={{ __html: project.description }}
+            />
           </motion.div>
         )}
 
