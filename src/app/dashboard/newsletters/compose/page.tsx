@@ -1369,7 +1369,7 @@ export default function ComposeNewsletterPage() {
   
   // Email Signature State (for banner and signature data)
   const [signatureData, setSignatureData] = useState<CreateEmailSignatureData | null>(null);
-  const [signatureLoaded, setSignatureLoaded] = useState(false);
+  const [, setSignatureLoaded] = useState(false);
   
   // Custom templates state
   const [customTemplates, setCustomTemplates] = useState<CustomTemplate[]>([]);

@@ -505,7 +505,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
 
   const getTaskPosition = useCallback((task: ProjectTask) => {
     if (!ganttData) return { startOffset: 0, duration: 1 };
-    const { minDate, totalDays } = ganttData;
+    const { minDate } = ganttData;
     const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
     const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
     
