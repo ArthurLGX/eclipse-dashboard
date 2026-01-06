@@ -16,6 +16,8 @@ import {
   IconChartBar,
   IconFileTypePdf,
   IconMail,
+  IconChevronDown,
+  IconChevronUp,
 } from '@tabler/icons-react';
 import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -395,6 +397,7 @@ const PRIORITY_OPTIONS: { value: TaskPriority; label: string; color: string }[] 
 // Composant ligne de tâche
 function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOptions: StatusOption[] }) {
   const { t } = useLanguage();
+  const [isExpanded, setIsExpanded] = useState(false);
   const statusConfig = taskStatusOptions.find(s => s.value === task.task_status) || taskStatusOptions[0];
   const priorityConfig = PRIORITY_OPTIONS.find(p => p.value === task.priority) || PRIORITY_OPTIONS[1];
   
@@ -422,9 +425,9 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
 
   return (
     <div className={`p-4 rounded-lg bg-card hover:bg-hover transition-colors ${isOverdue ? 'border-l-2 border-danger' : ''}`}>
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-4">
         {/* Status icon */}
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
           task.task_status === 'completed' ? 'bg-success-light' : 
           task.task_status === 'in_progress' ? 'bg-info-light' : 'bg-muted/30'
         }`}>
@@ -454,20 +457,39 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
           </div>
           
           {task.description && (
-            <div 
-              className="text-secondary leading-relaxed mt-2 prose prose-sm max-w-none dark:prose-invert
-                [&_h1]:text-base [&_h1]:font-bold [&_h1]:mb-1 [&_h1]:text-primary
-                [&_h2]:text-sm [&_h2]:font-semibold [&_h2]:mb-1 [&_h2]:text-primary
-                [&_p]:mb-1 [&_p]:text-secondary
-                [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-1
-                [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-1
-                [&_li]:mb-0.5 [&_li]:text-secondary
-                [&_a]:text-accent [&_a]:underline
-                [&_strong]:font-semibold [&_strong]:text-primary
-                [&_em]:italic
-                [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2"
-              dangerouslySetInnerHTML={{ __html: task.description }}
-            />
+            <div className="mt-2">
+              <div 
+                className={`text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+                  [&_h1]:text-base [&_h1]:font-bold [&_h1]:mb-1 [&_h1]:text-primary
+                  [&_h2]:text-sm [&_h2]:font-semibold [&_h2]:mb-1 [&_h2]:text-primary
+                  [&_p]:mb-1 [&_p]:text-secondary
+                  [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-1
+                  [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-1
+                  [&_li]:mb-0.5 [&_li]:text-secondary
+                  [&_a]:text-accent [&_a]:underline
+                  [&_strong]:font-semibold [&_strong]:text-primary
+                  [&_em]:italic
+                  [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2
+                  ${!isExpanded ? 'line-clamp-2' : ''}`}
+                dangerouslySetInnerHTML={{ __html: task.description }}
+              />
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center gap-1 text-xs text-accent hover:text-accent/80 mt-1 transition-colors"
+              >
+                {isExpanded ? (
+                  <>
+                    <IconChevronUp className="w-3.5 h-3.5" />
+                    {t('show_less') || 'Réduire'}
+                  </>
+                ) : (
+                  <>
+                    <IconChevronDown className="w-3.5 h-3.5" />
+                    {t('show_more') || 'Voir plus'}
+                  </>
+                )}
+              </button>
+            </div>
           )}
           
           <div className="flex items-center gap-4 mt-2 text-xs text-muted">
@@ -482,7 +504,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
         </div>
 
         {/* Progress bar */}
-        <div className="w-24 hidden sm:block">
+        <div className="w-24 hidden sm:block flex-shrink-0">
           <div className="h-1.5 bg-hover rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full transition-all ${

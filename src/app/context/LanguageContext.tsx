@@ -1053,6 +1053,8 @@ const translations = {
     on_tasks: 'sur',
     tasks_label: 'tâches',
     completed_percent: 'complété',
+    show_more: 'Voir plus',
+    show_less: 'Réduire',
 
     // Notifications page
     notifications_description: 'Gérez vos notifications et invitations',
@@ -2534,6 +2536,8 @@ const translations = {
     on_tasks: 'of',
     tasks_label: 'tasks',
     completed_percent: 'completed',
+    show_more: 'Show more',
+    show_less: 'Show less',
 
     // Notifications page
     notifications_description: 'Manage your notifications and invitations',
