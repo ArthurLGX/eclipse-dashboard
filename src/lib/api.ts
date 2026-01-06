@@ -1259,11 +1259,13 @@ export async function createProjectInvitation(data: {
   const payload = {
     project: data.project,
     sender: data.sender,
-    recipient_email: data.recipient_email || null,
+    // Pour les liens publics, on utilise une chaîne vide car Strapi exige un string
+    recipient_email: data.isPublicLink ? '' : (data.recipient_email || ''),
     invitation_code: invitationCode,
     invitation_status: 'pending',
     permission: data.permission || 'edit',
     expires_at: expiresAt,
+    is_public_link: data.isPublicLink || false,
     ...(recipient ? { recipient: recipient.id } : {}),
   };
 
