@@ -180,7 +180,7 @@ export default function ProjectTasks({
         due_date: newTask.due_date || null,
         estimated_hours: newTask.estimated_hours ? parseFloat(newTask.estimated_hours) : null,
         created_user: userId,
-        assigned_to: newTask.assigned_to || null,
+        assigned_to: newTask.assigned_to ? allMembers.find(m => m.documentId === newTask.assigned_to)?.id : undefined,
         order: tasks.length,
       });
 
