@@ -174,7 +174,7 @@ function EmailHistory() {
   const stripHtml = (html: string): string => {
     if (!html) return '';
     // Supprimer d'abord les balises style et script avec leur contenu
-    let cleanHtml = html
+    const cleanHtml = html
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
       .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
     
@@ -304,7 +304,7 @@ function EmailHistory() {
                   
                   return (
                     <motion.div
-                      key={email.documentId}
+                      key={`${email.documentId}-${index}`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       className={`p-4 hover:bg-hover cursor-pointer transition-colors group ${
