@@ -19,6 +19,7 @@ import {
 } from '@tabler/icons-react';
 import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
+import useLenis from '@/utils/useLenis';
 
 // API call pour récupérer les données du projet partagé
 async function fetchSharedProject(token: string, t: (key: string) => string) {
@@ -106,6 +107,9 @@ export default function SharedProjectPage() {
     showTasks: true,
   });
 
+  // Activer Lenis pour le smooth scroll
+  useLenis();
+
   // Options statut avec traductions
   const TASK_STATUS_OPTIONS: { value: TaskStatus; label: string; color: string }[] = useMemo(() => [
     { value: 'todo', label: t('todo'), color: 'muted' },
@@ -188,51 +192,46 @@ export default function SharedProjectPage() {
   }[project.project_status] || { label: project.project_status, colorClass: 'bg-muted text-muted border-muted' };
 
   return (
-    <div className="min-h-screen bg-page">
-      {/* Header fixe */}
-      <header className="bg-card border-b border-default fixed top-0 left-0 right-0 z-50 shadow-theme-sm">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {/* Logo Eclipse Studio */}
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
-                  <IconTimeline className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-sm font-medium text-muted hidden sm:block">Eclipse Studio</span>
-              </div>
-              <div className="h-6 w-px bg-default hidden sm:block" />
-              <div>
-                <h1 className="text-lg sm:text-xl font-bold text-primary line-clamp-1">{project.title}</h1>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${statusConfig.colorClass}`}>
-                    {statusConfig.label}
+    <div className="min-h-screen bg-page w-full px-8 pt-32 pb-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header du projet */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          {/* Titre et infos du projet */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">{project.title}</h1>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${statusConfig.colorClass}`}>
+                  {statusConfig.label}
+                </span>
+                {project.user?.username && (
+                  <span className="text-secondary text-sm">
+                    {t('by')} {project.user.username}
                   </span>
-                  {project.user?.username && (
-                    <span className="text-muted text-xs hidden sm:block">
-                      {t('by')} {project.user.username}
-                    </span>
-                  )}
-                </div>
+                )}
+                {project.end_date && (
+                  <span className="text-muted text-sm flex items-center gap-1">
+                    <IconCalendar className="w-4 h-4" />
+                    {t('deadline')}: {new Date(project.end_date).toLocaleDateString('fr-FR')}
+                  </span>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2">
               <a
                 href={`mailto:?subject=${t('project_progress')} - ${project.title}&body=${t('view_project_progress')} : ${typeof window !== 'undefined' ? window.location.href : ''}`}
-                className="btn btn-ghost flex items-center gap-2 px-3 py-2 text-sm"
+                className="btn btn-ghost flex items-center gap-2 px-4 py-2 text-sm"
               >
                 <IconMail className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('share_button')}</span>
+                {t('share_button')}
               </a>
             </div>
           </div>
-        </div>
-      </header>
-
-      {/* Spacer pour le header fixe */}
-      <div className="h-20 sm:h-24" />
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        </motion.div>
         {/* Description */}
         {project.description && (
           <motion.div
