@@ -899,7 +899,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="bg-card border border-default rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden"
+        className="bg-card border border-default rounded-2xl w-full max-w-5xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <form onSubmit={handleSubmit}>
