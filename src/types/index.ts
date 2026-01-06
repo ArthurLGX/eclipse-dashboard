@@ -479,6 +479,7 @@ export interface Notification {
     sender_name?: string;
     sender_profile_picture?: string;
     project_title?: string;
+    collaboration_request_id?: string;
   };
   action_url?: string;
   createdAt: string;
