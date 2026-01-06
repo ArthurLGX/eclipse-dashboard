@@ -482,6 +482,9 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
   const { t } = useLanguage();
   const ganttRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportMode, setExportMode] = useState<'light' | 'dark'>('light');
+  const [exportFileName, setExportFileName] = useState(`gantt-${projectName.replace(/\s+/g, '-').toLowerCase()}`);
 
   const normalizeDate = useCallback((date: Date): Date => {
     const normalized = new Date(date);
@@ -547,26 +550,177 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     }
   }, []);
 
-  const handleExportPDF = useCallback(async () => {
+  // Fonction pour générer le HTML d'export avec couleurs HEX (compatibles html2pdf)
+  const generateExportHTML = useCallback((mode: 'light' | 'dark') => {
+    if (!ganttData) {
+      return { html: '', colors: { bg: '#ffffff' } };
+    }
+
+    const { minDate, totalDays, dayHeaders } = ganttData;
+
+    const lightColors = {
+      bg: '#ffffff',
+      bgSecondary: '#f9fafb',
+      bgTertiary: '#f3f4f6',
+      border: '#e5e7eb',
+      textPrimary: '#111827',
+      textSecondary: '#374151',
+      textMuted: '#6b7280',
+      blue: '#3b82f6',
+      green: '#22c55e',
+      red: '#ef4444',
+      gray: '#9ca3af',
+      accent: '#7c3aed',
+      accentLight: '#ede9fe',
+      headerBg: '#f3f4f6',
+      headerText: '#374151',
+    };
+    
+    const darkColors = {
+      bg: '#111827',
+      bgSecondary: '#1f2937',
+      bgTertiary: '#374151',
+      border: '#374151',
+      textPrimary: '#f9fafb',
+      textSecondary: '#e5e7eb',
+      textMuted: '#9ca3af',
+      blue: '#60a5fa',
+      green: '#4ade80',
+      red: '#f87171',
+      gray: '#6b7280',
+      accent: '#a78bfa',
+      accentLight: '#4c1d95',
+      headerBg: '#1f2937',
+      headerText: '#e5e7eb',
+    };
+    
+    const colors = mode === 'dark' ? darkColors : lightColors;
+
+    let tasksHTML = '';
+    tasks.forEach((task) => {
+      const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
+      const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
+      const startOffset = Math.round((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
+      const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+      const leftPercent = Math.max(0, (startOffset / totalDays) * 100);
+      const widthPercent = (duration / totalDays) * 100;
+      
+      const statusColor = task.task_status === 'completed' ? colors.green 
+        : task.task_status === 'in_progress' ? colors.blue 
+        : task.task_status === 'cancelled' ? colors.red 
+        : colors.gray;
+      
+      const statusLabel = taskStatusOptions.find(o => o.value === task.task_status)?.label || task.task_status;
+      
+      tasksHTML += `
+        <tr style="border-bottom: 1px solid ${colors.border};">
+          <td style="padding: 12px; width: 200px; font-size: 13px; background: ${colors.bg};">
+            <div style="font-weight: 600; color: ${colors.textPrimary};">${task.title}</div>
+            <div style="font-size: 11px; color: ${colors.textMuted}; margin-top: 2px;">${statusLabel}</div>
+          </td>
+          <td style="padding: 8px 0; position: relative; background: ${colors.bg};">
+            <div style="position: relative; height: 24px;">
+              <div style="position: absolute; left: ${leftPercent}%; width: ${widthPercent}%; min-width: 40px; height: 24px; background: ${statusColor}; border-radius: 4px; display: table; table-layout: fixed;">
+                <span style="display: table-cell; vertical-align: middle; text-align: center; color: #ffffff; font-size: 11px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.3); white-space: nowrap; padding: 0 4px;">${task.progress || 0}%</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+
+    let datesHTML = '';
+    dayHeaders.forEach((day) => {
+      const isWeekend = day.getDay() === 0 || day.getDay() === 6;
+      const isTodayDate = day.getTime() === today.getTime();
+      const bgColor = isTodayDate ? colors.accentLight : isWeekend ? colors.bgTertiary : colors.headerBg;
+      const textColor = isTodayDate ? colors.accent : colors.headerText;
+      datesHTML += `<th style="padding: 4px 2px; text-align: center; font-size: 11px; font-weight: ${isTodayDate ? '700' : '500'}; background: ${bgColor}; color: ${textColor}; min-width: 28px; border-left: 1px solid ${colors.border};">${day.getDate()}</th>`;
+    });
+
+    return {
+      html: `
+        <div style="font-family: Arial, Helvetica, sans-serif; background: ${colors.bg}; padding: 20px;">
+          <h2 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 700; color: ${colors.textPrimary};">
+            ${projectName} - Gantt
+          </h2>
+          <p style="margin: 0 0 16px 0; font-size: 12px; color: ${colors.textMuted};">
+            ${t('exported_on') || 'Exporté le'} ${new Date().toLocaleDateString('fr-FR')}
+          </p>
+          <table style="width: 100%; border-collapse: collapse; border: 1px solid ${colors.border};">
+            <thead>
+              <tr style="background: ${colors.headerBg};">
+                <th style="padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 700; color: ${colors.headerText}; text-transform: uppercase; width: 200px; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg};">
+                  ${t('task') || 'Tâche'}
+                </th>
+                <th style="padding: 0; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg};">
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>${datesHTML}</tr>
+                  </table>
+                </th>
+              </tr>
+            </thead>
+            <tbody>${tasksHTML}</tbody>
+          </table>
+          <div style="margin-top: 16px; display: flex; gap: 20px; font-size: 12px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="width: 14px; height: 14px; background: ${colors.blue}; border-radius: 3px;"></div>
+              <span style="color: ${colors.textSecondary}; font-weight: 500;">${t('in_progress') || 'En cours'}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="width: 14px; height: 14px; background: ${colors.green}; border-radius: 3px;"></div>
+              <span style="color: ${colors.textSecondary}; font-weight: 500;">${t('completed') || 'Terminé'}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="width: 14px; height: 14px; background: ${colors.gray}; border-radius: 3px;"></div>
+              <span style="color: ${colors.textSecondary}; font-weight: 500;">${t('todo') || 'À faire'}</span>
+            </div>
+          </div>
+        </div>
+      `,
+      colors
+    };
+  }, [ganttData, tasks, taskStatusOptions, today, projectName, t, normalizeDate]);
+
+  // Fonction d'export PDF
+  const handleExportPDF = useCallback(async (mode: 'light' | 'dark') => {
     setIsExporting(true);
+    setShowExportModal(false);
+    
     try {
       const html2pdf = (await import('html2pdf.js')).default;
+      const { html, colors } = generateExportHTML(mode);
       
-      if (ganttRef.current) {
-        await html2pdf().set({
-          margin: [10, 10, 10, 10],
-          filename: `gantt-${projectName}-${new Date().toISOString().split('T')[0]}.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-        }).from(ganttRef.current).save();
+      const tempContainer = document.createElement('div');
+      tempContainer.innerHTML = html;
+      tempContainer.style.cssText = 'position: absolute; left: -9999px; top: 0; width: 1100px;';
+      document.body.appendChild(tempContainer);
+      
+      const exportElement = tempContainer.querySelector('div');
+      if (!exportElement) {
+        throw new Error('Export element not found');
       }
+      
+      await html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: `${exportFileName}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: colors.bg },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' as const },
+      }).from(exportElement).save();
+      
+      document.body.removeChild(tempContainer);
     } catch (error) {
       console.error('Error exporting PDF:', error);
     } finally {
       setIsExporting(false);
     }
-  }, [projectName]);
+  }, [generateExportHTML, exportFileName]);
+
+  // Générer l'aperçu HTML en temps réel
+  const previewHTML = useMemo(() => {
+    return generateExportHTML(exportMode).html;
+  }, [generateExportHTML, exportMode]);
 
   if (!ganttData || tasksWithDates.length === 0) {
     return (
@@ -581,9 +735,120 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
 
   return (
     <div className="space-y-2">
+      {/* Modal d'export avec aperçu */}
+      {showExportModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card border border-default rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="p-4 border-b border-default flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-primary">
+                {t('export_pdf') || 'Export PDF'}
+              </h3>
+              <button
+                onClick={() => setShowExportModal(false)}
+                className="p-1 text-secondary hover:text-primary transition-colors"
+              >
+                <IconX className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-hidden flex flex-col sm:flex-row">
+              {/* Options panel */}
+              <div className="w-full sm:w-72 flex-shrink-0 p-4 border-b sm:border-b-0 sm:border-r border-default space-y-4 overflow-y-auto">
+                {/* Nom du fichier */}
+                <div>
+                  <label className="block text-sm font-medium text-primary mb-2">
+                    {t('file_name') || 'Nom du fichier'}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={exportFileName}
+                      onChange={(e) => setExportFileName(e.target.value)}
+                      className="flex-1 px-3 py-2 text-sm bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+                    />
+                    <span className="text-secondary text-sm">.pdf</span>
+                  </div>
+                </div>
+
+                {/* Thème */}
+                <div>
+                  <label className="block text-sm font-medium text-primary mb-2">
+                    {t('choose_export_theme') || 'Thème'}
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setExportMode('light')}
+                      className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
+                        exportMode === 'light' 
+                          ? 'border-accent bg-accent/10' 
+                          : 'border-default bg-muted/50 hover:border-accent/50'
+                      }`}
+                    >
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="w-6 h-6 rounded bg-white border border-gray-300 flex items-center justify-center">
+                          <div className="w-3 h-0.5 bg-gray-800 rounded"></div>
+                        </div>
+                        <span className="text-xs font-medium text-primary">{t('light') || 'Clair'}</span>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setExportMode('dark')}
+                      className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
+                        exportMode === 'dark' 
+                          ? 'border-accent bg-accent/10' 
+                          : 'border-default bg-muted/50 hover:border-accent/50'
+                      }`}
+                    >
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="w-6 h-6 rounded bg-gray-800 border border-gray-600 flex items-center justify-center">
+                          <div className="w-3 h-0.5 bg-gray-100 rounded"></div>
+                        </div>
+                        <span className="text-xs font-medium text-primary">{t('dark') || 'Sombre'}</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="pt-4 space-y-2">
+                  <button
+                    onClick={() => handleExportPDF(exportMode)}
+                    disabled={isExporting}
+                    className="w-full py-2.5 px-4 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isExporting ? (
+                      <>
+                        <IconLoader2 className="w-4 h-4 animate-spin" />
+                        {t('exporting') || 'Export...'}
+                      </>
+                    ) : (
+                      <>
+                        <IconFileTypePdf className="w-4 h-4" />
+                        {t('export_pdf') || 'Export PDF'}
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Preview panel */}
+              <div className="flex-1 p-4 overflow-auto bg-muted">
+                <div 
+                  className="rounded-lg shadow-lg overflow-hidden transform scale-75 origin-top-left"
+                  style={{ width: '133%' }}
+                  dangerouslySetInnerHTML={{ __html: previewHTML }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-end">
         <button
-          onClick={handleExportPDF}
+          onClick={() => setShowExportModal(true)}
           disabled={isExporting}
           className="btn btn-ghost flex items-center gap-2 px-3 py-1.5 text-sm disabled:opacity-50"
         >
