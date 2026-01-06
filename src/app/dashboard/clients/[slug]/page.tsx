@@ -21,6 +21,7 @@ import TableFilters from '@/app/components/TableFilters';
 import AssignProjectDropdown from './AssignProjectDropdown';
 import { useAuth } from '@/app/context/AuthContext';
 import { useClientBySlug, useUnassignedProjects, clearCache } from '@/hooks/useApi';
+import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ImageUpload from '@/app/components/ImageUpload';
 import type { Client, Project } from '@/types';
 
@@ -57,6 +58,9 @@ export default function ClientDetailsPage() {
   // Hook avec slug (basé sur le nom)
   const { data: clientData, loading: clientLoading, refetch: refetchClient } = useClientBySlug(slug);
   const client = clientData as Client | null;
+  
+  // Mettre à jour le titre de l'onglet avec le nom du client
+  useDocumentTitle(client?.name, { prefix: 'Client' });
   
   const { data: unassignedProjectsData, loading: loadingProjects, refetch: refetchUnassigned } = useUnassignedProjects(user?.id);
   const unassignedProjects = useMemo(() => 

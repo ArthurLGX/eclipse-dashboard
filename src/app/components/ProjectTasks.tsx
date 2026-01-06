@@ -817,14 +817,20 @@ function TaskCard({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="mt-3 pt-3 border-t border-default"
+              className="mt-3 px-1"
             >
               <div 
-                className="text-sm text-secondary prose prose-sm max-w-none dark:prose-invert
-                  [&_h1]:text-lg [&_h1]:font-bold [&_h1]:mb-2
-                  [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mb-2
-                  [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                  [&_a]:text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+                  [&_h1]:text-lg [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:text-primary
+                  [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:text-primary
+                  [&_p]:mb-2 [&_p]:text-secondary
+                  [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-2
+                  [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-2
+                  [&_li]:mb-1 [&_li]:text-secondary
+                  [&_a]:text-accent [&_a]:underline
+                  [&_strong]:font-semibold [&_strong]:text-primary
+                  [&_em]:italic
+                  [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2"
                 dangerouslySetInnerHTML={{ __html: task.description || '' }}
               />
             </motion.div>

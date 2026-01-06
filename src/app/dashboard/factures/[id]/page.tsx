@@ -18,6 +18,7 @@ import {
 } from '@/lib/api';
 import { clearCache } from '@/hooks/useApi';
 import { extractIdFromSlug } from '@/utils/slug';
+import useDocumentTitle from '@/hooks/useDocumentTitle';
 import {
   Facture,
   Company,
@@ -62,6 +63,9 @@ export default function FacturePage() {
   const [showPreview, setShowPreview] = useState(false);
   const [facture, setFacture] = useState<Facture | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
+  
+  // Mettre à jour le titre de l'onglet avec la référence de la facture
+  useDocumentTitle(facture?.reference, { prefix: t('invoice') });
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState<Facture | null>(null);
   const [invoiceLines, setInvoiceLines] = useState<InvoiceLine[]>([]);

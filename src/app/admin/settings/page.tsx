@@ -288,7 +288,7 @@ export default function AdminSettingsPage() {
                     security: { ...settings.security, twoFactorEnabled: value },
                   })
                 }
-                label={t('2fa_authentication') || 'Authentification 2FA'}
+                label={t('fa_authentication') || 'Authentification 2FA'}
                 description={t('enable_2fa') || "Activer l'authentification à deux facteurs"}
               />
             </div>

@@ -20,6 +20,7 @@ import {
 import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import useLenis from '@/utils/useLenis';
+import useDocumentTitle from '@/hooks/useDocumentTitle';
 // Rich text description is now HTML from RichTextEditor
 
 // API call pour récupérer les données du projet partagé
@@ -110,6 +111,9 @@ export default function SharedProjectPage() {
 
   // Activer Lenis pour le smooth scroll
   useLenis();
+  
+  // Mettre à jour le titre de l'onglet avec le nom du projet
+  useDocumentTitle(project?.title, { prefix: t('project') });
 
   // Options statut avec traductions
   const TASK_STATUS_OPTIONS: { value: TaskStatus; label: string; color: string }[] = useMemo(() => [
@@ -352,7 +356,7 @@ export default function SharedProjectPage() {
               {t('tasks_list')}
             </h2>
             <div className="card overflow-hidden">
-              <div className="divide-y divide-default">
+              <div className="space-y-1 bg-page p-1">
                 {tasks.map((task, index) => (
                   <TaskRow 
                     key={task.documentId || index} 
@@ -417,12 +421,12 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed';
 
   return (
-    <div className={`p-4 hover:bg-hover transition-colors ${isOverdue ? 'border-l-2 border-danger' : ''}`}>
+    <div className={`p-4 rounded-lg bg-card hover:bg-hover transition-colors ${isOverdue ? 'border-l-2 border-danger' : ''}`}>
       <div className="flex items-center gap-4">
         {/* Status icon */}
         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
           task.task_status === 'completed' ? 'bg-success-light' : 
-          task.task_status === 'in_progress' ? 'bg-info-light' : 'bg-hover'
+          task.task_status === 'in_progress' ? 'bg-info-light' : 'bg-muted/30'
         }`}>
           {task.task_status === 'completed' ? (
             <IconCheck className="w-4 h-4 text-success" />
@@ -451,7 +455,17 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
           
           {task.description && (
             <div 
-              className="text-sm text-secondary mt-1 line-clamp-1 [&_*]:inline"
+              className="text-secondary leading-relaxed mt-2 prose prose-sm max-w-none dark:prose-invert
+                [&_h1]:text-base [&_h1]:font-bold [&_h1]:mb-1 [&_h1]:text-primary
+                [&_h2]:text-sm [&_h2]:font-semibold [&_h2]:mb-1 [&_h2]:text-primary
+                [&_p]:mb-1 [&_p]:text-secondary
+                [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-1
+                [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-1
+                [&_li]:mb-0.5 [&_li]:text-secondary
+                [&_a]:text-accent [&_a]:underline
+                [&_strong]:font-semibold [&_strong]:text-primary
+                [&_em]:italic
+                [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2"
               dangerouslySetInnerHTML={{ __html: task.description }}
             />
           )}

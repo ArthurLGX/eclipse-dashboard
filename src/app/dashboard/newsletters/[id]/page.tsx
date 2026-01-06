@@ -19,6 +19,7 @@ import {
   IconEye,
 } from '@tabler/icons-react';
 import MailboxPreview from '@/app/components/MailboxPreview';
+import useDocumentTitle from '@/hooks/useDocumentTitle';
 import type { CreateEmailSignatureData } from '@/types';
 
 // Types
@@ -160,6 +161,9 @@ export default function NewsletterDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   const newsletterId = params.id as string;
+  
+  // Mettre à jour le titre de l'onglet avec le titre de la newsletter
+  useDocumentTitle(newsletter?.title, { prefix: 'Newsletter' });
 
   useEffect(() => {
     const fetchData = async () => {

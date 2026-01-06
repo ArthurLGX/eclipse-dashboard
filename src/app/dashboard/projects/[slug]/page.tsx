@@ -33,6 +33,7 @@ import { extractIdFromSlug, generateSlug, generateClientSlug } from '@/utils/slu
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useProjectByDocumentId, useClients, clearCache } from '@/hooks/useApi';
+import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ShareProjectModal from '@/app/components/ShareProjectModal';
 import ProjectTasks from '@/app/components/ProjectTasks';
 import RichTextEditor from '@/app/components/RichTextEditor';
@@ -59,6 +60,9 @@ export default function ProjectDetailsPage() {
   // Hooks avec cache
   const { data: projectData, loading, refetch: refetchProject } = useProjectByDocumentId(documentId || undefined);
   const project = projectData as Project | null;
+  
+  // Mettre à jour le titre de l'onglet avec le nom du projet
+  useDocumentTitle(project?.title, { prefix: t('project') });
   
   const { data: clientsData } = useClients(user?.id);
   const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
