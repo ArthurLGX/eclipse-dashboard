@@ -37,8 +37,16 @@ import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ShareProjectModal from '@/app/components/ShareProjectModal';
 import ProjectTasks from '@/app/components/ProjectTasks';
 import RichTextEditor from '@/app/components/RichTextEditor';
-import { canDeleteProject, fetchProjectCollaborators } from '@/lib/api';
+import { 
+  canDeleteProject, 
+  fetchProjectCollaborators, 
+  fetchUserCollaborationRequest,
+  createCollaborationRequest,
+  createNotification,
+  isUserProjectCollaborator,
+} from '@/lib/api';
 import type { Project, Client, Facture, ProjectCollaborator, ProjectTask } from '@/types';
+import { IconUserPlus, IconHourglass } from '@tabler/icons-react';
 
 
 
@@ -87,6 +95,11 @@ export default function ProjectDetailsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [bannerColor, setBannerColor] = useState<string>('auto');
   const [isSaving, setIsSaving] = useState(false);
+  
+  // États pour les demandes de collaboration
+  const [isCollaborator, setIsCollaborator] = useState<boolean | null>(null);
+  const [collaborationRequestStatus, setCollaborationRequestStatus] = useState<'none' | 'pending' | 'approved' | 'rejected'>('none');
+  const [isRequestingAccess, setIsRequestingAccess] = useState(false);
 
   const PROJECT_STATUS = [
   { value: 'planning', label: t('planning'), color: 'blue', icon: IconClockPause },
@@ -165,16 +178,32 @@ const PROJECT_TYPES = [
     const checkPermissions = async () => {
       if (!user?.id || !project?.documentId) return;
       try {
-        const [canDelete, collabResponse] = await Promise.all([
+        const [canDelete, collabResponse, isCollab, requestResponse] = await Promise.all([
           canDeleteProject(project.documentId, user.id).catch(() => project.user?.id === user.id),
           fetchProjectCollaborators(project.documentId).catch(() => ({ data: [] })),
+          isUserProjectCollaborator(project.documentId, user.id).catch(() => false),
+          fetchUserCollaborationRequest(project.documentId, user.id).catch(() => ({ data: [] })),
         ]);
         setIsOwner(canDelete);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setCollaborators((collabResponse as any).data || []);
+        
+        // Vérifier si l'utilisateur est collaborateur (propriétaire ou collaborateur ajouté)
+        const isOwnerOrCollab = canDelete || isCollab;
+        setIsCollaborator(isOwnerOrCollab);
+        
+        // Vérifier si l'utilisateur a une demande de collaboration en cours
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const requests = (requestResponse as any).data || [];
+        if (requests.length > 0) {
+          setCollaborationRequestStatus(requests[0].status || 'pending');
+        } else {
+          setCollaborationRequestStatus('none');
+        }
       } catch {
         setIsOwner(project.user?.id === user.id);
         setCollaborators([]);
+        setIsCollaborator(project.user?.id === user.id);
       }
     };
     checkPermissions();
@@ -272,6 +301,136 @@ const PROJECT_TYPES = [
           <IconArrowLeft className="w-4 h-4" />
           Retour aux projets
         </Link>
+      </div>
+    );
+  }
+
+  // Fonction pour demander l'accès au projet
+  const handleRequestAccess = async () => {
+    if (!user?.id || !project?.documentId) return;
+    
+    setIsRequestingAccess(true);
+    try {
+      // Créer la demande de collaboration
+      await createCollaborationRequest({
+        project: project.documentId,
+        requester: user.id,
+      });
+      
+      // Notifier le propriétaire et les collaborateurs
+      const allCollaborators = collaborators.filter(c => c.user?.id);
+      for (const collab of allCollaborators) {
+        if (collab.user?.id) {
+          await createNotification({
+            user: collab.user.id,
+            type: 'collaboration_request',
+            title: t('new_collaboration_request'),
+            message: `${user.username || user.email} ${t('user_wants_to_collaborate')} "${project.title}"`,
+            data: {
+              project_id: project.documentId,
+              project_title: project.title,
+              sender_name: user.username || user.email,
+            },
+            action_url: `/dashboard/projects/${slug}`,
+          });
+        }
+      }
+      
+      setCollaborationRequestStatus('pending');
+      showGlobalPopup(t('collaboration_request_sent'), 'success');
+    } catch (error) {
+      console.error('Error requesting access:', error);
+      showGlobalPopup(t('error_occurred'), 'error');
+    } finally {
+      setIsRequestingAccess(false);
+    }
+  };
+
+  // Afficher une page d'accès limité si l'utilisateur n'est pas collaborateur
+  if (isCollaborator === false && collaborationRequestStatus !== 'approved') {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-2xl mx-auto"
+        >
+          {/* En-tête du projet (infos basiques) */}
+          <div className="card p-8 text-center mb-6">
+            <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <IconFileText className="w-10 h-10 text-accent" />
+            </div>
+            <h1 className="text-2xl font-bold text-primary mb-2">{project.title}</h1>
+            {project.user?.username && (
+              <p className="text-muted mb-4">{t('by')} {project.user.username}</p>
+            )}
+            {(() => {
+              const sc = getStatusConfig(project.project_status);
+              return (
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${sc.colors.bg} ${sc.colors.text} ${sc.colors.border}`}>
+                  {sc.label}
+                </span>
+              );
+            })()}
+          </div>
+
+          {/* Message d'accès limité */}
+          <div className="card p-8 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent border-warning/20">
+            {collaborationRequestStatus === 'pending' ? (
+              <div className="text-center">
+                <div className="w-16 h-16 bg-warning/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <IconHourglass className="w-8 h-8 text-warning" />
+                </div>
+                <h2 className="text-xl font-bold text-primary mb-2">{t('pending_request')}</h2>
+                <p className="text-secondary mb-4">{t('collaboration_request_pending')}</p>
+              </div>
+            ) : collaborationRequestStatus === 'rejected' ? (
+              <div className="text-center">
+                <div className="w-16 h-16 bg-danger/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <IconX className="w-8 h-8 text-danger" />
+                </div>
+                <h2 className="text-xl font-bold text-primary mb-2">{t('collaboration_rejected')}</h2>
+                <p className="text-secondary mb-4">{t('your_request_was_rejected')}</p>
+              </div>
+            ) : (
+              <div className="text-center">
+                <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <IconUserPlus className="w-8 h-8 text-accent" />
+                </div>
+                <h2 className="text-xl font-bold text-primary mb-2">{t('request_collaboration')}</h2>
+                <p className="text-secondary mb-6">{t('collaboration_request_description')}</p>
+                <button
+                  onClick={handleRequestAccess}
+                  disabled={isRequestingAccess}
+                  className="btn btn-primary flex items-center gap-2 px-6 py-3 mx-auto"
+                >
+                  {isRequestingAccess ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      {t('sending')}...
+                    </>
+                  ) : (
+                    <>
+                      <IconUserPlus className="w-5 h-5" />
+                      {t('request_access')}
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Lien retour */}
+          <div className="text-center mt-6">
+            <Link
+              href="/dashboard/projects"
+              className="text-accent hover:text-accent/80 flex items-center gap-2 justify-center"
+            >
+              <IconArrowLeft className="w-4 h-4" />
+              {t('back_to_projects')}
+            </Link>
+          </div>
+        </motion.div>
       </div>
     );
   }

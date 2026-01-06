@@ -103,52 +103,52 @@ export default function FreePlanModal({
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 max-w-md w-full"
+            className="bg-card border border-default rounded-xl p-6 max-w-md w-full"
             onClick={e => e.stopPropagation()}
           >
             {/* En-tête */}
             <div className="!text-center mb-6">
-              <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="!text-2xl">🎉</span>
               </div>
-              <h2 className="!text-xl font-bold text-zinc-200 mb-2">
+              <h2 className="!text-xl font-bold text-primary mb-2">
                 {t('activate_free_plan')}
               </h2>
-              <p className="text-zinc-400 !text-sm">
+              <p className="text-secondary !text-sm">
                 {t('free_plan_confirmation_message')}
               </p>
             </div>
 
             {/* Détails du plan */}
-            <div className="bg-zinc-800/50 rounded-lg p-4 mb-6">
+            <div className="bg-hover/50 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-zinc-300 font-medium capitalize">
+                <span className="text-secondary font-medium capitalize">
                   {plan.name}
                 </span>
-                <span className="!text-emerald-400 font-bold">Gratuit</span>
+                <span className="text-accent font-bold">Gratuit</span>
               </div>
-              <p className="text-zinc-400 !text-sm">{plan.description}</p>
+              <p className="text-secondary !text-sm">{plan.description}</p>
             </div>
 
             {/* Barre de progression du trial */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="!text-sm text-zinc-400">
+                <span className="!text-sm text-secondary">
                   {t('trial_period')}
                 </span>
-                <span className="!text-sm !text-emerald-400 font-medium">
+                <span className="!text-sm text-accent font-medium">
                   30 jours
                 </span>
               </div>
-              <div className="w-full bg-zinc-800 rounded-full h-2">
+              <div className="w-full bg-hover rounded-full h-2">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${trialProgress}%` }}
                   transition={{ duration: 1, ease: 'easeOut' }}
-                  className="h-2 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full"
+                  className="h-2 bg-gradient-to-r from-accent to-accent/80 rounded-full"
                 />
               </div>
-              <p className="!text-xs text-zinc-500 mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {t('trial_progress_description')}
               </p>
             </div>
@@ -158,14 +158,14 @@ export default function FreePlanModal({
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="flex-1 bg-zinc-800 text-zinc-300 px-4 py-2 rounded-lg hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                className="flex-1 bg-hover text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors disabled:opacity-50"
               >
                 {t('cancel')}
               </button>
               <button
                 onClick={handleConfirm}
                 disabled={loading}
-                className="flex-1 bg-emerald-500 !text-black px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors disabled:opacity-50 font-semibold"
+                className="flex-1 bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 font-semibold"
               >
                 {loading ? t('activating') : t('activate_plan')}
               </button>

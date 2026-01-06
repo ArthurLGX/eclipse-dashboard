@@ -1402,13 +1402,91 @@ export async function canDeleteProject(projectDocumentId: string, userId: number
 }
 
 // ============================================================================
+// COLLABORATION REQUESTS
+// ============================================================================
+
+/** Crée une demande de collaboration sur un projet */
+export async function createCollaborationRequest(data: {
+  project: string; // documentId du projet
+  requester: number; // id de l'utilisateur qui demande
+  message?: string;
+}) {
+  return post('collaboration-requests', {
+    project: data.project,
+    requester: data.requester,
+    message: data.message || '',
+    status: 'pending',
+  });
+}
+
+/** Récupère les demandes de collaboration pour un projet */
+export const fetchProjectCollaborationRequests = (projectDocumentId: string) =>
+  get(`collaboration-requests?populate=*&filters[project][documentId][$eq]=${projectDocumentId}&filters[status][$eq]=pending&sort=createdAt:desc`);
+
+/** Récupère une demande de collaboration existante pour un utilisateur et un projet */
+export async function fetchUserCollaborationRequest(projectDocumentId: string, userId: number) {
+  return get(`collaboration-requests?populate=*&filters[project][documentId][$eq]=${projectDocumentId}&filters[requester][id][$eq]=${userId}&sort=createdAt:desc`);
+}
+
+/** Approuve une demande de collaboration */
+export async function approveCollaborationRequest(
+  requestDocumentId: string,
+  respondedByUserId: number,
+  permission: 'view' | 'edit' = 'view'
+) {
+  // Récupérer les détails de la demande
+  const request = await get<ApiResponse<{
+    project?: { documentId: string };
+    requester?: { id: number };
+  }[]>>(`collaboration-requests?populate=*&filters[documentId][$eq]=${requestDocumentId}`);
+  
+  if (!request.data?.[0]?.project?.documentId || !request.data?.[0]?.requester?.id) {
+    throw new Error('Demande de collaboration invalide');
+  }
+  
+  // Ajouter l'utilisateur comme collaborateur
+  await addProjectCollaborator(
+    request.data[0].project.documentId,
+    request.data[0].requester.id,
+    permission
+  );
+  
+  // Mettre à jour le statut de la demande
+  return put(`collaboration-requests/${requestDocumentId}`, {
+    status: 'approved',
+    responded_by: respondedByUserId,
+    responded_at: new Date().toISOString(),
+  });
+}
+
+/** Rejette une demande de collaboration */
+export async function rejectCollaborationRequest(
+  requestDocumentId: string,
+  respondedByUserId: number
+) {
+  return put(`collaboration-requests/${requestDocumentId}`, {
+    status: 'rejected',
+    responded_by: respondedByUserId,
+    responded_at: new Date().toISOString(),
+  });
+}
+
+/** Vérifie si l'utilisateur est collaborateur d'un projet */
+export async function isUserProjectCollaborator(projectDocumentId: string, userId: number): Promise<boolean> {
+  const collaborator = await get<ApiResponse<{ id: number }[]>>(
+    `project-collaborators?filters[project][documentId][$eq]=${projectDocumentId}&filters[user][id][$eq]=${userId}`
+  );
+  return (collaborator.data?.length ?? 0) > 0;
+}
+
+// ============================================================================
 // NOTIFICATIONS
 // ============================================================================
 
 /** Crée une notification */
 export async function createNotification(data: {
   user: number;
-  type: 'project_invitation' | 'project_update' | 'system';
+  type: 'project_invitation' | 'project_update' | 'collaboration_request' | 'system';
   title: string;
   message: string;
   data?: {
@@ -1417,6 +1495,7 @@ export async function createNotification(data: {
     sender_name?: string;
     sender_profile_picture?: string;
     project_title?: string;
+    collaboration_request_id?: string;
   };
   action_url?: string;
 }) {

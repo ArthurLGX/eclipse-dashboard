@@ -65,6 +65,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   useLenis();
 
   // Vérifier si l'utilisateur est admin
+  // IMPORTANT: Seuls les emails explicitement listés ici peuvent accéder au dashboard admin
+  // Le rôle Strapi n'est PAS suffisant pour accéder au dashboard admin
   useEffect(() => {
     const checkAdmin = async () => {
       if (!user) {
@@ -72,19 +74,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         return;
       }
 
-      const adminEmails = ['admin@eclipsestudio.dev', 'arthur@eclipsestudio.dev'];
-      let userRole = '';
-      if (user.role) {
-        if (typeof user.role === 'string') {
-          userRole = user.role;
-        } else if (typeof user.role === 'object') {
-          const roleObj = user.role as unknown as { type?: string; name?: string };
-          userRole = roleObj.type || roleObj.name || '';
-        }
-      }
-      const isUserAdmin = adminEmails.includes(user.email) || userRole.toLowerCase() === 'admin';
+      // Liste blanche des emails admin - SEULS ces emails peuvent accéder
+      const adminEmails = [
+        'admin@eclipsestudio.dev', 
+        'arthur@eclipsestudio.dev',
+        // Ajouter d'autres emails admin ici si nécessaire
+      ];
+      
+      // Vérification stricte : SEUL l'email compte, pas le rôle Strapi
+      // Cela empêche les utilisateurs ayant le rôle "admin" par défaut d'accéder
+      const isUserAdmin = adminEmails.includes(user.email.toLowerCase());
 
       if (!isUserAdmin) {
+        console.warn(`Access denied to admin dashboard for: ${user.email}`);
         router.push('/dashboard');
         return;
       }

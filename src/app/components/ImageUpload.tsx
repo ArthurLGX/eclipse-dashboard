@@ -472,7 +472,7 @@ export default function ImageUpload({
     if (name) {
       return (
         <div className="flex items-center justify-center w-full h-full">
-          <span className={`text-zinc-300 font-bold ${size === 'sm' ? 'text-xl' : size === 'md' ? 'text-2xl' : 'text-4xl'}`}>
+          <span className={`text-secondary font-bold ${size === 'sm' ? 'text-xl' : size === 'md' ? 'text-2xl' : 'text-4xl'}`}>
             {initial}
           </span>
         </div>
@@ -480,7 +480,7 @@ export default function ImageUpload({
     }
     
     return (
-      <div className="flex items-center justify-center w-full h-full text-zinc-500">
+      <div className="flex items-center justify-center w-full h-full text-muted">
         {placeholder === 'user' ? (
           <IconUser size={size === 'sm' ? 24 : size === 'md' ? 32 : 48} stroke={1} />
         ) : (
@@ -498,9 +498,9 @@ export default function ImageUpload({
             ${sizeClasses[size]}
             ${shape === 'circle' ? 'rounded-full' : 'rounded-xl'}
             relative overflow-hidden
-            bg-zinc-800 border-2 border-zinc-700
+            bg-card border-2 border-default
             transition-all duration-200
-            cursor-pointer hover:border-emerald-500/50
+            cursor-pointer hover:border-accent/50
           `}
           onClick={handleAvatarClick}
         >
@@ -529,12 +529,12 @@ export default function ImageUpload({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute top-full left-0 mt-2 w-64 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl shadow-black/50 z-50 overflow-hidden"
+              className="absolute top-full left-0 mt-2 w-64 bg-card border border-default rounded-xl shadow-xl shadow-black/50 z-50 overflow-hidden"
             >
               {/* Message si mode lecture */}
               {disabled && (
-                <div className="px-4 py-3 bg-zinc-800/50 border-b border-zinc-700 text-center">
-                  <p className="text-amber-400 text-xs font-medium">
+                <div className="px-4 py-3 bg-hover/50 border-b border-default text-center">
+                  <p className="text-warning text-xs font-medium">
                     ⚠️ Passez en mode édition pour modifier l&apos;image
                   </p>
                 </div>
@@ -545,11 +545,11 @@ export default function ImageUpload({
                 <button
                   onClick={handleUseFavicon}
                   disabled={disabled}
-                  className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-zinc-800 ${
-                    disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-800'
+                  className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-default ${
+                    disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                   }`}
                 >
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center overflow-hidden">
+                  <div className="w-8 h-8 rounded-lg bg-info/10 border border-info/30 flex items-center justify-center overflow-hidden">
                     {faviconUrl ? (
                       <Image
                         src={faviconUrl}
@@ -561,12 +561,12 @@ export default function ImageUpload({
                         onError={() => setFaviconError(true)}
                       />
                     ) : (
-                      <IconWorld size={18} className="text-blue-400" />
+                      <IconWorld size={18} className="text-info" />
                     )}
                   </div>
                   <div>
-                    <p className="text-zinc-200 font-medium text-sm">Utiliser le favicon</p>
-                    <p className="text-zinc-500 text-xs truncate max-w-[160px]">
+                    <p className="text-primary font-medium text-sm">Utiliser le favicon</p>
+                    <p className="text-muted text-xs truncate max-w-[160px]">
                       {extractDomain(website)}
                     </p>
                   </div>
@@ -577,16 +577,16 @@ export default function ImageUpload({
               <button
                 onClick={handleChooseFile}
                 disabled={disabled}
-                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-zinc-800 ${
-                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-800'
+                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-default ${
+                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                 }`}
               >
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
-                  <IconUpload size={18} className="text-emerald-400" />
+                <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center">
+                  <IconUpload size={18} className="text-accent" />
                 </div>
                 <div>
-                  <p className="text-zinc-200 font-medium text-sm">Depuis l&apos;ordinateur</p>
-                  <p className="text-zinc-500 text-xs">Importer un fichier</p>
+                  <p className="text-primary font-medium text-sm">Depuis l&apos;ordinateur</p>
+                  <p className="text-muted text-xs">Importer un fichier</p>
                 </div>
               </button>
 
@@ -594,16 +594,16 @@ export default function ImageUpload({
               <button
                 onClick={handleOpenLibrary}
                 disabled={disabled}
-                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-zinc-800 ${
-                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-800'
+                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-default ${
+                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                 }`}
               >
                 <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center">
                   <IconPhoto size={18} className="text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-zinc-200 font-medium text-sm">Depuis la bibliothèque</p>
-                  <p className="text-zinc-500 text-xs">Images déjà uploadées</p>
+                  <p className="text-primary font-medium text-sm">Depuis la bibliothèque</p>
+                  <p className="text-muted text-xs">Images déjà uploadées</p>
                 </div>
               </button>
 
@@ -612,22 +612,22 @@ export default function ImageUpload({
                 onClick={handleOpenUrlInput}
                 disabled={disabled}
                 className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left ${
-                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-800'
+                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                 }`}
               >
-                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center">
-                  <IconLink size={18} className="text-cyan-400" />
+                <div className="w-8 h-8 rounded-lg bg-info/10 border border-info/30 flex items-center justify-center">
+                  <IconLink size={18} className="text-info" />
                 </div>
                 <div>
-                  <p className="text-zinc-200 font-medium text-sm">Depuis une URL</p>
-                  <p className="text-zinc-500 text-xs">Lien vers une image</p>
+                  <p className="text-primary font-medium text-sm">Depuis une URL</p>
+                  <p className="text-muted text-xs">Lien vers une image</p>
                 </div>
               </button>
               
               {/* Bouton fermer */}
               <button
                 onClick={() => setShowMenu(false)}
-                className="w-full px-4 py-2 text-zinc-500 text-xs hover:bg-zinc-800 transition-colors text-center border-t border-zinc-800"
+                className="w-full px-4 py-2 text-muted text-xs hover:bg-hover transition-colors text-center border-t border-default"
               >
                 Fermer
               </button>
@@ -658,24 +658,24 @@ export default function ImageUpload({
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-zinc-900 rounded-2xl border border-zinc-700 shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+              className="bg-card rounded-2xl border border-default shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-zinc-800">
+              <div className="flex items-center justify-between p-4 border-b border-default">
                 <div className="flex items-center gap-2">
-                  <IconCrop className="w-5 h-5 text-emerald-400" />
-                  <h3 className="text-lg font-semibold text-zinc-100">Éditer l&apos;image</h3>
+                  <IconCrop className="w-5 h-5 text-accent" />
+                  <h3 className="text-lg font-semibold text-primary">Éditer l&apos;image</h3>
                 </div>
                 <button
                   onClick={handleCancel}
-                  className="p-2 rounded-lg hover:bg-zinc-800 transition-colors"
+                  className="p-2 rounded-lg hover:bg-hover transition-colors"
                 >
-                  <IconX className="w-5 h-5 text-zinc-400" />
+                  <IconX className="w-5 h-5 text-secondary" />
                 </button>
               </div>
 
               {/* Image Editor */}
-              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-zinc-950/50">
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-page/50">
                 <ReactCrop
                   crop={crop}
                   onChange={(_, percentCrop) => setCrop(percentCrop)}
@@ -700,10 +700,10 @@ export default function ImageUpload({
               </div>
 
               {/* Controls */}
-              <div className="p-4 border-t border-zinc-800 space-y-4">
+              <div className="p-4 border-t border-default space-y-4">
                 {/* Zoom */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 text-zinc-400">
+                  <div className="flex items-center gap-2 text-secondary">
                     <IconZoomOut className="w-4 h-4" />
                   </div>
                   <input
@@ -713,17 +713,17 @@ export default function ImageUpload({
                     step="0.1"
                     value={scale}
                     onChange={(e) => setScale(Number(e.target.value))}
-                    className="flex-1 h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    className="flex-1 h-2 bg-hover rounded-lg appearance-none cursor-pointer accent-accent"
                   />
-                  <div className="flex items-center gap-2 text-zinc-400">
+                  <div className="flex items-center gap-2 text-secondary">
                     <IconZoomIn className="w-4 h-4" />
                   </div>
-                  <span className="text-sm text-zinc-500 w-12 text-right">{Math.round(scale * 100)}%</span>
+                  <span className="text-sm text-muted w-12 text-right">{Math.round(scale * 100)}%</span>
                 </div>
 
                 {/* Rotation */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 text-zinc-400">
+                  <div className="flex items-center gap-2 text-secondary">
                     <IconRotate className="w-4 h-4" />
                   </div>
                   <input
@@ -733,12 +733,12 @@ export default function ImageUpload({
                     step="1"
                     value={rotation}
                     onChange={(e) => setRotation(Number(e.target.value))}
-                    className="flex-1 h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    className="flex-1 h-2 bg-hover rounded-lg appearance-none cursor-pointer accent-accent"
                   />
-                  <span className="text-sm text-zinc-500 w-12 text-right">{rotation}°</span>
+                  <span className="text-sm text-muted w-12 text-right">{rotation}°</span>
                   <button
                     onClick={() => setRotation(0)}
-                    className="px-2 py-1 text-xs text-zinc-400 hover:text-zinc-200 border border-zinc-700 rounded hover:bg-zinc-800 transition-colors"
+                    className="px-2 py-1 text-xs text-secondary hover:text-primary border border-default rounded hover:bg-hover transition-colors"
                   >
                     Reset
                   </button>
@@ -748,14 +748,14 @@ export default function ImageUpload({
                 <div className="flex gap-2 justify-center">
                   <button
                     onClick={() => setRotation(r => r - 90)}
-                    className="px-3 py-1.5 text-sm bg-zinc-800 text-zinc-300 rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 text-sm bg-hover text-secondary rounded-lg hover:bg-card transition-colors flex items-center gap-1"
                   >
                     <IconRotate className="w-4 h-4 -scale-x-100" />
                     -90°
                   </button>
                   <button
                     onClick={() => setRotation(r => r + 90)}
-                    className="px-3 py-1.5 text-sm bg-zinc-800 text-zinc-300 rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 text-sm bg-hover text-secondary rounded-lg hover:bg-card transition-colors flex items-center gap-1"
                   >
                     <IconRotate className="w-4 h-4" />
                     +90°
@@ -764,18 +764,18 @@ export default function ImageUpload({
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-end gap-3 p-4 border-t border-zinc-800">
+              <div className="flex items-center justify-end gap-3 p-4 border-t border-default">
                 <button
                   onClick={handleCancel}
                   disabled={uploading}
-                  className="px-4 py-2 text-zinc-300 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 text-secondary bg-hover rounded-lg hover:bg-card transition-colors disabled:opacity-50"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={handleConfirmCrop}
                   disabled={uploading || !completedCrop}
-                  className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-400 transition-colors disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 flex items-center gap-2"
                 >
                   {uploading ? (
                     <>
@@ -809,19 +809,19 @@ export default function ImageUpload({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden"
+              className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden"
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-zinc-800">
-                <h3 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
+              <div className="flex items-center justify-between p-4 border-b border-default">
+                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
                   <IconPhoto className="w-5 h-5 text-purple-400" />
                   Bibliothèque d&apos;images
                 </h3>
                 <button
                   onClick={() => setShowLibrary(false)}
-                  className="p-2 rounded-lg hover:bg-zinc-800 transition-colors"
+                  className="p-2 rounded-lg hover:bg-hover transition-colors"
                 >
-                  <IconX className="w-5 h-5 text-zinc-400" />
+                  <IconX className="w-5 h-5 text-secondary" />
                 </button>
               </div>
 
@@ -832,7 +832,7 @@ export default function ImageUpload({
                     <IconLoader2 className="w-8 h-8 text-purple-400 animate-spin" />
                   </div>
                 ) : libraryImages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-48 text-zinc-500">
+                  <div className="flex flex-col items-center justify-center h-48 text-muted">
                     <IconPhoto className="w-12 h-12 mb-4 opacity-50" />
                     <p>Aucune image dans la bibliothèque</p>
                   </div>
@@ -879,26 +879,26 @@ export default function ImageUpload({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+              className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-zinc-800">
-                <h3 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
-                  <IconLink className="w-5 h-5 text-cyan-400" />
+              <div className="flex items-center justify-between p-4 border-b border-default">
+                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                  <IconLink className="w-5 h-5 text-info" />
                   Image depuis URL
                 </h3>
                 <button
                   onClick={() => setShowUrlInput(false)}
-                  className="p-2 rounded-lg hover:bg-zinc-800 transition-colors"
+                  className="p-2 rounded-lg hover:bg-hover transition-colors"
                 >
-                  <IconX className="w-5 h-5 text-zinc-400" />
+                  <IconX className="w-5 h-5 text-secondary" />
                 </button>
               </div>
 
               {/* Content */}
               <div className="p-4 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-2">
+                  <label className="block text-sm font-medium text-secondary mb-2">
                     URL de l&apos;image
                   </label>
                   <input
@@ -910,10 +910,10 @@ export default function ImageUpload({
                     }}
                     onKeyDown={(e) => e.key === 'Enter' && handleSubmitUrl()}
                     placeholder="https://example.com/image.jpg"
-                    className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500"
+                    className="w-full px-4 py-3 bg-hover border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-info/50 focus:border-info"
                   />
                   {urlError && (
-                    <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                    <p className="mt-2 text-sm text-danger flex items-center gap-1">
                       <IconAlertCircle className="w-4 h-4" />
                       {urlError}
                     </p>
@@ -923,7 +923,7 @@ export default function ImageUpload({
                 <button
                   onClick={handleSubmitUrl}
                   disabled={!urlInput.trim() || uploading}
-                  className="w-full px-4 py-3 bg-cyan-500 text-white rounded-lg hover:bg-cyan-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full px-4 py-3 bg-accent text-white rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {uploading ? (
                     <>
@@ -938,7 +938,7 @@ export default function ImageUpload({
                   )}
                 </button>
 
-                <p className="text-xs text-zinc-500 text-center">
+                <p className="text-xs text-muted text-center">
                   L&apos;image sera téléchargée et uploadée sur le serveur
                 </p>
               </div>

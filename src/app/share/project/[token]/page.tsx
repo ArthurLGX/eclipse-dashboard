@@ -18,11 +18,15 @@ import {
   IconMail,
   IconChevronDown,
   IconChevronUp,
+  IconUserPlus,
+  IconLogin,
+  IconExternalLink,
 } from '@tabler/icons-react';
 import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import useLenis from '@/utils/useLenis';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
+import { generateSlug } from '@/utils/slug';
 // Rich text description is now HTML from RichTextEditor
 
 // API call pour récupérer les données du projet partagé
@@ -236,6 +240,13 @@ export default function SharedProjectPage() {
                 <IconMail className="w-4 h-4" />
                 {t('share_button')}
               </a>
+              <a
+                href={`/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
+                className="btn btn-primary flex items-center gap-2 px-4 py-2 text-sm"
+              >
+                <IconExternalLink className="w-4 h-4" />
+                {t('access_project')}
+              </a>
             </div>
           </div>
         </motion.div>
@@ -370,6 +381,42 @@ export default function SharedProjectPage() {
             </div>
           </motion.div>
         )}
+
+        {/* CTA Section - Inciter à collaborer */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-12 card bg-gradient-to-r from-accent/10 via-accent/5 to-transparent border-accent/20 p-8"
+        >
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-2">
+                <IconUserPlus className="w-6 h-6 text-accent" />
+                {t('want_to_collaborate')}
+              </h3>
+              <p className="text-secondary">
+                {t('collaborate_description')}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="/login"
+                className="btn btn-ghost flex items-center justify-center gap-2 px-6 py-3"
+              >
+                <IconLogin className="w-5 h-5" />
+                {t('already_have_account')}
+              </a>
+              <a
+                href={`/register?redirect=/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
+                className="btn btn-primary flex items-center justify-center gap-2 px-6 py-3"
+              >
+                <IconUserPlus className="w-5 h-5" />
+                {t('create_account_collaborate')}
+              </a>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Footer */}
         <div className="mt-12 text-center text-muted text-sm">

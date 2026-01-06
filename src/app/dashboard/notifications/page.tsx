@@ -27,13 +27,15 @@ import {
   deleteNotification,
   acceptInvitation,
   rejectInvitation,
+  approveCollaborationRequest,
+  rejectCollaborationRequest,
 } from '@/lib/api';
 import type { Notification } from '@/types';
 import { useQuota, QuotaNotification } from '@/app/context/QuotaContext';
 import { IconAlertTriangle, IconClock, IconArrowRight } from '@tabler/icons-react';
 
 type FilterType = 'all' | 'unread' | 'read';
-type NotificationTypeFilter = 'all' | 'project_invitation' | 'project_update' | 'system';
+type NotificationTypeFilter = 'all' | 'project_invitation' | 'project_update' | 'collaboration_request' | 'system';
 
 export default function NotificationsPage() {
   const { t } = useLanguage();
@@ -236,6 +238,37 @@ export default function NotificationsPage() {
     }
   };
 
+  const handleApproveCollaborationRequest = async (notification: Notification) => {
+    if (!user?.id || !notification.data?.collaboration_request_id) return;
+    
+    try {
+      await approveCollaborationRequest(notification.data.collaboration_request_id, user.id);
+      await handleMarkAsRead(notification);
+      showGlobalPopup(
+        t('collaboration_approved') || 'Demande de collaboration approuvée !',
+        'success'
+      );
+      loadNotifications();
+    } catch (error) {
+      console.error('Error approving collaboration request:', error);
+      showGlobalPopup(t('error_generic') || 'Erreur', 'error');
+    }
+  };
+
+  const handleRejectCollaborationRequest = async (notification: Notification) => {
+    if (!user?.id || !notification.data?.collaboration_request_id) return;
+    
+    try {
+      await rejectCollaborationRequest(notification.data.collaboration_request_id, user.id);
+      await handleMarkAsRead(notification);
+      showGlobalPopup(t('collaboration_rejected') || 'Demande de collaboration refusée', 'success');
+      loadNotifications();
+    } catch (error) {
+      console.error('Error rejecting collaboration request:', error);
+      showGlobalPopup(t('error_generic') || 'Erreur', 'error');
+    }
+  };
+
   const toggleSelectNotification = (docId: string) => {
     setSelectedNotifications(prev => {
       const newSet = new Set(prev);
@@ -300,6 +333,27 @@ export default function NotificationsPage() {
         </div>
       );
     }
+
+    if (notification.type === 'collaboration_request') {
+      if (notification.data?.sender_name) {
+        const initials = notification.data.sender_name
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+        return (
+          <div className="w-10 h-10 rounded-full bg-warning-light flex items-center justify-center">
+            <span className="text-sm font-bold text-warning">{initials}</span>
+          </div>
+        );
+      }
+      return (
+        <div className="w-10 h-10 rounded-full bg-warning-light flex items-center justify-center">
+          <IconUsers className="w-5 h-5 text-warning" />
+        </div>
+      );
+    }
     
     return (
       <div className="w-10 h-10 rounded-full bg-info-light flex items-center justify-center">
@@ -314,6 +368,8 @@ export default function NotificationsPage() {
         return t('invitation') || 'Invitation';
       case 'project_update':
         return t('update') || 'Mise à jour';
+      case 'collaboration_request':
+        return t('collaboration_request_label') || 'Demande de collaboration';
       case 'system':
         return t('system') || 'Système';
       default:
@@ -583,6 +639,7 @@ export default function NotificationsPage() {
                   >
                     <option value="all">{t('all_types') || 'Tous les types'}</option>
                     <option value="project_invitation">{t('invitations') || 'Invitations'}</option>
+                    <option value="collaboration_request">{t('collaboration_requests') || 'Demandes de collaboration'}</option>
                     <option value="project_update">{t('updates') || 'Mises à jour'}</option>
                     <option value="system">{t('system') || 'Système'}</option>
                   </select>
@@ -719,6 +776,26 @@ export default function NotificationsPage() {
                           >
                             <IconX className="w-4 h-4" />
                             {t('reject') || 'Refuser'}
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Actions pour les demandes de collaboration */}
+                      {notification.type === 'collaboration_request' && !notification.read && (
+                        <div className="flex gap-2 mt-3">
+                          <button
+                            onClick={() => handleApproveCollaborationRequest(notification)}
+                            className="btn-primary px-4 py-2 text-sm font-medium"
+                          >
+                            <IconCheck className="w-4 h-4" />
+                            {t('approve_request') || 'Approuver'}
+                          </button>
+                          <button
+                            onClick={() => handleRejectCollaborationRequest(notification)}
+                            className="btn-ghost px-4 py-2 text-sm font-medium"
+                          >
+                            <IconX className="w-4 h-4" />
+                            {t('reject_request') || 'Refuser'}
                           </button>
                         </div>
                       )}

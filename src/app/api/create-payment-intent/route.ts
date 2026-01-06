@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-08-27.basil',
-});
+// Vérifier que la clé secrète Stripe est définie
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
 export async function POST(request: NextRequest) {
+  // Vérifier la configuration Stripe
+  if (!stripeSecretKey) {
+    console.error('STRIPE_SECRET_KEY is not defined');
+    return NextResponse.json(
+      { error: 'Stripe n\'est pas configuré. Contactez l\'administrateur.' },
+      { status: 500 }
+    );
+  }
+
+  const stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2025-08-27.basil',
+  });
+
   try {
     const { planId, billingType, amount } = await request.json();
 

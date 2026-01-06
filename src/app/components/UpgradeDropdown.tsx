@@ -103,7 +103,7 @@ export default function UpgradeDropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggleAction}
-        className="w-full cursor-pointer bg-emerald-300/20 !text-emerald-300 px-4 py-3 rounded-lg border border-emerald-300/20 hover:bg-emerald-300/10 transition-colors hover:border-emerald-300 font-semibold flex items-center justify-between"
+        className="w-full cursor-pointer bg-accent/20 text-accent px-4 py-3 rounded-lg border border-accent/20 hover:bg-accent/10 transition-colors hover:border-accent font-semibold flex items-center justify-between"
       >
         <span>{t('upgrade_plan')}</span>
         <motion.span
@@ -134,18 +134,18 @@ export default function UpgradeDropdown({
               dropdownPosition === 'bottom'
                 ? 'top-full mt-2'
                 : 'bottom-full mb-2'
-            } left-0 right-0 bg-zinc-900 border border-zinc-700 rounded-lg shadow-lg z-[9999] overflow-hidden`}
+            } left-0 right-0 bg-card border border-default rounded-lg shadow-lg z-[9999] overflow-hidden`}
             style={{
               maxHeight: '400px',
               overflowY: 'auto',
             }}
           >
             <div className="p-4 space-y-3">
-              <div className="!text-center pb-2 border-b border-zinc-700">
-                <h3 className="text-zinc-200 font-semibold !text-sm">
+              <div className="!text-center pb-2 border-b border-default">
+                <h3 className="text-primary font-semibold !text-sm">
                   {t('choose_upgrade_plan')}
                 </h3>
-                <p className="text-zinc-400 !text-xs mt-1">
+                <p className="text-secondary !text-xs mt-1">
                   {t('current_plan')}: {currentPlan}
                 </p>
               </div>
@@ -154,7 +154,7 @@ export default function UpgradeDropdown({
               <div className="flex flex-col lg:flex-row items-center justify-center gap-4 py-2">
                 <span
                   className={`!text-sm font-medium transition-colors duration-200 ${
-                    !togglePlan ? '!text-emerald-400' : 'text-zinc-400'
+                    !togglePlan ? 'text-accent' : 'text-secondary'
                   }`}
                 >
                   {t('monthly')}
@@ -162,8 +162,8 @@ export default function UpgradeDropdown({
 
                 <button
                   onClick={onTogglePlanAction}
-                  className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-zinc-900 ${
-                    togglePlan ? 'bg-emerald-500' : 'bg-zinc-700'
+                  className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-card ${
+                    togglePlan ? 'bg-accent' : 'bg-hover'
                   }`}
                 >
                   <span
@@ -175,7 +175,7 @@ export default function UpgradeDropdown({
 
                 <span
                   className={`!text-sm font-medium transition-colors duration-200 ${
-                    togglePlan ? '!text-emerald-400' : 'text-zinc-400'
+                    togglePlan ? 'text-accent' : 'text-secondary'
                   }`}
                 >
                   {t('yearly')}
@@ -184,8 +184,8 @@ export default function UpgradeDropdown({
                 <span
                   className={`px-2 py-1 ${
                     togglePlan
-                      ? 'bg-emerald-500/20 !text-emerald-300'
-                      : 'bg-zinc-900 text-zinc-500'
+                      ? 'bg-accent/20 text-accent'
+                      : 'bg-page text-muted'
                   } !text-xs font-medium rounded-full`}
                 >
                   {t('save_20_percent')}
@@ -199,27 +199,27 @@ export default function UpgradeDropdown({
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2, delay: index * 0.05 }}
                   onClick={() => onPlanSelectAction(plan)}
-                  className="w-full p-4 rounded-lg border border-zinc-700 hover:border-emerald-500/50 hover:bg-zinc-800/50 transition-all duration-200 !text-left group"
+                  className="w-full p-4 rounded-lg border border-default hover:border-accent/50 hover:bg-hover/50 transition-all duration-200 !text-left group"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-zinc-200 font-semibold capitalize group-hover:!text-emerald-300 transition-colors">
+                    <h4 className="text-primary font-semibold capitalize group-hover:text-accent transition-colors">
                       {plan.name}
                     </h4>
                     <div className="!text-right">
-                      <div className="!text-emerald-400 font-bold">
+                      <div className="text-accent font-bold">
                         {language === 'en' ? '€' : ''}
                         {togglePlan
                           ? plan.price_yearly.toFixed(2)
                           : plan.price_monthly.toFixed(2)}
                         {language === 'fr' ? '€' : ''}
                       </div>
-                      <div className="text-zinc-400 !text-xs">
+                      <div className="text-secondary !text-xs">
                         {t('per_month')}
                       </div>
                     </div>
                   </div>
                   {togglePlan && (
-                    <div className="text-zinc-400 !text-xs">
+                    <div className="text-secondary !text-xs">
                       {language === 'en' ? '€' : ''}
                       {(plan.price_yearly * 12).toFixed(2)}
                       {language === 'fr' ? '€ ' : ' '}
@@ -227,20 +227,20 @@ export default function UpgradeDropdown({
                     </div>
                   )}
 
-                  <p className="text-zinc-400 !text-sm mb-3">
+                  <p className="text-secondary !text-sm mb-3">
                     {plan.description}
                   </p>
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="!text-emerald-400 !text-xs font-medium">
+                      <span className="text-accent !text-xs font-medium">
                         {t('upgrade_to')}
                       </span>
-                      <span className="!text-emerald-300 font-semibold capitalize">
+                      <span className="text-accent font-semibold capitalize">
                         {plan.name}
                       </span>
                     </div>
-                    <div className="!text-emerald-400 !text-xs">→</div>
+                    <div className="text-accent !text-xs">→</div>
                   </div>
                 </motion.button>
               ))}
@@ -250,14 +250,14 @@ export default function UpgradeDropdown({
                 }}
                 className="flex items-center justify-center w-full"
               >
-                <p className="!text-red-400 cursor-pointer bg-red-500/10 px-4 py-2 text-center rounded-lg !text-sm w-full hover:bg-red-500/20 transition-colors border border-red-500/20 hover:border-red-500">
+                <p className="text-danger cursor-pointer bg-danger/10 px-4 py-2 text-center rounded-lg !text-sm w-full hover:bg-danger/20 transition-colors border border-danger/20 hover:border-danger">
                   {t('cancel_subscription')}
                 </p>
               </div>
 
               {upgradePlans.length === 0 && (
                 <div className="!text-center py-4">
-                  <p className="text-zinc-400 !text-sm">
+                  <p className="text-secondary !text-sm">
                     {t('no_upgrade_available')}
                   </p>
                 </div>

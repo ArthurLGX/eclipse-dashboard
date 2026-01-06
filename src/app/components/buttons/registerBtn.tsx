@@ -25,7 +25,7 @@ export const RegisterBtn = ({ onClick }: RegisterBtnProps) => {
         onClick={onClick}
         className="btn-secondary group flex flex-row items-center justify-center gap-2 !text-xs capitalize rounded-full lg:w-fit w-full !px-4 !py-2"
       >
-        <span className="flex flex-row !text-xs lg:w-full w-fit items-center justify-center gap-2">
+        <span className="flex flex-row !text-white group-hover:!text-accent !text-xs lg:w-full w-fit items-center justify-center gap-2">
           {t('register')}
           <IconArrowRight
             size={16}

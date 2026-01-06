@@ -124,25 +124,25 @@ export default function TrialExpiredModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-card border border-default rounded-xl p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             {/* En-tête */}
             <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-danger/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">⏰</span>
               </div>
-              <h2 className="text-2xl font-bold text-zinc-200 mb-2">
+              <h2 className="text-2xl font-bold text-primary mb-2">
                 {t('trial_expired_title')}
               </h2>
-              <p className="text-zinc-400 text-sm leading-relaxed">
+              <p className="text-secondary text-sm leading-relaxed">
                 {t('trial_expired_message')}
               </p>
             </div>
 
             {/* Plans disponibles */}
             <div className="space-y-4 mb-6">
-              <h3 className="text-lg font-semibold text-zinc-200 text-center">
+              <h3 className="text-lg font-semibold text-primary text-center">
                 {t('choose_plan_to_continue')}
               </h3>
 
@@ -156,33 +156,33 @@ export default function TrialExpiredModal({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
                       onClick={() => handleChoosePlan(plan)}
-                      className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 hover:border-emerald-500/50 hover:bg-zinc-800 transition-all duration-200 text-left group"
+                      className="bg-hover/50 border border-default rounded-lg p-4 hover:border-accent/50 hover:bg-hover transition-all duration-200 text-left group"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-zinc-200 font-semibold capitalize group-hover:text-emerald-300 transition-colors">
+                        <h4 className="text-primary font-semibold capitalize group-hover:text-accent transition-colors">
                           {plan.name}
                         </h4>
                         <div className="text-right">
-                          <div className="text-emerald-400 font-bold">
+                          <div className="text-accent font-bold">
                             {language === 'en' ? '€' : ''}
                             {plan.price_monthly.toFixed(2)}
                             {language === 'fr' ? '€' : ''}
                           </div>
-                          <div className="text-zinc-400 text-xs">
+                          <div className="text-secondary text-xs">
                             {t('per_month')}
                           </div>
                         </div>
                       </div>
 
-                      <p className="text-zinc-400 text-sm mb-3 line-clamp-2">
+                      <p className="text-secondary text-sm mb-3 line-clamp-2">
                         {plan.description}
                       </p>
 
                       <div className="flex items-center justify-between">
-                        <span className="text-emerald-400 text-xs font-medium">
+                        <span className="text-accent text-xs font-medium">
                           {t('select_plan')}
                         </span>
-                        <div className="text-emerald-400 text-xs">→</div>
+                        <div className="text-accent text-xs">→</div>
                       </div>
                     </motion.button>
                   ))}
@@ -193,13 +193,13 @@ export default function TrialExpiredModal({
             <div className="flex gap-3">
               <button
                 onClick={handleClose}
-                className="flex-1 bg-zinc-800 text-zinc-300 px-4 py-3 rounded-lg hover:bg-zinc-700 transition-colors"
+                className="flex-1 bg-hover text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
               >
                 {t('cancel')}
               </button>
               <button
                 onClick={() => router.push('/pricing')}
-                className="flex-1 bg-emerald-500 text-black px-4 py-3 rounded-lg hover:bg-emerald-400 transition-colors font-semibold"
+                className="flex-1 bg-accent text-white px-4 py-3 rounded-lg hover:bg-accent/80 transition-colors font-semibold"
               >
                 {t('view_all_plans')}
               </button>

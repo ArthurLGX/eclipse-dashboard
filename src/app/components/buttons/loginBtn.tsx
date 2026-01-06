@@ -25,7 +25,7 @@ export const LoginBtn = ({ onClick }: LoginBtnProps) => {
         onClick={onClick}
         className="btn-primary group flex flex-row items-center justify-center gap-2 capitalize rounded-full !px-4 !py-2 lg:w-fit w-full"
       >
-        <span className="flex flex-row !text-xs lg:w-full w-fit items-center justify-center gap-2">
+        <span className="flex flex-row !text-white group-hover:!text-accent !text-xs lg:w-full w-fit items-center justify-center gap-2">
           {t('login')}
           <IconArrowRight
             size={16}
