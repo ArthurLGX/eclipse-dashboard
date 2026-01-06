@@ -312,11 +312,11 @@ function ComposeEmail() {
       const isScheduled = scheduledAt !== null;
       
       if (isScheduled) {
-        // Email planifié - on enregistre seulement dans la base de données
+        // Email planifié - on enregistre le HTML complet dans la base de données
         await createSentEmail(user.id, {
           subject,
           recipients: recipients.map(r => r.email),
-          content: cleanedMessage, // Utiliser le message nettoyé
+          content: htmlContent, // Sauvegarder le HTML complet (avec titre et signature)
           category: 'classic',
           attachments: attachments.length > 0 ? attachments.map(a => ({ name: a.name, url: a.url })) : undefined,
           sent_at: new Date().toISOString(),

@@ -1522,6 +1522,9 @@ const translations = {
     max_login_attempts: 'Tentatives de connexion max',
     session_timeout: 'Timeout de session (minutes)',
     require_email_confirmation: 'Confirmation email requise',
+    email_title: 'Titre de l\'email',
+    email_title_hint: 'Le titre de l\'email sera affiché dans le corps de l\'email',
+    visible_in_inbox: 'Visible dans l\'inbox de l\'email',
     new_users_confirm_email: 'Les nouveaux utilisateurs doivent confirmer leur email',
     two_factor_auth: 'Authentification à deux facteurs',
     enable_2fa_option: 'Activer l\'option 2FA pour les utilisateurs',
@@ -2896,6 +2899,7 @@ const translations = {
 
     // Admin Dashboard
     email_confirmation_required: 'Email confirmation required',
+    visible_in_inbox: 'Visible in inbox',
     users_must_confirm_email: 'Users must confirm their email',
     enable_2fa: 'Enable 2FA',
     send_important_events: 'Send important events',

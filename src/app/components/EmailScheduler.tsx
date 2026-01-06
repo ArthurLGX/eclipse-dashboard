@@ -120,16 +120,19 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
           </div>
         </div>
         
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            checked={isScheduled}
-            onChange={(e) => handleToggle(e.target.checked)}
-            disabled={disabled}
-            className="sr-only peer"
+        <button
+          onClick={() => !disabled && handleToggle(!isScheduled)}
+          disabled={disabled}
+          className={`relative w-12 h-6 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            isScheduled ? 'bg-accent' : 'bg-gray-300 dark:bg-gray-600'
+          }`}
+        >
+          <div 
+            className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
+              isScheduled ? 'left-7' : 'left-1'
+            }`}
           />
-          <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-accent/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
-        </label>
+        </button>
       </div>
 
       <AnimatePresence>

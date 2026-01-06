@@ -173,14 +173,19 @@ function EmailHistory() {
   // Extraire le texte brut du HTML pour l'aperçu
   const stripHtml = (html: string): string => {
     if (!html) return '';
+    // Supprimer d'abord les balises style et script avec leur contenu
+    let cleanHtml = html
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+    
     // Créer un élément temporaire pour parser le HTML
     if (typeof document !== 'undefined') {
       const tmp = document.createElement('div');
-      tmp.innerHTML = html;
-      return tmp.textContent || tmp.innerText || '';
+      tmp.innerHTML = cleanHtml;
+      return (tmp.textContent || tmp.innerText || '').trim();
     }
     // Fallback pour SSR - simple regex
-    return html
+    return cleanHtml
       .replace(/<[^>]*>/g, ' ')
       .replace(/&nbsp;/g, ' ')
       .replace(/&amp;/g, '&')

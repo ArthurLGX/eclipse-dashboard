@@ -1897,17 +1897,20 @@ export const createSentEmail = async (
   userId: number,
   data: CreateSentEmailData
 ): Promise<SentEmail> => {
+  console.log('[DEBUG] Creating sent email for userId:', userId);
+  // Strapi v5: pour relation manyToOne, utiliser directement l'id ou set
   const response = await post<ApiResponse<SentEmail>>(
     'sent-emails',
-    { ...data, users: { connect: [{ id: userId }] } }
+    { ...data, users: { set: [userId] } }
   );
+  console.log('[DEBUG] Created sent email:', response.data?.documentId);
   return response.data;
 };
 
 /** Met à jour le statut d'un email envoyé */
 export const updateSentEmailStatus = async (
   documentId: string,
-  status: 'sent' | 'failed' | 'pending' | 'scheduled' | 'cancelled'
+  status: 'sent' | 'failed' | 'pending' | 'scheduled'
 ): Promise<void> => {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');
@@ -1928,6 +1931,24 @@ export const updateSentEmailStatus = async (
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error?.message || 'Erreur lors de la mise à jour');
+  }
+};
+
+/** Supprime un email (annule un email planifié) */
+export const deleteSentEmail = async (documentId: string): Promise<void> => {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+  
+  const response = await fetch(`${API_URL}/api/sent-emails/${documentId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Erreur lors de la suppression');
   }
 };
 

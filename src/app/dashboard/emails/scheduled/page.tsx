@@ -18,7 +18,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import { fetchSentEmails, updateSentEmailStatus } from '@/lib/api';
+import { fetchSentEmails, deleteSentEmail } from '@/lib/api';
 import type { SentEmail } from '@/types';
 
 export default function ScheduledEmailsPage() {
@@ -69,7 +69,7 @@ function ScheduledEmails() {
   const handleCancelEmail = async (documentId: string) => {
     setCancellingId(documentId);
     try {
-      await updateSentEmailStatus(documentId, 'cancelled');
+      await deleteSentEmail(documentId);
       showGlobalPopup(t('email_cancelled') || 'Email annulé', 'success');
       setConfirmCancel(null);
       loadScheduledEmails();
@@ -118,8 +118,8 @@ function ScheduledEmails() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard/emails"
@@ -136,7 +136,7 @@ function ScheduledEmails() {
           
           <Link
             href="/dashboard/emails/compose"
-            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent/90 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 btn-primary !text-white rounded-lg hover:bg-accent/90 transition-colors"
           >
             <IconMail className="w-4 h-4" />
             {t('new_email') || 'Nouvel email'}
@@ -145,7 +145,7 @@ function ScheduledEmails() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <IconLoader2 className="w-8 h-8 animate-spin text-accent" />
@@ -162,12 +162,12 @@ function ScheduledEmails() {
             <h2 className="text-xl font-semibold !text-primary mb-2">
               {t('no_scheduled_emails') || 'Aucun email planifié'}
             </h2>
-            <p className="text-muted max-w-md mx-auto">
+            <p className="text-muted max-w-7xl mx-auto">
               {t('no_scheduled_emails_desc') || 'Vous n\'avez aucun email en attente d\'envoi. Créez un nouvel email et utilisez la planification pour l\'envoyer plus tard.'}
             </p>
             <Link
               href="/dashboard/emails/compose"
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3 btn-primary text-white rounded-lg hover:bg-purple-700 transition-colors"
             >
               <IconClock className="w-5 h-5" />
               {t('schedule_email') || 'Planifier un email'}
@@ -278,7 +278,7 @@ function ScheduledEmails() {
       </div>
 
       {/* Info banner */}
-      <div className="max-w-6xl mx-auto px-6 pb-6">
+      <div className="max-w-7xl mx-auto px-6 pb-6">
         <div className="flex items-start gap-3 p-4 bg-purple-500/10 border border-purple-500/30 rounded-xl">
           <IconAlertTriangle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-purple-300">
