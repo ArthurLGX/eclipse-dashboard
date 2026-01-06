@@ -634,6 +634,20 @@ const PROJECT_TYPES = [
                       projectDocumentId={project.documentId}
                       userId={user?.id || 0}
                       canEdit={canEdit}
+                      collaborators={collaborators}
+                      ownerInfo={project.user ? {
+                        id: project.user.id,
+                        documentId: project.user.documentId || '',
+                        username: project.user.username,
+                        email: project.user.email,
+                      } : undefined}
+                      onTaskAssigned={async (taskTitle, assignedTo) => {
+                        // TODO: Implémenter l'envoi d'email ici
+                        showGlobalPopup(
+                          `${t('task_assigned_notification') || 'Notification envoyée à'} ${assignedTo.username}`, 
+                          'success'
+                        );
+                      }}
                     />
                   </div>
                 </motion.div>

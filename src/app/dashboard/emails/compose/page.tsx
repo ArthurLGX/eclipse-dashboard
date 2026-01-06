@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
@@ -15,20 +15,18 @@ import {
   IconX,
   IconAlertCircle,
   IconEye,
-  IconEyeOff,
   IconSignature,
   IconClock,
-  IconDeviceMobile,
-  IconDeviceDesktop,
   IconPencil,
+  IconHeading,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import MediaPickerModal from '@/app/components/MediaPickerModal';
 import EmailScheduler from '@/app/components/EmailScheduler';
+import EmailPreviewModal from '@/app/components/EmailPreviewModal';
 import { fetchEmailSignature, createSentEmail } from '@/lib/api';
 import { uploadToStrapi } from '@/lib/strapi-upload';
 import { useDraftSave } from '@/hooks/useDraftSave';
@@ -62,6 +60,7 @@ function ComposeEmail() {
   const router = useRouter();
   
   // Form state
+  const [title, setTitle] = useState(''); // Nouveau champ titre
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [recipients, setRecipients] = useState<Recipient[]>([]);
@@ -73,36 +72,55 @@ function ComposeEmail() {
   // UI state
   const [sending, setSending] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
   
   // Signature data
   const [signatureData, setSignatureData] = useState<CreateEmailSignatureData | null>(null);
   const [loadingSignature, setLoadingSignature] = useState(true);
-  const [footerLanguage, setFooterLanguage] = useState<FooterLanguage>('fr');
   
   // Draft management
   const { clearDraft } = useDraftSave({
     draftKey: 'email-compose-draft',
     data: {
+      title,
       subject,
       message,
       recipients,
       attachments,
       includeSignature,
-      footerLanguage,
     },
     onRestore: (draft) => {
+      if (draft.title) setTitle(draft.title as string);
       if (draft.subject) setSubject(draft.subject as string);
       if (draft.message) setMessage(draft.message as string);
       if (draft.recipients) setRecipients(draft.recipients as Recipient[]);
       if (draft.attachments) setAttachments(draft.attachments as Attachment[]);
       if (typeof draft.includeSignature === 'boolean') setIncludeSignature(draft.includeSignature);
-      if (draft.footerLanguage) setFooterLanguage(draft.footerLanguage as FooterLanguage);
     },
     autoSaveDelay: 10000, // Sauvegarde toutes les 10 secondes
   });
+  
+  // Mémoiser les traductions pour EmailPreviewModal
+  const previewTranslations = useMemo(() => ({
+    mailbox_preview: t('mailbox_preview') || 'Aperçu Boîte Mail',
+    inbox: t('inbox') || 'Boîte de réception',
+    favorites: t('favorites') || 'Favoris',
+    sent_folder: t('sent_folder') || 'Envoyés',
+    archives: t('archives') || 'Archives',
+    trash: t('trash') || 'Corbeille',
+    search_placeholder: t('search_placeholder') || 'Rechercher...',
+    now: t('now') || 'Maintenant',
+    to_me: t('to_me') || 'à moi',
+  }), [t]);
+  
+  // Info expéditeur pour le preview
+  const senderInfo = useMemo(() => ({
+    firstName: signatureData?.sender_name?.split(' ')[0] || user?.username?.split(' ')[0] || 'Utilisateur',
+    lastName: signatureData?.sender_name?.split(' ').slice(1).join(' ') || user?.username?.split(' ').slice(1).join(' ') || '',
+    email: user?.email || 'email@example.com',
+    profilePicture: user?.profile_picture?.url || null,
+  }), [signatureData?.sender_name, user?.username, user?.email, user?.profile_picture?.url]);
   
   // Charger la signature email
   useEffect(() => {
@@ -240,9 +258,27 @@ function ComposeEmail() {
     setSending(true);
     
     try {
+      // Utiliser la police de la signature ou Arial par défaut
+      const fontFamily = signatureData?.font_family 
+        ? `'${signatureData.font_family}', Arial, sans-serif` 
+        : 'Arial, sans-serif';
+      
       // Construire le contenu HTML de l'email
       let htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="font-family: ${fontFamily}; max-width: 600px; margin: 0 auto;">
+      `;
+      
+      // Ajouter le titre si présent
+      if (title.trim()) {
+        const primaryColor = signatureData?.primary_color || '#10b981';
+        htmlContent += `
+          <div style="text-align: center; padding: 24px 20px; background: linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd);">
+            <h1 style="margin: 0; font-size: 24px; font-weight: bold; color: #ffffff;">${title}</h1>
+          </div>
+        `;
+      }
+      
+      htmlContent += `
           <div style="padding: 20px;">
             ${message.split('\n').map(line => `<p style="margin: 0 0 10px; line-height: 1.6;">${line || '&nbsp;'}</p>`).join('')}
           </div>
@@ -357,11 +393,11 @@ function ComposeEmail() {
           
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setShowPreview(!showPreview)}
+              onClick={() => setShowPreview(true)}
               className="flex items-center gap-2 px-4 py-2 text-sm bg-accent/10 text-accent hover:bg-accent/20 rounded-lg transition-colors"
             >
-              {showPreview ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
-              {showPreview ? (t('edit') || 'Éditer') : (t('preview') || 'Aperçu')}
+              <IconEye className="w-4 h-4" />
+              {t('preview') || 'Aperçu'}
             </button>
             
             <button
@@ -391,166 +427,99 @@ function ComposeEmail() {
       
       {/* Content */}
       <div className="max-w-4xl mx-auto p-6">
-        <AnimatePresence mode="wait">
-          {showPreview ? (
-            <motion.div
-              key="preview"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-            >
-              {/* Preview Mode Toggle */}
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <button
-                  onClick={() => setPreviewMode('desktop')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                    previewMode === 'desktop'
-                      ? 'bg-accent text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  <IconDeviceDesktop className="w-4 h-4" />
-                  Desktop
-                </button>
-                <button
-                  onClick={() => setPreviewMode('mobile')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                    previewMode === 'mobile'
-                      ? 'bg-accent text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  <IconDeviceMobile className="w-4 h-4" />
-                  Mobile
-                </button>
-              </div>
-              
-              {/* Preview Container - Always white background for email preview */}
-              <div className={`mx-auto transition-all duration-300 ${
-                previewMode === 'mobile' ? 'max-w-[375px]' : 'max-w-full'
-              }`}>
-                <div className="email-preview-light rounded-xl shadow-lg overflow-hidden">
-                  <div className="p-4 border-b border-gray-200 bg-gray-50">
-                    <div className="text-sm mb-1 text-gray-500">{t('to') || 'À'}: {recipients.map(r => r.email).join(', ')}</div>
-                    <div className="font-semibold text-gray-800">{subject || '(Sans objet)'}</div>
-                  </div>
-                  
-                  <div className={`p-6 ${previewMode === 'mobile' ? 'text-sm' : ''}`}>
-                    <div style={{ fontFamily: 'Arial, sans-serif' }}>
-                      {message.split('\n').map((line, i) => (
-                        <p key={i} style={{ margin: '0 0 10px', lineHeight: 1.6 }}>
-                          {line || '\u00A0'}
-                        </p>
-                      ))}
-                    </div>
-                    
-                    {includeSignature && signatureData && (
-                      <div className="mt-8 pt-6 border-t border-gray-200">
-                        <EmailFooter 
-                          data={signatureData} 
-                          mode="preview" 
-                          compact 
-                          language={footerLanguage}
-                          onLanguageChange={setFooterLanguage}
-                          showLanguageToggle
-                          isMobile={previewMode === 'mobile'}
-                        />
-                      </div>
-                    )}
-                    
-                    {attachments.length > 0 && (
-                      <div className="mt-6 pt-4 border-t border-gray-200">
-                        <div className="text-sm font-medium text-gray-700 mb-2">
-                          {t('attachments') || 'Pièces jointes'} ({attachments.length})
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {attachments.map(att => (
-                            <div key={att.id} className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg text-sm">
-                              <IconPaperclip className="w-4 h-4 text-gray-500" />
-                              <span>{att.name}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="editor"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="space-y-6"
-            >
-              {/* Recipients */}
-              <div className="bg-card border border-default rounded-xl p-6">
-                <label className="block text-sm font-medium text-secondary mb-3 flex items-center gap-2">
-                  <IconUser className="w-4 h-4" />
-                  {t('recipients') || 'Destinataires'}
-                </label>
-                
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {recipients.map(recipient => (
-                    <motion.div
-                      key={recipient.id}
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.8, opacity: 0 }}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-accent/10 text-accent rounded-full text-sm"
-                    >
-                      <span>{recipient.email}</span>
-                      <button
-                        onClick={() => removeRecipient(recipient.id)}
-                        className="p-0.5 hover:bg-accent/20 rounded-full transition-colors"
-                      >
-                        <IconX className="w-3.5 h-3.5" />
-                      </button>
-                    </motion.div>
-                  ))}
-                </div>
-                
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={newRecipient}
-                    onChange={(e) => setNewRecipient(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addRecipient()}
-                    placeholder={t('add_recipient_placeholder') || 'email@example.com'}
-                    className="input flex-1"
-                  />
-                  <button
-                    onClick={addRecipient}
-                    disabled={!newRecipient.trim()}
-                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+        <div className="space-y-6">
+          {/* Recipients */}
+          <div className="bg-card border border-default rounded-xl p-6">
+            <label className="block text-sm font-medium text-secondary mb-3 flex items-center gap-2">
+              <IconUser className="w-4 h-4" />
+              {t('recipients') || 'Destinataires'}
+            </label>
+            
+            <div className="flex flex-wrap gap-2 mb-3">
+              <AnimatePresence>
+                {recipients.map(recipient => (
+                  <motion.div
+                    key={recipient.id}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-accent/10 text-accent rounded-full text-sm"
                   >
-                    {t('add') || 'Ajouter'}
-                  </button>
-                </div>
-              </div>
-              
-              {/* Subject */}
-              <div className="bg-card border border-default rounded-xl p-6">
-                <label className="block text-sm font-medium text-secondary mb-3">
-                  {t('subject') || 'Objet'}
-                </label>
-                <input
-                  type="text"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder={t('subject_placeholder') || 'Objet de votre email'}
-                  className="input w-full text-lg"
-                />
-              </div>
-              
-              {/* Message */}
-              <div className="bg-card border border-default rounded-xl p-6">
-                <label className="block text-sm font-medium text-secondary mb-3">
-                  {t('message') || 'Message'}
-                </label>
-                <textarea
+                    <span>{recipient.email}</span>
+                    <button
+                      onClick={() => removeRecipient(recipient.id)}
+                      className="p-0.5 hover:bg-accent/20 rounded-full transition-colors"
+                    >
+                      <IconX className="w-3.5 h-3.5" />
+                    </button>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+            
+            <div className="flex gap-2">
+              <input
+                type="email"
+                value={newRecipient}
+                onChange={(e) => setNewRecipient(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addRecipient()}
+                placeholder={t('add_recipient_placeholder') || 'email@example.com'}
+                className="input flex-1"
+              />
+              <button
+                onClick={addRecipient}
+                disabled={!newRecipient.trim()}
+                className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+              >
+                {t('add') || 'Ajouter'}
+              </button>
+            </div>
+          </div>
+          
+          {/* Title & Subject */}
+          <div className="bg-card border border-default rounded-xl p-6 space-y-4">
+            {/* Title (optional) */}
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-2">
+                <IconHeading className="w-4 h-4 inline mr-1.5 text-accent" />
+                {t('email_title') || 'Titre de l\'email'}
+                <span className="text-muted font-normal ml-2">({t('optional') || 'optionnel'})</span>
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={t('email_title_placeholder') || 'Ex: Bienvenue dans notre newsletter'}
+                className="input w-full text-lg"
+              />
+              <p className="text-xs text-muted mt-1">
+                {t('email_title_hint') || 'Affiché en en-tête de l\'email avec un fond coloré'}
+              </p>
+            </div>
+            
+            {/* Subject */}
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-2">
+                <IconMail className="w-4 h-4 inline mr-1.5 text-accent" />
+                {t('subject') || 'Objet de l\'email'} *
+                <span className="text-muted font-normal ml-2">({t('visible_in_inbox') || 'visible dans la boîte de réception'})</span>
+              </label>
+              <input
+                type="text"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder={t('subject_placeholder') || 'Objet de votre email'}
+                className="input w-full"
+              />
+            </div>
+          </div>
+          
+          {/* Message */}
+          <div className="bg-card border border-default rounded-xl p-6">
+            <label className="block text-sm font-medium text-secondary mb-3">
+              {t('message') || 'Message'} *
+            </label>
+            <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={t('message_placeholder') || 'Rédigez votre message...'}
@@ -679,17 +648,15 @@ function ComposeEmail() {
                 )}
               </div>
               
-              {/* Planification d'envoi */}
-              <div className="bg-card border border-default rounded-xl p-6">
-                <EmailScheduler
-                  onSchedule={setScheduledAt}
-                  initialDate={scheduledAt}
-                  disabled={sending}
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          {/* Planification d'envoi */}
+          <div className="bg-card border border-default rounded-xl p-6">
+            <EmailScheduler
+              onSchedule={setScheduledAt}
+              initialDate={scheduledAt}
+              disabled={sending}
+            />
+          </div>
+        </div>
       </div>
       
       {/* Media Picker Modal */}
@@ -698,6 +665,26 @@ function ComposeEmail() {
         onClose={() => setShowMediaPicker(false)}
         onSelect={handleMediaSelect}
         title={t('select_attachment') || 'Sélectionner un fichier'}
+      />
+      
+      {/* Email Preview Modal */}
+      <EmailPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        emailData={{
+          title: title || undefined,
+          subject,
+          content: message,
+        }}
+        senderInfo={senderInfo}
+        signatureData={includeSignature ? signatureData : null}
+        includeSignature={includeSignature}
+        fontFamily={signatureData?.font_family || 'Inter'}
+        primaryColor={signatureData?.primary_color || '#10b981'}
+        headerBackground={title ? {
+          color: signatureData?.primary_color || '#10b981',
+        } : undefined}
+        translations={previewTranslations}
       />
     </div>
   );

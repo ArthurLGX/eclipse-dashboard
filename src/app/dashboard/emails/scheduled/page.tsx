@@ -36,8 +36,8 @@ function ScheduledEmails() {
   
   const [scheduledEmails, setScheduledEmails] = useState<SentEmail[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cancellingId, setCancellingId] = useState<number | null>(null);
-  const [confirmCancel, setConfirmCancel] = useState<number | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [confirmCancel, setConfirmCancel] = useState<string | null>(null);
 
   const loadScheduledEmails = useCallback(async () => {
     if (!user?.id) return;
@@ -66,10 +66,10 @@ function ScheduledEmails() {
     loadScheduledEmails();
   }, [loadScheduledEmails]);
 
-  const handleCancelEmail = async (emailId: number) => {
-    setCancellingId(emailId);
+  const handleCancelEmail = async (documentId: string) => {
+    setCancellingId(documentId);
     try {
-      await updateSentEmailStatus(emailId, 'cancelled');
+      await updateSentEmailStatus(documentId, 'cancelled');
       showGlobalPopup(t('email_cancelled') || 'Email annulé', 'success');
       setConfirmCancel(null);
       loadScheduledEmails();
@@ -136,7 +136,7 @@ function ScheduledEmails() {
           
           <Link
             href="/dashboard/emails/compose"
-            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent/90 transition-colors"
           >
             <IconMail className="w-4 h-4" />
             {t('new_email') || 'Nouvel email'}
@@ -159,7 +159,7 @@ function ScheduledEmails() {
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-purple-500/10 flex items-center justify-center">
               <IconCalendar className="w-10 h-10 text-purple-400" />
             </div>
-            <h2 className="text-xl font-semibold text-primary mb-2">
+            <h2 className="text-xl font-semibold !text-primary mb-2">
               {t('no_scheduled_emails') || 'Aucun email planifié'}
             </h2>
             <p className="text-muted max-w-md mx-auto">
@@ -182,7 +182,7 @@ function ScheduledEmails() {
             <AnimatePresence>
               {scheduledEmails.map((email) => (
                 <motion.div
-                  key={email.id}
+                  key={email.documentId}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
@@ -231,17 +231,17 @@ function ScheduledEmails() {
                     </div>
                     
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      {confirmCancel === email.id ? (
+                      {confirmCancel === email.documentId ? (
                         <div className="flex items-center gap-2 p-2 bg-red-500/10 rounded-lg">
                           <span className="text-sm text-red-400">
                             {t('confirm_cancel') || 'Confirmer ?'}
                           </span>
                           <button
-                            onClick={() => handleCancelEmail(email.id)}
-                            disabled={cancellingId === email.id}
+                            onClick={() => handleCancelEmail(email.documentId)}
+                            disabled={cancellingId === email.documentId}
                             className="p-1.5 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50"
                           >
-                            {cancellingId === email.id ? (
+                            {cancellingId === email.documentId ? (
                               <IconLoader2 className="w-4 h-4 animate-spin" />
                             ) : (
                               <IconTrash className="w-4 h-4" />
@@ -257,7 +257,7 @@ function ScheduledEmails() {
                       ) : (
                         <>
                           <button
-                            onClick={() => setConfirmCancel(email.id)}
+                            onClick={() => setConfirmCancel(email.documentId)}
                             className="flex items-center gap-2 px-3 py-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                             title={t('cancel_email') || 'Annuler l\'envoi'}
                           >

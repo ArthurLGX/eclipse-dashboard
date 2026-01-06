@@ -32,10 +32,30 @@ import {
 } from '@/lib/api';
 import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
 
+interface Collaborator {
+  documentId: string;
+  user?: {
+    id: number;
+    documentId: string;
+    username?: string;
+    email?: string;
+  };
+  is_owner?: boolean;
+  permission?: string;
+}
+
 interface ProjectTasksProps {
   projectDocumentId: string;
   userId: number;
   canEdit: boolean;
+  collaborators?: Collaborator[];
+  ownerInfo?: {
+    id: number;
+    documentId: string;
+    username?: string;
+    email?: string;
+  };
+  onTaskAssigned?: (taskTitle: string, assignedTo: { email: string; username: string }) => void;
 }
 
 type ViewMode = 'cards' | 'table' | 'gantt';
@@ -44,9 +64,47 @@ type ViewMode = 'cards' | 'table' | 'gantt';
 type TaskStatusOption = { value: TaskStatus; label: string; color: string; icon: React.ReactNode };
 type TaskPriorityOption = { value: TaskPriority; label: string; color: string };
 
-export default function ProjectTasks({ projectDocumentId, userId, canEdit }: ProjectTasksProps) {
+export default function ProjectTasks({ 
+  projectDocumentId, 
+  userId, 
+  canEdit, 
+  collaborators = [],
+  ownerInfo,
+  onTaskAssigned,
+}: ProjectTasksProps) {
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
+  
+  // Créer une liste complète des membres (owner + collaborateurs)
+  const allMembers = useMemo(() => {
+    const members: { id: number; documentId: string; username: string; email: string; isOwner: boolean }[] = [];
+    
+    // Ajouter le propriétaire
+    if (ownerInfo) {
+      members.push({
+        id: ownerInfo.id,
+        documentId: ownerInfo.documentId,
+        username: ownerInfo.username || 'Propriétaire',
+        email: ownerInfo.email || '',
+        isOwner: true,
+      });
+    }
+    
+    // Ajouter les collaborateurs
+    collaborators.forEach(collab => {
+      if (collab.user && !collab.is_owner) {
+        members.push({
+          id: collab.user.id,
+          documentId: collab.user.documentId,
+          username: collab.user.username || 'Collaborateur',
+          email: collab.user.email || '',
+          isOwner: false,
+        });
+      }
+    });
+    
+    return members;
+  }, [ownerInfo, collaborators]);
 
   // Options définies à l'intérieur du composant pour accéder à t()
   const VIEW_OPTIONS: { value: ViewMode; label: string; icon: React.ReactNode }[] = [
@@ -82,9 +140,12 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
+    task_status: 'todo' as TaskStatus,
     priority: 'medium' as TaskPriority,
+    start_date: '',
     due_date: '',
     estimated_hours: '',
+    assigned_to: '',
   });
 
   useEffect(() => {
@@ -113,15 +174,26 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
         project: projectDocumentId,
         title: newTask.title.trim(),
         description: newTask.description.trim(),
+        task_status: newTask.task_status,
         priority: newTask.priority,
+        start_date: newTask.start_date || null,
         due_date: newTask.due_date || null,
         estimated_hours: newTask.estimated_hours ? parseFloat(newTask.estimated_hours) : null,
         created_user: userId,
+        assigned_to: newTask.assigned_to || null,
         order: tasks.length,
       });
 
+      // Si une personne est assignée, notifier
+      if (newTask.assigned_to && onTaskAssigned) {
+        const assignedMember = allMembers.find(m => m.documentId === newTask.assigned_to);
+        if (assignedMember && assignedMember.email) {
+          onTaskAssigned(newTask.title, { email: assignedMember.email, username: assignedMember.username });
+        }
+      }
+
       showGlobalPopup(t('task_created') || 'Tâche créée avec succès', 'success');
-      setNewTask({ title: '', description: '', priority: 'medium', due_date: '', estimated_hours: '' });
+      setNewTask({ title: '', description: '', task_status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', assigned_to: '' });
       setShowNewTaskForm(false);
       loadTasks();
     } catch (error) {
@@ -164,14 +236,44 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
     }
   };
 
-  const handleProgressChange = async (taskDocumentId: string, progress: number) => {
-    try {
-      await updateTaskProgress(taskDocumentId, progress);
-      loadTasks();
-    } catch (error) {
-      console.error('Error updating progress:', error);
+  // Debounce ref pour éviter les appels multiples
+  const progressTimeoutRef = useRef<Record<string, NodeJS.Timeout>>({});
+  const [localProgress, setLocalProgress] = useState<Record<string, number>>({});
+
+  const handleProgressChange = useCallback((taskDocumentId: string, progress: number) => {
+    // Mise à jour locale immédiate pour l'UI
+    setLocalProgress(prev => ({ ...prev, [taskDocumentId]: progress }));
+    
+    // Annuler le timeout précédent
+    if (progressTimeoutRef.current[taskDocumentId]) {
+      clearTimeout(progressTimeoutRef.current[taskDocumentId]);
     }
-  };
+    
+    // Debounce l'appel API (500ms après la fin du glissement)
+    progressTimeoutRef.current[taskDocumentId] = setTimeout(async () => {
+      try {
+        await updateTaskProgress(taskDocumentId, progress);
+        // Ne pas recharger toute la liste - juste mettre à jour localement
+        setTasks(prev => prev.map(t => 
+          t.documentId === taskDocumentId ? { ...t, progress } : t
+        ));
+        setLocalProgress(prev => {
+          const next = { ...prev };
+          delete next[taskDocumentId];
+          return next;
+        });
+      } catch (error) {
+        console.error('Error updating progress:', error);
+      }
+    }, 500);
+  }, []);
+
+  // Cleanup des timeouts
+  useEffect(() => {
+    return () => {
+      Object.values(progressTimeoutRef.current).forEach(clearTimeout);
+    };
+  }, []);
 
   const toggleExpanded = (taskDocumentId: string) => {
     setExpandedTasks(prev => {
@@ -365,6 +467,19 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
+                  <label className="block text-sm text-secondary mb-1">{t('status') || 'Statut'}</label>
+                  <select
+                    value={newTask.task_status}
+                    onChange={(e) => setNewTask({ ...newTask, task_status: e.target.value as TaskStatus })}
+                    className="input w-full"
+                  >
+                    {TASK_STATUS_OPTIONS.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
                   <label className="block text-sm text-secondary mb-1">{t('priority') || 'Priorité'}</label>
                   <select
                     value={newTask.priority}
@@ -375,6 +490,34 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
                   </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm text-secondary mb-1">{t('assigned_to') || 'Assigner à'}</label>
+                  <select
+                    value={newTask.assigned_to}
+                    onChange={(e) => setNewTask({ ...newTask, assigned_to: e.target.value })}
+                    className="input w-full"
+                  >
+                    <option value="">{t('not_assigned') || 'Non assigné'}</option>
+                    {allMembers.map(member => (
+                      <option key={member.documentId} value={member.documentId}>
+                        {member.username} {member.isOwner ? '(Propriétaire)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm text-secondary mb-1">{t('start_date') || 'Date de début'}</label>
+                  <input
+                    type="date"
+                    value={newTask.start_date}
+                    onChange={(e) => setNewTask({ ...newTask, start_date: e.target.value })}
+                    className="input w-full"
+                  />
                 </div>
 
                 <div>
@@ -460,6 +603,7 @@ export default function ProjectTasks({ projectDocumentId, userId, canEdit }: Pro
                   getStatusStyle={getStatusStyle}
                   getPriorityStyle={getPriorityStyle}
                   taskStatusOptions={TASK_STATUS_OPTIONS}
+                  localProgress={localProgress[task.documentId]}
                   t={t}
                 />
               ))}
@@ -526,6 +670,7 @@ interface TaskCardProps {
   getStatusStyle: (status: TaskStatus) => string;
   getPriorityStyle: (priority: TaskPriority) => string;
   taskStatusOptions: TaskStatusOption[];
+  localProgress?: number;
   t: (key: string) => string;
 }
 
@@ -541,10 +686,12 @@ function TaskCard({
   getStatusStyle,
   getPriorityStyle,
   taskStatusOptions,
+  localProgress,
   t: _t,
 }: TaskCardProps) {
   void _t; // Utilisé pour éviter l'erreur de lint
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed';
+  const displayProgress = localProgress !== undefined ? localProgress : task.progress;
 
   return (
     <motion.div
@@ -600,15 +747,14 @@ function TaskCard({
             {task.task_status !== 'cancelled' && (
               <div className="mt-2 flex items-center gap-3">
                 <div className="flex-1 h-1.5 bg-hover rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${task.progress}%` }}
-                    className={`h-full rounded-full ${
-                      task.progress >= 100 ? 'bg-accent' : 'bg-blue-500'
+                  <div
+                    className={`h-full rounded-full transition-all duration-100 ${
+                      displayProgress >= 100 ? 'bg-accent' : 'bg-blue-500'
                     }`}
+                    style={{ width: `${displayProgress}%` }}
                   />
                 </div>
-                <span className="text-xs text-muted w-10">{task.progress}%</span>
+                <span className="text-xs text-muted w-10">{displayProgress}%</span>
               </div>
             )}
 
@@ -682,7 +828,7 @@ function TaskCard({
             type="range"
             min="0"
             max="100"
-            value={task.progress}
+            value={displayProgress}
             onChange={(e) => onProgressChange(parseInt(e.target.value))}
             className="w-full h-1 bg-hover rounded-lg appearance-none cursor-pointer slider-thumb"
           />

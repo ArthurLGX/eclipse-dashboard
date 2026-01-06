@@ -1825,13 +1825,13 @@ export const createSentEmail = async (
 
 /** Met à jour le statut d'un email envoyé */
 export const updateSentEmailStatus = async (
-  emailId: number,
+  documentId: string,
   status: 'sent' | 'failed' | 'pending' | 'scheduled' | 'cancelled'
 ): Promise<void> => {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');
   
-  const response = await fetch(`${API_URL}/api/sent-emails/${emailId}`, {
+  const response = await fetch(`${API_URL}/api/sent-emails/${documentId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -1945,5 +1945,113 @@ export const createAuditLog = async (data: {
   metadata?: Record<string, unknown>;
 }): Promise<AuditLog> => {
   const response = await post<ApiResponse<AuditLog>>('audit-logs', data);
+  return response.data;
+};
+
+// ============================================================================
+// PROJECT SHARE LINKS (Public Sharing)
+// ============================================================================
+
+export interface ProjectShareLink {
+  id: number;
+  documentId: string;
+  share_token: string;
+  is_active: boolean;
+  show_gantt: boolean;
+  show_progress: boolean;
+  show_tasks: boolean;
+  expires_at: string | null;
+  views_count: number;
+  project?: {
+    id: number;
+    documentId: string;
+    title: string;
+  };
+  created_by?: {
+    id: number;
+    username: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateProjectShareLinkData {
+  project: string; // documentId
+  show_gantt?: boolean;
+  show_progress?: boolean;
+  show_tasks?: boolean;
+  expires_in_days?: number | null; // null = no expiration
+}
+
+/** Génère un token unique pour le partage */
+function generateShareToken(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let token = '';
+  for (let i = 0; i < 24; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return token;
+}
+
+/** Crée un lien de partage public pour un projet */
+export const createProjectShareLink = async (
+  userId: number,
+  data: CreateProjectShareLinkData
+): Promise<ProjectShareLink> => {
+  const shareToken = generateShareToken();
+  const expiresAt = data.expires_in_days 
+    ? new Date(Date.now() + data.expires_in_days * 24 * 60 * 60 * 1000).toISOString()
+    : null;
+  
+  const response = await post<ApiResponse<ProjectShareLink>>(
+    'project-share-links',
+    {
+      share_token: shareToken,
+      is_active: true,
+      show_gantt: data.show_gantt ?? true,
+      show_progress: data.show_progress ?? true,
+      show_tasks: data.show_tasks ?? true,
+      expires_at: expiresAt,
+      views_count: 0,
+      project: { connect: [{ documentId: data.project }] },
+      created_by_user: { connect: [{ id: userId }] },
+    }
+  );
+  
+  return response.data;
+};
+
+/** Récupère les liens de partage d'un projet */
+export const fetchProjectShareLinks = async (
+  projectDocumentId: string
+): Promise<{ data: ProjectShareLink[] }> => {
+  return get<{ data: ProjectShareLink[] }>(
+    `project-share-links?filters[project][documentId][$eq]=${projectDocumentId}&filters[is_active][$eq]=true&sort=createdAt:desc`
+  );
+};
+
+/** Désactive un lien de partage */
+export const deactivateShareLink = async (
+  shareLinkDocumentId: string
+): Promise<void> => {
+  await put(`project-share-links/${shareLinkDocumentId}`, {
+    is_active: false,
+  });
+};
+
+/** Met à jour un lien de partage */
+export const updateShareLink = async (
+  shareLinkDocumentId: string,
+  data: Partial<{
+    show_gantt: boolean;
+    show_progress: boolean;
+    show_tasks: boolean;
+    is_active: boolean;
+  }>
+): Promise<ProjectShareLink> => {
+  const response = await put<ApiResponse<ProjectShareLink>>(
+    `project-share-links/${shareLinkDocumentId}`,
+    data
+  );
   return response.data;
 };

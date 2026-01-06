@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
-import { fetchNewsletterById } from '@/lib/api';
+import { fetchNewsletterById, fetchEmailSignature } from '@/lib/api';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import {
   IconArrowLeft,
@@ -19,6 +19,7 @@ import {
   IconEye,
 } from '@tabler/icons-react';
 import MailboxPreview from '@/app/components/MailboxPreview';
+import type { CreateEmailSignatureData } from '@/types';
 
 // Types
 interface Subscriber {
@@ -154,6 +155,7 @@ export default function NewsletterDetailPage() {
   const { user } = useAuth();
   
   const [newsletter, setNewsletter] = useState<Newsletter | null>(null);
+  const [signatureData, setSignatureData] = useState<CreateEmailSignatureData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -166,8 +168,39 @@ export default function NewsletterDetailPage() {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetchNewsletterById(newsletterId);
-        setNewsletter(response.data);
+        
+        // Charger la newsletter et la signature en parallèle
+        const [newsletterResponse, signature] = await Promise.all([
+          fetchNewsletterById(newsletterId),
+          fetchEmailSignature(user.id),
+        ]);
+        
+        setNewsletter(newsletterResponse.data);
+        
+        if (signature) {
+          setSignatureData({
+            company_name: signature.company_name || '',
+            sender_name: signature.sender_name || '',
+            sender_title: signature.sender_title || '',
+            phone: signature.phone || '',
+            website: signature.website || '',
+            address: signature.address || '',
+            linkedin_url: signature.linkedin_url || '',
+            twitter_url: signature.twitter_url || '',
+            instagram_url: signature.instagram_url || '',
+            facebook_url: signature.facebook_url || '',
+            logo_url: signature.logo_url || '',
+            banner_url: signature.banner_url || '',
+            banner_link: signature.banner_link || '',
+            banner_alt: signature.banner_alt || '',
+            logo_size: signature.logo_size || 100,
+            primary_color: signature.primary_color || '#10b981',
+            text_color: signature.text_color || '#333333',
+            secondary_color: signature.secondary_color || '#666666',
+            font_family: signature.font_family || 'Inter',
+            social_links: signature.social_links || [],
+          });
+        }
       } catch (err) {
         console.error('Error fetching newsletter:', err);
         setError(t('newsletter_not_found') || 'Newsletter non trouvée');
@@ -358,6 +391,8 @@ export default function NewsletterDetailPage() {
                       send_at: newsletter.send_at,
                       author: newsletter.author,
                     }}
+                    signatureData={signatureData}
+                    fontFamily={signatureData?.font_family}
                     translations={{
                       inbox: t('inbox') || 'Boîte de réception',
                       favorites: t('favorites') || 'Favoris',
@@ -369,6 +404,7 @@ export default function NewsletterDetailPage() {
                       to_me: t('to_me') || 'à moi',
                       no_content: t('no_content') || 'Aucun contenu',
                       special_offer: t('special_offer') || 'Offre Spéciale',
+                      unsubscribe: t('unsubscribe') || 'Se désabonner',
                     }}
                   />
                 </div>

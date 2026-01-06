@@ -228,6 +228,35 @@
 .border-warning { border-color: var(--color-warning-border); }
 .border-danger { border-color: var(--color-danger-border); }
 
+/* Divide colors - for divide-y and divide-x utilities */
+.divide-default > :not([hidden]) ~ :not([hidden]) { 
+  border-color: var(--border-default); 
+}
+.divide-muted > :not([hidden]) ~ :not([hidden]) { 
+  border-color: var(--border-muted); 
+}
+.divide-input > :not([hidden]) ~ :not([hidden]) { 
+  border-color: var(--border-input); 
+}
+.divide-accent > :not([hidden]) ~ :not([hidden]) { 
+  border-color: var(--color-accent-border); 
+}
+.divide-primary > :not([hidden]) ~ :not([hidden]) { 
+  border-color: var(--color-primary-border); 
+}
+.divide-success > :not([hidden]) ~ :not([hidden]) { 
+  border-color: var(--color-success-border); 
+}
+.divide-info > :not([hidden]) ~ :not([hidden]) { 
+  border-color: var(--color-info-border); 
+}
+.divide-warning > :not([hidden]) ~ :not([hidden]) { 
+  border-color: var(--color-warning-border); 
+}
+.divide-danger > :not([hidden]) ~ :not([hidden]) { 
+  border-color: var(--color-danger-border); 
+}
+
 /* Shadows */
 .shadow-theme-sm { box-shadow: var(--shadow-sm); }
 .shadow-theme-md { box-shadow: var(--shadow-md); }

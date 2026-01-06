@@ -24,8 +24,9 @@ import {
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import { fetchSentEmails } from '@/lib/api';
-import type { SentEmail, EmailCategory } from '@/types';
+import MailboxPreview from '@/app/components/MailboxPreview';
+import { fetchSentEmails, fetchEmailSignature } from '@/lib/api';
+import type { SentEmail, EmailCategory, CreateEmailSignatureData } from '@/types';
 
 export default function EmailHistoryPage() {
   return (
@@ -46,6 +47,7 @@ function EmailHistory() {
   const [selectedCategory, setSelectedCategory] = useState<EmailCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEmail, setSelectedEmail] = useState<SentEmail | null>(null);
+  const [signatureData, setSignatureData] = useState<CreateEmailSignatureData | null>(null);
   
   // Load initial category from URL
   useEffect(() => {
@@ -54,6 +56,43 @@ function EmailHistory() {
       setSelectedCategory(category as EmailCategory);
     }
   }, [searchParams]);
+  
+  // Load signature on mount
+  useEffect(() => {
+    const loadSignature = async () => {
+      if (!user?.id) return;
+      try {
+        const sig = await fetchEmailSignature(user.id);
+        if (sig) {
+          setSignatureData({
+            company_name: sig.company_name || '',
+            sender_name: sig.sender_name || '',
+            sender_title: sig.sender_title || '',
+            phone: sig.phone || '',
+            website: sig.website || '',
+            address: sig.address || '',
+            linkedin_url: sig.linkedin_url || '',
+            twitter_url: sig.twitter_url || '',
+            instagram_url: sig.instagram_url || '',
+            facebook_url: sig.facebook_url || '',
+            logo_url: sig.logo_url || '',
+            banner_url: sig.banner_url || '',
+            banner_link: sig.banner_link || '',
+            banner_alt: sig.banner_alt || '',
+            logo_size: sig.logo_size || 100,
+            primary_color: sig.primary_color || '#10b981',
+            text_color: sig.text_color || '#333333',
+            secondary_color: sig.secondary_color || '#666666',
+            font_family: sig.font_family || 'Inter',
+            social_links: sig.social_links || [],
+          });
+        }
+      } catch (error) {
+        console.error('Error loading signature:', error);
+      }
+    };
+    loadSignature();
+  }, [user?.id]);
   
   // Load emails
   const loadEmails = useCallback(async () => {
@@ -131,11 +170,32 @@ function EmailHistory() {
     }
   };
   
+  // Extraire le texte brut du HTML pour l'aperçu
+  const stripHtml = (html: string): string => {
+    if (!html) return '';
+    // Créer un élément temporaire pour parser le HTML
+    if (typeof document !== 'undefined') {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      return tmp.textContent || tmp.innerText || '';
+    }
+    // Fallback pour SSR - simple regex
+    return html
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+  
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <div className="sticky top-0 z-40 bg-card border-b border-default p-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/dashboard/emails')}
@@ -151,7 +211,7 @@ function EmailHistory() {
           </div>
           
           {/* Search */}
-          <div className="flex items-center gap-2 bg-background rounded-lg border border-default px-3 py-2 w-72">
+          <div className="flex items-center gap-2 bg-background rounded-lg  px-3 py-2 w-72">
             <IconSearch className="w-4 h-4 text-muted" />
             <input
               type="text"
@@ -169,7 +229,7 @@ function EmailHistory() {
         </div>
       </div>
       
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6">
         <div className="flex gap-6">
           {/* Sidebar - Categories */}
           <div className="w-64 flex-shrink-0">
@@ -233,8 +293,8 @@ function EmailHistory() {
                 </p>
               </div>
             ) : (
-              <div className="bg-card border border-default rounded-xl overflow-hidden ">
-                {filteredEmails.map((email) => {
+              <div className="bg-card rounded-xl overflow-hidden">
+                {filteredEmails.map((email, index) => {
                   const catInfo = getCategoryInfo(email.category);
                   
                   return (
@@ -242,7 +302,9 @@ function EmailHistory() {
                       key={email.documentId}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="p-4 hover:bg-hover cursor-pointer transition-colors group"
+                      className={`p-4 hover:bg-hover cursor-pointer transition-colors group ${
+                        index > 0 ? 'border-t border-default' : ''
+                      }`}
                       onClick={() => setSelectedEmail(email)}
                     >
                       <div className="flex items-start gap-4">
@@ -275,7 +337,7 @@ function EmailHistory() {
                           </div>
                           
                           <p className="text-sm text-secondary line-clamp-1">
-                            {email.content}
+                            {stripHtml(email.content)}
                           </p>
                           
                           {/* Attachments indicator */}
@@ -299,7 +361,7 @@ function EmailHistory() {
         </div>
       </div>
       
-      {/* Email Detail Modal */}
+      {/* Email Detail Modal with MailboxPreview */}
       <AnimatePresence>
         {selectedEmail && (
           <motion.div
@@ -313,7 +375,7 @@ function EmailHistory() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-xl shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden"
+              className="bg-card rounded-xl shadow-xl w-full max-w-7xl max-h-[90vh] overflow-hidden"
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
@@ -333,6 +395,10 @@ function EmailHistory() {
                       <IconCalendar className="w-3.5 h-3.5" />
                       {new Date(selectedEmail.sent_at).toLocaleString('fr-FR')}
                       {getStatusIcon(selectedEmail.status_mail)}
+                      <span className="ml-2">
+                        {t('to') || 'À'}: {selectedEmail.recipients.slice(0, 2).join(', ')}
+                        {selectedEmail.recipients.length > 2 && ` +${selectedEmail.recipients.length - 2}`}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -344,32 +410,29 @@ function EmailHistory() {
                 </button>
               </div>
               
-              {/* Recipients */}
-              <div className="px-4 py-3 border-b border-default bg-background/50">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-muted">{t('to') || 'À'}:</span>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedEmail.recipients.map((r, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-accent/10 text-accent rounded-full text-xs">
-                        {r}
-                      </span>
-                    ))}
+              {/* Error message if failed */}
+              {selectedEmail.status_mail === 'failed' && selectedEmail.error_message && (
+                <div className="mx-4 mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <IconAlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <div className="font-medium text-red-700 dark:text-red-300 mb-1">
+                        {t('send_error') || 'Erreur d\'envoi'}
+                      </div>
+                      <div className="text-sm text-red-600 dark:text-red-400">
+                        {selectedEmail.error_message}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
               
-              {/* Content */}
-              <div className="p-6 max-h-[50vh] overflow-y-auto">
-                <div className="whitespace-pre-wrap text-primary">
-                  {selectedEmail.content}
-                </div>
-                
-                {/* Attachments */}
-                {selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
-                  <div className="mt-6 pt-4 border-t border-default">
-                    <div className="text-sm font-medium text-secondary mb-2">
-                      {t('attachments') || 'Pièces jointes'}
-                    </div>
+              {/* Attachments if any */}
+              {selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
+                <div className="px-4 py-3 border-b border-default bg-background/50">
+                  <div className="flex items-center gap-2 text-sm">
+                    <IconPaperclip className="w-4 h-4 text-muted" />
+                    <span className="text-muted">{t('attachments') || 'Pièces jointes'}:</span>
                     <div className="flex flex-wrap gap-2">
                       {selectedEmail.attachments.map((att, i) => (
                         <a
@@ -377,32 +440,51 @@ function EmailHistory() {
                           href={att.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-3 py-2 bg-background rounded-lg hover:bg-hover transition-colors"
+                          className="px-2 py-0.5 bg-accent/10 text-accent rounded-full text-xs hover:bg-accent/20 transition-colors"
                         >
-                          <IconPaperclip className="w-4 h-4 text-muted" />
-                          <span className="text-sm text-primary">{att.name}</span>
+                          {att.name}
                         </a>
                       ))}
                     </div>
                   </div>
-                )}
-                
-                {/* Error message */}
-                {selectedEmail.status_mail === 'failed' && selectedEmail.error_message && (
-                  <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                    <div className="flex items-start gap-2">
-                      <IconAlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <div className="font-medium text-red-700 dark:text-red-300 mb-1">
-                          {t('send_error') || 'Erreur d\'envoi'}
-                        </div>
-                        <div className="text-sm text-red-600 dark:text-red-400">
-                          {selectedEmail.error_message}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                </div>
+              )}
+              
+              {/* MailboxPreview */}
+              <div className="p-4 max-h-[calc(90vh-120px)] overflow-y-auto">
+                <MailboxPreview
+                  newsletter={{
+                    title: selectedEmail.subject || 'Email',
+                    subject: selectedEmail.subject,
+                    content: selectedEmail.content,
+                    template: 'standard',
+                    send_at: selectedEmail.sent_at,
+                    author: {
+                      username: user?.username || '',
+                      email: user?.email || '',
+                    },
+                  }}
+                  signatureData={signatureData}
+                  fontFamily={signatureData?.font_family}
+                  senderInfo={{
+                    firstName: user?.username?.split(' ')[0] || 'Utilisateur',
+                    lastName: user?.username?.split(' ').slice(1).join(' ') || '',
+                    email: user?.email || 'email@example.com',
+                  }}
+                  translations={{
+                    inbox: t('inbox') || 'Boîte de réception',
+                    favorites: t('favorites') || 'Favoris',
+                    sent_folder: t('sent_folder') || 'Envoyés',
+                    archives: t('archives') || 'Archives',
+                    trash: t('trash') || 'Corbeille',
+                    search_placeholder: t('search_placeholder') || 'Rechercher...',
+                    now: t('now') || 'Maintenant',
+                    to_me: t('to_me') || 'à moi',
+                    no_content: t('no_content') || 'Aucun contenu',
+                    special_offer: t('special_offer') || 'Offre Spéciale',
+                    unsubscribe: t('unsubscribe') || 'Se désabonner',
+                  }}
+                />
               </div>
             </motion.div>
           </motion.div>

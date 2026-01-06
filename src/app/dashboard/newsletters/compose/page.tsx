@@ -65,9 +65,9 @@ import MediaPickerModal from '@/app/components/MediaPickerModal';
 import SaveTemplateModal from '@/app/components/SaveTemplateModal';
 import LoadTemplateModal from '@/app/components/LoadTemplateModal';
 import EmailScheduler from '@/app/components/EmailScheduler';
-import { fetchSmtpConfig, fetchUserCustomTemplates, createCustomTemplate, deleteCustomTemplate, setDefaultCustomTemplate } from '@/lib/api';
+import { fetchSmtpConfig, fetchUserCustomTemplates, createCustomTemplate, deleteCustomTemplate, setDefaultCustomTemplate, fetchEmailSignature } from '@/lib/api';
 import { useDraftSave } from '@/hooks/useDraftSave';
-import type { CustomTemplate } from '@/types';
+import type { CustomTemplate, CreateEmailSignatureData } from '@/types';
 import type { Client, Company, SmtpConfig } from '@/types';
 
 // Types
@@ -122,12 +122,27 @@ interface EmailPreviewProps {
   buttonTextColor?: string;
   headerBackgroundUrl?: string;
   fontFamily?: string;
+  /** Données de signature email - si fournies, utilisées pour le footer */
+  signatureData?: CreateEmailSignatureData | null;
   translations: {
     specialOffer: string;
     yourTitleHere: string;
     contentPreviewPlaceholder: string;
+    unsubscribe?: string;
   };
 }
+
+// Labels par défaut pour les plateformes sociales
+const SOCIAL_PLATFORM_LABELS: Record<string, string> = {
+  linkedin: 'LinkedIn',
+  twitter: 'Twitter',
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+  youtube: 'YouTube',
+  tiktok: 'TikTok',
+  github: 'GitHub',
+  custom: 'Lien',
+};
 
 // Composant Email Preview
 function EmailPreview({
@@ -146,6 +161,7 @@ function EmailPreview({
   buttonTextColor,
   headerBackgroundUrl,
   fontFamily,
+  signatureData,
   translations,
 }: EmailPreviewProps) {
   const isPromo = template.id === 'promotional';
@@ -156,6 +172,11 @@ function EmailPreview({
   const ctaButtonColor = buttonColor || template.primaryColor;
   const ctaButtonTextColor = buttonTextColor || '#FFFFFF';
   const emailFontFamily = fontFamily ? `'${fontFamily}', Arial, sans-serif` : 'Arial, sans-serif';
+
+  // Couleurs de la signature si disponible
+  const sigPrimaryColor = signatureData?.primary_color || '#10b981';
+  const sigTextColor = signatureData?.text_color || '#333333';
+  const sigSecondaryColor = signatureData?.secondary_color || '#666666';
 
   // Create a style object that will be applied to all text elements
   const fontStyle = { fontFamily: emailFontFamily };
@@ -194,9 +215,9 @@ function EmailPreview({
 
       {/* Email body */}
       <div className="p-8">
-        {/* Content */}
+        {/* Content - with forced font inheritance */}
         <div 
-          className="prose prose-sm max-w-none text-gray-700 mb-6"
+          className="prose prose-sm max-w-none text-gray-700 mb-6 [&_*]:!font-[inherit]"
           style={{ fontFamily: emailFontFamily }}
           dangerouslySetInnerHTML={{ 
             __html: emailContent || `<p style="color: #9CA3AF;">${translations.contentPreviewPlaceholder}</p>` 
@@ -234,106 +255,216 @@ function EmailPreview({
         )}
       </div>
 
-      {/* Footer */}
-      <div className="p-6" style={{ fontFamily: emailFontFamily }}>
-        <div className="flex items-start gap-6">
-          {/* Logo / Avatar */}
-          <div className="flex-shrink-0">
-            {footerLogoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img 
-                src={footerLogoUrl} 
-                alt="Logo" 
-                className="w-16 h-16 rounded-lg object-cover"
-              />
-            ) : userProfilePicture ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img 
-                src={userProfilePicture}
-                alt="Profile"
-                className="w-16 h-16 rounded-lg object-cover"
-              />
-            ) : (
-              <div className="w-16 h-16 rounded-lg bg-gray-300 flex items-center justify-center">
-                <IconUser className="w-8 h-8 text-gray-500" />
-              </div>
-            )}
-          </div>
-
-          {/* Contact Info */}
-          <div className="flex-1 text-sm text-gray-600">
-            <p className="font-semibold text-gray-800 mb-1">
-              {footerSettings.firstName} {footerSettings.lastName}
+      {/* Footer / Signature */}
+      {signatureData && (signatureData.sender_name || signatureData.company_name || signatureData.logo_url) ? (
+        // Signature email - rendu identique aux emails réels
+        <div className="px-8 py-6 border-t border-gray-200" style={{ fontFamily: emailFontFamily }}>
+          <table cellPadding={0} cellSpacing={0} style={{ borderCollapse: 'collapse' }}>
+            <tbody>
+              <tr>
+                {/* Logo */}
+                {signatureData.logo_url && (
+                  <td style={{ paddingRight: '12px', verticalAlign: 'top' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={signatureData.logo_url} 
+                      alt="Logo" 
+                      style={{ 
+                        width: `${signatureData.logo_size || 100}px`, 
+                        height: `${signatureData.logo_size || 100}px`, 
+                        objectFit: 'contain', 
+                        borderRadius: '8px', 
+                        display: 'block',
+                      }}
+                    />
+                  </td>
+                )}
+                
+                {/* Info */}
+                <td style={{ verticalAlign: 'top' }}>
+                  {/* Name & Title */}
+                  {signatureData.sender_name && (
+                    <div style={{ fontWeight: 'bold', fontSize: '16px', color: sigTextColor }}>
+                      {signatureData.sender_name}
+                    </div>
+                  )}
+                  {signatureData.sender_title && (
+                    <div style={{ color: sigSecondaryColor, marginBottom: '6px', fontSize: '14px' }}>
+                      {signatureData.sender_title}
+                    </div>
+                  )}
+                  
+                  {/* Company */}
+                  {signatureData.company_name && (
+                    <div style={{ fontWeight: 600, color: sigPrimaryColor, marginBottom: '4px' }}>
+                      {signatureData.company_name}
+                    </div>
+                  )}
+                  
+                  {/* Contact */}
+                  <div style={{ fontSize: '13px', color: sigSecondaryColor }}>
+                    {signatureData.phone && <div>📞 {signatureData.phone}</div>}
+                    {signatureData.website && (
+                      <div>
+                        🌐 <a href={signatureData.website} style={{ color: sigPrimaryColor, textDecoration: 'none' }}>
+                          {signatureData.website.replace(/^https?:\/\//, '')}
+                        </a>
+                      </div>
+                    )}
+                    {signatureData.address && <div>📍 {signatureData.address}</div>}
+                  </div>
+                  
+                  {/* Social links */}
+                  {signatureData.social_links && signatureData.social_links.length > 0 && (
+                    <div style={{ marginTop: '10px' }}>
+                      {signatureData.social_links.map((link, index) => {
+                        const label = link.label || SOCIAL_PLATFORM_LABELS[link.platform] || link.platform;
+                        const color = link.color || sigPrimaryColor;
+                        
+                        return (
+                          <a 
+                            key={link.id || index}
+                            href={link.url} 
+                            style={{ 
+                              color, 
+                              marginRight: '8px', 
+                              textDecoration: 'none',
+                              fontWeight: 500,
+                            }}
+                          >
+                            {label}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          
+          {/* Unsubscribe */}
+          {translations.unsubscribe && (
+            <p className="text-xs mt-4 text-center">
+              <a href="#" style={{ color: sigPrimaryColor }} className="hover:underline">
+                {translations.unsubscribe}
+              </a>
             </p>
-            {footerSettings.email && (
-              <p className="flex items-center gap-2 mb-0.5">
-                <IconMail className="w-4 h-4" />
-                {footerSettings.email}
-              </p>
-            )}
-            {footerSettings.phone && (
-              <p className="flex items-center gap-2 mb-0.5">
-                <IconPhone className="w-4 h-4" />
-                {footerSettings.phone}
-              </p>
-            )}
-            {footerSettings.website && (
-              <p className="flex items-center gap-2 mb-0.5">
-                <IconWorld className="w-4 h-4" />
-                <a href={footerSettings.website} className="text-blue-600 hover:underline">
-                  {footerSettings.website.replace(/^https?:\/\//, '')}
-                </a>
-              </p>
-            )}
-            
-            {/* Social Links */}
-            <div className="flex items-center gap-3 mt-3">
-              {footerSettings.linkedin && (
-                <a href={footerSettings.linkedin} className="text-gray-500 hover:text-blue-600">
-                  <IconBrandLinkedin className="w-5 h-5" />
-                </a>
-              )}
-              {footerSettings.twitter && (
-                <a href={footerSettings.twitter} className="text-gray-500 hover:text-sky-500">
-                  <IconBrandTwitter className="w-5 h-5" />
-                </a>
-              )}
-              {footerSettings.instagram && (
-                <a href={footerSettings.instagram} className="text-gray-500 hover:text-pink-600">
-                  <IconBrandInstagram className="w-5 h-5" />
-                </a>
-              )}
-              {footerSettings.facebook && (
-                <a href={footerSettings.facebook} className="text-gray-500 hover:text-blue-700">
-                  <IconBrandFacebook className="w-5 h-5" />
-                </a>
+          )}
+        </div>
+      ) : (
+        // Footer classique avec footerSettings
+        <div className="p-6" style={{ fontFamily: emailFontFamily }}>
+          <div className="flex items-start gap-6">
+            {/* Logo / Avatar */}
+            <div className="flex-shrink-0">
+              {footerLogoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img 
+                  src={footerLogoUrl} 
+                  alt="Logo" 
+                  className="w-16 h-16 rounded-lg object-cover"
+                />
+              ) : userProfilePicture ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img 
+                  src={userProfilePicture}
+                  alt="Profile"
+                  className="w-16 h-16 rounded-lg object-cover"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-lg bg-gray-300 flex items-center justify-center">
+                  <IconUser className="w-8 h-8 text-gray-500" />
+                </div>
               )}
             </div>
+
+            {/* Contact Info */}
+            <div className="flex-1 text-sm text-gray-600">
+              <p className="font-semibold text-gray-800 mb-1">
+                {footerSettings.firstName} {footerSettings.lastName}
+              </p>
+              {footerSettings.email && (
+                <p className="flex items-center gap-2 mb-0.5">
+                  <IconMail className="w-4 h-4" />
+                  {footerSettings.email}
+                </p>
+              )}
+              {footerSettings.phone && (
+                <p className="flex items-center gap-2 mb-0.5">
+                  <IconPhone className="w-4 h-4" />
+                  {footerSettings.phone}
+                </p>
+              )}
+              {footerSettings.website && (
+                <p className="flex items-center gap-2 mb-0.5">
+                  <IconWorld className="w-4 h-4" />
+                  <a href={footerSettings.website} className="text-blue-600 hover:underline">
+                    {footerSettings.website.replace(/^https?:\/\//, '')}
+                  </a>
+                </p>
+              )}
+              
+              {/* Social Links */}
+              <div className="flex items-center gap-3 mt-3">
+                {footerSettings.linkedin && (
+                  <a href={footerSettings.linkedin} className="text-gray-500 hover:text-blue-600">
+                    <IconBrandLinkedin className="w-5 h-5" />
+                  </a>
+                )}
+                {footerSettings.twitter && (
+                  <a href={footerSettings.twitter} className="text-gray-500 hover:text-sky-500">
+                    <IconBrandTwitter className="w-5 h-5" />
+                  </a>
+                )}
+                {footerSettings.instagram && (
+                  <a href={footerSettings.instagram} className="text-gray-500 hover:text-pink-600">
+                    <IconBrandInstagram className="w-5 h-5" />
+                  </a>
+                )}
+                {footerSettings.facebook && (
+                  <a href={footerSettings.facebook} className="text-gray-500 hover:text-blue-700">
+                    <IconBrandFacebook className="w-5 h-5" />
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Custom text */}
-        {footerSettings.customText && (
-          <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-gray-200">
-            {footerSettings.customText}
+          {/* Custom text */}
+          {footerSettings.customText && (
+            <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-gray-200">
+              {footerSettings.customText}
+            </p>
+          )}
+
+          {/* Unsubscribe */}
+          <p className="text-xs text-gray-400 mt-4 text-center">
+            <a href="#" className="hover:underline">{footerSettings.unsubscribeText}</a>
           </p>
-        )}
-
-        {/* Unsubscribe */}
-        <p className="text-xs text-gray-400 mt-4 text-center">
-          <a href="#" className="hover:underline">{footerSettings.unsubscribeText}</a>
-        </p>
-      </div>
+        </div>
+      )}
       
-      {/* Banner (end of email) */}
-      {bannerImageUrl && (
+      {/* Banner (end of email) - utilise la bannière de la signature si aucune bannière spécifique */}
+      {(bannerImageUrl || signatureData?.banner_url) && (
         <div className="flex justify-center items-center w-full pb-8 px-6">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            src={bannerImageUrl} 
-            alt="Bannière" 
-            className="w-full rounded-lg object-contain max-h-48"
-          />
+          {(signatureData?.banner_link || '') ? (
+            <a href={signatureData?.banner_link} target="_blank" rel="noopener noreferrer">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={bannerImageUrl || signatureData?.banner_url || ''} 
+                alt="Bannière" 
+                className="w-full rounded-lg object-contain max-h-48"
+              />
+            </a>
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img 
+              src={bannerImageUrl || signatureData?.banner_url || ''} 
+              alt="Bannière" 
+              className="w-full rounded-lg object-contain max-h-48"
+            />
+          )}
         </div>
       )}
     </div>
@@ -1236,6 +1367,10 @@ export default function ComposeNewsletterPage() {
   const [smtpConfig, setSmtpConfig] = useState<SmtpConfig | null>(null);
   const [showSmtpWarning, setShowSmtpWarning] = useState(false);
   
+  // Email Signature State (for banner and signature data)
+  const [signatureData, setSignatureData] = useState<CreateEmailSignatureData | null>(null);
+  const [signatureLoaded, setSignatureLoaded] = useState(false);
+  
   // Custom templates state
   const [customTemplates, setCustomTemplates] = useState<CustomTemplate[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
@@ -1387,6 +1522,53 @@ export default function ComposeNewsletterPage() {
     };
     
     loadSmtpConfig();
+  }, [user?.id]);
+  
+  // Load email signature on mount (for banner and signature data)
+  useEffect(() => {
+    const loadSignature = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const sig = await fetchEmailSignature(user.id);
+        if (sig) {
+          setSignatureData({
+            company_name: sig.company_name || '',
+            sender_name: sig.sender_name || '',
+            sender_title: sig.sender_title || '',
+            phone: sig.phone || '',
+            website: sig.website || '',
+            address: sig.address || '',
+            linkedin_url: sig.linkedin_url || '',
+            twitter_url: sig.twitter_url || '',
+            instagram_url: sig.instagram_url || '',
+            facebook_url: sig.facebook_url || '',
+            logo_url: sig.logo_url || '',
+            banner_url: sig.banner_url || '',
+            banner_link: sig.banner_link || '',
+            banner_alt: sig.banner_alt || '',
+            logo_size: sig.logo_size || 100,
+            primary_color: sig.primary_color || '#10b981',
+            text_color: sig.text_color || '#333333',
+            secondary_color: sig.secondary_color || '#666666',
+            font_family: sig.font_family || 'Inter',
+            social_links: sig.social_links || [],
+          });
+          
+          // Auto-fill banner from signature if no banner set yet
+          if (sig.banner_url && !bannerImageUrl) {
+            setBannerImageUrl(sig.banner_url);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading email signature:', error);
+      } finally {
+        setSignatureLoaded(true);
+      }
+    };
+    
+    loadSignature();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   // Load ALL Google Fonts on mount for font preview buttons
@@ -2441,6 +2623,7 @@ export default function ComposeNewsletterPage() {
     specialOffer: t('special_offer'),
     yourTitleHere: t('your_title_here'),
     contentPreviewPlaceholder: t('content_preview_placeholder'),
+    unsubscribe: t('unsubscribe') || 'Se désabonner',
   }), [t]);
 
   return (
@@ -3201,7 +3384,18 @@ export default function ComposeNewsletterPage() {
 
                     {/* Banner Image */}
                     <div className="bg-card rounded-xl p-6 border border-default space-y-4">
-                      <h3 className="font-semibold text-primary">{t('banner_section_title')}</h3>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-primary">{t('banner_section_title') || 'Bannière de fin'}</h3>
+                        {signatureData?.banner_url && !bannerImageUrl && (
+                          <button
+                            onClick={() => setBannerImageUrl(signatureData.banner_url || '')}
+                            className="text-sm text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+                          >
+                            <IconPhoto className="w-4 h-4" />
+                            {t('use_signature_banner') || 'Utiliser la bannière de ma signature'}
+                          </button>
+                        )}
+                      </div>
                       
                       {bannerImageUrl ? (
                         <div className="relative">
@@ -3229,6 +3423,13 @@ export default function ComposeNewsletterPage() {
                               <IconX className="w-4 h-4" />
                             </button>
                           </div>
+                          {/* Indicator if using signature banner */}
+                          {signatureData?.banner_url === bannerImageUrl && (
+                            <div className="mt-2 text-xs text-muted flex items-center gap-1">
+                              <IconCheck className="w-3 h-3 text-accent" />
+                              {t('using_signature_banner') || 'Utilise la bannière de votre signature email'}
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div 
@@ -3237,10 +3438,21 @@ export default function ComposeNewsletterPage() {
                             hover:border-accent hover:bg-accent-light/30 transition-all cursor-pointer group"
                         >
                           <IconUpload className="w-8 h-8 mx-auto mb-2 text-muted group-hover:text-accent transition-colors" />
-                          <p className="text-primary font-medium">{t('add_banner')}</p>
-                          <p className="text-sm text-muted">{t('banner_hint')}</p>
+                          <p className="text-primary font-medium">{t('add_banner') || 'Ajouter une bannière'}</p>
+                          <p className="text-sm text-muted">{t('banner_hint') || 'Image promotionnelle en fin d\'email'}</p>
                         </div>
                       )}
+                      
+                      {/* Link to signature settings */}
+                      <div className="pt-2 border-t border-default">
+                        <Link
+                          href="/dashboard/settings?tab=email"
+                          className="text-sm text-accent hover:text-accent/80 transition-colors inline-flex items-center gap-1"
+                        >
+                          <IconSettings className="w-3.5 h-3.5" />
+                          {t('edit_signature_banner') || 'Modifier la bannière dans ma signature email'}
+                        </Link>
+                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -3893,6 +4105,7 @@ export default function ComposeNewsletterPage() {
                             buttonTextColor={customColors.buttonTextColor}
                             headerBackgroundUrl={headerBackgroundUrl}
                             fontFamily={customColors.fontFamily}
+                            signatureData={signatureData}
                             translations={emailPreviewTranslations}
                           />
                         ) : (

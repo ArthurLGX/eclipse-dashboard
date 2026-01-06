@@ -14,9 +14,8 @@ import {
   IconPaperclip,
   IconDots,
   IconChevronDown,
-  IconUser,
-  IconCalendar,
 } from '@tabler/icons-react';
+import type { CreateEmailSignatureData } from '@/types';
 
 // Types
 interface EmailTemplate {
@@ -29,6 +28,7 @@ interface SenderInfo {
   firstName: string;
   lastName: string;
   email: string;
+  profilePicture?: string | null;
 }
 
 interface NewsletterData {
@@ -46,6 +46,14 @@ interface NewsletterData {
 interface MailboxPreviewProps {
   newsletter: NewsletterData;
   senderInfo?: SenderInfo;
+  /** Données de signature email pour afficher la signature complète */
+  signatureData?: CreateEmailSignatureData | null;
+  /** URL de la bannière de fin (prioritaire sur signatureData.banner_url) */
+  bannerUrl?: string;
+  /** Lien de la bannière */
+  bannerLink?: string;
+  /** Police personnalisée */
+  fontFamily?: string;
   translations: {
     inbox: string;
     favorites: string;
@@ -57,6 +65,7 @@ interface MailboxPreviewProps {
     to_me: string;
     no_content: string;
     special_offer?: string;
+    unsubscribe?: string;
   };
 }
 
@@ -78,21 +87,57 @@ const FAKE_EMAILS = [
   { from: 'Slack', subject: 'Messages non lus dans #general', time: 'Dim.', avatar: '#4A154B' },
 ];
 
-// Composant Email Preview interne
+// Labels par défaut pour les plateformes sociales
+const SOCIAL_PLATFORM_LABELS: Record<string, string> = {
+  linkedin: 'LinkedIn',
+  twitter: 'Twitter',
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+  youtube: 'YouTube',
+  tiktok: 'TikTok',
+  github: 'GitHub',
+  custom: 'Lien',
+};
+
+// Composant Email Preview interne - rendu identique à l'email réel
 function EmailPreviewContent({ 
   newsletter, 
   templateConfig,
   translations,
+  signatureData,
+  bannerUrl,
+  bannerLink,
+  fontFamily,
 }: { 
   newsletter: NewsletterData; 
   templateConfig: EmailTemplate;
   translations: MailboxPreviewProps['translations'];
+  signatureData?: CreateEmailSignatureData | null;
+  bannerUrl?: string;
+  bannerLink?: string;
+  fontFamily?: string;
 }) {
   const isPromo = newsletter.template === 'promotional';
   const isAnnouncement = newsletter.template === 'announcement';
+  
+  // Utiliser la police personnalisée ou celle de la signature
+  const emailFontFamily = fontFamily 
+    ? `'${fontFamily}', Arial, sans-serif` 
+    : signatureData?.font_family 
+      ? `'${signatureData.font_family}', Arial, sans-serif`
+      : 'Arial, sans-serif';
+  
+  // Bannière effective (priorité: prop > signature)
+  const effectiveBannerUrl = bannerUrl || signatureData?.banner_url;
+  const effectiveBannerLink = bannerLink || signatureData?.banner_link;
+  
+  // Couleurs de la signature
+  const sigPrimaryColor = signatureData?.primary_color || '#10b981';
+  const sigTextColor = signatureData?.text_color || '#333333';
+  const sigSecondaryColor = signatureData?.secondary_color || '#666666';
 
   return (
-    <div className="bg-white rounded-xl shadow-xl overflow-hidden text-gray-800 w-full">
+    <div className="bg-white rounded-xl shadow-xl overflow-hidden text-gray-800 w-full" style={{ fontFamily: emailFontFamily }}>
       {/* Header with template-specific styling */}
       <div 
         className={`text-center ${isAnnouncement ? 'py-12' : 'py-8'}`}
@@ -106,12 +151,17 @@ function EmailPreviewContent({
           </div>
         )}
         
-        <h1 className={`font-bold text-gray-800 mb-2 px-6 ${isAnnouncement ? 'text-3xl' : 'text-2xl'}`}>
+        <h1 
+          className={`font-bold text-gray-800 mb-2 px-6 ${isAnnouncement ? 'text-3xl' : 'text-2xl'}`}
+          style={{ fontFamily: emailFontFamily }}
+        >
           {newsletter.title}
         </h1>
         
         {newsletter.subject && newsletter.subject !== newsletter.title && (
-          <p className="text-gray-700/80 px-6">{newsletter.subject}</p>
+          <p className="text-gray-700/80 px-6" style={{ fontFamily: emailFontFamily }}>
+            {newsletter.subject}
+          </p>
         )}
       </div>
 
@@ -119,7 +169,8 @@ function EmailPreviewContent({
       <div className="p-8">
         {newsletter.content ? (
           <div 
-            className="prose prose-sm max-w-none text-gray-700"
+            className="prose prose-sm max-w-none text-gray-700 [&_*]:!font-[inherit]"
+            style={{ fontFamily: emailFontFamily }}
             dangerouslySetInnerHTML={{ 
               __html: DOMPurify.sanitize(newsletter.content, {
                 ALLOWED_TAGS: ['p', 'br', 'b', 'i', 'u', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'video', 'span', 'div', 'table', 'tr', 'td', 'th', 'thead', 'tbody'],
@@ -135,28 +186,169 @@ function EmailPreviewContent({
         )}
       </div>
 
-      {/* Footer */}
-      <div className="px-8 py-6 bg-gray-50 border-t border-gray-100">
-        <div className="flex items-center justify-between text-sm text-gray-500">
-          <div className="flex items-center gap-2">
-            <IconUser className="w-4 h-4" />
-            <span>{newsletter.author?.username || newsletter.author?.email || '-'}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <IconCalendar className="w-4 h-4" />
-            <span>
-              {newsletter.send_at 
-                ? new Date(newsletter.send_at).toLocaleDateString('fr-FR', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
-                  })
-                : '-'
-              }
-            </span>
-          </div>
+      {/* Signature - rendu identique à l'email réel */}
+      {signatureData && (signatureData.sender_name || signatureData.company_name || signatureData.logo_url) && (
+        <div className="px-8 py-6 border-t border-gray-200">
+          <SignaturePreview 
+            data={signatureData}
+            fontFamily={emailFontFamily}
+            primaryColor={sigPrimaryColor}
+            textColor={sigTextColor}
+            secondaryColor={sigSecondaryColor}
+          />
         </div>
+      )}
+
+      {/* Bannière de fin */}
+      {effectiveBannerUrl && (
+        <div className="px-8 pb-6">
+          {effectiveBannerLink ? (
+            <a href={effectiveBannerLink} target="_blank" rel="noopener noreferrer">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={effectiveBannerUrl} 
+                alt="Banner" 
+                className="w-full rounded-lg object-contain max-h-48"
+              />
+            </a>
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img 
+              src={effectiveBannerUrl} 
+              alt="Banner" 
+              className="w-full rounded-lg object-contain max-h-48"
+            />
+          )}
+        </div>
+      )}
+
+      {/* Footer avec lien de désinscription */}
+      <div className="px-8 py-4 bg-gray-50 border-t border-gray-100 text-center">
+        {translations.unsubscribe && (
+          <a 
+            href="#" 
+            className="text-sm hover:underline"
+            style={{ color: sigPrimaryColor }}
+          >
+            {translations.unsubscribe}
+          </a>
+        )}
       </div>
+    </div>
+  );
+}
+
+// Composant de prévisualisation de la signature - identique à l'email réel
+function SignaturePreview({ 
+  data,
+  fontFamily,
+  primaryColor,
+  textColor,
+  secondaryColor,
+}: { 
+  data: CreateEmailSignatureData;
+  fontFamily: string;
+  primaryColor: string;
+  textColor: string;
+  secondaryColor: string;
+}) {
+  const logoSize = data.logo_size || 100;
+  const socialLinks = data.social_links || [];
+
+  return (
+    <div 
+      className="[&_*]:!bg-transparent"
+      style={{ fontFamily, fontSize: '14px', color: textColor, background: 'transparent' }}
+    >
+      {/* Signature - Alignée à gauche */}
+      <table 
+        cellPadding={0} 
+        cellSpacing={0} 
+        className="!bg-transparent"
+        style={{ borderCollapse: 'collapse', background: 'transparent' }}
+      >
+        <tbody className="!bg-transparent" style={{ background: 'transparent' }}>
+          <tr className="!bg-transparent" style={{ background: 'transparent' }}>
+            {/* Logo */}
+            {data.logo_url && (
+              <td className="!bg-transparent" style={{ paddingRight: '12px', verticalAlign: 'top', background: 'transparent' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={data.logo_url} 
+                  alt="Logo" 
+                  style={{ 
+                    width: `${logoSize}px`, 
+                    height: `${logoSize}px`, 
+                    objectFit: 'contain', 
+                    borderRadius: '8px', 
+                    display: 'block',
+                  }}
+                />
+              </td>
+            )}
+            
+            {/* Info */}
+            <td className="!bg-transparent" style={{ verticalAlign: 'top', background: 'transparent' }}>
+              {/* Name & Title */}
+              {data.sender_name && (
+                <div style={{ fontWeight: 'bold', fontSize: '16px', color: textColor }}>
+                  {data.sender_name}
+                </div>
+              )}
+              {data.sender_title && (
+                <div style={{ color: secondaryColor, marginBottom: '6px', fontSize: '14px' }}>
+                  {data.sender_title}
+                </div>
+              )}
+              
+              {/* Company */}
+              {data.company_name && (
+                <div style={{ fontWeight: 600, color: primaryColor, marginBottom: '4px' }}>
+                  {data.company_name}
+                </div>
+              )}
+              
+              {/* Contact */}
+              <div style={{ fontSize: '13px', color: secondaryColor }}>
+                {data.phone && <div>📞 {data.phone}</div>}
+                {data.website && (
+                  <div>
+                    🌐 <a href={data.website} style={{ color: primaryColor, textDecoration: 'none' }}>
+                      {data.website.replace(/^https?:\/\//, '')}
+                    </a>
+                  </div>
+                )}
+                {data.address && <div>📍 {data.address}</div>}
+              </div>
+              
+              {/* Social links */}
+              {socialLinks.length > 0 && (
+                <div style={{ marginTop: '10px' }}>
+                  {socialLinks.map((link, index) => {
+                    const label = link.label || SOCIAL_PLATFORM_LABELS[link.platform] || link.platform;
+                    const color = link.color || primaryColor;
+                    
+                    return (
+                      <a 
+                        key={link.id || index}
+                        href={link.url} 
+                        style={{ 
+                          color, 
+                          marginRight: '8px', 
+                          textDecoration: 'none',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {label}
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -164,20 +356,28 @@ function EmailPreviewContent({
 export default function MailboxPreview({ 
   newsletter,
   senderInfo,
+  signatureData,
+  bannerUrl,
+  bannerLink,
+  fontFamily,
   translations,
 }: MailboxPreviewProps) {
   const templateConfig = TEMPLATE_CONFIG[newsletter.template] || TEMPLATE_CONFIG.standard;
   
-  // Utiliser les infos de l'auteur si senderInfo n'est pas fourni
+  // Utiliser les infos de l'auteur ou de la signature si senderInfo n'est pas fourni
   const sender = senderInfo || {
-    firstName: newsletter.author?.username?.split(' ')[0] || 'Eclipse',
-    lastName: newsletter.author?.username?.split(' ')[1] || '',
+    firstName: signatureData?.sender_name?.split(' ')[0] || newsletter.author?.username?.split(' ')[0] || 'Eclipse',
+    lastName: signatureData?.sender_name?.split(' ').slice(1).join(' ') || newsletter.author?.username?.split(' ')[1] || '',
     email: newsletter.author?.email || 'email@example.com',
+    profilePicture: null,
   };
 
   const sendTime = newsletter.send_at 
     ? new Date(newsletter.send_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
     : translations.now;
+  
+  // Bannière effective pour l'indicateur
+  const effectiveBannerUrl = bannerUrl || signatureData?.banner_url;
 
   return (
     <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[700px]">
@@ -237,20 +437,40 @@ export default function MailboxPreview({
           </div>
 
           {/* Email items */}
-          <div className="flex-1 overflow-y-auto">
+          <div 
+            className="flex-1 overflow-y-auto focus:outline-none"
+            tabIndex={0}
+            onMouseEnter={(e) => e.currentTarget.focus()}
+          >
             {/* Current newsletter - highlighted */}
             <div className="bg-blue-50 border-l-4 border-blue-500 p-4 cursor-pointer">
               <div className="flex items-start gap-3">
                 <div 
-                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-semibold"
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-semibold overflow-hidden"
                   style={{ backgroundColor: templateConfig.primaryColor }}
                 >
-                  {(sender.firstName?.[0] || 'E').toUpperCase()}
+                  {sender.profilePicture ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img 
+                      src={sender.profilePicture} 
+                      alt="" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : signatureData?.logo_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img 
+                      src={signatureData.logo_url} 
+                      alt="" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    (sender.firstName?.[0] || 'E').toUpperCase()
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-semibold text-gray-900 truncate">
-                      {sender.firstName} {sender.lastName}
+                      {signatureData?.company_name || `${sender.firstName} ${sender.lastName}`}
                     </span>
                     <span className="text-xs text-gray-500 flex-shrink-0 ml-2">{sendTime}</span>
                   </div>
@@ -263,7 +483,7 @@ export default function MailboxPreview({
                 </div>
               </div>
               <div className="flex items-center gap-2 mt-2 ml-13">
-                <IconPaperclip className="w-3 h-3 text-gray-400" />
+                {effectiveBannerUrl && <IconPaperclip className="w-3 h-3 text-gray-400" />}
                 <IconStarFilled className="w-3 h-3 text-yellow-400" />
               </div>
             </div>
@@ -313,15 +533,31 @@ export default function MailboxPreview({
             </div>
             <div className="flex items-center gap-3">
               <div 
-                className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold"
+                className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold overflow-hidden"
                 style={{ backgroundColor: templateConfig.primaryColor }}
               >
-                {(sender.firstName?.[0] || 'E').toUpperCase()}
+                {sender.profilePicture ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img 
+                    src={sender.profilePicture} 
+                    alt="" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : signatureData?.logo_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img 
+                    src={signatureData.logo_url} 
+                    alt="" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  (sender.firstName?.[0] || 'E').toUpperCase()
+                )}
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-gray-900">
-                    {sender.firstName} {sender.lastName}
+                    {signatureData?.company_name || `${sender.firstName} ${sender.lastName}`}
                   </span>
                   <span className="text-gray-400 text-sm">
                     &lt;{sender.email}&gt;
@@ -336,12 +572,20 @@ export default function MailboxPreview({
           </div>
 
           {/* Email body - scrollable */}
-          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 min-w-0">
+          <div 
+            className="flex-1 overflow-y-auto p-4 bg-gray-50 min-w-0 focus:outline-none"
+            tabIndex={0}
+            onMouseEnter={(e) => e.currentTarget.focus()}
+          >
             <div className="w-full max-w-2xl mx-auto">
               <EmailPreviewContent 
                 newsletter={newsletter} 
                 templateConfig={templateConfig}
                 translations={translations}
+                signatureData={signatureData}
+                bannerUrl={bannerUrl}
+                bannerLink={bannerLink}
+                fontFamily={fontFamily}
               />
             </div>
           </div>
@@ -350,4 +594,3 @@ export default function MailboxPreview({
     </div>
   );
 }
-
