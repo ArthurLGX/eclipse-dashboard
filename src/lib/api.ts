@@ -2352,7 +2352,7 @@ export const fetchTimeEntries = async (
     billable?: boolean;
   }
 ): Promise<TimeEntry[]> => {
-  let query = `time-entries?filters[users][id][$eq]=${userId}&populate=project,task,client&sort=start_time:desc`;
+  let query = `time-entries?filters[users][id][$eq]=${userId}&populate[0]=project&populate[1]=task&populate[2]=client&sort=start_time:desc`;
   
   if (filters?.projectId) {
     query += `&filters[project][documentId][$eq]=${filters.projectId}`;
@@ -2377,7 +2377,7 @@ export const fetchTimeEntries = async (
 /** Récupère l'entrée de temps en cours (timer actif) */
 export const fetchRunningTimeEntry = async (userId: number): Promise<TimeEntry | null> => {
   const response = await get<ApiResponse<TimeEntry[]>>(
-    `time-entries?filters[users][id][$eq]=${userId}&filters[is_running][$eq]=true&populate=project,task,client`
+    `time-entries?filters[users][id][$eq]=${userId}&filters[is_running][$eq]=true&populate[0]=project&populate[1]=task&populate[2]=client`
   );
   return response.data?.[0] || null;
 };
@@ -2433,7 +2433,7 @@ export const stopTimeEntry = async (documentId: string): Promise<TimeEntry> => {
 /** Récupère une entrée de temps par documentId */
 const fetchTimeEntryByDocumentId = async (documentId: string): Promise<TimeEntry | null> => {
   const response = await get<ApiResponse<TimeEntry>>(
-    `time-entries/${documentId}?populate=project,task,client`
+    `time-entries/${documentId}?populate[0]=project&populate[1]=task&populate[2]=client`
   );
   return response.data || null;
 };
