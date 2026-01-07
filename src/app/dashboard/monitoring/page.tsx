@@ -338,17 +338,23 @@ export default function MonitoringPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                            site.site_type === 'frontend' ? 'bg-info/20 text-info' :
-                            site.site_type === 'backend' ? 'bg-accent/20 text-accent' :
-                            site.site_type === 'api' ? 'bg-warning/20 text-warning' :
-                            'bg-muted/20 text-muted'
-                          }`}>
-                            {site.site_type === 'frontend' && <IconDeviceDesktop className="w-3 h-3" />}
-                            {site.site_type === 'backend' && <IconServer className="w-3 h-3" />}
-                            {site.site_type === 'api' && <IconApi className="w-3 h-3" />}
-                            {(site.site_type || 'frontend').charAt(0).toUpperCase() + (site.site_type || 'frontend').slice(1)}
-                          </span>
+                          {(() => {
+                            const type = site.site_type || 'frontend';
+                            return (
+                              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                                type === 'frontend' ? 'bg-info/20 text-info' :
+                                type === 'backend' ? 'bg-accent/20 text-accent' :
+                                type === 'api' ? 'bg-warning/20 text-warning' :
+                                'bg-muted/20 text-muted'
+                              }`}>
+                                {type === 'frontend' && <IconDeviceDesktop className="w-3 h-3" />}
+                                {type === 'backend' && <IconServer className="w-3 h-3" />}
+                                {type === 'api' && <IconApi className="w-3 h-3" />}
+                                {type === 'other' && <IconWorld className="w-3 h-3" />}
+                                {type.charAt(0).toUpperCase() + type.slice(1)}
+                              </span>
+                            );
+                          })()}
                         </td>
                         <td className="px-4 py-3">
                           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
