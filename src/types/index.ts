@@ -805,20 +805,40 @@ export interface CreateMonitoredSiteData {
   client?: number;
 }
 
-export interface ServerCredentials {
-  ssh_user?: string;
+export type AuthMethod = 'password' | 'key';
+
+export interface ServerCredential {
+  id: number;
+  documentId: string;
+  ssh_user: string;
+  ssh_port: number;
+  auth_method: AuthMethod;
+  // Ces champs ne sont JAMAIS retournés par l'API pour des raisons de sécurité
+  // ssh_password_encrypted?: string;
+  // ssh_private_key_encrypted?: string;
+  monitored_site?: MonitoredSite;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateServerCredentialData {
+  monitored_site_id: string;
+  ssh_user: string;
   ssh_password?: string;
   ssh_private_key?: string;
-  ftp_user?: string;
-  ftp_password?: string;
-  database_host?: string;
-  database_user?: string;
-  database_password?: string;
-  database_name?: string;
-  admin_url?: string;
-  admin_user?: string;
-  admin_password?: string;
-  notes?: string;
+  ssh_port?: number;
+  auth_method: AuthMethod;
+}
+
+export interface ServerCredentialMetadata {
+  exists: boolean;
+  data?: {
+    ssh_user: string;
+    ssh_port: number;
+    auth_method: AuthMethod;
+    has_password: boolean;
+    has_key: boolean;
+  };
 }
 
 export type UpdateMonitoredSiteData = Partial<CreateMonitoredSiteData>;

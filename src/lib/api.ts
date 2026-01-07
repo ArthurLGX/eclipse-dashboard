@@ -3,7 +3,13 @@
  * @description API centralisée pour les requêtes Strapi
  */
 
-import type { Client, Facture, CreateFactureData } from '@/types';
+import type { 
+  Client, 
+  Facture, 
+  CreateFactureData,
+  ServerCredentialMetadata,
+  CreateServerCredentialData,
+} from '@/types';
 
 // ============================================================================
 // CONFIGURATION & HELPERS
@@ -2335,6 +2341,47 @@ export const updateMonitoredSite = async (
 /** Supprime un site surveillé */
 export const deleteMonitoredSite = async (documentId: string): Promise<void> => {
   await del(`monitored-sites/${documentId}`);
+};
+
+// ============================================================================
+// SERVER CREDENTIALS (Accès serveurs)
+// ============================================================================
+
+/** Récupère les métadonnées des credentials d'un site (sans les secrets) */
+export const fetchServerCredentials = async (siteDocumentId: string): Promise<ServerCredentialMetadata> => {
+  const jwt = getToken();
+  const response = await fetch(`/api/credentials?site_id=${siteDocumentId}`, {
+    headers: {
+      'Authorization': `Bearer ${jwt}`,
+    },
+  });
+  return response.json();
+};
+
+/** Sauvegarde les credentials d'un site (chiffrés côté serveur) */
+export const saveServerCredentials = async (data: CreateServerCredentialData): Promise<{ success: boolean; message: string }> => {
+  const jwt = getToken();
+  const response = await fetch('/api/credentials', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(data),
+  });
+  return response.json();
+};
+
+/** Supprime les credentials d'un site */
+export const deleteServerCredentials = async (siteDocumentId: string): Promise<{ success: boolean; message: string }> => {
+  const jwt = getToken();
+  const response = await fetch(`/api/credentials?site_id=${siteDocumentId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${jwt}`,
+    },
+  });
+  return response.json();
 };
 
 // ============================================================================
