@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useDragControls } from 'motion/react';
 import {
   IconClock,
   IconPlayerStop,
@@ -9,6 +9,9 @@ import {
   IconCheck,
   IconAlertTriangle,
   IconX,
+  IconGripVertical,
+  IconChevronRight,
+  IconChevronLeft,
 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -38,7 +41,11 @@ export default function TimerIndicator() {
   const [loading, setLoading] = useState(false);
   const [showExceededModal, setShowExceededModal] = useState(false);
   const [exceededModalShown, setExceededModalShown] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const timerRef = useRef<HTMLDivElement>(null);
+  const dragControls = useDragControls();
+  const constraintsRef = useRef<HTMLDivElement>(null);
 
   // Vérifier si le module time_tracking est activé
   const isTimeTrackingEnabled = enabledModules?.includes('time_tracking') ?? false;
@@ -182,49 +189,100 @@ export default function TimerIndicator() {
 
   return (
     <>
-      {/* Timer Bar - Fixed Right Side */}
+      {/* Drag Constraints Container */}
+      <div 
+        ref={constraintsRef}
+        className="fixed inset-0 pointer-events-none z-[1001]"
+      />
+
+      {/* Timer Bar - Draggable & Collapsible */}
       <motion.div 
         ref={timerRef}
-        initial={{ x: 100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
+        drag
+        dragControls={dragControls}
+        dragConstraints={constraintsRef}
+        dragElastic={0.1}
+        dragMomentum={false}
+        onDragEnd={(_, info) => {
+          setPosition(prev => ({
+            x: prev.x + info.offset.x,
+            y: prev.y + info.offset.y,
+          }));
+        }}
+        initial={{ x: 100, opacity: 0, y: 0 }}
+        animate={{ 
+          x: isCollapsed ? 180 : 0, 
+          opacity: 1,
+          y: position.y,
+        }}
         exit={{ x: 100, opacity: 0 }}
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-[1002] flex"
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        className="fixed right-0 top-1/2 z-[1002] flex items-center pointer-events-auto cursor-grab active:cursor-grabbing"
+        style={{ touchAction: 'none' }}
       >
-        {/* Main Timer Panel */}
-        <div 
-          className={`relative overflow-hidden rounded-l-xl shadow-2xl border-l border-t border-b transition-all ${
+        {/* Collapse Toggle Button */}
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className={`flex items-center justify-center w-6 h-16 rounded-l-lg shadow-lg transition-all ${
             isExceeded 
-              ? 'bg-danger/95 border-danger' 
-              : 'bg-warning/95 border-warning'
+              ? 'bg-danger hover:bg-danger/90' 
+              : 'bg-warning hover:bg-warning/90'
+          }`}
+          title={isCollapsed ? (t('expand') || 'Ouvrir') : (t('collapse') || 'Réduire')}
+        >
+          {isCollapsed ? (
+            <IconChevronLeft className="w-4 h-4 text-white" />
+          ) : (
+            <IconChevronRight className="w-4 h-4 text-white" />
+          )}
+        </button>
+
+        {/* Main Timer Panel */}
+        <motion.div 
+          animate={{ 
+            width: isCollapsed ? 0 : 'auto',
+            opacity: isCollapsed ? 0 : 1,
+          }}
+          transition={{ duration: 0.2 }}
+          className={`relative overflow-hidden rounded-r-xl shadow-2xl border-r border-t border-b ${
+            isExceeded 
+              ? 'bg-danger border-danger' 
+              : 'bg-warning border-warning'
           }`}
           style={{ backdropFilter: 'blur(12px)' }}
         >
           {/* Progress Bar Background */}
           <div className="absolute inset-0 bg-black/10" />
           <motion.div 
-            className={`absolute inset-y-0 left-0 ${isExceeded ? 'bg-danger-dark/30' : 'bg-warning-dark/30'}`}
+            className={`absolute inset-y-0 left-0 ${isExceeded ? 'bg-black/20' : 'bg-black/15'}`}
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
             transition={{ duration: 0.5 }}
           />
           
           {/* Content */}
-          <div className="relative p-3 min-w-[200px]">
-            {/* Task Name */}
+          <div className="relative p-3 min-w-[220px]">
+            {/* Drag Handle + Task Name */}
             <div className="flex items-center gap-2 mb-2">
-              <IconClock className="w-4 h-4 text-white/80 animate-pulse" />
-              <span className="text-sm font-medium text-white truncate max-w-[150px]">
+              <div
+                onPointerDown={(e) => dragControls.start(e)}
+                className="cursor-grab active:cursor-grabbing p-0.5 -ml-1 hover:bg-white/10 rounded"
+              >
+                <IconGripVertical className="w-4 h-4 text-white/60" />
+              </div>
+              <IconClock className="w-4 h-4 text-white animate-pulse" />
+              <span className="text-sm font-medium text-white truncate max-w-[140px]">
                 {taskName}
               </span>
             </div>
 
             {/* Timer Display */}
             <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-2xl font-mono font-bold text-white">
+              <span className="text-2xl font-mono font-bold text-white drop-shadow-md">
                 {formatSeconds(runningTime)}
               </span>
               {runningEntry.estimated_duration && (
-                <span className="text-xs text-white/70">
+                <span className="text-xs text-white/80 font-medium">
                   / {formatMinutes(runningEntry.estimated_duration)}
                 </span>
               )}
@@ -232,9 +290,9 @@ export default function TimerIndicator() {
 
             {/* Progress Bar */}
             {runningEntry.estimated_duration && (
-              <div className="h-1.5 bg-white/20 rounded-full overflow-hidden mb-3">
+              <div className="h-2 bg-white/30 rounded-full overflow-hidden mb-3">
                 <motion.div 
-                  className={`h-full rounded-full ${isExceeded ? 'bg-white' : 'bg-white/80'}`}
+                  className={`h-full rounded-full ${isExceeded ? 'bg-white' : 'bg-white'}`}
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min(progressPercent, 100)}%` }}
                   transition={{ duration: 0.3 }}
@@ -247,7 +305,7 @@ export default function TimerIndicator() {
               <button
                 onClick={() => handleStopTimer(isExceeded ? undefined : 'completed')}
                 disabled={loading}
-                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white/20 hover:bg-white/30 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white/25 hover:bg-white/35 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 shadow-sm"
               >
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -260,14 +318,14 @@ export default function TimerIndicator() {
               </button>
               <button
                 onClick={() => router.push('/dashboard/time-tracking')}
-                className="p-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors"
+                className="p-2 bg-white/25 hover:bg-white/35 text-white rounded-lg transition-colors shadow-sm"
                 title={t('view_details') || 'Voir détails'}
               >
                 <IconExternalLink className="w-4 h-4" />
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
 
       {/* Exceeded Time Modal */}

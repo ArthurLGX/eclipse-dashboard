@@ -275,9 +275,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
-  // URL du dashboard pour éviter de se vérifier soi-même
+  // URLs à ne pas vérifier (dashboard lui-même, localhost, etc.)
   const dashboardUrl = process.env.NEXT_PUBLIC_APP_URL || '';
   const dashboardHost = dashboardUrl ? new URL(dashboardUrl).host : '';
+  const excludedHosts = ['localhost', '127.0.0.1', '[::1]'];
+  if (dashboardHost) excludedHosts.push(dashboardHost);
   
   try {
     // Récupérer tous les sites à vérifier
@@ -309,11 +311,12 @@ export async function GET(request: NextRequest) {
     // Et éviter de vérifier le propre domaine du dashboard
     const now = new Date();
     const sitesToCheck = sites.filter(site => {
-      // Éviter de vérifier le dashboard lui-même pour éviter les boucles
+      // Éviter de vérifier le dashboard lui-même, localhost, etc.
       try {
-        const siteHost = new URL(site.url).host;
-        if (dashboardHost && siteHost === dashboardHost) {
-          console.log(`Skipping self-check for ${site.url}`);
+        const siteUrl = new URL(site.url);
+        const siteHost = siteUrl.hostname;
+        if (excludedHosts.some(h => siteHost === h || siteHost.includes(h))) {
+          console.log(`Skipping excluded host: ${site.url}`);
           return false;
         }
       } catch {

@@ -432,8 +432,8 @@ const translations = {
 
     // Projects
     new_project: 'Nouveau projet',
-    tasks_pending: 'tâches en attente',
-    tasks_completed: 'tâches terminées',
+    tasks_pending: 'Tâches en attente',
+    tasks_completed: 'Tâches terminées',
     activate_free_plan: 'Activer le plan gratuit',
     free_plan_confirmation_message:
       'Voulez-vous vraiment activer le plan gratuit ?',
@@ -1596,6 +1596,7 @@ const translations = {
     will_be_deactivated_plural: 'seront désactivés',
     quota_selection_saved: 'Sélection enregistrée avec succès',
     items_deactivated: 'éléments désactivés',
+    estimated_time: 'Temps estimé',
     
     // Modules & Business Types
     modules: 'Modules',
@@ -1704,6 +1705,11 @@ const translations = {
     start_time: 'Heure de début',
     end_time: 'Heure de fin',
     this_month: 'Ce mois',
+    week: 'Semaine',
+    month: 'Mois',
+    year: 'Année',
+    months: 'Mois',
+    three_months: '3 mois',
     
     // Time Tracking Analytics
     time_analytics: 'Analyse du temps',
@@ -1730,7 +1736,6 @@ const translations = {
     many_exceeded: 'Beaucoup de dépassements',
     many_exceeded_advice: 'Prévoyez plus de marge dans vos planifications',
     exceeded: 'Dépassées',
-    three_months: '3 mois',
     
     // Quotes (Devis - uniques)
     quotes_desc: 'Gérez vos devis et convertissez-les en factures',
@@ -2684,8 +2689,8 @@ const translations = {
 
     // Project tasks
     project_tasks: 'Project Tasks',
-    tasks_pending: 'tasks pending',
-    tasks_completed: 'tasks completed',
+    tasks_pending: 'Tasks pending',
+    tasks_completed: 'Tasks completed',
     progress: 'progress',
     overall_progress: 'Overall progress',
     add_task: 'New task',
@@ -2874,6 +2879,11 @@ const translations = {
     no_notifications_desc: 'You have no notifications at the moment.',
     today: 'Today',
     this_week: 'This week',
+    week: 'Week',
+    month: 'Month',
+    year: 'Year',
+    months: 'Months',
+    three_months: '3 months',
     older: 'Older',
     unread: 'Unread',
     read: 'Read',
@@ -3353,6 +3363,7 @@ const translations = {
     will_be_deactivated_plural: 'will be deactivated',
     quota_selection_saved: 'Selection saved successfully',
     items_deactivated: 'items deactivated',
+    estimated_time: 'Estimated time',
     
     // Modules & Business Types
     modules: 'Modules',
@@ -3487,7 +3498,6 @@ const translations = {
     many_exceeded: 'Many tasks exceeded',
     many_exceeded_advice: 'Plan more buffer time in your schedules',
     exceeded: 'Exceeded',
-    three_months: '3 months',
     
     // Quotes (unique)
     quotes_desc: 'Manage your quotes and convert them to invoices',
