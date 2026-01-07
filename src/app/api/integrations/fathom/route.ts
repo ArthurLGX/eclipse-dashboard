@@ -104,16 +104,25 @@ export async function POST(request: NextRequest) {
       ...(STRAPI_API_TOKEN && { Authorization: `Bearer ${STRAPI_API_TOKEN}` }),
     };
 
+    console.log('Fathom config save - STRAPI_URL:', STRAPI_URL);
+    console.log('Fathom config save - Token configured:', !!STRAPI_API_TOKEN);
+
     // Chercher si une config existe déjà
     const checkResponse = await fetch(
       `${STRAPI_URL}/api/integration-configs?filters[user][id][$eq]=${userId}&filters[provider][$eq]=fathom`,
       { headers }
     );
 
+    console.log('Check existing config - Status:', checkResponse.status);
+
     let existingId = null;
     if (checkResponse.ok) {
       const checkData = await checkResponse.json();
       existingId = checkData.data?.[0]?.documentId;
+      console.log('Existing config documentId:', existingId);
+    } else {
+      const checkError = await checkResponse.text();
+      console.error('Check config failed:', checkResponse.status, checkError);
     }
 
     const configData = {
@@ -129,9 +138,12 @@ export async function POST(request: NextRequest) {
       },
     };
 
+    console.log('Saving config data:', JSON.stringify(configData, null, 2));
+
     let response;
     if (existingId) {
       // Mettre à jour
+      console.log('Updating existing config:', existingId);
       response = await fetch(`${STRAPI_URL}/api/integration-configs/${existingId}`, {
         method: 'PUT',
         headers,
@@ -139,6 +151,7 @@ export async function POST(request: NextRequest) {
       });
     } else {
       // Créer
+      console.log('Creating new config');
       response = await fetch(`${STRAPI_URL}/api/integration-configs`, {
         method: 'POST',
         headers,
@@ -146,10 +159,15 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    console.log('Save response status:', response.status);
+
     if (!response.ok) {
-      const error = await response.text();
-      console.error('Strapi error:', error);
-      throw new Error('Failed to save config');
+      const errorText = await response.text();
+      console.error('Strapi save error:', response.status, errorText);
+      return NextResponse.json(
+        { error: `Strapi error: ${response.status} - ${errorText}` },
+        { status: response.status }
+      );
     }
 
     return NextResponse.json({ success: true });
