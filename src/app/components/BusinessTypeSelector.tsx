@@ -14,7 +14,7 @@ import {
   IconCheck,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { BusinessType, BUSINESS_CONFIGS, ALL_MODULES, getDefaultModules, getAvailableModules } from '@/config/business-modules';
+import { BusinessType, BUSINESS_CONFIGS, ALL_MODULES, getDefaultModules } from '@/config/business-modules';
 
 interface BusinessTypeSelectorProps {
   selectedType: BusinessType | null;

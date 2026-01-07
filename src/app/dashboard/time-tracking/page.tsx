@@ -25,8 +25,8 @@ import {
   deleteTimeEntry,
   fetchRunningTimeEntry,
 } from '@/lib/api';
-import { useProjects, useClients } from '@/hooks/useApi';
-import type { TimeEntry, Project, Client } from '@/types';
+import { useProjects } from '@/hooks/useApi';
+import type { TimeEntry, Project } from '@/types';
 import useSWR from 'swr';
 
 export default function TimeTrackingPage() {
@@ -52,8 +52,6 @@ export default function TimeTrackingPage() {
   const { data: projectsData } = useProjects(user?.id);
   const projects = useMemo(() => (projectsData as Project[]) || [], [projectsData]);
   
-  const { data: clientsData } = useClients(user?.id);
-  const _clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
 
   // Calculate date range
   const dateRange = useMemo(() => {
