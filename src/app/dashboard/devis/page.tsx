@@ -337,7 +337,7 @@ export default function DevisPage() {
                     <tr key={quote.documentId} className="hover:bg-hover transition-colors">
                       {columns.map((col) => (
                         <td key={col.key} className="px-4 py-3">
-                          {col.render ? col.render(quote) : (quote as Record<string, unknown>)[col.key] as React.ReactNode}
+                          {col.render ? col.render((quote as Record<string, unknown>)[col.key], quote) : (quote as Record<string, unknown>)[col.key] as React.ReactNode}
                         </td>
                       ))}
                     </tr>
