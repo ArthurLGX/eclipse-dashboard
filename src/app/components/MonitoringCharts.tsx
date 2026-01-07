@@ -359,6 +359,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                     fontSize: '11px',
                   }}
                   labelStyle={{ color: themeColors.textPrimary }}
+                  itemStyle={{ color: themeColors.textPrimary }}
                   formatter={(value) => [`${value}ms`, t('time_label') || 'Temps']}
                 />
                 <Area
@@ -410,6 +411,8 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                     borderRadius: '8px',
                     fontSize: '11px',
                   }}
+                  labelStyle={{ color: themeColors.textPrimary }}
+                  itemStyle={{ color: themeColors.textPrimary }}
                   formatter={(value) => [`${value}%`, 'Uptime']}
                 />
                 <Line
@@ -458,6 +461,8 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                     borderRadius: '8px',
                     fontSize: '11px',
                   }}
+                  labelStyle={{ color: themeColors.textPrimary }}
+                  itemStyle={{ color: themeColors.textPrimary }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -511,6 +516,8 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                   borderRadius: '8px',
                   fontSize: '11px',
                 }}
+                labelStyle={{ color: themeColors.textPrimary }}
+                itemStyle={{ color: themeColors.textPrimary }}
                 formatter={(value) => [value, t('checks') || 'Vérifications']}
               />
               <Bar 
