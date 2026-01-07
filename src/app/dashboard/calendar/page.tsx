@@ -637,11 +637,18 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
     } else {
       setTitle('');
       setDescription('');
-      const date = defaultDate || new Date();
+      const now = new Date();
+      const date = defaultDate || now;
       setStartDate(date.toISOString().split('T')[0]);
-      setStartTime('09:00');
+      // Utiliser l'heure actuelle arrondie aux 15 minutes supérieures
+      const currentMinutes = now.getMinutes();
+      const roundedMinutes = Math.ceil(currentMinutes / 15) * 15;
+      const startHour = roundedMinutes === 60 ? now.getHours() + 1 : now.getHours();
+      const startMin = roundedMinutes === 60 ? 0 : roundedMinutes;
+      const endHour = startHour + 1;
+      setStartTime(`${startHour.toString().padStart(2, '0')}:${startMin.toString().padStart(2, '0')}`);
+      setEndTime(`${endHour.toString().padStart(2, '0')}:${startMin.toString().padStart(2, '0')}`);
       setEndDate('');
-      setEndTime('10:00');
       setAllDay(false);
       setEventType('meeting');
       setLocation('');

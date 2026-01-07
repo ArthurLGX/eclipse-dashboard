@@ -2548,7 +2548,7 @@ export const fetchCalendarEvents = async (
     clientId?: string;
   }
 ): Promise<CalendarEvent[]> => {
-  let query = `calendar-events?filters[users][id][$eq]=${userId}&populate[0]=project&populate[1]=client&populate[2]=meeting_note&sort=start_date:asc`;
+  let query = `calendar-events?filters[users][id][$eq]=${userId}&populate[0]=project&populate[1]=client&sort=start_date:asc`;
   
   if (filters?.from) {
     query += `&filters[start_date][$gte]=${filters.from}`;
