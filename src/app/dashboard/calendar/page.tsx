@@ -71,6 +71,26 @@ export default function CalendarPage() {
   const scheduledNotifications = useRef<Map<string, NodeJS.Timeout>>(new Map());
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
+  // Fetch data
+  const { data: projectsData } = useProjects(user?.id);
+  const projects = useMemo(() => (projectsData as Project[]) || [], [projectsData]);
+  
+  const { data: clientsData } = useClients(user?.id);
+  const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
+
+  // Get month range
+  const monthRange = useMemo(() => {
+    const start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const end = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    return { from: start.toISOString(), to: end.toISOString() };
+  }, [currentDate]);
+
+  // Fetch events
+  const { data: events, mutate } = useSWR(
+    user?.id ? ['calendar-events', user.id, currentDate.getMonth(), currentDate.getFullYear()] : null,
+    () => fetchCalendarEvents(user!.id, monthRange)
+  );
+
   // Enable/disable notifications
   const toggleNotifications = async () => {
     if (!isSupported) {
@@ -152,26 +172,6 @@ export default function CalendarPage() {
   useEffect(() => {
     localStorage.setItem('calendar-notifications', notificationsEnabled.toString());
   }, [notificationsEnabled]);
-
-  // Fetch data
-  const { data: projectsData } = useProjects(user?.id);
-  const projects = useMemo(() => (projectsData as Project[]) || [], [projectsData]);
-  
-  const { data: clientsData } = useClients(user?.id);
-  const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
-
-  // Get month range
-  const monthRange = useMemo(() => {
-    const start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const end = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-    return { from: start.toISOString(), to: end.toISOString() };
-  }, [currentDate]);
-
-  // Fetch events
-  const { data: events, mutate } = useSWR(
-    user?.id ? ['calendar-events', user.id, currentDate.getMonth(), currentDate.getFullYear()] : null,
-    () => fetchCalendarEvents(user!.id, monthRange)
-  );
 
   // Get days in month
   const daysInMonth = useMemo(() => {
