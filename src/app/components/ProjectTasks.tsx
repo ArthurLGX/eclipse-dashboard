@@ -2235,19 +2235,21 @@ function TaskGanttView({
                       <td className="sticky left-[260px] z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
                       <td className="sticky left-[350px] z-20 bg-[var(--color-card)] shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
                       {/* Barre de span du groupe */}
-                      <td colSpan={dayHeaders.length} className="relative h-[40px]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
-                        <div className="absolute inset-0 flex">
-                          {dayHeaders.map((day, i) => (
-                            <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
-                          ))}
+                      <td colSpan={dayHeaders.length} className="h-[40px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                        <div className="relative w-full h-full">
+                          <div className="absolute inset-0 flex">
+                            {dayHeaders.map((day, i) => (
+                              <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                            ))}
+                          </div>
+                          {/* Ligne "aujourd'hui" */}
+                          {todayIndex >= 0 && (
+                            <div 
+                              className="absolute top-0 bottom-0 w-0.5 bg-red-500"
+                              style={{ left: `${(todayIndex * 32) + 16}px` }}
+                            />
+                          )}
                         </div>
-                        {/* Ligne "aujourd'hui" */}
-                        {todayIndex >= 0 && (
-                          <div 
-                            className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10"
-                            style={{ left: `${(todayIndex * 32) + 16}px` }}
-                          />
-                        )}
                       </td>
                     </tr>
 
@@ -2309,37 +2311,39 @@ function TaskGanttView({
                               </span>
                             </td>
                             {/* Timeline - Barre de Gantt */}
-                            <td colSpan={dayHeaders.length} className="relative h-[44px] p-0" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
-                              {/* Grille des jours - très subtile */}
-                              <div className="absolute inset-0 flex">
-                                {dayHeaders.map((day, i) => (
+                            <td colSpan={dayHeaders.length} className="h-[44px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                              <div className="relative w-full h-full">
+                                {/* Grille des jours - très subtile */}
+                                <div className="absolute inset-0 flex">
+                                  {dayHeaders.map((day, i) => (
+                                    <div 
+                                      key={i} 
+                                      className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/3' : ''}`} 
+                                    />
+                                  ))}
+                                </div>
+                                {/* Ligne "aujourd'hui" */}
+                                {todayIndex >= 0 && (
                                   <div 
-                                    key={i} 
-                                    className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/3' : ''}`} 
+                                    className="absolute top-0 bottom-0 w-0.5 bg-red-500"
+                                    style={{ left: `${(todayIndex * 32) + 16}px` }}
                                   />
-                                ))}
-                              </div>
-                              {/* Ligne "aujourd'hui" */}
-                              {todayIndex >= 0 && (
-                                <div 
-                                  className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10"
-                                  style={{ left: `${(todayIndex * 32) + 16}px` }}
-                                />
-                              )}
-                              {/* Barre de la tâche */}
-                              <div
-                                className="absolute top-1/2 -translate-y-1/2 h-7 rounded-md shadow-sm hover:shadow-md transition-shadow"
-                                style={{
-                                  left: `${startOffset * 32}px`,
-                                  width: `${Math.max(duration * 32, 32)}px`,
-                                  backgroundColor: task.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
-                                }}
-                              >
-                                <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${task.progress || 0}%` }} />
-                                <div className="relative h-full flex items-center px-2">
-                                  <span className="text-[11px] text-white font-medium truncate">
-                                    {duration > 3 ? task.title : ''}
-                                  </span>
+                                )}
+                                {/* Barre de la tâche */}
+                                <div
+                                  className="absolute top-1/2 -translate-y-1/2 h-7 rounded-md shadow-sm hover:shadow-md transition-shadow"
+                                  style={{
+                                    left: `${startOffset * 32}px`,
+                                    width: `${Math.max(duration * 32, 32)}px`,
+                                    backgroundColor: task.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
+                                  }}
+                                >
+                                  <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${task.progress || 0}%` }} />
+                                  <div className="relative h-full flex items-center px-2 overflow-hidden">
+                                    <span className="text-[11px] text-white font-medium truncate">
+                                      {duration > 3 ? task.title : ''}
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
                             </td>
@@ -2377,24 +2381,26 @@ function TaskGanttView({
                                 <td className="py-1 px-1 text-center sticky left-[350px] z-20 bg-[var(--color-card)] shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
                                   <span className="text-[9px] text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
                                 </td>
-                                <td colSpan={dayHeaders.length} className="relative h-[34px] p-0" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
-                                  <div className="absolute inset-0 flex">
-                                    {dayHeaders.map((day, i) => (
-                                      <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
-                                    ))}
-                                  </div>
-                                  {todayIndex >= 0 && (
-                                    <div className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10" style={{ left: `${(todayIndex * 32) + 16}px` }} />
-                                  )}
-                                  <div
-                                    className="absolute top-1/2 -translate-y-1/2 h-4 rounded opacity-70 hover:opacity-100 transition-opacity"
-                                    style={{
-                                      left: `${subPos.startOffset * 32}px`,
-                                      width: `${Math.max(subPos.duration * 32, 24)}px`,
-                                      backgroundColor: subtask.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
-                                    }}
-                                  >
-                                    <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l" style={{ width: `${subtask.progress || 0}%` }} />
+                                <td colSpan={dayHeaders.length} className="h-[34px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                  <div className="relative w-full h-full">
+                                    <div className="absolute inset-0 flex">
+                                      {dayHeaders.map((day, i) => (
+                                        <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                                      ))}
+                                    </div>
+                                    {todayIndex >= 0 && (
+                                      <div className="absolute top-0 bottom-0 w-0.5 bg-red-500" style={{ left: `${(todayIndex * 32) + 16}px` }} />
+                                    )}
+                                    <div
+                                      className="absolute top-1/2 -translate-y-1/2 h-4 rounded opacity-70 hover:opacity-100 transition-opacity"
+                                      style={{
+                                        left: `${subPos.startOffset * 32}px`,
+                                        width: `${Math.max(subPos.duration * 32, 24)}px`,
+                                        backgroundColor: subtask.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
+                                      }}
+                                    >
+                                      <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l" style={{ width: `${subtask.progress || 0}%` }} />
+                                    </div>
                                   </div>
                                 </td>
                               </tr>
@@ -2416,15 +2422,17 @@ function TaskGanttView({
                               </td>
                               <td className="sticky left-[260px] z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
                               <td className="sticky left-[350px] z-20 bg-[var(--color-card)] shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
-                              <td colSpan={dayHeaders.length} className="relative h-[30px]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
-                                <div className="absolute inset-0 flex">
-                                  {dayHeaders.map((day, i) => (
-                                    <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
-                                  ))}
+                              <td colSpan={dayHeaders.length} className="h-[30px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                <div className="relative w-full h-full">
+                                  <div className="absolute inset-0 flex">
+                                    {dayHeaders.map((day, i) => (
+                                      <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                                    ))}
+                                  </div>
+                                  {todayIndex >= 0 && (
+                                    <div className="absolute top-0 bottom-0 w-0.5 bg-red-500" style={{ left: `${(todayIndex * 32) + 16}px` }} />
+                                  )}
                                 </div>
-                                {todayIndex >= 0 && (
-                                  <div className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10" style={{ left: `${(todayIndex * 32) + 16}px` }} />
-                                )}
                               </td>
                             </tr>
                           )}
