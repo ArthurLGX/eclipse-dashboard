@@ -265,7 +265,7 @@ export default function MeetingIntegrationsPage() {
                     currentStep === step.id
                       ? 'border-accent bg-accent/5'
                       : step.completed
-                      ? 'border-success/30 bg-success/5'
+                      ? 'border-success- bg-success-light'
                       : 'border-default bg-hover'
                   }`}
                 >
@@ -347,7 +347,7 @@ export default function MeetingIntegrationsPage() {
                             />
                           </div>
 
-                          <div className="p-4 bg-info/10 rounded-lg border border-info/20">
+                          <div className="p-4 bg-info-light rounded-lg border border-info">
                             <h4 className="text-sm font-medium text-info mb-2">
                               📋 Instructions dans Fathom :
                             </h4>
@@ -370,7 +370,7 @@ export default function MeetingIntegrationsPage() {
                             href={step.externalLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-colors text-sm"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors text-sm"
                           >
                             {step.actionLabel}
                             <IconExternalLink className="w-4 h-4" />
@@ -380,12 +380,12 @@ export default function MeetingIntegrationsPage() {
                           <button
                             onClick={step.action}
                             disabled={testing}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-colors text-sm disabled:opacity-50"
+                            className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors text-sm disabled:opacity-50"
                           >
                             {testing ? (
-                              <IconLoader2 className="w-4 h-4 animate-spin" />
+                              <IconLoader2 className="w-4 h-4 animate-spin !text-white" />
                             ) : (
-                              <IconPlayerPlay className="w-4 h-4" />
+                              <IconPlayerPlay className="w-4 h-4 !text-white" />
                             )}
                             {step.actionLabel}
                           </button>
@@ -407,7 +407,7 @@ export default function MeetingIntegrationsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="inline-flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50"
+                className="inline-flex cursor-pointer items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50"
               >
                 {saving ? (
                   <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -462,7 +462,7 @@ export default function MeetingIntegrationsPage() {
         </div>
 
         {/* Pro Tips */}
-        <div className="card p-6 bg-gradient-to-br from-accent/5 to-transparent border-accent/20">
+        <div className="card p-6 bg-accent-light border border-accent">
           <h2 className="text-lg font-semibold text-primary mb-4">
             💡 Conseils pour un matching parfait
           </h2>

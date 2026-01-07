@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useModalFocus } from '@/hooks/useModalFocus';
+import { useRouter } from 'next/navigation';
 import {
   IconCalendar,
   IconPlus,
@@ -17,6 +18,9 @@ import {
   IconCheck,
   IconBell,
   IconBellOff,
+  IconBrain,
+  IconNotes,
+  IconLoader2,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -602,6 +606,8 @@ interface EventModalProps {
 
 function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, onSave }: EventModalProps) {
   const { t } = useLanguage();
+  const { user } = useAuth();
+  const router = useRouter();
   const modalRef = useModalFocus(isOpen);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -617,6 +623,67 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
   const [clientId, setClientId] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
   const [errors, setErrors] = useState<{ title?: string; startDate?: string }>({});
+  
+  // Notes de réunion
+  const [noteMode, setNoteMode] = useState<'none' | 'manual' | 'fathom'>('none');
+  const [fathomConfigured, setFathomConfigured] = useState<boolean | null>(null);
+  const [checkingFathom, setCheckingFathom] = useState(false);
+
+  // Projets filtrés par client
+  const filteredProjects = useMemo(() => {
+    if (!clientId) return projects;
+    return projects.filter(p => p.client?.documentId === clientId);
+  }, [projects, clientId]);
+
+  // Gérer la sélection du client
+  const handleClientChange = (newClientId: string) => {
+    setClientId(newClientId);
+    // Si le projet actuel n'appartient pas au nouveau client, le réinitialiser
+    if (newClientId && projectId) {
+      const currentProject = projects.find(p => p.documentId === projectId);
+      if (currentProject?.client?.documentId !== newClientId) {
+        setProjectId('');
+      }
+    }
+  };
+
+  // Gérer la sélection du projet
+  const handleProjectChange = (newProjectId: string) => {
+    setProjectId(newProjectId);
+    // Auto-sélectionner le client associé au projet
+    if (newProjectId) {
+      const selectedProject = projects.find(p => p.documentId === newProjectId);
+      if (selectedProject?.client?.documentId) {
+        setClientId(selectedProject.client.documentId);
+      }
+    }
+  };
+
+  // Vérifier la config Fathom quand on clique sur le bouton
+  const checkFathomConfig = async () => {
+    if (!user?.id) return;
+    
+    setCheckingFathom(true);
+    try {
+      const response = await fetch(`/api/integrations/fathom?userId=${user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.connected) {
+          setFathomConfigured(true);
+          setNoteMode('fathom');
+        } else {
+          // Rediriger vers la page de configuration
+          router.push('/dashboard/settings/meeting-integrations');
+        }
+      } else {
+        router.push('/dashboard/settings/meeting-integrations');
+      }
+    } catch {
+      router.push('/dashboard/settings/meeting-integrations');
+    } finally {
+      setCheckingFathom(false);
+    }
+  };
 
   // Initialize form
   React.useEffect(() => {
@@ -658,6 +725,8 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
       setReminderMinutes(30);
       setProjectId('');
       setClientId('');
+      setNoteMode('none');
+      setFathomConfigured(null);
     }
     setErrors({});
   }, [event, defaultDate]);
@@ -884,26 +953,11 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-secondary mb-1">
-                {t('project') || 'Projet'}
-              </label>
-              <select
-                value={projectId}
-                onChange={(e) => setProjectId(e.target.value)}
-                className="input w-full"
-              >
-                <option value="">{t('none_option') || 'Aucun'}</option>
-                {projects.map((p) => (
-                  <option key={p.documentId} value={p.documentId}>{p.title}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-secondary mb-1">
                 {t('client') || 'Client'}
               </label>
               <select
                 value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
+                onChange={(e) => handleClientChange(e.target.value)}
                 className="input w-full"
               >
                 <option value="">{t('none_option') || 'Aucun'}</option>
@@ -912,7 +966,106 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
                 ))}
               </select>
             </div>
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-1">
+                {t('project') || 'Projet'}
+                {clientId && filteredProjects.length === 0 && (
+                  <span className="text-xs text-muted ml-1">({t('no_projects_for_client') || 'aucun projet'})</span>
+                )}
+              </label>
+              <select
+                value={projectId}
+                onChange={(e) => handleProjectChange(e.target.value)}
+                className="input w-full"
+              >
+                <option value="">{t('none_option') || 'Aucun'}</option>
+                {(clientId ? filteredProjects : projects).map((p) => (
+                  <option key={p.documentId} value={p.documentId}>{p.title}</option>
+                ))}
+              </select>
+            </div>
           </div>
+
+          {/* Section Notes de réunion - uniquement pour les nouveaux événements de type meeting */}
+          {!event && eventType === 'meeting' && (
+            <div className="p-4 rounded-xl border border-default bg-hover/50 space-y-3">
+              <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                <IconNotes className="w-4 h-4 text-accent" />
+                {t('meeting_notes') || 'Notes de réunion'}
+              </div>
+              
+              <div className="flex gap-2">
+                {/* Option Notes manuelles */}
+                <button
+                  type="button"
+                  onClick={() => setNoteMode(noteMode === 'manual' ? 'none' : 'manual')}
+                  className={`flex-1 p-3 rounded-lg border-2 transition-all text-left ${
+                    noteMode === 'manual'
+                      ? 'border-accent bg-accent/10'
+                      : 'border-default hover:border-muted'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <IconNotes className={`w-5 h-5 ${noteMode === 'manual' ? 'text-accent' : 'text-muted'}`} />
+                    <span className={`text-sm font-medium ${noteMode === 'manual' ? 'text-accent' : 'text-secondary'}`}>
+                      {t('manual_notes') || 'Notes manuelles'}
+                    </span>
+                    {noteMode === 'manual' && <IconCheck className="w-4 h-4 text-accent ml-auto" />}
+                  </div>
+                  <p className="text-xs text-muted mt-1">
+                    {t('manual_notes_desc') || 'Prendre des notes après la réunion'}
+                  </p>
+                </button>
+
+                {/* Option Fathom AI */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (noteMode === 'fathom' && fathomConfigured) {
+                      setNoteMode('none');
+                      setFathomConfigured(null);
+                    } else {
+                      checkFathomConfig();
+                    }
+                  }}
+                  disabled={checkingFathom}
+                  className={`flex-1 p-3 rounded-lg border-2 transition-all text-left ${
+                    noteMode === 'fathom' && fathomConfigured
+                      ? 'border-success bg-success/10'
+                      : 'border-default hover:border-muted'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    {checkingFathom ? (
+                      <IconLoader2 className="w-5 h-5 text-accent animate-spin" />
+                    ) : (
+                      <IconBrain className={`w-5 h-5 ${noteMode === 'fathom' && fathomConfigured ? 'text-success' : 'text-purple-500'}`} />
+                    )}
+                    <span className={`text-sm font-medium ${noteMode === 'fathom' && fathomConfigured ? 'text-success' : 'text-secondary'}`}>
+                      Fathom AI
+                    </span>
+                    {noteMode === 'fathom' && fathomConfigured && <IconCheck className="w-4 h-4 text-success ml-auto" />}
+                  </div>
+                  <p className="text-xs text-muted mt-1">
+                    {noteMode === 'fathom' && fathomConfigured
+                      ? (t('fathom_ready') || 'Fathom enregistrera cette réunion')
+                      : (t('fathom_notes_desc') || 'Transcription automatique avec IA')
+                    }
+                  </p>
+                </button>
+              </div>
+
+              {/* Message de succès Fathom */}
+              {noteMode === 'fathom' && fathomConfigured && (
+                <div className="flex items-center gap-2 p-2 rounded-lg bg-success/10 border border-success/20">
+                  <IconCheck className="w-4 h-4 text-success" />
+                  <span className="text-sm text-success">
+                    {t('fathom_will_join') || 'Fathom rejoindra automatiquement votre réunion et prendra les notes'}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex items-center justify-end gap-2 pt-4">
             <button type="button" onClick={onClose} className="btn-ghost px-4 py-2">

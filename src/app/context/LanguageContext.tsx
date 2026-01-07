@@ -1780,6 +1780,14 @@ const translations = {
     event_deleted: 'Événement supprimé',
     event_completed: 'Événement terminé',
     upcoming_events: 'Événements à venir',
+    
+    // Notes de réunion dans le calendrier
+    manual_notes: 'Notes manuelles',
+    manual_notes_desc: 'Prendre des notes après la réunion',
+    fathom_notes_desc: 'Transcription automatique avec IA',
+    fathom_ready: 'Fathom enregistrera cette réunion',
+    fathom_will_join: 'Fathom rejoindra automatiquement votre réunion et prendra les notes',
+    no_projects_for_client: 'aucun projet',
     no_upcoming_events: 'Aucun événement à venir',
     no_events: 'Aucun événement',
     event_type: 'Type',
@@ -3591,6 +3599,14 @@ const translations = {
     event_deleted: 'Event deleted',
     event_completed: 'Event completed',
     upcoming_events: 'Upcoming events',
+    
+    // Meeting notes in calendar
+    manual_notes: 'Manual notes',
+    manual_notes_desc: 'Take notes after the meeting',
+    fathom_notes_desc: 'Automatic transcription with AI',
+    fathom_ready: 'Fathom will record this meeting',
+    fathom_will_join: 'Fathom will automatically join your meeting and take notes',
+    no_projects_for_client: 'no projects',
     no_upcoming_events: 'No upcoming events',
     no_events: 'No events',
     event_type: 'Type',
