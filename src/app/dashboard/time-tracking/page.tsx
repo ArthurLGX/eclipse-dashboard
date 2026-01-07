@@ -22,7 +22,8 @@ import ProtectedRoute from '@/app/components/ProtectedRoute';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import { 
   fetchTimeEntries, 
-  createTimeEntry, 
+  createTimeEntry,
+  updateTimeEntry,
   stopTimeEntry,
   deleteTimeEntry,
   fetchRunningTimeEntry,
@@ -568,7 +569,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer
         const endDateTime = new Date(`${date}T${endTime}`);
         const duration = Math.round((endDateTime.getTime() - startDateTime.getTime()) / 60000);
 
-        const data = {
+        await updateTimeEntry(entry.documentId, {
           description,
           start_time: startDateTime.toISOString(),
           end_time: endDateTime.toISOString(),
@@ -576,14 +577,13 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer
           estimated_duration: estimatedDuration,
           billable,
           hourly_rate: billable ? hourlyRate : 0,
-          is_running: false,
           project: selectedProject?.id,
-        };
+        });
         
-        await createTimeEntry(userId, data); // TODO: use updateTimeEntry when available
         showGlobalPopup(t('entry_updated') || 'Entrée mise à jour', 'success');
         await onSave();
-      } catch {
+      } catch (error) {
+        console.error('Update error:', error);
         showGlobalPopup(t('save_error') || 'Erreur lors de l\'enregistrement', 'error');
       } finally {
         setSaving(false);
