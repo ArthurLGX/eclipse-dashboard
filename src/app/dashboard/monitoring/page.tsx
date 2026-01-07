@@ -337,7 +337,7 @@ export default function MonitoringPage() {
                         </td>
                         <td className="px-4 py-3">
                           {(() => {
-                            const type = site.site_type as SiteType;
+                            const type = site.site_type || 'frontend';
                             return (
                               <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
                                 type === 'frontend' ? 'bg-info-light text-info' :
@@ -516,7 +516,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
       setCheckInterval(site.check_interval);
       setAlertEmail(site.alert_email);
       setAlertThreshold(site.alert_threshold);
-      setSiteType(site.site_type as SiteType);
+      setSiteType(site.site_type || 'frontend');
       setHostingProvider(site.hosting_provider);
       setServerIp(site.server_ip || '');
       setServerNotes(site.server_notes || '');
