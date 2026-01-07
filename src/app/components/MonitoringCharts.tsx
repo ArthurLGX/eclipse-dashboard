@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -45,10 +45,9 @@ interface MonitoringChartsProps {
   logs: MonitoringLog[];
 }
 
-// Hook pour récupérer les couleurs du thème CSS
-function useThemeColors() {
-  const { resolvedTheme } = useTheme();
-  const [colors, setColors] = useState({
+// Couleurs par thème
+const THEME_COLORS = {
+  dark: {
     textPrimary: '#E8E4F0',
     textSecondary: '#A89EC8',
     textMuted: '#7B6F9E',
@@ -59,31 +58,29 @@ function useThemeColors() {
     danger: '#F87171',
     bgCard: '#1A1428',
     borderDefault: '#2E2648',
-  });
+  },
+  light: {
+    textPrimary: '#1F2937',
+    textSecondary: '#4B5563',
+    textMuted: '#6B7280',
+    accent: '#7C3AED',
+    success: '#34dba6',
+    info: '#3B82F6',
+    warning: '#F59E0B',
+    danger: '#EF4444',
+    bgCard: '#FFFFFF',
+    borderDefault: '#E5E7EB',
+  },
+};
 
-  const updateColors = useCallback(() => {
-    if (typeof window === 'undefined') return;
-    
-    const root = document.documentElement;
-    const styles = getComputedStyle(root);
-    
-    setColors({
-      textPrimary: styles.getPropertyValue('--text-primary').trim() || '#E8E4F0',
-      textSecondary: styles.getPropertyValue('--text-secondary').trim() || '#A89EC8',
-      textMuted: styles.getPropertyValue('--text-muted').trim() || '#7B6F9E',
-      accent: styles.getPropertyValue('--color-accent').trim() || '#7C3AED',
-      success: styles.getPropertyValue('--color-success').trim() || '#34D399',
-      info: styles.getPropertyValue('--color-info').trim() || '#60A5FA',
-      warning: styles.getPropertyValue('--color-warning').trim() || '#FBBF24',
-      danger: styles.getPropertyValue('--color-danger').trim() || '#F87171',
-      bgCard: styles.getPropertyValue('--bg-card').trim() || '#1A1428',
-      borderDefault: styles.getPropertyValue('--border-default').trim() || '#2E2648',
-    });
-  }, []);
-
-  useEffect(() => {
-    updateColors();
-  }, [resolvedTheme, updateColors]);
+// Hook pour récupérer les couleurs du thème
+function useThemeColors() {
+  const { resolvedTheme } = useTheme();
+  
+  // Retourne directement les couleurs basées sur le thème résolu
+  const colors = useMemo(() => {
+    return resolvedTheme === 'light' ? THEME_COLORS.light : THEME_COLORS.dark;
+  }, [resolvedTheme]);
 
   return colors;
 }
