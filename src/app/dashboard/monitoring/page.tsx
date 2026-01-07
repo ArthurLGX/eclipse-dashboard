@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
   IconServer,
@@ -18,6 +19,7 @@ import {
   IconDeviceDesktop,
   IconApi,
   IconKey,
+  IconChartBar,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -45,6 +47,7 @@ export default function MonitoringPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const router = useRouter();
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSite, setEditingSite] = useState<MonitoredSite | null>(null);
@@ -400,6 +403,13 @@ export default function MonitoringPage() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => router.push(`/dashboard/monitoring/${site.documentId}`)}
+                              className="p-1.5 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+                              title={t('view_stats') || 'Voir les statistiques'}
+                            >
+                              <IconChartBar className="w-4 h-4" />
+                            </button>
                             <button
                               onClick={() => setEditingSite(site)}
                               className="p-1.5 text-muted hover:text-primary hover:bg-hover rounded-lg transition-colors"

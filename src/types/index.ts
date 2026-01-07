@@ -844,6 +844,32 @@ export interface ServerCredentialMetadata {
 export type UpdateMonitoredSiteData = Partial<CreateMonitoredSiteData>;
 
 // ============================================================================
+// MONITORING LOGS (Historique des vérifications)
+// ============================================================================
+
+export interface MonitoringLog {
+  id: number;
+  documentId: string;
+  status: 'up' | 'down' | 'slow';
+  response_time: number | null;
+  status_code: number | null;
+  error_message: string | null;
+  checked_at: string;
+  monitored_site?: MonitoredSite;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateMonitoringLogData {
+  monitored_site: string; // documentId
+  status: 'up' | 'down' | 'slow';
+  response_time?: number;
+  status_code?: number;
+  error_message?: string;
+  checked_at: string;
+}
+
+// ============================================================================
 // TIME TRACKING (Suivi du temps)
 // ============================================================================
 

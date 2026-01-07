@@ -9,6 +9,17 @@ import type {
   CreateFactureData,
   ServerCredentialMetadata,
   CreateServerCredentialData,
+  MonitoringLog,
+  CreateMonitoringLogData,
+  MonitoredSite,
+  CreateMonitoredSiteData,
+  UpdateMonitoredSiteData,
+  TimeEntry,
+  CreateTimeEntryData,
+  UpdateTimeEntryData,
+  CalendarEvent,
+  CreateCalendarEventData,
+  UpdateCalendarEventData,
 } from '@/types';
 
 // ============================================================================
@@ -2281,18 +2292,6 @@ export const toggleModule = async (
 // MONITORING (Sites surveillés)
 // ============================================================================
 
-import type { 
-  MonitoredSite, 
-  CreateMonitoredSiteData, 
-  UpdateMonitoredSiteData,
-  TimeEntry,
-  CreateTimeEntryData,
-  UpdateTimeEntryData,
-  CalendarEvent,
-  CreateCalendarEventData,
-  UpdateCalendarEventData,
-} from '@/types';
-
 /** Récupère tous les sites surveillés d'un utilisateur */
 export const fetchMonitoredSites = async (userId: number): Promise<MonitoredSite[]> => {
   const response = await get<ApiResponse<MonitoredSite[]>>(
@@ -2382,6 +2381,45 @@ export const deleteServerCredentials = async (siteDocumentId: string): Promise<{
     },
   });
   return response.json();
+};
+
+/** Récupère un site surveillé par son documentId */
+export const fetchMonitoredSiteById = async (documentId: string): Promise<MonitoredSite> => {
+  const response = await get<ApiResponse<MonitoredSite>>(
+    `monitored-sites/${documentId}?populate=client`
+  );
+  return response.data;
+};
+
+/** Récupère les logs de monitoring d'un site */
+export const fetchMonitoringLogs = async (
+  siteDocumentId: string,
+  timeRange: '24h' | '7d' | '30d' = '24h'
+): Promise<MonitoringLog[]> => {
+  const now = new Date();
+  let startDate: Date;
+  
+  switch (timeRange) {
+    case '7d':
+      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      break;
+    case '30d':
+      startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      break;
+    default:
+      startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  }
+  
+  const response = await get<ApiResponse<MonitoringLog[]>>(
+    `monitoring-logs?filters[monitored_site][documentId][$eq]=${siteDocumentId}&filters[checked_at][$gte]=${startDate.toISOString()}&sort=checked_at:asc&pagination[limit]=1000`
+  );
+  return response.data || [];
+};
+
+/** Crée un log de monitoring */
+export const createMonitoringLog = async (data: CreateMonitoringLogData): Promise<MonitoringLog> => {
+  const response = await post<ApiResponse<MonitoringLog>>('monitoring-logs', data);
+  return response.data;
 };
 
 // ============================================================================
