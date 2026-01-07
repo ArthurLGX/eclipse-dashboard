@@ -41,8 +41,13 @@ export default function DeleteConfirmModal({
 
   const typeInfo = itemTypeLabels[itemType] || { fr: 'élément', article: 'cet' };
   
-  // Phrase à réécrire pour confirmer
-  const confirmPhrase = `supprimer ${itemName}`.toLowerCase();
+  // Utiliser le nom de l'item ou un fallback basé sur le type
+  const displayName = itemName?.trim() || typeInfo.fr;
+  
+  // Phrase à réécrire pour confirmer - juste "supprimer" si pas de nom
+  const confirmPhrase = itemName?.trim() 
+    ? `supprimer ${itemName}`.toLowerCase().trim()
+    : 'supprimer';
   const isConfirmValid = confirmText.toLowerCase().trim() === confirmPhrase;
 
   // Reset le champ quand le modal s'ouvre/ferme
@@ -115,9 +120,11 @@ export default function DeleteConfirmModal({
             </div>
 
             {/* Item Name */}
-            <div className="mt-4 p-3 bg-hover rounded-lg border border-default">
-              <p className="text-primary font-medium truncate">{itemName}</p>
-            </div>
+            {displayName && (
+              <div className="mt-4 p-3 bg-hover rounded-lg border border-default">
+                <p className="text-primary font-medium truncate">{displayName}</p>
+              </div>
+            )}
 
             {/* Warning */}
             {warningMessage && (
