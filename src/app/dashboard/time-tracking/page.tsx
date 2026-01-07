@@ -461,8 +461,15 @@ export default function TimeTrackingPage() {
                               </p>
                               <p className="text-xs text-muted">
                                 {new Date(entry.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                                {entry.end_time && ` - ${new Date(entry.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`}
-                                {!entry.end_time && isRunning && ` - ${t('now') || 'maintenant'}`}
+                                {isRunning && entry.estimated_duration ? (
+                                  // Pour tâche en cours avec durée estimée : afficher l'heure de fin prévue
+                                  ` - ${new Date(new Date(entry.start_time).getTime() + entry.estimated_duration * 60000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
+                                ) : entry.end_time ? (
+                                  // Pour tâche terminée : afficher l'heure de fin réelle
+                                  ` - ${new Date(entry.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
+                                ) : isRunning ? (
+                                  ` - ${t('now') || 'maintenant'}`
+                                ) : null}
                                 {entry.client && ` • ${entry.client.name}`}
                               </p>
                             </div>
@@ -574,6 +581,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer
 
   // Mode édition uniquement pour les entrées existantes
   const isEditMode = !!entry;
+  const isRunningEntry = entry?.is_running ?? false;
   const [date, setDate] = useState(entry ? new Date(entry.start_time).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
   const [startTime, setStartTime] = useState(entry ? new Date(entry.start_time).toTimeString().slice(0, 5) : '');
   const [endTime, setEndTime] = useState(entry?.end_time ? new Date(entry.end_time).toTimeString().slice(0, 5) : '');
@@ -710,8 +718,8 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer
             </>
           )}
 
-          {/* Temps imparti - uniquement en mode création */}
-          {!isEditMode && (
+          {/* Temps imparti - en mode création OU pour les tâches en cours */}
+          {(!isEditMode || isRunningEntry) && (
             <div>
               <label className="block text-sm text-muted mb-1">{t('estimated_duration') || 'Temps imparti'}</label>
               <div className="flex items-center gap-2 flex-wrap">
