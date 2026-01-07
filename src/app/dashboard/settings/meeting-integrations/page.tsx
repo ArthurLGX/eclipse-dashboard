@@ -275,9 +275,9 @@ export default function MeetingIntegrationsPage() {
                   transition={{ delay: index * 0.1 }}
                   className={`p-4 rounded-xl border-2 transition-all ${
                     currentStep === step.id
-                      ? 'border-accent bg-accent/5'
+                      ? 'border-accent bg-accent-light'
                       : step.completed
-                      ? 'border-success- bg-success-light'
+                      ? 'border-success bg-success-light'
                       : 'border-default bg-hover'
                   }`}
                 >

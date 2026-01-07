@@ -634,6 +634,10 @@ export default function CalendarPage() {
               showGlobalPopup(t('save_error') || 'Erreur lors de la sauvegarde', 'error');
             }
           }}
+          onDelete={editingEvent ? () => {
+            setDeleteModal({ isOpen: true, event: editingEvent });
+            setEditingEvent(null);
+          } : undefined}
         />
 
         {/* Delete Modal */}
@@ -674,9 +678,10 @@ interface EventModalProps {
     project?: number;
     client?: number;
   }) => Promise<void>;
+  onDelete?: () => void;
 }
 
-function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, defaultProject, defaultClient, onSave }: EventModalProps) {
+function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, defaultProject, defaultClient, onSave, onDelete }: EventModalProps) {
   const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
@@ -1169,18 +1174,34 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-2 pt-4">
-            <button type="button" onClick={onClose} className="btn-ghost px-4 py-2">
-              {t('cancel') || 'Annuler'}
-            </button>
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
-            >
-              {isSaving && <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />}
-              {event ? (t('save') || 'Sauvegarder') : (t('create') || 'Créer')}
-            </button>
+          <div className="flex items-center justify-between pt-4">
+            {/* Bouton supprimer - uniquement en mode édition */}
+            {event && onDelete ? (
+              <button
+                type="button"
+                onClick={onDelete}
+                className="flex items-center gap-2 px-3 py-2 text-error hover:bg-error/10 rounded-lg transition-colors"
+              >
+                <IconTrash className="w-4 h-4" />
+                {t('delete') || 'Supprimer'}
+              </button>
+            ) : (
+              <div />
+            )}
+            
+            <div className="flex items-center gap-2">
+              <button type="button" onClick={onClose} className="btn-ghost px-4 py-2">
+                {t('cancel') || 'Annuler'}
+              </button>
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
+              >
+                {isSaving && <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />}
+                {event ? (t('save') || 'Sauvegarder') : (t('create') || 'Créer')}
+              </button>
+            </div>
           </div>
 
           {/* Meeting Notes Panel - Only for existing meeting events */}
