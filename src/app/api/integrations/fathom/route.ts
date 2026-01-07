@@ -45,14 +45,19 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
+    console.log('GET Fathom config - Strapi response:', JSON.stringify(data, null, 2));
+    
     const configEntry = data.data?.[0];
 
     if (!configEntry) {
+      console.log('GET Fathom config - No config entry found');
       return NextResponse.json({
         config: null,
         connected: false,
       });
     }
+
+    console.log('GET Fathom config - Config entry found:', JSON.stringify(configEntry, null, 2));
 
     // Décrypter les secrets (dans un vrai projet, utiliser une vraie encryption)
     const config: FathomConfig = {
@@ -64,9 +69,12 @@ export async function GET(request: NextRequest) {
       include_action_items: configEntry.include_action_items ?? true,
     };
 
+    const connected = !!(config.webhook_secret && config.api_key);
+    console.log('GET Fathom config - Connected:', connected, 'webhook_secret:', !!config.webhook_secret, 'api_key:', !!config.api_key);
+
     return NextResponse.json({
       config,
-      connected: !!(config.webhook_secret && config.api_key),
+      connected,
     });
   } catch (error) {
     console.error('Error fetching Fathom config:', error);

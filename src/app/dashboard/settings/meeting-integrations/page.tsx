@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
+import { useFathom } from '@/app/context/FathomContext';
 import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import {
@@ -57,6 +58,7 @@ interface SetupStep {
 export default function MeetingIntegrationsPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { refreshConfig: refreshFathomContext } = useFathom();
   const { showGlobalPopup } = usePopup();
 
   const [loading, setLoading] = useState(true);
@@ -133,6 +135,9 @@ export default function MeetingIntegrationsPage() {
 
       if (response.ok) {
         showGlobalPopup('Configuration sauvegardée !', 'success');
+        // Rafraîchir le context global Fathom
+        await refreshFathomContext();
+        setIsConnected(true);
         if (config.api_key && currentStep === 1) setCurrentStep(2);
         if (config.webhook_secret && currentStep === 2) setCurrentStep(3);
       } else {

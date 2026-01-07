@@ -24,6 +24,7 @@ import {
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
+import { useFathom } from '@/app/context/FathomContext';
 import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
@@ -684,6 +685,7 @@ interface EventModalProps {
 function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, defaultProject, defaultClient, onSave, onDelete }: EventModalProps) {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { isConnected: fathomConfigured, isLoading: checkingFathom } = useFathom();
   const router = useRouter();
   const modalRef = useModalFocus(isOpen);
   const [title, setTitle] = useState('');
@@ -703,8 +705,6 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
   
   // Notes de réunion
   const [noteMode, setNoteMode] = useState<'none' | 'manual' | 'fathom'>('none');
-  const [fathomConfigured, setFathomConfigured] = useState<boolean | null>(null);
-  const [checkingFathom, setCheckingFathom] = useState(false);
 
   // Projets filtrés par client
   const filteredProjects = useMemo(() => {
@@ -736,29 +736,18 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
     }
   };
 
-  // Vérifier la config Fathom quand on clique sur le bouton
-  const checkFathomConfig = async () => {
-    if (!user?.id) return;
-    
-    setCheckingFathom(true);
-    try {
-      const response = await fetch(`/api/integrations/fathom?userId=${user.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.connected) {
-          setFathomConfigured(true);
-          setNoteMode('fathom');
-        } else {
-          // Rediriger vers la page de configuration
-          router.push('/dashboard/settings/meeting-integrations');
-        }
+  // Gérer le clic sur Fathom
+  const handleFathomClick = () => {
+    if (fathomConfigured) {
+      // Si déjà sélectionné, désélectionner
+      if (noteMode === 'fathom') {
+        setNoteMode('none');
       } else {
-        router.push('/dashboard/settings/meeting-integrations');
+        setNoteMode('fathom');
       }
-    } catch {
+    } else {
+      // Rediriger vers la page de configuration
       router.push('/dashboard/settings/meeting-integrations');
-    } finally {
-      setCheckingFathom(false);
     }
   };
 
@@ -784,12 +773,10 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
       // Initialiser le mode de notes avec la valeur existante
       if (event.use_fathom) {
         setNoteMode('fathom');
-        setFathomConfigured(true);
       } else if (event.meeting_note) {
         setNoteMode('manual');
       } else {
         setNoteMode('none');
-        setFathomConfigured(null);
       }
     } else {
       setTitle('');
@@ -813,7 +800,6 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
       setProjectId(defaultProject?.documentId || '');
       setClientId(defaultClient?.documentId || defaultProject?.client?.documentId || '');
       setNoteMode('none');
-      setFathomConfigured(null);
     }
     setErrors({});
   }, [event, defaultDate, defaultProject, defaultClient]);
@@ -1123,9 +1109,8 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                   onClick={() => {
                     if (noteMode === 'fathom' && fathomConfigured) {
                       setNoteMode('none');
-                      setFathomConfigured(null);
                     } else {
-                      checkFathomConfig();
+                      handleFathomClick();
                     }
                   }}
                   disabled={checkingFathom}

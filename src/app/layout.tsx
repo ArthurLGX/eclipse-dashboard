@@ -10,6 +10,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { SidebarProvider } from './context/SidebarContext';
 import { PreferencesProvider } from './context/PreferencesContext';
 import { QuotaProvider } from './context/QuotaContext';
+import { FathomProvider } from './context/FathomContext';
 import TrialExpiredWrapper from './components/TrialExpiredWrapper';
 import ChatbotProvider from './components/ChatbotProvider';
 
@@ -70,13 +71,15 @@ export default function RootLayout({
                 <AuthProvider>
                   <QuotaProvider>
                     <PopupProvider>
-                      <ChatbotProvider>
-                        <TrialExpiredWrapper>
-                          <Header />
-                          {children}
-                          <Footer />
-                        </TrialExpiredWrapper>
-                      </ChatbotProvider>
+                      <FathomProvider>
+                        <ChatbotProvider>
+                          <TrialExpiredWrapper>
+                            <Header />
+                            {children}
+                            <Footer />
+                          </TrialExpiredWrapper>
+                        </ChatbotProvider>
+                      </FathomProvider>
                     </PopupProvider>
                   </QuotaProvider>
                 </AuthProvider>
