@@ -558,12 +558,12 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer
     e.preventDefault();
     setSaving(true);
 
-    try {
-      // Find project by documentId to get numeric id
-      const selectedProject = projectId ? projects.find(p => p.documentId === projectId) : undefined;
+    // Find project by documentId to get numeric id
+    const selectedProject = projectId ? projects.find(p => p.documentId === projectId) : undefined;
 
-      if (entry) {
-        // Update existing entry
+    if (entry) {
+      // Update existing entry
+      try {
         const startDateTime = new Date(`${date}T${startTime}`);
         const endDateTime = new Date(`${date}T${endTime}`);
         const duration = Math.round((endDateTime.getTime() - startDateTime.getTime()) / 60000);
@@ -583,23 +583,24 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer
         await createTimeEntry(userId, data); // TODO: use updateTimeEntry when available
         showGlobalPopup(t('entry_updated') || 'Entrée mise à jour', 'success');
         await onSave();
-      } else {
-        // Start a new timer
-        if (onStartTimer) {
-          await onStartTimer(
-            selectedProject?.id,
-            description,
-            estimatedDuration,
-            billable,
-            billable ? hourlyRate : 0
-          );
-          onClose();
-        }
+      } catch {
+        showGlobalPopup(t('save_error') || 'Erreur lors de l\'enregistrement', 'error');
+      } finally {
+        setSaving(false);
       }
-    } catch {
-      showGlobalPopup(t('save_error') || 'Erreur lors de l\'enregistrement', 'error');
-    } finally {
+    } else {
+      // Start a new timer - handleStartTimer gère ses propres erreurs et popups
+      if (onStartTimer) {
+        await onStartTimer(
+          selectedProject?.id,
+          description,
+          estimatedDuration,
+          billable,
+          billable ? hourlyRate : 0
+        );
+      }
       setSaving(false);
+      onClose();
     }
   };
 
