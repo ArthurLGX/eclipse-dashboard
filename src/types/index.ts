@@ -902,6 +902,7 @@ export interface CreateTimeEntryData {
   end_time?: string;
   duration?: number;
   estimated_duration?: number; // temps imparti en minutes
+  timer_status?: 'active' | 'completed' | 'exceeded' | 'failed';
   description?: string;
   billable?: boolean;
   hourly_rate?: number;
