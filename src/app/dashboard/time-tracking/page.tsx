@@ -416,33 +416,43 @@ export default function TimeTrackingPage() {
                 </div>
                 <div className="card">
                   {dateEntries.map((entry, index) => {
+                    // Calculer la durée réelle (en temps réel pour les entrées en cours)
+                    const isRunning = entry.is_running && entry.documentId === runningEntry?.documentId;
+                    const actualDuration = isRunning 
+                      ? Math.floor(runningTime / 60) // Convertir secondes en minutes
+                      : (entry.duration || 0);
+                    
                     // Calculer la progression si temps estimé
-                    const progressPercent = entry.estimated_duration && entry.duration
-                      ? Math.min((entry.duration / entry.estimated_duration) * 100, 100)
+                    const progressPercent = entry.estimated_duration && actualDuration
+                      ? Math.min((actualDuration / entry.estimated_duration) * 100, 100)
                       : 0;
-                    const isOverEstimate = entry.estimated_duration && entry.duration 
-                      ? entry.duration > entry.estimated_duration 
+                    const isOverEstimate = entry.estimated_duration && actualDuration 
+                      ? actualDuration > entry.estimated_duration 
                       : false;
                     const statusColor = entry.timer_status === 'completed' 
                       ? 'bg-success' 
                       : entry.timer_status === 'exceeded' || isOverEstimate
                         ? 'bg-danger'
-                        : entry.billable 
-                          ? 'bg-accent' 
-                          : 'bg-muted';
+                        : isRunning
+                          ? 'bg-warning animate-pulse'
+                          : entry.billable 
+                            ? 'bg-accent' 
+                            : 'bg-muted';
                     
                     return (
-                      <div key={entry.documentId} className={`p-4 hover:bg-hover transition-colors ${index > 0 ? 'border-t border-default' : ''}`}>
+                      <div key={entry.documentId} className={`p-4 hover:bg-hover transition-colors ${index > 0 ? 'border-t border-default' : ''} ${isRunning ? 'bg-warning/5' : ''}`}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4 flex-1 min-w-0">
                             <div className={`w-1 h-12 rounded-full ${statusColor}`} />
                             <div className="flex-1 min-w-0">
-                              <p className="font-medium text-primary truncate">
+                              <p className="font-medium text-primary truncate flex items-center gap-2">
                                 {entry.project?.title || entry.description || t('no_description') || 'Sans description'}
+                                {isRunning && <span className="text-xs text-warning font-normal">({t('running') || 'en cours'})</span>}
                               </p>
                               <p className="text-xs text-muted">
                                 {new Date(entry.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                                 {entry.end_time && ` - ${new Date(entry.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`}
+                                {!entry.end_time && isRunning && ` - ${t('now') || 'maintenant'}`}
                                 {entry.client && ` • ${entry.client.name}`}
                               </p>
                             </div>
@@ -450,7 +460,9 @@ export default function TimeTrackingPage() {
                           <div className="flex items-center gap-4">
                             {/* Temps réel et estimé */}
                             <div className="text-right">
-                              <span className="font-mono text-primary">{formatDuration(entry.duration || 0)}</span>
+                              <span className={`font-mono ${isRunning ? 'text-warning' : 'text-primary'}`}>
+                                {isRunning ? formatSeconds(runningTime) : formatDuration(actualDuration)}
+                              </span>
                               {entry.estimated_duration && (
                                 <span className={`text-xs ml-1 ${isOverEstimate ? 'text-danger' : 'text-muted'}`}>
                                   / {formatDuration(entry.estimated_duration)}
@@ -459,7 +471,7 @@ export default function TimeTrackingPage() {
                             </div>
                             {entry.billable && entry.hourly_rate && (
                               <span className="text-xs text-success">
-                                {formatCurrency((entry.duration || 0) / 60 * entry.hourly_rate)}
+                                {formatCurrency(actualDuration / 60 * entry.hourly_rate)}
                               </span>
                             )}
                             <div className="flex items-center gap-1">
@@ -479,11 +491,11 @@ export default function TimeTrackingPage() {
                           </div>
                         </div>
                         {/* Barre de progression */}
-                        {entry.estimated_duration && entry.duration && (
+                        {entry.estimated_duration && actualDuration > 0 && (
                           <div className="mt-2 ml-5">
-                            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
                               <div 
-                                className={`h-full rounded-full transition-all ${isOverEstimate ? 'bg-danger' : 'bg-accent'}`}
+                                className={`h-full rounded-full transition-all ${isOverEstimate ? 'bg-danger' : isRunning ? 'bg-warning' : 'bg-accent'}`}
                                 style={{ width: `${progressPercent}%` }}
                               />
                             </div>
