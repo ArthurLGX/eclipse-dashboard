@@ -35,10 +35,18 @@ export default function TimeTrackingPage() {
   const { showGlobalPopup } = usePopup();
   const { formatCurrency } = usePreferences();
   
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; entry: TimeEntry | null }>({
     isOpen: false,
     entry: null,
   });
+  
+  // Close modal helper
+  const closeModal = () => {
+    setShowAddModal(false);
+    setEditingEntry(null);
+  };
   
   // Filters
   const [dateFilter, setDateFilter] = useState<'today' | 'week' | 'month' | 'all'>('week');
