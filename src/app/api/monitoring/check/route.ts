@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
+
+// Configuration SMTP système pour les alertes (variables d'environnement)
+const SYSTEM_SMTP_HOST = process.env.SMTP_HOST;
+const SYSTEM_SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
+const SYSTEM_SMTP_USER = process.env.SMTP_USER;
+const SYSTEM_SMTP_PASS = process.env.SMTP_PASS;
+const SYSTEM_SMTP_SECURE = process.env.SMTP_SECURE === 'true';
 
 interface MonitoredSite {
   id: number;
@@ -221,21 +229,37 @@ async function sendAlert(site: MonitoredSite, result: CheckResult) {
   const userEmail = site.users[0]?.email;
   if (!userEmail) return;
   
+  // Vérifier que la config SMTP système est présente
+  if (!SYSTEM_SMTP_HOST || !SYSTEM_SMTP_USER || !SYSTEM_SMTP_PASS) {
+    console.error('System SMTP not configured for monitoring alerts');
+    return;
+  }
+  
   try {
     const isDown = result.status === 'down';
     const emoji = isDown ? '🔴' : '🟡';
     const statusText = isDown ? 'hors ligne' : 'lent';
     
-    // Utiliser l'API d'envoi d'email existante
-    await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ''}/api/emails/send`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        to: userEmail,
-        subject: `${emoji} Alerte: ${site.name} est ${statusText}`,
-        html: generateAlertEmailTemplate(site, result),
-      }),
+    // Créer le transporteur Nodemailer
+    const transporter = nodemailer.createTransport({
+      host: SYSTEM_SMTP_HOST,
+      port: SYSTEM_SMTP_PORT,
+      secure: SYSTEM_SMTP_SECURE,
+      auth: {
+        user: SYSTEM_SMTP_USER,
+        pass: SYSTEM_SMTP_PASS,
+      },
     });
+    
+    // Envoyer l'email avec le nom "Eclipse Monitoring"
+    await transporter.sendMail({
+      from: `"Eclipse Monitoring" <${SYSTEM_SMTP_USER}>`,
+      to: userEmail,
+      subject: `${emoji} Alerte: ${site.name} est ${statusText}`,
+      html: generateAlertEmailTemplate(site, result),
+    });
+    
+    console.log(`Alert email sent to ${userEmail} for site ${site.name}`);
   } catch (error) {
     console.error('Failed to send alert email:', error);
   }
