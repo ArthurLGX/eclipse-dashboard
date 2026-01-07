@@ -198,7 +198,7 @@ export default function TimerIndicator() {
       {/* Timer Bar - Draggable & Collapsible */}
       <motion.div 
         ref={timerRef}
-        drag
+        drag={!isCollapsed}
         dragControls={dragControls}
         dragConstraints={constraintsRef}
         dragElastic={0.1}
@@ -209,48 +209,54 @@ export default function TimerIndicator() {
             y: prev.y + info.offset.y,
           }));
         }}
-        initial={{ x: 100, opacity: 0, y: 0 }}
+        initial={{ opacity: 0 }}
         animate={{ 
-          x: isCollapsed ? 180 : 0, 
           opacity: 1,
+          x: position.x,
           y: position.y,
         }}
-        exit={{ x: 100, opacity: 0 }}
+        exit={{ opacity: 0 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="fixed right-0 top-1/2 z-[1002] flex items-center pointer-events-auto cursor-grab active:cursor-grabbing"
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-[1002] flex items-center pointer-events-auto"
         style={{ touchAction: 'none' }}
       >
-        {/* Collapse Toggle Button */}
+        {/* Collapse Toggle Button - Always visible */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`flex items-center justify-center w-6 h-16 rounded-l-lg shadow-lg transition-all ${
+          className={`flex items-center justify-center w-8 h-20 rounded-l-xl shadow-lg transition-all ${
             isExceeded 
               ? 'bg-danger hover:bg-danger/90' 
               : 'bg-warning hover:bg-warning/90'
           }`}
           title={isCollapsed ? (t('expand') || 'Ouvrir') : (t('collapse') || 'Réduire')}
         >
-          {isCollapsed ? (
-            <IconChevronLeft className="w-4 h-4 text-white" />
-          ) : (
-            <IconChevronRight className="w-4 h-4 text-white" />
-          )}
+          <div className="flex flex-col items-center gap-1">
+            {isCollapsed ? (
+              <>
+                <IconClock className="w-4 h-4 text-white animate-pulse" />
+                <IconChevronLeft className="w-4 h-4 text-white" />
+              </>
+            ) : (
+              <IconChevronRight className="w-4 h-4 text-white" />
+            )}
+          </div>
         </button>
 
-        {/* Main Timer Panel */}
-        <motion.div 
-          animate={{ 
-            width: isCollapsed ? 0 : 'auto',
-            opacity: isCollapsed ? 0 : 1,
-          }}
-          transition={{ duration: 0.2 }}
-          className={`relative overflow-hidden rounded-r-xl shadow-2xl border-r border-t border-b ${
-            isExceeded 
-              ? 'bg-danger border-danger' 
-              : 'bg-warning border-warning'
-          }`}
-          style={{ backdropFilter: 'blur(12px)' }}
-        >
+        {/* Main Timer Panel - Collapsible */}
+        <AnimatePresence>
+          {!isCollapsed && (
+            <motion.div 
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 'auto', opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className={`relative overflow-hidden rounded-r-xl shadow-2xl cursor-grab active:cursor-grabbing ${
+                isExceeded 
+                  ? 'bg-danger' 
+                  : 'bg-warning'
+              }`}
+              style={{ backdropFilter: 'blur(12px)' }}
+            >
           {/* Progress Bar Background */}
           <div className="absolute inset-0 bg-black/10" />
           <motion.div 
@@ -326,6 +332,8 @@ export default function TimerIndicator() {
             </div>
           </div>
         </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       {/* Exceeded Time Modal */}
