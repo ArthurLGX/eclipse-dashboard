@@ -805,8 +805,6 @@ export default function ProjectTasks({
                 setParentTaskForSubtask(parentTask);
                 setShowNewTaskForm(true);
               }}
-              getStatusStyle={getStatusStyle}
-              getPriorityStyle={getPriorityStyle}
               taskStatusOptions={TASK_STATUS_OPTIONS}
               projectName={undefined}
               t={t}
@@ -1627,8 +1625,6 @@ interface TaskGanttViewProps {
   tasks: ProjectTask[];
   onEdit: (task: ProjectTask) => void;
   onAddSubtask: (parentTask: ProjectTask) => void;
-  getStatusStyle: (status: TaskStatus) => string;
-  getPriorityStyle: (priority: TaskPriority) => string;
   taskStatusOptions: TaskStatusOption[];
   projectName?: string;
   t: (key: string) => string;
@@ -1638,7 +1634,6 @@ function TaskGanttView({
   tasks,
   onEdit,
   onAddSubtask,
-  getStatusStyle,
   taskStatusOptions,
   projectName,
   t,
@@ -2036,7 +2031,7 @@ function TaskGanttView({
     );
   }
 
-  const { dayHeaders, weeks, months, todayIndex, totalDays } = ganttData;
+  const { dayHeaders, months, todayIndex } = ganttData;
 
   return (
     <div className="space-y-2">
@@ -2187,7 +2182,7 @@ function TaskGanttView({
 
             {/* Liste des groupes et tâches */}
             <div className="overflow-y-auto" style={{ maxHeight: 'calc(70vh - 100px)' }}>
-              {taskGroups.map((group, groupIndex) => {
+              {taskGroups.map((group) => {
                 const isExpanded = !collapsedGroups.has(group.color);
                 const groupName = getColorName(group.color);
                 
