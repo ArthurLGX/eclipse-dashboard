@@ -145,25 +145,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/**
- * Fonction utilitaire pour récupérer le secret webhook d'un utilisateur
- * Utilisée par le webhook Fathom pour vérifier la signature
- */
-export async function getFathomWebhookSecret(userId: number): Promise<string | null> {
-  try {
-    const response = await fetch(
-      `${STRAPI_URL}/api/integration-configs?filters[user][id][$eq]=${userId}&filters[provider][$eq]=fathom`,
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-    return data.data?.[0]?.webhook_secret || null;
-  } catch {
-    return null;
-  }
-}
-
