@@ -566,19 +566,26 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer
       // Update existing entry
       try {
         const startDateTime = new Date(`${date}T${startTime}`);
-        const endDateTime = new Date(`${date}T${endTime}`);
-        const duration = Math.round((endDateTime.getTime() - startDateTime.getTime()) / 60000);
-
-        await updateTimeEntry(entry.documentId, {
+        
+        // Préparer les données de mise à jour
+        const updateData: Record<string, unknown> = {
           description,
           start_time: startDateTime.toISOString(),
-          end_time: endDateTime.toISOString(),
-          duration,
           estimated_duration: estimatedDuration,
           billable,
           hourly_rate: billable ? hourlyRate : 0,
           project: selectedProject?.id,
-        });
+        };
+        
+        // Ajouter end_time et duration seulement si endTime est défini (entrée terminée)
+        if (endTime) {
+          const endDateTime = new Date(`${date}T${endTime}`);
+          const duration = Math.round((endDateTime.getTime() - startDateTime.getTime()) / 60000);
+          updateData.end_time = endDateTime.toISOString();
+          updateData.duration = duration;
+        }
+
+        await updateTimeEntry(entry.documentId, updateData);
         
         showGlobalPopup(t('entry_updated') || 'Entrée mise à jour', 'success');
         await onSave();
