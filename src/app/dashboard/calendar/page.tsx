@@ -453,7 +453,8 @@ export default function CalendarPage() {
           onClose={() => setDeleteModal({ isOpen: false, event: null })}
           onConfirm={handleDelete}
           title={t('delete_event') || 'Supprimer l\'événement'}
-          message={t('delete_event_confirm') || `Êtes-vous sûr de vouloir supprimer "${deleteModal.event?.title}" ?`}
+          itemName={deleteModal.event?.title || ''}
+          itemType="event"
         />
       </motion.div>
     </ProtectedRoute>

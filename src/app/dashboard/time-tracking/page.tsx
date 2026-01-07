@@ -428,7 +428,8 @@ export default function TimeTrackingPage() {
           onClose={() => setDeleteModal({ isOpen: false, entry: null })}
           onConfirm={handleDelete}
           title={t('delete_entry') || 'Supprimer l\'entrée'}
-          message={t('delete_entry_confirm') || 'Êtes-vous sûr de vouloir supprimer cette entrée ?'}
+          itemName={deleteModal.entry?.description || ''}
+          itemType="entry"
         />
       </motion.div>
     </ProtectedRoute>

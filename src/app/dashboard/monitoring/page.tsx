@@ -366,7 +366,8 @@ export default function MonitoringPage() {
           onClose={() => setDeleteModal({ isOpen: false, site: null })}
           onConfirm={handleDelete}
           title={t('delete_site') || 'Supprimer le site'}
-          message={t('delete_site_confirm') || `Êtes-vous sûr de vouloir supprimer "${deleteModal.site?.name}" ?`}
+          itemName={deleteModal.site?.name || ''}
+          itemType="site"
         />
       </motion.div>
     </ProtectedRoute>

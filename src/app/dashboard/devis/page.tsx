@@ -360,7 +360,8 @@ export default function DevisPage() {
           onClose={() => setDeleteModal({ isOpen: false, quote: null })}
           onConfirm={handleDelete}
           title={t('delete_quote') || 'Supprimer le devis'}
-          message={t('delete_quote_confirm') || `Êtes-vous sûr de vouloir supprimer le devis "${deleteModal.quote?.reference}" ?`}
+          itemName={deleteModal.quote?.reference || ''}
+          itemType="quote"
         />
       </motion.div>
     </ProtectedRoute>
