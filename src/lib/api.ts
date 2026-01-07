@@ -2664,10 +2664,8 @@ export const createMeetingNote = async (
   data: CreateMeetingNoteData
 ): Promise<MeetingNote> => {
   const response = await post<ApiResponse<MeetingNote>>('meeting-notes', {
-    data: {
-      ...data,
-      users: userId,
-    },
+    ...data,
+    users: userId,
   });
   
   if (!response.data) {
@@ -2682,9 +2680,7 @@ export const updateMeetingNote = async (
   documentId: string,
   data: UpdateMeetingNoteData
 ): Promise<MeetingNote> => {
-  const response = await put<ApiResponse<MeetingNote>>(`meeting-notes/${documentId}`, {
-    data,
-  });
+  const response = await put<ApiResponse<MeetingNote>>(`meeting-notes/${documentId}`, data);
   
   if (!response.data) {
     throw new Error('Failed to update meeting note');
