@@ -388,8 +388,9 @@ export default function ProjectTasks({
 
   // Cleanup des timeouts
   useEffect(() => {
+    const timeouts = progressTimeoutRef.current;
     return () => {
-      Object.values(progressTimeoutRef.current).forEach(clearTimeout);
+      Object.values(timeouts).forEach(clearTimeout);
     };
   }, []);
 
@@ -1755,15 +1756,6 @@ function TaskGanttView({
   const isToday = useCallback((date: Date) => {
     return date.getTime() === today.getTime();
   }, [today]);
-
-  const getStatusColor = useCallback((status: TaskStatus) => {
-    switch (status) {
-      case 'completed': return 'bg-accent';
-      case 'in_progress': return 'bg-blue-500';
-      case 'cancelled': return 'bg-red-500/50';
-      default: return 'bg-secondary';
-    }
-  }, []);
 
   // Fonction pour générer le HTML d'export (réutilisable pour aperçu et export)
   const generateExportHTML = useCallback((mode: 'light' | 'dark') => {
