@@ -776,6 +776,16 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
       setReminderMinutes(event.reminder_minutes);
       setProjectId(event.project?.documentId || '');
       setClientId(event.client?.documentId || '');
+      // Initialiser le mode de notes avec la valeur existante
+      if (event.use_fathom) {
+        setNoteMode('fathom');
+        setFathomConfigured(true);
+      } else if (event.meeting_note) {
+        setNoteMode('manual');
+      } else {
+        setNoteMode('none');
+        setFathomConfigured(null);
+      }
     } else {
       setTitle('');
       setDescription('');
@@ -1071,8 +1081,8 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
             </div>
           </div>
 
-          {/* Section Notes de réunion - uniquement pour les nouveaux événements de type meeting */}
-          {!event && eventType === 'meeting' && (
+          {/* Section Notes de réunion - pour les événements de type meeting */}
+          {eventType === 'meeting' && (
             <div className="p-4 rounded-xl border border-default bg-hover/50 space-y-3">
               <div className="flex items-center gap-2 text-sm font-medium text-primary">
                 <IconNotes className="w-4 h-4 text-accent" />
