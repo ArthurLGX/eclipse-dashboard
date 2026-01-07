@@ -1,0 +1,319 @@
+import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
+
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const FATHOM_WEBHOOK_SECRET = process.env.FATHOM_WEBHOOK_SECRET;
+
+// Types pour le payload Fathom
+interface FathomAttendee {
+  name: string;
+  email?: string;
+}
+
+interface FathomActionItem {
+  text: string;
+  assignee?: string;
+}
+
+interface FathomWebhookPayload {
+  call_id: string;
+  title: string;
+  start_time: string; // ISO date
+  end_time: string; // ISO date
+  duration_seconds: number;
+  summary?: string;
+  transcript?: string;
+  action_items?: FathomActionItem[];
+  attendees?: FathomAttendee[];
+  recording_url?: string;
+  meeting_url?: string; // URL Google Meet/Zoom
+}
+
+/**
+ * Vérifie la signature du webhook Fathom
+ * @see https://developers.fathom.ai/webhooks
+ */
+function verifyWebhookSignature(
+  secret: string,
+  signature: string | null,
+  rawBody: string
+): boolean {
+  if (!signature) return false;
+
+  try {
+    // Format: "v1,signature1 signature2..."
+    const [, signatureBlock] = signature.split(',');
+    if (!signatureBlock) return false;
+
+    const expected = crypto
+      .createHmac('sha256', secret)
+      .update(rawBody, 'utf8')
+      .digest('base64');
+
+    const signatures = signatureBlock.split(' ');
+    return signatures.includes(expected);
+  } catch (error) {
+    console.error('Error verifying webhook signature:', error);
+    return false;
+  }
+}
+
+/**
+ * Trouve l'événement calendrier correspondant à la réunion
+ */
+async function findMatchingCalendarEvent(
+  meetingDate: string,
+  meetingTitle: string,
+  meetingUrl?: string
+): Promise<{ id: number; documentId: string; users: { id: number }[] } | null> {
+  try {
+    // Chercher par date (même jour) et type meeting
+    const date = new Date(meetingDate);
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const query = new URLSearchParams({
+      'filters[event_type][$eq]': 'meeting',
+      'filters[start_date][$gte]': startOfDay.toISOString(),
+      'filters[start_date][$lte]': endOfDay.toISOString(),
+      'populate[0]': 'users',
+      'populate[1]': 'project',
+      'populate[2]': 'client',
+    });
+
+    const response = await fetch(`${STRAPI_URL}/api/calendar-events?${query}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch calendar events:', response.status);
+      return null;
+    }
+
+    const data = await response.json();
+    const events = data.data || [];
+
+    if (events.length === 0) {
+      console.log('No matching calendar events found for date:', meetingDate);
+      return null;
+    }
+
+    // Essayer de matcher par titre ou URL
+    for (const event of events) {
+      const eventTitle = event.title?.toLowerCase() || '';
+      const searchTitle = meetingTitle.toLowerCase();
+      const eventLocation = event.location?.toLowerCase() || '';
+
+      // Match par URL de meeting dans location
+      if (meetingUrl && eventLocation.includes(meetingUrl.toLowerCase())) {
+        console.log('Matched by meeting URL:', event.documentId);
+        return event;
+      }
+
+      // Match par titre similaire
+      if (
+        eventTitle.includes(searchTitle) ||
+        searchTitle.includes(eventTitle) ||
+        eventTitle === searchTitle
+      ) {
+        console.log('Matched by title:', event.documentId);
+        return event;
+      }
+    }
+
+    // Si pas de match exact, prendre le premier événement meeting du jour
+    console.log('No exact match, using first meeting of the day:', events[0].documentId);
+    return events[0];
+  } catch (error) {
+    console.error('Error finding matching calendar event:', error);
+    return null;
+  }
+}
+
+/**
+ * Crée ou met à jour la note de réunion dans Strapi
+ */
+async function createOrUpdateMeetingNote(
+  userId: number,
+  calendarEventId: number | null,
+  payload: FathomWebhookPayload,
+  projectId?: number,
+  clientId?: number
+): Promise<boolean> {
+  try {
+    // Vérifier si une note existe déjà pour cet événement
+    let existingNote = null;
+    if (calendarEventId) {
+      const checkResponse = await fetch(
+        `${STRAPI_URL}/api/meeting-notes?filters[calendar_event][id][$eq]=${calendarEventId}`,
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+      const checkData = await checkResponse.json();
+      existingNote = checkData.data?.[0];
+    }
+
+    // Formater les action items
+    const actionItems = payload.action_items?.map((item, index) => ({
+      id: `fathom-${payload.call_id}-${index}`,
+      text: item.text,
+      assignee: item.assignee,
+      completed: false,
+    }));
+
+    // Formater les participants
+    const attendees = payload.attendees?.map((attendee) => ({
+      name: attendee.name,
+      email: attendee.email,
+    }));
+
+    const noteData = {
+      data: {
+        title: payload.title,
+        transcription: payload.transcript || null,
+        summary: payload.summary || null,
+        action_items: actionItems || null,
+        attendees: attendees || null,
+        duration_minutes: Math.round(payload.duration_seconds / 60),
+        recording_url: payload.recording_url || null,
+        source: 'phantom_ai', // Fathom = Phantom AI
+        status: 'completed',
+        meeting_date: payload.start_time,
+        users: userId,
+        ...(calendarEventId && { calendar_event: calendarEventId }),
+        ...(projectId && { project: projectId }),
+        ...(clientId && { client: clientId }),
+      },
+    };
+
+    let response;
+    if (existingNote) {
+      // Mettre à jour la note existante
+      response = await fetch(
+        `${STRAPI_URL}/api/meeting-notes/${existingNote.documentId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(noteData),
+        }
+      );
+      console.log('Updated existing meeting note:', existingNote.documentId);
+    } else {
+      // Créer une nouvelle note
+      response = await fetch(`${STRAPI_URL}/api/meeting-notes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(noteData),
+      });
+      console.log('Created new meeting note');
+    }
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Failed to save meeting note:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error creating/updating meeting note:', error);
+    return false;
+  }
+}
+
+/**
+ * Webhook endpoint pour Fathom AI
+ * POST /api/webhooks/fathom
+ */
+export async function POST(request: NextRequest) {
+  try {
+    const rawBody = await request.text();
+    const signature = request.headers.get('webhook-signature');
+
+    // Vérifier la signature si le secret est configuré
+    if (FATHOM_WEBHOOK_SECRET) {
+      if (!verifyWebhookSignature(FATHOM_WEBHOOK_SECRET, signature, rawBody)) {
+        console.error('Invalid webhook signature');
+        return NextResponse.json(
+          { error: 'Invalid signature' },
+          { status: 401 }
+        );
+      }
+    } else {
+      console.warn('FATHOM_WEBHOOK_SECRET not configured - skipping signature verification');
+    }
+
+    const payload: FathomWebhookPayload = JSON.parse(rawBody);
+    console.log('Received Fathom webhook:', {
+      call_id: payload.call_id,
+      title: payload.title,
+      start_time: payload.start_time,
+    });
+
+    // Trouver l'événement calendrier correspondant
+    const calendarEvent = await findMatchingCalendarEvent(
+      payload.start_time,
+      payload.title,
+      payload.meeting_url
+    );
+
+    if (!calendarEvent) {
+      console.log('No matching calendar event found, storing note without link');
+    }
+
+    // Récupérer l'ID utilisateur depuis l'événement ou utiliser un default
+    const userId = calendarEvent?.users?.[0]?.id;
+    if (!userId) {
+      console.error('No user found for this meeting');
+      return NextResponse.json(
+        { error: 'No user associated with this meeting' },
+        { status: 400 }
+      );
+    }
+
+    // Créer la note de réunion
+    const success = await createOrUpdateMeetingNote(
+      userId,
+      calendarEvent?.id || null,
+      payload,
+      undefined, // projectId - sera récupéré depuis l'événement si lié
+      undefined  // clientId - sera récupéré depuis l'événement si lié
+    );
+
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Failed to save meeting note' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Meeting note saved successfully',
+      linked_to_event: !!calendarEvent,
+    });
+  } catch (error) {
+    console.error('Webhook processing error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * GET pour tester que l'endpoint est accessible
+ */
+export async function GET() {
+  return NextResponse.json({
+    status: 'ok',
+    message: 'Fathom webhook endpoint is ready',
+    webhook_secret_configured: !!FATHOM_WEBHOOK_SECRET,
+  });
+}
+

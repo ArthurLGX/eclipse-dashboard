@@ -697,7 +697,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-lg bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-y-auto"
       >
         <div className="p-6 border-b border-default">
           <h2 className="text-lg font-semibold text-primary">
