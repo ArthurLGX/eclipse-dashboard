@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
 interface FathomConfig {
   webhook_secret: string;
@@ -23,12 +24,16 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Headers avec authentification Strapi
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      ...(STRAPI_API_TOKEN && { Authorization: `Bearer ${STRAPI_API_TOKEN}` }),
+    };
+
     // Chercher la config dans Strapi
     const response = await fetch(
       `${STRAPI_URL}/api/integration-configs?filters[user][id][$eq]=${userId}&filters[provider][$eq]=fathom`,
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
+      { headers }
     );
 
     if (!response.ok) {
@@ -85,12 +90,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'userId is required' }, { status: 400 });
     }
 
+    // Headers avec authentification Strapi
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      ...(STRAPI_API_TOKEN && { Authorization: `Bearer ${STRAPI_API_TOKEN}` }),
+    };
+
     // Chercher si une config existe déjà
     const checkResponse = await fetch(
       `${STRAPI_URL}/api/integration-configs?filters[user][id][$eq]=${userId}&filters[provider][$eq]=fathom`,
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
+      { headers }
     );
 
     let existingId = null;
@@ -117,14 +126,14 @@ export async function POST(request: NextRequest) {
       // Mettre à jour
       response = await fetch(`${STRAPI_URL}/api/integration-configs/${existingId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(configData),
       });
     } else {
       // Créer
       response = await fetch(`${STRAPI_URL}/api/integration-configs`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(configData),
       });
     }
