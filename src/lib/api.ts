@@ -1566,7 +1566,7 @@ import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
 /** Récupère les tâches d'un projet */
 export const fetchProjectTasks = (projectDocumentId: string) =>
   get<ApiResponse<ProjectTask[]>>(
-    `project-tasks?populate=*&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc`
+    `project-tasks?populate[0]=assigned_to&populate[1]=subtasks&populate[2]=subtasks.assigned_to&populate[3]=parent_task&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc`
   );
 
 /** Crée une nouvelle tâche */
@@ -1584,6 +1584,8 @@ export async function createProjectTask(data: {
   created_user: number; // user id
   order?: number;
   tags?: string[];
+  parent_task?: string; // documentId de la tâche parente (pour sous-tâches)
+  color?: string; // couleur du groupe de tâches
 }) {
   return post('project-tasks', {
     project: data.project,
@@ -1600,6 +1602,8 @@ export async function createProjectTask(data: {
     assigned_to: data.assigned_to || null,
     created_user: data.created_user,
     tags: data.tags || [],
+    parent_task: data.parent_task || null,
+    color: data.color || '#8B5CF6',
   });
 }
 
@@ -1616,15 +1620,15 @@ export async function updateProjectTask(
     due_date: string | null;
     completed_date: string | null;
     estimated_hours: number | null;
+    actual_hours: number | null;
     assigned_to: number | null;
     order: number;
     tags: string[];
+    color: string;
   }>
 ) {
   // Si la tâche est marquée comme complétée, ajouter la date de complétion
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { actual_hours: _removed, ...cleanData } = data as Record<string, unknown>;
-  const payload = { ...cleanData };
+  const payload = { ...data };
   if (data.task_status === 'completed' && !data.completed_date) {
     payload.completed_date = new Date().toISOString();
     payload.progress = 100;

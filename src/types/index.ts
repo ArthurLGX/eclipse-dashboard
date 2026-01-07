@@ -149,9 +149,12 @@ export interface ProjectTask {
   estimated_hours: number | null;
   actual_hours: number | null;
   order: number;
+  color?: string; // Couleur pour le groupe de tâches
   project?: Project;
   assigned_to?: User;
   created_user?: User;
+  parent_task?: ProjectTask; // Tâche parente (si sous-tâche)
+  subtasks?: ProjectTask[]; // Sous-tâches
   tags?: string[];
   createdAt: string;
   updatedAt: string;

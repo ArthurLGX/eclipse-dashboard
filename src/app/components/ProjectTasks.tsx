@@ -19,7 +19,11 @@ import {
   IconTable,
   IconTimeline,
   IconFileTypePdf,
+  IconSubtask,
+  IconUser,
+  IconPalette,
 } from '@tabler/icons-react';
+import type { User } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import RichTextEditor from './RichTextEditor';
@@ -65,6 +69,95 @@ type ViewMode = 'cards' | 'table' | 'gantt';
 // Types pour les options
 type TaskStatusOption = { value: TaskStatus; label: string; color: string; icon: React.ReactNode };
 type TaskPriorityOption = { value: TaskPriority; label: string; color: string };
+
+// Couleurs prédéfinies pour les groupes de tâches
+const TASK_COLORS = [
+  '#8B5CF6', // Violet (défaut)
+  '#3B82F6', // Bleu
+  '#10B981', // Vert
+  '#F59E0B', // Orange
+  '#EF4444', // Rouge
+  '#EC4899', // Rose
+  '#06B6D4', // Cyan
+  '#84CC16', // Lime
+];
+
+// Composant Avatar pour les utilisateurs assignés
+function UserAvatar({ 
+  user, 
+  size = 'md',
+  className = '' 
+}: { 
+  user?: User | null; 
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}) {
+  const sizeClasses = {
+    sm: 'w-5 h-5 text-[10px]',
+    md: 'w-7 h-7 text-xs',
+    lg: 'w-9 h-9 text-sm',
+  };
+  
+  if (!user) {
+    return (
+      <div className={`${sizeClasses[size]} rounded-full bg-hover flex items-center justify-center ${className}`}>
+        <IconUser className="w-3 h-3 text-muted" />
+      </div>
+    );
+  }
+  
+  const initials = user.username 
+    ? user.username.slice(0, 2).toUpperCase() 
+    : user.email?.slice(0, 2).toUpperCase() || '??';
+    
+  // Générer une couleur basée sur le nom
+  const colors = ['bg-violet-500', 'bg-blue-500', 'bg-green-500', 'bg-amber-500', 'bg-rose-500', 'bg-cyan-500'];
+  const colorIndex = (user.username || user.email || '').charCodeAt(0) % colors.length;
+  
+  return (
+    <div 
+      className={`${sizeClasses[size]} rounded-full ${colors[colorIndex]} flex items-center justify-center text-white font-medium ${className}`}
+      title={user.username || user.email}
+    >
+      {initials}
+    </div>
+  );
+}
+
+// Composant pour afficher plusieurs avatars empilés
+function AvatarStack({ 
+  users, 
+  max = 3,
+  size = 'sm' 
+}: { 
+  users: (User | undefined)[]; 
+  max?: number;
+  size?: 'sm' | 'md';
+}) {
+  const validUsers = users.filter((u): u is User => !!u);
+  const displayed = validUsers.slice(0, max);
+  const remaining = validUsers.length - max;
+  
+  if (displayed.length === 0) return null;
+  
+  return (
+    <div className="flex items-center -space-x-2">
+      {displayed.map((user, i) => (
+        <UserAvatar 
+          key={user.id || i} 
+          user={user} 
+          size={size}
+          className="ring-2 ring-card"
+        />
+      ))}
+      {remaining > 0 && (
+        <div className={`${size === 'sm' ? 'w-5 h-5 text-[10px]' : 'w-7 h-7 text-xs'} rounded-full bg-hover flex items-center justify-center ring-2 ring-card text-muted font-medium`}>
+          +{remaining}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ProjectTasks({ 
   projectDocumentId, 
@@ -137,6 +230,7 @@ export default function ProjectTasks({
   const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<TaskStatus | 'all'>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
+  const [parentTaskForSubtask, setParentTaskForSubtask] = useState<ProjectTask | null>(null);
 
 
   // Formulaire nouvelle tâche
@@ -149,6 +243,7 @@ export default function ProjectTasks({
     due_date: '',
     estimated_hours: '',
     assigned_to: '',
+    color: TASK_COLORS[0],
   });
 
   useEffect(() => {
@@ -185,6 +280,8 @@ export default function ProjectTasks({
         created_user: userId,
         assigned_to: newTask.assigned_to ? allMembers.find(m => m.documentId === newTask.assigned_to)?.id : undefined,
         order: tasks.length,
+        parent_task: parentTaskForSubtask?.documentId || undefined,
+        color: parentTaskForSubtask ? parentTaskForSubtask.color : newTask.color,
       });
 
       // Si une personne est assignée, notifier
@@ -195,9 +292,13 @@ export default function ProjectTasks({
         }
       }
 
-      showGlobalPopup(t('task_created') || 'Tâche créée avec succès', 'success');
-      setNewTask({ title: '', description: '', task_status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', assigned_to: '' });
+      const successMessage = parentTaskForSubtask 
+        ? (t('subtask_created') || 'Sous-tâche créée avec succès')
+        : (t('task_created') || 'Tâche créée avec succès');
+      showGlobalPopup(successMessage, 'success');
+      setNewTask({ title: '', description: '', task_status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', assigned_to: '', color: TASK_COLORS[0] });
       setShowNewTaskForm(false);
+      setParentTaskForSubtask(null);
       loadTasks();
     } catch (error) {
       console.error('Error creating task:', error);
@@ -325,10 +426,14 @@ export default function ProjectTasks({
     return colorMap[priority];
   };
 
-  const filteredTasks = tasks.filter(task => 
+  // Filtrer les tâches : exclure les sous-tâches (elles sont affichées dans leurs parents)
+  const parentTasks = tasks.filter(task => !task.parent_task);
+  
+  const filteredTasks = parentTasks.filter(task => 
     filter === 'all' || task.task_status === filter
   );
 
+  // Stats basées sur toutes les tâches (y compris sous-tâches)
   const taskStats = {
     total: tasks.length,
     todo: tasks.filter(t => t.task_status === 'todo').length,
@@ -343,7 +448,7 @@ export default function ProjectTasks({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="w-8 h-8 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent border-t-accent rounded-full animate-spin" />
       </div>
     );
   }
@@ -443,7 +548,7 @@ export default function ProjectTasks({
         </div>
       )}
 
-      {/* Formulaire nouvelle tâche */}
+      {/* Formulaire nouvelle tâche / sous-tâche */}
       <AnimatePresence>
         {showNewTaskForm && (
           <motion.form
@@ -452,12 +557,29 @@ export default function ProjectTasks({
             exit={{ opacity: 0, height: 0 }}
             onSubmit={handleCreateTask}
             className="bg-card border border-default rounded-xl p-4 space-y-4"
+            style={parentTaskForSubtask ? { borderLeftWidth: '4px', borderLeftColor: parentTaskForSubtask.color || TASK_COLORS[0] } : undefined}
           >
             <div className="flex items-center justify-between">
-              <h4 className="font-medium text-primary">{t('new_task') || 'Nouvelle tâche'}</h4>
+              <div>
+                <h4 className="font-medium text-primary">
+                  {parentTaskForSubtask 
+                    ? `${t('new_subtask') || 'Nouvelle sous-tâche'}`
+                    : (t('new_task') || 'Nouvelle tâche')
+                  }
+                </h4>
+                {parentTaskForSubtask && (
+                  <p className="text-sm text-muted flex items-center gap-1 mt-1">
+                    <IconSubtask className="w-4 h-4" />
+                    {t('subtask_of') || 'Sous-tâche de'} <strong>{parentTaskForSubtask.title}</strong>
+                  </p>
+                )}
+              </div>
               <button
                 type="button"
-                onClick={() => setShowNewTaskForm(false)}
+                onClick={() => {
+                  setShowNewTaskForm(false);
+                  setParentTaskForSubtask(null);
+                }}
                 className="p-1 text-secondary hover:text-primary"
               >
                 <IconX className="w-5 h-5" />
@@ -467,7 +589,7 @@ export default function ProjectTasks({
             <div className="grid gap-4">
               <input
                 type="text"
-                placeholder={t('task_title') || 'Titre de la tâche *'}
+                placeholder={parentTaskForSubtask ? (t('subtask_title') || 'Titre de la sous-tâche *') : (t('task_title') || 'Titre de la tâche *')}
                 value={newTask.title}
                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                 className="input w-full"
@@ -528,6 +650,29 @@ export default function ProjectTasks({
                   </select>
                 </div>
               </div>
+
+              {/* Sélecteur de couleur (uniquement pour les tâches principales) */}
+              {!parentTaskForSubtask && (
+                <div>
+                  <label className="block text-sm text-secondary mb-2 flex items-center gap-1">
+                    <IconPalette className="w-4 h-4" />
+                    {t('task_color') || 'Couleur du groupe'}
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {TASK_COLORS.map(color => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setNewTask({ ...newTask, color })}
+                        className={`w-8 h-8 rounded-full transition-all ${
+                          newTask.color === color ? 'ring-2 ring-offset-2 ring-offset-card scale-110' : 'hover:scale-105'
+                        }`}
+                        style={{ backgroundColor: color, ['--tw-ring-color' as string]: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
@@ -618,8 +763,12 @@ export default function ProjectTasks({
                   onToggleExpand={() => toggleExpanded(task.documentId)}
                   onStatusChange={(status) => handleStatusChange(task.documentId, status)}
                   onProgressChange={(progress) => handleProgressChange(task.documentId, progress)}
-                  onEdit={() => setEditingTask(task)}
+                  onClick={() => setEditingTask(task)}
                   onDelete={() => handleDeleteTask(task.documentId)}
+                  onAddSubtask={() => {
+                    setParentTaskForSubtask(task);
+                    setShowNewTaskForm(true);
+                  }}
                   getStatusStyle={getStatusStyle}
                   getPriorityStyle={getPriorityStyle}
                   taskStatusOptions={TASK_STATUS_OPTIONS}
@@ -669,6 +818,12 @@ export default function ProjectTasks({
             onSave={(updates) => handleUpdateTask(editingTask.documentId, updates)}
             taskStatusOptions={TASK_STATUS_OPTIONS}
             priorityOptions={PRIORITY_OPTIONS}
+            allMembers={allMembers}
+            onAddSubtask={() => {
+              setParentTaskForSubtask(editingTask);
+              setEditingTask(null);
+              setShowNewTaskForm(true);
+            }}
             t={t}
           />
         )}
@@ -685,12 +840,15 @@ interface TaskCardProps {
   onToggleExpand: () => void;
   onStatusChange: (status: TaskStatus) => void;
   onProgressChange: (progress: number) => void;
-  onEdit: () => void;
+  onClick: () => void; // Nouveau: clic pour ouvrir la modale
   onDelete: () => void;
+  onAddSubtask: () => void; // Nouveau: ajouter sous-tâche
   getStatusStyle: (status: TaskStatus) => string;
   getPriorityStyle: (priority: TaskPriority) => string;
   taskStatusOptions: TaskStatusOption[];
   localProgress?: number;
+  isSubtask?: boolean; // Nouveau: indique si c'est une sous-tâche
+  parentColor?: string; // Nouveau: couleur héritée du parent
   t: (key: string) => string;
 }
 
@@ -701,32 +859,70 @@ function TaskCard({
   onToggleExpand,
   onStatusChange,
   onProgressChange,
-  onEdit,
+  onClick,
   onDelete,
+  onAddSubtask,
   getStatusStyle,
   getPriorityStyle,
   taskStatusOptions,
   localProgress,
-  t: _t,
+  isSubtask = false,
+  parentColor,
+  t,
 }: TaskCardProps) {
-  void _t; // Utilisé pour éviter l'erreur de lint
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed';
   const displayProgress = localProgress !== undefined ? localProgress : task.progress;
+  const taskColor = task.color || parentColor || TASK_COLORS[0];
+  
+  // Collecter tous les utilisateurs assignés (tâche + sous-tâches)
+  const allAssignedUsers = useMemo(() => {
+    const users: User[] = [];
+    if (task.assigned_to) users.push(task.assigned_to);
+    if (task.subtasks) {
+      task.subtasks.forEach(sub => {
+        if (sub.assigned_to && !users.find(u => u.id === sub.assigned_to?.id)) {
+          users.push(sub.assigned_to);
+        }
+      });
+    }
+    return users;
+  }, [task.assigned_to, task.subtasks]);
+  
+  const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+  const completedSubtasks = task.subtasks?.filter(s => s.task_status === 'completed').length || 0;
+  const totalSubtasks = task.subtasks?.length || 0;
 
   return (
     <motion.div
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`bg-card border rounded-xl overflow-hidden transition-colors ${
+      className={`bg-card border rounded-xl overflow-hidden transition-colors cursor-pointer hover:border-accent ${
         isOverdue ? 'border-red-500/50' : 'border-default'
-      }`}
+      } ${isSubtask ? 'ml-8' : ''}`}
+      style={!isSubtask ? { borderLeftWidth: '4px', borderLeftColor: taskColor } : undefined}
+      onClick={(e) => {
+        // Ne pas ouvrir si on clique sur un bouton
+        if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('input')) return;
+        onClick();
+      }}
     >
       <div className="p-4">
         <div className="flex items-start gap-3">
+          {/* Indicateur sous-tâche */}
+          {isSubtask && (
+            <div 
+              className="w-1 h-full rounded-full flex-shrink-0"
+              style={{ backgroundColor: parentColor || taskColor }}
+            />
+          )}
+          
           {/* Checkbox statut */}
           <button
-            onClick={() => onStatusChange(task.task_status === 'completed' ? 'todo' : 'completed')}
+            onClick={(e) => {
+              e.stopPropagation();
+              onStatusChange(task.task_status === 'completed' ? 'todo' : 'completed');
+            }}
             disabled={!canEdit}
             className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
               task.task_status === 'completed'
@@ -753,12 +949,20 @@ function TaskCard({
               <span className={`px-2 py-0.5 text-xs rounded-full border ${getStatusStyle(task.task_status)}`}>
                 {taskStatusOptions.find(o => o.value === task.task_status)?.label}
               </span>
+              
+              {/* Compteur sous-tâches */}
+              {hasSubtasks && (
+                <span className="flex items-center gap-1 text-xs text-muted bg-hover px-2 py-0.5 rounded-full">
+                  <IconSubtask className="w-3.5 h-3.5" />
+                  {completedSubtasks}/{totalSubtasks}
+                </span>
+              )}
 
               {/* Indicateur retard */}
               {isOverdue && (
                 <span className="flex items-center gap-1 text-xs text-red-400">
                   <IconAlertCircle className="w-3.5 h-3.5" />
-                  En retard
+                  {t('overdue') || 'En retard'}
                 </span>
               )}
             </div>
@@ -768,87 +972,135 @@ function TaskCard({
               <div className="mt-2 flex items-center gap-3">
                 <div className="flex-1 h-1.5 bg-hover rounded-full overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all duration-100 ${
-                      displayProgress >= 100 ? 'bg-accent' : 'bg-blue-500'
-                    }`}
-                    style={{ width: `${displayProgress}%` }}
+                    className="h-full rounded-full transition-all duration-100"
+                    style={{ 
+                      width: `${displayProgress}%`,
+                      backgroundColor: displayProgress >= 100 ? taskColor : taskColor + '80'
+                    }}
                   />
                 </div>
                 <span className="text-xs text-muted w-10">{displayProgress}%</span>
               </div>
             )}
 
-            {/* Dates */}
-            {(task.due_date || task.estimated_hours) && (
-              <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted">
-                {task.due_date && (
-                  <span className={`flex items-center gap-1 ${isOverdue ? 'text-red-400' : ''}`}>
-                    <IconCalendar className="w-3.5 h-3.5" />
-                    {new Date(task.due_date).toLocaleDateString('fr-FR')}
-                  </span>
-                )}
-                {task.estimated_hours && (
-                  <span className="flex items-center gap-1">
-                    <IconClock className="w-3.5 h-3.5" />
-                    {task.estimated_hours}h estimées
-                  </span>
-                )}
-              </div>
-            )}
+            {/* Dates et infos */}
+            <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted">
+              {task.due_date && (
+                <span className={`flex items-center gap-1 ${isOverdue ? 'text-red-400' : ''}`}>
+                  <IconCalendar className="w-3.5 h-3.5" />
+                  {new Date(task.due_date).toLocaleDateString('fr-FR')}
+                </span>
+              )}
+              {task.estimated_hours && (
+                <span className="flex items-center gap-1">
+                  <IconClock className="w-3.5 h-3.5" />
+                  {task.estimated_hours}h
+                </span>
+              )}
+              
+              {/* Avatars assignés */}
+              {allAssignedUsers.length > 0 && (
+                <AvatarStack users={allAssignedUsers} max={3} size="sm" />
+              )}
+            </div>
           </div>
 
           {/* Actions */}
           <div className="flex items-center gap-1">
-            {task.description && (
+            {(task.description || hasSubtasks) && (
               <button
-                onClick={onToggleExpand}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleExpand();
+                }}
                 className="p-1.5 text-muted hover:text-primary transition-colors"
               >
                 {isExpanded ? <IconChevronUp className="w-4 h-4" /> : <IconChevronDown className="w-4 h-4" />}
               </button>
             )}
+            {canEdit && !isSubtask && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddSubtask();
+                }}
+                className="p-1.5 text-muted hover:text-accent transition-colors"
+                title={t('add_subtask') || 'Ajouter une sous-tâche'}
+              >
+                <IconSubtask className="w-4 h-4" />
+              </button>
+            )}
             {canEdit && (
-              <>
-                <button
-                  onClick={onEdit}
-                  className="p-1.5 text-muted hover:text-blue-400 transition-colors"
-                >
-                  <IconEdit className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={onDelete}
-                  className="p-1.5 text-muted hover:text-red-400 transition-colors"
-                >
-                  <IconTrash className="w-4 h-4" />
-                </button>
-              </>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
+                className="p-1.5 text-muted hover:text-red-400 transition-colors"
+              >
+                <IconTrash className="w-4 h-4" />
+              </button>
             )}
           </div>
         </div>
 
-        {/* Description expandue */}
+        {/* Description et sous-tâches expandues */}
         <AnimatePresence>
-          {isExpanded && task.description && (
+          {isExpanded && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="mt-3 px-1"
+              className="mt-3"
             >
-              <div 
-                className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
-                  [&_h1]:text-lg [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:text-primary
-                  [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:text-primary
-                  [&_p]:mb-2 [&_p]:text-secondary
-                  [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-2
-                  [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-2
-                  [&_li]:mb-1 [&_li]:text-secondary
-                  [&_a]:text-accent [&_a]:underline
-                  [&_strong]:font-semibold [&_strong]:text-primary
-                  [&_em]:italic
-                  [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2"
-                dangerouslySetInnerHTML={{ __html: task.description || '' }}
-              />
+              {task.description && (
+                <div 
+                  className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert px-1 mb-3
+                    [&_h1]:text-lg [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:text-primary
+                    [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:text-primary
+                    [&_p]:mb-2 [&_p]:text-secondary
+                    [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-2
+                    [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-2
+                    [&_li]:mb-1 [&_li]:text-secondary
+                    [&_a]:text-accent [&_a]:underline
+                    [&_strong]:font-semibold [&_strong]:text-primary
+                    [&_em]:italic
+                    [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2"
+                  dangerouslySetInnerHTML={{ __html: task.description || '' }}
+                />
+              )}
+              
+              {/* Liste des sous-tâches */}
+              {hasSubtasks && (
+                <div className="space-y-2 pl-4 border-l-2" style={{ borderColor: taskColor + '40' }}>
+                  <p className="text-xs font-medium text-muted mb-2">{t('subtasks') || 'Sous-tâches'}</p>
+                  {task.subtasks?.map(subtask => (
+                    <div 
+                      key={subtask.documentId}
+                      className="flex items-center gap-2 p-2 rounded-lg bg-hover/50 hover:bg-hover transition-colors cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onClick(); // Ouvre la modale de la tâche parente pour l'instant
+                      }}
+                    >
+                      <div 
+                        className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                        style={{ borderColor: taskColor }}
+                      >
+                        {subtask.task_status === 'completed' && (
+                          <IconCheck className="w-3 h-3" style={{ color: taskColor }} />
+                        )}
+                      </div>
+                      <span className={`flex-1 text-sm ${subtask.task_status === 'completed' ? 'line-through text-muted' : 'text-primary'}`}>
+                        {subtask.title}
+                      </span>
+                      {subtask.assigned_to && (
+                        <UserAvatar user={subtask.assigned_to} size="sm" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -878,10 +1130,15 @@ interface TaskEditModalProps {
   onSave: (updates: Partial<ProjectTask>) => void;
   taskStatusOptions: TaskStatusOption[];
   priorityOptions: TaskPriorityOption[];
+  allMembers: { id: number; documentId: string; username: string; email: string; isOwner: boolean }[];
+  onAddSubtask: () => void;
   t: (key: string) => string;
 }
 
-function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptions, t }: TaskEditModalProps) {
+function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptions, allMembers, onAddSubtask, t }: TaskEditModalProps) {
+  const isSubtask = !!task.parent_task;
+  const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+  
   const [formData, setFormData] = useState({
     title: task.title,
     description: task.description || '',
@@ -892,10 +1149,13 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
     start_date: task.start_date ? task.start_date.split('T')[0] : '',
     estimated_hours: task.estimated_hours?.toString() || '',
     actual_hours: task.actual_hours?.toString() || '',
+    color: task.color || TASK_COLORS[0],
+    assigned_to: task.assigned_to?.id?.toString() || '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Note: assigned_to est passé comme number pour l'API, le type sera adapté dans handleUpdateTask
     onSave({
       title: formData.title,
       description: formData.description,
@@ -906,6 +1166,8 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
       start_date: formData.start_date || null,
       estimated_hours: formData.estimated_hours ? parseFloat(formData.estimated_hours) : null,
       actual_hours: formData.actual_hours ? parseFloat(formData.actual_hours) : null,
+      color: formData.color,
+      assigned_to: (formData.assigned_to ? parseInt(formData.assigned_to) : null) as unknown as User | undefined,
     });
   };
 
@@ -925,10 +1187,29 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
         onClick={(e) => e.stopPropagation()}
       >
         <form onSubmit={handleSubmit}>
-          <div className="flex items-center justify-between p-6 border-b border-default">
-            <h2 className="text-xl font-semibold text-primary">
-              {t('edit_task') || 'Modifier la tâche'}
-            </h2>
+          <div 
+            className="flex items-center justify-between p-6 border-b border-default"
+            style={!isSubtask ? { borderLeftWidth: '4px', borderLeftColor: formData.color } : undefined}
+          >
+            <div>
+              <h2 className="text-xl font-semibold text-primary">
+                {isSubtask ? (t('edit_subtask') || 'Modifier la sous-tâche') : (t('edit_task') || 'Modifier la tâche')}
+              </h2>
+              {isSubtask && task.parent_task && (
+                <p className="text-sm text-muted flex items-center gap-1 mt-1">
+                  <IconSubtask className="w-4 h-4" />
+                  {t('subtask_of') || 'Sous-tâche de'} <strong>{task.parent_task.title}</strong>
+                </p>
+              )}
+              {task.assigned_to && (
+                <div className="flex items-center gap-2 mt-2">
+                  <UserAvatar user={task.assigned_to} size="sm" />
+                  <span className="text-sm text-secondary">
+                    {t('assigned_to') || 'Assigné à'}: {task.assigned_to.username || task.assigned_to.email}
+                  </span>
+                </div>
+              )}
+            </div>
             <button
               type="button"
               onClick={onClose}
@@ -1066,6 +1347,110 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                 />
               </div>
             </div>
+
+            {/* Assignation */}
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-1">
+                {t('assigned_to') || 'Assigner à'}
+              </label>
+              <select
+                value={formData.assigned_to}
+                onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
+                className="input w-full"
+              >
+                <option value="">{t('not_assigned') || 'Non assigné'}</option>
+                {allMembers.map(member => (
+                  <option key={member.documentId} value={member.id}>
+                    {member.username} {member.isOwner ? `(${t('owner') || 'Propriétaire'})` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sélecteur de couleur (uniquement pour les tâches principales) */}
+            {!isSubtask && (
+              <div>
+                <label className="block text-sm font-medium text-secondary mb-2 flex items-center gap-1">
+                  <IconPalette className="w-4 h-4" />
+                  {t('task_color') || 'Couleur du groupe'}
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {TASK_COLORS.map(color => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, color })}
+                      className={`w-8 h-8 rounded-full transition-all ${
+                        formData.color === color ? 'ring-2 ring-offset-2 ring-offset-card scale-110' : 'hover:scale-105'
+                      }`}
+                      style={{ backgroundColor: color, ['--tw-ring-color' as string]: color }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Sous-tâches */}
+            {!isSubtask && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-medium text-secondary flex items-center gap-1">
+                    <IconSubtask className="w-4 h-4" />
+                    {t('subtasks') || 'Sous-tâches'}
+                    {hasSubtasks && <span className="text-muted">({task.subtasks?.length})</span>}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onAddSubtask();
+                    }}
+                    className="text-xs px-2 py-1 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition-colors flex items-center gap-1"
+                  >
+                    <IconPlus className="w-3 h-3" />
+                    {t('add_subtask') || 'Ajouter'}
+                  </button>
+                </div>
+                
+                {hasSubtasks ? (
+                  <div className="space-y-2 p-3 rounded-lg bg-hover/50 border border-default">
+                    {task.subtasks?.map(subtask => (
+                      <div 
+                        key={subtask.documentId}
+                        className="flex items-center gap-2 p-2 rounded-lg bg-card"
+                      >
+                        <div 
+                          className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                            subtask.task_status === 'completed' ? 'bg-accent border-accent' : 'border-muted'
+                          }`}
+                        >
+                          {subtask.task_status === 'completed' && (
+                            <IconCheck className="w-3 h-3 text-white" />
+                          )}
+                        </div>
+                        <span className={`flex-1 text-sm ${subtask.task_status === 'completed' ? 'line-through text-muted' : 'text-primary'}`}>
+                          {subtask.title}
+                        </span>
+                        {subtask.assigned_to && (
+                          <UserAvatar user={subtask.assigned_to} size="sm" />
+                        )}
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${
+                          subtask.task_status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                          subtask.task_status === 'in_progress' ? 'bg-blue-500/20 text-blue-400' :
+                          'bg-zinc-500/20 text-zinc-400'
+                        }`}>
+                          {subtask.progress}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-muted text-sm rounded-lg bg-hover/50 border border-default">
+                    {t('no_subtasks') || 'Aucune sous-tâche'}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end gap-3 p-6 border-t border-default">
@@ -1684,7 +2069,7 @@ function TaskGanttView({
               </div>
 
               {/* Aperçu */}
-              <div className="flex-1 p-4 overflow-auto bg-muted/30">
+              <div className="flex-1 p-4 overflow-auto bg-muted-light">
                 <p className="text-xs text-muted mb-2 uppercase tracking-wider">{t('preview') || 'Aperçu'}</p>
                 <div 
                   className="border !border-default rounded-lg shadow-lg overflow-auto"
@@ -1786,69 +2171,120 @@ function TaskGanttView({
             />
           )}
 
-          {/* Lignes des tâches */}
-          {tasks.map((task, index) => {
-            const { startOffset, duration } = getTaskPosition(task);
-            const widthPercent = (duration / totalDays) * 100;
-            const leftPercent = (startOffset / totalDays) * 100;
+          {/* Lignes des tâches (parents + sous-tâches) */}
+          {tasks.flatMap((task, index) => {
+            // Créer une liste avec la tâche parente et ses sous-tâches
+            const taskItems: { task: ProjectTask; isSubtask: boolean; parentColor?: string }[] = [
+              { task, isSubtask: false }
+            ];
+            
+            // Ajouter les sous-tâches si elles existent
+            if (task.subtasks && task.subtasks.length > 0) {
+              task.subtasks.forEach(subtask => {
+                if (subtask.start_date || subtask.due_date) {
+                  taskItems.push({ 
+                    task: subtask, 
+                    isSubtask: true,
+                    parentColor: task.color || TASK_COLORS[0]
+                  });
+                }
+              });
+            }
+            
+            return taskItems.map(({ task: currentTask, isSubtask, parentColor }, subIndex) => {
+              const { startOffset, duration } = getTaskPosition(currentTask);
+              const widthPercent = (duration / totalDays) * 100;
+              const leftPercent = (startOffset / totalDays) * 100;
+              const taskColor = isSubtask ? parentColor : (currentTask.color || TASK_COLORS[0]);
 
-            return (
-              <div 
-                key={`${task.documentId}-${index}`}
-                className="flex border-b border-muted hover:bg-hover group"
-              >
-                {/* Nom de la tâche - sticky */}
+              return (
                 <div 
-                  className="w-48 flex-shrink-0 py-3 px-3 cursor-pointer bg-card sticky left-0 z-10 border-r border-default group-hover:bg-hover"
-                  onClick={() => onEdit(task)}
+                  key={`${currentTask.documentId}-${index}-${subIndex}`}
+                  className={`flex border-b border-muted hover:bg-hover group ${isSubtask ? 'bg-muted/20' : ''}`}
                 >
-                  <p className="text-sm text-primary truncate group-hover:text-accent transition-colors">
-                    {task.title}
-                  </p>
-                  <span className={`text-xs px-1.5 py-0.5 rounded ${getStatusStyle(task.task_status)}`}>
-                    {taskStatusOptions.find(o => o.value === task.task_status)?.label}
-                  </span>
-                </div>
-
-                {/* Barre de Gantt */}
-                <div className="flex-1 relative py-2" style={{ minWidth: `${dayHeaders.length * 32}px` }}>
-                  {/* Grille des jours */}
-                  <div className="absolute inset-0 flex">
-                    {dayHeaders.map((day, i) => (
-                      <div 
-                        key={i}
-                        style={{ width: '32px', minWidth: '32px' }}
-                        className={`border-l border-muted first:border-l-0 ${
-                          isToday(day) ? 'bg-accent/10' : ''
-                        } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/30' : ''}`}
-                      />
-                    ))}
+                  {/* Nom de la tâche - sticky */}
+                  <div 
+                    className={`w-48 flex-shrink-0 py-3 cursor-pointer bg-card sticky left-0 z-10 border-r border-default group-hover:bg-hover ${isSubtask ? 'pl-6 pr-3' : 'px-3'}`}
+                    onClick={() => onEdit(isSubtask ? task : currentTask)}
+                    style={!isSubtask ? { borderLeftWidth: '3px', borderLeftColor: taskColor } : undefined}
+                  >
+                    <div className="flex items-center gap-2">
+                      {isSubtask && (
+                        <div 
+                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: parentColor }}
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm truncate group-hover:text-accent transition-colors ${isSubtask ? 'text-secondary' : 'text-primary'}`}>
+                          {currentTask.title}
+                        </p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className={`text-xs px-1.5 py-0.5 rounded ${getStatusStyle(currentTask.task_status)}`}>
+                            {taskStatusOptions.find(o => o.value === currentTask.task_status)?.label}
+                          </span>
+                          {/* Avatar de l'utilisateur assigné */}
+                          {currentTask.assigned_to && (
+                            <UserAvatar user={currentTask.assigned_to} size="sm" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Barre de la tâche */}
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 h-6 rounded cursor-pointer transition-all hover:h-7"
-                    style={{
-                      left: `${leftPercent}%`,
-                      width: `${widthPercent}%`,
-                      minWidth: '40px',
-                    }}
-                    onClick={() => onEdit(task)}
-                  >
-                    <div className={`w-full h-full ${getStatusColor(task.task_status)} rounded relative overflow-hidden`}>
-                      {/* Progression */}
+                  {/* Barre de Gantt */}
+                  <div className="flex-1 relative py-2" style={{ minWidth: `${dayHeaders.length * 32}px` }}>
+                    {/* Grille des jours */}
+                    <div className="absolute inset-0 flex">
+                      {dayHeaders.map((day, i) => (
+                        <div 
+                          key={i}
+                          style={{ width: '32px', minWidth: '32px' }}
+                          className={`border-l border-muted first:border-l-0 ${
+                            isToday(day) ? 'bg-accent/10' : ''
+                          } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/30' : ''}`}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Barre de la tâche */}
+                    <div
+                      className={`absolute top-1/2 -translate-y-1/2 rounded cursor-pointer transition-all hover:h-7 ${isSubtask ? 'h-5' : 'h-6'}`}
+                      style={{
+                        left: `${leftPercent}%`,
+                        width: `${widthPercent}%`,
+                        minWidth: '40px',
+                      }}
+                      onClick={() => onEdit(isSubtask ? task : currentTask)}
+                    >
                       <div 
-                        className="absolute inset-y-0 left-0 bg-white/20"
-                        style={{ width: `${task.progress || 0}%` }}
-                      />
-                      <span className="absolute inset-0 flex items-center justify-center text-xs text-white font-medium px-2 truncate">
-                        {task.progress || 0}%
-                      </span>
+                        className="w-full h-full rounded relative overflow-hidden"
+                        style={{ 
+                          backgroundColor: currentTask.task_status === 'cancelled' 
+                            ? 'rgb(239 68 68 / 0.5)' 
+                            : taskColor 
+                        }}
+                      >
+                        {/* Progression */}
+                        <div 
+                          className="absolute inset-y-0 left-0 bg-white/20"
+                          style={{ width: `${currentTask.progress || 0}%` }}
+                        />
+                        <span className="absolute inset-0 flex items-center justify-center text-xs text-white font-medium px-2 truncate">
+                          {currentTask.progress || 0}%
+                        </span>
+                      </div>
+                      {/* Avatar sur la barre (desktop) */}
+                      {currentTask.assigned_to && !isSubtask && (
+                        <div className="absolute -top-3 -right-1 hidden sm:block">
+                          <UserAvatar user={currentTask.assigned_to} size="sm" className="ring-2 ring-card" />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              </div>
-            );
+              );
+            });
           })}
         </div>
         </div>
