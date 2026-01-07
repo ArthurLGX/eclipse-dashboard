@@ -32,6 +32,7 @@ import {
   deleteMonitoredSite,
   updateMonitoredSite 
 } from '@/lib/api';
+import { getFaviconUrl } from '@/lib/favicon';
 import type { MonitoredSite, SiteStatus, SiteType, HostingProvider, ServerCredentials } from '@/types';
 import useSWR from 'swr';
 
@@ -308,17 +309,29 @@ export default function MonitoringPage() {
                     return (
                       <tr key={site.documentId} className={`hover:bg-hover transition-colors ${index > 0 ? 'border-t border-default' : ''}`}>
                         <td className="px-4 py-3">
-                          <div>
-                            <p className="font-medium text-primary">{site.name}</p>
-                            <a 
-                              href={site.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-xs text-accent hover:underline flex items-center gap-1"
-                            >
-                              {site.url}
-                              <IconExternalLink className="w-3 h-3" />
-                            </a>
+                          <div className="flex items-center gap-3">
+                            {/* Favicon */}
+                            <img 
+                              src={getFaviconUrl(site.url)} 
+                              alt={`${site.name} favicon`}
+                              className="w-8 h-8 rounded-lg bg-elevated p-1 object-contain"
+                              onError={(e) => {
+                                const img = e.currentTarget;
+                                img.style.display = 'none';
+                              }}
+                            />
+                            <div>
+                              <p className="font-medium text-primary">{site.name}</p>
+                              <a 
+                                href={site.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-xs text-accent hover:underline flex items-center gap-1"
+                              >
+                                {site.url}
+                                <IconExternalLink className="w-3 h-3" />
+                              </a>
+                            </div>
                           </div>
                         </td>
                         <td className="px-4 py-3">

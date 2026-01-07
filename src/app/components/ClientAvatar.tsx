@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { getFaviconUrl as getFaviconUrlLib, FAVICON_SERVICES, extractDomain } from '@/lib/favicon';
 
 interface ClientAvatarProps {
   name: string;
@@ -19,29 +20,13 @@ const sizeConfig = {
 };
 
 /**
- * Extrait le domaine d'une URL
- */
-function extractDomain(url: string): string | null {
-  try {
-    // Ajouter le protocole si absent
-    let fullUrl = url;
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      fullUrl = 'https://' + url;
-    }
-    const urlObj = new URL(fullUrl);
-    return urlObj.hostname;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Génère l'URL du favicon via Google S2 (nouveau format)
+ * Génère l'URL du favicon avec fallback chain
  */
 function getFaviconUrl(website: string): string | null {
   const domain = extractDomain(website);
   if (!domain) return null;
-  return `https://www.google.com/s2/favicons?sz=64&domain_url=${domain}`;
+  // Utilise DuckDuckGo par défaut (plus fiable)
+  return getFaviconUrlLib(website, 'duckduckgo');
 }
 
 export default function ClientAvatar({
@@ -51,12 +36,26 @@ export default function ClientAvatar({
   size = 'sm',
   className = '',
 }: ClientAvatarProps) {
-  const [faviconError, setFaviconError] = useState(false);
+  const [faviconService, setFaviconService] = useState<'duckduckgo' | 'google' | 'direct' | 'failed'>('duckduckgo');
   const [imageError, setImageError] = useState(false);
   const config = sizeConfig[size];
   
-  // URL du favicon si disponible
-  const faviconUrl = website && !faviconError ? getFaviconUrl(website) : null;
+  // URL du favicon si disponible, avec fallback chain
+  const domain = website ? extractDomain(website) : null;
+  const faviconUrl = website && domain && faviconService !== 'failed' 
+    ? FAVICON_SERVICES[faviconService](domain)
+    : null;
+  
+  // Gère le fallback des favicons
+  const handleFaviconError = () => {
+    if (faviconService === 'duckduckgo') {
+      setFaviconService('google');
+    } else if (faviconService === 'google') {
+      setFaviconService('direct');
+    } else {
+      setFaviconService('failed');
+    }
+  };
   
   // Initiale du nom
   const initial = name?.charAt(0)?.toUpperCase() || '?';
@@ -108,15 +107,13 @@ export default function ClientAvatar({
   // Cas 3: Favicon du site web
   if (faviconUrl) {
     return (
-      <div className={`${config.container} rounded-full overflow-hidden flex-shrink-0 relative bg-white ${className}`}>
-        <Image
+      <div className={`${config.container} rounded-full overflow-hidden flex-shrink-0 relative bg-elevated ${className}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={faviconUrl}
           alt={name}
-          fill
-          sizes="64px"
-          className="object-contain p-1"
-          onError={() => setFaviconError(true)}
-          unoptimized
+          className="w-full h-full object-contain p-1"
+          onError={handleFaviconError}
         />
       </div>
     );
