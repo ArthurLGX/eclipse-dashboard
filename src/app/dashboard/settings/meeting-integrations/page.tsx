@@ -43,7 +43,7 @@ interface SetupStep {
 }
 
 export default function MeetingIntegrationsPage() {
-  useLanguage(); // Pour le contexte de langue
+  const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
 
@@ -161,32 +161,32 @@ export default function MeetingIntegrationsPage() {
   const steps: SetupStep[] = [
     {
       id: 1,
-      title: 'Créer un compte Fathom',
-      description: 'Inscrivez-vous sur Fathom AI et obtenez votre clé API dans les paramètres.',
+      title: t('fathom_step1_title') || 'Créer un compte Fathom',
+      description: t('fathom_step1_desc') || 'Inscrivez-vous sur Fathom AI et obtenez votre clé API dans les paramètres.',
       completed: !!config.api_key,
       externalLink: 'https://fathom.video/settings/api',
-      actionLabel: 'Ouvrir Fathom',
+      actionLabel: t('open_fathom') || 'Ouvrir Fathom',
     },
     {
       id: 2,
-      title: 'Configurer le webhook',
-      description: 'Dans Fathom, ajoutez un webhook avec l\'URL ci-dessous et copiez le secret généré.',
+      title: t('fathom_step2_title') || 'Configurer le webhook',
+      description: t('fathom_step2_desc') || 'Dans Fathom, ajoutez un webhook avec l\'URL ci-dessous et copiez le secret généré.',
       completed: !!config.webhook_secret,
       externalLink: 'https://fathom.video/settings/api',
-      actionLabel: 'Configurer webhook',
+      actionLabel: t('configure_webhook') || 'Configurer webhook',
     },
     {
       id: 3,
-      title: 'Tester la connexion',
-      description: 'Vérifiez que le webhook fonctionne correctement.',
+      title: t('fathom_step3_title') || 'Tester la connexion',
+      description: t('fathom_step3_desc') || 'Vérifiez que le webhook fonctionne correctement.',
       completed: isConnected,
       action: handleTest,
-      actionLabel: 'Tester',
+      actionLabel: t('test_connection') || 'Tester',
     },
     {
       id: 4,
-      title: 'Prêt !',
-      description: 'Fathom enverra automatiquement les notes de vos réunions.',
+      title: t('fathom_step4_title') || 'Prêt !',
+      description: t('fathom_step4_desc') || 'Fathom enverra automatiquement les notes de vos réunions.',
       completed: isConnected,
     },
   ];
@@ -219,10 +219,10 @@ export default function MeetingIntegrationsPage() {
           <div>
             <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
               <IconBrain className="w-7 h-7 text-accent" />
-              Fathom AI - Notes de réunion
+              {t('fathom_ai') || 'Fathom AI - Notes de réunion'}
             </h1>
             <p className="text-muted text-sm mt-1">
-              Configurez Fathom pour recevoir automatiquement les transcriptions et résumés de vos réunions
+              {t('meeting_integrations_desc') || 'Configurez Fathom pour recevoir automatiquement les transcriptions et résumés de vos réunions'}
             </p>
           </div>
         </div>
@@ -236,12 +236,12 @@ export default function MeetingIntegrationsPage() {
           {isConnected ? (
             <>
               <IconCheck className="w-4 h-4" />
-              Connecté et actif
+              {t('fathom_connected') || 'Connecté et actif'}
             </>
           ) : (
             <>
               <IconAlertCircle className="w-4 h-4" />
-              Non configuré
+              {t('fathom_not_configured') || 'Non configuré'}
             </>
           )}
         </div>
@@ -251,7 +251,7 @@ export default function MeetingIntegrationsPage() {
           <div className="card p-6">
             <h2 className="text-lg font-semibold text-primary mb-6 flex items-center gap-2">
               <IconSettings className="w-5 h-5 text-accent" />
-              Guide de configuration
+              {t('setup_guide') || 'Guide de configuration'}
             </h2>
 
             <div className="space-y-4">
