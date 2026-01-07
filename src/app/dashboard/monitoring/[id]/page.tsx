@@ -30,17 +30,17 @@ import { getFaviconUrl } from '@/lib/favicon';
 import type { MonitoredSite, SiteStatus } from '@/types';
 
 const STATUS_CONFIG: Record<SiteStatus, { bg: string; text: string; label: string; icon: React.ReactNode }> = {
-  up: { bg: 'bg-success-light', text: 'text-success', label: 'En ligne', icon: <IconCheck className="w-5 h-5" /> },
-  down: { bg: 'bg-error-light', text: 'text-error', label: 'Hors ligne', icon: <IconX className="w-5 h-5" /> },
-  slow: { bg: 'bg-warning-light', text: 'text-warning', label: 'Lent', icon: <IconClock className="w-5 h-5" /> },
-  unknown: { bg: 'bg-muted-light', text: 'text-muted', label: 'Inconnu', icon: <IconAlertTriangle className="w-5 h-5" /> },
+  up: { bg: 'bg-success-light', text: 'text-success', label: 'En ligne', icon: <IconCheck className="w-4 h-4" /> },
+  down: { bg: 'bg-error-light', text: 'text-error', label: 'Hors ligne', icon: <IconX className="w-4 h-4" /> },
+  slow: { bg: 'bg-warning-light', text: 'text-warning', label: 'Lent', icon: <IconClock className="w-4 h-4" /> },
+  unknown: { bg: 'bg-muted-light', text: 'text-muted', label: 'Inconnu', icon: <IconAlertTriangle className="w-4 h-4" /> },
 };
 
 const SITE_TYPE_CONFIG = {
-  frontend: { icon: <IconDeviceDesktop className="w-5 h-5" />, label: 'Frontend', color: 'text-info' },
-  backend: { icon: <IconServer className="w-5 h-5" />, label: 'Backend', color: 'text-accent' },
-  api: { icon: <IconApi className="w-5 h-5" />, label: 'API', color: 'text-warning' },
-  other: { icon: <IconWorld className="w-5 h-5" />, label: 'Autre', color: 'text-muted' },
+  frontend: { icon: <IconDeviceDesktop className="w-4 h-4" />, label: 'Frontend', color: 'text-info' },
+  backend: { icon: <IconServer className="w-4 h-4" />, label: 'Backend', color: 'text-accent' },
+  api: { icon: <IconApi className="w-4 h-4" />, label: 'API', color: 'text-warning' },
+  other: { icon: <IconWorld className="w-4 h-4" />, label: 'Autre', color: 'text-muted' },
 };
 
 export default function MonitoringDetailPage() {
@@ -71,7 +71,6 @@ export default function MonitoringDetailPage() {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-      // Trigger a check via API
       const response = await fetch(`/api/monitoring/check?site_id=${siteId}`, {
         method: 'POST',
       });
@@ -135,14 +134,10 @@ export default function MonitoringDetailPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="w-full mx-auto flex flex-col gap-4">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row md:items-center justify-between gap-4"
-        >
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => router.push('/dashboard/monitoring')}
               className="p-2 hover:bg-hover rounded-lg transition-colors"
@@ -150,19 +145,20 @@ export default function MonitoringDetailPage() {
               <IconArrowLeft className="w-5 h-5 text-muted" />
             </button>
             
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={getFaviconUrl(site.url)} 
               alt={`${site.name} favicon`}
-              className="w-12 h-12 rounded-xl bg-elevated p-2 object-contain"
+              className="w-10 h-10 rounded-lg bg-elevated p-1.5 object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
             />
             
             <div>
-              <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
+              <h1 className="text-xl font-bold text-primary flex items-center gap-2">
                 {site.name}
-                <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
                   {statusConfig.icon}
                   {statusConfig.label}
                 </span>
@@ -174,7 +170,7 @@ export default function MonitoringDetailPage() {
                 className="text-accent hover:underline flex items-center gap-1 text-sm"
               >
                 {site.url}
-                <IconExternalLink className="w-4 h-4" />
+                <IconExternalLink className="w-3 h-3" />
               </a>
             </div>
           </div>
@@ -183,77 +179,73 @@ export default function MonitoringDetailPage() {
             <button
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="btn-secondary flex items-center gap-2"
+              className="btn-secondary px-3 py-1.5 text-sm flex items-center gap-1.5"
             >
               <IconRefresh className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
               {t('refresh') || 'Actualiser'}
             </button>
             <button
               onClick={() => router.push(`/dashboard/monitoring?edit=${site.documentId}`)}
-              className="btn-secondary flex items-center gap-2"
+              className="btn-secondary px-3 py-1.5 text-sm flex items-center gap-1.5"
             >
               <IconSettings className="w-4 h-4" />
-              {t('settings') || 'Paramètres'}
             </button>
             <button
               onClick={() => setDeleteModal(true)}
-              className="btn-secondary text-error hover:bg-error/10 flex items-center gap-2"
+              className="btn-secondary px-3 py-1.5 text-sm text-error hover:bg-error/10 flex items-center gap-1.5"
             >
               <IconTrash className="w-4 h-4" />
             </button>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Site Info Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="card p-4">
-            <p className="text-xs text-muted uppercase mb-1">{t('site_type') || 'Type'}</p>
-            <div className={`flex items-center gap-2 ${siteTypeConfig.color}`}>
-              {siteTypeConfig.icon}
-              <span className="font-medium">{siteTypeConfig.label}</span>
-            </div>
-          </div>
-          
-          <div className="card p-4">
-            <p className="text-xs text-muted uppercase mb-1">{t('check_interval') || 'Intervalle'}</p>
-            <p className="text-lg font-bold text-primary">{site.check_interval} min</p>
-          </div>
-          
-          <div className="card p-4">
-            <p className="text-xs text-muted uppercase mb-1">{t('last_response_time') || 'Dernier temps'}</p>
-            <p className="text-lg font-bold text-primary">
-              {site.last_response_time ? `${site.last_response_time}ms` : '-'}
-            </p>
-          </div>
-          
-          <div className="card p-4">
-            <p className="text-xs text-muted uppercase mb-1">{t('last_check') || 'Dernière vérif.'}</p>
-            <p className="text-sm text-primary">
-              {site.last_check 
-                ? new Date(site.last_check).toLocaleString('fr-FR')
-                : '-'
-              }
-            </p>
-          </div>
+        {/* Infos site - Grille compacte */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: t('site_type') || 'Type', value: siteTypeConfig.label, icon: siteTypeConfig.icon, color: siteTypeConfig.color },
+            { label: t('check_interval') || 'Intervalle', value: `${site.check_interval} min`, icon: <IconClock className="w-4 h-4" />, color: 'text-info' },
+            { label: t('last_response_time') || 'Dernier temps', value: site.last_response_time ? `${site.last_response_time}ms` : '-', icon: <IconRefresh className="w-4 h-4" />, color: 'text-accent' },
+            { label: t('last_check') || 'Dernière vérif.', value: site.last_check ? new Date(site.last_check).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '-', icon: <IconCheck className="w-4 h-4" />, color: 'text-success' },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="card p-3"
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <span className={item.color}>{item.icon}</span>
+                <span className="text-xs text-muted">{item.label}</span>
+              </div>
+              <p className={`text-lg font-bold ${item.color}`}>{item.value}</p>
+            </motion.div>
+          ))}
         </div>
 
         {/* Hosting Info */}
         {(site.hosting_provider || site.server_ip) && (
-          <div className="card p-4">
-            <h3 className="text-sm font-medium text-muted uppercase mb-3">
-              {t('hosting_info') || 'Informations hébergement'}
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="card p-4"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <IconServer className="w-4 h-4 text-accent" />
+              <span className="text-sm font-medium text-primary">{t('hosting_info') || 'Hébergement'}</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {site.hosting_provider && (
                 <div>
                   <p className="text-xs text-muted">{t('hosting_provider') || 'Hébergeur'}</p>
-                  <p className="text-primary font-medium capitalize">{site.hosting_provider}</p>
+                  <p className="text-sm text-primary font-medium capitalize">{site.hosting_provider}</p>
                 </div>
               )}
               {site.server_ip && (
                 <div>
                   <p className="text-xs text-muted">{t('server_ip') || 'IP Serveur'}</p>
-                  <p className="text-primary font-mono">{site.server_ip}</p>
+                  <p className="text-sm text-primary font-mono">{site.server_ip}</p>
                 </div>
               )}
             </div>
@@ -263,18 +255,18 @@ export default function MonitoringDetailPage() {
                 <p className="text-sm text-secondary whitespace-pre-wrap">{site.server_notes}</p>
               </div>
             )}
-          </div>
+          </motion.div>
         )}
 
         {/* Time Range Selector */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between">
           <span className="text-sm text-muted">{t('period') || 'Période'}:</span>
-          <div className="flex bg-elevated rounded-lg p-1">
+          <div className="flex bg-elevated rounded-lg p-0.5">
             {(['24h', '7d', '30d'] as const).map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                className={`px-3 py-1 text-xs rounded-md transition-colors ${
                   timeRange === range
                     ? 'bg-accent text-white'
                     : 'text-muted hover:text-primary'
@@ -305,11 +297,11 @@ export default function MonitoringDetailPage() {
           isOpen={deleteModal}
           onClose={() => setDeleteModal(false)}
           onConfirm={handleDelete}
+          title={t('delete_site') || 'Supprimer le site'}
           itemName={site.name}
-          itemType={t('monitored_site') || 'site surveillé'}
+          itemType="site"
         />
       </div>
     </ProtectedRoute>
   );
 }
-

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
   LineChart,
   Line,
@@ -24,8 +24,13 @@ import {
   IconX,
   IconAlertTriangle,
   IconActivity,
+  IconChartLine,
+  IconChartBar,
+  IconChartPie,
 } from '@tabler/icons-react';
+import { motion } from 'framer-motion';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useTheme } from '@/app/context/ThemeContext';
 
 interface MonitoringLog {
   id: number;
@@ -33,37 +38,70 @@ interface MonitoringLog {
   response_time: number | null;
   status_code: number | null;
   checked_at: string;
-  error_message?: string;
+  error_message?: string | null;
 }
 
 interface MonitoringChartsProps {
   logs: MonitoringLog[];
 }
 
-// Couleurs pour les graphiques
-const COLORS = {
-  up: '#22c55e',
-  down: '#ef4444',
-  slow: '#f59e0b',
-  primary: '#a855f7',
-  secondary: '#6366f1',
-  muted: '#64748b',
-};
+// Hook pour récupérer les couleurs du thème CSS
+function useThemeColors() {
+  const { resolvedTheme } = useTheme();
+  const [colors, setColors] = useState({
+    textPrimary: '#E8E4F0',
+    textSecondary: '#A89EC8',
+    textMuted: '#7B6F9E',
+    accent: '#7C3AED',
+    success: '#34D399',
+    info: '#60A5FA',
+    warning: '#FBBF24',
+    danger: '#F87171',
+    bgCard: '#1A1428',
+    borderDefault: '#2E2648',
+  });
+
+  const updateColors = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    
+    const root = document.documentElement;
+    const styles = getComputedStyle(root);
+    
+    setColors({
+      textPrimary: styles.getPropertyValue('--text-primary').trim() || '#E8E4F0',
+      textSecondary: styles.getPropertyValue('--text-secondary').trim() || '#A89EC8',
+      textMuted: styles.getPropertyValue('--text-muted').trim() || '#7B6F9E',
+      accent: styles.getPropertyValue('--color-accent').trim() || '#7C3AED',
+      success: styles.getPropertyValue('--color-success').trim() || '#34D399',
+      info: styles.getPropertyValue('--color-info').trim() || '#60A5FA',
+      warning: styles.getPropertyValue('--color-warning').trim() || '#FBBF24',
+      danger: styles.getPropertyValue('--color-danger').trim() || '#F87171',
+      bgCard: styles.getPropertyValue('--bg-card').trim() || '#1A1428',
+      borderDefault: styles.getPropertyValue('--border-default').trim() || '#2E2648',
+    });
+  }, []);
+
+  useEffect(() => {
+    updateColors();
+  }, [resolvedTheme, updateColors]);
+
+  return colors;
+}
 
 export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
   const { t } = useLanguage();
+  const themeColors = useThemeColors();
 
   // Données pour le graphique de temps de réponse
   const responseTimeData = useMemo(() => {
     return logs
       .filter(log => log.response_time !== null)
-      .slice(-100) // Derniers 100 points
+      .slice(-50) // Derniers 50 points pour plus de lisibilité
       .map(log => ({
         time: new Date(log.checked_at).toLocaleTimeString('fr-FR', { 
           hour: '2-digit', 
           minute: '2-digit' 
         }),
-        fullTime: new Date(log.checked_at).toLocaleString('fr-FR'),
         responseTime: log.response_time,
         status: log.status,
       }));
@@ -83,7 +121,6 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
     last24h.forEach(log => {
       const hour = new Date(log.checked_at).toLocaleTimeString('fr-FR', { 
         hour: '2-digit',
-        minute: '2-digit'
       });
       if (!hourlyData[hour]) {
         hourlyData[hour] = { up: 0, down: 0, slow: 0, total: 0 };
@@ -94,7 +131,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
 
     return Object.entries(hourlyData).map(([hour, data]) => ({
       hour,
-      uptime: Math.round((data.up / data.total) * 100),
+      uptime: data.total > 0 ? Math.round((data.up / data.total) * 100) : 100,
       up: data.up,
       down: data.down,
       slow: data.slow,
@@ -163,21 +200,21 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
     const counts = { up: 0, down: 0, slow: 0 };
     logs.forEach(log => counts[log.status]++);
     return [
-      { name: 'En ligne', value: counts.up, color: COLORS.up },
-      { name: 'Hors ligne', value: counts.down, color: COLORS.down },
-      { name: 'Lent', value: counts.slow, color: COLORS.slow },
+      { name: 'En ligne', value: counts.up, color: themeColors.success },
+      { name: 'Hors ligne', value: counts.down, color: themeColors.danger },
+      { name: 'Lent', value: counts.slow, color: themeColors.warning },
     ].filter(item => item.value > 0);
-  }, [logs]);
+  }, [logs, themeColors]);
 
   // Distribution des temps de réponse
   const responseDistribution = useMemo(() => {
     const buckets = [
-      { range: '0-100ms', min: 0, max: 100, count: 0 },
-      { range: '100-300ms', min: 100, max: 300, count: 0 },
-      { range: '300-500ms', min: 300, max: 500, count: 0 },
-      { range: '500-1s', min: 500, max: 1000, count: 0 },
-      { range: '1-2s', min: 1000, max: 2000, count: 0 },
-      { range: '>2s', min: 2000, max: Infinity, count: 0 },
+      { range: '0-100', min: 0, max: 100, count: 0 },
+      { range: '100-300', min: 100, max: 300, count: 0 },
+      { range: '300-500', min: 300, max: 500, count: 0 },
+      { range: '500-1k', min: 500, max: 1000, count: 0 },
+      { range: '1k-2k', min: 1000, max: 2000, count: 0 },
+      { range: '>2k', min: 2000, max: Infinity, count: 0 },
     ];
 
     logs.forEach(log => {
@@ -202,164 +239,214 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
       }));
   }, [logs]);
 
+  const lightGridColor = `${themeColors.borderDefault}33`;
+  const tickColor = themeColors.textMuted;
+
   if (logs.length === 0) {
     return (
-      <div className="text-center py-12 text-muted">
-        <IconActivity className="w-12 h-12 mx-auto mb-4 opacity-50" />
-        <p>{t('no_monitoring_data') || 'Aucune donnée de monitoring disponible'}</p>
-        <p className="text-sm mt-2">{t('monitoring_data_hint') || 'Les données apparaîtront après les premières vérifications'}</p>
-      </div>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="card p-8 text-center"
+      >
+        <IconActivity className="w-12 h-12 mx-auto mb-4 text-muted opacity-50" />
+        <p className="text-muted">{t('no_monitoring_data') || 'Aucune donnée de monitoring disponible'}</p>
+        <p className="text-sm text-muted mt-2">{t('monitoring_data_hint') || 'Les données apparaîtront après les premières vérifications'}</p>
+      </motion.div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard
-          title={t('uptime_24h') || 'Uptime 24h'}
-          value={`${stats.uptime24h}%`}
-          icon={<IconCheck className="w-5 h-5" />}
-          color={stats.uptime24h >= 99 ? 'success' : stats.uptime24h >= 95 ? 'warning' : 'error'}
-        />
-        <StatCard
-          title={t('avg_response_time') || 'Temps moyen'}
-          value={`${stats.avgResponseTime}ms`}
-          icon={<IconClock className="w-5 h-5" />}
-          color={stats.avgResponseTime <= 500 ? 'success' : stats.avgResponseTime <= 1000 ? 'warning' : 'error'}
-          subtitle={`Min: ${stats.minResponseTime}ms / Max: ${stats.maxResponseTime}ms`}
-        />
-        <StatCard
-          title={t('incidents_24h') || 'Incidents 24h'}
-          value={stats.incidents24h.toString()}
-          icon={stats.incidents24h > 0 ? <IconAlertTriangle className="w-5 h-5" /> : <IconCheck className="w-5 h-5" />}
-          color={stats.incidents24h === 0 ? 'success' : 'error'}
-        />
-        <StatCard
-          title={t('current_streak') || 'Série en cours'}
-          value={stats.currentStreak.toString()}
-          icon={<IconTrendingUp className="w-5 h-5" />}
-          color="primary"
-          subtitle={t('consecutive_checks') || 'vérifications consécutives'}
-        />
+    <div className="flex flex-col gap-4">
+      {/* KPIs - Grille compacte */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {[
+          { icon: IconCheck, label: t('uptime_24h') || 'Uptime 24h', value: `${stats.uptime24h}%`, color: stats.uptime24h >= 99 ? 'text-success' : stats.uptime24h >= 95 ? 'text-warning' : 'text-danger' },
+          { icon: IconClock, label: t('avg_response_time') || 'Temps moyen', value: `${stats.avgResponseTime}ms`, subvalue: `Min: ${stats.minResponseTime}ms / Max: ${stats.maxResponseTime}ms`, color: stats.avgResponseTime <= 500 ? 'text-success' : stats.avgResponseTime <= 1000 ? 'text-warning' : 'text-danger' },
+          { icon: IconAlertTriangle, label: t('incidents_24h') || 'Incidents 24h', value: stats.incidents24h.toString(), color: stats.incidents24h === 0 ? 'text-success' : 'text-danger' },
+          { icon: IconTrendingUp, label: t('current_streak') || 'Série en cours', value: stats.currentStreak.toString(), subvalue: t('consecutive_checks') || 'vérif. consécutives', color: 'text-accent' },
+        ].map((kpi, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: i * 0.05 }}
+            className="card p-4"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
+              <span className="text-xs text-muted">{kpi.label}</span>
+            </div>
+            <p className={`text-xl font-bold ${kpi.color}`}>{kpi.value}</p>
+            {kpi.subvalue && <p className="text-xs text-muted">{kpi.subvalue}</p>}
+          </motion.div>
+        ))}
       </div>
 
-      {/* Uptime Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <UptimeCard period="24h" value={stats.uptime24h} />
-        <UptimeCard period="7j" value={stats.uptime7d} />
-        <UptimeCard period="30j" value={stats.uptime30d} />
+      {/* Barres d'uptime */}
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          { period: '24h', value: stats.uptime24h },
+          { period: '7j', value: stats.uptime7d },
+          { period: '30j', value: stats.uptime30d },
+        ].map((item, i) => (
+          <motion.div
+            key={item.period}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 + i * 0.05 }}
+            className="card p-4"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-muted">Uptime {item.period}</span>
+              <span className={`text-sm font-bold ${
+                item.value >= 99.9 ? 'text-success' : item.value >= 95 ? 'text-warning' : 'text-danger'
+              }`}>{item.value}%</span>
+            </div>
+            <div className="h-1.5 bg-elevated rounded-full overflow-hidden">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${item.value}%` }}
+                transition={{ duration: 1, ease: 'easeOut' }}
+                className={`h-full rounded-full ${
+                  item.value >= 99.9 ? 'bg-success' : item.value >= 95 ? 'bg-warning' : 'bg-danger'
+                }`}
+              />
+            </div>
+          </motion.div>
+        ))}
       </div>
 
-      {/* Response Time Chart */}
-      <div className="card p-6">
-        <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-          <IconActivity className="w-5 h-5 text-accent" />
-          {t('response_time_chart') || 'Temps de réponse'}
-        </h3>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={responseTimeData}>
-              <defs>
-                <linearGradient id="responseGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis 
-                dataKey="time" 
-                stroke="#9ca3af" 
-                fontSize={12}
-                tickLine={false}
-              />
-              <YAxis 
-                stroke="#9ca3af" 
-                fontSize={12}
-                tickLine={false}
-                tickFormatter={(value) => `${value}ms`}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#1f2937',
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                }}
-                labelStyle={{ color: '#f3f4f6' }}
-                formatter={(value) => [`${value}ms`, 'Temps de réponse']}
-              />
-              <Area
-                type="monotone"
-                dataKey="responseTime"
-                stroke={COLORS.primary}
-                strokeWidth={2}
-                fill="url(#responseGradient)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Status Timeline & Distribution */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Uptime Timeline */}
-        <div className="card p-6">
-          <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-            <IconTrendingUp className="w-5 h-5 text-success" />
-            {t('uptime_timeline') || 'Uptime (24h)'}
-          </h3>
-          <div className="h-48">
+      {/* Graphiques - Grille 3 colonnes */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {/* Courbe temps de réponse */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="card p-4"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <IconChartLine className="w-4 h-4 text-accent" />
+            <span className="text-sm font-medium text-primary">{t('response_time_chart') || 'Temps de réponse'}</span>
+          </div>
+          <div className="h-40">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={statusTimelineData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <AreaChart data={responseTimeData}>
+                <defs>
+                  <linearGradient id="responseGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={themeColors.accent} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={themeColors.accent} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={lightGridColor} />
                 <XAxis 
-                  dataKey="hour" 
-                  stroke="#9ca3af" 
+                  dataKey="time" 
+                  stroke={tickColor} 
                   fontSize={10}
                   tickLine={false}
+                  axisLine={false}
                 />
                 <YAxis 
-                  stroke="#9ca3af" 
-                  fontSize={12}
+                  stroke={tickColor} 
+                  fontSize={10}
                   tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `${value}`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: `${themeColors.bgCard}F2`,
+                    border: `1px solid ${themeColors.borderDefault}`,
+                    borderRadius: '8px',
+                    fontSize: '11px',
+                  }}
+                  labelStyle={{ color: themeColors.textPrimary }}
+                  formatter={(value) => [`${value}ms`, 'Temps']}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="responseTime"
+                  stroke={themeColors.accent}
+                  strokeWidth={2}
+                  fill="url(#responseGradient)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        {/* Barres uptime par heure */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="card p-4"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <IconChartBar className="w-4 h-4 text-success" />
+            <span className="text-sm font-medium text-primary">{t('uptime_timeline') || 'Uptime par heure'}</span>
+          </div>
+          <div className="h-40">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={statusTimelineData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={lightGridColor} />
+                <XAxis 
+                  dataKey="hour" 
+                  stroke={tickColor} 
+                  fontSize={10}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis 
+                  stroke={tickColor} 
+                  fontSize={10}
+                  tickLine={false}
+                  axisLine={false}
                   domain={[0, 100]}
                   tickFormatter={(value) => `${value}%`}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
+                    backgroundColor: `${themeColors.bgCard}F2`,
+                    border: `1px solid ${themeColors.borderDefault}`,
                     borderRadius: '8px',
+                    fontSize: '11px',
                   }}
                   formatter={(value) => [`${value}%`, 'Uptime']}
                 />
                 <Line
                   type="monotone"
                   dataKey="uptime"
-                  stroke={COLORS.up}
+                  stroke={themeColors.success}
                   strokeWidth={2}
                   dot={false}
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Status Distribution Pie */}
-        <div className="card p-6">
-          <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-            <IconActivity className="w-5 h-5 text-accent" />
-            {t('status_distribution') || 'Distribution des statuts'}
-          </h3>
-          <div className="h-48 flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
+        {/* Camembert statuts */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="card p-4 md:col-span-2 lg:col-span-1"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <IconChartPie className="w-4 h-4 text-info" />
+            <span className="text-sm font-medium text-primary">{t('status_distribution') || 'Statuts'}</span>
+          </div>
+          <div className="h-40 flex items-center">
+            <ResponsiveContainer width="60%" height="100%">
               <PieChart>
                 <Pie
                   data={statusDistribution}
                   cx="50%"
                   cy="50%"
-                  innerRadius={40}
-                  outerRadius={70}
+                  innerRadius={30}
+                  outerRadius={55}
                   paddingAngle={2}
                   dataKey="value"
                 >
@@ -369,168 +456,112 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
+                    backgroundColor: `${themeColors.bgCard}F2`,
+                    border: `1px solid ${themeColors.borderDefault}`,
                     borderRadius: '8px',
+                    fontSize: '11px',
                   }}
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="flex flex-col gap-2 ml-4">
+            <div className="flex flex-col gap-1.5">
               {statusDistribution.map((item) => (
-                <div key={item.name} className="flex items-center gap-2 text-sm">
+                <div key={item.name} className="flex items-center gap-2 text-xs">
                   <div 
-                    className="w-3 h-3 rounded-full" 
+                    className="w-2 h-2 rounded-full" 
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-secondary">{item.name}: {item.value}</span>
+                  <span className="text-muted">{item.name}: {item.value}</span>
                 </div>
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      {/* Response Time Distribution */}
-      <div className="card p-6">
-        <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-          <IconClock className="w-5 h-5 text-warning" />
-          {t('response_distribution') || 'Distribution des temps de réponse'}
-        </h3>
-        <div className="h-48">
+      {/* Distribution temps de réponse */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
+        className="card p-4"
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <IconClock className="w-4 h-4 text-warning" />
+          <span className="text-sm font-medium text-primary">{t('response_distribution') || 'Distribution temps de réponse (ms)'}</span>
+        </div>
+        <div className="h-32">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={responseDistribution}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <CartesianGrid strokeDasharray="3 3" stroke={lightGridColor} />
               <XAxis 
                 dataKey="range" 
-                stroke="#9ca3af" 
-                fontSize={11}
+                stroke={tickColor} 
+                fontSize={10}
                 tickLine={false}
+                axisLine={false}
               />
               <YAxis 
-                stroke="#9ca3af" 
-                fontSize={12}
+                stroke={tickColor} 
+                fontSize={10}
                 tickLine={false}
+                axisLine={false}
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#1f2937',
-                  border: '1px solid #374151',
+                  backgroundColor: `${themeColors.bgCard}F2`,
+                  border: `1px solid ${themeColors.borderDefault}`,
                   borderRadius: '8px',
+                  fontSize: '11px',
                 }}
                 formatter={(value) => [value, 'Vérifications']}
               />
               <Bar 
                 dataKey="count" 
-                fill={COLORS.secondary}
-                radius={[4, 4, 0, 0]}
+                fill={`${themeColors.info}99`}
+                radius={[3, 3, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Recent Incidents */}
+      {/* Incidents récents */}
       {recentIncidents.length > 0 && (
-        <div className="card p-6">
-          <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-            <IconX className="w-5 h-5 text-error" />
-            {t('recent_incidents') || 'Incidents récents'}
-          </h3>
-          <div className="space-y-3">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.7 }}
+          className="card p-4"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <IconX className="w-4 h-4 text-danger" />
+            <span className="text-sm font-medium text-primary">{t('recent_incidents') || 'Incidents récents'}</span>
+            <span className="text-xs text-muted">({recentIncidents.length})</span>
+          </div>
+          <div className="space-y-2">
             {recentIncidents.map((incident, index) => (
               <div 
                 key={index}
-                className="flex items-center justify-between p-3 bg-error/10 border border-error/20 rounded-lg"
+                className="flex items-center justify-between p-2 bg-danger/10 border border-danger/20 rounded-lg"
               >
-                <div className="flex items-center gap-3">
-                  <IconAlertTriangle className="w-5 h-5 text-error" />
+                <div className="flex items-center gap-2">
+                  <IconAlertTriangle className="w-4 h-4 text-danger" />
                   <div>
-                    <p className="text-sm text-primary">{incident.message}</p>
+                    <p className="text-xs text-primary">{incident.message}</p>
                     <p className="text-xs text-muted">{incident.time}</p>
                   </div>
                 </div>
                 {incident.statusCode && (
-                  <span className="px-2 py-1 bg-error/20 text-error text-xs font-mono rounded">
+                  <span className="px-1.5 py-0.5 bg-danger/20 text-danger text-xs font-mono rounded">
                     HTTP {incident.statusCode}
                   </span>
                 )}
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );
 }
-
-// Composant StatCard
-interface StatCardProps {
-  title: string;
-  value: string;
-  icon: React.ReactNode;
-  color: 'success' | 'warning' | 'error' | 'primary';
-  subtitle?: string;
-}
-
-function StatCard({ title, value, icon, color, subtitle }: StatCardProps) {
-  const colorClasses = {
-    success: 'bg-success-light text-success',
-    warning: 'bg-warning-light text-warning',
-    error: 'bg-error-light text-error',
-    primary: 'bg-accent-light text-accent',
-  };
-
-  return (
-    <div className="card p-4">
-      <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${colorClasses[color]}`}>
-          {icon}
-        </div>
-        <div>
-          <p className="text-xs text-muted uppercase">{title}</p>
-          <p className="text-xl font-bold text-primary">{value}</p>
-          {subtitle && <p className="text-xs text-muted">{subtitle}</p>}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Composant UptimeCard
-interface UptimeCardProps {
-  period: string;
-  value: number;
-}
-
-function UptimeCard({ period, value }: UptimeCardProps) {
-  const getColor = (val: number) => {
-    if (val >= 99.9) return 'text-success';
-    if (val >= 99) return 'text-success';
-    if (val >= 95) return 'text-warning';
-    return 'text-error';
-  };
-
-  const getBarColor = (val: number) => {
-    if (val >= 99.9) return 'bg-success';
-    if (val >= 99) return 'bg-success';
-    if (val >= 95) return 'bg-warning';
-    return 'bg-error';
-  };
-
-  return (
-    <div className="card p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-muted">Uptime {period}</span>
-        <span className={`text-lg font-bold ${getColor(value)}`}>{value}%</span>
-      </div>
-      <div className="h-2 bg-elevated rounded-full overflow-hidden">
-        <div 
-          className={`h-full ${getBarColor(value)} transition-all duration-500`}
-          style={{ width: `${value}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
