@@ -85,13 +85,24 @@ export default function MeetingIntegrationsPage() {
   // Charger la config existante
   useEffect(() => {
     const loadConfig = async () => {
-      if (!user?.id) return;
+      if (!user?.id) {
+        console.log('loadConfig: No user ID, skipping');
+        setLoading(false);
+        return;
+      }
+      
+      console.log('loadConfig: Fetching config for userId:', user.id);
       
       try {
         const response = await fetch(`/api/integrations/fathom?userId=${user.id}`);
+        console.log('loadConfig: Response status:', response.status);
+        
         if (response.ok) {
           const data = await response.json();
+          console.log('loadConfig: API response:', data);
+          
           if (data.config) {
+            console.log('loadConfig: Config found, connected:', data.connected);
             setConfig(data.config);
             setIsConnected(data.connected);
             setShowTutorial(!data.connected);
@@ -99,7 +110,11 @@ export default function MeetingIntegrationsPage() {
             if (data.config.api_key) setCurrentStep(2);
             if (data.config.webhook_secret) setCurrentStep(3);
             if (data.connected) setCurrentStep(4);
+          } else {
+            console.log('loadConfig: No config in response');
           }
+        } else {
+          console.log('loadConfig: Response not OK');
         }
       } catch (error) {
         console.error('Error loading Fathom config:', error);
