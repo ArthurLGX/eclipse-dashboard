@@ -1652,7 +1652,6 @@ const translations = {
     slow: 'Lent',
     unknown: 'Inconnu',
     time_label: 'Temps',
-    checks: 'Vérifications',
     site_unavailable: 'Site inaccessible',
     // Time Tracking (uniques)
     time_tracking_desc: 'Gérez le temps passé sur vos projets',
@@ -3330,7 +3329,6 @@ const translations = {
     slow: 'Slow',
     unknown: 'Unknown',
     time_label: 'Time',
-    checks: 'Checks',
     site_unavailable: 'Site unavailable',
     // Time Tracking (unique)
     time_tracking_desc: 'Manage time spent on your projects',
