@@ -346,7 +346,6 @@ export default function SharedProjectPage() {
               <PublicGanttView 
                 tasks={tasks} 
                 projectName={project.title}
-                taskStatusOptions={TASK_STATUS_OPTIONS}
               />
             ) : (
               <div className="card p-8 text-center">
@@ -580,10 +579,9 @@ const DEFAULT_TASK_COLORS = [
 ];
 
 // Composant Gantt style Gamma pour la vue publique
-function PublicGanttView({ tasks, projectName, taskStatusOptions }: { 
+function PublicGanttView({ tasks, projectName }: { 
   tasks: ProjectTask[]; 
   projectName: string;
-  taskStatusOptions: StatusOption[];
 }) {
   const { t } = useLanguage();
   const ganttRef = useRef<HTMLDivElement>(null);
@@ -715,7 +713,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     return date.getTime() === today.getTime();
   }, [today]);
 
-  const formatDateRange = useCallback((startDate?: string, dueDate?: string) => {
+  const formatDateRange = useCallback((startDate?: string | null, dueDate?: string | null) => {
     if (!startDate && !dueDate) return '—';
     const start = startDate ? new Date(startDate) : null;
     const end = dueDate ? new Date(dueDate) : null;
@@ -726,7 +724,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     return '—';
   }, []);
 
-  const getDurationDays = useCallback((startDate?: string, dueDate?: string) => {
+  const getDurationDays = useCallback((startDate?: string | null, dueDate?: string | null) => {
     if (!startDate || !dueDate) return 0;
     const start = new Date(startDate);
     const end = new Date(dueDate);
