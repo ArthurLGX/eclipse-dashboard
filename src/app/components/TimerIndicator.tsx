@@ -24,8 +24,11 @@ export default function TimerIndicator() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
-  const { userPreferences, enabledModules } = useUserPreferencesOptional();
+  const preferencesContext = useUserPreferencesOptional();
   const router = useRouter();
+  
+  const userPreferences = preferencesContext?.preferences;
+  const enabledModules = preferencesContext?.enabledModules;
 
   const [runningEntry, setRunningEntry] = useState<TimeEntry | null>(null);
   const [runningTime, setRunningTime] = useState<number>(0);
