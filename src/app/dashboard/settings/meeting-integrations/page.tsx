@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -16,7 +16,6 @@ import {
   IconChevronRight,
   IconCalendar,
   IconWebhook,
-  IconKey,
   IconPlayerPlay,
   IconSettings,
   IconNotes,
@@ -44,7 +43,7 @@ interface SetupStep {
 }
 
 export default function MeetingIntegrationsPage() {
-  const { t } = useLanguage();
+  useLanguage(); // Pour le contexte de langue
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
 
@@ -355,7 +354,7 @@ export default function MeetingIntegrationsPage() {
                             <ol className="text-sm text-secondary space-y-1 list-decimal list-inside">
                               <li>Allez dans <strong>Settings → API Access</strong></li>
                               <li>Cliquez sur <strong>Manage → Add Webhook</strong></li>
-                              <li>Collez l'URL ci-dessus dans <strong>Destination URL</strong></li>
+                              <li>Collez l&apos;URL ci-dessus dans <strong>Destination URL</strong></li>
                               <li>Cochez : <strong>Summary, Transcript, Action Items</strong></li>
                               <li>Copiez le <strong>Webhook Secret</strong> généré</li>
                               <li>Collez-le dans le champ ci-dessus</li>
@@ -470,7 +469,7 @@ export default function MeetingIntegrationsPage() {
           <ul className="space-y-2 text-sm text-secondary">
             <li className="flex items-start gap-2">
               <IconCheck className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-              <span><strong>Mets le lien Google Meet/Zoom</strong> dans le champ "Lieu" de l'événement Eclipse</span>
+              <span><strong>Mets le lien Google Meet/Zoom</strong> dans le champ &quot;Lieu&quot; de l&apos;événement Eclipse</span>
             </li>
             <li className="flex items-start gap-2">
               <IconCheck className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
@@ -482,7 +481,7 @@ export default function MeetingIntegrationsPage() {
             </li>
             <li className="flex items-start gap-2">
               <IconCheck className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-              <span><strong>Crée l'événement avant</strong> la réunion pour que le matching fonctionne</span>
+              <span><strong>Crée l&apos;événement avant</strong> la réunion pour que le matching fonctionne</span>
             </li>
           </ul>
         </div>
