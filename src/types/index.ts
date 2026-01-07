@@ -758,6 +758,9 @@ export interface CreateSentEmailData {
 
 export type SiteStatus = 'up' | 'down' | 'slow' | 'unknown';
 
+export type SiteType = 'frontend' | 'backend' | 'api' | 'other';
+export type HostingProvider = 'ovh' | 'hostinger' | 'o2switch' | 'aws' | 'vercel' | 'netlify' | 'digitalocean' | 'scaleway' | 'other';
+
 export interface MonitoredSite {
   id: number;
   documentId: string;
@@ -775,6 +778,14 @@ export interface MonitoredSite {
   total_checks: number;
   successful_checks: number;
   last_down_at: string | null;
+  // Nouveau: Type de site
+  site_type: SiteType;
+  // Nouveau: Infos serveur (optionnelles et chiffrées)
+  hosting_provider: HostingProvider | null;
+  server_ip: string | null;
+  server_notes: string | null;
+  // Credentials chiffrés (stockés de manière sécurisée)
+  has_credentials: boolean;
   client?: Client;
   users?: User;
   createdAt: string;
@@ -787,7 +798,27 @@ export interface CreateMonitoredSiteData {
   check_interval?: number;
   alert_email?: boolean;
   alert_threshold?: number;
+  site_type?: SiteType;
+  hosting_provider?: HostingProvider | null;
+  server_ip?: string | null;
+  server_notes?: string | null;
   client?: number;
+}
+
+export interface ServerCredentials {
+  ssh_user?: string;
+  ssh_password?: string;
+  ssh_private_key?: string;
+  ftp_user?: string;
+  ftp_password?: string;
+  database_host?: string;
+  database_user?: string;
+  database_password?: string;
+  database_name?: string;
+  admin_url?: string;
+  admin_user?: string;
+  admin_password?: string;
+  notes?: string;
 }
 
 export type UpdateMonitoredSiteData = Partial<CreateMonitoredSiteData>;

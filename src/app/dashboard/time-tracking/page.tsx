@@ -402,9 +402,9 @@ export default function TimeTrackingPage() {
                     {formatDuration(dateEntries.reduce((acc, e) => acc + (e.duration || 0), 0))}
                   </span>
                 </div>
-                <div className="card divide-y divide-default">
-                  {dateEntries.map((entry) => (
-                    <div key={entry.documentId} className="p-4 flex items-center justify-between hover:bg-hover transition-colors">
+                <div className="card">
+                  {dateEntries.map((entry, index) => (
+                    <div key={entry.documentId} className={`p-4 flex items-center justify-between hover:bg-hover transition-colors ${index > 0 ? 'border-t border-default' : ''}`}>
                       <div className="flex items-center gap-4">
                         <div className={`w-1 h-10 rounded-full ${entry.billable ? 'bg-success' : 'bg-muted'}`} />
                         <div>

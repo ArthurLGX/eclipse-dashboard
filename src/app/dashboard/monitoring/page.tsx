@@ -15,6 +15,11 @@ import {
   IconAlertTriangle,
   IconLock,
   IconWorld,
+  IconDeviceDesktop,
+  IconApi,
+  IconKey,
+  IconEye,
+  IconEyeOff,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -27,7 +32,7 @@ import {
   deleteMonitoredSite,
   updateMonitoredSite 
 } from '@/lib/api';
-import type { MonitoredSite, SiteStatus } from '@/types';
+import type { MonitoredSite, SiteStatus, SiteType, HostingProvider, ServerCredentials } from '@/types';
 import useSWR from 'swr';
 
 const STATUS_COLORS: Record<SiteStatus, { bg: string; text: string; icon: React.ReactNode }> = {
@@ -49,6 +54,7 @@ export default function MonitoringPage() {
     site: null,
   });
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [typeFilter, setTypeFilter] = useState<SiteType | 'all'>('all');
 
   // Fetch sites
   const { data: sites, mutate, isLoading } = useSWR(
@@ -56,6 +62,13 @@ export default function MonitoringPage() {
     () => fetchMonitoredSites(user!.id),
     { refreshInterval: 60000 } // Refresh every minute
   );
+
+  // Filtrer les sites
+  const filteredSites = useMemo(() => {
+    if (!sites) return [];
+    if (typeFilter === 'all') return sites;
+    return sites.filter(s => s.site_type === typeFilter);
+  }, [sites, typeFilter]);
 
   // Stats
   const stats = useMemo(() => {
@@ -199,13 +212,40 @@ export default function MonitoringPage() {
           </div>
         </div>
 
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-1 bg-hover rounded-lg p-1">
+            {(['all', 'frontend', 'backend', 'api', 'other'] as const).map((type) => (
+              <button
+                key={type}
+                onClick={() => setTypeFilter(type)}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1 ${
+                  typeFilter === type
+                    ? 'bg-accent text-white'
+                    : 'text-muted hover:text-primary'
+                }`}
+              >
+                {type === 'all' && <IconWorld className="w-4 h-4" />}
+                {type === 'frontend' && <IconDeviceDesktop className="w-4 h-4" />}
+                {type === 'backend' && <IconServer className="w-4 h-4" />}
+                {type === 'api' && <IconApi className="w-4 h-4" />}
+                {type === 'all' ? (t('all') || 'Tous') :
+                 type === 'frontend' ? 'Frontend' :
+                 type === 'backend' ? 'Backend' :
+                 type === 'api' ? 'API' :
+                 (t('other') || 'Autre')}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Sites Table */}
         <div className="card overflow-hidden">
           {isLoading ? (
             <div className="p-8 flex items-center justify-center">
               <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />
             </div>
-          ) : !sites?.length ? (
+          ) : !filteredSites?.length ? (
             <div className="p-8 text-center">
               <IconServer className="w-12 h-12 text-muted mx-auto mb-4" />
               <p className="text-muted">{t('no_sites') || 'Aucun site surveillé'}</p>
@@ -223,6 +263,9 @@ export default function MonitoringPage() {
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
                       {t('site') || 'Site'}
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
+                      {t('type') || 'Type'}
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
                       {t('status') || 'Statut'}
@@ -244,13 +287,13 @@ export default function MonitoringPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-default">
-                  {sites.map((site) => {
+                <tbody>
+                  {filteredSites.map((site, index) => {
                     const statusConfig = STATUS_COLORS[site.site_status];
                     const sslDays = getSslDaysRemaining(site.ssl_expiry);
                     
                     return (
-                      <tr key={site.documentId} className="hover:bg-hover transition-colors">
+                      <tr key={site.documentId} className={`hover:bg-hover transition-colors ${index > 0 ? 'border-t border-default' : ''}`}>
                         <td className="px-4 py-3">
                           <div>
                             <p className="font-medium text-primary">{site.name}</p>
@@ -264,6 +307,19 @@ export default function MonitoringPage() {
                               <IconExternalLink className="w-3 h-3" />
                             </a>
                           </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                            site.site_type === 'frontend' ? 'bg-info/20 text-info' :
+                            site.site_type === 'backend' ? 'bg-accent/20 text-accent' :
+                            site.site_type === 'api' ? 'bg-warning/20 text-warning' :
+                            'bg-muted/20 text-muted'
+                          }`}>
+                            {site.site_type === 'frontend' && <IconDeviceDesktop className="w-3 h-3" />}
+                            {site.site_type === 'backend' && <IconServer className="w-3 h-3" />}
+                            {site.site_type === 'api' && <IconApi className="w-3 h-3" />}
+                            {(site.site_type || 'frontend').charAt(0).toUpperCase() + (site.site_type || 'frontend').slice(1)}
+                          </span>
                         </td>
                         <td className="px-4 py-3">
                           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
@@ -374,12 +430,35 @@ export default function MonitoringPage() {
   );
 }
 
+// Hosting providers list
+const HOSTING_PROVIDERS: { value: HostingProvider; label: string }[] = [
+  { value: 'ovh', label: 'OVH' },
+  { value: 'hostinger', label: 'Hostinger' },
+  { value: 'o2switch', label: 'o2switch' },
+  { value: 'aws', label: 'AWS' },
+  { value: 'vercel', label: 'Vercel' },
+  { value: 'netlify', label: 'Netlify' },
+  { value: 'digitalocean', label: 'DigitalOcean' },
+  { value: 'scaleway', label: 'Scaleway' },
+  { value: 'other', label: 'Autre' },
+];
+
 // Add/Edit Site Modal Component
 interface AddSiteModalProps {
   isOpen: boolean;
   onClose: () => void;
   site: MonitoredSite | null;
-  onSave: (data: { name: string; url: string; check_interval: number; alert_email: boolean; alert_threshold: number }) => Promise<void>;
+  onSave: (data: { 
+    name: string; 
+    url: string; 
+    check_interval: number; 
+    alert_email: boolean; 
+    alert_threshold: number;
+    site_type: SiteType;
+    hosting_provider: HostingProvider | null;
+    server_ip: string | null;
+    server_notes: string | null;
+  }) => Promise<void>;
 }
 
 function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
@@ -389,6 +468,11 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
   const [checkInterval, setCheckInterval] = useState(5);
   const [alertEmail, setAlertEmail] = useState(true);
   const [alertThreshold, setAlertThreshold] = useState(2000);
+  const [siteType, setSiteType] = useState<SiteType>('frontend');
+  const [hostingProvider, setHostingProvider] = useState<HostingProvider | null>(null);
+  const [serverIp, setServerIp] = useState('');
+  const [serverNotes, setServerNotes] = useState('');
+  const [showServerInfo, setShowServerInfo] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   // Initialize form when site changes
@@ -399,12 +483,22 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
       setCheckInterval(site.check_interval);
       setAlertEmail(site.alert_email);
       setAlertThreshold(site.alert_threshold);
+      setSiteType(site.site_type || 'frontend');
+      setHostingProvider(site.hosting_provider);
+      setServerIp(site.server_ip || '');
+      setServerNotes(site.server_notes || '');
+      setShowServerInfo(!!(site.hosting_provider || site.server_ip));
     } else {
       setName('');
       setUrl('');
       setCheckInterval(5);
       setAlertEmail(true);
       setAlertThreshold(2000);
+      setSiteType('frontend');
+      setHostingProvider(null);
+      setServerIp('');
+      setServerNotes('');
+      setShowServerInfo(false);
     }
   }, [site]);
 
@@ -418,6 +512,10 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
         check_interval: checkInterval,
         alert_email: alertEmail,
         alert_threshold: alertThreshold,
+        site_type: siteType,
+        hosting_provider: showServerInfo ? hostingProvider : null,
+        server_ip: showServerInfo && serverIp ? serverIp : null,
+        server_notes: showServerInfo && serverNotes ? serverNotes : null,
       });
     } finally {
       setIsSaving(false);
@@ -431,15 +529,16 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md bg-card border border-default rounded-xl shadow-xl"
+        className="w-full max-w-lg bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-y-auto"
       >
-        <div className="p-6 border-b border-default">
+        <div className="p-6 border-b border-default sticky top-0 bg-card z-10">
           <h2 className="text-lg font-semibold text-primary">
             {site ? (t('edit_site') || 'Modifier le site') : (t('add_site') || 'Ajouter un site')}
           </h2>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {/* Basic Info */}
           <div>
             <label className="block text-sm font-medium text-secondary mb-1">
               {t('site_name') || 'Nom du site'}
@@ -468,35 +567,68 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
             />
           </div>
 
+          {/* Site Type */}
           <div>
-            <label className="block text-sm font-medium text-secondary mb-1">
-              {t('check_interval') || 'Intervalle de vérification'} (minutes)
+            <label className="block text-sm font-medium text-secondary mb-2">
+              {t('site_type') || 'Type de site'}
             </label>
-            <select
-              value={checkInterval}
-              onChange={(e) => setCheckInterval(Number(e.target.value))}
-              className="input w-full"
-            >
-              <option value={1}>1 min</option>
-              <option value={5}>5 min</option>
-              <option value={15}>15 min</option>
-              <option value={30}>30 min</option>
-              <option value={60}>1 heure</option>
-            </select>
+            <div className="grid grid-cols-4 gap-2">
+              {(['frontend', 'backend', 'api', 'other'] as const).map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setSiteType(type)}
+                  className={`p-2 rounded-lg border text-sm font-medium transition-colors flex flex-col items-center gap-1 ${
+                    siteType === type
+                      ? 'border-accent bg-accent/10 text-accent'
+                      : 'border-default bg-hover text-muted hover:text-primary'
+                  }`}
+                >
+                  {type === 'frontend' && <IconDeviceDesktop className="w-5 h-5" />}
+                  {type === 'backend' && <IconServer className="w-5 h-5" />}
+                  {type === 'api' && <IconApi className="w-5 h-5" />}
+                  {type === 'other' && <IconWorld className="w-5 h-5" />}
+                  {type === 'frontend' ? 'Frontend' :
+                   type === 'backend' ? 'Backend' :
+                   type === 'api' ? 'API' :
+                   (t('other') || 'Autre')}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-secondary mb-1">
-              {t('slow_threshold') || 'Seuil de lenteur'} (ms)
-            </label>
-            <input
-              type="number"
-              value={alertThreshold}
-              onChange={(e) => setAlertThreshold(Number(e.target.value))}
-              className="input w-full"
-              min={100}
-              max={10000}
-            />
+          {/* Monitoring Settings */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-1">
+                {t('check_interval') || 'Intervalle'} (min)
+              </label>
+              <select
+                value={checkInterval}
+                onChange={(e) => setCheckInterval(Number(e.target.value))}
+                className="input w-full"
+              >
+                <option value={1}>1 min</option>
+                <option value={5}>5 min</option>
+                <option value={15}>15 min</option>
+                <option value={30}>30 min</option>
+                <option value={60}>1 heure</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-1">
+                {t('slow_threshold') || 'Seuil lenteur'} (ms)
+              </label>
+              <input
+                type="number"
+                value={alertThreshold}
+                onChange={(e) => setAlertThreshold(Number(e.target.value))}
+                className="input w-full"
+                min={100}
+                max={10000}
+              />
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -505,12 +637,86 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
               id="alertEmail"
               checked={alertEmail}
               onChange={(e) => setAlertEmail(e.target.checked)}
-              className="w-4 h-4 rounded border-default"
+              className="w-4 h-4 rounded border-default accent-accent"
             />
             <label htmlFor="alertEmail" className="text-sm text-secondary">
               {t('alert_by_email') || 'M\'alerter par email si le site est down'}
             </label>
           </div>
+
+          {/* Server Info Toggle */}
+          <div className="pt-2 border-t border-default">
+            <button
+              type="button"
+              onClick={() => setShowServerInfo(!showServerInfo)}
+              className="w-full flex items-center justify-between p-3 bg-hover rounded-lg text-sm font-medium text-secondary hover:text-primary transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <IconServer className="w-4 h-4" />
+                {t('server_info') || 'Informations serveur'} ({t('optional') || 'optionnel'})
+              </span>
+              <span className={`transform transition-transform ${showServerInfo ? 'rotate-180' : ''}`}>
+                ▼
+              </span>
+            </button>
+          </div>
+
+          {/* Server Info Fields */}
+          {showServerInfo && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="space-y-4 p-4 bg-hover rounded-lg"
+            >
+              <div>
+                <label className="block text-sm font-medium text-secondary mb-1">
+                  {t('hosting_provider') || 'Hébergeur'}
+                </label>
+                <select
+                  value={hostingProvider || ''}
+                  onChange={(e) => setHostingProvider(e.target.value as HostingProvider || null)}
+                  className="input w-full"
+                >
+                  <option value="">{t('select') || 'Sélectionner'}</option>
+                  {HOSTING_PROVIDERS.map(({ value, label }) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-secondary mb-1">
+                  {t('server_ip') || 'Adresse IP du serveur'}
+                </label>
+                <input
+                  type="text"
+                  value={serverIp}
+                  onChange={(e) => setServerIp(e.target.value)}
+                  placeholder="192.168.1.1"
+                  className="input w-full font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-secondary mb-1">
+                  {t('server_notes') || 'Notes sur le serveur'}
+                </label>
+                <textarea
+                  value={serverNotes}
+                  onChange={(e) => setServerNotes(e.target.value)}
+                  placeholder={t('server_notes_placeholder') || 'Informations de configuration, accès...'}
+                  className="input w-full h-20 resize-none"
+                />
+              </div>
+
+              <div className="p-3 bg-warning/10 border border-warning/20 rounded-lg">
+                <p className="text-xs text-warning flex items-center gap-2">
+                  <IconKey className="w-4 h-4" />
+                  {t('credentials_info') || 'Les identifiants de connexion seront gérés dans une section sécurisée séparée.'}
+                </p>
+              </div>
+            </motion.div>
+          )}
 
           <div className="flex items-center justify-end gap-2 pt-4">
             <button
