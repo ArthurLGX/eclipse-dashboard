@@ -586,6 +586,17 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer
   const [startTime, setStartTime] = useState(entry ? new Date(entry.start_time).toTimeString().slice(0, 5) : '');
   const [endTime, setEndTime] = useState(entry?.end_time ? new Date(entry.end_time).toTimeString().slice(0, 5) : '');
 
+  // Synchroniser l'heure de fin avec la durée estimée (pour tâches en cours)
+  useEffect(() => {
+    if (isRunningEntry && startTime && estimatedDuration) {
+      const [hours, minutes] = startTime.split(':').map(Number);
+      const startDate = new Date();
+      startDate.setHours(hours, minutes, 0, 0);
+      const endDate = new Date(startDate.getTime() + estimatedDuration * 60000);
+      setEndTime(endDate.toTimeString().slice(0, 5));
+    }
+  }, [isRunningEntry, startTime, estimatedDuration]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
