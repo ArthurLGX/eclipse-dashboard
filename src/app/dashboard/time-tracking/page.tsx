@@ -687,36 +687,38 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer
             </>
           )}
 
-          {/* Temps imparti */}
-          <div>
-            <label className="block text-sm text-muted mb-1">{t('estimated_duration') || 'Temps imparti'}</label>
-            <div className="flex items-center gap-2 flex-wrap">
-              <input
-                type="number"
-                value={estimatedDuration}
-                onChange={(e) => setEstimatedDuration(Math.max(1, Number(e.target.value)))}
-                className="input w-20"
-                min="1"
-              />
-              <span className="text-sm text-muted">min</span>
-              <div className="flex gap-1">
-                {[15, 30, 60, 90, 120].map((mins) => (
-                  <button
-                    key={mins}
-                    type="button"
-                    onClick={() => setEstimatedDuration(mins)}
-                    className={`px-2 py-1 text-xs rounded transition-colors ${
-                      estimatedDuration === mins 
-                        ? 'bg-accent text-white' 
-                        : 'bg-hover text-muted hover:text-primary hover:bg-hover'
-                    }`}
-                  >
-                    {mins >= 60 ? `${mins/60}h` : `${mins}m`}
-                  </button>
-                ))}
+          {/* Temps imparti - uniquement en mode création */}
+          {!isEditMode && (
+            <div>
+              <label className="block text-sm text-muted mb-1">{t('estimated_duration') || 'Temps imparti'}</label>
+              <div className="flex items-center gap-2 flex-wrap">
+                <input
+                  type="number"
+                  value={estimatedDuration}
+                  onChange={(e) => setEstimatedDuration(Math.max(1, Number(e.target.value)))}
+                  className="input w-20"
+                  min="1"
+                />
+                <span className="text-sm text-muted">min</span>
+                <div className="flex gap-1">
+                  {[15, 30, 60, 90, 120].map((mins) => (
+                    <button
+                      key={mins}
+                      type="button"
+                      onClick={() => setEstimatedDuration(mins)}
+                      className={`px-2 py-1 text-xs rounded transition-colors ${
+                        estimatedDuration === mins 
+                          ? 'bg-accent text-white' 
+                          : 'bg-hover text-muted hover:text-primary hover:bg-hover'
+                      }`}
+                    >
+                      {mins >= 60 ? `${mins/60}h` : `${mins}m`}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 cursor-pointer">
