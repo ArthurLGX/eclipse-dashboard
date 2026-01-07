@@ -1,127 +1,106 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/app/context/AuthContext';
-import {
-  fetchNotifications,
-  fetchUnreadNotificationCount,
-  markNotificationAsRead,
-  markAllNotificationsAsRead,
-  deleteNotification,
-} from '@/lib/api';
-import type { Notification } from '@/types';
 
-interface UseNotificationsReturn {
-  notifications: Notification[];
-  unreadCount: number;
-  loading: boolean;
-  error: string | null;
-  refresh: () => Promise<void>;
-  markAsRead: (notificationDocumentId: string) => Promise<void>;
-  markAllAsRead: () => Promise<void>;
-  remove: (notificationDocumentId: string) => Promise<void>;
+interface NotificationOptions {
+  title: string;
+  body: string;
+  icon?: string;
+  tag?: string;
+  requireInteraction?: boolean;
+  onClick?: () => void;
 }
 
-export function useNotifications(): UseNotificationsReturn {
-  const { user } = useAuth();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export function useNotifications() {
+  const [permission, setPermission] = useState<NotificationPermission>('default');
+  const [isSupported, setIsSupported] = useState(false);
 
-  const loadNotifications = useCallback(async () => {
-    if (!user?.id) return;
+  useEffect(() => {
+    // Check if notifications are supported
+    const supported = typeof window !== 'undefined' && 'Notification' in window;
+    setIsSupported(supported);
     
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const [notifResponse, countResponse] = await Promise.all([
-        fetchNotifications(user.id).catch(() => ({ data: [] })),
-        fetchUnreadNotificationCount(user.id).catch(() => 0),
-      ]);
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const notifData = (notifResponse as any).data || [];
-      setNotifications(notifData);
-      setUnreadCount(typeof countResponse === 'number' ? countResponse : 0);
-    } catch (err) {
-      console.error('Error loading notifications:', err);
-      setError('Erreur lors du chargement des notifications');
-      setNotifications([]);
-      setUnreadCount(0);
-    } finally {
-      setLoading(false);
-    }
-  }, [user?.id]);
-
-  // Charger au montage et à chaque changement de user
-  useEffect(() => {
-    loadNotifications();
-  }, [loadNotifications]);
-
-  // Polling toutes les 30 secondes
-  useEffect(() => {
-    if (!user?.id) return;
-
-    const interval = setInterval(() => {
-      loadNotifications();
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, [user?.id, loadNotifications]);
-
-  const markAsRead = useCallback(async (notificationDocumentId: string) => {
-    try {
-      await markNotificationAsRead(notificationDocumentId);
-      setNotifications(prev =>
-        prev.map(n =>
-          n.documentId === notificationDocumentId ? { ...n, read: true } : n
-        )
-      );
-      setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (err) {
-      console.error('Error marking notification as read:', err);
-      throw err;
+    if (supported) {
+      setPermission(Notification.permission);
     }
   }, []);
 
-  const markAllAsRead = useCallback(async () => {
-    if (!user?.id) return;
+  const requestPermission = useCallback(async () => {
+    if (!isSupported) return 'denied' as NotificationPermission;
     
     try {
-      await markAllNotificationsAsRead(user.id);
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-      setUnreadCount(0);
-    } catch (err) {
-      console.error('Error marking all as read:', err);
-      throw err;
+      const result = await Notification.requestPermission();
+      setPermission(result);
+      return result;
+    } catch {
+      return 'denied' as NotificationPermission;
     }
-  }, [user?.id]);
+  }, [isSupported]);
 
-  const remove = useCallback(async (notificationDocumentId: string) => {
-    try {
-      await deleteNotification(notificationDocumentId);
-      const removedNotif = notifications.find(n => n.documentId === notificationDocumentId);
-      setNotifications(prev => prev.filter(n => n.documentId !== notificationDocumentId));
-      if (removedNotif && !removedNotif.read) {
-        setUnreadCount(prev => Math.max(0, prev - 1));
-      }
-    } catch (err) {
-      console.error('Error deleting notification:', err);
-      throw err;
+  const sendNotification = useCallback(async ({
+    title,
+    body,
+    icon = '/favicon.ico',
+    tag,
+    requireInteraction = false,
+    onClick,
+  }: NotificationOptions) => {
+    if (!isSupported) return null;
+    
+    // Request permission if not granted
+    let currentPermission = permission;
+    if (permission === 'default') {
+      currentPermission = await requestPermission();
     }
-  }, [notifications]);
+    
+    if (currentPermission !== 'granted') return null;
+    
+    try {
+      const notification = new Notification(title, {
+        body,
+        icon,
+        tag,
+        requireInteraction,
+      });
+      
+      if (onClick) {
+        notification.onclick = () => {
+          onClick();
+          notification.close();
+        };
+      }
+      
+      return notification;
+    } catch {
+      return null;
+    }
+  }, [isSupported, permission, requestPermission]);
 
   return {
-    notifications,
-    unreadCount,
-    loading,
-    error,
-    refresh: loadNotifications,
-    markAsRead,
-    markAllAsRead,
-    remove,
+    isSupported,
+    permission,
+    requestPermission,
+    sendNotification,
   };
 }
 
+// Utilitaire pour planifier une notification
+export function scheduleNotification(
+  sendFn: (opts: NotificationOptions) => Promise<Notification | null>,
+  eventDate: Date,
+  minutesBefore: number,
+  options: NotificationOptions
+) {
+  const notificationTime = new Date(eventDate.getTime() - minutesBefore * 60 * 1000);
+  const now = new Date();
+  
+  if (notificationTime <= now) return null;
+  
+  const delay = notificationTime.getTime() - now.getTime();
+  
+  const timeoutId = setTimeout(() => {
+    sendFn(options);
+  }, delay);
+  
+  return timeoutId;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   IconCalendar,
@@ -14,6 +14,8 @@ import {
   IconTrash,
   IconEdit,
   IconCheck,
+  IconBell,
+  IconBellOff,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -28,6 +30,7 @@ import {
   completeCalendarEvent,
 } from '@/lib/api';
 import { useProjects, useClients } from '@/hooks/useApi';
+import { useNotifications, scheduleNotification } from '@/hooks/useNotifications';
 import type { CalendarEvent, EventType, Project, Client } from '@/types';
 import useSWR from 'swr';
 
@@ -62,6 +65,93 @@ export default function CalendarPage() {
     isOpen: false,
     event: null,
   });
+
+  // Notifications
+  const { isSupported, permission, requestPermission, sendNotification } = useNotifications();
+  const scheduledNotifications = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  // Enable/disable notifications
+  const toggleNotifications = async () => {
+    if (!isSupported) {
+      showGlobalPopup(t('notifications_not_supported') || 'Notifications non supportées', 'error');
+      return;
+    }
+
+    if (permission !== 'granted') {
+      const result = await requestPermission();
+      if (result === 'granted') {
+        setNotificationsEnabled(true);
+        showGlobalPopup(t('notifications_enabled') || 'Notifications activées', 'success');
+      } else {
+        showGlobalPopup(t('notifications_denied') || 'Permission refusée', 'error');
+      }
+    } else {
+      setNotificationsEnabled(!notificationsEnabled);
+      showGlobalPopup(
+        notificationsEnabled 
+          ? (t('notifications_disabled') || 'Notifications désactivées')
+          : (t('notifications_enabled') || 'Notifications activées'),
+        'success'
+      );
+    }
+  };
+
+  // Schedule notifications for upcoming events
+  useEffect(() => {
+    if (!notificationsEnabled || !events || permission !== 'granted') return;
+
+    // Clear previous scheduled notifications
+    scheduledNotifications.current.forEach(timeout => clearTimeout(timeout));
+    scheduledNotifications.current.clear();
+
+    const now = new Date();
+    const upcomingEventsToNotify = events.filter(event => {
+      const eventDate = new Date(event.start_date);
+      return eventDate > now && !event.is_completed && event.reminder_minutes;
+    });
+
+    upcomingEventsToNotify.forEach(event => {
+      const reminderMinutes = event.reminder_minutes || 15;
+      const eventDate = new Date(event.start_date);
+      
+      const timeoutId = scheduleNotification(
+        sendNotification,
+        eventDate,
+        reminderMinutes,
+        {
+          title: `📅 ${event.title}`,
+          body: `Dans ${reminderMinutes} minutes${event.location ? ` - ${event.location}` : ''}`,
+          tag: event.documentId,
+          onClick: () => {
+            window.focus();
+            setSelectedDate(eventDate);
+          },
+        }
+      );
+
+      if (timeoutId) {
+        scheduledNotifications.current.set(event.documentId, timeoutId);
+      }
+    });
+
+    return () => {
+      scheduledNotifications.current.forEach(timeout => clearTimeout(timeout));
+    };
+  }, [events, notificationsEnabled, permission, sendNotification]);
+
+  // Load notifications preference from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('calendar-notifications');
+    if (saved === 'true' && permission === 'granted') {
+      setNotificationsEnabled(true);
+    }
+  }, [permission]);
+
+  // Save notifications preference
+  useEffect(() => {
+    localStorage.setItem('calendar-notifications', notificationsEnabled.toString());
+  }, [notificationsEnabled]);
 
   // Fetch data
   const { data: projectsData } = useProjects(user?.id);
@@ -197,16 +287,40 @@ export default function CalendarPage() {
               {t('calendar_desc') || 'Gérez vos rendez-vous et deadlines'}
             </p>
           </div>
-          <button
-            onClick={() => {
-              setSelectedDate(new Date());
-              setShowAddModal(true);
-            }}
-            className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
-          >
-            <IconPlus className="w-4 h-4" />
-            {t('new_event') || 'Nouvel événement'}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Notifications toggle */}
+            {isSupported && (
+              <button
+                onClick={toggleNotifications}
+                className={`p-2.5 rounded-lg border transition-colors ${
+                  notificationsEnabled
+                    ? 'bg-accent/10 border-accent text-accent'
+                    : 'border-default text-muted hover:text-primary hover:border-primary'
+                }`}
+                title={notificationsEnabled 
+                  ? (t('disable_notifications') || 'Désactiver les notifications')
+                  : (t('enable_notifications') || 'Activer les notifications')
+                }
+              >
+                {notificationsEnabled ? (
+                  <IconBell className="w-5 h-5" />
+                ) : (
+                  <IconBellOff className="w-5 h-5" />
+                )}
+              </button>
+            )}
+            
+            <button
+              onClick={() => {
+                setSelectedDate(new Date());
+                setShowAddModal(true);
+              }}
+              className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
+            >
+              <IconPlus className="w-4 h-4" />
+              {t('new_event') || 'Nouvel événement'}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

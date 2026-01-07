@@ -38,7 +38,7 @@ const PopupMessage = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
-      className={`fixed lg:-right-1/2 -translate-x-1/2 right-0 lg:-translate-x-0 lg:bottom-8 top-8 z-[1000] flex flex-col lg:m-0 m-4 w-11/12 flex-wrap lg:w-fit h-fit justify-center items-center px-4 py-2 rounded-lg backdrop-blur-xl overflow-hidden ${
+      className={`fixed lg:right-1/2 -translate-x-1/2 lg:-translate-x-0 lg:bottom-8 top-8 z-[1000] flex flex-col  w-11/12 flex-wrap lg:w-fit h-fit justify-center items-center px-4 py-2 rounded-lg backdrop-blur-xl overflow-hidden ${
         type === 'success'
           ? 'bg-success-light border border-success'
           : type === 'error'

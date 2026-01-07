@@ -1698,6 +1698,30 @@ const translations = {
     no_reminder: 'Aucun',
     none_option: 'Aucun',
     more_items: 'plus',
+    
+    // Notifications calendrier
+    enable_notifications: 'Activer les notifications',
+    disable_notifications: 'Désactiver les notifications',
+    notifications_enabled: 'Notifications activées',
+    notifications_disabled: 'Notifications désactivées',
+    notifications_not_supported: 'Les notifications ne sont pas supportées par votre navigateur',
+    notifications_denied: 'Permission de notification refusée',
+    
+    // Intégrations calendrier
+    calendar_integrations: 'Intégrations calendrier',
+    calendar_integrations_desc: 'Connectez vos calendriers externes pour synchroniser vos événements',
+    setup_required: 'Configuration requise',
+    oauth_setup_info: 'Pour connecter vos calendriers, vous devez configurer les identifiants OAuth dans votre fichier .env.local:',
+    connected: 'Connecté',
+    last_sync: 'Dernière sync',
+    setup: 'Config',
+    sync: 'Sync',
+    disconnect: 'Déconnecter',
+    connect: 'Connecter',
+    connection_error: 'Erreur de connexion',
+    disconnected: 'Déconnecté',
+    sync_error: 'Erreur de synchronisation',
+    setup_guides: 'Guides de configuration',
   },
 
   en: {
@@ -3328,6 +3352,30 @@ const translations = {
     no_reminder: 'None',
     none_option: 'None',
     more_items: 'more',
+    
+    // Calendar notifications
+    enable_notifications: 'Enable notifications',
+    disable_notifications: 'Disable notifications',
+    notifications_enabled: 'Notifications enabled',
+    notifications_disabled: 'Notifications disabled',
+    notifications_not_supported: 'Notifications are not supported by your browser',
+    notifications_denied: 'Notification permission denied',
+    
+    // Calendar integrations
+    calendar_integrations: 'Calendar integrations',
+    calendar_integrations_desc: 'Connect your external calendars to sync your events',
+    setup_required: 'Setup required',
+    oauth_setup_info: 'To connect your calendars, you need to configure OAuth credentials in your .env.local file:',
+    connected: 'Connected',
+    last_sync: 'Last sync',
+    setup: 'Setup',
+    sync: 'Sync',
+    disconnect: 'Disconnect',
+    connect: 'Connect',
+    connection_error: 'Connection error',
+    disconnected: 'Disconnected',
+    sync_error: 'Sync error',
+    setup_guides: 'Setup guides',
   },
 };
 

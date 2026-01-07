@@ -81,11 +81,24 @@ export default function MonitoringPage() {
     };
   }, [sites]);
 
-  // Refresh all sites
+  // Refresh all sites - trigger monitoring check
   const handleRefreshAll = async () => {
     setIsRefreshing(true);
     try {
-      // TODO: Appeler l'API de vérification des sites
+      // Appeler l'API de vérification des sites
+      const response = await fetch('/api/monitoring/check', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET || ''}`,
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to refresh sites');
+      }
+      
+      // Attendre un peu puis rafraîchir les données
+      await new Promise(resolve => setTimeout(resolve, 2000));
       await mutate();
       showGlobalPopup(t('sites_refreshed') || 'Sites actualisés', 'success');
     } catch {
