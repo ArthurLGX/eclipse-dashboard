@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { updateProject, fetchFacturesByProject, fetchProjectTasks } from '@/lib/api';
+import { updateProject, fetchFacturesByProject, fetchProjectTasks, fetchMeetingNotes } from '@/lib/api';
 import { useEffect, useState, useRef, useMemo } from 'react';
 import {
   IconCalendar,
@@ -24,6 +24,10 @@ import {
   IconCode,
   IconPalette,
   IconTool,
+  IconNotes,
+  IconClock,
+  IconUsers,
+  IconPlayerPlay,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
@@ -45,12 +49,12 @@ import {
   createNotification,
   isUserProjectCollaborator,
 } from '@/lib/api';
-import type { Project, Client, Facture, ProjectCollaborator, ProjectTask } from '@/types';
+import type { Project, Client, Facture, ProjectCollaborator, ProjectTask, MeetingNote } from '@/types';
 import { IconUserPlus, IconHourglass } from '@tabler/icons-react';
 
 
 
-type TabType = 'overview' | 'tasks' | 'invoices';
+type TabType = 'overview' | 'tasks' | 'invoices' | 'meetings';
 
 export default function ProjectDetailsPage() {
   
@@ -87,6 +91,8 @@ export default function ProjectDetailsPage() {
   const [factures, setFactures] = useState<Facture[]>([]);
   const [loadingFactures, setLoadingFactures] = useState(false);
   const [tasks, setTasks] = useState<ProjectTask[]>([]);
+  const [meetingNotes, setMeetingNotes] = useState<MeetingNote[]>([]);
+  const [loadingMeetingNotes, setLoadingMeetingNotes] = useState(false);
 
   // États pour le partage et les onglets
   const [showShareModal, setShowShareModal] = useState(false);
@@ -172,6 +178,23 @@ const PROJECT_TYPES = [
     };
     loadTasks();
   }, [project?.documentId]);
+
+  // Charger les notes de réunion du projet
+  useEffect(() => {
+    const loadMeetingNotes = async () => {
+      if (!user?.id || !project?.documentId) return;
+      try {
+        setLoadingMeetingNotes(true);
+        const notes = await fetchMeetingNotes(user.id, { projectId: project.documentId });
+        setMeetingNotes(notes);
+      } catch (error) {
+        console.error('Error fetching meeting notes:', error);
+      } finally {
+        setLoadingMeetingNotes(false);
+      }
+    };
+    loadMeetingNotes();
+  }, [user?.id, project?.documentId]);
 
   // Vérifier les permissions et charger les collaborateurs
   useEffect(() => {
@@ -678,6 +701,7 @@ const PROJECT_TYPES = [
             {[
               { id: 'overview' as TabType, label: t('overview'), icon: IconChartBar },
               { id: 'tasks' as TabType, label: t('tasks'), icon: IconListCheck, count: pendingTasks, isOrange: true },
+              { id: 'meetings' as TabType, label: t('meetings') || 'Réunions', icon: IconNotes, count: meetingNotes.length },
               { id: 'invoices' as TabType, label: t('invoices'), icon: IconFileInvoice, count: factures.length },
             ].map(tab => (
               <button
@@ -847,6 +871,166 @@ const PROJECT_TYPES = [
                         }
                       }}
                     />
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'meetings' && (
+                <motion.div
+                  key="meetings"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                >
+                  <div className="card p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+                        <IconNotes className="w-5 h-5 text-info" />
+                        {t('meeting_notes') || 'Notes de réunion'}
+                      </h2>
+                    </div>
+
+                    {loadingMeetingNotes ? (
+                      <div className="flex items-center justify-center py-12">
+                        <div className="w-8 h-8 border-2 border-info/30 border-t-info rounded-full animate-spin" />
+                      </div>
+                    ) : meetingNotes.length > 0 ? (
+                      <div className="space-y-4">
+                        {meetingNotes.map((note) => (
+                          <div
+                            key={note.documentId}
+                            className="p-4 bg-hover rounded-xl border border-transparent hover:border-default transition-all"
+                          >
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h3 className="font-medium text-primary truncate">
+                                    {note.title}
+                                  </h3>
+                                  {note.source === 'phantom_ai' && (
+                                    <span className="px-2 py-0.5 text-xs rounded-full bg-accent-light text-accent font-medium">
+                                      Fathom AI
+                                    </span>
+                                  )}
+                                </div>
+                                
+                                <div className="flex items-center gap-4 text-sm text-muted mb-3">
+                                  <span className="flex items-center gap-1">
+                                    <IconCalendar className="w-4 h-4" />
+                                    {new Date(note.meeting_date).toLocaleDateString('fr-FR', {
+                                      weekday: 'short',
+                                      day: 'numeric',
+                                      month: 'short',
+                                      year: 'numeric',
+                                    })}
+                                  </span>
+                                  {note.duration_minutes && (
+                                    <span className="flex items-center gap-1">
+                                      <IconClock className="w-4 h-4" />
+                                      {note.duration_minutes} min
+                                    </span>
+                                  )}
+                                  {note.attendees && note.attendees.length > 0 && (
+                                    <span className="flex items-center gap-1">
+                                      <IconUsers className="w-4 h-4" />
+                                      {note.attendees.length} participant{note.attendees.length > 1 ? 's' : ''}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {note.summary && (
+                                  <p className="text-sm text-secondary line-clamp-2 mb-3">
+                                    {note.summary}
+                                  </p>
+                                )}
+
+                                {note.action_items && note.action_items.length > 0 && (
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <IconListCheck className="w-4 h-4 text-warning" />
+                                    <span className="text-muted">
+                                      {note.action_items.filter(item => !item.completed).length} action{note.action_items.filter(item => !item.completed).length > 1 ? 's' : ''} en attente
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                {note.recording_url && (
+                                  <a
+                                    href={note.recording_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-2 rounded-lg bg-accent-light text-accent hover:opacity-80 transition-colors"
+                                    title="Voir l'enregistrement"
+                                  >
+                                    <IconPlayerPlay className="w-4 h-4" />
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Expandable transcription */}
+                            {note.transcription && (
+                              <details className="mt-4 group">
+                                <summary className="cursor-pointer text-sm text-accent hover:underline list-none flex items-center gap-1">
+                                  <IconFileText className="w-4 h-4" />
+                                  Voir la transcription
+                                </summary>
+                                <div className="mt-3 p-4 bg-page rounded-lg border border-default max-h-64 overflow-y-auto">
+                                  <p className="text-sm text-secondary whitespace-pre-wrap">
+                                    {note.transcription}
+                                  </p>
+                                </div>
+                              </details>
+                            )}
+
+                            {/* Action items list */}
+                            {note.action_items && note.action_items.length > 0 && (
+                              <details className="mt-3 group">
+                                <summary className="cursor-pointer text-sm text-accent hover:underline list-none flex items-center gap-1">
+                                  <IconListCheck className="w-4 h-4" />
+                                  Voir les actions ({note.action_items.length})
+                                </summary>
+                                <div className="mt-3 space-y-2">
+                                  {note.action_items.map((item) => (
+                                    <div
+                                      key={item.id}
+                                      className={`flex items-start gap-2 p-2 rounded-lg ${
+                                        item.completed ? 'bg-success-light' : 'bg-warning-light'
+                                      }`}
+                                    >
+                                      <IconCheck className={`w-4 h-4 mt-0.5 ${
+                                        item.completed ? 'text-success' : 'text-warning'
+                                      }`} />
+                                      <div className="flex-1">
+                                        <p className={`text-sm ${item.completed ? 'line-through text-muted' : 'text-primary'}`}>
+                                          {item.text}
+                                        </p>
+                                        {item.assignee && (
+                                          <p className="text-xs text-muted mt-0.5">
+                                            Assigné à : {item.assignee}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </details>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                          <IconNotes className="w-8 h-8 text-muted" />
+                        </div>
+                        <p className="text-muted mb-2">{t('no_meeting_notes') || 'Aucune note de réunion'}</p>
+                        <p className="text-sm text-muted">
+                          Les notes seront ajoutées automatiquement via Fathom AI ou manuellement depuis le calendrier.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}

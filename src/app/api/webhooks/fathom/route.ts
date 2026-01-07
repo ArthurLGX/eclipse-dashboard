@@ -58,6 +58,14 @@ function verifyWebhookSignature(
   }
 }
 
+interface MatchedCalendarEvent {
+  id: number;
+  documentId: string;
+  users: { id: number }[];
+  project?: { id: number };
+  client?: { id: number };
+}
+
 /**
  * Trouve l'événement calendrier correspondant à la réunion
  */
@@ -65,7 +73,7 @@ async function findMatchingCalendarEvent(
   meetingDate: string,
   meetingTitle: string,
   meetingUrl?: string
-): Promise<{ id: number; documentId: string; users: { id: number }[] } | null> {
+): Promise<MatchedCalendarEvent | null> {
   try {
     // Chercher par date (même jour) et type meeting
     const date = new Date(meetingDate);
@@ -276,13 +284,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Créer la note de réunion
+    // Créer la note de réunion avec le projet et client de l'événement
     const success = await createOrUpdateMeetingNote(
       userId,
       calendarEvent?.id || null,
       payload,
-      undefined, // projectId - sera récupéré depuis l'événement si lié
-      undefined  // clientId - sera récupéré depuis l'événement si lié
+      calendarEvent?.project?.id,
+      calendarEvent?.client?.id
     );
 
     if (!success) {
