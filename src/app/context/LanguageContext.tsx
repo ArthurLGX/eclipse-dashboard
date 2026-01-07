@@ -1395,6 +1395,7 @@ const translations = {
     opens: 'Ouvertures',
     clicks: 'Clics',
     meetings: "Réunions",
+    event_title_placeholder: 'Titre de l\'événement...',
     
     // Email detail modal
     delivered: 'Délivré',
@@ -1617,6 +1618,12 @@ const translations = {
     portfolio: 'Portfolio',
     modules_saved: 'Préférences enregistrées avec succès !',
     modules_save_error: 'Erreur lors de l\'enregistrement des préférences',
+    
+    // Intégrations
+    integrations: 'Intégrations',
+    integrations_desc: 'Connectez des services externes pour automatiser votre workflow.',
+    fathom_integration_desc: 'Notes de réunion automatiques - Transcriptions, résumés et actions',
+    more_integrations_soon: 'D\'autres intégrations arrivent bientôt...',
     setup_welcome: 'Configurez votre espace',
     setup_subtitle: 'Personnalisez Eclipse selon votre activité',
     setup_complete: 'Configuration terminée !',
@@ -1812,6 +1819,7 @@ const translations = {
     connection_error: 'Erreur de connexion',
     sync_error: 'Erreur de synchronisation',
     setup_guides: 'Guides de configuration',
+    field_required: 'Champ requis',
     
     // Notes de réunion
     meeting_notes: 'Notes de réunion',
@@ -3428,6 +3436,12 @@ const translations = {
     save_changes: 'Save changes',
     modules_saved: 'Preferences saved successfully!',
     modules_save_error: 'Error saving preferences',
+    
+    // Integrations
+    integrations: 'Integrations',
+    integrations_desc: 'Connect external services to automate your workflow.',
+    fathom_integration_desc: 'Automatic meeting notes - Transcriptions, summaries and action items',
+    more_integrations_soon: 'More integrations coming soon...',
     setup_welcome: 'Set up your workspace',
     setup_subtitle: 'Customize Eclipse for your business',
     setup_complete: 'Setup complete!',
@@ -3602,7 +3616,8 @@ const translations = {
     notifications_disabled: 'Notifications disabled',
     notifications_not_supported: 'Notifications are not supported by your browser',
     notifications_denied: 'Notification permission denied',
-    
+    event_title_placeholder: 'Event title...',
+    field_required: 'Field required',
     // Calendar integrations
     calendar_integrations: 'Calendar integrations',
     calendar_integrations_desc: 'Connect your external calendars to sync your events',

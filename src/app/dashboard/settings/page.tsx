@@ -31,14 +31,17 @@ import {
   IconUserCog,
   IconPuzzle,
   IconCheck,
+  IconPlugConnected,
+  IconChevronRight,
 } from '@tabler/icons-react';
 import SmtpConfigSection from '@/app/components/SmtpConfigSection';
 import EmailSignatureSection from '@/app/components/EmailSignatureSection';
 import { BusinessTypeSelector, ModuleSelector } from '@/app/components/BusinessTypeSelector';
 import { BusinessType, getDefaultModules } from '@/config/business-modules';
 import { usePopup } from '@/app/context/PopupContext';
+import Link from 'next/link';
 
-type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'sidebar' | 'email' | 'modules';
+type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'sidebar' | 'email' | 'modules' | 'integrations';
 
 export default function SettingsPage() {
   const { t, language, setLanguage } = useLanguage();
@@ -70,7 +73,7 @@ export default function SettingsPage() {
   // Set active tab from URL parameter
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['appearance', 'notifications', 'format', 'invoice', 'email', 'sidebar', 'modules'].includes(tabParam)) {
+    if (tabParam && ['appearance', 'notifications', 'format', 'invoice', 'email', 'sidebar', 'modules', 'integrations'].includes(tabParam)) {
       setActiveTab(tabParam as SettingsTab);
     }
   }, [searchParams]);
@@ -78,6 +81,7 @@ export default function SettingsPage() {
   const tabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
     { id: 'appearance', label: t('appearance') || 'Apparence', icon: <IconSun className="w-4 h-4" /> },
     { id: 'modules', label: t('modules') || 'Modules', icon: <IconPuzzle className="w-4 h-4" /> },
+    { id: 'integrations', label: t('integrations') || 'Intégrations', icon: <IconPlugConnected className="w-4 h-4" /> },
     { id: 'notifications', label: t('notifications') || 'Notifications', icon: <IconBell className="w-4 h-4" /> },
     { id: 'format', label: t('format') || 'Format', icon: <IconCalendar className="w-4 h-4" /> },
     { id: 'invoice', label: t('invoicing') || 'Facturation', icon: <IconFileInvoice className="w-4 h-4" /> },
@@ -590,6 +594,43 @@ export default function SettingsPage() {
                 {t('reset_sidebar') || 'Afficher tous les liens'}
               </button>
             </SettingsRow>
+          </motion.div>
+        )}
+
+        {/* INTÉGRATIONS */}
+        {activeTab === 'integrations' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <div className="text-sm text-muted mb-4">
+              {t('integrations_desc') || 'Connectez des services externes pour automatiser votre workflow.'}
+            </div>
+            
+            {/* Fathom AI */}
+            <Link
+              href="/dashboard/settings/meeting-integrations"
+              className="block p-4 rounded-xl border border-default hover:border-accent/50 hover:bg-accent/5 transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+                  <IconBrain className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-primary group-hover:text-accent transition-colors">
+                    Fathom AI
+                  </h3>
+                  <p className="text-sm text-muted">
+                    {t('fathom_integration_desc') || 'Notes de réunion automatiques - Transcriptions, résumés et actions'}
+                  </p>
+                </div>
+                <IconChevronRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
+              </div>
+            </Link>
+
+            {/* Future integrations placeholder */}
+            <div className="p-4 rounded-xl border border-dashed border-default text-center">
+              <p className="text-sm text-muted">
+                {t('more_integrations_soon') || 'D\'autres intégrations arrivent bientôt...'}
+              </p>
+            </div>
           </motion.div>
         )}
 

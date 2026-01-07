@@ -739,11 +739,11 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
                 setTitle(e.target.value);
                 if (errors.title) setErrors(prev => ({ ...prev, title: undefined }));
               }}
-              className={`input w-full ${errors.title ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+              className={`input w-full ${errors.title ? '!border-red-500 focus:!border-red-500 focus:!ring-red-500' : ''}`}
               placeholder={t('event_title_placeholder') || 'Nom de l\'événement'}
             />
             {errors.title && (
-              <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+              <p className="!text-red-500 text-sm mt-1">{errors.title}</p>
             )}
           </div>
 
