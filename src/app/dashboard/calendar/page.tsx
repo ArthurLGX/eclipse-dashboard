@@ -616,6 +616,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
   const [projectId, setProjectId] = useState<string>('');
   const [clientId, setClientId] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
+  const [errors, setErrors] = useState<{ title?: string; startDate?: string }>({});
 
   // Initialize form
   React.useEffect(() => {
@@ -658,10 +659,27 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
       setProjectId('');
       setClientId('');
     }
+    setErrors({});
   }, [event, defaultDate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
+    const newErrors: { title?: string; startDate?: string } = {};
+    if (!title.trim()) {
+      newErrors.title = t('field_required') || 'Ce champ est requis';
+    }
+    if (!startDate) {
+      newErrors.startDate = t('field_required') || 'Ce champ est requis';
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    
+    setErrors({});
     setIsSaving(true);
     
     try {
@@ -717,10 +735,16 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="input w-full"
-              required
+              onChange={(e) => {
+                setTitle(e.target.value);
+                if (errors.title) setErrors(prev => ({ ...prev, title: undefined }));
+              }}
+              className={`input w-full ${errors.title ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+              placeholder={t('event_title_placeholder') || 'Nom de l\'événement'}
             />
+            {errors.title && (
+              <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -780,10 +804,15 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
               <input
                 type="date"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="input w-full"
-                required
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  if (errors.startDate) setErrors(prev => ({ ...prev, startDate: undefined }));
+                }}
+                className={`input w-full ${errors.startDate ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
               />
+              {errors.startDate && (
+                <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>
+              )}
             </div>
             {!allDay && (
               <div>
@@ -891,8 +920,8 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
             </button>
             <button
               type="submit"
-              disabled={isSaving || !title || !startDate}
-              className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2"
+              disabled={isSaving}
+              className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
             >
               {isSaving && <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />}
               {event ? (t('save') || 'Sauvegarder') : (t('create') || 'Créer')}
