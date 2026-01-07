@@ -57,6 +57,7 @@ interface ProjectTasksProps {
     email?: string;
   };
   onTaskAssigned?: (taskTitle: string, assignedTo: { email: string; username: string }) => void;
+  onAllTasksCompleted?: () => void;
 }
 
 type ViewMode = 'cards' | 'table' | 'gantt';
@@ -72,6 +73,7 @@ export default function ProjectTasks({
   collaborators = [],
   ownerInfo,
   onTaskAssigned,
+  onAllTasksCompleted,
 }: ProjectTasksProps) {
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
@@ -231,7 +233,21 @@ export default function ProjectTasks({
   const handleStatusChange = async (taskDocumentId: string, status: TaskStatus) => {
     try {
       await updateTaskStatus(taskDocumentId, status);
-      loadTasks();
+      
+      // Recharger les tâches
+      const response = await fetchProjectTasks(projectDocumentId);
+      const updatedTasks = response.data || [];
+      setTasks(updatedTasks);
+      
+      // Vérifier si toutes les tâches sont terminées
+      if (updatedTasks.length > 0 && onAllTasksCompleted) {
+        const allCompleted = updatedTasks.every(
+          task => task.task_status === 'completed' || task.task_status === 'cancelled'
+        );
+        if (allCompleted) {
+          onAllTasksCompleted();
+        }
+      }
     } catch (error) {
       console.error('Error updating status:', error);
     }

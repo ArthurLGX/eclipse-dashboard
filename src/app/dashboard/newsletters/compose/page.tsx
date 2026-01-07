@@ -749,7 +749,6 @@ function RichTextEditor({
   // Delete selected media
   const deleteSelectedMedia = useCallback(() => {
     if (!selectedMedia) {
-      console.log('No media selected');
       return;
     }
     

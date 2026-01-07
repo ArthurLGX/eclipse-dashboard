@@ -862,6 +862,7 @@ const translations = {
     archived: 'Archivé',
     dates: 'Dates',
     project_updated_success: 'Projet mis à jour avec succès',
+    project_auto_completed: 'Toutes les tâches terminées ! Projet marqué comme terminé.',
 
     // Partage de projet & Collaboration
     share_project: 'Partager le projet',
@@ -2569,6 +2570,7 @@ const translations = {
     planning: 'Planning',
     dates: 'Dates',
     project_updated_success: 'Project updated successfully',
+    project_auto_completed: 'All tasks completed! Project marked as completed.',
 
     // Project Sharing & Collaboration
     share_project: 'Share project',

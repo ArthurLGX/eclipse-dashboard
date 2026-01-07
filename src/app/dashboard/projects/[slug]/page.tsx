@@ -828,6 +828,24 @@ const PROJECT_TYPES = [
                           'success'
                         );
                       }}
+                      onAllTasksCompleted={async () => {
+                        // Mettre le projet en statut "completed" automatiquement
+                        if (project.project_status !== 'completed') {
+                          try {
+                            await updateProject(project.documentId, {
+                              project_status: 'completed',
+                            });
+                            setSelectedStatus('completed');
+                            showGlobalPopup(
+                              t('project_auto_completed') || 'Toutes les tâches terminées ! Projet marqué comme terminé.',
+                              'success'
+                            );
+                            await refetchProject();
+                          } catch (error) {
+                            console.error('Error auto-completing project:', error);
+                          }
+                        }
+                      }}
                     />
                   </div>
                 </motion.div>
