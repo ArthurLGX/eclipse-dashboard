@@ -1684,7 +1684,7 @@ const translations = {
     site_unavailable: 'Site inaccessible',
     // Time Tracking (uniques)
     time_tracking_desc: 'Gérez le temps passé sur vos projets',
-    add_entry: 'Ajouter une entrée',
+    start_task: 'Démarrer une tâche',
     edit_entry: 'Modifier l\'entrée',
     delete_entry: 'Supprimer l\'entrée',
     delete_entry_confirm: 'Êtes-vous sûr de vouloir supprimer cette entrée ?',
@@ -2696,7 +2696,7 @@ const translations = {
     tasks_completed: 'Tasks completed',
     progress: 'progress',
     overall_progress: 'Overall progress',
-    add_task: 'New task',
+    add_task: 'Start task',
     new_task: 'New task',
     task_title: 'Task title',
     task_description: 'Description (optional)',
@@ -3455,7 +3455,7 @@ const translations = {
     site_unavailable: 'Site unavailable',
     // Time Tracking (unique)
     time_tracking_desc: 'Manage time spent on your projects',
-    add_entry: 'Add entry',
+    start_task: 'Start task',
     edit_entry: 'Edit entry',
     delete_entry: 'Delete entry',
     delete_entry_confirm: 'Are you sure you want to delete this entry?',

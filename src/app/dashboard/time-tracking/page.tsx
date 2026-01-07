@@ -158,7 +158,13 @@ export default function TimeTrackingPage() {
   }, [entries]);
 
   // Start timer
-  const handleStartTimer = async (projectId?: number, description?: string, estimatedDuration?: number) => {
+  const handleStartTimer = async (
+    projectId?: number, 
+    description?: string, 
+    estimatedDuration?: number,
+    billable?: boolean,
+    hourlyRate?: number
+  ) => {
     // Éviter les doubles clics ET vérifier qu'il n'y a pas déjà un timer en cours
     if (isTimerLoading || runningEntry) {
       if (runningEntry) {
@@ -171,7 +177,8 @@ export default function TimeTrackingPage() {
       await createTimeEntry(user!.id, {
         start_time: new Date().toISOString(),
         is_running: true,
-        billable: true,
+        billable: billable ?? true,
+        hourly_rate: hourlyRate || 0,
         description,
         project: projectId,
         estimated_duration: estimatedDuration,
@@ -265,7 +272,7 @@ export default function TimeTrackingPage() {
               className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
             >
               <IconPlus className="w-4 h-4" />
-              {t('add_entry') || 'Ajouter une entrée'}
+              {t('start_task') || 'Démarrer une tâche'}
             </button>
           </div>
         </div>
@@ -297,35 +304,20 @@ export default function TimeTrackingPage() {
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
-              {runningEntry ? (
-                <button
-                  onClick={handleStopTimer}
-                  disabled={isTimerLoading}
-                  className="btn-primary bg-error hover:bg-error/90 px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50"
-                >
-                  {isTimerLoading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <IconPlayerStop className="w-5 h-5" />
-                  )}
-                  {t('stop') || 'Arrêter'}
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleStartTimer()}
-                  disabled={isTimerLoading}
-                  className="btn-primary px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50"
-                >
-                  {isTimerLoading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <IconPlayerPlay className="w-5 h-5" />
-                  )}
-                  {t('start') || 'Démarrer'}
-                </button>
-              )}
-            </div>
+            {runningEntry && (
+              <button
+                onClick={handleStopTimer}
+                disabled={isTimerLoading}
+                className="btn-primary bg-error hover:bg-error/90 px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50"
+              >
+                {isTimerLoading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <IconPlayerStop className="w-5 h-5" />
+                )}
+                {t('stop') || 'Arrêter'}
+              </button>
+            )}
           </div>
         </div>
 
@@ -488,7 +480,7 @@ export default function TimeTrackingPage() {
                         {/* Barre de progression */}
                         {entry.estimated_duration && entry.duration && (
                           <div className="mt-2 ml-5">
-                            <div className="h-1.5 bg-default rounded-full overflow-hidden">
+                            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                               <div 
                                 className={`h-full rounded-full transition-all ${isOverEstimate ? 'bg-danger' : 'bg-accent'}`}
                                 style={{ width: `${progressPercent}%` }}
@@ -523,9 +515,11 @@ export default function TimeTrackingPage() {
             onClose={closeModal}
             onSave={async () => {
               await mutate();
+              await mutateRunning();
               closeModal();
             }}
             userId={user!.id}
+            onStartTimer={handleStartTimer}
           />
         )}
       </motion.div>
@@ -540,60 +534,68 @@ interface TimeEntryModalProps {
   onClose: () => void;
   onSave: () => Promise<void>;
   userId: number;
+  onStartTimer?: (projectId?: number, description?: string, estimatedDuration?: number, billable?: boolean, hourlyRate?: number) => Promise<void>;
 }
 
-function TimeEntryModal({ entry, projects, onClose, onSave, userId }: TimeEntryModalProps) {
+function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer }: TimeEntryModalProps) {
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
   
-  // Calculer l'heure actuelle pour les valeurs par défaut
-  const now = new Date();
-  const currentTime = now.toTimeString().slice(0, 5);
-  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000).toTimeString().slice(0, 5);
-  
   const [description, setDescription] = useState(entry?.description || '');
   const [projectId, setProjectId] = useState<string>(entry?.project?.documentId || '');
-  const [date, setDate] = useState(entry ? new Date(entry.start_time).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
-  const [startTime, setStartTime] = useState(entry ? new Date(entry.start_time).toTimeString().slice(0, 5) : currentTime);
-  const [endTime, setEndTime] = useState(entry?.end_time ? new Date(entry.end_time).toTimeString().slice(0, 5) : oneHourLater);
   const [estimatedDuration, setEstimatedDuration] = useState<number>(entry?.estimated_duration || 60); // minutes
   const [billable, setBillable] = useState(entry?.billable ?? true);
   const [hourlyRate, setHourlyRate] = useState(entry?.hourly_rate || 0);
   const [saving, setSaving] = useState(false);
+
+  // Mode édition uniquement pour les entrées existantes
+  const isEditMode = !!entry;
+  const [date, setDate] = useState(entry ? new Date(entry.start_time).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
+  const [startTime, setStartTime] = useState(entry ? new Date(entry.start_time).toTimeString().slice(0, 5) : '');
+  const [endTime, setEndTime] = useState(entry?.end_time ? new Date(entry.end_time).toTimeString().slice(0, 5) : '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
     try {
-      const startDateTime = new Date(`${date}T${startTime}`);
-      const endDateTime = new Date(`${date}T${endTime}`);
-      const duration = Math.round((endDateTime.getTime() - startDateTime.getTime()) / 60000);
-
       // Find project by documentId to get numeric id
       const selectedProject = projectId ? projects.find(p => p.documentId === projectId) : undefined;
 
-      const data = {
-        description,
-        start_time: startDateTime.toISOString(),
-        end_time: endDateTime.toISOString(),
-        duration,
-        estimated_duration: estimatedDuration,
-        billable,
-        hourly_rate: billable ? hourlyRate : 0,
-        is_running: false,
-        project: selectedProject?.id,
-      };
-
       if (entry) {
-        // Update existing - would need updateTimeEntry API
+        // Update existing entry
+        const startDateTime = new Date(`${date}T${startTime}`);
+        const endDateTime = new Date(`${date}T${endTime}`);
+        const duration = Math.round((endDateTime.getTime() - startDateTime.getTime()) / 60000);
+
+        const data = {
+          description,
+          start_time: startDateTime.toISOString(),
+          end_time: endDateTime.toISOString(),
+          duration,
+          estimated_duration: estimatedDuration,
+          billable,
+          hourly_rate: billable ? hourlyRate : 0,
+          is_running: false,
+          project: selectedProject?.id,
+        };
+        
+        await createTimeEntry(userId, data); // TODO: use updateTimeEntry when available
         showGlobalPopup(t('entry_updated') || 'Entrée mise à jour', 'success');
+        await onSave();
       } else {
-        await createTimeEntry(userId, data);
-        showGlobalPopup(t('entry_created') || 'Entrée créée', 'success');
+        // Start a new timer
+        if (onStartTimer) {
+          await onStartTimer(
+            selectedProject?.id,
+            description,
+            estimatedDuration,
+            billable,
+            billable ? hourlyRate : 0
+          );
+          onClose();
+        }
       }
-      
-      await onSave();
     } catch {
       showGlobalPopup(t('save_error') || 'Erreur lors de l\'enregistrement', 'error');
     } finally {
@@ -609,7 +611,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId }: TimeEntryM
         className="card w-full max-w-md p-6 m-4"
       >
         <h2 className="text-xl font-bold text-primary mb-4">
-          {entry ? (t('edit_entry') || 'Modifier l\'entrée') : (t('add_entry') || 'Ajouter une entrée')}
+          {entry ? (t('edit_entry') || 'Modifier l\'entrée') : (t('start_task') || 'Démarrer une tâche')}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -620,7 +622,8 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId }: TimeEntryM
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="input w-full"
-              placeholder={t('what_did_you_work_on') || 'Sur quoi avez-vous travaillé ?'}
+              placeholder={t('what_did_you_work_on') || 'Sur quoi travaillez-vous ?'}
+              autoFocus
             />
           </div>
 
@@ -640,59 +643,64 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId }: TimeEntryM
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm text-muted mb-1">{t('date') || 'Date'}</label>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="input w-full"
-            />
-          </div>
+          {/* Date/Heure uniquement en mode édition */}
+          {isEditMode && (
+            <>
+              <div>
+                <label className="block text-sm text-muted mb-1">{t('date') || 'Date'}</label>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="input w-full"
+                />
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-muted mb-1">{t('start_time') || 'Début'}</label>
-              <input
-                type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="input w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-muted mb-1">{t('end_time') || 'Fin'}</label>
-              <input
-                type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                className="input w-full"
-              />
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-muted mb-1">{t('start_time') || 'Début'}</label>
+                  <input
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className="input w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-muted mb-1">{t('end_time') || 'Fin'}</label>
+                  <input
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className="input w-full"
+                  />
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Temps imparti */}
           <div>
             <label className="block text-sm text-muted mb-1">{t('estimated_duration') || 'Temps imparti'}</label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <input
                 type="number"
                 value={estimatedDuration}
                 onChange={(e) => setEstimatedDuration(Math.max(1, Number(e.target.value)))}
-                className="input w-24"
+                className="input w-20"
                 min="1"
               />
-              <span className="text-sm text-muted">minutes</span>
-              <div className="flex gap-1 ml-2">
-                {[15, 30, 60, 120].map((mins) => (
+              <span className="text-sm text-muted">min</span>
+              <div className="flex gap-1">
+                {[15, 30, 60, 90, 120].map((mins) => (
                   <button
                     key={mins}
                     type="button"
                     onClick={() => setEstimatedDuration(mins)}
-                    className={`px-2 py-1 text-xs rounded ${
+                    className={`px-2 py-1 text-xs rounded transition-colors ${
                       estimatedDuration === mins 
                         ? 'bg-accent text-white' 
-                        : 'bg-hover text-muted hover:text-primary'
+                        : 'bg-hover text-muted hover:text-primary hover:bg-hover'
                     }`}
                   >
                     {mins >= 60 ? `${mins/60}h` : `${mins}m`}
@@ -732,17 +740,21 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId }: TimeEntryM
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-muted hover:text-primary"
+              className="px-4 py-2 text-muted hover:text-primary transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2"
+              className="btn-primary px-6 py-2 rounded-lg flex items-center gap-2"
             >
-              {saving && <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />}
-              {t('save') || 'Enregistrer'}
+              {saving ? (
+                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+              ) : (
+                <IconPlayerPlay className="w-4 h-4" />
+              )}
+              {isEditMode ? (t('save') || 'Enregistrer') : (t('start') || 'Démarrer')}
             </button>
           </div>
         </form>
