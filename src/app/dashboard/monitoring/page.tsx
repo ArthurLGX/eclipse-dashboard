@@ -37,10 +37,10 @@ import type { MonitoredSite, SiteStatus, SiteType, HostingProvider, ServerCreden
 import useSWR from 'swr';
 
 const STATUS_COLORS: Record<SiteStatus, { bg: string; text: string; icon: React.ReactNode }> = {
-  up: { bg: 'bg-success/20', text: 'text-success', icon: <IconCheck className="w-4 h-4" /> },
-  down: { bg: 'bg-error/20', text: 'text-error', icon: <IconX className="w-4 h-4" /> },
-  slow: { bg: 'bg-warning/20', text: 'text-warning', icon: <IconClock className="w-4 h-4" /> },
-  unknown: { bg: 'bg-muted/20', text: 'text-muted', icon: <IconAlertTriangle className="w-4 h-4" /> },
+  up: { bg: 'bg-success-light', text: 'text-success', icon: <IconCheck className="w-4 h-4" /> },
+  down: { bg: 'bg-error-light', text: 'text-error', icon: <IconX className="w-4 h-4" /> },
+  slow: { bg: 'bg-warning-light', text: 'text-warning', icon: <IconClock className="w-4 h-4" /> },
+  unknown: { bg: 'bg-muted-light', text: 'text-muted', icon: <IconAlertTriangle className="w-4 h-4" /> },
 };
 
 export default function MonitoringPage() {
@@ -185,7 +185,7 @@ export default function MonitoringPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent/20 rounded-lg">
+              <div className="p-2 bg-accent-light rounded-lg">
                 <IconWorld className="w-5 h-5 text-accent" />
               </div>
               <div>
@@ -196,7 +196,7 @@ export default function MonitoringPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-success/20 rounded-lg">
+              <div className="p-2 bg-success-light rounded-lg">
                 <IconCheck className="w-5 h-5 text-success" />
               </div>
               <div>
@@ -207,7 +207,7 @@ export default function MonitoringPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-error/20 rounded-lg">
+              <div className="p-2 bg-error-light rounded-lg">
                 <IconX className="w-5 h-5 text-error" />
               </div>
               <div>
@@ -218,7 +218,7 @@ export default function MonitoringPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-warning/20 rounded-lg">
+              <div className="p-2 bg-warning-light rounded-lg">
                 <IconClock className="w-5 h-5 text-warning" />
               </div>
               <div>
@@ -339,13 +339,13 @@ export default function MonitoringPage() {
                         </td>
                         <td className="px-4 py-3">
                           {(() => {
-                            const type = site.site_type || 'frontend';
+                            const type = site.site_type as SiteType;
                             return (
                               <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                                type === 'frontend' ? 'bg-info/20 text-info' :
-                                type === 'backend' ? 'bg-accent/20 text-accent' :
-                                type === 'api' ? 'bg-warning/20 text-warning' :
-                                'bg-muted/20 text-muted'
+                                type === 'frontend' ? 'bg-info-light text-info' :
+                                type === 'backend' ? 'bg-accent-light text-accent' :
+                                type === 'api' ? 'bg-warning-light text-warning' :
+                                'bg-muted-light text-muted'
                               }`}>
                                 {type === 'frontend' && <IconDeviceDesktop className="w-3 h-3" />}
                                 {type === 'backend' && <IconServer className="w-3 h-3" />}
@@ -410,7 +410,7 @@ export default function MonitoringPage() {
                             </button>
                             <button
                               onClick={() => setDeleteModal({ isOpen: true, site })}
-                              className="p-1.5 text-muted hover:text-error hover:bg-error/10 rounded-lg transition-colors"
+                              className="p-1.5 text-muted hover:text-error hover:bg-error-light rounded-lg transition-colors"
                             >
                               <IconTrash className="w-4 h-4" />
                             </button>
@@ -518,7 +518,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
       setCheckInterval(site.check_interval);
       setAlertEmail(site.alert_email);
       setAlertThreshold(site.alert_threshold);
-      setSiteType(site.site_type || 'frontend');
+      setSiteType(site.site_type as SiteType);
       setHostingProvider(site.hosting_provider);
       setServerIp(site.server_ip || '');
       setServerNotes(site.server_notes || '');
@@ -615,7 +615,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
                   onClick={() => setSiteType(type)}
                   className={`p-2 rounded-lg border text-sm font-medium transition-colors flex flex-col items-center gap-1 ${
                     siteType === type
-                      ? 'border-accent bg-accent/10 text-accent'
+                      ? 'border-accent bg-accent-light text-accent'
                       : 'border-default bg-hover text-muted hover:text-primary'
                   }`}
                 >
@@ -744,7 +744,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
                 />
               </div>
 
-              <div className="p-3 bg-warning/10 border border-warning/20 rounded-lg">
+              <div className="p-3 bg-warning-light border border-warning rounded-lg">
                 <p className="text-xs text-warning flex items-center gap-2">
                   <IconKey className="w-4 h-4" />
                   {t('credentials_info') || 'Les identifiants de connexion seront gérés dans une section sécurisée séparée.'}
