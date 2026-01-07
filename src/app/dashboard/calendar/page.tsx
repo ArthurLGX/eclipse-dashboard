@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useModalFocus } from '@/hooks/useModalFocus';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   IconCalendar,
   IconPlus,
@@ -62,6 +62,8 @@ export default function CalendarPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -71,6 +73,10 @@ export default function CalendarPage() {
     isOpen: false,
     event: null,
   });
+  
+  // Default values from URL params
+  const [defaultProject, setDefaultProject] = useState<Project | null>(null);
+  const [defaultClient, setDefaultClient] = useState<Client | null>(null);
 
   // Notifications
   const { isSupported, permission, requestPermission, sendNotification } = useNotifications();
@@ -83,6 +89,38 @@ export default function CalendarPage() {
   
   const { data: clientsData } = useClients(user?.id);
   const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
+
+  // Handle URL params for new event with project/client
+  useEffect(() => {
+    const action = searchParams.get('action');
+    const projectId = searchParams.get('projectId');
+    const clientId = searchParams.get('clientId');
+    
+    if (action === 'new') {
+      // Set default project if provided
+      if (projectId && projects.length > 0) {
+        const project = projects.find(p => p.documentId === projectId);
+        if (project) {
+          setDefaultProject(project);
+          if (project.client) {
+            setDefaultClient(project.client);
+          }
+        }
+      }
+      // Set default client if provided
+      if (clientId && clients.length > 0 && !defaultClient) {
+        const client = clients.find(c => c.documentId === clientId);
+        if (client) {
+          setDefaultClient(client);
+        }
+      }
+      
+      setShowAddModal(true);
+      
+      // Clean URL
+      router.replace('/dashboard/calendar', { scroll: false });
+    }
+  }, [searchParams, projects, clients, router, defaultClient]);
 
   // Get month range
   const monthRange = useMemo(() => {
@@ -391,7 +429,7 @@ export default function CalendarPage() {
                       {dayEvents.slice(0, 3).map((event) => (
                         <div
                           key={event.documentId}
-                          className="text-xs px-1 py-0.5 rounded truncate"
+                          className="relative text-xs px-1 py-0.5 rounded truncate pr-5"
                           style={{ 
                             backgroundColor: `${event.color || EVENT_COLORS[event.event_type]}20`,
                             color: event.color || EVENT_COLORS[event.event_type],
@@ -403,6 +441,18 @@ export default function CalendarPage() {
                         >
                           {event.all_day ? '' : formatTime(event.start_date) + ' '}
                           {event.title}
+                          {event.use_fathom && (
+                            <div className="absolute right-0.5 top-1/2 -translate-y-1/2">
+                              <Image
+                                src="https://icons.duckduckgo.com/ip3/fathom.video.ico"
+                                alt="Fathom"
+                                width={12}
+                                height={12}
+                                className="rounded-sm"
+                                unoptimized
+                              />
+                            </div>
+                          )}
                         </div>
                       ))}
                       {dayEvents.length > 3 && (
@@ -458,6 +508,21 @@ export default function CalendarPage() {
                               <IconMapPin className="w-3 h-3" />
                               {event.location}
                             </p>
+                          )}
+                          {event.use_fathom && (
+                            <div className="flex items-center gap-1 mt-1.5 px-1.5 py-0.5 bg-purple-500/10 rounded text-purple-600 w-fit">
+                              <Image
+                                src="https://icons.duckduckgo.com/ip3/fathom.video.ico"
+                                alt="Fathom"
+                                width={12}
+                                height={12}
+                                className="rounded-sm"
+                                unoptimized
+                              />
+                              <span className="text-[10px] font-medium">
+                                {t('notetaker_by_fathom') || 'Notetaker by Fathom'}
+                              </span>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -544,11 +609,15 @@ export default function CalendarPage() {
           onClose={() => {
             setShowAddModal(false);
             setEditingEvent(null);
+            setDefaultProject(null);
+            setDefaultClient(null);
           }}
           event={editingEvent}
           defaultDate={selectedDate}
           projects={projects}
           clients={clients}
+          defaultProject={defaultProject}
+          defaultClient={defaultClient}
           onSave={async (data) => {
             try {
               if (editingEvent) {
@@ -589,6 +658,8 @@ interface EventModalProps {
   defaultDate: Date | null;
   projects: Project[];
   clients: Client[];
+  defaultProject?: Project | null;
+  defaultClient?: Client | null;
   onSave: (data: {
     title: string;
     description?: string;
@@ -599,12 +670,13 @@ interface EventModalProps {
     color?: string;
     location?: string;
     reminder_minutes?: number;
+    use_fathom?: boolean;
     project?: number;
     client?: number;
   }) => Promise<void>;
 }
 
-function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, onSave }: EventModalProps) {
+function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, defaultProject, defaultClient, onSave }: EventModalProps) {
   const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
@@ -723,13 +795,13 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
       setEventType('meeting');
       setLocation('');
       setReminderMinutes(30);
-      setProjectId('');
-      setClientId('');
+      setProjectId(defaultProject?.documentId || '');
+      setClientId(defaultClient?.documentId || defaultProject?.client?.documentId || '');
       setNoteMode('none');
       setFathomConfigured(null);
     }
     setErrors({});
-  }, [event, defaultDate]);
+  }, [event, defaultDate, defaultProject, defaultClient]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -741,6 +813,18 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
     }
     if (!startDate) {
       newErrors.startDate = t('field_required') || 'Ce champ est requis';
+    }
+    
+    // Validation: la date/heure ne peut pas être dans le passé pour les nouveaux événements
+    if (!event && startDate) {
+      const now = new Date();
+      const selectedDateTime = allDay 
+        ? new Date(startDate) 
+        : new Date(`${startDate}T${startTime}`);
+      
+      if (selectedDateTime < now) {
+        newErrors.startDate = t('date_must_be_future') || 'La date doit être dans le futur';
+      }
     }
     
     if (Object.keys(newErrors).length > 0) {
@@ -771,6 +855,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
         event_type: eventType,
         location: location || undefined,
         reminder_minutes: reminderMinutes,
+        use_fathom: noteMode === 'fathom' && fathomConfigured === true,
         project: projectId ? projects.find(p => p.documentId === projectId)?.id : undefined,
         client: clientId ? clients.find(c => c.documentId === clientId)?.id : undefined,
       });

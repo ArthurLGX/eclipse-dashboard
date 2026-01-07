@@ -42,7 +42,7 @@ export default function TableActions({
   }, [open]);
 
   return (
-    <div className={`relative flex items-center ${className}`} ref={menuRef}>
+    <div className={`relative flex items-center cursor-pointer ${className}`} ref={menuRef}>
       <button
         onClick={e => {
           e.stopPropagation();

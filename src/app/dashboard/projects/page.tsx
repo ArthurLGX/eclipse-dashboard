@@ -15,6 +15,7 @@ import {
   IconBuilding,
   IconCheck,
   IconProgressCheck,
+  IconCalendarEvent,
 } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import NewProjectModal, { CreateProjectData } from './NewProjectModal';
@@ -371,10 +372,22 @@ export default function ProjectsPage() {
       key: 'actions',
       label: t('actions'),
       render: (_, row) => (
-        <TableActions
-          onEdit={() => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}?edit=1`)}
-          onDelete={() => setDeleteModal({ isOpen: true, project: row })}
-        />
+        <div className="flex items-center gap-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleScheduleMeeting(row);
+            }}
+            title={t('schedule_meeting') || 'Planifier une réunion'}
+            className="p-1.5 rounded-lg cursor-pointer hover:bg-accent-light text-muted hover:text-accent transition-colors"
+          >
+            <IconCalendarEvent className="w-4 h-4" />
+          </button>
+          <TableActions
+            onEdit={() => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}?edit=1`)}
+            onDelete={() => setDeleteModal({ isOpen: true, project: row })}
+          />
+        </div>
       ),
     },
   ];
@@ -421,6 +434,19 @@ export default function ProjectsPage() {
     await refetchProjects();
   };
 
+  // Planifier une réunion pour un projet
+  const handleScheduleMeeting = (project?: Project) => {
+    const params = new URLSearchParams();
+    params.set('action', 'new');
+    if (project) {
+      params.set('projectId', project.documentId);
+      if (project.client?.documentId) {
+        params.set('clientId', project.client.documentId);
+      }
+    }
+    router.push(`/dashboard/calendar?${params.toString()}`);
+  };
+
   // Handle multiple deletion
   const handleDeleteMultipleProjects = async (projectsToDelete: Project[]) => {
     let successCount = 0;
@@ -454,6 +480,14 @@ export default function ProjectsPage() {
         onRowClick={row => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}`)}
         actionButtonLabel={canAdd('projects') ? t('new_project') : `${t('new_project')} (${t('quota_reached') || 'Quota atteint'})`}
         onActionButtonClick={canAdd('projects') ? () => setShowNewProjectModal(true) : () => showGlobalPopup(t('quota_reached_message') || 'Quota atteint. Passez à un plan supérieur.', 'warning')}
+        additionalActions={[
+          {
+            label: t('schedule_meeting') || 'Planifier une réunion',
+            onClick: () => handleScheduleMeeting(),
+            icon: <IconCalendarEvent className="w-4 h-4" />,
+            variant: 'outline',
+          },
+        ]}
         stats={[
           {
             label: t('total_projects'),

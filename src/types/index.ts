@@ -935,6 +935,7 @@ export interface CalendarEvent {
   reminder_minutes: number;
   is_completed: boolean;
   recurrence: RecurrenceType;
+  use_fathom?: boolean; // Si l'événement utilise Fathom AI pour les notes
   project?: Project;
   client?: Client;
   users?: User;
