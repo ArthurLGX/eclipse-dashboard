@@ -931,6 +931,7 @@ export interface CalendarEvent {
   project?: Project;
   client?: Client;
   users?: User;
+  meeting_note?: MeetingNote;
   createdAt: string;
   updatedAt: string;
 }
@@ -951,4 +952,64 @@ export interface CreateCalendarEventData {
 }
 
 export type UpdateCalendarEventData = Partial<CreateCalendarEventData>;
+
+// ============================================================================
+// MEETING NOTES (Notes de réunion)
+// ============================================================================
+
+export type MeetingNoteSource = 'manual' | 'phantom_ai' | 'otter_ai' | 'fireflies' | 'other';
+export type MeetingNoteStatus = 'pending' | 'processing' | 'completed' | 'failed';
+
+export interface ActionItem {
+  id: string;
+  text: string;
+  assignee?: string;
+  due_date?: string;
+  completed: boolean;
+}
+
+export interface MeetingAttendee {
+  name: string;
+  email?: string;
+  role?: string;
+}
+
+export interface MeetingNote {
+  id: number;
+  documentId: string;
+  title: string;
+  transcription: string | null;
+  summary: string | null;
+  action_items: ActionItem[] | null;
+  attendees: MeetingAttendee[] | null;
+  duration_minutes: number | null;
+  recording_url: string | null;
+  source: MeetingNoteSource;
+  status: MeetingNoteStatus;
+  meeting_date: string;
+  calendar_event?: CalendarEvent;
+  project?: Project;
+  client?: Client;
+  users?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateMeetingNoteData {
+  title: string;
+  transcription?: string;
+  summary?: string;
+  action_items?: ActionItem[];
+  attendees?: MeetingAttendee[];
+  duration_minutes?: number;
+  recording_url?: string;
+  source?: MeetingNoteSource;
+  status?: MeetingNoteStatus;
+  meeting_date: string;
+  calendar_event?: number;
+  project?: number;
+  client?: number;
+}
+
+export type UpdateMeetingNoteData = Partial<CreateMeetingNoteData>;
 

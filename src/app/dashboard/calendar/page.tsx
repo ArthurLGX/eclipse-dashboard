@@ -29,6 +29,7 @@ import {
   deleteCalendarEvent,
   completeCalendarEvent,
 } from '@/lib/api';
+import MeetingNotePanel from '@/app/components/MeetingNotePanel';
 import { useProjects, useClients } from '@/hooks/useApi';
 import { useNotifications, scheduleNotification } from '@/hooks/useNotifications';
 import type { CalendarEvent, EventType, Project, Client } from '@/types';
@@ -886,6 +887,15 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
               {event ? (t('save') || 'Sauvegarder') : (t('create') || 'Créer')}
             </button>
           </div>
+
+          {/* Meeting Notes Panel - Only for existing meeting events */}
+          {event && event.event_type === 'meeting' && (
+            <MeetingNotePanel
+              calendarEvent={event}
+              project={projects.find(p => p.documentId === projectId) || null}
+              client={clients.find(c => c.documentId === clientId) || null}
+            />
+          )}
         </form>
       </motion.div>
     </div>

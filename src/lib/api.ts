@@ -20,6 +20,9 @@ import type {
   CalendarEvent,
   CreateCalendarEventData,
   UpdateCalendarEventData,
+  MeetingNote,
+  CreateMeetingNoteData,
+  UpdateMeetingNoteData,
 } from '@/types';
 
 // ============================================================================
@@ -2602,6 +2605,95 @@ export const deleteCalendarEvent = async (documentId: string): Promise<void> => 
 /** Marque un événement comme complété */
 export const completeCalendarEvent = async (documentId: string): Promise<CalendarEvent> => {
   return updateCalendarEvent(documentId, { is_completed: true } as UpdateCalendarEventData);
+};
+
+// ============================================================================
+// MEETING NOTES (Notes de réunion)
+// ============================================================================
+
+/** Récupère toutes les notes de réunion d'un utilisateur */
+export const fetchMeetingNotes = async (
+  userId: number,
+  filters?: {
+    calendarEventId?: string;
+    projectId?: string;
+    clientId?: string;
+    status?: string;
+  }
+): Promise<MeetingNote[]> => {
+  let query = `meeting-notes?filters[users][id][$eq]=${userId}&populate=calendar_event,project,client&sort=meeting_date:desc`;
+  
+  if (filters?.calendarEventId) {
+    query += `&filters[calendar_event][documentId][$eq]=${filters.calendarEventId}`;
+  }
+  if (filters?.projectId) {
+    query += `&filters[project][documentId][$eq]=${filters.projectId}`;
+  }
+  if (filters?.clientId) {
+    query += `&filters[client][documentId][$eq]=${filters.clientId}`;
+  }
+  if (filters?.status) {
+    query += `&filters[status][$eq]=${filters.status}`;
+  }
+  
+  const response = await get<ApiResponse<MeetingNote[]>>(query);
+  return response.data || [];
+};
+
+/** Récupère une note de réunion par son documentId */
+export const fetchMeetingNoteById = async (documentId: string): Promise<MeetingNote | null> => {
+  const response = await get<ApiResponse<MeetingNote>>(
+    `meeting-notes/${documentId}?populate=calendar_event,project,client`
+  );
+  return response.data || null;
+};
+
+/** Récupère la note de réunion liée à un événement calendrier */
+export const fetchMeetingNoteByCalendarEvent = async (calendarEventId: string): Promise<MeetingNote | null> => {
+  const response = await get<ApiResponse<MeetingNote[]>>(
+    `meeting-notes?filters[calendar_event][documentId][$eq]=${calendarEventId}&populate=calendar_event,project,client`
+  );
+  return response.data?.[0] || null;
+};
+
+/** Crée une nouvelle note de réunion */
+export const createMeetingNote = async (
+  userId: number,
+  data: CreateMeetingNoteData
+): Promise<MeetingNote> => {
+  const response = await post<ApiResponse<MeetingNote>>('meeting-notes', {
+    data: {
+      ...data,
+      users: userId,
+    },
+  });
+  
+  if (!response.data) {
+    throw new Error('Failed to create meeting note');
+  }
+  
+  return response.data;
+};
+
+/** Met à jour une note de réunion */
+export const updateMeetingNote = async (
+  documentId: string,
+  data: UpdateMeetingNoteData
+): Promise<MeetingNote> => {
+  const response = await put<ApiResponse<MeetingNote>>(`meeting-notes/${documentId}`, {
+    data,
+  });
+  
+  if (!response.data) {
+    throw new Error('Failed to update meeting note');
+  }
+  
+  return response.data;
+};
+
+/** Supprime une note de réunion */
+export const deleteMeetingNote = async (documentId: string): Promise<void> => {
+  await del(`meeting-notes/${documentId}`);
 };
 
 // ============================================================================
