@@ -109,7 +109,7 @@ export default function MonitoringDetailPage() {
             <p className="text-primary">{t('site_not_found') || 'Site non trouvé'}</p>
             <button 
               onClick={() => router.push('/dashboard/monitoring')}
-              className="btn-secondary mt-4"
+              className="btn-primary mt-4 rounded-lg"
             >
               {t('back_to_monitoring') || 'Retour au monitoring'}
             </button>
@@ -179,20 +179,20 @@ export default function MonitoringDetailPage() {
             <button
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="btn-secondary px-3 py-1.5 text-sm flex items-center gap-1.5"
+              className="btn-primary px-3 py-1.5 text-sm rounded-lg flex items-center gap-1.5"
             >
               <IconRefresh className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
               {t('refresh') || 'Actualiser'}
             </button>
             <button
               onClick={() => router.push(`/dashboard/monitoring?edit=${site.documentId}`)}
-              className="btn-secondary px-3 py-1.5 text-sm flex items-center gap-1.5"
+              className="btn-tertiary px-3 py-1.5 text-sm rounded-lg flex items-center gap-1.5"
             >
               <IconSettings className="w-4 h-4" />
             </button>
             <button
               onClick={() => setDeleteModal(true)}
-              className="btn-secondary px-3 py-1.5 text-sm text-error hover:bg-error/10 flex items-center gap-1.5"
+              className="btn-tertiary px-3 py-1.5 text-sm rounded-lg text-error hover:bg-error-light flex items-center gap-1.5"
             >
               <IconTrash className="w-4 h-4" />
             </button>

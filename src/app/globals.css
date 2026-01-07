@@ -42,6 +42,8 @@
   --color-accent: #7C3AED;
   --color-accent-light: #A78BFA;
   --color-accent-bg: rgba(124, 58, 237, 0.15);
+  --color-accent-muted: rgba(124, 58, 237, 0.25);
+  --color-accent-subtle: rgba(124, 58, 237, 0.4);
   --color-accent-border: rgba(124, 58, 237, 0.3);
   --color-accent-text: #FFFFFF;
   
@@ -122,6 +124,8 @@
   --color-accent: #7C3AED;
   --color-accent-light: #A78BFA;
   --color-accent-bg: rgba(124, 58, 237, 0.1);
+  --color-accent-muted: rgba(124, 58, 237, 0.15);
+  --color-accent-subtle: rgba(124, 58, 237, 0.25);
   --color-accent-border: #C4B5FD;
   --color-accent-text: #FFFFFF;
   
@@ -190,6 +194,8 @@
 
 .bg-accent { background-color: var(--color-accent); }
 .bg-accent-light { background-color: var(--color-accent-bg); }
+.bg-accent-muted { background-color: var(--color-accent-muted); }
+.bg-accent-subtle { background-color: var(--color-accent-subtle); }
 .bg-primary { background-color: var(--color-primary); }
 .bg-primary-light { background-color: var(--color-primary-bg); }
 .bg-success { background-color: var(--color-success); }
@@ -306,14 +312,25 @@
 }
 
 .btn-secondary {
-  background-color: var(--color-primary);
+  background-color: var(--color-accent-subtle);
   color: var(--color-accent-text);
-  border: 1px solid var(--color-primary-border);
+  border: 1px solid transparent;
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-primary-bg);
-  color: var(--color-primary-text);
+  background-color: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
+.btn-tertiary {
+  background-color: var(--color-accent-muted);
+  color: var(--text-primary);
+  border: 1px solid transparent;
+}
+
+.btn-tertiary:hover {
+  background-color: var(--color-accent-subtle);
+  color: var(--color-accent-text);
 }
 
 .btn-ghost {
