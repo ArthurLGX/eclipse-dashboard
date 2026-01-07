@@ -1736,6 +1736,7 @@ const translations = {
     many_exceeded: 'Beaucoup de dépassements',
     many_exceeded_advice: 'Prévoyez plus de marge dans vos planifications',
     exceeded: 'Dépassées',
+    task_in_progress: 'Tâche en cours',
     
     // Quotes (Devis - uniques)
     quotes_desc: 'Gérez vos devis et convertissez-les en factures',
@@ -3592,6 +3593,8 @@ const translations = {
     recording: 'Recording',
     recording_url: 'Recording URL',
     saved: 'Saved',
+    task_in_progress: 'Task in progress',
+
   },
 };
 

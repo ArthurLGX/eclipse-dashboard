@@ -76,7 +76,6 @@ export default function AdminSubscriptionsPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const plansData = await plansRes.json();
-      console.log('Plans data:', plansData);
       setPlans(plansData.data || []);
 
       // Récupérer les subscriptions avec le plan et les users
@@ -84,7 +83,6 @@ export default function AdminSubscriptionsPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const subsData = await subsRes.json();
-      console.log('Subscriptions data:', subsData);
       
       // Mapper les subscriptions pour inclure le prix du plan
       const mappedSubs = (subsData.data || []).map((sub: Subscription & { plan?: Plan }) => {

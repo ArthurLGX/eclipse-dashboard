@@ -223,14 +223,14 @@ export default function TimerIndicator() {
         {/* Collapse Toggle Button - Always visible */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`flex items-center justify-center w-8 h-20 rounded-l-xl shadow-lg transition-all ${
+          className={`flex items-center justify-center w-8 h-20 rounded-l-xl shadow-lg transition-all cursor-pointer ${
             isExceeded 
-              ? 'bg-danger hover:bg-danger/90' 
-              : 'bg-warning hover:bg-warning/90'
+              ? 'bg-danger hover:bg-danger-light' 
+              : 'bg-warning hover:bg-warning-light'
           }`}
           title={isCollapsed ? (t('expand') || 'Ouvrir') : (t('collapse') || 'Réduire')}
         >
-          <div className="flex flex-col items-center gap-1">
+          <div className="flex flex-col items-center gap-1 cursor-pointer">
             {isCollapsed ? (
               <>
                 <IconClock className="w-4 h-4 text-white animate-pulse" />
@@ -252,8 +252,8 @@ export default function TimerIndicator() {
               transition={{ duration: 0.2 }}
               className={`relative overflow-hidden rounded-r-xl shadow-2xl cursor-grab active:cursor-grabbing ${
                 isExceeded 
-                  ? 'bg-danger' 
-                  : 'bg-warning'
+                  ? 'bg-danger-light' 
+                  : 'bg-warning-light'
               }`}
               style={{ backdropFilter: 'blur(12px)' }}
             >
@@ -274,21 +274,21 @@ export default function TimerIndicator() {
                 onPointerDown={(e) => dragControls.start(e)}
                 className="cursor-grab active:cursor-grabbing p-0.5 -ml-1 hover:bg-white/10 rounded"
               >
-                <IconGripVertical className="w-4 h-4 text-white/60" />
+                <IconGripVertical className="w-4 h-4 !text-white" />
               </div>
-              <IconClock className="w-4 h-4 text-white animate-pulse" />
-              <span className="text-sm font-medium text-white truncate max-w-[140px]">
+              <IconClock className="w-4 h-4 text-warning animate-pulse" />
+              <span className="text-sm font-medium text-warning truncate max-w-[140px]">
                 {taskName}
               </span>
             </div>
 
             {/* Timer Display */}
             <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-2xl font-mono font-bold text-white drop-shadow-md">
+              <span className="text-2xl font-mono font-bold text-warning drop-shadow-md">
                 {formatSeconds(runningTime)}
               </span>
               {runningEntry.estimated_duration && (
-                <span className="text-xs text-white/80 font-medium">
+                <span className="text-xs text-warning/80 font-medium">
                   / {formatMinutes(runningEntry.estimated_duration)}
                 </span>
               )}
@@ -311,7 +311,7 @@ export default function TimerIndicator() {
               <button
                 onClick={() => handleStopTimer(isExceeded ? undefined : 'completed')}
                 disabled={loading}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white/25 hover:bg-white/35 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white/25 hover:bg-white/35 text-warning text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 shadow-sm"
               >
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -324,7 +324,7 @@ export default function TimerIndicator() {
               </button>
               <button
                 onClick={() => router.push('/dashboard/time-tracking')}
-                className="p-2 bg-white/25 hover:bg-white/35 text-white rounded-lg transition-colors shadow-sm"
+                className="p-2 bg-white/25 hover:bg-white/35 text-warning rounded-lg transition-colors shadow-sm"
                 title={t('view_details') || 'Voir détails'}
               >
                 <IconExternalLink className="w-4 h-4" />
@@ -352,10 +352,10 @@ export default function TimerIndicator() {
               className="bg-card border border-default rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
             >
               {/* Header */}
-              <div className="p-6 bg-warning/10 border-b border-warning/20">
+              <div className="p-6 bg-warning-light border-b border-warning">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-warning/20 flex items-center justify-center">
-                    <IconAlertTriangle className="w-6 h-6 text-warning" />
+                  <div className="w-12 h-12 rounded-full bg-warning-light flex items-center justify-center">
+                    <IconAlertTriangle className="w-6 h-6 text-warning-light" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-primary">
