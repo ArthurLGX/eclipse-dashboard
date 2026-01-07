@@ -84,9 +84,17 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const { userId, config } = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
+
+    const { userId, config } = body || {};
 
     if (!userId) {
+      console.error('POST /api/integrations/fathom - userId missing. Body received:', body);
       return NextResponse.json({ error: 'userId is required' }, { status: 400 });
     }
 

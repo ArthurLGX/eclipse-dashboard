@@ -111,17 +111,24 @@ export default function MeetingIntegrationsPage() {
 
   // Sauvegarder la config
   const handleSave = async () => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      console.error('User ID not available');
+      showGlobalPopup('Erreur: utilisateur non connecté', 'error');
+      return;
+    }
     
     setSaving(true);
     try {
+      const payload = {
+        userId: user.id,
+        config,
+      };
+      console.log('Saving Fathom config:', payload);
+      
       const response = await fetch('/api/integrations/fathom', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user.id,
-          config,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -129,11 +136,13 @@ export default function MeetingIntegrationsPage() {
         if (config.api_key && currentStep === 1) setCurrentStep(2);
         if (config.webhook_secret && currentStep === 2) setCurrentStep(3);
       } else {
-        throw new Error('Failed to save');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Save failed:', response.status, errorData);
+        throw new Error(errorData.error || 'Failed to save');
       }
     } catch (error) {
       console.error('Error saving config:', error);
-      showGlobalPopup('Erreur lors de la sauvegarde', 'error');
+      showGlobalPopup(error instanceof Error ? error.message : 'Erreur lors de la sauvegarde', 'error');
     } finally {
       setSaving(false);
     }
@@ -319,7 +328,7 @@ export default function MeetingIntegrationsPage() {
                               type="password"
                               value={config.api_key}
                               onChange={(e) => setConfig({ ...config, api_key: e.target.value })}
-                              placeholder="fathom_xxxxxxxxxxxxx"
+                              placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                               className="w-full input px-3 py-2 text-sm"
                             />
                           </div>
