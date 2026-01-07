@@ -93,7 +93,7 @@ export default function DashboardPageTemplate<T>({
           {additionalActions.map((action, index) => (
             <button
               key={index}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-all duration-300 ${
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-all duration-300 cursor-pointer ${
                 action.variant === 'outline' 
                   ? 'btn-outline border border-default text-secondary hover:bg-card-hover' 
                   : action.variant === 'primary'
@@ -108,7 +108,7 @@ export default function DashboardPageTemplate<T>({
           ))}
           {/* Main action button */}
           <button
-            className="btn-secondary lg:w-fit w-full rounded-lg px-4 py-2 transition-all duration-300"
+            className="btn-primary cursor-pointer lg:w-fit w-full rounded-lg px-4 py-2 transition-all duration-300"
             onClick={onActionButtonClick || (() => {})}
           >
             {actionButtonLabel}

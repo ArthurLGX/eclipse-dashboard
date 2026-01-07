@@ -1622,6 +1622,7 @@ const translations = {
     skip_setup: 'Configurer plus tard',
     start_eclipse: 'Commencer',
     modules_for: 'Modules recommandés pour',
+    start: 'Démarrer',
     
     // Monitoring
     monitoring_desc: 'Surveillez la disponibilité de vos sites web',
@@ -3350,7 +3351,7 @@ const translations = {
     skip_setup: 'Set up later',
     start_eclipse: 'Get started',
     modules_for: 'Recommended modules for',
-    
+    start: 'Start',
     // Monitoring
     monitoring_desc: 'Monitor the availability of your websites',
     add_site: 'Add site',

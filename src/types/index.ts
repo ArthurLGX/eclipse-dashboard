@@ -882,11 +882,13 @@ export interface TimeEntry {
   start_time: string;
   end_time: string | null;
   duration: number; // minutes
+  estimated_duration: number | null; // minutes - temps imparti
   description: string | null;
   billable: boolean;
   billed: boolean;
   hourly_rate: number | null;
   is_running: boolean;
+  timer_status: 'active' | 'completed' | 'exceeded' | null; // statut du timer
   project?: Project;
   task?: ProjectTask;
   client?: Client;
@@ -899,6 +901,7 @@ export interface CreateTimeEntryData {
   start_time: string;
   end_time?: string;
   duration?: number;
+  estimated_duration?: number; // temps imparti en minutes
   description?: string;
   billable?: boolean;
   hourly_rate?: number;

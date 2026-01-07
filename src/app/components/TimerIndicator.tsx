@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconClock,
-  IconPlayerPlay,
   IconPlayerStop,
   IconExternalLink,
+  IconCheck,
+  IconAlertTriangle,
+  IconX,
 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -15,10 +17,12 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useUserPreferencesOptional } from '@/app/context/UserPreferencesContext';
 import {
   fetchRunningTimeEntry,
-  createTimeEntry,
   stopTimeEntry,
+  updateTimeEntry,
 } from '@/lib/api';
 import type { TimeEntry } from '@/types';
+
+type TimerCompletionStatus = 'completed' | 'exceeded_continue' | 'exceeded_success' | 'exceeded_failed';
 
 export default function TimerIndicator() {
   const { t } = useLanguage();
@@ -31,12 +35,12 @@ export default function TimerIndicator() {
 
   const [runningEntry, setRunningEntry] = useState<TimeEntry | null>(null);
   const [runningTime, setRunningTime] = useState<number>(0);
-  const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [showExceededModal, setShowExceededModal] = useState(false);
+  const [exceededModalShown, setExceededModalShown] = useState(false);
+  const timerRef = useRef<HTMLDivElement>(null);
 
   // Vérifier si le module time_tracking est activé
-  // On vérifie directement dans enabled_modules pour être sûr
   const isTimeTrackingEnabled = enabledModules?.includes('time_tracking') ?? false;
 
   // Charger le timer en cours
@@ -47,16 +51,20 @@ export default function TimerIndicator() {
       try {
         const entry = await fetchRunningTimeEntry(user.id);
         setRunningEntry(entry);
+        // Reset modal shown state if new entry
+        if (entry && (!runningEntry || entry.documentId !== runningEntry.documentId)) {
+          setExceededModalShown(false);
+        }
       } catch {
         setRunningEntry(null);
       }
     };
 
     loadRunningEntry();
-    const interval = setInterval(loadRunningEntry, 10000); // Refresh toutes les 10s
+    const interval = setInterval(loadRunningEntry, 10000);
 
     return () => clearInterval(interval);
-  }, [user?.id, isTimeTrackingEnabled]);
+  }, [user?.id, isTimeTrackingEnabled, runningEntry?.documentId]);
 
   // Mettre à jour le timer en temps réel
   useEffect(() => {
@@ -66,6 +74,15 @@ export default function TimerIndicator() {
       const updateTimer = () => {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         setRunningTime(elapsed);
+        
+        // Vérifier si le temps imparti est dépassé
+        if (runningEntry.estimated_duration && !exceededModalShown) {
+          const estimatedSeconds = runningEntry.estimated_duration * 60;
+          if (elapsed >= estimatedSeconds) {
+            setShowExceededModal(true);
+            setExceededModalShown(true);
+          }
+        }
       };
 
       updateTimer();
@@ -75,57 +92,77 @@ export default function TimerIndicator() {
     } else {
       setRunningTime(0);
     }
-  }, [runningEntry]);
-
-  // Fermer le dropdown quand on clique ailleurs
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [runningEntry, exceededModalShown]);
 
   // Format seconds to HH:MM:SS
-  const formatSeconds = (seconds: number) => {
+  const formatSeconds = useCallback((seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
+  }, []);
 
-  // Démarrer un nouveau timer
-  const handleStartTimer = async () => {
-    if (!user?.id) return;
-    setLoading(true);
-    try {
-      await createTimeEntry(user.id, {
-        start_time: new Date().toISOString(),
-        is_running: true,
-        billable: true,
-      });
-      const entry = await fetchRunningTimeEntry(user.id);
-      setRunningEntry(entry);
-      showGlobalPopup(t('timer_started') || 'Timer démarré', 'success');
-    } catch {
-      showGlobalPopup(t('timer_error') || 'Erreur', 'error');
-    } finally {
-      setLoading(false);
+  // Format minutes to display
+  const formatMinutes = useCallback((minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0) {
+      return `${hours}h${mins > 0 ? mins.toString().padStart(2, '0') : ''}`;
     }
-  };
+    return `${mins}min`;
+  }, []);
 
-  // Arrêter le timer
-  const handleStopTimer = async () => {
+  // Calculer la progression
+  const progressPercent = runningEntry?.estimated_duration 
+    ? Math.min((runningTime / (runningEntry.estimated_duration * 60)) * 100, 100)
+    : 0;
+
+  const isExceeded = runningEntry?.estimated_duration 
+    ? runningTime >= runningEntry.estimated_duration * 60
+    : false;
+
+  // Obtenir le nom de la tâche
+  const taskName = runningEntry?.task?.title 
+    || runningEntry?.project?.title 
+    || runningEntry?.description 
+    || t('task_in_progress') || 'Tâche en cours';
+
+  // Arrêter le timer avec un statut
+  const handleStopTimer = async (status?: TimerCompletionStatus) => {
     if (!runningEntry) return;
     setLoading(true);
     try {
+      // Mettre à jour le statut si nécessaire
+      if (status) {
+        const timerStatus = status === 'completed' || status === 'exceeded_success' 
+          ? 'completed' 
+          : status === 'exceeded_failed' 
+            ? 'exceeded'
+            : 'active';
+        
+        await updateTimeEntry(runningEntry.documentId, { 
+          timer_status: timerStatus as 'active' | 'completed' | 'exceeded'
+        });
+      }
+      
       await stopTimeEntry(runningEntry.documentId);
       setRunningEntry(null);
       setRunningTime(0);
-      showGlobalPopup(t('timer_stopped') || 'Timer arrêté', 'success');
+      setShowExceededModal(false);
+      
+      const message = status === 'exceeded_success' || status === 'completed'
+        ? t('task_completed_success') || 'Tâche terminée avec succès !'
+        : status === 'exceeded_failed'
+          ? t('task_completed_incomplete') || 'Tâche marquée comme incomplète'
+          : t('timer_stopped') || 'Timer arrêté';
+      
+      const popupType = status === 'exceeded_success' || status === 'completed'
+        ? 'success'
+        : status === 'exceeded_failed'
+          ? 'warning'
+          : 'success';
+      
+      showGlobalPopup(message, popupType);
     } catch {
       showGlobalPopup(t('timer_error') || 'Erreur', 'error');
     } finally {
@@ -133,158 +170,188 @@ export default function TimerIndicator() {
     }
   };
 
-  // Ne pas afficher si le module n'est pas activé
-  if (!isTimeTrackingEnabled) {
+  // Continuer après dépassement
+  const handleContinue = () => {
+    setShowExceededModal(false);
+  };
+
+  // Ne pas afficher si le module n'est pas activé ou pas de timer
+  if (!isTimeTrackingEnabled || !runningEntry) {
     return null;
   }
 
   return (
-    <div ref={dropdownRef} className="fixed top-4 right-24 z-[1002]">
-      {/* Timer Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`relative flex items-center gap-2 px-3 py-2.5 rounded-xl backdrop-blur-sm border transition-all shadow-theme-lg ${
-          runningEntry
-            ? 'bg-accent/10 border-accent text-accent hover:bg-accent/20'
-            : 'bg-card border-default text-muted hover:text-primary hover:bg-hover'
-        }`}
+    <>
+      {/* Timer Bar - Fixed Right Side */}
+      <motion.div 
+        ref={timerRef}
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: 100, opacity: 0 }}
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-[1002] flex"
       >
-        <IconClock className={`w-5 h-5 ${runningEntry ? 'animate-pulse' : ''}`} />
-        
-        {runningEntry ? (
-          <span className="font-mono text-sm font-semibold min-w-[70px]">
-            {formatSeconds(runningTime)}
-          </span>
-        ) : null}
-
-        {/* Indicateur actif */}
-        {runningEntry && (
-          <motion.span
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full border-2 border-card"
-          >
-            <span className="absolute inset-0 bg-success rounded-full animate-ping opacity-75" />
-          </motion.span>
-        )}
-      </button>
-
-      {/* Dropdown */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-2 w-72 bg-card border border-default rounded-xl shadow-2xl overflow-hidden"
-          >
-            {/* Header */}
-            <div className="p-4 border-b border-default">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-primary">
-                  {t('time_tracking') || 'Suivi du temps'}
-                </h3>
-                <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    router.push('/dashboard/time-tracking');
-                  }}
-                  className="text-muted hover:text-accent transition-colors"
-                  title={t('view_all') || 'Voir tout'}
-                >
-                  <IconExternalLink className="w-4 h-4" />
-                </button>
-              </div>
+        {/* Main Timer Panel */}
+        <div 
+          className={`relative overflow-hidden rounded-l-xl shadow-2xl border-l border-t border-b transition-all ${
+            isExceeded 
+              ? 'bg-danger/95 border-danger' 
+              : 'bg-warning/95 border-warning'
+          }`}
+          style={{ backdropFilter: 'blur(12px)' }}
+        >
+          {/* Progress Bar Background */}
+          <div className="absolute inset-0 bg-black/10" />
+          <motion.div 
+            className={`absolute inset-y-0 left-0 ${isExceeded ? 'bg-danger-dark/30' : 'bg-warning-dark/30'}`}
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPercent}%` }}
+            transition={{ duration: 0.5 }}
+          />
+          
+          {/* Content */}
+          <div className="relative p-3 min-w-[200px]">
+            {/* Task Name */}
+            <div className="flex items-center gap-2 mb-2">
+              <IconClock className="w-4 h-4 text-white/80 animate-pulse" />
+              <span className="text-sm font-medium text-white truncate max-w-[150px]">
+                {taskName}
+              </span>
             </div>
 
             {/* Timer Display */}
-            <div className="p-4">
-              {runningEntry ? (
-                <div className="space-y-4">
-                  {/* Timer actif */}
-                  <div className="text-center">
-                    <p className="text-xs text-muted mb-1">
-                      {t('timer_running') || 'Timer en cours'}
-                    </p>
-                    <p className="text-3xl font-mono font-bold text-accent">
-                      {formatSeconds(runningTime)}
-                    </p>
-                    {runningEntry.project?.title && (
-                      <p className="text-sm text-secondary mt-1 truncate">
-                        {runningEntry.project.title}
-                      </p>
-                    )}
-                    {runningEntry.description && !runningEntry.project?.title && (
-                      <p className="text-sm text-secondary mt-1 truncate">
-                        {runningEntry.description}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Stop Button */}
-                  <button
-                    onClick={handleStopTimer}
-                    disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 bg-error hover:bg-error/90 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
-                  >
-                    {loading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <>
-                        <IconPlayerStop className="w-5 h-5" />
-                        {t('stop') || 'Arrêter'}
-                      </>
-                    )}
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {/* Pas de timer */}
-                  <div className="text-center py-2">
-                    <IconClock className="w-10 h-10 text-muted mx-auto mb-2" />
-                    <p className="text-sm text-muted">
-                      {t('no_timer') || 'Aucun timer actif'}
-                    </p>
-                  </div>
-
-                  {/* Start Button */}
-                  <button
-                    onClick={handleStartTimer}
-                    disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
-                  >
-                    {loading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <>
-                        <IconPlayerPlay className="w-5 h-5" />
-                        {t('start') || 'Démarrer'}
-                      </>
-                    )}
-                  </button>
-                </div>
+            <div className="flex items-baseline gap-2 mb-2">
+              <span className="text-2xl font-mono font-bold text-white">
+                {formatSeconds(runningTime)}
+              </span>
+              {runningEntry.estimated_duration && (
+                <span className="text-xs text-white/70">
+                  / {formatMinutes(runningEntry.estimated_duration)}
+                </span>
               )}
             </div>
 
-            {/* Quick Stats */}
-            {runningEntry && (
-              <div className="px-4 pb-4">
-                <div className="flex items-center justify-between text-xs text-muted bg-hover rounded-lg p-2">
-                  <span>{t('started_at') || 'Démarré à'}</span>
-                  <span className="font-mono">
-                    {new Date(runningEntry.start_time).toLocaleTimeString('fr-FR', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
-                </div>
+            {/* Progress Bar */}
+            {runningEntry.estimated_duration && (
+              <div className="h-1.5 bg-white/20 rounded-full overflow-hidden mb-3">
+                <motion.div 
+                  className={`h-full rounded-full ${isExceeded ? 'bg-white' : 'bg-white/80'}`}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(progressPercent, 100)}%` }}
+                  transition={{ duration: 0.3 }}
+                />
               </div>
             )}
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleStopTimer(isExceeded ? undefined : 'completed')}
+                disabled={loading}
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white/20 hover:bg-white/30 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+              >
+                {loading ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <IconPlayerStop className="w-4 h-4" />
+                    {t('stop') || 'Stop'}
+                  </>
+                )}
+              </button>
+              <button
+                onClick={() => router.push('/dashboard/time-tracking')}
+                className="p-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors"
+                title={t('view_details') || 'Voir détails'}
+              >
+                <IconExternalLink className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Exceeded Time Modal */}
+      <AnimatePresence>
+        {showExceededModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[2000] p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-card border border-default rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+            >
+              {/* Header */}
+              <div className="p-6 bg-warning/10 border-b border-warning/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-warning/20 flex items-center justify-center">
+                    <IconAlertTriangle className="w-6 h-6 text-warning" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary">
+                      {t('time_exceeded') || 'Temps imparti écoulé'}
+                    </h3>
+                    <p className="text-sm text-muted">
+                      {formatMinutes(runningEntry?.estimated_duration || 0)} {t('elapsed') || 'écoulé(s)'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <p className="text-secondary mb-6">
+                  {t('time_exceeded_question') || 'Le temps imparti pour cette tâche est écoulé. Que souhaitez-vous faire ?'}
+                </p>
+
+                <div className="space-y-3">
+                  {/* Continue */}
+                  <button
+                    onClick={handleContinue}
+                    className="w-full flex items-center gap-3 p-4 bg-warning/10 hover:bg-warning/20 border border-warning/30 rounded-xl transition-colors text-left"
+                  >
+                    <IconClock className="w-5 h-5 text-warning flex-shrink-0" />
+                    <div>
+                      <p className="font-medium text-primary">{t('continue_task') || 'Continuer la tâche'}</p>
+                      <p className="text-xs text-muted">{t('continue_task_desc') || 'Rallonger le temps de travail'}</p>
+                    </div>
+                  </button>
+
+                  {/* Mark as completed */}
+                  <button
+                    onClick={() => handleStopTimer('exceeded_success')}
+                    disabled={loading}
+                    className="w-full flex items-center gap-3 p-4 bg-success/10 hover:bg-success/20 border border-success/30 rounded-xl transition-colors text-left disabled:opacity-50"
+                  >
+                    <IconCheck className="w-5 h-5 text-success flex-shrink-0" />
+                    <div>
+                      <p className="font-medium text-primary">{t('objectives_completed') || 'Objectifs atteints'}</p>
+                      <p className="text-xs text-muted">{t('objectives_completed_desc') || 'La tâche est terminée avec succès'}</p>
+                    </div>
+                  </button>
+
+                  {/* Mark as incomplete */}
+                  <button
+                    onClick={() => handleStopTimer('exceeded_failed')}
+                    disabled={loading}
+                    className="w-full flex items-center gap-3 p-4 bg-danger/10 hover:bg-danger/20 border border-danger/30 rounded-xl transition-colors text-left disabled:opacity-50"
+                  >
+                    <IconX className="w-5 h-5 text-danger flex-shrink-0" />
+                    <div>
+                      <p className="font-medium text-primary">{t('objectives_not_completed') || 'Objectifs non atteints'}</p>
+                      <p className="text-xs text-muted">{t('objectives_not_completed_desc') || 'Arrêter et marquer comme incomplet'}</p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
-

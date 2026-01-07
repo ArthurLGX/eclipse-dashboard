@@ -11,7 +11,9 @@ import {
   IconBriefcase,
   IconTrash,
   IconEdit,
+  IconChartBar,
 } from '@tabler/icons-react';
+import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -242,13 +244,22 @@ export default function TimeTrackingPage() {
               {t('time_tracking_desc') || 'Gérez le temps passé sur vos projets'}
             </p>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
-          >
-            <IconPlus className="w-4 h-4" />
-            {t('add_entry') || 'Ajouter une entrée'}
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/dashboard/time-tracking/analytics"
+              className="px-4 py-2 flex items-center gap-2 rounded-lg border border-default text-secondary hover:text-primary hover:bg-hover transition-colors"
+            >
+              <IconChartBar className="w-4 h-4" />
+              {t('analytics') || 'Analyses'}
+            </Link>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
+            >
+              <IconPlus className="w-4 h-4" />
+              {t('add_entry') || 'Ajouter une entrée'}
+            </button>
+          </div>
         </div>
 
         {/* Active Timer */}
@@ -499,6 +510,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId }: TimeEntryM
   const [date, setDate] = useState(entry ? new Date(entry.start_time).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
   const [startTime, setStartTime] = useState(entry ? new Date(entry.start_time).toTimeString().slice(0, 5) : currentTime);
   const [endTime, setEndTime] = useState(entry?.end_time ? new Date(entry.end_time).toTimeString().slice(0, 5) : oneHourLater);
+  const [estimatedDuration, setEstimatedDuration] = useState<number>(entry?.estimated_duration || 60); // minutes
   const [billable, setBillable] = useState(entry?.billable ?? true);
   const [hourlyRate, setHourlyRate] = useState(entry?.hourly_rate || 0);
   const [saving, setSaving] = useState(false);
@@ -520,6 +532,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId }: TimeEntryM
         start_time: startDateTime.toISOString(),
         end_time: endDateTime.toISOString(),
         duration,
+        estimated_duration: estimatedDuration,
         billable,
         hourly_rate: billable ? hourlyRate : 0,
         is_running: false,
@@ -609,6 +622,37 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId }: TimeEntryM
                 onChange={(e) => setEndTime(e.target.value)}
                 className="input w-full"
               />
+            </div>
+          </div>
+
+          {/* Temps imparti */}
+          <div>
+            <label className="block text-sm text-muted mb-1">{t('estimated_duration') || 'Temps imparti'}</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value={estimatedDuration}
+                onChange={(e) => setEstimatedDuration(Math.max(1, Number(e.target.value)))}
+                className="input w-24"
+                min="1"
+              />
+              <span className="text-sm text-muted">minutes</span>
+              <div className="flex gap-1 ml-2">
+                {[15, 30, 60, 120].map((mins) => (
+                  <button
+                    key={mins}
+                    type="button"
+                    onClick={() => setEstimatedDuration(mins)}
+                    className={`px-2 py-1 text-xs rounded ${
+                      estimatedDuration === mins 
+                        ? 'bg-accent text-white' 
+                        : 'bg-hover text-muted hover:text-primary'
+                    }`}
+                  >
+                    {mins >= 60 ? `${mins/60}h` : `${mins}m`}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

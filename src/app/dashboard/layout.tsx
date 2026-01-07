@@ -184,12 +184,6 @@ function DashboardLayoutContent({
           icon: <IconChartLine size={20} stroke={1} />,
           path: '/dashboard/revenue',
         },
-        {
-          id: 'factures',
-          label: t('factures'),
-          icon: <IconFileInvoice size={20} stroke={1} />,
-          path: '/dashboard/factures',
-        },
       ],
     },
 
@@ -232,6 +226,21 @@ function DashboardLayoutContent({
       icon: <IconBriefcase size={20} stroke={1} />,
       isCategory: true,
       menuItems: [
+        // Facturation (Factures + Devis)
+        {
+          id: 'factures',
+          label: t('factures'),
+          icon: <IconFileInvoice size={20} stroke={1} />,
+          path: '/dashboard/factures',
+        },
+        {
+          id: 'quotes',
+          label: t('quotes') || 'Devis',
+          icon: <IconFileDescription size={20} stroke={1} />,
+          path: '/dashboard/devis',
+          moduleId: 'quotes',
+        },
+        // Projets & Organisation
         {
           id: 'projects',
           label: t('projects'),
@@ -239,6 +248,21 @@ function DashboardLayoutContent({
           path: '/dashboard/projects',
           moduleId: 'projects',
         },
+        {
+          id: 'calendar',
+          label: t('calendar') || 'Calendrier',
+          icon: <IconCalendar size={20} stroke={1} />,
+          path: '/dashboard/calendar',
+          moduleId: 'calendar',
+        },
+        {
+          id: 'time_tracking',
+          label: t('time_tracking') || 'Suivi du temps',
+          icon: <IconClock size={20} stroke={1} />,
+          path: '/dashboard/time-tracking',
+          moduleId: 'time_tracking',
+        },
+        // Communication
         {
           id: 'newsletters',
           label: t('newsletters'),
@@ -253,34 +277,13 @@ function DashboardLayoutContent({
           path: '/dashboard/emails',
           moduleId: 'emails',
         },
-        // Modules optionnels (visibles selon les préférences)
+        // Technique
         {
           id: 'monitoring',
           label: t('monitoring') || 'Monitoring',
           icon: <IconServer size={20} stroke={1} />,
           path: '/dashboard/monitoring',
           moduleId: 'monitoring',
-        },
-        {
-          id: 'time_tracking',
-          label: t('time_tracking') || 'Suivi du temps',
-          icon: <IconClock size={20} stroke={1} />,
-          path: '/dashboard/time-tracking',
-          moduleId: 'time_tracking',
-        },
-        {
-          id: 'quotes',
-          label: t('quotes') || 'Devis',
-          icon: <IconFileDescription size={20} stroke={1} />,
-          path: '/dashboard/devis',
-          moduleId: 'quotes',
-        },
-        {
-          id: 'calendar',
-          label: t('calendar') || 'Calendrier',
-          icon: <IconCalendar size={20} stroke={1} />,
-          path: '/dashboard/calendar',
-          moduleId: 'calendar',
         },
       ],
     },
