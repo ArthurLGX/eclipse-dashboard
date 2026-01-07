@@ -47,9 +47,9 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     console.log('GET Fathom config - Strapi response:', JSON.stringify(data, null, 2));
     
-    const configEntry = data.data?.[0];
+    const rawEntry = data.data?.[0];
 
-    if (!configEntry) {
+    if (!rawEntry) {
       console.log('GET Fathom config - No config entry found');
       return NextResponse.json({
         config: null,
@@ -57,9 +57,11 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // Gérer les deux structures Strapi (v4 avec attributes wrapper, v5 sans)
+    const configEntry = rawEntry.attributes || rawEntry;
     console.log('GET Fathom config - Config entry found:', JSON.stringify(configEntry, null, 2));
 
-    // Décrypter les secrets (dans un vrai projet, utiliser une vraie encryption)
+    // Extraire les valeurs de la config
     const config: FathomConfig = {
       webhook_secret: configEntry.webhook_secret || '',
       api_key: configEntry.api_key || '',
