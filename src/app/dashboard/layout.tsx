@@ -353,6 +353,15 @@ export default function DashboardLayout({
   const visibleSidebarItems = useMemo(() => {
     const isModuleEnabled = userPreferences?.isModuleEnabled ?? (() => true);
     
+    // DEBUG: Log pour vérifier les modules activés
+    console.log('🔧 UserPreferences Debug:', {
+      hasContext: !!userPreferences,
+      enabledModules: userPreferences?.enabledModules,
+      loading: userPreferences?.loading,
+      testTimeTracking: isModuleEnabled('time_tracking'),
+      testCalendar: isModuleEnabled('calendar'),
+    });
+    
     return sidebarItems
       .filter(item => isLinkVisible(item.id))
       .map(item => {
