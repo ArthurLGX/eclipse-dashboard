@@ -4,6 +4,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/app/context/AuthContext';
 import { useCompany } from '@/hooks/useApi';
+import { getFaviconUrl } from '@/lib/favicon';
 
 interface Company {
   name?: string;
@@ -15,6 +16,7 @@ export default function SidebarLogo() {
   const { user } = useAuth();
   const { data: company } = useCompany(user?.id);
   const [faviconError, setFaviconError] = useState(false);
+  const [currentService, setCurrentService] = useState<'duckduckgo' | 'google'>('duckduckgo');
   
   // Cast pour avoir les propriétés typées
   const companyData = company as Company | null;
@@ -22,6 +24,7 @@ export default function SidebarLogo() {
   // Réinitialiser l'erreur favicon quand l'URL change
   useEffect(() => {
     setFaviconError(false);
+    setCurrentService('duckduckgo');
   }, [companyData?.website]);
 
   // Extraire le domaine de l'URL du site web
@@ -29,19 +32,23 @@ export default function SidebarLogo() {
     if (!companyData?.website) return null;
     
     try {
-      // Nettoyer l'URL
-      let url = companyData.website.trim();
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'https://' + url;
-      }
-      
-      const domain = new URL(url).hostname;
-      // Utiliser le service Google pour récupérer le favicon
-      return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+      // Utiliser DuckDuckGo par défaut (plus fiable)
+      return getFaviconUrl(companyData.website, currentService);
     } catch {
       return null;
     }
-  }, [companyData?.website]);
+  }, [companyData?.website, currentService]);
+
+  // Gestion du fallback en cas d'erreur
+  const handleFaviconError = () => {
+    if (currentService === 'duckduckgo') {
+      // Essayer Google en fallback
+      setCurrentService('google');
+    } else {
+      // Toutes les sources ont échoué
+      setFaviconError(true);
+    }
+  };
 
   // Générer les initiales du nom de l'entreprise
   const companyInitials = useMemo(() => {
@@ -63,7 +70,7 @@ export default function SidebarLogo() {
           alt={companyData?.name || 'Company logo'}
           width={24}
           height={24}
-          onError={() => setFaviconError(true)}
+          onError={handleFaviconError}
           unoptimized // Nécessaire pour les URLs externes
         />
       </div>

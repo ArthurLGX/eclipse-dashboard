@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
             },
             {
                 protocol: 'https',
+                hostname: 'icons.duckduckgo.com',
+            },
+            {
+                protocol: 'https',
                 hostname: 't0.gstatic.com',
             },
             {
