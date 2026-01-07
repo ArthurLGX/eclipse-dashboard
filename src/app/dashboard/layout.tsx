@@ -470,20 +470,17 @@ function DashboardLayoutContent({
   };
 
   return (
-    <ProtectedRoute>
-      <TrialExpiredGuard>
-        <UserPreferencesProvider>
-          {/* Business Setup Modal - S'affiche si les préférences ne sont pas configurées */}
-          <BusinessSetupModal />
-          
-        <OnboardingProvider>
-          {/* Onboarding Wizard Modal */}
-          <OnboardingWizard />
-          
-          {/* Notification Bell - Fixed en haut à droite */}
-          <NotificationBell />
-        
-        <div className="dashboard-wrapper flex min-h-screen w-full">
+    <>
+      {/* Business Setup Modal - S'affiche si les préférences ne sont pas configurées */}
+      <BusinessSetupModal />
+      
+      {/* Onboarding Wizard Modal */}
+      <OnboardingWizard />
+      
+      {/* Notification Bell - Fixed en haut à droite */}
+      <NotificationBell />
+    
+      <div className="dashboard-wrapper flex min-h-screen w-full">
           {/* Sidebar Desktop - Fixed */}
           <motion.div
             className="sidebar hidden lg:flex fixed left-0 top-0 backdrop-blur-sm flex-col items-start justify-start gap-8 h-screen z-[1000] overflow-hidden transition-colors duration-300"
@@ -669,6 +666,7 @@ function DashboardLayoutContent({
               {children}
             </div>
           </motion.main>
-        </div>
+      </div>
+    </>
   );
 }
