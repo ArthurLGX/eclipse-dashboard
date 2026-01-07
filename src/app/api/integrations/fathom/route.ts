@@ -45,21 +45,25 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    console.log('GET Fathom config - Strapi response:', JSON.stringify(data, null, 2));
+    console.log('GET Fathom config - Strapi raw response:', JSON.stringify(data, null, 2));
     
     const rawEntry = data.data?.[0];
 
     if (!rawEntry) {
-      console.log('GET Fathom config - No config entry found');
+      console.log('GET Fathom config - No config entry found in data.data[0]');
+      // Retourner la réponse brute pour debug
       return NextResponse.json({
         config: null,
         connected: false,
+        debug: { strapiResponse: data },
       });
     }
 
+    console.log('GET Fathom config - Raw entry:', JSON.stringify(rawEntry, null, 2));
+
     // Gérer les deux structures Strapi (v4 avec attributes wrapper, v5 sans)
     const configEntry = rawEntry.attributes || rawEntry;
-    console.log('GET Fathom config - Config entry found:', JSON.stringify(configEntry, null, 2));
+    console.log('GET Fathom config - Config entry (after attributes check):', JSON.stringify(configEntry, null, 2));
 
     // Extraire les valeurs de la config
     const config: FathomConfig = {
@@ -77,6 +81,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       config,
       connected,
+      debug: { rawEntry, configEntry },
     });
   } catch (error) {
     console.error('Error fetching Fathom config:', error);

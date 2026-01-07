@@ -100,6 +100,9 @@ export default function MeetingIntegrationsPage() {
         if (response.ok) {
           const data = await response.json();
           console.log('loadConfig: API response:', data);
+          if (data.debug) {
+            console.log('loadConfig: DEBUG - Raw Strapi data:', data.debug);
+          }
           
           if (data.config) {
             console.log('loadConfig: Config found, connected:', data.connected);
