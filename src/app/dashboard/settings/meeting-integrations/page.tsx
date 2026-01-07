@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import {
-  IconBrain,
   IconCheck,
   IconCopy,
   IconExternalLink,
@@ -22,6 +22,18 @@ import {
   IconArrowLeft,
 } from '@tabler/icons-react';
 import Link from 'next/link';
+
+// Composant pour le logo Fathom
+const FathomLogo = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
+  <Image
+    src="https://icons.duckduckgo.com/ip3/fathom.video.ico"
+    alt="Fathom AI"
+    width={size}
+    height={size}
+    className={`rounded ${className}`}
+    unoptimized
+  />
+);
 
 interface FathomConfig {
   webhook_secret: string;
@@ -164,7 +176,7 @@ export default function MeetingIntegrationsPage() {
       title: t('fathom_step1_title') || 'Créer un compte Fathom',
       description: t('fathom_step1_desc') || 'Inscrivez-vous sur Fathom AI et obtenez votre clé API dans les paramètres.',
       completed: !!config.api_key,
-      externalLink: 'https://fathom.video/settings/api',
+      externalLink: 'https://fathom.video/customize#api-access-header',
       actionLabel: t('open_fathom') || 'Ouvrir Fathom',
     },
     {
@@ -172,7 +184,7 @@ export default function MeetingIntegrationsPage() {
       title: t('fathom_step2_title') || 'Configurer le webhook',
       description: t('fathom_step2_desc') || 'Dans Fathom, ajoutez un webhook avec l\'URL ci-dessous et copiez le secret généré.',
       completed: !!config.webhook_secret,
-      externalLink: 'https://fathom.video/settings/api',
+      externalLink: 'https://developers.fathom.ai/webhooks',
       actionLabel: t('configure_webhook') || 'Configurer webhook',
     },
     {
@@ -218,7 +230,7 @@ export default function MeetingIntegrationsPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-              <IconBrain className="w-7 h-7 text-accent" />
+              <FathomLogo size={28} />
               {t('fathom_ai') || 'Fathom AI - Notes de réunion'}
             </h1>
             <p className="text-muted text-sm mt-1">

@@ -18,10 +18,10 @@ import {
   IconCheck,
   IconBell,
   IconBellOff,
-  IconBrain,
   IconNotes,
   IconLoader2,
 } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -1039,7 +1039,14 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
                     {checkingFathom ? (
                       <IconLoader2 className="w-5 h-5 text-accent animate-spin" />
                     ) : (
-                      <IconBrain className={`w-5 h-5 ${noteMode === 'fathom' && fathomConfigured ? 'text-success' : 'text-purple-500'}`} />
+                      <Image
+                        src="https://icons.duckduckgo.com/ip3/fathom.video.ico"
+                        alt="Fathom AI"
+                        width={20}
+                        height={20}
+                        className="rounded"
+                        unoptimized
+                      />
                     )}
                     <span className={`text-sm font-medium ${noteMode === 'fathom' && fathomConfigured ? 'text-success' : 'text-secondary'}`}>
                       Fathom AI

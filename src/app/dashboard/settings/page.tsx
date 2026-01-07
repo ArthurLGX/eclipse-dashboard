@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useTheme } from '@/app/context/ThemeContext';
 import { useSidebar, CONFIGURABLE_LINKS, SidebarLinkId } from '@/app/context/SidebarContext';
@@ -610,8 +611,15 @@ export default function SettingsPage() {
               className="block p-4 rounded-xl border border-default hover:border-accent/50 hover:bg-accent/5 transition-all group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
-                  <IconBrain className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm border border-default">
+                  <Image
+                    src="https://icons.duckduckgo.com/ip3/fathom.video.ico"
+                    alt="Fathom AI"
+                    width={32}
+                    height={32}
+                    className="rounded"
+                    unoptimized
+                  />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-primary group-hover:text-accent transition-colors">
