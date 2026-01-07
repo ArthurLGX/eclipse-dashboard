@@ -567,7 +567,19 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
   );
 }
 
-// Composant Gantt simplifié pour la vue publique
+// Couleurs par défaut pour les groupes de tâches
+const DEFAULT_TASK_COLORS = [
+  '#7c3aed', // Violet
+  '#3b82f6', // Bleu
+  '#10b981', // Vert
+  '#f59e0b', // Orange
+  '#ef4444', // Rouge
+  '#ec4899', // Rose
+  '#06b6d4', // Cyan
+  '#8b5cf6', // Indigo
+];
+
+// Composant Gantt style Gamma pour la vue publique
 function PublicGanttView({ tasks, projectName, taskStatusOptions }: { 
   tasks: ProjectTask[]; 
   projectName: string;
@@ -579,6 +591,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportMode, setExportMode] = useState<'light' | 'dark'>('light');
   const [exportFileName, setExportFileName] = useState(`gantt-${projectName.replace(/\s+/g, '-').toLowerCase()}`);
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
   const normalizeDate = useCallback((date: Date): Date => {
     const normalized = new Date(date);
@@ -586,16 +599,58 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     return normalized;
   }, []);
 
-  const getISOWeekNumber = useCallback((date: Date): number => {
-    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
-  }, []);
-
   const today = useMemo(() => normalizeDate(new Date()), [normalizeDate]);
   const tasksWithDates = useMemo(() => tasks.filter(task => task.start_date || task.due_date), [tasks]);
+
+  // Grouper les tâches par couleur
+  const taskGroups = useMemo(() => {
+    const groups: { color: string; tasks: ProjectTask[] }[] = [];
+    const colorMap = new Map<string, ProjectTask[]>();
+    
+    // Séparer les tâches principales des sous-tâches
+    const mainTasks = tasks.filter(t => !t.parent_task);
+    
+    mainTasks.forEach((task, index) => {
+      const color = task.color || DEFAULT_TASK_COLORS[index % DEFAULT_TASK_COLORS.length];
+      if (!colorMap.has(color)) {
+        colorMap.set(color, []);
+      }
+      colorMap.get(color)!.push(task);
+    });
+    
+    colorMap.forEach((groupTasks, color) => {
+      groups.push({ color, tasks: groupTasks });
+    });
+    
+    return groups;
+  }, [tasks]);
+
+  // Générer un nom de couleur lisible
+  const getColorName = useCallback((color: string) => {
+    const colorNames: Record<string, string> = {
+      '#7c3aed': 'Violet',
+      '#3b82f6': 'Bleu',
+      '#10b981': 'Vert',
+      '#f59e0b': 'Orange',
+      '#ef4444': 'Rouge',
+      '#ec4899': 'Rose',
+      '#06b6d4': 'Cyan',
+      '#8b5cf6': 'Indigo',
+    };
+    return colorNames[color] || t('group') || 'Groupe';
+  }, [t]);
+
+  const toggleGroup = useCallback((color: string) => {
+    setCollapsedGroups(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(color)) {
+        newSet.delete(color);
+      } else {
+        newSet.add(color);
+      }
+      return newSet;
+    });
+  }, []);
 
   const ganttData = useMemo(() => {
     if (tasksWithDates.length === 0) return null;
@@ -622,22 +677,6 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
       dayHeaders.push(normalizeDate(date));
     }
 
-    // Grouper par semaines
-    const weeks: { start: Date; days: Date[] }[] = [];
-    let currentWeek: Date[] = [];
-    let weekStart = dayHeaders[0];
-    dayHeaders.forEach((date, i) => {
-      if (date.getDay() === 1 && currentWeek.length > 0) {
-        weeks.push({ start: weekStart, days: currentWeek });
-        currentWeek = [];
-        weekStart = date;
-      }
-      currentWeek.push(date);
-      if (i === dayHeaders.length - 1) {
-        weeks.push({ start: weekStart, days: currentWeek });
-      }
-    });
-
     // Grouper par mois
     const months: { month: number; year: number; label: string; days: number }[] = [];
     let currentMonth = -1;
@@ -657,7 +696,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
 
     const todayIndex = dayHeaders.findIndex(d => d.getTime() === today.getTime());
 
-    return { minDate, totalDays, dayHeaders, weeks, months, todayIndex };
+    return { minDate, totalDays, dayHeaders, months, todayIndex };
   }, [tasksWithDates, today, normalizeDate]);
 
   const getTaskPosition = useCallback((task: ProjectTask) => {
@@ -676,16 +715,25 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     return date.getTime() === today.getTime();
   }, [today]);
 
-  const getStatusColor = useCallback((status: TaskStatus) => {
-    switch (status) {
-      case 'completed': return 'bg-accent';
-      case 'in_progress': return 'bg-blue-500';
-      case 'cancelled': return 'bg-red-500/50';
-      default: return 'bg-secondary';
-    }
+  const formatDateRange = useCallback((startDate?: string, dueDate?: string) => {
+    if (!startDate && !dueDate) return '—';
+    const start = startDate ? new Date(startDate) : null;
+    const end = dueDate ? new Date(dueDate) : null;
+    const formatDate = (d: Date) => `${d.getDate()}/${d.getMonth() + 1}`;
+    if (start && end) return `${formatDate(start)} - ${formatDate(end)}`;
+    if (start) return formatDate(start);
+    if (end) return formatDate(end);
+    return '—';
   }, []);
 
-  // Fonction pour générer le HTML d'export avec couleurs HEX (compatibles html2pdf)
+  const getDurationDays = useCallback((startDate?: string, dueDate?: string) => {
+    if (!startDate || !dueDate) return 0;
+    const start = new Date(startDate);
+    const end = new Date(dueDate);
+    return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+  }, []);
+
+  // Fonction pour générer le HTML d'export
   const generateExportHTML = useCallback((mode: 'light' | 'dark') => {
     if (!ganttData) {
       return { html: '', colors: { bg: '#ffffff' } };
@@ -701,12 +749,6 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
       textPrimary: '#111827',
       textSecondary: '#374151',
       textMuted: '#6b7280',
-      blue: '#3b82f6',
-      green: '#22c55e',
-      red: '#ef4444',
-      gray: '#9ca3af',
-      accent: '#7c3aed',
-      accentLight: '#ede9fe',
       headerBg: '#f3f4f6',
       headerText: '#374151',
     };
@@ -719,12 +761,6 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
       textPrimary: '#f9fafb',
       textSecondary: '#e5e7eb',
       textMuted: '#9ca3af',
-      blue: '#60a5fa',
-      green: '#4ade80',
-      red: '#f87171',
-      gray: '#6b7280',
-      accent: '#a78bfa',
-      accentLight: '#4c1d95',
       headerBg: '#1f2937',
       headerText: '#e5e7eb',
     };
@@ -732,39 +768,35 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     const colors = mode === 'dark' ? darkColors : lightColors;
 
     let tasksHTML = '';
-    tasks.forEach((task) => {
-      const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
-      const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
-      const startOffset = Math.round((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
-      const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
-      const leftPercent = Math.max(0, (startOffset / totalDays) * 100);
-      const widthPercent = (duration / totalDays) * 100;
-      
-      const statusColor = task.task_status === 'completed' ? colors.green 
-        : task.task_status === 'in_progress' ? colors.blue 
-        : task.task_status === 'cancelled' ? colors.red 
-        : colors.gray;
-      
-      const statusLabel = taskStatusOptions.find(o => o.value === task.task_status)?.label || task.task_status;
-      
-      tasksHTML += `
-        <tr style="border-bottom: 1px solid ${colors.border};">
-          <td style="padding: 12px; width: 200px; font-size: 13px; background: ${colors.bg};">
-            <div style="font-weight: 600; color: ${colors.textPrimary};">${task.title}</div>
-            <div style="font-size: 11px; color: ${colors.textMuted}; margin-top: 2px;">${statusLabel}</div>
-          </td>
-          <td style="padding: 8px 0; position: relative; background: ${colors.bg};">
-            <div style="position: relative; height: 24px;">
-              <div style="position: absolute; left: ${leftPercent}%; width: ${widthPercent}%; min-width: 40px; height: 24px; background: ${statusColor}; border-radius: 4px; display: table; table-layout: fixed;">
-                <span style="display: table-cell; vertical-align: middle; text-align: center; color: #ffffff; font-size: 11px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.3); white-space: nowrap; padding: 0 4px;">${task.progress || 0}%</span>
+    taskGroups.forEach(group => {
+      group.tasks.forEach((task) => {
+        const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
+        const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
+        const startOffset = Math.round((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
+        const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+        const leftPercent = Math.max(0, (startOffset / totalDays) * 100);
+        const widthPercent = (duration / totalDays) * 100;
+        
+        tasksHTML += `
+          <tr style="border-bottom: 1px solid ${colors.border};">
+            <td style="padding: 12px; width: 200px; font-size: 13px; background: ${colors.bg};">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background: ${group.color};"></div>
+                <span style="font-weight: 600; color: ${colors.textPrimary};">${task.title}</span>
               </div>
-            </div>
-          </td>
-        </tr>
-      `;
+            </td>
+            <td style="padding: 8px 0; position: relative; background: ${colors.bg};">
+              <div style="position: relative; height: 24px;">
+                <div style="position: absolute; left: ${leftPercent}%; width: ${widthPercent}%; min-width: 40px; height: 24px; background: ${group.color}; border-radius: 4px; display: table; table-layout: fixed;">
+                  <span style="display: table-cell; vertical-align: middle; text-align: center; color: #ffffff; font-size: 11px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.3); white-space: nowrap; padding: 0 4px;">${task.progress || 0}%</span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
     });
 
-    // Générer les en-têtes de mois pour l'export
     const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
     const monthsForExport: { label: string; days: number }[] = [];
     let currentMonthExport = -1;
@@ -790,8 +822,8 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     dayHeaders.forEach((day) => {
       const isWeekend = day.getDay() === 0 || day.getDay() === 6;
       const isTodayDate = day.getTime() === today.getTime();
-      const bgColor = isTodayDate ? colors.accentLight : isWeekend ? colors.bgTertiary : colors.headerBg;
-      const textColor = isTodayDate ? colors.accent : colors.headerText;
+      const bgColor = isTodayDate ? '#fee2e2' : isWeekend ? colors.bgTertiary : colors.headerBg;
+      const textColor = isTodayDate ? '#ef4444' : colors.headerText;
       datesHTML += `<th style="padding: 4px 2px; text-align: center; font-size: 11px; font-weight: ${isTodayDate ? '700' : '500'}; background: ${bgColor}; color: ${textColor}; min-width: 20px; border-left: 1px solid ${colors.border};">${day.getDate()}</th>`;
     });
 
@@ -818,27 +850,20 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
             </thead>
             <tbody>${tasksHTML}</tbody>
           </table>
-          <div style="margin-top: 16px; display: flex; gap: 20px; font-size: 12px;">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <div style="width: 14px; height: 14px; background: ${colors.blue}; border-radius: 3px;"></div>
-              <span style="color: ${colors.textSecondary}; font-weight: 500;">${t('in_progress') || 'En cours'}</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <div style="width: 14px; height: 14px; background: ${colors.green}; border-radius: 3px;"></div>
-              <span style="color: ${colors.textSecondary}; font-weight: 500;">${t('completed') || 'Terminé'}</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <div style="width: 14px; height: 14px; background: ${colors.gray}; border-radius: 3px;"></div>
-              <span style="color: ${colors.textSecondary}; font-weight: 500;">${t('todo') || 'À faire'}</span>
-            </div>
+          <div style="margin-top: 16px; display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px;">
+            ${taskGroups.map(g => `
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <div style="width: 12px; height: 12px; background: ${g.color}; border-radius: 3px;"></div>
+                <span style="color: ${colors.textSecondary}; font-weight: 500;">${getColorName(g.color)} (${g.tasks.length})</span>
+              </div>
+            `).join('')}
           </div>
         </div>
       `,
       colors
     };
-  }, [ganttData, tasks, taskStatusOptions, today, projectName, t, normalizeDate]);
+  }, [ganttData, taskGroups, today, projectName, t, normalizeDate, getColorName]);
 
-  // Fonction d'export PDF
   const handleExportPDF = useCallback(async (mode: 'light' | 'dark') => {
     setIsExporting(true);
     setShowExportModal(false);
@@ -873,7 +898,6 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     }
   }, [generateExportHTML, exportFileName]);
 
-  // Générer l'aperçu HTML en temps réel
   const previewHTML = useMemo(() => {
     return generateExportHTML(exportMode).html;
   }, [generateExportHTML, exportMode]);
@@ -887,7 +911,7 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
     );
   }
 
-  const { dayHeaders, weeks, months, todayIndex, totalDays } = ganttData;
+  const { dayHeaders, months, todayIndex } = ganttData;
 
   return (
     <div className="space-y-2">
@@ -895,7 +919,6 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
       {showExportModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-card border border-default rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col">
-            {/* Header */}
             <div className="p-4 border-b border-default flex items-center justify-between">
               <h3 className="text-lg font-semibold text-primary">
                 {t('export_pdf') || 'Export PDF'}
@@ -908,11 +931,8 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
               </button>
             </div>
 
-            {/* Content */}
             <div className="flex-1 overflow-hidden flex flex-col sm:flex-row">
-              {/* Options panel */}
               <div className="w-full sm:w-72 flex-shrink-0 p-4 border-b sm:border-b-0 sm:border-r border-default space-y-4 overflow-y-auto">
-                {/* Nom du fichier */}
                 <div>
                   <label className="block text-sm font-medium text-primary mb-2">
                     {t('file_name') || 'Nom du fichier'}
@@ -928,7 +948,6 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
                   </div>
                 </div>
 
-                {/* Thème */}
                 <div>
                   <label className="block text-sm font-medium text-primary mb-2">
                     {t('choose_export_theme') || 'Thème'}
@@ -967,7 +986,6 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="pt-4 space-y-2">
                   <button
                     onClick={() => handleExportPDF(exportMode)}
@@ -989,7 +1007,6 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
                 </div>
               </div>
 
-              {/* Preview panel */}
               <div className="flex-1 p-4 overflow-auto bg-muted">
                 <div 
                   className="rounded-lg shadow-lg overflow-hidden transform scale-75 origin-top-left"
@@ -1013,136 +1030,260 @@ function PublicGanttView({ tasks, projectName, taskStatusOptions }: {
         </button>
       </div>
 
-      <div className="overflow-x-auto card" ref={ganttRef}>
-        <div style={{ minWidth: `${Math.max(800, 200 + dayHeaders.length * 32)}px` }}>
-          {/* Header */}
-          <div className="flex border-b border-default sticky top-0 z-10 bg-card">
-            {/* Colonne titre sticky */}
-            <div className="w-48 flex-shrink-0 bg-card sticky left-0 z-20 border-r border-default">
-              <div className="py-2 px-3 text-xs font-medium text-secondary uppercase tracking-wider h-full flex items-end">
-                {t('task')}
-              </div>
-            </div>
-            {/* Colonnes dates */}
-            <div className="flex-1 flex flex-col">
-              {/* Ligne des mois */}
-              <div className="flex border-b border-default">
+      {/* Design Gantt style Gamma - Structure unifiée */}
+      <div className="bg-card rounded-xl border border-default overflow-hidden" ref={ganttRef}>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse" style={{ minWidth: `${450 + dayHeaders.length * 32}px` }}>
+            {/* En-tête */}
+            <thead className="sticky top-0 z-20">
+              <tr>
+                {/* Colonnes fixes */}
+                <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
+                  {t('task_name') || 'Tâche'}
+                </th>
+                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
+                  {t('due_range') || 'Échéance'}
+                </th>
+                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                  {t('duration') || 'Durée'}
+                </th>
+                {/* Timeline header - Mois */}
                 {months.map((month, i) => (
-                  <div 
-                    key={i} 
-                    style={{ flex: month.days, minWidth: `${month.days * 32}px` }}
-                    className="text-xs font-semibold text-primary text-center py-1.5 bg-muted/50 border-l border-default first:border-l-0"
+                  <th 
+                    key={i}
+                    colSpan={month.days}
+                    className="text-center py-2 text-xs font-semibold text-primary bg-muted/10 border-b border-muted/30"
                   >
                     {month.label}
-                  </div>
+                  </th>
                 ))}
-              </div>
-              {/* Ligne des semaines */}
-              <div className="flex border-b border-default">
-                {weeks.map((week, i) => (
-                  <div 
-                    key={i} 
-                    style={{ flex: week.days.length, minWidth: `${week.days.length * 32}px` }} 
-                    className="text-xs text-muted text-center py-1 border-l border-default first:border-l-0"
-                  >
-                    {t('week_short') || 'Sem.'} {getISOWeekNumber(week.days[0])}
-                  </div>
-                ))}
-              </div>
-              {/* Ligne des jours */}
-              <div className="flex">
-                {dayHeaders.map((day, i) => (
-                  <div 
-                    key={i}
-                    style={{ width: '32px', minWidth: '32px' }}
-                    className={`text-center py-1 text-xs border-l border-default first:border-l-0 ${
+              </tr>
+              <tr>
+                <th className="sticky left-0 z-30 bg-card h-7 border-b border-muted/20" />
+                <th className="sticky left-[260px] z-30 bg-card border-b border-muted/20" />
+                <th className="sticky left-[350px] z-30 bg-card border-b border-muted/20 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" />
+                {/* Timeline header - Jours */}
+                {dayHeaders.map((day, j) => (
+                  <th 
+                    key={j}
+                    className={`text-center py-1.5 text-[10px] font-medium w-8 min-w-[32px] border-b border-muted/20 ${
                       isToday(day) 
-                        ? 'bg-accent/20 text-accent font-medium' 
+                        ? 'bg-red-500/15 text-red-500 font-bold' 
                         : day.getDay() === 0 || day.getDay() === 6
-                          ? 'text-muted bg-muted/30'
-                          : 'text-secondary'
+                          ? 'text-muted/60 bg-muted/5'
+                          : 'text-muted'
                     }`}
                   >
                     {day.getDate()}
-                  </div>
+                  </th>
                 ))}
-              </div>
-            </div>
-          </div>
+              </tr>
+            </thead>
 
-          {/* Tasks */}
-          <div className="relative">
-            {todayIndex >= 0 && (
-              <div 
-                className="absolute w-0.5 bg-accent z-20 pointer-events-none"
-                style={{
-                  left: `calc(192px + ((100% - 192px) * ${todayIndex} / ${dayHeaders.length}) + ((100% - 192px) / ${dayHeaders.length} / 2))`,
-                  top: 0,
-                  bottom: 0,
-                }}
-              />
-            )}
-
-            {tasks.map((task, index) => {
-              const { startOffset, duration } = getTaskPosition(task);
-              const widthPercent = (duration / totalDays) * 100;
-              const leftPercent = (startOffset / totalDays) * 100;
-
-              return (
-                <div 
-                  key={task.documentId || index}
-                  className="flex border-b border-muted hover:bg-hover group"
-                >
-                  {/* Titre de la tâche - sticky */}
-                  <div className="w-48 flex-shrink-0 py-3 px-3 bg-card sticky left-0 z-10 border-r border-default group-hover:bg-hover">
-                    <p className="text-sm text-primary truncate">{task.title}</p>
-                    <span className={`text-xs ${
-                      task.task_status === 'completed' ? 'text-success' :
-                      task.task_status === 'in_progress' ? 'text-info' : 'text-muted'
-                    }`}>
-                      {taskStatusOptions.find(o => o.value === task.task_status)?.label}
-                    </span>
-                  </div>
-
-                  <div className="flex-1 relative py-2" style={{ minWidth: `${dayHeaders.length * 32}px` }}>
-                    <div className="absolute inset-0 flex">
-                      {dayHeaders.map((day, i) => (
-                        <div 
-                          key={i}
-                          style={{ width: '32px', minWidth: '32px' }}
-                          className={`border-l border-muted first:border-l-0 ${
-                            isToday(day) ? 'bg-accent/10' : ''
-                          } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/30' : ''}`}
-                        />
-                      ))}
-                    </div>
-
-                    <div
-                      className="absolute top-1/2 -translate-y-1/2 h-6 rounded transition-all hover:h-7"
-                      style={{
-                        left: `${leftPercent}%`,
-                        width: `${widthPercent}%`,
-                        minWidth: '40px',
-                      }}
+            <tbody>
+              {taskGroups.map((group) => {
+                const isExpanded = !collapsedGroups.has(group.color);
+                const groupName = getColorName(group.color);
+                
+                return (
+                  <React.Fragment key={group.color}>
+                    {/* En-tête du groupe */}
+                    <tr 
+                      className="cursor-pointer hover:bg-muted/10 transition-colors"
+                      onClick={() => toggleGroup(group.color)}
                     >
-                      <div className={`w-full h-full ${getStatusColor(task.task_status)} rounded relative overflow-hidden`}>
-                        <div 
-                          className="absolute inset-y-0 left-0 bg-white/20"
-                          style={{ width: `${task.progress || 0}%` }}
-                        />
-                        <span className="absolute inset-0 flex items-center justify-center text-xs text-white font-medium px-2 truncate">
-                          {task.progress || 0}%
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                      <td className="py-2.5 px-4 sticky left-0 z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
+                          <span className="font-medium text-primary text-sm">{groupName}</span>
+                          <span className="text-xs text-muted">({group.tasks.length})</span>
+                          {isExpanded ? <IconChevronUp className="w-4 h-4 text-muted ml-auto" /> : <IconChevronDown className="w-4 h-4 text-muted ml-auto" />}
+                        </div>
+                      </td>
+                      <td className="sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
+                      <td className="sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
+                      <td colSpan={dayHeaders.length} className="h-[40px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                        <div className="relative w-full h-full">
+                          <div className="absolute inset-0 flex">
+                            {dayHeaders.map((day, i) => (
+                              <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                            ))}
+                          </div>
+                          {todayIndex >= 0 && (
+                            <div 
+                              className="absolute top-0 bottom-0 w-0.5 bg-red-500"
+                              style={{ left: `${(todayIndex * 32) + 16}px` }}
+                            />
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Tâches du groupe */}
+                    {isExpanded && group.tasks.map((task) => {
+                      const { startOffset, duration } = getTaskPosition(task);
+                      const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+                      const subtaskCount = task.subtasks?.length || 0;
+                      const completedSubtasks = task.subtasks?.filter(s => s.task_status === 'completed').length || 0;
+
+                      return (
+                        <React.Fragment key={task.documentId}>
+                          {/* Ligne de tâche principale */}
+                          <tr className="hover:bg-muted/5 group h-[44px]">
+                            {/* Task Name */}
+                            <td className="py-2 px-4 sticky left-0 z-20 bg-card group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                              <div className="flex items-center gap-2">
+                                <div 
+                                  className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                    task.task_status === 'completed' ? 'border-transparent' : ''
+                                  }`}
+                                  style={{ 
+                                    backgroundColor: task.task_status === 'completed' ? group.color : 'transparent',
+                                    borderColor: task.task_status !== 'completed' ? group.color + '50' : undefined
+                                  }}
+                                >
+                                  {task.task_status === 'completed' && <IconCheck className="w-2.5 h-2.5 text-white" />}
+                                </div>
+                                <span className={`text-sm truncate max-w-[160px] ${task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
+                                  {task.title}
+                                </span>
+                                {hasSubtasks && (
+                                  <span className="flex items-center gap-0.5 text-[10px] text-muted bg-muted/30 px-1 py-0.5 rounded">
+                                    {completedSubtasks}/{subtaskCount}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            {/* Due Range */}
+                            <td className="py-2 px-1 text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                              <span 
+                                className="text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
+                                style={{ backgroundColor: group.color + '20', color: group.color }}
+                              >
+                                {formatDateRange(task.start_date, task.due_date)}
+                              </span>
+                            </td>
+                            {/* Duration */}
+                            <td className="py-2 px-1 text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted/5 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                              <span className="text-xs text-muted whitespace-nowrap">
+                                {getDurationDays(task.start_date, task.due_date)} {t('days_short') || 'j'}
+                              </span>
+                            </td>
+                            {/* Timeline - Barre de Gantt */}
+                            <td colSpan={dayHeaders.length} className="h-[44px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                              <div className="relative w-full h-full">
+                                <div className="absolute inset-0 flex">
+                                  {dayHeaders.map((day, i) => (
+                                    <div 
+                                      key={i} 
+                                      className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/3' : ''}`} 
+                                    />
+                                  ))}
+                                </div>
+                                {todayIndex >= 0 && (
+                                  <div 
+                                    className="absolute top-0 bottom-0 w-0.5 bg-red-500"
+                                    style={{ left: `${(todayIndex * 32) + 16}px` }}
+                                  />
+                                )}
+                                <div
+                                  className="absolute top-1/2 -translate-y-1/2 h-7 rounded-md shadow-sm"
+                                  style={{
+                                    left: `${startOffset * 32}px`,
+                                    width: `${Math.max(duration * 32, 32)}px`,
+                                    backgroundColor: task.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
+                                  }}
+                                >
+                                  <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${task.progress || 0}%` }} />
+                                  <div className="relative h-full flex items-center px-2 overflow-hidden">
+                                    <span className="text-[11px] text-white font-medium truncate">
+                                      {duration > 3 ? task.title : ''}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+
+                          {/* Sous-tâches */}
+                          {hasSubtasks && task.subtasks?.map(subtask => {
+                            const subPos = getTaskPosition(subtask);
+                            return (
+                              <tr 
+                                key={subtask.documentId}
+                                className="hover:bg-muted/5 h-[34px]"
+                              >
+                                <td className="py-1 pl-10 pr-4 sticky left-0 z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                  <div className="flex items-center gap-2">
+                                    <div 
+                                      className="w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                                      style={{ 
+                                        backgroundColor: subtask.task_status === 'completed' ? group.color : 'transparent',
+                                        borderColor: subtask.task_status !== 'completed' ? group.color + '40' : 'transparent'
+                                      }}
+                                    >
+                                      {subtask.task_status === 'completed' && <IconCheck className="w-2 h-2 text-white" />}
+                                    </div>
+                                    <span className={`text-xs truncate max-w-[140px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-secondary'}`}>
+                                      {subtask.title}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="py-1 px-1 text-center sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                  <span className="text-[9px] text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
+                                </td>
+                                <td className="py-1 px-1 text-center sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                                  <span className="text-[9px] text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'j'}</span>
+                                </td>
+                                <td colSpan={dayHeaders.length} className="h-[34px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                  <div className="relative w-full h-full">
+                                    <div className="absolute inset-0 flex">
+                                      {dayHeaders.map((day, i) => (
+                                        <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                                      ))}
+                                    </div>
+                                    {todayIndex >= 0 && (
+                                      <div className="absolute top-0 bottom-0 w-0.5 bg-red-500" style={{ left: `${(todayIndex * 32) + 16}px` }} />
+                                    )}
+                                    <div
+                                      className="absolute top-1/2 -translate-y-1/2 h-4 rounded opacity-70"
+                                      style={{
+                                        left: `${subPos.startOffset * 32}px`,
+                                        width: `${Math.max(subPos.duration * 32, 24)}px`,
+                                        backgroundColor: subtask.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
+                                      }}
+                                    >
+                                      <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l" style={{ width: `${subtask.progress || 0}%` }} />
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </React.Fragment>
+                      );
+                    })}
+                  </React.Fragment>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
-      </div>  
-      
+
+      {/* Légende */}
+      <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-muted">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-red-500" />
+          <span>{t('today') || "Aujourd'hui"}</span>
+        </div>
+        {taskGroups.map(group => (
+          <div key={group.color} className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
+            <span>{getColorName(group.color)} ({group.tasks.length})</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
