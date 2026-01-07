@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useModalFocus } from '@/hooks/useModalFocus';
 import {
   IconCalendar,
   IconPlus,
@@ -601,6 +602,7 @@ interface EventModalProps {
 
 function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, onSave }: EventModalProps) {
   const { t } = useLanguage();
+  const modalRef = useModalFocus(isOpen);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -695,9 +697,11 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, on
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <motion.div
+        ref={modalRef}
+        tabIndex={-1}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-y-auto outline-none"
       >
         <div className="p-6 border-b border-default">
           <h2 className="text-lg font-semibold text-primary">

@@ -1394,7 +1394,7 @@ const translations = {
     no_tracking_data_desc: 'Envoyez des emails et suivez les ouvertures et clics',
     opens: 'Ouvertures',
     clicks: 'Clics',
-    meetings: "Meetings",
+    meetings: "Réunions",
     
     // Email detail modal
     delivered: 'Délivré',
