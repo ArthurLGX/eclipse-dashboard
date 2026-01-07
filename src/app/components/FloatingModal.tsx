@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useModalFocus } from '@/hooks/useModalFocus';
 
 interface FloatingModalProps {
   isOpen: boolean;
@@ -14,6 +15,8 @@ export default function FloatingModal({
   children,
   maxWidth = 'max-w-2xl',
 }: FloatingModalProps) {
+  const modalRef = useModalFocus(isOpen);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -25,11 +28,13 @@ export default function FloatingModal({
           onClick={onClose}
         >
           <motion.div
+            ref={modalRef}
+            tabIndex={-1}
             initial={{ scale: 0.95, opacity: 0, y: -20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: -20 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className={`bg-card border border-default rounded-2xl p-6 w-full my-auto max-h-[90vh] overflow-y-auto ${maxWidth}`}
+            className={`bg-card border border-default rounded-2xl p-6 w-full my-auto max-h-[90vh] overflow-y-auto outline-none ${maxWidth}`}
             onClick={e => e.stopPropagation()}
           >
             {children}

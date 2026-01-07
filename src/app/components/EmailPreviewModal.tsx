@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useModalFocus } from '@/hooks/useModalFocus';
 import DOMPurify from 'dompurify';
 import {
   IconMail,
@@ -112,6 +113,8 @@ export default function EmailPreviewModal({
   primaryColor = '#8B9DC3',
   translations: t,
 }: EmailPreviewModalProps) {
+  const modalRef = useModalFocus(isOpen);
+  
   // Déterminer la bannière à utiliser (priorité : prop > signature)
   const effectiveBannerUrl = bannerUrl || signatureData?.banner_url;
   const effectiveBannerLink = bannerLink || signatureData?.banner_link;
@@ -136,10 +139,12 @@ export default function EmailPreviewModal({
           onClick={onClose}
         >
           <motion.div
+            ref={modalRef}
+            tabIndex={-1}
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Mailbox Header */}

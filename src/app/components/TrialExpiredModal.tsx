@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useModalFocus } from '@/hooks/useModalFocus';
 import { useRouter } from 'next/navigation';
 import { fetchPlans, createSubscription } from '@/lib/api';
 import { useAuth } from '@/app/context/AuthContext';
@@ -33,6 +34,7 @@ export default function TrialExpiredModal({
   const router = useRouter();
   const { user, triggerSubscriptionUpdate } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const modalRef = useModalFocus(isOpen);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showFreePlanModal, setShowFreePlanModal] = useState(false);
@@ -120,11 +122,13 @@ export default function TrialExpiredModal({
           onClick={handleClose}
         >
           <motion.div
+            ref={modalRef}
+            tabIndex={-1}
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="bg-card border border-default rounded-xl p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-card border border-default rounded-xl p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto outline-none"
             onClick={e => e.stopPropagation()}
           >
             {/* En-tête */}
