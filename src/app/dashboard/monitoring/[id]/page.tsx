@@ -29,18 +29,18 @@ import { fetchMonitoredSiteById, fetchMonitoringLogs, deleteMonitoredSite } from
 import { getFaviconUrl } from '@/lib/favicon';
 import type { MonitoredSite, SiteStatus } from '@/types';
 
-const STATUS_CONFIG: Record<SiteStatus, { bg: string; text: string; label: string; icon: React.ReactNode }> = {
-  up: { bg: 'bg-success-light', text: 'text-success', label: 'En ligne', icon: <IconCheck className="w-4 h-4" /> },
-  down: { bg: 'bg-error-light', text: 'text-error', label: 'Hors ligne', icon: <IconX className="w-4 h-4" /> },
-  slow: { bg: 'bg-warning-light', text: 'text-warning', label: 'Lent', icon: <IconClock className="w-4 h-4" /> },
-  unknown: { bg: 'bg-muted-light', text: 'text-muted', label: 'Inconnu', icon: <IconAlertTriangle className="w-4 h-4" /> },
+const STATUS_CONFIG: Record<SiteStatus, { bg: string; text: string; labelKey: string; icon: React.ReactNode }> = {
+  up: { bg: 'bg-success-light', text: 'text-success', labelKey: 'online', icon: <IconCheck className="w-4 h-4" /> },
+  down: { bg: 'bg-error-light', text: 'text-error', labelKey: 'offline', icon: <IconX className="w-4 h-4" /> },
+  slow: { bg: 'bg-warning-light', text: 'text-warning', labelKey: 'slow', icon: <IconClock className="w-4 h-4" /> },
+  unknown: { bg: 'bg-muted-light', text: 'text-muted', labelKey: 'unknown', icon: <IconAlertTriangle className="w-4 h-4" /> },
 };
 
-const SITE_TYPE_CONFIG = {
-  frontend: { icon: <IconDeviceDesktop className="w-4 h-4" />, label: 'Frontend', color: 'text-info' },
-  backend: { icon: <IconServer className="w-4 h-4" />, label: 'Backend', color: 'text-accent' },
-  api: { icon: <IconApi className="w-4 h-4" />, label: 'API', color: 'text-warning' },
-  other: { icon: <IconWorld className="w-4 h-4" />, label: 'Autre', color: 'text-muted' },
+const SITE_TYPE_CONFIG: Record<string, { icon: React.ReactNode; labelKey: string; color: string }> = {
+  frontend: { icon: <IconDeviceDesktop className="w-4 h-4" />, labelKey: 'frontend', color: 'text-info' },
+  backend: { icon: <IconServer className="w-4 h-4" />, labelKey: 'backend', color: 'text-accent' },
+  api: { icon: <IconApi className="w-4 h-4" />, labelKey: 'api', color: 'text-warning' },
+  other: { icon: <IconWorld className="w-4 h-4" />, labelKey: 'other', color: 'text-muted' },
 };
 
 export default function MonitoringDetailPage() {
@@ -134,9 +134,9 @@ export default function MonitoringDetailPage() {
 
   return (
     <ProtectedRoute>
-      <div className="w-full mx-auto flex flex-col gap-4">
+      <div className="w-full mx-auto flex flex-col gap-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-2">
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.push('/dashboard/monitoring')}
@@ -160,7 +160,7 @@ export default function MonitoringDetailPage() {
                 {site.name}
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
                   {statusConfig.icon}
-                  {statusConfig.label}
+                  {t(statusConfig.labelKey) || statusConfig.labelKey}
                 </span>
               </h1>
               <a 
@@ -202,7 +202,7 @@ export default function MonitoringDetailPage() {
         {/* Infos site - Grille compacte */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { label: t('site_type') || 'Type', value: siteTypeConfig.label, icon: siteTypeConfig.icon, color: siteTypeConfig.color },
+            { label: t('site_type') || 'Type', value: t(siteTypeConfig.labelKey) || siteTypeConfig.labelKey, icon: siteTypeConfig.icon, color: siteTypeConfig.color },
             { label: t('check_interval') || 'Intervalle', value: `${site.check_interval} min`, icon: <IconClock className="w-4 h-4" />, color: 'text-info' },
             { label: t('last_response_time') || 'Dernier temps', value: site.last_response_time ? `${site.last_response_time}ms` : '-', icon: <IconRefresh className="w-4 h-4" />, color: 'text-accent' },
             { label: t('last_check') || 'Dernière vérif.', value: site.last_check ? new Date(site.last_check).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '-', icon: <IconCheck className="w-4 h-4" />, color: 'text-success' },

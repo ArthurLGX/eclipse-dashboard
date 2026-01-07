@@ -171,7 +171,7 @@ export default function CalendarIntegrationsPage() {
         className="max-w-4xl mx-auto space-y-6"
       >
         {/* Header */}
-        <div>
+        <div className="pb-4">
           <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
             <IconCalendar className="w-7 h-7 text-accent" />
             {t('calendar_integrations') || 'Intégrations calendrier'}

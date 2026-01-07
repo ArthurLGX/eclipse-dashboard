@@ -277,7 +277,7 @@ export default function CalendarPage() {
         className="space-y-6"
       >
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
             <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
               <IconCalendar className="w-7 h-7 text-accent" />

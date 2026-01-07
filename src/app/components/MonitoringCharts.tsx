@@ -200,11 +200,11 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
     const counts = { up: 0, down: 0, slow: 0 };
     logs.forEach(log => counts[log.status]++);
     return [
-      { name: 'En ligne', value: counts.up, color: themeColors.success },
-      { name: 'Hors ligne', value: counts.down, color: themeColors.danger },
-      { name: 'Lent', value: counts.slow, color: themeColors.warning },
+      { name: t('online') || 'En ligne', value: counts.up, color: themeColors.success },
+      { name: t('offline') || 'Hors ligne', value: counts.down, color: themeColors.danger },
+      { name: t('slow') || 'Lent', value: counts.slow, color: themeColors.warning },
     ].filter(item => item.value > 0);
-  }, [logs, themeColors]);
+  }, [logs, themeColors, t]);
 
   // Distribution des temps de réponse
   const responseDistribution = useMemo(() => {
@@ -234,10 +234,10 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
       .slice(0, 5)
       .map(log => ({
         time: new Date(log.checked_at).toLocaleString('fr-FR'),
-        message: log.error_message || 'Site inaccessible',
+        message: log.error_message || t('site_unavailable') || 'Site inaccessible',
         statusCode: log.status_code,
       }));
-  }, [logs]);
+  }, [logs, t]);
 
   const lightGridColor = `${themeColors.borderDefault}33`;
   const tickColor = themeColors.textMuted;
@@ -362,7 +362,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                     fontSize: '11px',
                   }}
                   labelStyle={{ color: themeColors.textPrimary }}
-                  formatter={(value) => [`${value}ms`, 'Temps']}
+                  formatter={(value) => [`${value}ms`, t('time_label') || 'Temps']}
                 />
                 <Area
                   type="monotone"
@@ -514,7 +514,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                   borderRadius: '8px',
                   fontSize: '11px',
                 }}
-                formatter={(value) => [value, 'Vérifications']}
+                formatter={(value) => [value, t('checks') || 'Vérifications']}
               />
               <Bar 
                 dataKey="count" 
