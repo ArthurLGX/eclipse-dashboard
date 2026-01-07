@@ -48,6 +48,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { BreadCrumb } from '@/app/components/BreadCrumb';
 import { useCurrentUser } from '@/hooks/useApi';
 import NotificationBell from '@/app/components/NotificationBell';
+import TimerIndicator from '@/app/components/TimerIndicator';
 import { useTheme } from '@/app/context/ThemeContext';
 import { useSidebar } from '@/app/context/SidebarContext';
 import SidebarLogo from '@/app/components/SidebarLogo';
@@ -476,6 +477,9 @@ function DashboardLayoutContent({
       
       {/* Onboarding Wizard Modal */}
       <OnboardingWizard />
+      
+      {/* Timer Indicator - Fixed en haut à droite (à côté des notifications) */}
+      <TimerIndicator />
       
       {/* Notification Bell - Fixed en haut à droite */}
       <NotificationBell />
