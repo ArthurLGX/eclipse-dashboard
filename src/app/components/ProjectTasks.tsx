@@ -2162,406 +2162,280 @@ function TaskGanttView({
         </button>
       </div>
 
-      {/* Nouveau design Gantt inspiré de Gamma */}
+      {/* Design Gantt style Gamma - Structure unifiée */}
       <div className="bg-card rounded-xl border border-default overflow-hidden" ref={ganttRef}>
-        <div className="flex">
-          {/* Zone gauche - Liste des tâches (fixe) */}
-          <div className="flex-shrink-0 border-r border-default bg-card" style={{ width: '420px' }}>
-            {/* En-tête colonnes */}
-            <div className="flex border-b border-default bg-muted/30 sticky top-0 z-20">
-              <div className="flex-1 py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider">
-                {t('task_name') || 'Nom de la tâche'}
-              </div>
-              <div className="w-20 py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider text-center border-l border-default">
-                {t('due_range') || 'Période'}
-              </div>
-              <div className="w-16 py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider text-center border-l border-default">
-                {t('duration') || 'Durée'}
-              </div>
-            </div>
+        <div className="overflow-x-auto" ref={timelineRef}>
+          <table className="w-full border-collapse" style={{ minWidth: `${500 + dayHeaders.length * 32}px` }}>
+            {/* En-tête */}
+            <thead className="sticky top-0 z-20 bg-card">
+              <tr className="border-b border-default">
+                {/* Colonnes fixes */}
+                <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider bg-muted/30 sticky left-0 z-30 w-[280px] min-w-[280px]">
+                  {t('task_name') || 'Task Name'}
+                </th>
+                <th className="text-center py-3 px-3 text-xs font-semibold text-muted uppercase tracking-wider bg-muted/30 sticky left-[280px] z-30 w-[100px] min-w-[100px] border-l border-default">
+                  {t('due_range') || 'Due Range'}
+                </th>
+                <th className="text-center py-3 px-3 text-xs font-semibold text-muted uppercase tracking-wider bg-muted/30 sticky left-[380px] z-30 w-[70px] min-w-[70px] border-l border-default">
+                  {t('duration') || 'Duration'}
+                </th>
+                {/* Timeline header - Mois */}
+                {months.map((month, i) => (
+                  <th 
+                    key={i}
+                    colSpan={month.days}
+                    className="text-center py-2 text-xs font-semibold text-primary bg-muted/20 border-l border-default"
+                  >
+                    {month.label}
+                  </th>
+                ))}
+              </tr>
+              <tr className="border-b border-default">
+                <th className="bg-card sticky left-0 z-30" />
+                <th className="bg-card sticky left-[280px] z-30 border-l border-default" />
+                <th className="bg-card sticky left-[380px] z-30 border-l border-default" />
+                {/* Timeline header - Jours */}
+                {dayHeaders.map((day, j) => (
+                  <th 
+                    key={j}
+                    className={`text-center py-1.5 text-[10px] font-medium border-l border-default w-8 min-w-[32px] ${
+                      isToday(day) 
+                        ? 'bg-red-500/20 text-red-500 font-bold' 
+                        : day.getDay() === 0 || day.getDay() === 6
+                          ? 'text-muted bg-muted/10'
+                          : 'text-secondary bg-card'
+                    }`}
+                  >
+                    {day.getDate()}
+                  </th>
+                ))}
+              </tr>
+            </thead>
 
-            {/* Liste des groupes et tâches */}
-            <div className="overflow-y-auto" style={{ maxHeight: 'calc(70vh - 100px)' }}>
+            <tbody>
               {taskGroups.map((group) => {
                 const isExpanded = !collapsedGroups.has(group.color);
                 const groupName = getColorName(group.color);
                 
                 return (
-                  <div key={group.color}>
+                  <React.Fragment key={group.color}>
                     {/* En-tête du groupe */}
-                    <div 
-                      className="flex items-center border-b border-default bg-muted/20 cursor-pointer hover:bg-muted/40 transition-colors"
+                    <tr 
+                      className="border-b border-default bg-muted/10 cursor-pointer hover:bg-muted/20 transition-colors"
                       onClick={() => toggleGroup(group.color)}
                     >
-                      <div className="flex-1 py-2.5 px-4 flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded"
-                          style={{ backgroundColor: group.color }}
-                        />
-                        <span className="font-medium text-primary text-sm">{groupName}</span>
-                        <span className="text-xs text-muted">({group.tasks.length})</span>
-                        <button className="ml-auto p-1 text-muted hover:text-primary">
-                          {isExpanded ? <IconChevronUp className="w-4 h-4" /> : <IconChevronDown className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
+                      <td className="py-2.5 px-4 sticky left-0 z-10 bg-muted/10">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
+                          <span className="font-medium text-primary text-sm">{groupName}</span>
+                          <span className="text-xs text-muted">({group.tasks.length})</span>
+                          {isExpanded ? <IconChevronUp className="w-4 h-4 text-muted ml-auto" /> : <IconChevronDown className="w-4 h-4 text-muted ml-auto" />}
+                        </div>
+                      </td>
+                      <td className="sticky left-[280px] z-10 bg-muted/10 border-l border-default" />
+                      <td className="sticky left-[380px] z-10 bg-muted/10 border-l border-default" />
+                      {/* Barre de span du groupe */}
+                      <td colSpan={dayHeaders.length} className="relative h-[42px]">
+                        <div className="absolute inset-0 flex">
+                          {dayHeaders.map((day, i) => (
+                            <div key={i} className={`w-8 min-w-[32px] border-l border-muted/20 ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                          ))}
+                        </div>
+                        {/* Ligne "aujourd'hui" */}
+                        {todayIndex >= 0 && (
+                          <div 
+                            className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10"
+                            style={{ left: `${(todayIndex * 32) + 16}px` }}
+                          />
+                        )}
+                      </td>
+                    </tr>
 
                     {/* Tâches du groupe */}
-                    <AnimatePresence>
-                      {isExpanded && group.tasks.map((task, taskIndex) => {
-                        const hasSubtasks = task.subtasks && task.subtasks.length > 0;
-                        const subtaskCount = task.subtasks?.length || 0;
-                        const completedSubtasks = task.subtasks?.filter(s => s.task_status === 'completed').length || 0;
-                        const allAssignedUsers = [
-                          task.assigned_to,
-                          ...(task.subtasks?.map(s => s.assigned_to) || [])
-                        ].filter((u): u is NonNullable<typeof u> => !!u);
-                        const uniqueUsers = allAssignedUsers.filter((u, i, arr) => 
-                          arr.findIndex(x => x.id === u.id) === i
-                        );
+                    {isExpanded && group.tasks.map((task, taskIndex) => {
+                      const { startOffset, duration } = getTaskPosition(task);
+                      const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+                      const subtaskCount = task.subtasks?.length || 0;
+                      const completedSubtasks = task.subtasks?.filter(s => s.task_status === 'completed').length || 0;
+                      const allAssignedUsers = [task.assigned_to, ...(task.subtasks?.map(s => s.assigned_to) || [])].filter((u): u is NonNullable<typeof u> => !!u);
+                      const uniqueUsers = allAssignedUsers.filter((u, i, arr) => arr.findIndex(x => x.id === u.id) === i);
 
-                        return (
-                          <motion.div
-                            key={task.documentId}
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
+                      return (
+                        <React.Fragment key={task.documentId}>
+                          {/* Ligne de tâche principale */}
+                          <tr 
+                            className="border-b border-muted hover:bg-hover cursor-pointer group h-[48px]"
+                            onClick={() => onEdit(task)}
                           >
-                            {/* Tâche principale */}
-                            <div 
-                              className="flex items-center border-b border-muted hover:bg-hover cursor-pointer group"
-                              onClick={() => onEdit(task)}
-                            >
-                              <div className="flex-1 py-3 px-4 flex items-center gap-3">
-                                {/* Checkbox circulaire */}
+                            {/* Task Name */}
+                            <td className="py-2 px-4 sticky left-0 z-10 bg-card group-hover:bg-hover">
+                              <div className="flex items-center gap-2">
                                 <div 
-                                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                                    task.task_status === 'completed' 
-                                      ? 'border-transparent' 
-                                      : 'border-muted group-hover:border-accent'
+                                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                    task.task_status === 'completed' ? 'border-transparent' : ''
                                   }`}
                                   style={{ 
                                     backgroundColor: task.task_status === 'completed' ? group.color : 'transparent',
                                     borderColor: task.task_status !== 'completed' ? group.color + '60' : undefined
                                   }}
                                 >
-                                  {task.task_status === 'completed' && (
-                                    <IconCheck className="w-3 h-3 text-white" />
-                                  )}
+                                  {task.task_status === 'completed' && <IconCheck className="w-3 h-3 text-white" />}
                                 </div>
-                                
-                                {/* Titre et infos */}
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2">
-                                    <span className={`text-sm font-medium truncate ${
-                                      task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'
-                                    }`}>
-                                      {task.title}
-                                    </span>
-                                    {hasSubtasks && (
-                                      <span className="flex items-center gap-1 text-xs text-muted bg-muted/50 px-1.5 py-0.5 rounded">
-                                        <IconSubtask className="w-3 h-3" />
-                                        {completedSubtasks}/{subtaskCount}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-
-                                {/* Avatars empilés */}
-                                {uniqueUsers.length > 0 && (
-                                  <AvatarStack users={uniqueUsers} max={3} size="sm" />
+                                <span className={`text-sm font-medium truncate max-w-[150px] ${task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
+                                  {task.title}
+                                </span>
+                                {hasSubtasks && (
+                                  <span className="flex items-center gap-0.5 text-[10px] text-muted bg-muted/50 px-1 py-0.5 rounded">
+                                    <IconSubtask className="w-3 h-3" />
+                                    {completedSubtasks}/{subtaskCount}
+                                  </span>
                                 )}
+                                {uniqueUsers.length > 0 && <AvatarStack users={uniqueUsers} max={2} size="sm" />}
                               </div>
-                              
-                              {/* Due Range */}
-                              <div className="w-20 py-3 px-2 text-center border-l border-muted">
-                                <span 
-                                  className="text-xs font-medium px-2 py-1 rounded"
-                                  style={{ 
-                                    backgroundColor: group.color + '20',
-                                    color: group.color
-                                  }}
-                                >
-                                  {formatDateRange(task.start_date, task.due_date)}
-                                </span>
-                              </div>
-                              
-                              {/* Duration */}
-                              <div className="w-16 py-3 px-2 text-center border-l border-muted">
-                                <span className="text-xs text-secondary">
-                                  {getDurationDays(task.start_date, task.due_date)} {t('days_short') || 'j'}
-                                </span>
-                              </div>
-                            </div>
-
-                            {/* Sous-tâches */}
-                            {hasSubtasks && task.subtasks?.map(subtask => (
-                              <div 
-                                key={subtask.documentId}
-                                className="flex items-center border-b border-muted/50 hover:bg-hover cursor-pointer group bg-muted/10"
-                                onClick={() => onEdit(task)}
+                            </td>
+                            {/* Due Range */}
+                            <td className="py-2 px-2 text-center sticky left-[280px] z-10 bg-card group-hover:bg-hover border-l border-muted">
+                              <span 
+                                className="text-[11px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
+                                style={{ backgroundColor: group.color + '20', color: group.color }}
                               >
-                                <div className="flex-1 py-2.5 pl-12 pr-4 flex items-center gap-3">
-                                  {/* Checkbox */}
+                                {formatDateRange(task.start_date, task.due_date)}
+                              </span>
+                            </td>
+                            {/* Duration */}
+                            <td className="py-2 px-2 text-center sticky left-[380px] z-10 bg-card group-hover:bg-hover border-l border-muted">
+                              <span className="text-xs text-secondary whitespace-nowrap">
+                                {getDurationDays(task.start_date, task.due_date)} {t('days_short') || 'days'}
+                              </span>
+                            </td>
+                            {/* Timeline - Barre de Gantt */}
+                            <td colSpan={dayHeaders.length} className="relative h-[48px] p-0">
+                              {/* Grille des jours */}
+                              <div className="absolute inset-0 flex">
+                                {dayHeaders.map((day, i) => (
                                   <div 
-                                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                      subtask.task_status === 'completed' 
-                                        ? 'border-transparent' 
-                                        : 'border-muted'
-                                    }`}
-                                    style={{ 
-                                      backgroundColor: subtask.task_status === 'completed' ? group.color : 'transparent',
-                                      borderColor: subtask.task_status !== 'completed' ? group.color + '40' : undefined
-                                    }}
-                                  >
-                                    {subtask.task_status === 'completed' && (
-                                      <IconCheck className="w-2.5 h-2.5 text-white" />
-                                    )}
-                                  </div>
-                                  
-                                  <span className={`text-xs truncate ${
-                                    subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-secondary'
-                                  }`}>
-                                    {subtask.title}
-                                  </span>
-
-                                  {subtask.assigned_to && (
-                                    <UserAvatar user={subtask.assigned_to} size="sm" className="ml-auto" />
-                                  )}
-                                </div>
-                                
-                                <div className="w-20 py-2.5 px-2 text-center border-l border-muted/50">
-                                  <span className="text-[10px] text-muted">
-                                    {formatDateRange(subtask.start_date, subtask.due_date)}
-                                  </span>
-                                </div>
-                                
-                                <div className="w-16 py-2.5 px-2 text-center border-l border-muted/50">
-                                  <span className="text-[10px] text-muted">
-                                    {getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'j'}
-                                  </span>
-                                </div>
+                                    key={i} 
+                                    className={`w-8 min-w-[32px] border-l border-muted/20 ${
+                                      isToday(day) ? 'bg-red-500/5' : ''
+                                    } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/5' : ''}`} 
+                                  />
+                                ))}
                               </div>
-                            ))}
-
-                            {/* Bouton ajouter sous-tâche */}
-                            {taskIndex === group.tasks.length - 1 && (
-                              <div 
-                                className="flex items-center py-2 px-4 text-muted hover:text-accent cursor-pointer hover:bg-hover transition-colors"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onAddSubtask(task);
+                              {/* Ligne "aujourd'hui" */}
+                              {todayIndex >= 0 && (
+                                <div 
+                                  className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10"
+                                  style={{ left: `${(todayIndex * 32) + 16}px` }}
+                                />
+                              )}
+                              {/* Barre de la tâche */}
+                              <div
+                                className="absolute top-1/2 -translate-y-1/2 h-7 rounded-md shadow-sm hover:shadow-md transition-shadow"
+                                style={{
+                                  left: `${startOffset * 32}px`,
+                                  width: `${Math.max(duration * 32, 32)}px`,
+                                  backgroundColor: task.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
                                 }}
                               >
-                                <IconPlus className="w-4 h-4 mr-2" />
-                                <span className="text-xs">{t('add_task') || 'Ajouter une tâche...'}</span>
+                                <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${task.progress || 0}%` }} />
+                                <div className="relative h-full flex items-center px-2">
+                                  <span className="text-[11px] text-white font-medium truncate">
+                                    {duration > 3 ? task.title : ''}
+                                  </span>
+                                </div>
                               </div>
-                            )}
-                          </motion.div>
-                        );
-                      })}
-                    </AnimatePresence>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                            </td>
+                          </tr>
 
-          {/* Zone droite - Timeline (scrollable) */}
-          <div className="flex-1 overflow-x-auto" ref={timelineRef}>
-            <div style={{ minWidth: `${Math.max(400, dayHeaders.length * 28)}px` }}>
-              {/* En-tête Timeline */}
-              <div className="sticky top-0 z-10 bg-card border-b border-default">
-                {/* Ligne des mois */}
-                <div className="flex">
-                  {months.map((month, i) => (
-                    <div 
-                      key={i} 
-                      style={{ flex: month.days, minWidth: `${month.days * 28}px` }}
-                      className="text-xs font-semibold text-primary text-center py-2 bg-muted/30 border-l border-default first:border-l-0"
-                    >
-                      {month.label}
-                    </div>
-                  ))}
-                </div>
-                {/* Ligne des jours */}
-                <div className="flex">
-                  {dayHeaders.map((day, j) => (
-                    <div 
-                      key={j}
-                      style={{ width: '28px', minWidth: '28px' }}
-                      className={`text-center py-1.5 text-[10px] border-l border-default first:border-l-0 ${
-                        isToday(day) 
-                          ? 'bg-red-500/20 text-red-500 font-bold' 
-                          : day.getDay() === 0 || day.getDay() === 6
-                            ? 'text-muted bg-muted/20'
-                            : 'text-secondary'
-                      }`}
-                    >
-                      {day.getDate()}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Barres du Gantt */}
-              <div className="relative" style={{ maxHeight: 'calc(70vh - 100px)' }}>
-                {/* Ligne verticale "Aujourd'hui" */}
-                {todayIndex >= 0 && (
-                  <div 
-                    className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-30 pointer-events-none"
-                    style={{
-                      left: `${(todayIndex * 28) + 14}px`,
-                    }}
-                  >
-                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-red-500 rounded-full" />
-                  </div>
-                )}
-
-                {/* Rendu des barres par groupe */}
-                {taskGroups.map((group) => {
-                  const isExpanded = !collapsedGroups.has(group.color);
-                  
-                  return (
-                    <div key={group.color}>
-                      {/* Header du groupe (barre de span si plusieurs tâches) */}
-                      <div className="h-[42px] border-b border-default relative">
-                        {group.tasks.length > 1 && isExpanded && (
-                          <div className="absolute top-1/2 -translate-y-1/2 h-1 rounded-full opacity-30"
-                            style={{
-                              backgroundColor: group.color,
-                              left: `${Math.min(...group.tasks.map(t => {
-                                const pos = getTaskPosition(t);
-                                return pos.startOffset;
-                              })) * 28}px`,
-                              width: `${(Math.max(...group.tasks.map(t => {
-                                const pos = getTaskPosition(t);
-                                return pos.startOffset + pos.duration;
-                              })) - Math.min(...group.tasks.map(t => {
-                                const pos = getTaskPosition(t);
-                                return pos.startOffset;
-                              }))) * 28}px`
-                            }}
-                          />
-                        )}
-                      </div>
-
-                      {/* Barres des tâches */}
-                      <AnimatePresence>
-                        {isExpanded && group.tasks.map((task) => {
-                          const { startOffset, duration } = getTaskPosition(task);
-                          const hasSubtasks = task.subtasks && task.subtasks.length > 0;
-
-                          return (
-                            <motion.div
-                              key={task.documentId}
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                            >
-                              {/* Barre de la tâche principale */}
-                              <div className="h-[52px] border-b border-muted relative flex items-center">
-                                {/* Grille des jours */}
-                                <div className="absolute inset-0 flex pointer-events-none">
-                                  {dayHeaders.map((day, i) => (
+                          {/* Sous-tâches */}
+                          {hasSubtasks && task.subtasks?.map(subtask => {
+                            const subPos = getTaskPosition(subtask);
+                            return (
+                              <tr 
+                                key={subtask.documentId}
+                                className="border-b border-muted/50 hover:bg-hover cursor-pointer h-[36px] bg-muted/5"
+                                onClick={() => onEdit(task)}
+                              >
+                                <td className="py-1.5 pl-10 pr-4 sticky left-0 z-10 bg-muted/5">
+                                  <div className="flex items-center gap-2">
                                     <div 
-                                      key={i}
-                                      style={{ width: '28px', minWidth: '28px' }}
-                                      className={`border-l border-muted/30 ${
-                                        isToday(day) ? 'bg-red-500/5' : ''
-                                      } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/10' : ''}`}
-                                    />
+                                      className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0`}
+                                      style={{ 
+                                        backgroundColor: subtask.task_status === 'completed' ? group.color : 'transparent',
+                                        borderColor: subtask.task_status !== 'completed' ? group.color + '40' : 'transparent'
+                                      }}
+                                    >
+                                      {subtask.task_status === 'completed' && <IconCheck className="w-2.5 h-2.5 text-white" />}
+                                    </div>
+                                    <span className={`text-xs truncate max-w-[140px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-secondary'}`}>
+                                      {subtask.title}
+                                    </span>
+                                    {subtask.assigned_to && <UserAvatar user={subtask.assigned_to} size="sm" className="ml-auto" />}
+                                  </div>
+                                </td>
+                                <td className="py-1.5 px-2 text-center sticky left-[280px] z-10 bg-muted/5 border-l border-muted/50">
+                                  <span className="text-[10px] text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
+                                </td>
+                                <td className="py-1.5 px-2 text-center sticky left-[380px] z-10 bg-muted/5 border-l border-muted/50">
+                                  <span className="text-[10px] text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
+                                </td>
+                                <td colSpan={dayHeaders.length} className="relative h-[36px] p-0 bg-muted/5">
+                                  <div className="absolute inset-0 flex">
+                                    {dayHeaders.map((day, i) => (
+                                      <div key={i} className={`w-8 min-w-[32px] border-l border-muted/10 ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                                    ))}
+                                  </div>
+                                  {todayIndex >= 0 && (
+                                    <div className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10" style={{ left: `${(todayIndex * 32) + 16}px` }} />
+                                  )}
+                                  <div
+                                    className="absolute top-1/2 -translate-y-1/2 h-5 rounded opacity-80 hover:opacity-100 transition-opacity"
+                                    style={{
+                                      left: `${subPos.startOffset * 32}px`,
+                                      width: `${Math.max(subPos.duration * 32, 24)}px`,
+                                      backgroundColor: subtask.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
+                                    }}
+                                  >
+                                    <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l" style={{ width: `${subtask.progress || 0}%` }} />
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+
+                          {/* Bouton Ajouter tâche */}
+                          {taskIndex === group.tasks.length - 1 && (
+                            <tr className="border-b border-default h-[32px]">
+                              <td 
+                                className="py-1.5 px-4 sticky left-0 z-10 bg-card hover:bg-hover cursor-pointer transition-colors"
+                                colSpan={3}
+                                onClick={(e) => { e.stopPropagation(); onAddSubtask(task); }}
+                              >
+                                <div className="flex items-center gap-2 text-muted hover:text-accent">
+                                  <IconPlus className="w-4 h-4" />
+                                  <span className="text-xs">{t('add_task') || 'Add task...'}</span>
+                                </div>
+                              </td>
+                              <td colSpan={dayHeaders.length} className="relative h-[32px]">
+                                <div className="absolute inset-0 flex">
+                                  {dayHeaders.map((day, i) => (
+                                    <div key={i} className={`w-8 min-w-[32px] border-l border-muted/10 ${isToday(day) ? 'bg-red-500/5' : ''}`} />
                                   ))}
                                 </div>
-
-                                {/* Barre */}
-                                <div
-                                  className="absolute h-7 rounded-lg cursor-pointer transition-all hover:scale-y-110 shadow-sm hover:shadow-md group"
-                                  style={{
-                                    left: `${startOffset * 28}px`,
-                                    width: `${duration * 28}px`,
-                                    minWidth: '28px',
-                                    backgroundColor: task.task_status === 'cancelled' 
-                                      ? 'rgb(239 68 68 / 0.4)' 
-                                      : group.color,
-                                  }}
-                                  onClick={() => onEdit(task)}
-                                >
-                                  {/* Progression */}
-                                  <div 
-                                    className="absolute inset-y-0 left-0 bg-black/10 rounded-l-lg"
-                                    style={{ width: `${task.progress || 0}%` }}
-                                  />
-                                  {/* Contenu de la barre */}
-                                  <div className="relative h-full flex items-center justify-between px-2">
-                                    <span className="text-xs text-white font-medium truncate">
-                                      {duration > 2 && task.title}
-                                    </span>
-                                    {task.assigned_to && duration > 1 && (
-                                      <UserAvatar 
-                                        user={task.assigned_to} 
-                                        size="sm" 
-                                        className="ring-2 ring-white/30 -mr-1"
-                                      />
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Barres des sous-tâches */}
-                              {hasSubtasks && task.subtasks?.map(subtask => {
-                                const subPos = getTaskPosition(subtask);
-                                return (
-                                  <div key={subtask.documentId} className="h-[40px] border-b border-muted/50 relative flex items-center bg-muted/5">
-                                    {/* Grille */}
-                                    <div className="absolute inset-0 flex pointer-events-none">
-                                      {dayHeaders.map((day, i) => (
-                                        <div 
-                                          key={i}
-                                          style={{ width: '28px', minWidth: '28px' }}
-                                          className={`border-l border-muted/20 ${
-                                            isToday(day) ? 'bg-red-500/5' : ''
-                                          }`}
-                                        />
-                                      ))}
-                                    </div>
-
-                                    {/* Barre sous-tâche */}
-                                    <div
-                                      className="absolute h-5 rounded cursor-pointer transition-all hover:scale-y-110 opacity-70 hover:opacity-100"
-                                      style={{
-                                        left: `${subPos.startOffset * 28}px`,
-                                        width: `${subPos.duration * 28}px`,
-                                        minWidth: '20px',
-                                        backgroundColor: subtask.task_status === 'cancelled' 
-                                          ? 'rgb(239 68 68 / 0.4)' 
-                                          : group.color,
-                                      }}
-                                      onClick={() => onEdit(task)}
-                                    >
-                                      <div 
-                                        className="absolute inset-y-0 left-0 bg-black/10 rounded-l"
-                                        style={{ width: `${subtask.progress || 0}%` }}
-                                      />
-                                    </div>
-                                  </div>
-                                );
-                              })}
-
-                              {/* Espace pour le bouton "Ajouter" */}
-                              {group.tasks[group.tasks.length - 1]?.documentId === task.documentId && (
-                                <div className="h-[36px] border-b border-default" />
-                              )}
-                            </motion.div>
-                          );
-                        })}
-                      </AnimatePresence>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+                                {todayIndex >= 0 && (
+                                  <div className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10" style={{ left: `${(todayIndex * 32) + 16}px` }} />
+                                )}
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </React.Fragment>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -2569,14 +2443,11 @@ function TaskGanttView({
       <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-muted">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-500" />
-          <span>{t('today') || "Aujourd'hui"}</span>
+          <span>{t('today') || "Today"}</span>
         </div>
         {taskGroups.map(group => (
           <div key={group.color} className="flex items-center gap-2">
-            <div 
-              className="w-3 h-3 rounded"
-              style={{ backgroundColor: group.color }}
-            />
+            <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
             <span>{getColorName(group.color)} ({group.tasks.length})</span>
           </div>
         ))}
