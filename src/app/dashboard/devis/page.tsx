@@ -132,16 +132,14 @@ export default function DevisPage() {
     {
       key: 'reference',
       label: t('reference') || 'Référence',
-      sortable: true,
-      render: (quote) => (
+      render: (_, quote) => (
         <span className="font-mono font-medium text-primary">{quote.reference}</span>
       ),
     },
     {
       key: 'client',
       label: t('client') || 'Client',
-      sortable: true,
-      render: (quote) => {
+      render: (_, quote) => {
         const client = (quote.client_id as Client) || (quote.client as Client);
         return <span className="text-secondary">{client?.name || '---'}</span>;
       },
@@ -149,24 +147,21 @@ export default function DevisPage() {
     {
       key: 'number',
       label: t('amount') || 'Montant',
-      sortable: true,
-      render: (quote) => (
+      render: (_, quote) => (
         <span className="font-semibold text-primary">{formatCurrency(quote.number)}</span>
       ),
     },
     {
       key: 'date',
       label: t('date') || 'Date',
-      sortable: true,
-      render: (quote) => (
+      render: (_, quote) => (
         <span className="text-muted text-sm">{formatDate(quote.date)}</span>
       ),
     },
     {
       key: 'valid_until',
       label: t('valid_until') || 'Validité',
-      sortable: true,
-      render: (quote) => {
+      render: (_, quote) => {
         if (!quote.valid_until) return <span className="text-muted">---</span>;
         const isExpired = new Date(quote.valid_until) < new Date();
         return (
@@ -179,8 +174,7 @@ export default function DevisPage() {
     {
       key: 'quote_status',
       label: t('status') || 'Statut',
-      sortable: true,
-      render: (quote) => {
+      render: (_, quote) => {
         const status = quote.quote_status || 'draft';
         const config = QUOTE_STATUS_COLORS[status];
         return (
@@ -197,7 +191,7 @@ export default function DevisPage() {
     {
       key: 'actions',
       label: '',
-      render: (quote) => (
+      render: (_, quote) => (
         <div className="flex items-center justify-end gap-1">
           <button
             onClick={() => router.push(`/dashboard/factures/${quote.documentId}?type=quote`)}
