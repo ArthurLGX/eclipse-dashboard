@@ -549,7 +549,6 @@ export default function TimeTrackingPage() {
               triggerTimerRefresh(); // Synchroniser TimerIndicator après mise à jour
               closeModal();
             }}
-            userId={user!.id}
             onStartTimer={handleStartTimer}
           />
         )}
@@ -564,11 +563,10 @@ interface TimeEntryModalProps {
   projects: Project[];
   onClose: () => void;
   onSave: () => Promise<void>;
-  userId: number;
   onStartTimer?: (projectId?: number, description?: string, estimatedDuration?: number, billable?: boolean, hourlyRate?: number) => Promise<void>;
 }
 
-function TimeEntryModal({ entry, projects, onClose, onSave, userId, onStartTimer }: TimeEntryModalProps) {
+function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: TimeEntryModalProps) {
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
   
