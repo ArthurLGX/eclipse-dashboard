@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { IconAlertTriangle, IconTrash, IconX, IconLoader2 } from '@tabler/icons-react';
 import { useState, useEffect } from 'react';
+import { useModalFocus } from '@/hooks/useModalFocus';
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
@@ -35,6 +36,7 @@ export default function DeleteConfirmModal({
   itemType,
   warningMessage,
 }: DeleteConfirmModalProps) {
+  const modalRef = useModalFocus(isOpen);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmText, setConfirmText] = useState('');
@@ -92,11 +94,13 @@ export default function DeleteConfirmModal({
           onClick={handleClose}
         >
           <motion.div
+            ref={modalRef}
+            tabIndex={-1}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-card border border-default rounded-2xl p-6 max-w-md w-full shadow-2xl"
+            className="bg-card border border-default rounded-2xl p-6 max-w-md w-full shadow-2xl outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useModalFocus } from '@/hooks/useModalFocus';
 import {
   IconX,
   IconMail,
@@ -59,6 +60,7 @@ export default function ShareProjectModal({
 }: ShareProjectModalProps) {
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
+  const modalRef = useModalFocus(isOpen);
 
   const [email, setEmail] = useState('');
   const [permission, setPermission] = useState<InvitationPermission>('edit');
@@ -516,11 +518,13 @@ export default function ShareProjectModal({
         onClick={onClose}
       >
         <motion.div
+          ref={modalRef}
+          tabIndex={-1}
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: 'spring', duration: 0.3 }}
-          className="bg-card border border-default rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden"
+          className="bg-card border border-default rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden outline-none"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}

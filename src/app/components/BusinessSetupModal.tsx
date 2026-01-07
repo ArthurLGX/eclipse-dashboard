@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { IconSparkles, IconX } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useModalFocus } from '@/hooks/useModalFocus';
 import { useUserPreferences } from '@/app/context/UserPreferencesContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -20,6 +21,7 @@ export default function BusinessSetupModal() {
   const { showGlobalPopup } = usePopup();
   
   const [isOpen, setIsOpen] = useState(false);
+  const modalRef = useModalFocus(isOpen);
   const [step, setStep] = useState<SetupStep>('business');
   const [selectedType, setSelectedType] = useState<BusinessType | null>(null);
   const [selectedModules, setSelectedModules] = useState<string[]>([]);
@@ -108,11 +110,13 @@ export default function BusinessSetupModal() {
         className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       >
         <motion.div
+          ref={modalRef}
+          tabIndex={-1}
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-3xl bg-card border border-default rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+          className="relative w-full max-w-3xl bg-card border border-default rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto outline-none"
         >
           {/* Header */}
           <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent/20 via-accent/10 to-transparent">

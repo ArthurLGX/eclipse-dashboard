@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useModalFocus } from '@/hooks/useModalFocus';
 import { useTheme } from '@/app/context/ThemeContext';
 import { loadStripe } from '@stripe/stripe-js';
 import {
@@ -198,18 +199,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   onSuccess,
 }) => {
   const { t } = useLanguage();
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  const modalRef = useModalFocus(isOpen);
 
   return (
     <AnimatePresence>
@@ -231,11 +221,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
           {/* Modal */}
           <motion.div
+            ref={modalRef}
+            tabIndex={-1}
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative bg-card rounded-xl border border-default p-6 w-full max-w-md"
+            className="relative bg-card rounded-xl border border-default p-6 w-full max-w-md outline-none"
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="!text-xl font-bold text-primary">

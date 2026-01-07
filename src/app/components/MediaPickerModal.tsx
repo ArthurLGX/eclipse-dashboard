@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
+import { useModalFocus } from '@/hooks/useModalFocus';
 import {
   IconX,
   IconUpload,
@@ -50,6 +51,7 @@ export default function MediaPickerModal({
   title,
 }: MediaPickerModalProps) {
   const { t } = useLanguage();
+  const modalRef = useModalFocus(isOpen);
   const [activeTab, setActiveTab] = useState<'computer' | 'library' | 'url'>('computer');
   const [urlInput, setUrlInput] = useState('');
   const [urlError, setUrlError] = useState('');
@@ -244,10 +246,12 @@ export default function MediaPickerModal({
         onClick={(e) => e.target === e.currentTarget && onClose()}
       >
         <motion.div
+          ref={modalRef}
+          tabIndex={-1}
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden"
+          className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden outline-none"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">

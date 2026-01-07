@@ -1394,6 +1394,7 @@ const translations = {
     no_tracking_data_desc: 'Envoyez des emails et suivez les ouvertures et clics',
     opens: 'Ouvertures',
     clicks: 'Clics',
+    meetings: "Meetings",
     
     // Email detail modal
     delivered: 'Délivré',
@@ -3458,6 +3459,7 @@ const translations = {
     alert_by_email: 'Alert me by email if site is down',
     site_type: 'Site type',
     hosting_provider: 'Hosting provider',
+    meetings: "Meetings",
     server_ip: 'Server IP address',
     server_notes: 'Server notes',
     server_notes_placeholder: 'Configuration info, access...',
