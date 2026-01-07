@@ -2165,18 +2165,18 @@ function TaskGanttView({
       {/* Design Gantt style Gamma - Structure unifiée */}
       <div className="bg-card rounded-xl border border-default overflow-hidden" ref={ganttRef}>
         <div className="overflow-x-auto" ref={timelineRef}>
-          <table className="w-full border-collapse" style={{ minWidth: `${500 + dayHeaders.length * 32}px` }}>
+          <table className="w-full border-collapse" style={{ minWidth: `${450 + dayHeaders.length * 32}px` }}>
             {/* En-tête */}
-            <thead className="sticky top-0 z-20 bg-card">
-              <tr className="border-b border-default">
+            <thead className="sticky top-0 z-20">
+              <tr>
                 {/* Colonnes fixes */}
-                <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider bg-muted/30 sticky left-0 z-30 w-[280px] min-w-[280px]">
+                <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-[var(--color-card)] border-b border-muted/30">
                   {t('task_name') || 'Task Name'}
                 </th>
-                <th className="text-center py-3 px-3 text-xs font-semibold text-muted uppercase tracking-wider bg-muted/30 sticky left-[280px] z-30 w-[100px] min-w-[100px] border-l border-default">
+                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-[var(--color-card)] border-b border-muted/30">
                   {t('due_range') || 'Due Range'}
                 </th>
-                <th className="text-center py-3 px-3 text-xs font-semibold text-muted uppercase tracking-wider bg-muted/30 sticky left-[380px] z-30 w-[70px] min-w-[70px] border-l border-default">
+                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-[var(--color-card)] border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
                   {t('duration') || 'Duration'}
                 </th>
                 {/* Timeline header - Mois */}
@@ -2184,26 +2184,26 @@ function TaskGanttView({
                   <th 
                     key={i}
                     colSpan={month.days}
-                    className="text-center py-2 text-xs font-semibold text-primary bg-muted/20 border-l border-default"
+                    className="text-center py-2 text-xs font-semibold text-primary bg-muted/10 border-b border-muted/30"
                   >
                     {month.label}
                   </th>
                 ))}
               </tr>
-              <tr className="border-b border-default">
-                <th className="bg-card sticky left-0 z-30" />
-                <th className="bg-card sticky left-[280px] z-30 border-l border-default" />
-                <th className="bg-card sticky left-[380px] z-30 border-l border-default" />
+              <tr>
+                <th className="sticky left-0 z-30 bg-[var(--color-card)] h-7 border-b border-muted/20" />
+                <th className="sticky left-[260px] z-30 bg-[var(--color-card)] border-b border-muted/20" />
+                <th className="sticky left-[350px] z-30 bg-[var(--color-card)] border-b border-muted/20 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" />
                 {/* Timeline header - Jours */}
                 {dayHeaders.map((day, j) => (
                   <th 
                     key={j}
-                    className={`text-center py-1.5 text-[10px] font-medium border-l border-default w-8 min-w-[32px] ${
+                    className={`text-center py-1.5 text-[10px] font-medium w-8 min-w-[32px] border-b border-muted/20 ${
                       isToday(day) 
-                        ? 'bg-red-500/20 text-red-500 font-bold' 
+                        ? 'bg-red-500/15 text-red-500 font-bold' 
                         : day.getDay() === 0 || day.getDay() === 6
-                          ? 'text-muted bg-muted/10'
-                          : 'text-secondary bg-card'
+                          ? 'text-muted/60 bg-muted/5'
+                          : 'text-muted'
                     }`}
                   >
                     {day.getDate()}
@@ -2221,10 +2221,10 @@ function TaskGanttView({
                   <React.Fragment key={group.color}>
                     {/* En-tête du groupe */}
                     <tr 
-                      className="border-b border-default bg-muted/10 cursor-pointer hover:bg-muted/20 transition-colors"
+                      className="cursor-pointer hover:bg-muted/10 transition-colors"
                       onClick={() => toggleGroup(group.color)}
                     >
-                      <td className="py-2.5 px-4 sticky left-0 z-10 bg-muted/10">
+                      <td className="py-2.5 px-4 sticky left-0 z-10 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                         <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
                           <span className="font-medium text-primary text-sm">{groupName}</span>
@@ -2232,13 +2232,13 @@ function TaskGanttView({
                           {isExpanded ? <IconChevronUp className="w-4 h-4 text-muted ml-auto" /> : <IconChevronDown className="w-4 h-4 text-muted ml-auto" />}
                         </div>
                       </td>
-                      <td className="sticky left-[280px] z-10 bg-muted/10 border-l border-default" />
-                      <td className="sticky left-[380px] z-10 bg-muted/10 border-l border-default" />
+                      <td className="sticky left-[260px] z-10 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
+                      <td className="sticky left-[350px] z-10 bg-[var(--color-card)] shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
                       {/* Barre de span du groupe */}
-                      <td colSpan={dayHeaders.length} className="relative h-[42px]">
+                      <td colSpan={dayHeaders.length} className="relative h-[40px]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                         <div className="absolute inset-0 flex">
                           {dayHeaders.map((day, i) => (
-                            <div key={i} className={`w-8 min-w-[32px] border-l border-muted/20 ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                            <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
                           ))}
                         </div>
                         {/* Ligne "aujourd'hui" */}
@@ -2264,28 +2264,28 @@ function TaskGanttView({
                         <React.Fragment key={task.documentId}>
                           {/* Ligne de tâche principale */}
                           <tr 
-                            className="border-b border-muted hover:bg-hover cursor-pointer group h-[48px]"
+                            className="hover:bg-muted/5 cursor-pointer group h-[44px]"
                             onClick={() => onEdit(task)}
                           >
                             {/* Task Name */}
-                            <td className="py-2 px-4 sticky left-0 z-10 bg-card group-hover:bg-hover">
+                            <td className="py-2 px-4 sticky left-0 z-10 bg-[var(--color-card)] group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                               <div className="flex items-center gap-2">
                                 <div 
-                                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                  className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                                     task.task_status === 'completed' ? 'border-transparent' : ''
                                   }`}
                                   style={{ 
                                     backgroundColor: task.task_status === 'completed' ? group.color : 'transparent',
-                                    borderColor: task.task_status !== 'completed' ? group.color + '60' : undefined
+                                    borderColor: task.task_status !== 'completed' ? group.color + '50' : undefined
                                   }}
                                 >
-                                  {task.task_status === 'completed' && <IconCheck className="w-3 h-3 text-white" />}
+                                  {task.task_status === 'completed' && <IconCheck className="w-2.5 h-2.5 text-white" />}
                                 </div>
-                                <span className={`text-sm font-medium truncate max-w-[150px] ${task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
+                                <span className={`text-sm truncate max-w-[140px] ${task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
                                   {task.title}
                                 </span>
                                 {hasSubtasks && (
-                                  <span className="flex items-center gap-0.5 text-[10px] text-muted bg-muted/50 px-1 py-0.5 rounded">
+                                  <span className="flex items-center gap-0.5 text-[10px] text-muted bg-muted/30 px-1 py-0.5 rounded">
                                     <IconSubtask className="w-3 h-3" />
                                     {completedSubtasks}/{subtaskCount}
                                   </span>
@@ -2294,30 +2294,28 @@ function TaskGanttView({
                               </div>
                             </td>
                             {/* Due Range */}
-                            <td className="py-2 px-2 text-center sticky left-[280px] z-10 bg-card group-hover:bg-hover border-l border-muted">
+                            <td className="py-2 px-1 text-center sticky left-[260px] z-10 bg-[var(--color-card)] group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                               <span 
-                                className="text-[11px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
+                                className="text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
                                 style={{ backgroundColor: group.color + '20', color: group.color }}
                               >
                                 {formatDateRange(task.start_date, task.due_date)}
                               </span>
                             </td>
                             {/* Duration */}
-                            <td className="py-2 px-2 text-center sticky left-[380px] z-10 bg-card group-hover:bg-hover border-l border-muted">
-                              <span className="text-xs text-secondary whitespace-nowrap">
-                                {getDurationDays(task.start_date, task.due_date)} {t('days_short') || 'days'}
+                            <td className="py-2 px-1 text-center sticky left-[350px] z-10 bg-[var(--color-card)] group-hover:bg-muted/5 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                              <span className="text-xs text-muted whitespace-nowrap">
+                                {getDurationDays(task.start_date, task.due_date)} {t('days_short') || 'd'}
                               </span>
                             </td>
                             {/* Timeline - Barre de Gantt */}
-                            <td colSpan={dayHeaders.length} className="relative h-[48px] p-0">
-                              {/* Grille des jours */}
+                            <td colSpan={dayHeaders.length} className="relative h-[44px] p-0" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                              {/* Grille des jours - très subtile */}
                               <div className="absolute inset-0 flex">
                                 {dayHeaders.map((day, i) => (
                                   <div 
                                     key={i} 
-                                    className={`w-8 min-w-[32px] border-l border-muted/20 ${
-                                      isToday(day) ? 'bg-red-500/5' : ''
-                                    } ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/5' : ''}`} 
+                                    className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/3' : ''}`} 
                                   />
                                 ))}
                               </div>
@@ -2353,43 +2351,43 @@ function TaskGanttView({
                             return (
                               <tr 
                                 key={subtask.documentId}
-                                className="border-b border-muted/50 hover:bg-hover cursor-pointer h-[36px] bg-muted/5"
+                                className="hover:bg-muted/5 cursor-pointer h-[34px]"
                                 onClick={() => onEdit(task)}
                               >
-                                <td className="py-1.5 pl-10 pr-4 sticky left-0 z-10 bg-muted/5">
+                                <td className="py-1 pl-10 pr-4 sticky left-0 z-10 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <div className="flex items-center gap-2">
                                     <div 
-                                      className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0`}
+                                      className="w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
                                       style={{ 
                                         backgroundColor: subtask.task_status === 'completed' ? group.color : 'transparent',
                                         borderColor: subtask.task_status !== 'completed' ? group.color + '40' : 'transparent'
                                       }}
                                     >
-                                      {subtask.task_status === 'completed' && <IconCheck className="w-2.5 h-2.5 text-white" />}
+                                      {subtask.task_status === 'completed' && <IconCheck className="w-2 h-2 text-white" />}
                                     </div>
-                                    <span className={`text-xs truncate max-w-[140px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-secondary'}`}>
+                                    <span className={`text-xs truncate max-w-[130px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-secondary'}`}>
                                       {subtask.title}
                                     </span>
                                     {subtask.assigned_to && <UserAvatar user={subtask.assigned_to} size="sm" className="ml-auto" />}
                                   </div>
                                 </td>
-                                <td className="py-1.5 px-2 text-center sticky left-[280px] z-10 bg-muted/5 border-l border-muted/50">
-                                  <span className="text-[10px] text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
+                                <td className="py-1 px-1 text-center sticky left-[260px] z-10 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                  <span className="text-[9px] text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
                                 </td>
-                                <td className="py-1.5 px-2 text-center sticky left-[380px] z-10 bg-muted/5 border-l border-muted/50">
-                                  <span className="text-[10px] text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
+                                <td className="py-1 px-1 text-center sticky left-[350px] z-10 bg-[var(--color-card)] shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                                  <span className="text-[9px] text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
                                 </td>
-                                <td colSpan={dayHeaders.length} className="relative h-[36px] p-0 bg-muted/5">
+                                <td colSpan={dayHeaders.length} className="relative h-[34px] p-0" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <div className="absolute inset-0 flex">
                                     {dayHeaders.map((day, i) => (
-                                      <div key={i} className={`w-8 min-w-[32px] border-l border-muted/10 ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                                      <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
                                     ))}
                                   </div>
                                   {todayIndex >= 0 && (
                                     <div className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10" style={{ left: `${(todayIndex * 32) + 16}px` }} />
                                   )}
                                   <div
-                                    className="absolute top-1/2 -translate-y-1/2 h-5 rounded opacity-80 hover:opacity-100 transition-opacity"
+                                    className="absolute top-1/2 -translate-y-1/2 h-4 rounded opacity-70 hover:opacity-100 transition-opacity"
                                     style={{
                                       left: `${subPos.startOffset * 32}px`,
                                       width: `${Math.max(subPos.duration * 32, 24)}px`,
@@ -2405,21 +2403,23 @@ function TaskGanttView({
 
                           {/* Bouton Ajouter tâche */}
                           {taskIndex === group.tasks.length - 1 && (
-                            <tr className="border-b border-default h-[32px]">
+                            <tr className="h-[30px]">
                               <td 
-                                className="py-1.5 px-4 sticky left-0 z-10 bg-card hover:bg-hover cursor-pointer transition-colors"
-                                colSpan={3}
+                                className="py-1 px-4 sticky left-0 z-10 bg-[var(--color-card)] hover:bg-muted/5 cursor-pointer transition-colors"
                                 onClick={(e) => { e.stopPropagation(); onAddSubtask(task); }}
+                                style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}
                               >
                                 <div className="flex items-center gap-2 text-muted hover:text-accent">
-                                  <IconPlus className="w-4 h-4" />
+                                  <IconPlus className="w-3.5 h-3.5" />
                                   <span className="text-xs">{t('add_task') || 'Add task...'}</span>
                                 </div>
                               </td>
-                              <td colSpan={dayHeaders.length} className="relative h-[32px]">
+                              <td className="sticky left-[260px] z-10 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
+                              <td className="sticky left-[350px] z-10 bg-[var(--color-card)] shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
+                              <td colSpan={dayHeaders.length} className="relative h-[30px]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                 <div className="absolute inset-0 flex">
                                   {dayHeaders.map((day, i) => (
-                                    <div key={i} className={`w-8 min-w-[32px] border-l border-muted/10 ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                                    <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
                                   ))}
                                 </div>
                                 {todayIndex >= 0 && (
