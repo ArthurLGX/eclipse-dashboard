@@ -1696,6 +1696,7 @@ const translations = {
     timer_stopped: 'Timer arrêté',
     timer_already_running: 'Un timer est déjà en cours',
     timer_error: 'Erreur du timer',
+    estimated_duration: 'Durée estimée',
     no_timer: 'Aucun timer actif',
     no_entries: 'Aucune entrée de temps',
     total_time: 'Temps total',
@@ -3227,6 +3228,7 @@ const translations = {
     new_user_registered: 'New user registered',
     upgraded_to_pro: 'Upgraded to Pro plan',
     emails_sent_count: 'emails sent',
+    estimated_duration: 'Estimated duration',
     
     // Admin Users
     users_management: 'Users Management',
