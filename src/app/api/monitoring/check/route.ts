@@ -122,6 +122,98 @@ async function updateSiteStatus(
   return response.ok;
 }
 
+// Générer le template d'email d'alerte (mode clair)
+function generateAlertEmailTemplate(site: MonitoredSite, result: CheckResult): string {
+  const isDown = result.status === 'down';
+  const statusColor = isDown ? '#DC2626' : '#F59E0B'; // Rouge pour down, orange pour slow
+  const statusBgColor = isDown ? '#FEE2E2' : '#FEF3C7';
+  const statusText = isDown ? 'HORS LIGNE' : 'LENT';
+  const statusIcon = isDown ? '🔴' : '🟡';
+  const dateStr = new Date().toLocaleString('fr-FR');
+
+  return `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alerte Monitoring</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #F3F4F6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F3F4F6;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+          <!-- Header -->
+          <tr>
+            <td align="center" style="padding: 32px 40px 24px;">
+              <div style="font-size: 48px; margin-bottom: 16px;">${statusIcon}</div>
+              <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #111827;">Alerte Monitoring</h1>
+            </td>
+          </tr>
+          
+          <!-- Status Banner -->
+          <tr>
+            <td style="padding: 0 40px;">
+              <div style="background-color: ${statusBgColor}; border-left: 4px solid ${statusColor}; border-radius: 8px; padding: 16px 20px;">
+                <p style="margin: 0; font-size: 16px; color: #374151;">
+                  <strong style="color: ${statusColor};">${site.name}</strong> est actuellement <strong style="color: ${statusColor};">${statusText}</strong>
+                </p>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Details -->
+          <tr>
+            <td style="padding: 24px 40px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB;">
+                    <span style="color: #6B7280; font-size: 14px;">URL</span><br>
+                    <a href="${site.url}" style="color: #7C3AED; text-decoration: none; font-size: 14px; word-break: break-all;">${site.url}</a>
+                  </td>
+                </tr>
+                ${result.responseTime ? `
+                <tr>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB;">
+                    <span style="color: #6B7280; font-size: 14px;">Temps de réponse</span><br>
+                    <span style="color: #111827; font-size: 16px; font-weight: 600;">${result.responseTime}ms</span>
+                  </td>
+                </tr>
+                ` : ''}
+                ${result.error ? `
+                <tr>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB;">
+                    <span style="color: #6B7280; font-size: 14px;">Erreur</span><br>
+                    <span style="color: #DC2626; font-size: 14px;">${result.error}</span>
+                  </td>
+                </tr>
+                ` : ''}
+                <tr>
+                  <td style="padding: 12px 0;">
+                    <span style="color: #6B7280; font-size: 14px;">Vérifié le</span><br>
+                    <span style="color: #111827; font-size: 14px;">${dateStr}</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding: 24px 40px 32px; border-top: 1px solid #E5E7EB;">
+              <p style="margin: 0; font-size: 12px; color: #9CA3AF;">Eclipse Dashboard - Monitoring</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
 // Envoyer une alerte email
 async function sendAlert(site: MonitoredSite, result: CheckResult) {
   if (!site.alert_email || !site.users?.length) return;
@@ -130,24 +222,18 @@ async function sendAlert(site: MonitoredSite, result: CheckResult) {
   if (!userEmail) return;
   
   try {
+    const isDown = result.status === 'down';
+    const emoji = isDown ? '🔴' : '🟡';
+    const statusText = isDown ? 'hors ligne' : 'lent';
+    
     // Utiliser l'API d'envoi d'email existante
     await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ''}/api/emails/send`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         to: userEmail,
-        subject: `🚨 Alerte: ${site.name} est ${result.status === 'down' ? 'hors ligne' : 'lent'}`,
-        html: `
-          <h2>Alerte Monitoring Eclipse</h2>
-          <p>Le site <strong>${site.name}</strong> (${site.url}) est actuellement <strong>${
-            result.status === 'down' ? 'HORS LIGNE' : 'LENT'
-          }</strong>.</p>
-          ${result.responseTime ? `<p>Temps de réponse: ${result.responseTime}ms</p>` : ''}
-          ${result.error ? `<p>Erreur: ${result.error}</p>` : ''}
-          <p>Vérifié le: ${new Date().toLocaleString('fr-FR')}</p>
-          <hr>
-          <p><small>Eclipse Dashboard - Monitoring</small></p>
-        `,
+        subject: `${emoji} Alerte: ${site.name} est ${statusText}`,
+        html: generateAlertEmailTemplate(site, result),
       }),
     });
   } catch (error) {
