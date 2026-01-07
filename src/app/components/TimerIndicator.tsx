@@ -24,7 +24,7 @@ export default function TimerIndicator() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
-  const { userPreferences, isModuleEnabled } = useUserPreferencesOptional();
+  const { userPreferences, enabledModules } = useUserPreferencesOptional();
   const router = useRouter();
 
   const [runningEntry, setRunningEntry] = useState<TimeEntry | null>(null);
@@ -34,7 +34,8 @@ export default function TimerIndicator() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Vérifier si le module time_tracking est activé
-  const isTimeTrackingEnabled = isModuleEnabled?.('time_tracking') ?? false;
+  // On vérifie directement dans enabled_modules pour être sûr
+  const isTimeTrackingEnabled = enabledModules?.includes('time_tracking') ?? false;
 
   // Charger le timer en cours
   useEffect(() => {
@@ -130,8 +131,16 @@ export default function TimerIndicator() {
     }
   };
 
-  // Ne pas afficher si le module n'est pas activé ou si les préférences ne sont pas chargées
-  if (!userPreferences || !isTimeTrackingEnabled) {
+  // Debug log
+  console.log('TimerIndicator Debug:', {
+    hasUser: !!user,
+    hasPreferences: !!userPreferences,
+    enabledModules,
+    isTimeTrackingEnabled,
+  });
+
+  // Ne pas afficher si le module n'est pas activé
+  if (!isTimeTrackingEnabled) {
     return null;
   }
 
