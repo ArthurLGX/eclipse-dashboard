@@ -1149,7 +1149,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
 
               {/* Message de succès Fathom */}
               {noteMode === 'fathom' && fathomConfigured && (
-                <div className="flex items-center gap-2 p-2 rounded-lg bg-success-light border border-success">
+                <div className="flex items-center gap-2 p-2 rounded-lg !bg-success-light border border-success">
                   <IconCheck className="w-4 h-4 text-success" />
                   <span className="text-sm text-success">
                     {t('fathom_will_join') || 'Fathom rejoindra automatiquement votre réunion et prendra les notes'}
