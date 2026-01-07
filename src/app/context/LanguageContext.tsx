@@ -943,8 +943,6 @@ const translations = {
     edit_subtask: 'Modifier la sous-tâche',
     no_subtasks: 'Aucune sous-tâche',
     task_color: 'Couleur du groupe',
-    overdue: 'En retard',
-    owner: 'Propriétaire',
     no_tasks_filter: 'Aucune tâche avec ce statut',
     add_first_task: 'Ajouter une tâche',
     priority: 'Priorité',
@@ -2666,8 +2664,7 @@ const translations = {
     edit_subtask: 'Edit subtask',
     no_subtasks: 'No subtasks',
     task_color: 'Group color',
-    overdue: 'Overdue',
-    owner: 'Owner',
+
     no_tasks_filter: 'No tasks with this status',
     add_first_task: 'Add a task',
     priority: 'Priority',
