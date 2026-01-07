@@ -158,8 +158,14 @@ export default function TimeTrackingPage() {
   }, [entries]);
 
   // Start timer
-  const handleStartTimer = async (projectId?: number, description?: string) => {
-    if (isTimerLoading) return; // Éviter les doubles clics
+  const handleStartTimer = async (projectId?: number, description?: string, estimatedDuration?: number) => {
+    // Éviter les doubles clics ET vérifier qu'il n'y a pas déjà un timer en cours
+    if (isTimerLoading || runningEntry) {
+      if (runningEntry) {
+        showGlobalPopup(t('timer_already_running') || 'Un timer est déjà en cours', 'warning');
+      }
+      return;
+    }
     setIsTimerLoading(true);
     try {
       await createTimeEntry(user!.id, {
@@ -168,6 +174,8 @@ export default function TimeTrackingPage() {
         billable: true,
         description,
         project: projectId,
+        estimated_duration: estimatedDuration,
+        timer_status: 'active',
       });
       await mutateRunning();
       await mutate();
@@ -414,45 +422,83 @@ export default function TimeTrackingPage() {
                   </span>
                 </div>
                 <div className="card">
-                  {dateEntries.map((entry, index) => (
-                    <div key={entry.documentId} className={`p-4 flex items-center justify-between hover:bg-hover transition-colors ${index > 0 ? 'border-t border-default' : ''}`}>
-                      <div className="flex items-center gap-4">
-                        <div className={`w-1 h-10 rounded-full ${entry.billable ? 'bg-success' : 'bg-muted'}`} />
-                        <div>
-                          <p className="font-medium text-primary">
-                            {entry.project?.title || entry.description || t('no_description') || 'Sans description'}
-                          </p>
-                          <p className="text-xs text-muted">
-                            {new Date(entry.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                            {entry.end_time && ` - ${new Date(entry.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`}
-                            {entry.client && ` • ${entry.client.name}`}
-                          </p>
+                  {dateEntries.map((entry, index) => {
+                    // Calculer la progression si temps estimé
+                    const progressPercent = entry.estimated_duration && entry.duration
+                      ? Math.min((entry.duration / entry.estimated_duration) * 100, 100)
+                      : 0;
+                    const isOverEstimate = entry.estimated_duration && entry.duration 
+                      ? entry.duration > entry.estimated_duration 
+                      : false;
+                    const statusColor = entry.timer_status === 'completed' 
+                      ? 'bg-success' 
+                      : entry.timer_status === 'exceeded' || isOverEstimate
+                        ? 'bg-danger'
+                        : entry.billable 
+                          ? 'bg-accent' 
+                          : 'bg-muted';
+                    
+                    return (
+                      <div key={entry.documentId} className={`p-4 hover:bg-hover transition-colors ${index > 0 ? 'border-t border-default' : ''}`}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4 flex-1 min-w-0">
+                            <div className={`w-1 h-12 rounded-full ${statusColor}`} />
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-primary truncate">
+                                {entry.project?.title || entry.description || t('no_description') || 'Sans description'}
+                              </p>
+                              <p className="text-xs text-muted">
+                                {new Date(entry.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                                {entry.end_time && ` - ${new Date(entry.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`}
+                                {entry.client && ` • ${entry.client.name}`}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            {/* Temps réel et estimé */}
+                            <div className="text-right">
+                              <span className="font-mono text-primary">{formatDuration(entry.duration || 0)}</span>
+                              {entry.estimated_duration && (
+                                <span className={`text-xs ml-1 ${isOverEstimate ? 'text-danger' : 'text-muted'}`}>
+                                  / {formatDuration(entry.estimated_duration)}
+                                </span>
+                              )}
+                            </div>
+                            {entry.billable && entry.hourly_rate && (
+                              <span className="text-xs text-success">
+                                {formatCurrency((entry.duration || 0) / 60 * entry.hourly_rate)}
+                              </span>
+                            )}
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => setEditingEntry(entry)}
+                                className="p-1.5 text-muted hover:text-primary hover:bg-hover rounded-lg"
+                              >
+                                <IconEdit className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => setDeleteModal({ isOpen: true, entry })}
+                                className="p-1.5 text-muted hover:text-error hover:bg-error/10 rounded-lg"
+                              >
+                                <IconTrash className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="font-mono text-primary">{formatDuration(entry.duration || 0)}</span>
-                        {entry.billable && entry.hourly_rate && (
-                          <span className="text-xs text-success">
-                            {formatCurrency((entry.duration || 0) / 60 * entry.hourly_rate)}
-                          </span>
+                        {/* Barre de progression */}
+                        {entry.estimated_duration && entry.duration && (
+                          <div className="mt-2 ml-5">
+                            <div className="h-1.5 bg-default rounded-full overflow-hidden">
+                              <div 
+                                className={`h-full rounded-full transition-all ${isOverEstimate ? 'bg-danger' : 'bg-accent'}`}
+                                style={{ width: `${progressPercent}%` }}
+                              />
+                            </div>
+                          </div>
                         )}
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => setEditingEntry(entry)}
-                            className="p-1.5 text-muted hover:text-primary hover:bg-hover rounded-lg"
-                          >
-                            <IconEdit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => setDeleteModal({ isOpen: true, entry })}
-                            className="p-1.5 text-muted hover:text-error hover:bg-error/10 rounded-lg"
-                          >
-                            <IconTrash className="w-4 h-4" />
-                          </button>
-                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))
