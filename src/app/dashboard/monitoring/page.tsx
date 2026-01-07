@@ -64,11 +64,14 @@ export default function MonitoringPage() {
     { refreshInterval: 60000 } // Refresh every minute
   );
 
-  // Filtrer les sites
+  // Filtrer les sites (sites sans site_type sont considérés comme "frontend" par défaut)
   const filteredSites = useMemo(() => {
     if (!sites) return [];
     if (typeFilter === 'all') return sites;
-    return sites.filter(s => s.site_type === typeFilter);
+    return sites.filter(s => {
+      const siteType = s.site_type || 'frontend'; // Défaut: frontend
+      return siteType === typeFilter;
+    });
   }, [sites, typeFilter]);
 
   // Stats
