@@ -63,7 +63,27 @@ interface SidebarItem {
   moduleId?: string; // ID du module pour le filtrage dynamique
 }
 
+// Wrapper component that provides the context
 export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <ProtectedRoute>
+      <TrialExpiredGuard>
+        <UserPreferencesProvider>
+          <OnboardingProvider>
+            <DashboardLayoutContent>{children}</DashboardLayoutContent>
+          </OnboardingProvider>
+        </UserPreferencesProvider>
+      </TrialExpiredGuard>
+    </ProtectedRoute>
+  );
+}
+
+// Inner component that can use the UserPreferences context
+function DashboardLayoutContent({
   children,
 }: {
   children: React.ReactNode;
@@ -80,7 +100,7 @@ export default function DashboardLayout({
   const { isLinkVisible } = useSidebar();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
   
-  // Hook pour les préférences utilisateur (modules activés)
+  // Hook pour les préférences utilisateur (modules activés) - NOW INSIDE THE PROVIDER
   const userPreferences = useUserPreferencesOptional();
 
   // Hook pour l'utilisateur avec profile_picture
@@ -650,9 +670,5 @@ export default function DashboardLayout({
             </div>
           </motion.main>
         </div>
-        </OnboardingProvider>
-        </UserPreferencesProvider>
-      </TrialExpiredGuard>
-    </ProtectedRoute>
   );
 }
