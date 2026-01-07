@@ -286,7 +286,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                   borderRadius: '8px',
                 }}
                 labelStyle={{ color: '#f3f4f6' }}
-                formatter={(value: number) => [`${value}ms`, 'Temps de réponse']}
+                formatter={(value) => [`${value}ms`, 'Temps de réponse']}
               />
               <Area
                 type="monotone"
@@ -331,7 +331,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                     border: '1px solid #374151',
                     borderRadius: '8px',
                   }}
-                  formatter={(value: number) => [`${value}%`, 'Uptime']}
+                  formatter={(value) => [`${value}%`, 'Uptime']}
                 />
                 <Line
                   type="monotone"
@@ -418,7 +418,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                   border: '1px solid #374151',
                   borderRadius: '8px',
                 }}
-                formatter={(value: number) => [value, 'Vérifications']}
+                formatter={(value) => [value, 'Vérifications']}
               />
               <Bar 
                 dataKey="count" 
