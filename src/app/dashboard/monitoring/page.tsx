@@ -18,8 +18,6 @@ import {
   IconDeviceDesktop,
   IconApi,
   IconKey,
-  IconEye,
-  IconEyeOff,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -33,7 +31,7 @@ import {
   updateMonitoredSite 
 } from '@/lib/api';
 import { getFaviconUrl } from '@/lib/favicon';
-import type { MonitoredSite, SiteStatus, SiteType, HostingProvider, ServerCredentials } from '@/types';
+import type { MonitoredSite, SiteStatus, SiteType, HostingProvider } from '@/types';
 import useSWR from 'swr';
 
 const STATUS_COLORS: Record<SiteStatus, { bg: string; text: string; icon: React.ReactNode }> = {

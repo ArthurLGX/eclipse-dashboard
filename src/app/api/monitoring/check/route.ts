@@ -47,7 +47,7 @@ async function checkSite(url: string, alertThreshold: number): Promise<CheckResu
     const responseTime = Date.now() - startTime;
     
     // Vérifier le SSL (si HTTPS)
-    let sslExpiry: string | null = null;
+    const sslExpiry: string | null = null;
     let sslValid = true;
     
     if (url.startsWith('https://')) {

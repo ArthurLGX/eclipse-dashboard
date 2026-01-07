@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
-import { getFaviconUrl as getFaviconUrlLib, FAVICON_SERVICES, extractDomain } from '@/lib/favicon';
+import { FAVICON_SERVICES, extractDomain } from '@/lib/favicon';
 
 interface ClientAvatarProps {
   name: string;
@@ -18,16 +17,6 @@ const sizeConfig = {
   md: { container: 'w-12 h-12', text: 'text-lg', iconSize: 32 },
   lg: { container: 'w-16 h-16', text: 'text-2xl', iconSize: 48 },
 };
-
-/**
- * Génère l'URL du favicon avec fallback chain
- */
-function getFaviconUrl(website: string): string | null {
-  const domain = extractDomain(website);
-  if (!domain) return null;
-  // Utilise DuckDuckGo par défaut (plus fiable)
-  return getFaviconUrlLib(website, 'duckduckgo');
-}
 
 export default function ClientAvatar({
   name,
