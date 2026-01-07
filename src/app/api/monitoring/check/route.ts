@@ -275,8 +275,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
+  // URL du dashboard pour éviter de se vérifier soi-même
+  const dashboardUrl = process.env.NEXT_PUBLIC_APP_URL || '';
+  const dashboardHost = dashboardUrl ? new URL(dashboardUrl).host : '';
+  
   try {
     // Récupérer tous les sites à vérifier
+    console.log(`Fetching monitored sites from ${STRAPI_URL}`);
+    
     const response = await fetch(
       `${STRAPI_URL}/api/monitored-sites?populate=users&pagination[pageSize]=100`,
       {
@@ -287,18 +293,35 @@ export async function GET(request: NextRequest) {
     );
     
     if (!response.ok) {
-      throw new Error('Failed to fetch monitored sites');
+      const errorText = await response.text();
+      console.error('Strapi response error:', response.status, errorText);
+      throw new Error(`Failed to fetch monitored sites: ${response.status}`);
     }
     
-    const { data: sites } = await response.json() as { data: MonitoredSite[] };
+    const responseData = await response.json();
+    const sites = responseData.data as MonitoredSite[] | undefined;
     
     if (!sites?.length) {
       return NextResponse.json({ message: 'No sites to check', checked: 0 });
     }
     
     // Filtrer les sites qui doivent être vérifiés (basé sur check_interval)
+    // Et éviter de vérifier le propre domaine du dashboard
     const now = new Date();
     const sitesToCheck = sites.filter(site => {
+      // Éviter de vérifier le dashboard lui-même pour éviter les boucles
+      try {
+        const siteHost = new URL(site.url).host;
+        if (dashboardHost && siteHost === dashboardHost) {
+          console.log(`Skipping self-check for ${site.url}`);
+          return false;
+        }
+      } catch {
+        // URL invalide, on la skippe
+        console.error(`Invalid URL for site ${site.name}: ${site.url}`);
+        return false;
+      }
+      
       if (!site.last_check) return true;
       const lastCheck = new Date(site.last_check);
       const minutesSinceLastCheck = (now.getTime() - lastCheck.getTime()) / 60000;
@@ -307,31 +330,43 @@ export async function GET(request: NextRequest) {
     
     console.log(`Checking ${sitesToCheck.length} sites out of ${sites.length}`);
     
-    // Vérifier chaque site
+    // Vérifier chaque site avec gestion d'erreur individuelle
     const results = await Promise.all(
       sitesToCheck.map(async (site) => {
-        const result = await checkSite(site.url, site.alert_threshold);
-        
-        // Mettre à jour le statut dans Strapi
-        await updateSiteStatus(site.documentId, result, {
-          total_checks: site.total_checks || 0,
-          successful_checks: site.successful_checks || 0,
-        });
-        
-        // Envoyer une alerte si nécessaire
-        if (result.status === 'down' || result.status === 'slow') {
-          // Ne pas envoyer si le site était déjà down
-          if (site.site_status !== result.status) {
-            await sendAlert(site, result);
+        try {
+          const result = await checkSite(site.url, site.alert_threshold);
+          
+          // Mettre à jour le statut dans Strapi
+          await updateSiteStatus(site.documentId, result, {
+            total_checks: site.total_checks || 0,
+            successful_checks: site.successful_checks || 0,
+          });
+          
+          // Envoyer une alerte si nécessaire
+          if (result.status === 'down' || result.status === 'slow') {
+            // Ne pas envoyer si le site était déjà down
+            if (site.site_status !== result.status) {
+              await sendAlert(site, result);
+            }
           }
+          
+          return {
+            name: site.name,
+            url: site.url,
+            status: result.status,
+            responseTime: result.responseTime,
+            error: null,
+          };
+        } catch (error) {
+          console.error(`Error checking site ${site.name}:`, error);
+          return {
+            name: site.name,
+            url: site.url,
+            status: 'error' as const,
+            responseTime: null,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          };
         }
-        
-        return {
-          name: site.name,
-          url: site.url,
-          status: result.status,
-          responseTime: result.responseTime,
-        };
       })
     );
     
@@ -344,7 +379,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Monitoring check error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Monitoring check failed' },
+      { 
+        error: error instanceof Error ? error.message : 'Monitoring check failed',
+        details: error instanceof Error ? error.stack : undefined,
+      },
       { status: 500 }
     );
   }
