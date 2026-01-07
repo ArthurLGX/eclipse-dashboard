@@ -862,7 +862,6 @@ export async function fetchUserMedia(): Promise<MediaFile[]> {
   }
 
   const result = await response.json();
-  console.log('API user-medias response:', result);
   const userMedias = result.data || [];
   
   // Transformer en MediaFile avec URLs absolues
@@ -1917,13 +1916,12 @@ export const createSentEmail = async (
   userId: number,
   data: CreateSentEmailData
 ): Promise<SentEmail> => {
-  console.log('[DEBUG] Creating sent email for userId:', userId);
+ 
   // Strapi v5: pour relation manyToOne, utiliser directement l'id ou set
   const response = await post<ApiResponse<SentEmail>>(
     'sent-emails',
     { ...data, users: { set: [userId] } }
   );
-  console.log('[DEBUG] Created sent email:', response.data?.documentId);
   return response.data;
 };
 
@@ -2546,7 +2544,7 @@ export const fetchCalendarEvents = async (
     clientId?: string;
   }
 ): Promise<CalendarEvent[]> => {
-  let query = `calendar-events?filters[users][id][$eq]=${userId}&populate=project,client&sort=start_date:asc`;
+  let query = `calendar-events?filters[users][id][$eq]=${userId}&populate[0]=project&populate[1]=client&populate[2]=meeting_note&sort=start_date:asc`;
   
   if (filters?.from) {
     query += `&filters[start_date][$gte]=${filters.from}`;
@@ -2621,7 +2619,7 @@ export const fetchMeetingNotes = async (
     status?: string;
   }
 ): Promise<MeetingNote[]> => {
-  let query = `meeting-notes?filters[users][id][$eq]=${userId}&populate=calendar_event,project,client&sort=meeting_date:desc`;
+  let query = `meeting-notes?filters[users][id][$eq]=${userId}&populate[0]=calendar_event&populate[1]=project&populate[2]=client&sort=meeting_date:desc`;
   
   if (filters?.calendarEventId) {
     query += `&filters[calendar_event][documentId][$eq]=${filters.calendarEventId}`;
@@ -2643,7 +2641,7 @@ export const fetchMeetingNotes = async (
 /** Récupère une note de réunion par son documentId */
 export const fetchMeetingNoteById = async (documentId: string): Promise<MeetingNote | null> => {
   const response = await get<ApiResponse<MeetingNote>>(
-    `meeting-notes/${documentId}?populate=calendar_event,project,client`
+    `meeting-notes/${documentId}?populate[0]=calendar_event&populate[1]=project&populate[2]=client`
   );
   return response.data || null;
 };
@@ -2651,7 +2649,7 @@ export const fetchMeetingNoteById = async (documentId: string): Promise<MeetingN
 /** Récupère la note de réunion liée à un événement calendrier */
 export const fetchMeetingNoteByCalendarEvent = async (calendarEventId: string): Promise<MeetingNote | null> => {
   const response = await get<ApiResponse<MeetingNote[]>>(
-    `meeting-notes?filters[calendar_event][documentId][$eq]=${calendarEventId}&populate=calendar_event,project,client`
+    `meeting-notes?filters[calendar_event][documentId][$eq]=${calendarEventId}&populate[0]=calendar_event&populate[1]=project&populate[2]=client`
   );
   return response.data?.[0] || null;
 };
@@ -2703,7 +2701,7 @@ export const deleteMeetingNote = async (documentId: string): Promise<void> => {
 /** Récupère tous les devis d'un utilisateur */
 export const fetchQuotes = async (userId: number): Promise<Facture[]> => {
   const response = await get<ApiResponse<Facture[]>>(
-    `factures?filters[user][id][$eq]=${userId}&filters[document_type][$eq]=quote&populate=client_id,project,invoice_lines&sort=createdAt:desc`
+    `factures?filters[user][id][$eq]=${userId}&filters[document_type][$eq]=quote&populate[0]=client_id&populate[1]=project&populate[2]=invoice_lines&sort=createdAt:desc`
   );
   return response.data || [];
 };
@@ -2733,7 +2731,7 @@ export const convertQuoteToInvoice = async (
 ): Promise<Facture> => {
   // Récupérer le devis
   const quoteResponse = await get<ApiResponse<Facture>>(
-    `factures/${quoteDocumentId}?populate=client_id,project,invoice_lines`
+    `factures/${quoteDocumentId}?populate[0]=client_id&populate[1]=project&populate[2]=invoice_lines`
   );
   const quote = quoteResponse.data;
   
