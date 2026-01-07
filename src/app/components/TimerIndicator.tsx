@@ -134,14 +134,6 @@ export default function TimerIndicator() {
     }
   };
 
-  // Debug log
-  console.log('TimerIndicator Debug:', {
-    hasUser: !!user,
-    hasPreferences: !!userPreferences,
-    enabledModules,
-    isTimeTrackingEnabled,
-  });
-
   // Ne pas afficher si le module n'est pas activé
   if (!isTimeTrackingEnabled) {
     return null;

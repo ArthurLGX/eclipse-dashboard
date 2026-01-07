@@ -55,6 +55,7 @@ export default function TimeTrackingPage() {
   // Running timer state
   const [runningTime, setRunningTime] = useState<number>(0);
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
+  const [isTimerLoading, setIsTimerLoading] = useState(false);
 
   // Fetch data
   const { data: projectsData } = useProjects(user?.id);
@@ -156,6 +157,8 @@ export default function TimeTrackingPage() {
 
   // Start timer
   const handleStartTimer = async (projectId?: number, description?: string) => {
+    if (isTimerLoading) return; // Éviter les doubles clics
+    setIsTimerLoading(true);
     try {
       await createTimeEntry(user!.id, {
         start_time: new Date().toISOString(),
@@ -169,12 +172,15 @@ export default function TimeTrackingPage() {
       showGlobalPopup(t('timer_started') || 'Timer démarré', 'success');
     } catch {
       showGlobalPopup(t('timer_error') || 'Erreur lors du démarrage', 'error');
+    } finally {
+      setIsTimerLoading(false);
     }
   };
 
   // Stop timer
   const handleStopTimer = async () => {
-    if (!runningEntry) return;
+    if (!runningEntry || isTimerLoading) return; // Éviter les doubles clics
+    setIsTimerLoading(true);
     try {
       await stopTimeEntry(runningEntry.documentId);
       await mutateRunning();
@@ -182,6 +188,8 @@ export default function TimeTrackingPage() {
       showGlobalPopup(t('timer_stopped') || 'Timer arrêté', 'success');
     } catch {
       showGlobalPopup(t('timer_error') || 'Erreur lors de l\'arrêt', 'error');
+    } finally {
+      setIsTimerLoading(false);
     }
   };
 
@@ -274,17 +282,27 @@ export default function TimeTrackingPage() {
               {runningEntry ? (
                 <button
                   onClick={handleStopTimer}
-                  className="btn-primary bg-error hover:bg-error/90 px-6 py-3 rounded-xl flex items-center gap-2"
+                  disabled={isTimerLoading}
+                  className="btn-primary bg-error hover:bg-error/90 px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50"
                 >
-                  <IconPlayerStop className="w-5 h-5" />
+                  {isTimerLoading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <IconPlayerStop className="w-5 h-5" />
+                  )}
                   {t('stop') || 'Arrêter'}
                 </button>
               ) : (
                 <button
                   onClick={() => handleStartTimer()}
-                  className="btn-primary px-6 py-3 rounded-xl flex items-center gap-2"
+                  disabled={isTimerLoading}
+                  className="btn-primary px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50"
                 >
-                  <IconPlayerPlay className="w-5 h-5" />
+                  {isTimerLoading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <IconPlayerPlay className="w-5 h-5" />
+                  )}
                   {t('start') || 'Démarrer'}
                 </button>
               )}
@@ -471,11 +489,16 @@ function TimeEntryModal({ entry, projects, onClose, onSave, userId }: TimeEntryM
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
   
+  // Calculer l'heure actuelle pour les valeurs par défaut
+  const now = new Date();
+  const currentTime = now.toTimeString().slice(0, 5);
+  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000).toTimeString().slice(0, 5);
+  
   const [description, setDescription] = useState(entry?.description || '');
   const [projectId, setProjectId] = useState<string>(entry?.project?.documentId || '');
   const [date, setDate] = useState(entry ? new Date(entry.start_time).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
-  const [startTime, setStartTime] = useState(entry ? new Date(entry.start_time).toTimeString().slice(0, 5) : '09:00');
-  const [endTime, setEndTime] = useState(entry?.end_time ? new Date(entry.end_time).toTimeString().slice(0, 5) : '17:00');
+  const [startTime, setStartTime] = useState(entry ? new Date(entry.start_time).toTimeString().slice(0, 5) : currentTime);
+  const [endTime, setEndTime] = useState(entry?.end_time ? new Date(entry.end_time).toTimeString().slice(0, 5) : oneHourLater);
   const [billable, setBillable] = useState(entry?.billable ?? true);
   const [hourlyRate, setHourlyRate] = useState(entry?.hourly_rate || 0);
   const [saving, setSaving] = useState(false);
