@@ -147,6 +147,7 @@ export default function FacturePage() {
   const emptyFacture: Facture = {
     id: 0,
     documentId: '',
+    document_type: 'invoice',
     reference: preferences.invoice.autoNumbering ? `${preferences.invoice.invoicePrefix}${Date.now().toString().slice(-6)}` : '',
     date: today.toISOString().split('T')[0],
     due_date: defaultDueDate.toISOString().split('T')[0],
