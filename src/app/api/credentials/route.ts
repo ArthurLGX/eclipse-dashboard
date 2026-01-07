@@ -23,7 +23,9 @@ function encryptData(plaintext: string): string {
 
 /**
  * Déchiffre les données sensibles côté serveur
+ * @note Cette fonction est préparée pour une utilisation future (ex: tester connexion SSH)
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function decryptData(ciphertext: string): string {
   const [ivBase64, authTagBase64, encrypted] = ciphertext.split(':');
   

@@ -19,7 +19,6 @@ import {
 } from 'recharts';
 import { 
   IconTrendingUp, 
-  IconTrendingDown, 
   IconClock, 
   IconCheck, 
   IconX,
@@ -39,7 +38,6 @@ interface MonitoringLog {
 
 interface MonitoringChartsProps {
   logs: MonitoringLog[];
-  siteName: string;
 }
 
 // Couleurs pour les graphiques
@@ -52,7 +50,7 @@ const COLORS = {
   muted: '#64748b',
 };
 
-export default function MonitoringCharts({ logs, siteName }: MonitoringChartsProps) {
+export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
   const { t } = useLanguage();
 
   // Données pour le graphique de temps de réponse
