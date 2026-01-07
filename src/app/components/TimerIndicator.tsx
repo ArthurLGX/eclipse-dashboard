@@ -27,6 +27,9 @@ import type { TimeEntry } from '@/types';
 
 type TimerCompletionStatus = 'completed' | 'exceeded_continue' | 'exceeded_success' | 'exceeded_failed';
 
+// Custom event for timer synchronization
+export const TIMER_REFRESH_EVENT = 'timer-refresh';
+
 export default function TimerIndicator() {
   const { t } = useLanguage();
   const { user } = useAuth();
@@ -51,27 +54,37 @@ export default function TimerIndicator() {
   const isTimeTrackingEnabled = enabledModules?.includes('time_tracking') ?? false;
 
   // Charger le timer en cours
+  const loadRunningEntry = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const entry = await fetchRunningTimeEntry(user.id);
+      setRunningEntry(entry);
+      // Reset modal shown state if new entry
+      if (entry && (!runningEntry || entry.documentId !== runningEntry.documentId)) {
+        setExceededModalShown(false);
+      }
+    } catch {
+      setRunningEntry(null);
+    }
+  }, [user?.id, runningEntry?.documentId]);
+
   useEffect(() => {
     if (!user?.id || !isTimeTrackingEnabled) return;
-
-    const loadRunningEntry = async () => {
-      try {
-        const entry = await fetchRunningTimeEntry(user.id);
-        setRunningEntry(entry);
-        // Reset modal shown state if new entry
-        if (entry && (!runningEntry || entry.documentId !== runningEntry.documentId)) {
-          setExceededModalShown(false);
-        }
-      } catch {
-        setRunningEntry(null);
-      }
-    };
 
     loadRunningEntry();
     const interval = setInterval(loadRunningEntry, 10000);
 
-    return () => clearInterval(interval);
-  }, [user?.id, isTimeTrackingEnabled, runningEntry?.documentId]);
+    // Écouter l'événement de refresh pour synchronisation immédiate
+    const handleRefresh = () => {
+      loadRunningEntry();
+    };
+    window.addEventListener(TIMER_REFRESH_EVENT, handleRefresh);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener(TIMER_REFRESH_EVENT, handleRefresh);
+    };
+  }, [user?.id, isTimeTrackingEnabled, loadRunningEntry]);
 
   // Mettre à jour le timer en temps réel
   useEffect(() => {

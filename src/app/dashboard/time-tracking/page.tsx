@@ -31,6 +31,14 @@ import {
 import { useProjects } from '@/hooks/useApi';
 import type { TimeEntry, Project } from '@/types';
 import useSWR from 'swr';
+import { TIMER_REFRESH_EVENT } from '@/app/components/TimerIndicator';
+
+// Helper to trigger timer refresh across components
+const triggerTimerRefresh = () => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(TIMER_REFRESH_EVENT));
+  }
+};
 
 export default function TimeTrackingPage() {
   const { t } = useLanguage();
@@ -187,6 +195,7 @@ export default function TimeTrackingPage() {
       });
       await mutateRunning();
       await mutate();
+      triggerTimerRefresh(); // Synchroniser TimerIndicator
       showGlobalPopup(t('timer_started') || 'Timer démarré', 'success');
     } catch {
       showGlobalPopup(t('timer_error') || 'Erreur lors du démarrage', 'error');
@@ -203,6 +212,7 @@ export default function TimeTrackingPage() {
       await stopTimeEntry(runningEntry.documentId);
       await mutateRunning();
       await mutate();
+      triggerTimerRefresh(); // Synchroniser TimerIndicator
       showGlobalPopup(t('timer_stopped') || 'Timer arrêté', 'success');
     } catch {
       showGlobalPopup(t('timer_error') || 'Erreur lors de l\'arrêt', 'error');
@@ -529,6 +539,7 @@ export default function TimeTrackingPage() {
             onSave={async () => {
               await mutate();
               await mutateRunning();
+              triggerTimerRefresh(); // Synchroniser TimerIndicator après mise à jour
               closeModal();
             }}
             userId={user!.id}
