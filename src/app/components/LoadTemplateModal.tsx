@@ -13,6 +13,7 @@ import {
   IconAlertTriangle,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useModalScroll } from '@/hooks/useModalFocus';
 import type { CustomTemplate } from '@/types';
 
 interface LoadTemplateModalProps {
@@ -39,6 +40,9 @@ export default function LoadTemplateModal({
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [settingDefault, setSettingDefault] = useState<string | null>(null);
+
+  // Bloquer le scroll du body quand la modale est ouverte
+  useModalScroll(isOpen);
 
   // Reset selection when modal opens
   useEffect(() => {

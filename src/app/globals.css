@@ -642,6 +642,12 @@ body:has(.dashboard-wrapper) {
   overflow-y: auto;
 }
 
+/* Block scroll when modal is open */
+body.modal-open {
+  overflow: hidden !important;
+  padding-right: var(--scrollbar-width, 0px);
+}
+
 main {
   display: flex;
   flex-direction: column;

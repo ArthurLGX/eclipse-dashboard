@@ -7,6 +7,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { useRouter } from 'next/navigation';
+import { useModalScroll } from '@/hooks/useModalFocus';
 
 interface Plan {
   id: number;
@@ -37,6 +38,9 @@ export default function FreePlanModal({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [trialProgress, setTrialProgress] = useState(0);
+
+  // Bloquer le scroll du body quand la modale est ouverte
+  useModalScroll(isOpen);
 
   // Simuler la progression du trial (30 jours)
   useEffect(() => {

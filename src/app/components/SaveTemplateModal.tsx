@@ -10,6 +10,7 @@ import {
   IconStarFilled,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useModalScroll } from '@/hooks/useModalFocus';
 
 interface GradientStop {
   id: string;
@@ -49,6 +50,9 @@ export default function SaveTemplateModal({
   const [isDefault, setIsDefault] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+
+  // Bloquer le scroll du body quand la modale est ouverte
+  useModalScroll(isOpen);
 
   const handleSave = async () => {
     if (!name.trim()) {

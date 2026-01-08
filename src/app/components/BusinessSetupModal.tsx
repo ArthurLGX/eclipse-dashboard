@@ -130,7 +130,7 @@ export default function BusinessSetupModal() {
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 border-accent-light rounded-xl">
+              <div className="p-3 bg-accent-light rounded-xl">
                 <IconSparkles className="w-8 h-8 text-accent" />
               </div>
               <div>

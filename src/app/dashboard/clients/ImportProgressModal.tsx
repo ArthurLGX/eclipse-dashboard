@@ -9,6 +9,7 @@ import {
   IconAlertCircle,
   IconPlayerSkipForward
 } from '@tabler/icons-react';
+import { useModalScroll } from '@/hooks/useModalFocus';
 
 export interface ImportProgressItem {
   id: string;
@@ -38,6 +39,9 @@ export default function ImportProgressModal({
   t 
 }: ImportProgressModalProps) {
   const listRef = useRef<HTMLDivElement>(null);
+
+  // Bloquer le scroll du body quand la modale est ouverte
+  useModalScroll(isOpen);
 
   // Auto-scroll to bottom when new items are added
   useEffect(() => {

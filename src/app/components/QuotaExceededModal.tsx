@@ -9,6 +9,7 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useModalScroll } from '@/hooks/useModalFocus';
 
 interface QuotaExceededModalProps<T> {
   isOpen: boolean;
@@ -39,6 +40,9 @@ export default function QuotaExceededModal<T>({
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [searchTerm, setSearchTerm] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Bloquer le scroll du body quand la modale est ouverte
+  useModalScroll(isOpen);
 
   const exceededCount = items.length - quota;
   const mustRemove = exceededCount;

@@ -279,7 +279,8 @@ export default function MeetingIntegrationsPage() {
         }`}>
           {isConnected ? (
             <>
-              <IconCheck className="w-4 h-4" />
+                            <div className="w-2 h-2 bg-success animate-pulse rounded-full"></div>
+
               {t('fathom_connected') || 'Connecté et actif'}
             </>
           ) : (

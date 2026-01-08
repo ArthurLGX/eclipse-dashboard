@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import Image from 'next/image';
 import {
   IconPlus,
   IconCheck,
@@ -23,6 +24,7 @@ import {
   IconUser,
   IconPalette,
 } from '@tabler/icons-react';
+import ExcelImportModal, { type ImportedTask } from './ExcelImportModal';
 import type { User } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -51,6 +53,7 @@ interface Collaborator {
 
 interface ProjectTasksProps {
   projectDocumentId: string;
+  projectName?: string;
   userId: number;
   canEdit: boolean;
   collaborators?: Collaborator[];
@@ -160,7 +163,8 @@ function AvatarStack({
 }
 
 export default function ProjectTasks({ 
-  projectDocumentId, 
+  projectDocumentId,
+  projectName = 'Projet',
   userId, 
   canEdit, 
   collaborators = [],
@@ -231,6 +235,7 @@ export default function ProjectTasks({
   const [filter, setFilter] = useState<TaskStatus | 'all'>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [parentTaskForSubtask, setParentTaskForSubtask] = useState<ProjectTask | null>(null);
+  const [showExcelImport, setShowExcelImport] = useState(false);
 
 
   // Formulaire nouvelle tâche
@@ -329,6 +334,187 @@ export default function ProjectTasks({
       console.error('Error deleting task:', error);
       showGlobalPopup(t('error_generic') || 'Erreur', 'error');
     }
+  };
+
+  // Import de tâches depuis Excel
+  const handleExcelImport = async (
+    importedTasks: ImportedTask[], 
+    options: { 
+      sendNotificationEmails: boolean;
+      emailSubject?: string;
+      emailMessage?: string;
+    }
+  ) => {
+    try {
+      // Collecter les tâches assignées pour les notifications
+      const tasksToNotify: { 
+        title: string; 
+        description: string;
+        priority: string;
+        due_date: string | null;
+        email: string; 
+        username: string;
+      }[] = [];
+
+      // Créer les tâches une par une
+      for (let i = 0; i < importedTasks.length; i++) {
+        const task = importedTasks[i];
+        const assignedMember = task.assigned_to 
+          ? allMembers.find(m => m.documentId === task.assigned_to) 
+          : undefined;
+
+        await createProjectTask({
+          project: projectDocumentId,
+          title: task.title,
+          description: task.description,
+          task_status: task.task_status,
+          priority: task.priority,
+          progress: task.progress || 0,
+          start_date: task.start_date,
+          due_date: task.due_date,
+          estimated_hours: task.estimated_hours,
+          actual_hours: task.actual_hours,
+          created_user: userId,
+          assigned_to: assignedMember?.id,
+          order: tasks.length + i,
+          color: task.color || TASK_COLORS[i % TASK_COLORS.length],
+          tags: task.tags && task.tags.length > 0 ? task.tags : undefined,
+        });
+
+        // Collecter pour notification si assigné et emails activés
+        // Exclure les tâches terminées ou annulées
+        const excludedStatuses: TaskStatus[] = ['completed', 'cancelled'];
+        if (options.sendNotificationEmails && assignedMember && task.assigned_to_email && !excludedStatuses.includes(task.task_status)) {
+          tasksToNotify.push({
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            due_date: task.due_date,
+            email: assignedMember.email,
+            username: assignedMember.username,
+          });
+        }
+      }
+
+      // Envoyer UN SEUL email consolidé par collaborateur
+      if (options.sendNotificationEmails && tasksToNotify.length > 0) {
+        const projectUrl = typeof window !== 'undefined' 
+          ? `${window.location.origin}/dashboard/projects/${projectDocumentId}` 
+          : '';
+        
+        // Grouper par email
+        const uniqueEmails = [...new Set(tasksToNotify.map(t => t.email))];
+        
+        for (const email of uniqueEmails) {
+          const userTasks = tasksToNotify.filter(t => t.email === email);
+          const username = userTasks[0].username;
+          
+          // Générer le HTML de l'email avec toutes les tâches de l'utilisateur
+          const emailHtml = generateTaskNotificationEmail({
+            username,
+            tasks: userTasks,
+            projectName,
+            projectUrl,
+            message: options.emailMessage || `Vous avez de nouvelles tâches assignées sur le projet "${projectName}".`,
+          });
+          
+          // Envoyer l'email via l'API
+          try {
+            await fetch('/api/emails/send', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+              },
+              body: JSON.stringify({
+                to: [email],
+                subject: options.emailSubject || `Nouvelles tâches assignées - ${projectName}`,
+                html: emailHtml,
+              }),
+            });
+          } catch (emailError) {
+            console.error(`Failed to send email to ${email}:`, emailError);
+          }
+        }
+        
+        showGlobalPopup(
+          `${importedTasks.length} ${t('tasks_imported') || 'tâches importées'} • ${uniqueEmails.length} ${t('emails_sent') || 'email(s) envoyé(s)'}`,
+          'success'
+        );
+      } else {
+        showGlobalPopup(
+          `${importedTasks.length} ${t('tasks_imported') || 'tâches importées avec succès'}`,
+          'success'
+        );
+      }
+      
+      loadTasks();
+    } catch (error) {
+      console.error('Error importing tasks:', error);
+      throw error; // Propager l'erreur pour que le modal la gère
+    }
+  };
+  
+  // Générer le HTML de l'email de notification de tâches
+  const generateTaskNotificationEmail = ({
+    username,
+    tasks,
+    projectName: pName,
+    projectUrl,
+    message,
+  }: {
+    username: string;
+    tasks: { title: string; description: string; priority: string; due_date: string | null }[];
+    projectName: string;
+    projectUrl: string;
+    message: string;
+  }): string => {
+    const taskListHtml = tasks.map(task => `
+      <tr>
+        <td style="padding: 12px 16px; border-bottom: 1px solid #E5E7EB;">
+          <div style="font-weight: 600; color: #1F2937; margin-bottom: 4px;">${task.title}</div>
+          ${task.description ? `<div style="font-size: 13px; color: #6B7280; margin-bottom: 4px;">${task.description.substring(0, 100)}${task.description.length > 100 ? '...' : ''}</div>` : ''}
+          <div style="font-size: 12px; color: #9CA3AF;">
+            ${task.priority ? `Priorité: ${task.priority} • ` : ''}
+            ${task.due_date ? `Échéance: ${new Date(task.due_date).toLocaleDateString('fr-FR')}` : ''}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F3F4F6;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); border-radius: 16px 16px 0 0; padding: 32px; text-align: center;">
+      <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">📋 Nouvelles tâches assignées</h1>
+      <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px;">Projet: ${pName}</p>
+    </div>
+    <div style="background-color: white; padding: 32px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+      <p style="color: #1F2937; font-size: 16px; margin: 0 0 16px;">Bonjour <strong>${username}</strong>,</p>
+      <p style="color: #4B5563; font-size: 15px; line-height: 1.6; margin: 0 0 24px;">${message.replace(/\n/g, '<br>')}</p>
+      <div style="background-color: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: inline-block;">
+        <span style="color: #7C3AED; font-weight: 600; font-size: 14px;">${tasks.length} tâche${tasks.length > 1 ? 's' : ''} ${tasks.length > 1 ? 'vous ont été assignées' : 'vous a été assignée'}</span>
+      </div>
+      <table style="width: 100%; border-collapse: collapse; background-color: #F9FAFB; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
+        <thead>
+          <tr><th style="padding: 12px 16px; text-align: left; background-color: #F3F4F6; color: #6B7280; font-size: 12px; font-weight: 600; text-transform: uppercase;">Vos tâches</th></tr>
+        </thead>
+        <tbody>${taskListHtml}</tbody>
+      </table>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${projectUrl}" style="display: inline-block; background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);">Voir mes tâches →</a>
+      </div>
+      <p style="color: #9CA3AF; font-size: 13px; text-align: center; margin: 24px 0 0; padding-top: 20px; border-top: 1px solid #E5E7EB;">Cet email a été envoyé automatiquement depuis Eclipse Dashboard.</p>
+    </div>
+  </div>
+</body>
+</html>`;
   };
 
   const handleStatusChange = async (taskDocumentId: string, status: TaskStatus) => {
@@ -469,13 +655,41 @@ export default function ProjectTasks({
         </div>
 
         {canEdit && (
-          <button
-            onClick={() => setShowNewTaskForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors"
-          >
-            <IconPlus className="w-4 h-4" />
-            {t('add_task') || 'Nouvelle tâche'}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Bouton Import Excel / Google Sheets */}
+            <button
+              onClick={() => setShowExcelImport(true)}
+              className="flex items-center gap-2 px-3 py-2 !bg-muted hover:!bg-accent-light text-primary border border-default rounded-lg transition-colors"
+              title={t('import_spreadsheet') || 'Importer depuis Excel ou Google Sheets'}
+            >
+              <div className="flex items-center -space-x-1">
+                <Image
+                  src="/images/excel-icon.png"
+                  alt="Excel"
+                  width={18}
+                  height={18}
+                  className="object-contain"
+                />
+                <Image
+                  src="/images/google-sheets-icon.png"
+                  alt="Google Sheets"
+                  width={18}
+                  height={18}
+                  className="object-contain"
+                />
+              </div>
+              <span className="hidden sm:inline text-primary text-sm">{t('import') || 'Importer'}</span>
+            </button>
+            
+            {/* Bouton Nouvelle tâche */}
+            <button
+              onClick={() => setShowNewTaskForm(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors"
+            >
+              <IconPlus className="w-4 h-4" />
+              {t('add_task') || 'Nouvelle tâche'}
+            </button>
+          </div>
         )}
       </div>
 
@@ -832,6 +1046,17 @@ export default function ProjectTasks({
           />
         )}
       </AnimatePresence>
+
+      {/* Modal d'import Excel */}
+      <ExcelImportModal
+        isOpen={showExcelImport}
+        onClose={() => setShowExcelImport(false)}
+        onImport={handleExcelImport}
+        projectDocumentId={projectDocumentId}
+        projectName={projectName}
+        projectUrl={typeof window !== 'undefined' ? `${window.location.origin}/dashboard/projects/${projectDocumentId}` : ''}
+        collaborators={allMembers}
+      />
     </div>
   );
 }

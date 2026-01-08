@@ -20,6 +20,7 @@ import {
   IconBellOff,
   IconNotes,
   IconLoader2,
+  IconUnlink,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -40,6 +41,7 @@ import { useProjects, useClients } from '@/hooks/useApi';
 import { useNotifications, scheduleNotification } from '@/hooks/useNotifications';
 import type { CalendarEvent, EventType, Project, Client } from '@/types';
 import useSWR from 'swr';
+import Link from 'next/link';
 
 const EVENT_COLORS: Record<EventType, string> = {
   meeting: '#6366f1',
@@ -65,6 +67,7 @@ export default function CalendarPage() {
   const { showGlobalPopup } = usePopup();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [isConnected, setIsConnected] = useState(false);
   
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -123,6 +126,17 @@ export default function CalendarPage() {
     }
   }, [searchParams, projects, clients, router, defaultClient]);
 
+  // Check if user is connected to fathom
+  useEffect(() => {
+    if (user?.id) {
+      fetch(`/api/integrations/fathom?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log('Fathom config:', data);
+          setIsConnected(data.connected);
+        });
+    }
+  }, [user?.id]);
   // Get month range
   const monthRange = useMemo(() => {
     const start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -370,7 +384,31 @@ export default function CalendarPage() {
             </button>
           </div>
         </div>
+        <div className="flex items-center justify-center w-fit md:flex-row flex-col gap-4">
+          <p className="text-muted text-sm">{t('integrate') || 'Intégrez'}</p>
+          {/*TODO: afficher le favicon de fathom et le lien vers le site de fathom */}
+          <div className="flex cursor-pointer items-center gap-2 bg-accent-light rounded-lg p-2 group hover:bg-accent transition-colors">
+          <Image
+            src="https://icons.duckduckgo.com/ip3/fathom.video.ico"
+            alt="Fathom"
+            width={20}
+            height={20}
+            className="rounded-sm"
+            unoptimized
+          />
+          <Link href="/dashboard/settings/meeting-integrations" target="_blank" className="text-primary group-hover:text-accent transition-colors">
+              Fathom AI
+            </Link>
+              {/*is user connected to fathom, afficher une pastille verte avec le texte "Connecté"*/}
+          {isConnected && (
+              <div className="w-2 h-2 bg-success animate-pulse rounded-full"></div>
+          )}
+          </div>
 
+        
+                              <p className="text-muted text-sm">{t('to_your_meetings') || 'Powered by'}</p>
+
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Calendar Grid */}
           <div className="lg:col-span-3 card p-4">

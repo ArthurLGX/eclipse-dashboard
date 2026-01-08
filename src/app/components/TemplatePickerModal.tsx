@@ -11,6 +11,7 @@ import {
   IconSnowflake,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useModalScroll } from '@/hooks/useModalFocus';
 import {
   templateCategories,
   getTemplatesByCategory,
@@ -41,6 +42,9 @@ export default function TemplatePickerModal({
   const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
+
+  // Bloquer le scroll du body quand la modale est ouverte
+  useModalScroll(isOpen);
 
   const filteredTemplates = useMemo(() => {
     return getTemplatesByCategory(selectedCategory);

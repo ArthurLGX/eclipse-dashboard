@@ -19,6 +19,7 @@ import {
   IconReload
 } from '@tabler/icons-react';
 import ClientAvatar from '@/app/components/ClientAvatar';
+import { useModalScroll } from '@/hooks/useModalFocus';
 import type { DuplicateCheckMode } from '@/lib/api';
 
 export interface ImportedClient {
@@ -48,6 +49,9 @@ interface ImportClientsModalProps {
 export default function ImportClientsModal({ isOpen, onClose, onImport, t }: ImportClientsModalProps) {
   const [importedClients, setImportedClients] = useState<ImportedClient[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+
+  // Bloquer le scroll du body quand la modale est ouverte
+  useModalScroll(isOpen);
   const [isImporting, setIsImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [duplicateCheckMode, setDuplicateCheckMode] = useState<DuplicateCheckMode>('email_only');

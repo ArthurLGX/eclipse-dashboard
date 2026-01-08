@@ -1581,6 +1581,7 @@ export async function createProjectTask(data: {
   start_date?: string | null;
   due_date?: string | null;
   estimated_hours?: number | null;
+  actual_hours?: number | null;
   assigned_to?: number; // user id
   created_user: number; // user id
   order?: number;
@@ -1599,6 +1600,7 @@ export async function createProjectTask(data: {
     due_date: data.due_date || null,
     completed_date: null,
     estimated_hours: data.estimated_hours || null,
+    actual_hours: data.actual_hours || null,
     order: data.order || 0,
     assigned_to: data.assigned_to || null,
     created_user: data.created_user,

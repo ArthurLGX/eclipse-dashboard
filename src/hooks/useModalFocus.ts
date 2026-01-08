@@ -1,6 +1,24 @@
 import { useEffect, useRef } from 'react';
 
 /**
+ * Fonction utilitaire pour bloquer le scroll du body
+ * Utilise la classe CSS modal-open avec !important pour garantir le blocage
+ */
+function lockBodyScroll() {
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+  document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
+  document.body.classList.add('modal-open');
+}
+
+/**
+ * Fonction utilitaire pour débloquer le scroll du body
+ */
+function unlockBodyScroll() {
+  document.body.classList.remove('modal-open');
+  document.documentElement.style.removeProperty('--scrollbar-width');
+}
+
+/**
  * Hook pour gérer le focus et le scroll des modales
  * - Bloque le scroll du body quand la modale s'ouvre
  * - Scroll vers le haut de la modale
@@ -17,7 +35,7 @@ export function useModalFocus(isOpen: boolean) {
       previousActiveElement.current = document.activeElement;
 
       // Bloquer le scroll du body
-      document.body.style.overflow = 'hidden';
+      lockBodyScroll();
 
       // Attendre que le DOM soit mis à jour
       requestAnimationFrame(() => {
@@ -40,7 +58,7 @@ export function useModalFocus(isOpen: boolean) {
       });
     } else {
       // Restaurer le scroll du body
-      document.body.style.overflow = 'unset';
+      unlockBodyScroll();
 
       // Restaurer le focus sur l'élément précédent
       if (previousActiveElement.current instanceof HTMLElement) {
@@ -49,7 +67,7 @@ export function useModalFocus(isOpen: boolean) {
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      unlockBodyScroll();
     };
   }, [isOpen]);
 
@@ -60,11 +78,11 @@ export function useModalFocus(isOpen: boolean) {
  * Hook simplifié pour juste bloquer le scroll et scrollTop
  * Utile pour les modales qui utilisent déjà leur propre ref
  */
-export function useModalScroll(isOpen: boolean, containerRef?: React.RefObject<HTMLDivElement>) {
+export function useModalScroll(isOpen: boolean, containerRef?: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     if (isOpen) {
       // Bloquer le scroll du body
-      document.body.style.overflow = 'hidden';
+      lockBodyScroll();
 
       // Scroll vers le haut du container si fourni
       requestAnimationFrame(() => {
@@ -74,11 +92,11 @@ export function useModalScroll(isOpen: boolean, containerRef?: React.RefObject<H
       });
     } else {
       // Restaurer le scroll du body
-      document.body.style.overflow = 'unset';
+      unlockBodyScroll();
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      unlockBodyScroll();
     };
   }, [isOpen, containerRef]);
 }
