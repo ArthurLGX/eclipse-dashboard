@@ -18,6 +18,9 @@ import {
   IconMail,
   IconChevronDown,
   IconChevronUp,
+  IconList,
+  IconCircle,
+  IconFilter,
   IconUserPlus,
   IconLogin,
   IconExternalLink,
@@ -114,6 +117,7 @@ export default function SharedProjectPage() {
     showProgress: true,
     showTasks: true,
   });
+  const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all');
 
   // Activer Lenis pour le smooth scroll
   useLenis();
@@ -191,6 +195,30 @@ export default function SharedProjectPage() {
   const overallProgress = tasks.length > 0
     ? Math.round(tasks.reduce((sum, task) => sum + (task.progress || 0), 0) / tasks.length)
     : 0;
+
+  // Statistiques par statut pour les filtres
+  const taskStats = useMemo(() => ({
+    all: tasks.length,
+    todo: tasks.filter(t => t.task_status === 'todo').length,
+    in_progress: tasks.filter(t => t.task_status === 'in_progress').length,
+    completed: tasks.filter(t => t.task_status === 'completed').length,
+    cancelled: tasks.filter(t => t.task_status === 'cancelled').length,
+  }), [tasks]);
+
+  // Tâches filtrées selon le statut sélectionné
+  const filteredTasks = useMemo(() => {
+    if (statusFilter === 'all') return tasks;
+    return tasks.filter(task => task.task_status === statusFilter);
+  }, [tasks, statusFilter]);
+
+  // Options de filtres avec icônes
+  const FILTER_OPTIONS: { value: TaskStatus | 'all'; label: string; icon: React.ReactNode; color: string }[] = useMemo(() => [
+    { value: 'all', label: t('all'), icon: <IconList className="w-4 h-4" />, color: 'text-primary' },
+    { value: 'todo', label: t('todo'), icon: <IconCircle className="w-4 h-4" />, color: 'text-muted' },
+    { value: 'in_progress', label: t('in_progress'), icon: <IconProgress className="w-4 h-4" />, color: 'text-info' },
+    { value: 'completed', label: t('done'), icon: <IconCheck className="w-4 h-4" />, color: 'text-success' },
+    { value: 'cancelled', label: t('cancelled'), icon: <IconX className="w-4 h-4" />, color: 'text-danger' },
+  ], [t]);
 
   const daysRemaining = project.end_date 
     ? Math.ceil((new Date(project.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
@@ -330,6 +358,77 @@ export default function SharedProjectPage() {
           </motion.div>
         )}
 
+        {/* Barre de filtres */}
+        {tasks.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="mb-6"
+          >
+            <div className="card p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex items-center gap-2 text-secondary">
+                  <IconFilter className="w-5 h-5" />
+                  <span className="font-medium">{t('filter_by_status') || 'Filtrer par statut'}</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {FILTER_OPTIONS.map(option => {
+                    const count = taskStats[option.value];
+                    const isActive = statusFilter === option.value;
+                    return (
+                      <motion.button
+                        key={option.value}
+                        onClick={() => setStatusFilter(option.value)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                          isActive
+                            ? 'bg-accent text-white shadow-sm'
+                            : 'bg-muted text-secondary hover:bg-hover hover:text-primary'
+                        }`}
+                      >
+                        <span className={isActive ? 'text-white' : option.color}>
+                          {option.icon}
+                        </span>
+                        {option.label}
+                        <span className={`px-1.5 py-0.5 rounded text-xs ${
+                          isActive ? 'bg-white/20' : 'bg-page'
+                        }`}>
+                          {count}
+                        </span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              {/* Résumé du filtre actif */}
+              {statusFilter !== 'all' && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="mt-3 pt-3 border-t border-default"
+                >
+                  <p className="text-sm text-secondary">
+                    {t('showing') || 'Affichage de'}{' '}
+                    <span className="font-semibold text-primary">{filteredTasks.length}</span>{' '}
+                    {t('tasks_on') || 'tâche(s) sur'}{' '}
+                    <span className="font-semibold text-primary">{tasks.length}</span>
+                    {' • '}
+                    <button 
+                      onClick={() => setStatusFilter('all')}
+                      className="text-accent hover:underline"
+                    >
+                      {t('show_all') || 'Voir toutes'}
+                    </button>
+                  </p>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
         {/* Gantt Chart */}
         {shareConfig.showGantt && (
           <motion.div
@@ -341,16 +440,25 @@ export default function SharedProjectPage() {
             <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
               <IconTimeline className="w-5 h-5 text-accent-light" />
               {t('gantt_diagram')}
+              {statusFilter !== 'all' && (
+                <span className="text-sm font-normal text-muted">
+                  ({filteredTasks.length} {t('tasks') || 'tâches'})
+                </span>
+              )}
             </h2>
-            {tasks.length > 0 ? (
+            {filteredTasks.length > 0 ? (
               <PublicGanttView 
-                tasks={tasks} 
+                tasks={filteredTasks} 
                 projectName={project.title}
               />
             ) : (
               <div className="card p-8 text-center">
                 <IconTimeline className="w-12 h-12 text-muted mx-auto mb-3" />
-                <p className="text-secondary">{t('no_tasks_yet') || 'Aucune tâche dans ce projet pour le moment'}</p>
+                <p className="text-secondary">
+                  {statusFilter !== 'all' 
+                    ? (t('no_tasks_with_status') || 'Aucune tâche avec ce statut')
+                    : (t('no_tasks_yet') || 'Aucune tâche dans ce projet pour le moment')}
+                </p>
               </div>
             )}
           </motion.div>
@@ -366,18 +474,32 @@ export default function SharedProjectPage() {
             <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
               <IconProgress className="w-5 h-5 text-accent-light" />
               {t('tasks_list')}
+              {statusFilter !== 'all' && (
+                <span className="text-sm font-normal text-muted">
+                  ({filteredTasks.length} {t('tasks') || 'tâches'})
+                </span>
+              )}
             </h2>
-            <div className="card overflow-hidden">
-              <div className="space-y-1 bg-page p-1">
-                {tasks.map((task, index) => (
-                  <TaskRow 
-                    key={task.documentId || index} 
-                    task={task} 
-                    taskStatusOptions={TASK_STATUS_OPTIONS}
-                  />
-                ))}
+            {filteredTasks.length > 0 ? (
+              <div className="card overflow-hidden">
+                <div className="space-y-1 bg-page p-1">
+                  {filteredTasks.map((task, index) => (
+                    <TaskRow 
+                      key={task.documentId || index} 
+                      task={task} 
+                      taskStatusOptions={TASK_STATUS_OPTIONS}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="card p-8 text-center">
+                <IconProgress className="w-12 h-12 text-muted mx-auto mb-3" />
+                <p className="text-secondary">
+                  {t('no_tasks_with_status') || 'Aucune tâche avec ce statut'}
+                </p>
+              </div>
+            )}
           </motion.div>
         )}
 
