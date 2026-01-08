@@ -27,6 +27,11 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import type { TaskStatus, TaskPriority } from '@/types';
 import * as XLSX from 'xlsx';
 
+// Callback de progression pour l'import
+export interface ImportProgressCallback {
+  (current: number, total: number, taskTitle: string): void;
+}
+
 interface ExcelImportModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -34,7 +39,7 @@ interface ExcelImportModalProps {
     sendNotificationEmails: boolean;
     emailSubject?: string;
     emailMessage?: string;
-  }) => Promise<void>;
+  }, onProgress?: ImportProgressCallback) => Promise<void>;
   projectDocumentId: string;
   projectName?: string;
   projectUrl?: string;
@@ -175,6 +180,7 @@ export default function ExcelImportModal({
   });
   const [previewTasks, setPreviewTasks] = useState<ImportedTask[]>([]);
   const [importing, setImporting] = useState(false);
+  const [importProgress, setImportProgress] = useState({ current: 0, total: 0, taskTitle: '' });
   const [error, setError] = useState<string | null>(null);
   const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const [loadingGoogleSheet, setLoadingGoogleSheet] = useState(false);
@@ -214,6 +220,7 @@ export default function ExcelImportModal({
     setEmailMessage('');
     setShowEmailPreview(false);
     setPreviewRecipientEmail(null);
+    setImportProgress({ current: 0, total: 0, taskTitle: '' });
   }, []);
 
   const handleClose = useCallback(() => {
@@ -671,13 +678,19 @@ export default function ExcelImportModal({
   const handleImportFinal = useCallback(async () => {
     setImporting(true);
     setStep('importing');
+    setImportProgress({ current: 0, total: previewTasks.length, taskTitle: '' });
+    
+    // Callback pour mettre à jour la progression
+    const onProgress: ImportProgressCallback = (current, total, taskTitle) => {
+      setImportProgress({ current, total, taskTitle });
+    };
     
     try {
       await onImport(previewTasks, { 
         sendNotificationEmails,
         emailSubject: sendNotificationEmails ? emailSubject : undefined,
         emailMessage: sendNotificationEmails ? emailMessage : undefined,
-      });
+      }, onProgress);
       handleClose();
     } catch (err) {
       console.error('Error importing tasks:', err);
@@ -1311,12 +1324,74 @@ export default function ExcelImportModal({
 
             {/* Step 5: Importing */}
             {step === 'importing' && (
-              <div className="text-center py-12">
-                <IconLoader2 className="w-12 h-12 text-accent animate-spin mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-primary mb-2">
-                  {t('excel_importing') || 'Import en cours...'}
-                </h3>
-                <p className="text-sm text-muted">
+              <div className="py-8 space-y-6">
+                {/* Animation et compteur */}
+                <div className="text-center">
+                  <div className="relative inline-flex items-center justify-center mb-4">
+                    <IconLoader2 className="w-12 h-12 text-accent animate-spin" />
+                    <span className="absolute text-xs font-bold text-accent">
+                      {importProgress.current}/{importProgress.total}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-medium text-primary mb-1">
+                    {t('excel_importing') || 'Import en cours...'}
+                  </h3>
+                  <p className="text-sm text-muted">
+                    {importProgress.current} / {importProgress.total} {t('tasks') || 'tâches'}
+                  </p>
+                </div>
+
+                {/* Barre de progression */}
+                <div className="max-w-md mx-auto">
+                  <div className="h-3 bg-muted rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-accent to-accent-light rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ 
+                        width: importProgress.total > 0 
+                          ? `${(importProgress.current / importProgress.total) * 100}%` 
+                          : '0%' 
+                      }}
+                      transition={{ duration: 0.3, ease: 'easeOut' }}
+                    />
+                  </div>
+                  <div className="flex justify-between mt-1 text-xs text-muted">
+                    <span>0%</span>
+                    <span className="font-medium text-accent">
+                      {importProgress.total > 0 
+                        ? Math.round((importProgress.current / importProgress.total) * 100) 
+                        : 0}%
+                    </span>
+                    <span>100%</span>
+                  </div>
+                </div>
+
+                {/* Tâche en cours */}
+                {importProgress.taskTitle && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-md mx-auto"
+                  >
+                    <div className="p-4 bg-muted rounded-xl border border-default">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-accent-light flex items-center justify-center flex-shrink-0">
+                          <IconCheck className="w-4 h-4 text-accent" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-muted mb-0.5">
+                            {t('current_task') || 'Tâche en cours'}
+                          </p>
+                          <p className="text-sm font-medium text-primary truncate">
+                            {importProgress.taskTitle}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                <p className="text-xs text-muted text-center">
                   {t('excel_please_wait') || 'Veuillez patienter pendant la création des tâches'}
                 </p>
               </div>

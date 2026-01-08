@@ -24,7 +24,7 @@ import {
   IconUser,
   IconPalette,
 } from '@tabler/icons-react';
-import ExcelImportModal, { type ImportedTask } from './ExcelImportModal';
+import ExcelImportModal, { type ImportedTask, type ImportProgressCallback } from './ExcelImportModal';
 import type { User } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -343,7 +343,8 @@ export default function ProjectTasks({
       sendNotificationEmails: boolean;
       emailSubject?: string;
       emailMessage?: string;
-    }
+    },
+    onProgress?: ImportProgressCallback
   ) => {
     try {
       // Collecter les tâches assignées pour les notifications
@@ -378,6 +379,7 @@ export default function ProjectTasks({
 
       // Créer les tâches une par une (seulement les non-doublons)
       let createdCount = 0;
+      const totalToImport = tasksToImport.length;
       for (let i = 0; i < tasksToImport.length; i++) {
         const task = tasksToImport[i];
         const assignedMember = task.assigned_to 
@@ -402,6 +404,11 @@ export default function ProjectTasks({
           tags: task.tags && task.tags.length > 0 ? task.tags : undefined,
         });
         createdCount++;
+        
+        // Notifier la progression
+        if (onProgress) {
+          onProgress(createdCount, totalToImport, task.title);
+        }
 
         // Collecter pour notification si assigné et emails activés
         // Exclure les tâches terminées ou annulées

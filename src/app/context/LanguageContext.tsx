@@ -979,7 +979,6 @@ const translations = {
     import_spreadsheet: 'Importer depuis Excel / Google Sheets',
     spreadsheet_drop_file: 'Glissez-déposez votre fichier',
     spreadsheet_formats: 'Formats: .xlsx, .xls, .csv',
-    or: 'ou',
     load: 'Charger',
     google_sheet_link: 'Lien Google Sheets',
     google_sheet_must_be_public: 'Le fichier doit être partagé publiquement',
@@ -1028,7 +1027,6 @@ const translations = {
     email_info_description: 'Chaque collaborateur recevra un email unique contenant la liste de toutes ses tâches assignées.',
     task: 'tâche',
     tasks: 'tâches',
-    next: 'Suivant',
     excel_drop_file: 'Glissez-déposez votre fichier Excel',
     excel_or_click: 'ou cliquez pour sélectionner',
     excel_select_file: 'Sélectionner un fichier',
@@ -1049,6 +1047,7 @@ const translations = {
     excel_more_tasks: 'autres tâches...',
     tasks_imported: 'tâches importées avec succès',
     duplicates_ignored: 'doublon(s) ignoré(s)',
+    current_task: 'Tâche en cours',
     tasks_to_import: 'tâches à importer',
     rows: 'lignes',
     title_field: 'Titre',
@@ -1083,7 +1082,6 @@ const translations = {
     manage: 'Gérer',
     late: 'En retard',
     week_short: 'Sem.',
-    task: 'Tâche',
     export_pdf: 'Export PDF',
     exporting: 'Export...',
     exported_on: 'Exporté le',
@@ -1394,7 +1392,6 @@ const translations = {
     // Custom Templates
     save_template: 'Sauvegarder le thème',
     load_template: 'Charger un thème',
-    load: 'Charger',
     template_preview: 'Aperçu du thème',
     template_name: 'Nom du thème',
     template_name_placeholder: 'Ex: Mon thème corporate',
@@ -1443,7 +1440,6 @@ const translations = {
     cyan: 'Cyan',
 
     overview: 'Aperçu',
-    tasks: 'Tâches',
 
     // Email Analytics
     email_analytics: 'Analytics',
@@ -2903,7 +2899,6 @@ const translations = {
     import_spreadsheet: 'Import from Excel / Google Sheets',
     spreadsheet_drop_file: 'Drag and drop your file',
     spreadsheet_formats: 'Formats: .xlsx, .xls, .csv',
-    or: 'or',
     load: 'Load',
     google_sheet_link: 'Google Sheets Link',
     google_sheet_must_be_public: 'The file must be shared publicly',
@@ -2952,7 +2947,6 @@ const translations = {
     email_info_description: 'Each collaborator will receive a unique email containing the list of all their assigned tasks.',
     task: 'task',
     tasks: 'tasks',
-    next: 'Next',
     excel_drop_file: 'Drag and drop your Excel file',
     excel_or_click: 'or click to select',
     excel_select_file: 'Select a file',
@@ -2973,6 +2967,7 @@ const translations = {
     excel_more_tasks: 'more tasks...',
     tasks_imported: 'tasks imported successfully',
     duplicates_ignored: 'duplicate(s) ignored',
+    current_task: 'Current task',
     tasks_to_import: 'tasks to import',
     rows: 'rows',
     title_field: 'Title',
@@ -3006,7 +3001,6 @@ const translations = {
     // ProjectTasks - Misc
     late: 'Late',
     week_short: 'Week',
-    task: 'Task',
     export_pdf: 'Export PDF',
     exporting: 'Exporting...',
     exported_on: 'Exported on',
@@ -3323,7 +3317,6 @@ const translations = {
     // Custom Templates
     save_template: 'Save theme',
     load_template: 'Load a theme',
-    load: 'Load',
     template_preview: 'Theme preview',
     template_name: 'Theme name',
     template_name_placeholder: 'E.g.: My corporate theme',
@@ -3369,7 +3362,6 @@ const translations = {
     cyan: 'Cyan',
 
     overview: 'Overview',
-    tasks: 'Tasks',
 
     // Email Analytics
     email_analytics: 'Analytics',
