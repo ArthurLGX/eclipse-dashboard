@@ -1564,11 +1564,40 @@ export const deleteNotification = (notificationDocumentId: string) =>
 
 import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
 
-/** Récupère les tâches d'un projet */
-export const fetchProjectTasks = (projectDocumentId: string) =>
-  get<ApiResponse<ProjectTask[]>>(
-    `project-tasks?populate[0]=assigned_to&populate[1]=subtasks&populate[2]=subtasks.assigned_to&populate[3]=parent_task&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc`
-  );
+/** Récupère les tâches d'un projet (avec pagination pour récupérer toutes les tâches) */
+export async function fetchProjectTasks(projectDocumentId: string): Promise<ApiResponse<ProjectTask[]>> {
+  const allTasks: ProjectTask[] = [];
+  let page = 1;
+  const pageSize = 100; // Maximum autorisé par Strapi
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await get<ApiResponse<ProjectTask[]>>(
+      `project-tasks?populate[0]=assigned_to&populate[1]=subtasks&populate[2]=subtasks.assigned_to&populate[3]=parent_task&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc&pagination[pageSize]=${pageSize}&pagination[page]=${page}`
+    );
+
+    if (response.data && response.data.length > 0) {
+      allTasks.push(...response.data);
+    }
+
+    // Vérifier s'il y a plus de pages
+    const totalPages = response.meta?.pagination?.pageCount ?? 1;
+    hasMore = page < totalPages;
+    page++;
+  }
+
+  return { 
+    data: allTasks, 
+    meta: { 
+      pagination: { 
+        page: 1, 
+        pageSize: allTasks.length, 
+        pageCount: 1, 
+        total: allTasks.length 
+      } 
+    } 
+  };
+}
 
 /** Crée une nouvelle tâche */
 export async function createProjectTask(data: {
