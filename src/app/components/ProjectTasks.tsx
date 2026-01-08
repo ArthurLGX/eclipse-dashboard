@@ -1939,11 +1939,6 @@ function TaskGanttView({
     const dayWidth = 32;
     const containerWidth = timelineRef.current.clientWidth;
     
-    // Trouver l'index du jour d'aujourd'hui
-    const todayNormalized = normalizeDate(new Date());
-    const firstDay = timelineRef.current.querySelector('th[data-day-index="0"]');
-    if (!firstDay) return;
-    
     // Trouver la colonne d'aujourd'hui
     const todayColumn = timelineRef.current.querySelector(`th[data-is-today="true"]`);
     if (!todayColumn) return;
