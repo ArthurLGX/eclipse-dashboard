@@ -166,9 +166,12 @@ export default function CalendarPage() {
   useEffect(() => {
     if (!notificationsEnabled || !events || permission !== 'granted') return;
 
+    // Copie locale pour le cleanup
+    const notificationsMap = scheduledNotifications.current;
+
     // Clear previous scheduled notifications
-    scheduledNotifications.current.forEach(timeout => clearTimeout(timeout));
-    scheduledNotifications.current.clear();
+    notificationsMap.forEach(timeout => clearTimeout(timeout));
+    notificationsMap.clear();
 
     const now = new Date();
     const upcomingEventsToNotify = events.filter(event => {
@@ -196,12 +199,12 @@ export default function CalendarPage() {
       );
 
       if (timeoutId) {
-        scheduledNotifications.current.set(event.documentId, timeoutId);
+        notificationsMap.set(event.documentId, timeoutId);
       }
     });
 
     return () => {
-      scheduledNotifications.current.forEach(timeout => clearTimeout(timeout));
+      notificationsMap.forEach(timeout => clearTimeout(timeout));
     };
   }, [events, notificationsEnabled, permission, sendNotification]);
 
@@ -684,7 +687,6 @@ interface EventModalProps {
 
 function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, defaultProject, defaultClient, onSave, onDelete }: EventModalProps) {
   const { t } = useLanguage();
-  const { user } = useAuth();
   const { isConnected: fathomConfigured, isLoading: checkingFathom } = useFathom();
   const router = useRouter();
   const modalRef = useModalFocus(isOpen);
