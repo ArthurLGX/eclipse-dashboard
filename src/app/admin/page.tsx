@@ -281,7 +281,7 @@ export default function AdminOverviewPage() {
             {t('server_health') || 'Santé du Serveur'}
           </h2>
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
-            serverHealth.status === 'ok' ? 'bg-success/10' : 'bg-danger/10'
+            serverHealth.status === 'ok' ? 'bg-success-light' : 'bg-danger-light'
           }`}>
             <span className={getHealthStatusColor(serverHealth.status)}>
               {getHealthStatusIcon(serverHealth.status)}
@@ -350,7 +350,7 @@ export default function AdminOverviewPage() {
             value: stats.totalUsers,
             icon: IconUsers,
             color: 'text-info',
-            bgColor: 'bg-info/10',
+            bgColor: 'bg-info-light',
             trend: '+12%',
             trendUp: true,
           },
@@ -359,7 +359,7 @@ export default function AdminOverviewPage() {
             value: stats.totalSubscriptions,
             icon: IconCreditCard,
             color: 'text-success',
-            bgColor: 'bg-success/10',
+            bgColor: 'bg-success-light',
             trend: '+5%',
             trendUp: true,
           },
@@ -368,7 +368,7 @@ export default function AdminOverviewPage() {
             value: stats.emailsSentToday,
             icon: IconMail,
             color: 'text-accent',
-            bgColor: 'bg-accent/10',
+            bgColor: 'bg-accent-light',
             trend: '+23%',
             trendUp: true,
           },
@@ -377,7 +377,7 @@ export default function AdminOverviewPage() {
             value: stats.newslettersSent,
             icon: IconNews,
             color: 'text-warning',
-            bgColor: 'bg-warning/10',
+            bgColor: 'bg-warning-light',
             trend: '-2%',
             trendUp: false,
           },
@@ -480,7 +480,7 @@ export default function AdminOverviewPage() {
                 <a
                   key={action.label}
                   href={action.href}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-muted/5 border border-muted hover:border-accent/30 hover:bg-accent/5 transition-all group"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-muted/5 border border-muted hover:border-accent-light hover:bg-accent-light transition-all group"
                 >
                   <Icon className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
                   <span className="text-sm font-medium text-primary group-hover:text-accent transition-colors">

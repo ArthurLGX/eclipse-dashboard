@@ -127,7 +127,7 @@ function CompatibilityInfo({
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         onClick={() => setShowTooltip(!showTooltip)}
-        className="text-muted hover:text-accent transition-colors p-1 rounded-full hover:bg-accent/10"
+        className="text-muted hover:text-accent transition-colors p-1 rounded-full hover:bg-accent-light"
       >
         <IconInfoCircle className="w-4 h-4" />
       </button>
@@ -239,7 +239,7 @@ export default function ThemeCustomizer({
                 onClick={onLoadTemplate}
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg transition-colors ${
                   hasSavedTemplates 
-                    ? 'text-accent hover:bg-accent/10' 
+                    ? 'text-accent hover:bg-accent-light' 
                     : 'text-muted cursor-not-allowed'
                 }`}
                 disabled={!hasSavedTemplates}
@@ -257,7 +257,7 @@ export default function ThemeCustomizer({
             {onSaveTemplate && (
               <button
                 onClick={onSaveTemplate}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-accent/10 text-accent hover:bg-accent/20 rounded-lg transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-accent-light text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
                 title={t('save_template') || 'Sauvegarder le thème'}
               >
                 <IconDeviceFloppy className="w-4 h-4" />

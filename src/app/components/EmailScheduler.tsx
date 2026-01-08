@@ -108,10 +108,10 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
     new Date(`${scheduledDate}T${scheduledTime}`) > new Date();
 
   return (
-    <div className="bg-card rounded-xl p-5 border border-default hover:border-accent/30 transition-all duration-300 shadow-sm">
+    <div className="bg-card rounded-xl p-5 border border-default hover:border-accent-light transition-all duration-300 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-warning/20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-warning-light flex items-center justify-center">
             <IconClock className="w-5 h-5 text-warning" />
           </div>
           <div>
@@ -189,7 +189,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
               <motion.div 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 bg-success/10 border border-success/30 rounded-lg"
+                className="flex items-center gap-2 p-3 bg-success-light border border-success/30 rounded-lg"
               >
                 <IconCheck className="w-5 h-5 text-success" />
                 <span className="text-success text-sm">
@@ -213,7 +213,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
               <motion.div 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 bg-danger/10 border border-danger/30 rounded-lg"
+                className="flex items-center gap-2 p-3 bg-danger-light border border-danger/30 rounded-lg"
               >
                 <IconAlertTriangle className="w-5 h-5 text-danger" />
                 <span className="text-danger text-sm">

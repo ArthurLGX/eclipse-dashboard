@@ -126,7 +126,7 @@ function EmailsDashboard() {
           className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl bg-accent/20 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-xl border-accent-light flex items-center justify-center">
               <IconChartBar className="w-7 h-7 text-accent" />
             </div>
             <div className="flex-1">
@@ -150,7 +150,7 @@ function EmailsDashboard() {
           className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl bg-info/20 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-xl bg-info-light flex items-center justify-center">
               <IconHistory className="w-7 h-7 text-info" />
             </div>
             <div className="flex-1">
@@ -175,7 +175,7 @@ function EmailsDashboard() {
         className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
       >
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-xl bg-warning/20 flex items-center justify-center">
+          <div className="w-14 h-14 rounded-xl bg-warning-light flex items-center justify-center">
             <IconClock className="w-7 h-7 text-warning" />
           </div>
           <div className="flex-1">

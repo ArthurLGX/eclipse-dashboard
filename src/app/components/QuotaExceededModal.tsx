@@ -121,7 +121,7 @@ export default function QuotaExceededModal<T>({
         >
           {/* Header */}
           <div className="flex items-start gap-4 mb-6">
-            <div className="p-2 rounded-xl bg-accent/10">
+            <div className="p-2 rounded-xl bg-accent-light">
               <img 
                 src="/images/logo/eclipse-logo.png" 
                 alt="Eclipse Logo" 
@@ -166,7 +166,7 @@ export default function QuotaExceededModal<T>({
             <div className="flex items-center gap-2">
               <button
                 onClick={selectAll}
-                className="text-xs px-2 py-1 rounded bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+                className="text-xs px-2 py-1 rounded bg-accent-light text-accent hover:bg-accent-light transition-colors"
               >
                 {t('select_first') || `Sélectionner les ${quota} premiers`}
               </button>
@@ -207,7 +207,7 @@ export default function QuotaExceededModal<T>({
                     ${isSelected 
                       ? 'bg-page border-muted' 
                       : canSelect 
-                        ? 'bg-card border-default hover:border-accent-light' 
+                        ? 'bg-card border-default hover:bg-accent-light' 
                         : 'bg-muted border-muted opacity-50 cursor-not-allowed'
                     }
                   `}

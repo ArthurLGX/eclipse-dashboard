@@ -392,7 +392,7 @@ export default function DataTable<T = unknown>({
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-muted">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-danger/10">
+                  <div className="p-2 rounded-xl bg-danger-light">
                     <IconTrash className="w-6 h-6 text-danger" />
                   </div>
                   <div>

@@ -336,7 +336,7 @@ export default function TimeTrackingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent/20 rounded-lg">
+              <div className="p-2 bg-accent-light rounded-lg">
                 <IconClock className="w-5 h-5 text-accent" />
               </div>
               <div>
@@ -347,7 +347,7 @@ export default function TimeTrackingPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-success/20 rounded-lg">
+              <div className="p-2 bg-success-light rounded-lg">
                 <IconBriefcase className="w-5 h-5 text-success" />
               </div>
               <div>
@@ -358,7 +358,7 @@ export default function TimeTrackingPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-warning/20 rounded-lg">
+                <div className="p-2 bg-warning-light rounded-lg">
                 <IconCurrencyEuro className="w-5 h-5 text-warning" />
               </div>
               <div>
@@ -450,7 +450,7 @@ export default function TimeTrackingPage() {
                             : 'bg-muted';
                     
                     return (
-                      <div key={entry.documentId} className={`p-4 hover:bg-hover transition-colors ${index > 0 ? 'border-t border-default' : ''} ${isRunning ? 'bg-warning/5' : ''}`}>
+                      <div key={entry.documentId} className={`p-4 hover:bg-hover transition-colors ${index > 0 ? 'border-t border-default' : ''} ${isRunning ? 'bg-warning-light' : ''}`}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4 flex-1 min-w-0">
                             <div className={`w-1 h-12 rounded-full ${statusColor}`} />

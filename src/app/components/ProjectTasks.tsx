@@ -1409,7 +1409,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                       onClose();
                       onAddSubtask();
                     }}
-                    className="text-xs px-2 py-1 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition-colors flex items-center gap-1"
+                    className="text-xs px-2 py-1 rounded-lg border-accent-light text-accent hover:bg-accent-light hover:border-accent transition-colors flex items-center gap-1"
                   >
                     <IconPlus className="w-3 h-3" />
                     {t('add_subtask') || 'Ajouter'}
@@ -2082,7 +2082,7 @@ function TaskGanttView({
                       onClick={() => setExportMode('light')}
                       className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
                         exportMode === 'light' 
-                          ? 'border-accent bg-accent/10' 
+                          ? 'border-accent bg-accent-light' 
                           : 'border-default bg-muted/50 hover:border-accent/50'
                       }`}
                     >
@@ -2097,7 +2097,7 @@ function TaskGanttView({
                       onClick={() => setExportMode('dark')}
                       className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
                         exportMode === 'dark' 
-                          ? 'border-accent bg-accent/10' 
+                          ? 'border-accent bg-accent-light' 
                           : 'border-default bg-muted/50 hover:border-accent/50'
                       }`}
                     >

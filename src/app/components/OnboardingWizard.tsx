@@ -124,7 +124,7 @@ export default function OnboardingWizard() {
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent/20 via-accent/10 to-transparent">
+            <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent/20 via-accent-light to-transparent">
               <button
                 onClick={handleClose}
                 className="absolute top-4 right-4 p-2 text-muted hover:text-primary rounded-lg hover:bg-white/10 transition-colors"
@@ -133,7 +133,7 @@ export default function OnboardingWizard() {
               </button>
               
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-accent/20 rounded-xl">
+                <div className="p-3 bg-accent-light rounded-xl">
                   <IconSparkles className="w-8 h-8 text-accent" />
                 </div>
                 <div>
@@ -179,8 +179,8 @@ export default function OnboardingWizard() {
                       ${status === 'completed' 
                         ? 'bg-success-light border-success' 
                         : status === 'current'
-                          ? 'bg-accent/10 border-accent shadow-lg shadow-accent/20'
-                          : 'bg-card border-default hover:border-accent/30'
+                          ? 'bg-accent-light border-accent shadow-lg shadow-accent/20'
+                          : 'bg-card border-default hover:border-accent-light'
                       }
                     `}
                     onClick={() => handleStepClick(step)}

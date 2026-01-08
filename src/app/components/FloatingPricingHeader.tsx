@@ -98,7 +98,7 @@ export default function FloatingPricingHeader({
                           key={plan.id}
                           className={`p-4 text-center text-primary font-semibold transition-all duration-500 w-1/6 ${
                             highlightedPlan === plan.name
-                              ? 'bg-accent/20'
+                              ? 'bg-accent/-light'
                               : ''
                           }`}
                         >

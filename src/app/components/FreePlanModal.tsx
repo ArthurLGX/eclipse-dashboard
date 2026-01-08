@@ -108,7 +108,7 @@ export default function FreePlanModal({
           >
             {/* En-tête */}
             <div className="!text-center mb-6">
-              <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="!text-2xl">🎉</span>
               </div>
               <h2 className="!text-xl font-bold text-primary mb-2">

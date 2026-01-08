@@ -119,7 +119,7 @@ export default function BusinessSetupModal() {
           className="relative w-full max-w-3xl bg-card border border-default rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto outline-none"
         >
           {/* Header */}
-          <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent/20 via-accent/10 to-transparent">
+          <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent/20 via-accent-light to-transparent">
             <button
               onClick={handleSkip}
               disabled={isSaving}
@@ -130,7 +130,7 @@ export default function BusinessSetupModal() {
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-accent/20 rounded-xl">
+              <div className="p-3 border-accent-light rounded-xl">
                 <IconSparkles className="w-8 h-8 text-accent" />
               </div>
               <div>

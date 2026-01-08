@@ -198,7 +198,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           className="flex flex-col items-center gap-4 p-8 bg-card rounded-2xl border border-default shadow-xl"
         >
           <div className="relative">
-            <div className="w-12 h-12 border-4 border-accent/20 rounded-full" />
+            <div className="w-12 h-12 border-4 border-accent-light rounded-full" />
             <div className="absolute inset-0 w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
           </div>
           <div className="text-center">

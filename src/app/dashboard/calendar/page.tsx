@@ -339,7 +339,7 @@ export default function CalendarPage() {
                 onClick={toggleNotifications}
                 className={`p-2.5 rounded-lg border transition-colors ${
                   notificationsEnabled
-                    ? 'bg-accent/10 border-accent text-accent'
+                    ? 'bg-accent-light border-accent text-accent'
                     : 'border-default text-muted hover:text-primary hover:border-primary'
                 }`}
                 title={notificationsEnabled 
@@ -573,7 +573,7 @@ export default function CalendarPage() {
                             {!event.is_completed && (
                               <button
                                 onClick={() => handleComplete(event)}
-                                className="p-1 hover:bg-success/20 rounded text-success"
+                                className="p-1 hover:bg-success-light rounded text-success"
                               >
                                 <IconCheck className="w-3 h-3" />
                               </button>
@@ -1087,7 +1087,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                   onClick={() => setNoteMode(noteMode === 'manual' ? 'none' : 'manual')}
                   className={`flex-1 p-3 rounded-lg border-2 transition-all text-left ${
                     noteMode === 'manual'
-                      ? 'border-accent bg-accent/10'
+                      ? 'border-accent bg-accent-light'
                       : 'border-default hover:border-muted'
                   }`}
                 >
@@ -1116,7 +1116,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                   disabled={checkingFathom}
                   className={`flex-1 p-3 rounded-lg border-2 transition-all text-left ${
                     noteMode === 'fathom' && fathomConfigured
-                      ? 'border-success bg-success/10'
+                      ? 'border-success bg-success-light'
                       : 'border-default hover:border-muted'
                   }`}
                 >

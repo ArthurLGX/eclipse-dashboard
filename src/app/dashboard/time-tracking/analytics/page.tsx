@@ -467,7 +467,7 @@ export default function TimeTrackingAnalyticsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="card p-5">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-accent/20 rounded-xl">
+                  <div className="p-3 bg-accent-light rounded-xl">
                     <IconClock className="w-6 h-6 text-accent" />
                   </div>
                   <div>
@@ -479,7 +479,7 @@ export default function TimeTrackingAnalyticsPage() {
               
               <div className="card p-5">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-warning/20 rounded-xl">
+                  <div className="p-3 bg-warning-light rounded-xl">
                     <IconCalendar className="w-6 h-6 text-warning" />
                   </div>
                   <div>
@@ -492,8 +492,8 @@ export default function TimeTrackingAnalyticsPage() {
               <div className="card p-5">
                 <div className="flex items-center gap-3">
                   <div className={`p-3 rounded-xl ${
-                    analytics.avgAccuracy > 110 ? 'bg-danger/20' :
-                    analytics.avgAccuracy < 90 ? 'bg-info/20' : 'bg-success/20'
+                    analytics.avgAccuracy > 110 ? 'bg-danger-light' :
+                    analytics.avgAccuracy < 90 ? 'bg-info-light' : 'bg-success-light'
                   }`}>
                     <IconTarget className={`w-6 h-6 ${
                       analytics.avgAccuracy > 110 ? 'text-danger' :
@@ -514,7 +514,7 @@ export default function TimeTrackingAnalyticsPage() {
               
               <div className="card p-5">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-success/20 rounded-xl">
+                  <div className="p-3 bg-success-light rounded-xl">
                     <IconTrendingUp className="w-6 h-6 text-success" />
                   </div>
                   <div>
@@ -622,14 +622,14 @@ export default function TimeTrackingAnalyticsPage() {
             </div>
 
             {/* Insights */}
-            <div className="card p-6 bg-gradient-to-r from-accent/5 to-transparent border-accent/20">
+            <div className="card p-6 bg-gradient-to-r from-accent/5 to-transparent border-accent-light">
               <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
                 <IconTarget className="w-5 h-5 text-accent" />
                 {t('insights') || 'Conseils'}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {analytics.avgAccuracy > 120 && (
-                  <div className="flex items-start gap-3 p-3 bg-danger/10 rounded-lg">
+                  <div className="flex items-start gap-3 p-3 bg-danger-light rounded-lg">
                     <IconTrendingUp className="w-5 h-5 text-danger flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-primary">
@@ -642,7 +642,7 @@ export default function TimeTrackingAnalyticsPage() {
                   </div>
                 )}
                 {analytics.avgAccuracy < 80 && (
-                  <div className="flex items-start gap-3 p-3 bg-info/10 rounded-lg">
+                  <div className="flex items-start gap-3 p-3 bg-info-light rounded-lg">
                     <IconTrendingDown className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-primary">
@@ -655,7 +655,7 @@ export default function TimeTrackingAnalyticsPage() {
                   </div>
                 )}
                 {analytics.avgAccuracy >= 80 && analytics.avgAccuracy <= 120 && (
-                  <div className="flex items-start gap-3 p-3 bg-success/10 rounded-lg">
+                  <div className="flex items-start gap-3 p-3 bg-success-light rounded-lg">
                     <IconTarget className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-primary">
@@ -668,7 +668,7 @@ export default function TimeTrackingAnalyticsPage() {
                   </div>
                 )}
                 {analytics.exceededTasks > analytics.completedTasks && (
-                  <div className="flex items-start gap-3 p-3 bg-warning/10 rounded-lg">
+                  <div className="flex items-start gap-3 p-3 bg-warning-light rounded-lg">
                     <IconClock className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-primary">

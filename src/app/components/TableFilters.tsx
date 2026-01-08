@@ -156,7 +156,7 @@ export default function TableFilters({
             onClick={() => setShowAdvanced(!showAdvanced)}
             className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
               showAdvanced || activeFiltersCount > 0
-                ? 'bg-accent/10 border-accent text-accent'
+                ? 'bg-accent-light border-accent text-accent'
                 : 'bg-card border-default text-secondary hover:border-accent/50'
             }`}
           >
@@ -175,7 +175,7 @@ export default function TableFilters({
         {hasActiveFilters && (
           <button
             onClick={clearAllFilters}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-danger/30 text-danger hover:bg-danger/10 transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-danger/30 text-danger hover:bg-danger-light transition-colors"
           >
             <IconX className="w-4 h-4" />
             <span className="hidden sm:inline">{t('clear_filters') || 'Effacer'}</span>
@@ -195,14 +195,14 @@ export default function TableFilters({
             <div className="p-4 lg:p-5 rounded-xl bg-card border border-default shadow-sm">
               {/* Header */}
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-default">
-                <div className="p-1.5 rounded-lg bg-accent/10">
+                <div className="p-1.5 rounded-lg bg-accent-light">
                   <IconFilter className="w-4 h-4 text-accent" />
                 </div>
                 <span className="text-sm font-semibold text-primary">
                   {t('filter_by') || 'Filtrer par'}
                 </span>
                 {activeFiltersCount > 0 && (
-                  <span className="ml-auto px-2 py-0.5 rounded-full bg-accent/10 text-accent text-xs font-medium">
+                  <span className="ml-auto px-2 py-0.5 rounded-full bg-accent-light text-accent text-xs font-medium">
                     {activeFiltersCount} actif{activeFiltersCount > 1 ? 's' : ''}
                   </span>
                 )}
@@ -267,7 +267,7 @@ export default function TableFilters({
                                     key={opt.value}
                                     onClick={() => handleMultiSelectToggle(filter.id, opt.value)}
                                     className={`w-full px-3 py-2 text-left flex items-center gap-2 hover:bg-muted transition-colors text-sm ${
-                                      isSelected ? 'bg-accent/10 text-accent' : 'text-primary'
+                                      isSelected ? 'bg-accent-light text-accent' : 'text-primary'
                                     }`}
                                   >
                                     <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${

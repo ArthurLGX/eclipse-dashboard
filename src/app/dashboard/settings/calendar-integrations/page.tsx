@@ -182,7 +182,7 @@ export default function CalendarIntegrationsPage() {
         </div>
 
         {/* Setup Instructions */}
-        <div className="card p-4 bg-info/10 border-info/20">
+        <div className="card p-4 bg-info-light border-info/20">
           <div className="flex items-start gap-3">
             <IconAlertCircle className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
             <div className="text-sm">
@@ -227,7 +227,7 @@ export default function CalendarIntegrationsPage() {
                     <h3 className="font-semibold text-primary flex items-center gap-2">
                       {provider.name}
                       {provider.connected && (
-                        <span className="flex items-center gap-1 text-xs text-success bg-success/10 px-2 py-0.5 rounded-full">
+                        <span className="flex items-center gap-1 text-xs text-success bg-success-light px-2 py-0.5 rounded-full">
                           <IconCheck className="w-3 h-3" />
                           {t('connected') || 'Connecté'}
                         </span>

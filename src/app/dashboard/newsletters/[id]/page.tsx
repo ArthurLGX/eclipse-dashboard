@@ -65,7 +65,7 @@ function InfoCard({
 }) {
   return (
     <div className={`flex items-start gap-3 p-4 bg-muted rounded-xl border border-default ${className}`}>
-      <div className="p-2 rounded-lg bg-accent/10 text-accent">
+      <div className="p-2 rounded-lg bg-accent-light text-accent">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
@@ -79,8 +79,8 @@ function InfoCard({
 // Composant pour le badge de statut
 function StatusBadge({ status, t }: { status: string; t: (key: string) => string }) {
   const config = {
-    sent: { bg: 'bg-accent/10', text: 'text-accent', label: t('sent') || 'Envoyée' },
-    draft: { bg: 'bg-warning/10', text: 'text-warning', label: t('draft') || 'Brouillon' },
+    sent: { bg: 'bg-accent-light', text: 'text-accent', label: t('sent') || 'Envoyée' },
+    draft: { bg: 'bg-warning-light', text: 'text-warning', label: t('draft') || 'Brouillon' },
   };
   
   const style = config[status as keyof typeof config] || config.draft;
@@ -103,7 +103,7 @@ function TemplateBadge({ template, t }: { template: string; t: (key: string) => 
   };
   
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-info/10 text-info">
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-info-light text-info">
       <IconTemplate className="w-3.5 h-3.5" />
       {labels[template] || template}
     </span>
@@ -132,8 +132,8 @@ function SubscriberItem({ subscriber }: { subscriber: Subscriber }) {
   };
 
   return (
-    <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-default hover:border-accent/30 transition-colors">
-      <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-semibold text-sm">
+    <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-default hover:border-accent-light transition-colors">
+      <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center text-accent font-semibold text-sm">
         {getInitials()}
       </div>
       <div className="flex-1 min-w-0">
@@ -337,7 +337,7 @@ export default function NewsletterDetailPage() {
                       <h2 className="font-semibold text-primary flex items-center gap-2">
                         <IconUsers className="w-5 h-5 text-accent" />
                         {t('subscribers') || 'Destinataires'}
-                        <span className="ml-auto px-2 py-0.5 bg-accent/10 text-accent text-sm rounded-full">
+                        <span className="ml-auto px-2 py-0.5 bg-accent-light text-accent text-sm rounded-full">
                           {newsletter.subscribers?.length || 0}
                         </span>
                       </h2>

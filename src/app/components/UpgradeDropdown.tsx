@@ -103,7 +103,7 @@ export default function UpgradeDropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggleAction}
-        className="w-full cursor-pointer bg-accent/20 text-accent px-4 py-3 rounded-lg border border-accent/20 hover:bg-accent/10 transition-colors hover:border-accent font-semibold flex items-center justify-between"
+        className="w-full cursor-pointer bg-accent-light text-accent px-4 py-3 rounded-lg border border-accent-light hover:bg-accent hover:text-white transition-colors hover:border-accent font-semibold flex items-center justify-between"
       >
         <span>{t('upgrade_plan')}</span>
         <motion.span
@@ -250,7 +250,7 @@ export default function UpgradeDropdown({
                 }}
                 className="flex items-center justify-center w-full"
               >
-                <p className="text-danger cursor-pointer bg-danger/10 px-4 py-2 text-center rounded-lg !text-sm w-full hover:bg-danger/20 transition-colors border border-danger/20 hover:border-danger">
+                <p className="text-danger cursor-pointer bg-danger-light px-4 py-2 text-center rounded-lg !text-sm w-full hover:bg-danger-light transition-colors border border-danger/20 hover:border-danger">
                   {t('cancel_subscription')}
                 </p>
               </div>

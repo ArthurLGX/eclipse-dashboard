@@ -175,7 +175,7 @@ export default function MediaLibraryPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-card rounded-xl p-4 border border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent/10 rounded-lg">
+              <div className="p-2 bg-accent-light rounded-lg">
                 <IconPhoto className="w-5 h-5 text-accent" />
               </div>
               <div>
@@ -187,7 +187,7 @@ export default function MediaLibraryPage() {
           
           <div className="bg-card rounded-xl p-4 border border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-warning/10 rounded-lg">
+              <div className="p-2 bg-warning-light rounded-lg">
                 <IconVideo className="w-5 h-5 text-warning" />
               </div>
               <div>
@@ -199,7 +199,7 @@ export default function MediaLibraryPage() {
           
           <div className="bg-card rounded-xl p-4 border border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-success/10 rounded-lg">
+              <div className="p-2 bg-success-light rounded-lg">
                 <IconPhoto className="w-5 h-5 text-success" />
               </div>
               <div>
@@ -211,7 +211,7 @@ export default function MediaLibraryPage() {
           
           <div className="bg-card rounded-xl p-4 border border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-info/10 rounded-lg">
+              <div className="p-2 bg-info-light rounded-lg">
                 <IconDownload className="w-5 h-5 text-info" />
               </div>
               <div>
@@ -286,7 +286,7 @@ export default function MediaLibraryPage() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="group relative bg-card rounded-xl border border-default overflow-hidden hover:border-accent/30 transition-colors"
+                className="group relative bg-card rounded-xl border border-default overflow-hidden hover:border-accent-light transition-colors"
               >
                 {/* Preview */}
                 <div 

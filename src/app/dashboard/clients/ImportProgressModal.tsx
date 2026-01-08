@@ -130,18 +130,18 @@ export default function ImportProgressModal({
 
           {/* Stats */}
           <div className="flex flex-wrap gap-3 mt-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 text-success text-sm">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light text-success text-sm">
               <IconCheck className="w-4 h-4" />
               {successCount} {t('import_success_count') || 'ajouté(s)'}
             </div>
             {skippedCount > 0 && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-warning/10 text-warning text-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-warning-light text-warning text-sm">
                 <IconPlayerSkipForward className="w-4 h-4" />
                 {skippedCount} {t('import_skipped_count') || 'ignoré(s)'}
               </div>
             )}
             {errorCount > 0 && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-danger/10 text-danger text-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-danger-light text-danger text-sm">
                 <IconAlertCircle className="w-4 h-4" />
                 {errorCount} {t('import_error_count') || 'erreur(s)'}
               </div>
@@ -171,11 +171,11 @@ export default function ImportProgressModal({
                 className={`
                   flex items-center gap-4 p-3 rounded-xl border transition-all
                   ${item.status === 'success' 
-                    ? 'bg-success/5 border-success/20' 
+                    ? 'bg-success-light border-success/20' 
                     : item.status === 'error'
-                      ? 'bg-danger/5 border-danger/20'
+                      ? 'bg-danger-light border-danger/20'
                       : item.status === 'skipped'
-                        ? 'bg-warning/5 border-warning/20'
+                        ? 'bg-warning-light border-warning/20'
                         : 'bg-card-hover border-default'
                   }
                 `}

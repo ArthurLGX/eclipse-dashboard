@@ -1087,7 +1087,7 @@ export default function ShareProjectModal({
                             onClick={() => setBannerType('color')}
                             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
                               bannerType === 'color' 
-                                ? 'border-accent bg-accent/10 text-accent' 
+                                ? 'border-accent bg-accent-light text-accent' 
                                 : 'border-default bg-muted/50 text-secondary hover:border-accent/50'
                             }`}
                           >
@@ -1099,7 +1099,7 @@ export default function ShareProjectModal({
                             onClick={() => setBannerType('image')}
                             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
                               bannerType === 'image' 
-                                ? 'border-accent bg-accent/10 text-accent' 
+                                ? 'border-accent bg-accent-light text-accent' 
                                 : 'border-default bg-muted/50 text-secondary hover:border-accent/50'
                             }`}
                           >

@@ -453,7 +453,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {/* Error message */}
             {error && (
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-danger/10 border border-danger/20">
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-danger-light border border-danger/20">
                 <IconAlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
                 <p className="text-danger text-sm">{error}</p>
               </div>
@@ -473,7 +473,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                       className={`
                         flex flex-col items-center gap-2 p-4 rounded-xl border transition-all text-center
                         ${importMode === option.value 
-                          ? 'bg-accent/10 border-accent text-accent' 
+                          ? 'bg-accent-light border-accent text-accent' 
                           : 'bg-card border-default hover:border-accent/50 text-secondary hover:text-primary'
                         }
                       `}
@@ -510,7 +510,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                   className="hidden"
                 />
                 <div className="flex flex-col items-center gap-4">
-                  <div className={`p-4 rounded-2xl ${isDragging ? 'bg-accent/20' : 'bg-card-hover'}`}>
+                  <div className={`p-4 rounded-2xl ${isDragging ? 'bg-accent-light' : 'bg-card-hover'}`}>
                     <IconUpload className={`w-8 h-8 ${isDragging ? 'text-accent' : 'text-secondary'}`} />
                   </div>
                   <div>
@@ -557,7 +557,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
 
             {/* Format hints */}
             {importedClients.length === 0 && importMode === 'json' && (
-              <div className="p-4 rounded-xl bg-info/5 border border-info/20">
+              <div className="p-4 rounded-xl bg-info-light border border-info/20">
                 <p className="text-sm text-secondary mb-2">
                   {t('import_list') || 'Format JSON attendu :'}
                 </p>
@@ -575,7 +575,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
             )}
 
             {importedClients.length === 0 && importMode === 'csv' && (
-              <div className="p-4 rounded-xl bg-info/5 border border-info/20">
+              <div className="p-4 rounded-xl bg-info-light border border-info/20">
                 <p className="text-sm text-secondary mb-2">
                   {t('import_csv_format') || 'Format CSV attendu :'}
                 </p>
@@ -595,12 +595,12 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
               <div className="space-y-4">
                 {/* Stats */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 text-success text-sm">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light text-success text-sm">
                     <IconCheck className="w-4 h-4" />
                     {validCount} {t('import_valid') || 'valide(s)'}
                   </div>
                   {invalidCount > 0 && (
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-danger/10 text-danger text-sm">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-danger-light text-danger text-sm">
                       <IconAlertCircle className="w-4 h-4" />
                       {invalidCount} {t('import_invalid') || 'invalide(s)'}
                     </div>
@@ -660,7 +660,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                       {importedClients.map((client, index) => (
                         <tr 
                           key={index} 
-                          className={`${!client.isValid ? 'bg-danger/5' : 'hover:bg-card-hover'} transition-colors`}
+                          className={`${!client.isValid ? 'bg-danger-light' : 'hover:bg-card-hover'} transition-colors`}
                         >
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-3">
@@ -703,7 +703,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           <td className="px-4 py-3 text-center">
                             <button
                               onClick={() => removeClient(index)}
-                              className="p-1.5 rounded-lg hover:bg-danger/10 text-secondary hover:text-danger transition-colors"
+                              className="p-1.5 rounded-lg hover:bg-danger-light text-secondary hover:text-danger transition-colors"
                               title={t('remove') || 'Supprimer'}
                             >
                               <IconTrash className="w-4 h-4" />
@@ -717,7 +717,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
 
                 {/* Error list */}
                 {invalidCount > 0 && (
-                  <div className="p-4 rounded-xl bg-warning/5 border border-warning/20">
+                  <div className="p-4 rounded-xl bg-warning-light border border-warning/20">
                     <p className="text-sm text-warning font-medium mb-2">
                       {t('import_errors_found') || 'Erreurs détectées :'}
                     </p>
@@ -751,7 +751,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                         className={`
                           flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all border
                           ${duplicateAction === option.value 
-                            ? 'bg-warning/10 border-warning' 
+                            ? 'bg-warning-light border-warning' 
                             : 'bg-card border-default hover:border-warning/50'
                           }
                         `}
@@ -770,7 +770,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           }`}>
                             {option.label}
                             {option.value === 'skip' && (
-                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success/10 text-success">
+                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success-light text-success">
                                 {t('recommended') || 'Recommandé'}
                               </span>
                             )}
@@ -797,7 +797,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                         className={`
                           flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all border
                           ${duplicateCheckMode === option.value 
-                            ? 'bg-accent/10 border-accent' 
+                            ? 'bg-accent-light border-accent' 
                             : 'bg-card border-default hover:border-accent/50'
                           }
                         `}
@@ -816,7 +816,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           }`}>
                             {option.label}
                             {option.value === 'email_only' && (
-                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success/10 text-success">
+                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success-light text-success">
                                 {t('recommended') || 'Recommandé'}
                               </span>
                             )}

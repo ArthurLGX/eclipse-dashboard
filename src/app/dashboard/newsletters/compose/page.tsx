@@ -2758,7 +2758,7 @@ export default function ComposeNewsletterPage() {
                             className={`relative p-5 rounded-2xl border transition-all text-left
                               ${isSelected 
                                 ? 'border-default !shadow-lg !shadow-accent/20' 
-                                : 'border-default hover:border-accent/30'
+                                : 'border-default hover:border-accent-light'
                               }`}
                             style={{
                               background: isSelected 
@@ -2915,7 +2915,7 @@ export default function ComposeNewsletterPage() {
                                       handleUpdateTemplate(template.documentId);
                                     }}
                                     disabled={isUpdating || isDeleting}
-                                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg bg-accent-light text-accent hover:border-accent-light transition-colors disabled:opacity-50"
                                     title={t('update_theme') || 'Mettre à jour avec les paramètres actuels'}
                                   >
                                     {isUpdating ? (
@@ -3523,7 +3523,7 @@ export default function ComposeNewsletterPage() {
                                               className="w-10 h-10 rounded-full object-cover"
                                             />
                                           ) : (
-                                            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold">
+                                            <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center text-accent font-semibold">
                                               {client.name[0]?.toUpperCase()}
                                             </div>
                                           )}
@@ -3585,14 +3585,14 @@ export default function ComposeNewsletterPage() {
                                 key={manual.email}
                                 className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full group"
                               >
-                                <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-accent text-xs font-semibold">
+                                <div className="w-6 h-6 rounded-full border-accent-light flex items-center justify-center text-accent text-xs font-semibold">
                                   {getEmailInitials(manual.email)}
                                 </div>
                                 <span className="text-sm text-primary">{manual.email}</span>
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveManualEmail(manual.email)}
-                                  className="p-0.5 rounded-full hover:bg-danger/20 text-muted hover:text-danger transition-colors"
+                                  className="p-0.5 rounded-full hover:bg-danger-light text-muted hover:text-danger transition-colors"
                                 >
                                   <IconX className="w-3.5 h-3.5" />
                                 </button>
@@ -3648,7 +3648,7 @@ export default function ComposeNewsletterPage() {
                                   className="w-10 h-10 rounded-full object-cover"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold">
+                                <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center text-accent font-semibold">
                                   {client.name[0]?.toUpperCase()}
                                 </div>
                               )}
@@ -3738,9 +3738,9 @@ export default function ComposeNewsletterPage() {
                           {manualEmails.slice(0, 3).map(manual => (
                             <span
                               key={manual.email}
-                              className="px-3 py-1 bg-accent/10 rounded-full text-sm text-accent flex items-center gap-1"
+                              className="px-3 py-1 bg-accent-light rounded-full text-sm text-accent flex items-center gap-1"
                             >
-                              <span className="w-4 h-4 rounded-full bg-accent/20 flex items-center justify-center text-[10px] font-bold">
+                              <span className="w-4 h-4 rounded-full border-accent-light flex items-center justify-center text-[10px] font-bold">
                                 {getEmailInitials(manual.email)}
                               </span>
                               {manual.email}
@@ -3853,7 +3853,7 @@ export default function ComposeNewsletterPage() {
                 className="bg-card rounded-2xl p-6 max-w-md w-full shadow-2xl border border-default"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-warning/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-warning-light flex items-center justify-center">
                     <IconSettings className="w-6 h-6 text-warning" />
                   </div>
                   <div>
@@ -3866,7 +3866,7 @@ export default function ComposeNewsletterPage() {
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-xl bg-warning/5 border border-warning/20 mb-6">
+                <div className="p-4 rounded-xl bg-warning-light border border-warning/20 mb-6">
                   <p className="text-sm text-secondary">
                     {smtpConfig ? (
                       t('smtp_not_verified_warning') || 'Votre configuration SMTP n\'a pas été vérifiée. Testez la connexion et enregistrez pour continuer.'

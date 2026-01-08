@@ -201,7 +201,7 @@ export default function TemplatePickerModal({
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
-                          className="absolute inset-0 bg-accent/10 flex items-center justify-center"
+                          className="absolute inset-0 bg-accent-light flex items-center justify-center"
                         >
                           <span className="px-4 py-2 bg-accent text-white rounded-lg text-sm font-medium">
                             {t('select') || 'Sélectionner'}

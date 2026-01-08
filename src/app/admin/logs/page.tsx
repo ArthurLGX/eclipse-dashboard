@@ -122,13 +122,13 @@ export default function AdminLogsPage() {
 
   const getTypeColor = (type: DisplayLog['type']) => {
     const colors: Record<DisplayLog['type'], string> = {
-      login: 'bg-success/10 text-success',
-      logout: 'bg-info/10 text-info',
-      register: 'bg-accent/10 text-accent',
-      update: 'bg-warning/10 text-warning',
-      delete: 'bg-danger/10 text-danger',
-      email: 'bg-info/10 text-info',
-      error: 'bg-danger/10 text-danger',
+      login: 'bg-success-light text-success',
+      logout: 'bg-info-light text-info',
+      register: 'bg-accent-light text-accent',
+      update: 'bg-warning-light text-warning',
+      delete: 'bg-danger-light text-danger',
+      email: 'bg-info-light text-info',
+      error: 'bg-danger-light text-danger',
       system: 'bg-muted/20 text-muted',
     };
     return colors[type];

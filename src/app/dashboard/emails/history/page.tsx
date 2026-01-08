@@ -204,7 +204,7 @@ function EmailHistory() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/dashboard/emails')}
-              className="p-2 text-muted hover:text-primary hover:bg-accent/10 rounded-lg transition-colors"
+              className="p-2 text-muted hover:text-primary hover:bg-accent-light rounded-lg transition-colors"
             >
               <IconArrowLeft className="w-5 h-5" />
             </button>
@@ -256,7 +256,7 @@ function EmailHistory() {
                       onClick={() => setSelectedCategory(cat.id)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
                         selectedCategory === cat.id
-                          ? 'bg-accent/10 text-accent'
+                          ? 'bg-accent-light text-accent'
                           : 'text-secondary hover:bg-hover hover:text-primary'
                       }`}
                     >
@@ -266,7 +266,7 @@ function EmailHistory() {
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         selectedCategory === cat.id
-                          ? 'bg-accent/20 text-accent'
+                          ? 'bg-accent-light text-accent'
                           : 'bg-background text-muted'
                       }`}>
                         {count}
@@ -445,7 +445,7 @@ function EmailHistory() {
                           href={att.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2 py-0.5 bg-accent/10 text-accent rounded-full text-xs hover:bg-accent/20 transition-colors"
+                          className="px-2 py-0.5 bg-accent-light text-accent rounded-full text-xs hover:bg-accent/20 transition-colors"
                         >
                           {att.name}
                         </a>

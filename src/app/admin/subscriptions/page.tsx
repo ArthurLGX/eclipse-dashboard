@@ -257,13 +257,13 @@ export default function AdminSubscriptionsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="card p-6 bg-gradient-to-br from-accent/20 to-accent/5 border-accent/20"
+          className="card p-6 bg-gradient-to-br from-accent to-accent-light border-accent"
         >
           <div className="flex items-center justify-between mb-4">
-            <div className="p-2 rounded-lg bg-accent/10">
+            <div className="p-2 rounded-lg bg-accent-light">
               <IconTrendingUp className="w-6 h-6 text-accent" />
             </div>
-            <span className="text-xs text-accent bg-accent/10 px-2 py-1 rounded-full font-medium">MRR</span>
+            <span className="text-xs text-accent bg-accent-light px-2 py-1 rounded-full font-medium">MRR</span>
           </div>
           <p className="text-3xl font-bold text-primary">{totalMRR.toLocaleString()}€</p>
           <p className="text-sm text-muted">{t('monthly_recurring_revenue') || 'Revenu mensuel récurrent'}</p>
@@ -296,7 +296,7 @@ export default function AdminSubscriptionsPage() {
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className="p-4 rounded-xl bg-muted/5 border border-muted hover:border-accent/30 transition-all"
+              className="p-4 rounded-xl bg-muted border border-muted hover:bg-accent-light transition-all"
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="font-semibold text-primary">{plan.name}</span>
@@ -401,7 +401,7 @@ export default function AdminSubscriptionsPage() {
                   <td className="px-4 py-4">
                     {sub.users && sub.users.length > 0 ? (
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center">
                           <span className="text-accent font-medium text-sm">
                             {sub.users[0].username?.charAt(0).toUpperCase()}
                           </span>
@@ -429,10 +429,10 @@ export default function AdminSubscriptionsPage() {
                       const status = getSubStatus(sub).toLowerCase();
                       return (
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          status === 'active' ? 'bg-success/10 text-success' :
-                          status === 'trial' ? 'bg-info/10 text-info' :
-                          status === 'canceled' ? 'bg-danger/10 text-danger' :
-                          'bg-warning/10 text-warning'
+                          status === 'active' ? 'bg-success-light text-success' :
+                          status === 'trial' ? 'bg-info-light text-info' :
+                          status === 'canceled' ? 'bg-danger-light text-danger' :
+                          'bg-warning-light text-warning'
                         }`}>
                           {status === 'active' ? t('active') || 'Actif' :
                            status === 'trial' ? t('trial') || 'Essai' :

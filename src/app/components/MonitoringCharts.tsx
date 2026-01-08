@@ -547,7 +547,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
             {recentIncidents.map((incident, index) => (
               <div 
                 key={index}
-                className="flex items-center justify-between p-2 bg-danger/10 border border-danger/20 rounded-lg"
+                className="flex items-center justify-between p-2 bg-danger-light border border-danger/20 rounded-lg"
               >
                 <div className="flex items-center gap-2">
                   <IconAlertTriangle className="w-4 h-4 text-danger" />
@@ -557,7 +557,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                   </div>
                 </div>
                 {incident.statusCode && (
-                  <span className="px-1.5 py-0.5 bg-danger/20 text-danger text-xs font-mono rounded">
+                  <span className="px-1.5 py-0.5 bg-danger-light text-danger text-xs font-mono rounded">
                     HTTP {incident.statusCode}
                   </span>
                 )}

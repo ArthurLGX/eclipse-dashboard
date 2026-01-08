@@ -347,16 +347,16 @@ export default function AdminUsersPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-accent/10 border border-accent/30 rounded-xl p-4 flex items-center justify-between"
+          className="bg-accent-light border border-accent-light rounded-xl p-4 flex items-center justify-between"
         >
           <span className="text-sm text-accent font-medium">
             {selectedUsers.length} {t('users_selected') || 'utilisateur(s) sélectionné(s)'}
           </span>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-1.5 text-sm bg-warning/10 text-warning rounded-lg hover:bg-warning/20">
+            <button className="px-3 py-1.5 text-sm bg-warning-light text-warning rounded-lg hover:bg-warning-light">
               {t('block') || 'Bloquer'}
             </button>
-            <button className="px-3 py-1.5 text-sm bg-danger/10 text-danger rounded-lg hover:bg-danger/20">
+            <button className="px-3 py-1.5 text-sm bg-danger-light text-danger rounded-lg hover:bg-danger-light">
               {t('delete') || 'Supprimer'}
             </button>
             <button
@@ -421,7 +421,7 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center">
                         <span className="text-accent font-medium text-sm">
                           {user.username?.charAt(0).toUpperCase() || '?'}
                         </span>
@@ -446,8 +446,8 @@ export default function AdminUsersPage() {
                       onClick={() => openRoleModal(user)}
                       className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity ${
                         user.role?.name === 'Admin' 
-                          ? 'bg-accent/10 text-accent' 
-                          : 'bg-info/10 text-info'
+                          ? 'bg-accent-light text-accent' 
+                          : 'bg-info-light text-info'
                       }`}
                       title={t('click_to_change_role') || 'Cliquer pour changer le rôle'}
                     >
@@ -458,8 +458,8 @@ export default function AdminUsersPage() {
                   <td className="px-4 py-4">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
                       user.blocked 
-                        ? 'bg-danger/10 text-danger' 
-                        : 'bg-success/10 text-success'
+                        ? 'bg-danger-light text-danger' 
+                        : 'bg-success-light text-success'
                     }`}>
                       {user.blocked ? (
                         <>
@@ -506,7 +506,7 @@ export default function AdminUsersPage() {
                       </button>
                       <button
                         onClick={() => setModalData({ user, action: 'delete' })}
-                        className="p-2 rounded-lg hover:bg-danger/10 transition-colors"
+                        className="p-2 rounded-lg hover:bg-danger-light transition-colors"
                         title={t('delete') || 'Supprimer'}
                       >
                         <IconTrash className="w-4 h-4 text-danger" />
@@ -583,7 +583,7 @@ export default function AdminUsersPage() {
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center">
                         <span className="text-2xl text-accent font-bold">
                           {modalData.user.username?.charAt(0).toUpperCase()}
                         </span>
@@ -645,7 +645,7 @@ export default function AdminUsersPage() {
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-accent-light flex items-center justify-center">
                         <span className="text-lg text-accent font-bold">
                           {modalData.user.username?.charAt(0).toUpperCase()}
                         </span>
@@ -667,12 +667,12 @@ export default function AdminUsersPage() {
                             onClick={() => setSelectedRole(role.id)}
                             className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
                               selectedRole === role.id
-                                ? 'border-accent bg-accent/10'
+                                ? 'border-accent bg-accent-light'
                                 : 'border-muted hover:border-accent/50'
                             }`}
                           >
                             <div className={`p-2 rounded-lg ${
-                              role.name === 'Admin' ? 'bg-accent/10' : 'bg-info/10'
+                              role.name === 'Admin' ? 'bg-accent-light' : 'bg-info-light'
                             }`}>
                               {role.name === 'Admin' ? (
                                 <IconCrown className="w-4 h-4 text-accent" />
@@ -715,7 +715,7 @@ export default function AdminUsersPage() {
               {modalData.action === 'block' && (
                 <>
                   <div className="text-center mb-6">
-                    <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 rounded-full bg-warning-light flex items-center justify-center mx-auto mb-4">
                       <IconBan className="w-8 h-8 text-warning" />
                     </div>
                     <h3 className="text-lg font-semibold text-primary">
@@ -756,7 +756,7 @@ export default function AdminUsersPage() {
               {modalData.action === 'delete' && (
                 <>
                   <div className="text-center mb-6">
-                    <div className="w-16 h-16 rounded-full bg-danger/10 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 rounded-full bg-danger-light flex items-center justify-center mx-auto mb-4">
                       <IconTrash className="w-8 h-8 text-danger" />
                     </div>
                     <h3 className="text-lg font-semibold text-primary">

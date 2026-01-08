@@ -166,7 +166,7 @@ export default function Plans() {
   const getPlanStyles = (planName: string) => {
     if (planName === 'pro') {
       return {
-        card: 'bg-accent/10 border-accent',
+        card: 'bg-accent-light border-accent',
         title: 'text-primary',
         description: 'text-secondary',
         price: 'text-accent',
@@ -240,7 +240,7 @@ export default function Plans() {
         <span
           className={`ml-2 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
             togglePlan
-              ? 'bg-accent/20 text-accent'
+              ? 'bg-accent-light text-accent'
               : 'bg-muted text-secondary'
           }`}
         >

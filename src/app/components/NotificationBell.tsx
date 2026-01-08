@@ -352,7 +352,7 @@ export default function NotificationBell() {
 
               {loading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="w-6 h-6 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-accent-light border-t-accent rounded-full animate-spin" />
                 </div>
               ) : filteredNotifications.length === 0 && visibleQuotaAlerts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 px-4">

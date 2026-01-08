@@ -400,7 +400,7 @@ export default function EmailSignatureSection() {
             
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-3 py-2 text-sm bg-accent/10 text-accent hover:bg-accent/20 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-sm bg-accent-light text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
             >
               <IconEye className="w-4 h-4" />
               {t('preview') || 'Aperçu'}
@@ -607,7 +607,7 @@ export default function EmailSignatureSection() {
             </h4>
             <button
               onClick={addSocialLink}
-              className="flex items-center gap-1 px-3 py-1.5 text-sm bg-accent/10 text-accent hover:bg-accent/20 rounded-lg transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 text-sm bg-accent-light text-accent hover:bg-accent/20 rounded-lg transition-colors"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_social') || 'Ajouter'}
@@ -704,7 +704,7 @@ export default function EmailSignatureSection() {
                     {/* Remove button */}
                     <button
                       onClick={() => removeSocialLink(link.id)}
-                      className="p-2 text-danger/70 hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
+                      className="p-2 text-danger/70 hover:text-danger hover:bg-danger-light rounded-lg transition-colors"
                     >
                       <IconTrash className="w-4 h-4" />
                     </button>
@@ -725,7 +725,7 @@ export default function EmailSignatureSection() {
         <div className="pt-4 border-t border-default">
           <button
             onClick={() => setShowCustomization(!showCustomization)}
-            className="flex items-center justify-between w-full p-3 bg-accent/5 hover:bg-accent/10 rounded-lg transition-colors"
+            className="flex items-center justify-between w-full p-3 bg-accent/5 hover:bg-accent-light rounded-lg transition-colors"
           >
             <div className="flex items-center gap-2">
               <IconPalette className="w-5 h-5 text-accent" />

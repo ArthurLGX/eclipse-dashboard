@@ -163,7 +163,7 @@ const CheckoutForm: React.FC<{
         </div>
 
         {error && (
-          <div className="bg-danger/20 border border-danger/30 rounded-lg p-3">
+          <div className="bg-danger-light border border-danger/30 rounded-lg p-3">
             <p className="text-danger !text-sm">{error}</p>
           </div>
         )}
@@ -255,7 +255,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
             {!stripePublishableKey ? (
               <div className="text-center py-8">
-                <div className="w-16 h-16 bg-warning/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">⚠️</span>
                 </div>
                 <p className="text-primary font-medium mb-2">

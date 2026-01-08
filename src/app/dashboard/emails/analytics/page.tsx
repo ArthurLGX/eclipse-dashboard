@@ -266,7 +266,7 @@ function EmailAnalytics() {
                 key={link.url}
                 className="flex items-center gap-3 p-3 bg-secondary/5 rounded-lg"
               >
-                <div className="w-8 h-8 rounded-full bg-accent/10 text-accent flex items-center justify-center text-sm font-bold">
+                <div className="w-8 h-8 rounded-full bg-accent-light text-accent flex items-center justify-center text-sm font-bold">
                   {index + 1}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -598,7 +598,7 @@ function EmailDetailModal({
                     key={index}
                     className="flex items-center gap-4 p-3 bg-background rounded-lg"
                   >
-                    <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center">
                       <IconUser className="w-4 h-4 text-accent" />
                     </div>
                     

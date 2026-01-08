@@ -394,7 +394,7 @@ function ComposeEmail() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.back()}
-              className="p-2 text-muted hover:text-primary hover:bg-accent/10 rounded-lg transition-colors"
+              className="p-2 text-muted hover:text-primary hover:bg-accent-light rounded-lg transition-colors"
             >
               <IconArrowLeft className="w-5 h-5" />
             </button>
@@ -408,7 +408,7 @@ function ComposeEmail() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(true)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent/10 text-accent hover:bg-accent/20 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
             >
               <IconEye className="w-4 h-4" />
               {t('preview') || 'Aperçu'}
@@ -457,7 +457,7 @@ function ComposeEmail() {
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.8, opacity: 0 }}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-accent/10 text-accent rounded-full text-sm"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-accent-light text-accent rounded-full text-sm"
                   >
                     <span>{recipient.email}</span>
                     <button

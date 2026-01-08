@@ -380,7 +380,7 @@ const PROJECT_TYPES = [
         >
           {/* En-tête du projet (infos basiques) */}
           <div className="card p-8 text-center mb-6">
-            <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
               <IconFileText className="w-10 h-10 text-accent" />
             </div>
             <h1 className="text-2xl font-bold text-primary mb-2">{project.title}</h1>
@@ -401,7 +401,7 @@ const PROJECT_TYPES = [
           <div className="card p-8 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent border-warning/20">
             {collaborationRequestStatus === 'pending' ? (
               <div className="text-center">
-                <div className="w-16 h-16 bg-warning/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-4">
                   <IconHourglass className="w-8 h-8 text-warning" />
                 </div>
                 <h2 className="text-xl font-bold text-primary mb-2">{t('pending_request')}</h2>
@@ -409,7 +409,7 @@ const PROJECT_TYPES = [
               </div>
             ) : collaborationRequestStatus === 'rejected' ? (
               <div className="text-center">
-                <div className="w-16 h-16 bg-danger/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-danger-light rounded-full flex items-center justify-center mx-auto mb-4">
                   <IconX className="w-8 h-8 text-danger" />
                 </div>
                 <h2 className="text-xl font-bold text-primary mb-2">{t('collaboration_rejected')}</h2>
@@ -417,7 +417,7 @@ const PROJECT_TYPES = [
               </div>
             ) : (
               <div className="text-center">
-                <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
                   <IconUserPlus className="w-8 h-8 text-accent" />
                 </div>
                 <h2 className="text-xl font-bold text-primary mb-2">{t('request_collaboration')}</h2>

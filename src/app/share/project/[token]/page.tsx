@@ -386,7 +386,7 @@ export default function SharedProjectPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-12 card bg-gradient-to-r from-accent/10 via-accent/5 to-transparent border-accent/20 p-8"
+          className="mt-12 card bg-gradient-to-r from-accent-light via-accent/5 to-transparent border-accent-light p-8"
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex-1">
@@ -955,7 +955,7 @@ function PublicGanttView({ tasks, projectName }: {
                       onClick={() => setExportMode('light')}
                       className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
                         exportMode === 'light' 
-                          ? 'border-accent bg-accent/10' 
+                          ? 'border-accent bg-accent-light' 
                           : 'border-default bg-muted/50 hover:border-accent/50'
                       }`}
                     >
@@ -970,7 +970,7 @@ function PublicGanttView({ tasks, projectName }: {
                       onClick={() => setExportMode('dark')}
                       className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
                         exportMode === 'dark' 
-                          ? 'border-accent bg-accent/10' 
+                          ? 'border-accent bg-accent-light' 
                           : 'border-default bg-muted/50 hover:border-accent/50'
                       }`}
                     >

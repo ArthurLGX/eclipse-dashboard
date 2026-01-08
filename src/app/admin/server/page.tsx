@@ -285,14 +285,14 @@ export default function AdminServerPage() {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`p-3 rounded-lg ${
-                  service.status === 'ok' ? 'bg-success/10' : 'bg-danger/10'
+                  service.status === 'ok' ? 'bg-success-light' : 'bg-danger-light'
                 }`}>
                   <Icon className={`w-6 h-6 ${
                     service.status === 'ok' ? 'text-success' : 'text-danger'
                   }`} />
                 </div>
                 <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
-                  service.status === 'ok' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'
+                  service.status === 'ok' ? 'bg-success-light text-success' : 'bg-danger-light text-danger'
                 }`}>
                   {service.status === 'ok' ? (
                     <><IconCheck className="w-3 h-3" /> OK</>
@@ -385,7 +385,7 @@ export default function AdminServerPage() {
             <div
               key={i}
               className={`flex items-center justify-between p-3 rounded-lg ${
-                h.status === 'ok' ? 'bg-success/5' : 'bg-danger/5'
+                h.status === 'ok' ? 'bg-success-light' : 'bg-danger-light'
               }`}
             >
               <div className="flex items-center gap-3">

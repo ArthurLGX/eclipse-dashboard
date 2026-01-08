@@ -123,7 +123,7 @@ function ScheduledEmails() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard/emails"
-              className="p-2 text-muted hover:text-primary hover:bg-accent/10 rounded-lg transition-colors"
+              className="p-2 text-muted hover:text-primary hover:bg-accent-light rounded-lg transition-colors"
             >
               <IconArrowLeft className="w-5 h-5" />
             </Link>

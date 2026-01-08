@@ -33,10 +33,10 @@ import useSWR from 'swr';
 
 const QUOTE_STATUS_COLORS: Record<QuoteStatus, { bg: string; text: string; label: string }> = {
   draft: { bg: 'bg-muted/20', text: 'text-muted', label: 'Brouillon' },
-  sent: { bg: 'bg-info/20', text: 'text-info', label: 'Envoyé' },
-  accepted: { bg: 'bg-success/20', text: 'text-success', label: 'Accepté' },
+  sent: { bg: 'bg-info-light', text: 'text-info', label: 'Envoyé' },
+  accepted: { bg: 'bg-success-light', text: 'text-success', label: 'Accepté' },
   rejected: { bg: 'bg-error/20', text: 'text-error', label: 'Refusé' },
-  expired: { bg: 'bg-warning/20', text: 'text-warning', label: 'Expiré' },
+  expired: { bg: 'bg-warning-light', text: 'text-warning', label: 'Expiré' },
 };
 
 export default function DevisPage() {
@@ -211,7 +211,7 @@ export default function DevisPage() {
             <button
               onClick={() => handleConvert(quote)}
               disabled={convertingId === quote.documentId}
-              className="p-1.5 text-muted hover:text-success hover:bg-success/10 rounded-lg"
+              className="p-1.5 text-muted hover:text-success hover:bg-success-light rounded-lg"
               title={t('convert_to_invoice') || 'Convertir en facture'}
             >
               {convertingId === quote.documentId ? (

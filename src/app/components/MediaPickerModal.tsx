@@ -334,7 +334,7 @@ export default function MediaPickerModal({
                     </>
                   ) : (
                     <>
-                      <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors">
+                      <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center mb-4 group-hover:bg-accent-light transition-colors">
                         <IconUpload className="w-8 h-8 text-accent" />
                       </div>
                       <p className="text-primary font-medium mb-2">
@@ -422,7 +422,7 @@ export default function MediaPickerModal({
             {activeTab === 'url' && (
               <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
                 <div className="w-full max-w-md space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center mx-auto mb-4">
                     <IconLink className="w-8 h-8 text-accent" />
                   </div>
                   

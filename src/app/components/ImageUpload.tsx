@@ -549,7 +549,7 @@ export default function ImageUpload({
                     disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                   }`}
                 >
-                  <div className="w-8 h-8 rounded-lg bg-info/10 border border-info/30 flex items-center justify-center overflow-hidden">
+                  <div className="w-8 h-8 rounded-lg bg-info-light border border-info/30 flex items-center justify-center overflow-hidden">
                     {faviconUrl ? (
                       <Image
                         src={faviconUrl}
@@ -581,7 +581,7 @@ export default function ImageUpload({
                   disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                 }`}
               >
-                <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-accent-light border border-accent-light flex items-center justify-center">
                   <IconUpload size={18} className="text-accent" />
                 </div>
                 <div>
@@ -615,7 +615,7 @@ export default function ImageUpload({
                   disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                 }`}
               >
-                <div className="w-8 h-8 rounded-lg bg-info/10 border border-info/30 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-info-light border border-info/30 flex items-center justify-center">
                   <IconLink size={18} className="text-info" />
                 </div>
                 <div>

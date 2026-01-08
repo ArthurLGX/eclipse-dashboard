@@ -167,12 +167,12 @@ export default function SaveTemplateModal({
               {(templateData.headerBackgroundUrl || templateData.bannerUrl) && (
                 <div className="flex gap-2 mt-3 text-xs text-muted">
                   {templateData.headerBackgroundUrl && (
-                    <span className="px-2 py-1 bg-accent/10 text-accent rounded">
+                    <span className="px-2 py-1 bg-accent-light text-accent rounded">
                       {t('header_image_included') || '+ Image en-tête'}
                     </span>
                   )}
                   {templateData.bannerUrl && (
-                    <span className="px-2 py-1 bg-accent/10 text-accent rounded">
+                    <span className="px-2 py-1 bg-accent-light text-accent rounded">
                       {t('banner_included') || '+ Bannière'}
                     </span>
                   )}
@@ -221,7 +221,7 @@ export default function SaveTemplateModal({
               className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-all ${
                 isDefault
                   ? 'border-yellow-500/50 bg-yellow-500/10'
-                  : 'border-default hover:border-accent/30 hover:bg-hover/50'
+                  : 'border-default hover:border-accent-light hover:bg-hover/50'
               }`}
             >
               {isDefault ? (

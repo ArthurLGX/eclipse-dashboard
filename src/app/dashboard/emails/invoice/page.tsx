@@ -342,7 +342,7 @@ Cordialement`;
           <div className="flex flex-row items-center justify-between gap-4 p-4">
             <button
               onClick={() => router.back()}
-              className="p-2 text-muted hover:text-primary hover:bg-accent/10 rounded-lg transition-colors"
+              className="p-2 text-muted hover:text-primary hover:bg-accent-light rounded-lg transition-colors"
             >
               <IconArrowLeft className="w-5 h-5" />
             </button>
@@ -358,7 +358,7 @@ Cordialement`;
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent/10 text-accent hover:bg-accent/20 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
             >
               {showPreview ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
               {showPreview ? (t('edit') || 'Éditer') : (t('preview') || 'Aperçu')}
@@ -545,7 +545,7 @@ Cordialement`;
                               <button
                                 key={invoice.documentId}
                                 onClick={() => handleSelectInvoice(invoice)}
-                                className="w-full p-3 flex items-center gap-4 hover:bg-accent/10 rounded-lg transition-colors text-left"
+                                className="w-full p-3 flex items-center gap-4 hover:bg-accent-light rounded-lg transition-colors text-left"
                               >
                                 <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center">
                                   <IconFileInvoice className="w-5 h-5 text-amber-500" />
@@ -593,12 +593,12 @@ Cordialement`;
                       key={recipient.id}
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-accent/10 text-accent rounded-full text-sm"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-accent-light text-accent rounded-full text-sm"
                     >
                       <span>{recipient.name ? `${recipient.name} <${recipient.email}>` : recipient.email}</span>
                       <button
                         onClick={() => removeRecipient(recipient.id)}
-                        className="p-0.5 hover:bg-accent/20 rounded-full transition-colors"
+                        className="p-0.5 hover:bg-accent hover:text-white rounded-full transition-colors"
                       >
                         <IconX className="w-3.5 h-3.5" />
                       </button>
