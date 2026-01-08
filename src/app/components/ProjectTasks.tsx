@@ -1972,7 +1972,8 @@ function TaskGanttView({
     };
     
     requestAnimationFrame(animateScroll);
-  }, [normalizeDate]);
+  }, []);
+
   const tasksWithDates = useMemo(() => tasks.filter(task => task.start_date || task.due_date), [tasks]);
 
   // Calculer toutes les données du Gantt avec useMemo

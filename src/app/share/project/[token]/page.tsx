@@ -133,6 +133,33 @@ export default function SharedProjectPage() {
     { value: 'cancelled', label: t('cancelled'), color: 'danger' },
   ], [t]);
 
+  // Les tâches du projet (mémorisées pour éviter les re-calculs)
+  const tasks = useMemo(() => project?.tasks || [], [project?.tasks]);
+
+  // Statistiques par statut pour les filtres
+  const taskStats = useMemo(() => ({
+    all: tasks.length,
+    todo: tasks.filter(t => t.task_status === 'todo').length,
+    in_progress: tasks.filter(t => t.task_status === 'in_progress').length,
+    completed: tasks.filter(t => t.task_status === 'completed').length,
+    cancelled: tasks.filter(t => t.task_status === 'cancelled').length,
+  }), [tasks]);
+
+  // Tâches filtrées selon le statut sélectionné
+  const filteredTasks = useMemo(() => {
+    if (statusFilter === 'all') return tasks;
+    return tasks.filter(task => task.task_status === statusFilter);
+  }, [tasks, statusFilter]);
+
+  // Options de filtres avec icônes
+  const FILTER_OPTIONS: { value: TaskStatus | 'all'; label: string; icon: React.ReactNode; color: string }[] = useMemo(() => [
+    { value: 'all', label: t('all'), icon: <IconList className="w-4 h-4" />, color: 'text-primary' },
+    { value: 'todo', label: t('todo'), icon: <IconCircle className="w-4 h-4" />, color: 'text-muted' },
+    { value: 'in_progress', label: t('in_progress'), icon: <IconProgress className="w-4 h-4" />, color: 'text-info' },
+    { value: 'completed', label: t('done'), icon: <IconCheck className="w-4 h-4" />, color: 'text-success' },
+    { value: 'cancelled', label: t('cancelled'), icon: <IconX className="w-4 h-4" />, color: 'text-danger' },
+  ], [t]);
+
   useEffect(() => {
     const loadProject = async () => {
       if (!token) {
@@ -190,35 +217,10 @@ export default function SharedProjectPage() {
     );
   }
 
-  const tasks = project.tasks || [];
   const completedTasks = tasks.filter(task => task.task_status === 'completed').length;
   const overallProgress = tasks.length > 0
     ? Math.round(tasks.reduce((sum, task) => sum + (task.progress || 0), 0) / tasks.length)
     : 0;
-
-  // Statistiques par statut pour les filtres
-  const taskStats = useMemo(() => ({
-    all: tasks.length,
-    todo: tasks.filter(t => t.task_status === 'todo').length,
-    in_progress: tasks.filter(t => t.task_status === 'in_progress').length,
-    completed: tasks.filter(t => t.task_status === 'completed').length,
-    cancelled: tasks.filter(t => t.task_status === 'cancelled').length,
-  }), [tasks]);
-
-  // Tâches filtrées selon le statut sélectionné
-  const filteredTasks = useMemo(() => {
-    if (statusFilter === 'all') return tasks;
-    return tasks.filter(task => task.task_status === statusFilter);
-  }, [tasks, statusFilter]);
-
-  // Options de filtres avec icônes
-  const FILTER_OPTIONS: { value: TaskStatus | 'all'; label: string; icon: React.ReactNode; color: string }[] = useMemo(() => [
-    { value: 'all', label: t('all'), icon: <IconList className="w-4 h-4" />, color: 'text-primary' },
-    { value: 'todo', label: t('todo'), icon: <IconCircle className="w-4 h-4" />, color: 'text-muted' },
-    { value: 'in_progress', label: t('in_progress'), icon: <IconProgress className="w-4 h-4" />, color: 'text-info' },
-    { value: 'completed', label: t('done'), icon: <IconCheck className="w-4 h-4" />, color: 'text-success' },
-    { value: 'cancelled', label: t('cancelled'), icon: <IconX className="w-4 h-4" />, color: 'text-danger' },
-  ], [t]);
 
   const daysRemaining = project.end_date 
     ? Math.ceil((new Date(project.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
