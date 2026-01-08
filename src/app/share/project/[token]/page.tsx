@@ -775,47 +775,6 @@ function PublicGanttView({ tasks, projectName }: {
     });
   }, []);
 
-  // Scroll jusqu'à aujourd'hui avec animation
-  const scrollToToday = useCallback(() => {
-    if (!timelineRef.current || !ganttData) return;
-    
-    const { todayIndex } = ganttData;
-    if (todayIndex < 0) return;
-    
-    // Colonnes fixes: 260px + 90px + 60px = 410px, chaque jour = 32px
-    const fixedColumnsWidth = 410;
-    const dayWidth = 32;
-    const containerWidth = timelineRef.current.clientWidth;
-    
-    // Centrer la colonne d'aujourd'hui dans la vue visible
-    const targetScroll = (todayIndex * dayWidth) - (containerWidth / 2) + fixedColumnsWidth + (dayWidth / 2);
-    
-    // Animation smooth avec requestAnimationFrame
-    const startScroll = timelineRef.current.scrollLeft;
-    const distance = Math.max(0, targetScroll) - startScroll;
-    const duration = 600; // ms
-    let startTime: number | null = null;
-    
-    const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
-    
-    const animateScroll = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easeProgress = easeOutCubic(progress);
-      
-      if (timelineRef.current) {
-        timelineRef.current.scrollLeft = startScroll + (distance * easeProgress);
-      }
-      
-      if (progress < 1) {
-        requestAnimationFrame(animateScroll);
-      }
-    };
-    
-    requestAnimationFrame(animateScroll);
-  }, [ganttData]);
-
   const ganttData = useMemo(() => {
     if (tasksWithDates.length === 0) return null;
 
@@ -862,6 +821,47 @@ function PublicGanttView({ tasks, projectName }: {
 
     return { minDate, totalDays, dayHeaders, months, todayIndex };
   }, [tasksWithDates, today, normalizeDate]);
+
+  // Scroll jusqu'à aujourd'hui avec animation
+  const scrollToToday = useCallback(() => {
+    if (!timelineRef.current || !ganttData) return;
+    
+    const { todayIndex } = ganttData;
+    if (todayIndex < 0) return;
+    
+    // Colonnes fixes: 260px + 90px + 60px = 410px, chaque jour = 32px
+    const fixedColumnsWidth = 410;
+    const dayWidth = 32;
+    const containerWidth = timelineRef.current.clientWidth;
+    
+    // Centrer la colonne d'aujourd'hui dans la vue visible
+    const targetScroll = (todayIndex * dayWidth) - (containerWidth / 2) + fixedColumnsWidth + (dayWidth / 2);
+    
+    // Animation smooth avec requestAnimationFrame
+    const startScroll = timelineRef.current.scrollLeft;
+    const distance = Math.max(0, targetScroll) - startScroll;
+    const duration = 600; // ms
+    let startTime: number | null = null;
+    
+    const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
+    
+    const animateScroll = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = easeOutCubic(progress);
+      
+      if (timelineRef.current) {
+        timelineRef.current.scrollLeft = startScroll + (distance * easeProgress);
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+    
+    requestAnimationFrame(animateScroll);
+  }, [ganttData]);
 
   const getTaskPosition = useCallback((task: ProjectTask) => {
     if (!ganttData) return { startOffset: 0, duration: 1 };
