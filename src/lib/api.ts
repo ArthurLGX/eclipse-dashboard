@@ -1276,8 +1276,9 @@ export async function createProjectInvitation(data: {
   }
 
   const payload = {
-    project: data.project,
-    sender: data.sender,
+    // Relations Strapi v5 avec connect et documentId
+    project: { connect: [{ documentId: data.project }] },
+    sender: { connect: [{ id: data.sender }] },
     // Pour les liens publics, on utilise une chaîne vide car Strapi exige un string
     recipient_email: data.isPublicLink ? '' : (data.recipient_email || ''),
     invitation_code: invitationCode,
@@ -1285,7 +1286,7 @@ export async function createProjectInvitation(data: {
     permission: data.permission || 'edit',
     expires_at: expiresAt,
     is_public_link: data.isPublicLink || false,
-    ...(recipient ? { recipient: recipient.id } : {}),
+    ...(recipient ? { recipient: { connect: [{ id: recipient.id }] } } : {}),
   };
 
   const invitation = await post('project-invitations', payload);
