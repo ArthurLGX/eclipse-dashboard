@@ -78,6 +78,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       const adminEmails = [
         'admin@eclipsestudio.dev', 
         'arthur@eclipsestudio.dev',
+        'arthur.legoux@gmail.com',
         // Ajouter d'autres emails admin ici si nécessaire
       ];
       
