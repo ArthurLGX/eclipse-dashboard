@@ -16,7 +16,7 @@ import {
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { useAuth } from '@/app/context/AuthContext';
-import { fetchInvitationByCode, acceptInvitation, rejectInvitation, fetchProjects } from '@/lib/api';
+import { fetchInvitationByCode, acceptInvitation, rejectInvitation, fetchProjectsUser } from '@/lib/api';
 import { clearCache } from '@/hooks/useApi';
 import { generateSlug } from '@/utils/slug';
 import type { ProjectInvitation, Project } from '@/types';
@@ -118,7 +118,7 @@ export default function InvitationPage() {
     const loadUserProjects = async () => {
       if (user?.id) {
         try {
-          const response = await fetchProjects(user.id);
+          const response = await fetchProjectsUser(user.id);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const projects = (response as any).data || [];
           setUserProjects(projects);
