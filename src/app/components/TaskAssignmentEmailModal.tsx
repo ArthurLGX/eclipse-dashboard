@@ -360,6 +360,7 @@ export default function TaskAssignmentEmailModal({
           }}
           emailData={{
             subject: effectiveSubject,
+            content: effectiveMessage,
             htmlContent: generateEmailHtml(previewUser),
           }}
           senderInfo={senderInfo}
