@@ -356,9 +356,30 @@ export default function ProjectTasks({
         username: string;
       }[] = [];
 
-      // Créer les tâches une par une
-      for (let i = 0; i < importedTasks.length; i++) {
-        const task = importedTasks[i];
+      // Récupérer les titres des tâches existantes pour détecter les doublons
+      const existingTitles = new Set(
+        tasks.map(t => t.title.toLowerCase().trim())
+      );
+      
+      // Filtrer les tâches à importer (exclure les doublons)
+      const tasksToImport: ImportedTask[] = [];
+      const duplicateTasks: string[] = [];
+      
+      for (const task of importedTasks) {
+        const normalizedTitle = task.title.toLowerCase().trim();
+        if (existingTitles.has(normalizedTitle)) {
+          duplicateTasks.push(task.title);
+        } else {
+          tasksToImport.push(task);
+          // Ajouter au set pour éviter les doublons internes au fichier importé
+          existingTitles.add(normalizedTitle);
+        }
+      }
+
+      // Créer les tâches une par une (seulement les non-doublons)
+      let createdCount = 0;
+      for (let i = 0; i < tasksToImport.length; i++) {
+        const task = tasksToImport[i];
         const assignedMember = task.assigned_to 
           ? allMembers.find(m => m.documentId === task.assigned_to) 
           : undefined;
@@ -380,6 +401,7 @@ export default function ProjectTasks({
           color: task.color || TASK_COLORS[i % TASK_COLORS.length],
           tags: task.tags && task.tags.length > 0 ? task.tags : undefined,
         });
+        createdCount++;
 
         // Collecter pour notification si assigné et emails activés
         // Exclure les tâches terminées ou annulées
@@ -437,13 +459,19 @@ export default function ProjectTasks({
           }
         }
         
+        const duplicateInfo = duplicateTasks.length > 0 
+          ? ` • ${duplicateTasks.length} ${t('duplicates_ignored') || 'doublon(s) ignoré(s)'}`
+          : '';
         showGlobalPopup(
-          `${importedTasks.length} ${t('tasks_imported') || 'tâches importées'} • ${uniqueEmails.length} ${t('emails_sent') || 'email(s) envoyé(s)'}`,
+          `${createdCount} ${t('tasks_imported') || 'tâches importées'} • ${uniqueEmails.length} ${t('emails_sent') || 'email(s) envoyé(s)'}${duplicateInfo}`,
           'success'
         );
       } else {
+        const duplicateInfo = duplicateTasks.length > 0 
+          ? ` • ${duplicateTasks.length} ${t('duplicates_ignored') || 'doublon(s) ignoré(s)'}`
+          : '';
         showGlobalPopup(
-          `${importedTasks.length} ${t('tasks_imported') || 'tâches importées avec succès'}`,
+          `${createdCount} ${t('tasks_imported') || 'tâches importées avec succès'}${duplicateInfo}`,
           'success'
         );
       }
