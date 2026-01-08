@@ -7,7 +7,6 @@ import {
   IconMail,
   IconSend,
   IconEye,
-  IconCheck,
   IconLoader2,
   IconClipboardList,
 } from '@tabler/icons-react';

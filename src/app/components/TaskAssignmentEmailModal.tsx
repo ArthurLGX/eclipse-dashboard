@@ -7,8 +7,6 @@ import {
   IconMail,
   IconSend,
   IconEye,
-  IconEdit,
-  IconCheck,
   IconListCheck,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
