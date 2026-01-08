@@ -11,6 +11,7 @@ import {
   IconTrash,
   IconEdit,
   IconCalendar,
+  IconCalendarEvent,
   IconFlag,
   IconX,
   IconChevronDown,
@@ -1928,6 +1929,55 @@ function TaskGanttView({
 
   // Calculer la plage de dates - normaliser aujourd'hui à minuit
   const today = useMemo(() => normalizeDate(new Date()), [normalizeDate]);
+
+  // Fonction pour scroller jusqu'à aujourd'hui avec animation
+  const scrollToToday = useCallback(() => {
+    if (!timelineRef.current) return;
+    
+    // Colonnes fixes: 260px + 90px + 60px = 410px, chaque jour = 32px
+    const fixedColumnsWidth = 410;
+    const dayWidth = 32;
+    const containerWidth = timelineRef.current.clientWidth;
+    
+    // Trouver l'index du jour d'aujourd'hui
+    const todayNormalized = normalizeDate(new Date());
+    const firstDay = timelineRef.current.querySelector('th[data-day-index="0"]');
+    if (!firstDay) return;
+    
+    // Trouver la colonne d'aujourd'hui
+    const todayColumn = timelineRef.current.querySelector(`th[data-is-today="true"]`);
+    if (!todayColumn) return;
+    
+    const todayIndex = parseInt(todayColumn.getAttribute('data-day-index') || '0', 10);
+    
+    // Centrer la colonne d'aujourd'hui dans la vue visible
+    const targetScroll = (todayIndex * dayWidth) - (containerWidth / 2) + fixedColumnsWidth + (dayWidth / 2);
+    
+    // Animation smooth avec requestAnimationFrame
+    const startScroll = timelineRef.current.scrollLeft;
+    const distance = Math.max(0, targetScroll) - startScroll;
+    const duration = 600; // ms
+    let startTime: number | null = null;
+    
+    const easeOutCubic = (x: number): number => 1 - Math.pow(1 - x, 3);
+    
+    const animateScroll = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = easeOutCubic(progress);
+      
+      if (timelineRef.current) {
+        timelineRef.current.scrollLeft = startScroll + (distance * easeProgress);
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+    
+    requestAnimationFrame(animateScroll);
+  }, [normalizeDate]);
   const tasksWithDates = useMemo(() => tasks.filter(task => task.start_date || task.due_date), [tasks]);
 
   // Calculer toutes les données du Gantt avec useMemo
@@ -2410,8 +2460,18 @@ function TaskGanttView({
         </div>
       )}
 
-      {/* Bouton d'export */}
-      <div className="flex justify-end">
+      {/* Boutons Today + Export */}
+      <div className="flex justify-end gap-2">
+        <motion.button
+          onClick={scrollToToday}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors shadow-sm"
+        >
+          <IconCalendarEvent className="w-4 h-4" />
+          {t('today') || "Aujourd'hui"}
+        </motion.button>
+        
         <button
           onClick={() => setShowExportModal(true)}
           disabled={isExporting}
@@ -2458,6 +2518,8 @@ function TaskGanttView({
                 {dayHeaders.map((day, j) => (
                   <th 
                     key={j}
+                    data-day-index={j}
+                    data-is-today={isToday(day) ? 'true' : 'false'}
                     className={`text-center py-1.5 text-[10px] font-medium w-8 min-w-[32px] border-b border-muted/20 ${
                       isToday(day) 
                         ? 'bg-red-500/15 text-red-500 font-bold' 

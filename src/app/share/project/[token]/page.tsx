@@ -585,6 +585,7 @@ function PublicGanttView({ tasks, projectName }: {
 }) {
   const { t } = useLanguage();
   const ganttRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportMode, setExportMode] = useState<'light' | 'dark'>('light');
@@ -649,6 +650,47 @@ function PublicGanttView({ tasks, projectName }: {
       return newSet;
     });
   }, []);
+
+  // Scroll jusqu'à aujourd'hui avec animation
+  const scrollToToday = useCallback(() => {
+    if (!timelineRef.current || !ganttData) return;
+    
+    const { todayIndex } = ganttData;
+    if (todayIndex < 0) return;
+    
+    // Colonnes fixes: 260px + 90px + 60px = 410px, chaque jour = 32px
+    const fixedColumnsWidth = 410;
+    const dayWidth = 32;
+    const containerWidth = timelineRef.current.clientWidth;
+    
+    // Centrer la colonne d'aujourd'hui dans la vue visible
+    const targetScroll = (todayIndex * dayWidth) - (containerWidth / 2) + fixedColumnsWidth + (dayWidth / 2);
+    
+    // Animation smooth avec requestAnimationFrame
+    const startScroll = timelineRef.current.scrollLeft;
+    const distance = Math.max(0, targetScroll) - startScroll;
+    const duration = 600; // ms
+    let startTime: number | null = null;
+    
+    const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
+    
+    const animateScroll = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = easeOutCubic(progress);
+      
+      if (timelineRef.current) {
+        timelineRef.current.scrollLeft = startScroll + (distance * easeProgress);
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+    
+    requestAnimationFrame(animateScroll);
+  }, [ganttData]);
 
   const ganttData = useMemo(() => {
     if (tasksWithDates.length === 0) return null;
@@ -1017,7 +1059,18 @@ function PublicGanttView({ tasks, projectName }: {
         </div>
       )}
 
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        {/* Bouton Today */}
+        <motion.button
+          onClick={scrollToToday}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors shadow-sm"
+        >
+          <IconCalendar className="w-4 h-4" />
+          {t('today') || "Aujourd'hui"}
+        </motion.button>
+        
         <button
           onClick={() => setShowExportModal(true)}
           disabled={isExporting}
@@ -1030,7 +1083,7 @@ function PublicGanttView({ tasks, projectName }: {
 
       {/* Design Gantt style Gamma - Structure unifiée */}
       <div className="bg-card rounded-xl border border-default overflow-hidden" ref={ganttRef}>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" ref={timelineRef}>
           <table className="w-full border-collapse" style={{ minWidth: `${450 + dayHeaders.length * 32}px` }}>
             {/* En-tête */}
             <thead className="sticky top-0 z-20">
