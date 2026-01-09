@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
 import {
   IconSparkles,
-  IconLoader2,
   IconRefresh,
   IconDownload,
   IconMaximize,
@@ -50,7 +49,8 @@ export default function GeneratedMockup({
   missingSections,
   existingSections,
   currentScreenshot,
-  url,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  url: _url,
   styleAnalysis,
 }: GeneratedMockupProps) {
   const { t } = useLanguage();

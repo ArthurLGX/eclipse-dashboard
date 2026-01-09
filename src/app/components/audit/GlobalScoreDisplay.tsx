@@ -95,7 +95,8 @@ export default function GlobalScoreDisplay({
   pageType,
   analyzedAt,
   fromCache,
-  cachedUntil,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  cachedUntil: _cachedUntil,
 }: GlobalScoreDisplayProps) {
   const { t, language } = useLanguage();
   const scoreLevel = getScoreLevel(score);

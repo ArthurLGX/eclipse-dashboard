@@ -440,10 +440,6 @@ function analyzeStyle(html: string): StyleAnalysis {
     .filter(c => !isNeutralColor(c)) // Filter out pure black/white/gray
     .slice(0, 5);
   
-  // Detect background color (look for body/html background)
-  const bgMatch = allStyles.match(/(?:body|html)[^{]*\{[^}]*background(?:-color)?:\s*([^;}\s]+)/i) ||
-                  html.match(/class=["'][^"']*(?:bg-|background)[^"']*["']/i);
-  
   // Check for dark mode indicators
   const isDarkMode = 
     allStyles.includes('dark') ||
