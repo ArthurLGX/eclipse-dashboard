@@ -559,12 +559,12 @@ export default function TimerIndicator() {
                   {/* Continue */}
                   <button
                     onClick={handleContinue}
-                    className="w-full flex items-center gap-3 p-4 bg-warning-light hover:!bg-warning border border-warning rounded-xl transition-colors text-left hover:!text-white"
+                    className="w-full flex items-center gap-3 p-4 bg-warning-light group cursor-pointer hover:!bg-warning border border-warning rounded-xl transition-colors text-left hover:!text-white"
                   >
                     <IconClock className="w-5 h-5 text-warning flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-primary">{t('continue_task') || 'Continuer la tâche'}</p>
-                      <p className="text-xs text-muted">{t('continue_task_desc') || 'Rallonger le temps de travail'}</p>
+                      <p className="font-medium text-primary group-hover:!text-white">{t('continue_task') || 'Continuer la tâche'}</p>
+                      <p className="text-xs text-muted group-hover:!text-white">{t('continue_task_desc') || 'Rallonger le temps de travail'}</p>
                     </div>
                   </button>
 
@@ -572,12 +572,12 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer('exceeded_success')}
                     disabled={loading}
-                    className="w-full flex items-center gap-3 p-4 bg-success-light hover:!bg-success border border-success rounded-xl transition-colors text-left hover:!text-white disabled:opacity-50"
+                    className="w-full flex items-center gap-3 p-4 bg-success-light group cursor-pointer hover:!bg-success border border-success rounded-xl transition-colors text-left hover:!text-white disabled:opacity-50"
                   >
                     <IconCheck className="w-5 h-5 text-success flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-primary">{t('objectives_completed') || 'Objectifs atteints'}</p>
-                      <p className="text-xs text-muted">{t('objectives_completed_desc') || 'La tâche est terminée avec succès'}</p>
+                      <p className="font-medium text-primary group-hover:!text-white">{t('objectives_completed') || 'Objectifs atteints'}</p>
+                      <p className="text-xs text-muted group-hover:!text-white">{t('objectives_completed_desc') || 'La tâche est terminée avec succès'}</p>
                     </div>
                   </button>
 
@@ -585,12 +585,12 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer('exceeded_failed')}
                     disabled={loading}
-                    className="w-full flex items-center gap-3 p-4 bg-danger-light hover:!bg-danger border border-danger rounded-xl transition-colors text-left hover:!text-white disabled:opacity-50"
+                    className="w-full flex items-center gap-3 p-4 bg-danger-light group cursor-pointer hover:!bg-danger border border-danger rounded-xl transition-colors text-left hover:!text-white disabled:opacity-50"
                   >
                     <IconX className="w-5 h-5 text-danger flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-primary">{t('objectives_not_completed') || 'Objectifs non atteints'}</p>
-                      <p className="text-xs text-muted">{t('objectives_not_completed_desc') || 'Arrêter et marquer comme incomplet'}</p>
+                      <p className="font-medium text-primary group-hover:!text-white">{t('objectives_not_completed') || 'Objectifs non atteints'}</p>
+                      <p className="text-xs text-muted group-hover:!text-white">{t('objectives_not_completed_desc') || 'Arrêter et marquer comme incomplet'}</p>
                     </div>
                   </button>
                 </div>
