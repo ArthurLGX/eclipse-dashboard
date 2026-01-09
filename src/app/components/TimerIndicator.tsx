@@ -12,6 +12,8 @@ import {
   IconGripVertical,
   IconChevronRight,
   IconChevronLeft,
+  IconCoffee,
+  IconPlayerPlay,
 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -46,9 +48,15 @@ export default function TimerIndicator() {
   const [exceededModalShown, setExceededModalShown] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isPaused, setIsPaused] = useState(false);
+  const [pauseTimeLeft, setPauseTimeLeft] = useState(0);
+  const [pausedAtTime, setPausedAtTime] = useState<number>(0);
+  const [isPauseHovered, setIsPauseHovered] = useState(false);
   const timerRef = useRef<HTMLDivElement>(null);
   const dragControls = useDragControls();
   const constraintsRef = useRef<HTMLDivElement>(null);
+  
+  const PAUSE_DURATION = 5 * 60; // 5 minutes en secondes
 
   // Vérifier si le module time_tracking est activé
   const isTimeTrackingEnabled = enabledModules?.includes('time_tracking') ?? false;
@@ -88,11 +96,12 @@ export default function TimerIndicator() {
 
   // Mettre à jour le timer en temps réel
   useEffect(() => {
-    if (runningEntry) {
+    if (runningEntry && !isPaused) {
       const startTime = new Date(runningEntry.start_time).getTime();
 
       const updateTimer = () => {
-        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        // Calculer le temps écoulé en tenant compte de la pause
+        const elapsed = Math.floor((Date.now() - startTime) / 1000) - pausedAtTime;
         setRunningTime(elapsed);
         
         // Vérifier si le temps imparti est dépassé
@@ -109,10 +118,28 @@ export default function TimerIndicator() {
       const interval = setInterval(updateTimer, 1000);
 
       return () => clearInterval(interval);
-    } else {
+    } else if (!runningEntry) {
       setRunningTime(0);
     }
-  }, [runningEntry, exceededModalShown]);
+  }, [runningEntry, exceededModalShown, isPaused, pausedAtTime]);
+
+  // Gérer le décompte de la pause
+  useEffect(() => {
+    if (isPaused && pauseTimeLeft > 0) {
+      const interval = setInterval(() => {
+        setPauseTimeLeft(prev => {
+          if (prev <= 1) {
+            // La pause est terminée, reprendre le timer
+            setIsPaused(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isPaused, pauseTimeLeft]);
 
   // Format seconds to HH:MM:SS
   const formatSeconds = useCallback((seconds: number) => {
@@ -195,6 +222,26 @@ export default function TimerIndicator() {
     setShowExceededModal(false);
   };
 
+  // Mettre en pause le timer (pause café)
+  const handlePause = () => {
+    if (!isPaused) {
+      setIsPaused(true);
+      setPauseTimeLeft(PAUSE_DURATION);
+      setPausedAtTime(prev => prev); // Garder le temps actuel en pause
+    }
+  };
+
+  // Reprendre le timer avant la fin de la pause
+  const handleResume = () => {
+    if (isPaused) {
+      // Ajouter le temps de pause au temps "gelé"
+      const pauseDuration = PAUSE_DURATION - pauseTimeLeft;
+      setPausedAtTime(prev => prev + pauseDuration);
+      setIsPaused(false);
+      setPauseTimeLeft(0);
+    }
+  };
+
   // Ne pas afficher si le module n'est pas activé ou pas de timer
   if (!isTimeTrackingEnabled || !runningEntry) {
     return null;
@@ -237,16 +284,22 @@ export default function TimerIndicator() {
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={`flex items-center justify-center w-8 h-20 rounded-l-xl shadow-lg transition-all cursor-pointer ${
-            isExceeded 
-              ? 'bg-danger hover:bg-danger-light' 
-              : 'bg-warning hover:bg-warning-light'
+            isPaused
+              ? 'bg-accent hover:bg-accent-light'
+              : isExceeded 
+                ? 'bg-danger hover:bg-danger-light' 
+                : 'bg-warning hover:bg-warning-light'
           }`}
           title={isCollapsed ? (t('expand') || 'Ouvrir') : (t('collapse') || 'Réduire')}
         >
           <div className="flex flex-col items-center gap-1 cursor-pointer">
             {isCollapsed ? (
               <>
-                <IconClock className="w-4 h-4 text-white animate-pulse" />
+                {isPaused ? (
+                  <IconCoffee className="w-4 h-4 text-white animate-pulse" />
+                ) : (
+                  <IconClock className="w-4 h-4 text-white animate-pulse" />
+                )}
                 <IconChevronLeft className="w-4 h-4 text-white" />
               </>
             ) : (
@@ -264,9 +317,11 @@ export default function TimerIndicator() {
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
               className={`relative overflow-hidden rounded-r-xl shadow-2xl cursor-grab active:cursor-grabbing ${
-                isExceeded 
-                  ? 'bg-danger-light' 
-                  : 'bg-warning-light'
+                isPaused
+                  ? 'bg-accent-light border border-accent'
+                  : isExceeded 
+                    ? 'bg-danger-light' 
+                    : 'bg-warning-light'
               }`}
               style={{ backdropFilter: 'blur(12px)' }}
             >
@@ -287,33 +342,49 @@ export default function TimerIndicator() {
                 onPointerDown={(e) => dragControls.start(e)}
                 className="cursor-grab active:cursor-grabbing p-0.5 -ml-1 hover:bg-white/10 rounded"
               >
-                <IconGripVertical className="w-4 h-4 !text-white" />
+                <IconGripVertical className={`w-4 h-4 ${isPaused ? '!text-accent' : '!text-white'}`} />
               </div>
-              <IconClock className="w-4 h-4 text-warning animate-pulse" />
-              <span className="text-sm font-medium text-warning truncate max-w-[140px]">
-                {taskName}
+              {isPaused ? (
+                <IconCoffee className="w-4 h-4 text-accent animate-pulse" />
+              ) : (
+                <IconClock className="w-4 h-4 text-warning animate-pulse" />
+              )}
+              <span className={`text-sm font-medium truncate max-w-[140px] ${isPaused ? 'text-accent' : 'text-warning'}`}>
+                {isPaused ? (t('coffee_break') || 'Pause café') : taskName}
               </span>
             </div>
 
             {/* Timer Display */}
             <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-2xl font-mono font-bold text-warning drop-shadow-md">
-                {formatSeconds(runningTime)}
-              </span>
-              {runningEntry.estimated_duration && (
+              <motion.span 
+                className={`text-2xl font-mono font-bold drop-shadow-md ${isPaused ? 'text-accent' : 'text-warning'}`}
+                animate={isPaused ? { opacity: [1, 0.5, 1] } : { opacity: 1 }}
+                transition={isPaused ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' } : {}}
+              >
+                {isPaused ? formatSeconds(pauseTimeLeft) : formatSeconds(runningTime)}
+              </motion.span>
+              {!isPaused && runningEntry.estimated_duration && (
                 <span className="text-xs text-warning/80 font-medium">
                   / {formatMinutes(runningEntry.estimated_duration)}
+                </span>
+              )}
+              {isPaused && (
+                <span className="text-xs text-accent/80 font-medium">
+                  {t('remaining') || 'restant'}
                 </span>
               )}
             </div>
 
             {/* Progress Bar */}
-            {runningEntry.estimated_duration && (
-              <div className="h-2 bg-white/30 rounded-full overflow-hidden mb-3">
+            {(runningEntry.estimated_duration || isPaused) && (
+              <div className={`h-2 rounded-full overflow-hidden mb-3 ${isPaused ? 'bg-accent/30' : 'bg-white/30'}`}>
                 <motion.div 
-                  className={`h-full rounded-full ${isExceeded ? 'bg-white' : 'bg-white'}`}
+                  className={`h-full rounded-full ${isPaused ? 'bg-accent' : 'bg-white'}`}
                   initial={{ width: 0 }}
-                  animate={{ width: `${Math.min(progressPercent, 100)}%` }}
+                  animate={{ width: isPaused 
+                    ? `${(pauseTimeLeft / PAUSE_DURATION) * 100}%` 
+                    : `${Math.min(progressPercent, 100)}%` 
+                  }}
                   transition={{ duration: 0.3 }}
                 />
               </div>
@@ -321,23 +392,64 @@ export default function TimerIndicator() {
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => handleStopTimer(isExceeded ? undefined : 'completed')}
-                disabled={loading}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white/25 hover:bg-white/35 text-warning text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 shadow-sm"
-              >
-                {loading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <IconPlayerStop className="w-4 h-4" />
-                    {t('stop') || 'Stop'}
-                  </>
-                )}
-              </button>
+              {isPaused ? (
+                // Bouton reprendre pendant la pause
+                <button
+                  onClick={handleResume}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-accent/25 hover:bg-accent/35 text-accent text-sm font-semibold rounded-lg transition-colors shadow-sm"
+                >
+                  <IconPlayerPlay className="w-4 h-4" />
+                  {t('resume') || 'Reprendre'}
+                </button>
+              ) : (
+                <>
+                  {/* Bouton Stop */}
+                  <button
+                    onClick={() => handleStopTimer(isExceeded ? undefined : 'completed')}
+                    disabled={loading}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white/25 hover:bg-white/35 text-warning text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                  >
+                    {loading ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <IconPlayerStop className="w-4 h-4" />
+                        {t('stop') || 'Stop'}
+                      </>
+                    )}
+                  </button>
+                  {/* Bouton Pause Café avec animation au survol */}
+                  <button
+                    onClick={handlePause}
+                    onMouseEnter={() => setIsPauseHovered(true)}
+                    onMouseLeave={() => setIsPauseHovered(false)}
+                    className="relative flex items-center p-2 bg-white/25 hover:bg-white/35 text-warning rounded-lg transition-colors shadow-sm overflow-hidden"
+                    title={t('coffee_break') || 'Pause café'}
+                  >
+                    <IconCoffee className="w-4 h-4 flex-shrink-0" />
+                    <AnimatePresence>
+                      {isPauseHovered && (
+                        <motion.span
+                          initial={{ opacity: 0, x: -10, width: 0 }}
+                          animate={{ opacity: 1, x: 0, width: 'auto' }}
+                          exit={{ opacity: 0, x: -10, width: 0 }}
+                          transition={{ duration: 0.2, ease: 'easeOut' }}
+                          className="ml-1.5 text-sm font-medium whitespace-nowrap"
+                        >
+                          {t('pause') || 'Pause'}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </>
+              )}
               <button
                 onClick={() => router.push('/dashboard/time-tracking')}
-                className="p-2 bg-white/25 hover:bg-white/35 text-warning rounded-lg transition-colors shadow-sm"
+                className={`p-2 rounded-lg transition-colors shadow-sm ${
+                  isPaused 
+                    ? 'bg-accent/25 hover:bg-accent/35 text-accent' 
+                    : 'bg-white/25 hover:bg-white/35 text-warning'
+                }`}
                 title={t('view_details') || 'Voir détails'}
               >
                 <IconExternalLink className="w-4 h-4" />
