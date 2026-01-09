@@ -121,18 +121,8 @@ function generatePrompt(request: MockupRequest): string {
     .map(s => `- ${s.toUpperCase()}: ${SECTION_DESCRIPTIONS[s]}`)
     .join('\n');
   
-  // Page type context
-  const pageContext = PAGE_TYPE_CONTEXT[pageType] || PAGE_TYPE_CONTEXT.landing;
-  
-  // Use detected style or fallback
-  const detectedStyle = styleAnalysis?.styleType || style;
-  const styleDesc = STYLE_DESCRIPTIONS[detectedStyle] || STYLE_DESCRIPTIONS.modern;
-  
   // Build color and style info from analysis
-  let colorInfo = '';
-  let backgroundInfo = 'Clean white background with subtle gray accents';
   let accentInfo = 'Single accent color (purple or blue) for CTAs and highlights';
-  let fontInfo = 'Modern sans-serif typography (like Inter or SF Pro)';
   let cornerInfo = 'Soft shadows and rounded corners (8-16px radius)';
   
   if (styleAnalysis) {
@@ -144,31 +134,12 @@ function generatePrompt(request: MockupRequest): string {
       }
     }
     
-    // Background based on dark/light mode
-    if (styleAnalysis.isDarkMode) {
-      backgroundInfo = `Dark theme with background color ${styleAnalysis.backgroundColor || '#0F172A'} and text color ${styleAnalysis.textColor || '#F8FAFC'}`;
-    } else {
-      backgroundInfo = `Light theme with clean ${styleAnalysis.backgroundColor || 'white'} background and ${styleAnalysis.textColor || 'dark'} text`;
-    }
-    
-    // Font style
-    if (styleAnalysis.fontStyle === 'serif') {
-      fontInfo = 'Elegant serif typography (like Playfair Display or Merriweather)';
-    } else if (styleAnalysis.fontStyle === 'mixed') {
-      fontInfo = 'Mixed typography with serif headings and sans-serif body text';
-    }
-    
     // Corners and gradients
     if (styleAnalysis.roundedCorners) {
       cornerInfo = 'Rounded corners (12-16px radius) on cards and buttons';
     }
     if (styleAnalysis.hasGradients) {
       cornerInfo += ', subtle gradients for depth';
-    }
-    
-    // Build color palette description
-    if (styleAnalysis.dominantColors && styleAnalysis.dominantColors.length > 0) {
-      colorInfo = `\nCOLOR PALETTE (from original site): ${styleAnalysis.dominantColors.slice(0, 4).join(', ')}`;
     }
   }
   

@@ -7,7 +7,6 @@ import {
   IconSparkles,
   IconFlask,
   IconCheck,
-  IconX,
   IconLoader2,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -19,7 +18,7 @@ import {
 } from '@/config/business-modules';
 
 export default function AdminModulesPage() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const [moduleStatuses, setModuleStatuses] = useState<ModuleStatusConfig[]>(DEFAULT_MODULE_STATUSES);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -98,7 +97,7 @@ export default function AdminModulesPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="card"
+        className="card flex flex-col gap-2 p-4"
       >
         <div className="p-4 border-b border-default">
           <h2 className="font-semibold text-primary">
@@ -106,16 +105,16 @@ export default function AdminModulesPage() {
           </h2>
         </div>
 
-        <div>
+        <div className="flex flex-row gap-2 items-center justify-center flex-wrap">
           {Object.values(ALL_MODULES).map(module => {
             const currentStatus = getModuleStatus(module.id);
             
             return (
               <div
                 key={module.id}
-                className="p-4 flex items-center justify-between hover:bg-hover transition-colors border-b border-default last:border-b-0"
+                className="p-4 flex-1 bg-accent-light flex min-h-[100px] flex-col gap-4 items-center justify-between transition-colors border border-default rounded-lg"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-start w-full  gap-3">
                   <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
                     <span className="text-accent text-lg">
                       {module.icon === 'IconTargetArrow' ? '🎯' : '📦'}
@@ -138,7 +137,7 @@ export default function AdminModulesPage() {
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                       currentStatus === null
                         ? 'bg-muted text-primary font-medium'
-                        : 'text-muted hover:bg-hover'
+                        : 'text-muted hover:bg-[var(--color-hover)]'
                     }`}
                   >
                     {language === 'fr' ? 'Aucun' : 'None'}
@@ -147,8 +146,8 @@ export default function AdminModulesPage() {
                     onClick={() => handleStatusChange(module.id, 'beta')}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
                       currentStatus === 'beta'
-                        ? 'bg-warning-light text-warning font-medium border border-warning'
-                        : 'text-muted hover:bg-hover'
+                        ? 'bg-warning text-white font-medium border border-warning'
+                        : 'text-muted bg-accent-light'
                     }`}
                   >
                     <IconFlask className="w-4 h-4" />
