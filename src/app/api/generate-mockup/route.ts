@@ -209,13 +209,25 @@ async function generateMockupImage(prompt: string): Promise<string> {
   const encodedPrompt = encodeURIComponent(prompt);
   const seed = Math.floor(Math.random() * 1000000);
   
-  // Build the Pollinations.ai URL
-  let imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1792&height=1024&seed=${seed}&nologo=true`;
+  // Build the Pollinations.ai URL with optimal parameters
+  // - model=flux : Best quality model for UI/UX mockups
+  // - enhance=true : Auto-enhance the prompt for better results
+  // - nologo=true : Remove watermark
+  const params = new URLSearchParams({
+    width: '1792',
+    height: '1024',
+    seed: seed.toString(),
+    nologo: 'true',
+    model: 'flux',      // Best quality model
+    enhance: 'true',    // Auto-enhance prompt
+  });
   
-  // Add token parameter if API key is available
+  // Add token if API key is available
   if (apiKey) {
-    imageUrl += `&token=${apiKey}`;
+    params.append('token', apiKey);
   }
+  
+  const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?${params.toString()}`;
   
   // Fetch the image from Pollinations and convert to base64
   // This keeps the API key server-side and ensures the image is ready
