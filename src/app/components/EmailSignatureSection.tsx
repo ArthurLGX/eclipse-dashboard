@@ -400,7 +400,7 @@ export default function EmailSignatureSection() {
             
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-3 py-2 text-sm bg-accent-light text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-sm bg-accent-light text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
             >
               <IconEye className="w-4 h-4" />
               {t('preview') || 'Aperçu'}
@@ -607,7 +607,7 @@ export default function EmailSignatureSection() {
             </h4>
             <button
               onClick={addSocialLink}
-              className="flex items-center gap-1 px-3 py-1.5 text-sm bg-accent-light text-accent hover:bg-accent/20 rounded-lg transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 text-sm bg-accent-light text-accent hover:bg-accent-light rounded-lg transition-colors"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_social') || 'Ajouter'}
@@ -987,7 +987,7 @@ export default function EmailSignatureSection() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
           >
             {saving ? (
               <>

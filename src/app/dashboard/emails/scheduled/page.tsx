@@ -136,7 +136,7 @@ function ScheduledEmails() {
           
           <Link
             href="/dashboard/emails/compose"
-            className="flex items-center gap-2 px-4 py-2 btn-primary !text-white rounded-lg hover:bg-accent/90 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 btn-primary !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors"
           >
             <IconMail className="w-4 h-4" />
             {t('new_email') || 'Nouvel email'}

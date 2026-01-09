@@ -702,7 +702,7 @@ export default function AdminUsersPage() {
                       <button
                         onClick={() => selectedRole && handleChangeRole(modalData.user!, selectedRole)}
                         disabled={actionLoading || !selectedRole || selectedRole === modalData.user.role?.id}
-                        className="flex-1 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50"
+                        className="flex-1 px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] disabled:opacity-50"
                       >
                         {actionLoading ? t('loading') || 'Chargement...' : t('validate') || 'Valider'}
                       </button>
@@ -740,7 +740,7 @@ export default function AdminUsersPage() {
                     <button
                       onClick={() => handleBlockUser(modalData.user!)}
                       disabled={actionLoading}
-                      className="flex-1 px-4 py-2 bg-warning text-white rounded-lg hover:bg-warning/90 disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-warning text-white rounded-lg hover:bg-[var(--color-warning)] disabled:opacity-50"
                     >
                       {actionLoading 
                         ? t('loading') || 'Chargement...' 
@@ -776,7 +776,7 @@ export default function AdminUsersPage() {
                     <button
                       onClick={() => handleDeleteUser(modalData.user!)}
                       disabled={actionLoading}
-                      className="flex-1 px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90 disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-danger text-white rounded-lg hover:bg-[var(--color-danger)] disabled:opacity-50"
                     >
                       {actionLoading ? t('deleting') || 'Suppression...' : t('delete') || 'Supprimer'}
                     </button>

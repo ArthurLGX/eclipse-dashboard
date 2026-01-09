@@ -445,7 +445,7 @@ function EmailHistory() {
                           href={att.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2 py-0.5 bg-accent-light text-accent rounded-full text-xs hover:bg-accent/20 transition-colors"
+                          className="px-2 py-0.5 bg-accent-light text-accent rounded-full text-xs hover:bg-accent-light transition-colors"
                         >
                           {att.name}
                         </a>

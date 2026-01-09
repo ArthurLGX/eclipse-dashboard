@@ -720,7 +720,7 @@ export default function ProjectTasks({
             {/* Bouton Nouvelle tâche */}
             <button
               onClick={() => setShowNewTaskForm(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-[var(--color-accent)] text-white rounded-lg transition-colors"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_task') || 'Nouvelle tâche'}
@@ -972,7 +972,7 @@ export default function ProjectTasks({
               <button
                 type="submit"
                 disabled={!newTask.title.trim()}
-                className="px-4 py-2 bg-accent hover:bg-accent/90 disabled:opacity-50 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-accent hover:bg-[var(--color-accent)] disabled:opacity-50 text-white rounded-lg transition-colors"
               >
                 {t('create') || 'Créer'}
               </button>
@@ -1728,7 +1728,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-accent hover:bg-[var(--color-accent)] text-white rounded-lg transition-colors"
             >
               {t('save') || 'Enregistrer'}
             </button>
@@ -2422,7 +2422,7 @@ function TaskGanttView({
                   <button
                     onClick={() => handleExportPDF(exportMode)}
                     disabled={isExporting}
-                    className="w-full py-2.5 px-4 text-sm bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 px-4 text-sm bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     <IconFileTypePdf className="w-4 h-4" />
                     {isExporting ? (t('exporting') || 'Export...') : (t('export') || 'Exporter')}
@@ -2462,7 +2462,7 @@ function TaskGanttView({
           onClick={scrollToToday}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors shadow-sm"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-accent text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
         >
           <IconCalendarEvent className="w-4 h-4" />
           {t('today') || "Aujourd'hui"}

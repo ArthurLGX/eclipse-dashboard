@@ -467,7 +467,7 @@ export default function FacturePage() {
           {!editing ? (
             <button
               onClick={handleEdit}
-              className="flex items-center justify-center gap-2 bg-accent-light text-accent border border-accent px-4 py-2 rounded-lg hover:bg-accent hover:text-white transition-colors"
+              className="flex items-center justify-center gap-2 bg-accent-light text-accent border border-accent px-4 py-2 rounded-lg hover:bg-[var(--color-accent)] hover:text-white transition-colors"
             >
               <IconEdit className="w-4 h-4" />
               {t('edit')}

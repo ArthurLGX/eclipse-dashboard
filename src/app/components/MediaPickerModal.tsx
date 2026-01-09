@@ -458,7 +458,7 @@ export default function MediaPickerModal({
                   <button
                     onClick={handleUrlSubmit}
                     disabled={!urlInput.trim()}
-                    className="w-full px-4 py-3 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full px-4 py-3 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <IconCheck className="w-4 h-4" />
                     {t('insert') || 'Insérer'}
@@ -480,7 +480,7 @@ export default function MediaPickerModal({
               </p>
               <button
                 onClick={handleLibrarySelect}
-                className="px-6 py-2.5 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 font-medium"
+                className="px-6 py-2.5 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 font-medium"
               >
                 <IconCheck className="w-4 h-4" />
                 {t('confirm_selection') || 'Confirmer'}

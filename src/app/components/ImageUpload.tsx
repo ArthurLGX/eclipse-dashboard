@@ -775,7 +775,7 @@ export default function ImageUpload({
                 <button
                   onClick={handleConfirmCrop}
                   disabled={uploading || !completedCrop}
-                  className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
                 >
                   {uploading ? (
                     <>
@@ -923,7 +923,7 @@ export default function ImageUpload({
                 <button
                   onClick={handleSubmitUrl}
                   disabled={!urlInput.trim() || uploading}
-                  className="w-full px-4 py-3 bg-accent text-white rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full px-4 py-3 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {uploading ? (
                     <>

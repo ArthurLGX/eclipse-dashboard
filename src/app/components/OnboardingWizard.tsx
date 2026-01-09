@@ -256,7 +256,7 @@ export default function OnboardingWizard() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   onClick={handleClose}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl font-medium hover:bg-accent/90 transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl font-medium hover:bg-[var(--color-accent)] transition-colors"
                 >
                   <IconRocket className="w-5 h-5" />
                   {t('start_using') || 'Commencer à utiliser Eclipse'}

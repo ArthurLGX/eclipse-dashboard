@@ -386,7 +386,7 @@ export default function CalendarPage() {
         <div className="flex items-center justify-center w-fit md:flex-row flex-col gap-4">
           <p className="text-muted text-sm">{t('integrate') || 'Intégrez'}</p>
           {/*TODO: afficher le favicon de fathom et le lien vers le site de fathom */}
-          <div className="flex cursor-pointer items-center gap-2 bg-accent-light rounded-lg p-2 group hover:bg-accent transition-colors">
+          <div className="flex cursor-pointer items-center gap-2 bg-accent-light rounded-lg p-2 group hover:bg-[var(--color-accent)] transition-colors">
           <Image
             src="https://icons.duckduckgo.com/ip3/fathom.video.ico"
             alt="Fathom"

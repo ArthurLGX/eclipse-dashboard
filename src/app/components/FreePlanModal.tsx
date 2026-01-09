@@ -169,7 +169,7 @@ export default function FreePlanModal({
               <button
                 onClick={handleConfirm}
                 disabled={loading}
-                className="flex-1 bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 font-semibold"
+                className="flex-1 bg-accent text-white px-4 py-2 rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 font-semibold"
               >
                 {loading ? t('activating') : t('activate_plan')}
               </button>

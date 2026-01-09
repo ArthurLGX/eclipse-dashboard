@@ -341,7 +341,7 @@ export default function MediaLibraryPage() {
                         handleDelete(file);
                       }}
                       disabled={deletingId === file.id}
-                      className="p-2 bg-danger/80 rounded-full hover:bg-danger transition-colors"
+                      className="p-2 bg-danger/80 rounded-full hover:bg-[var(--color-danger)] transition-colors"
                     >
                       {deletingId === file.id ? (
                         <IconLoader2 className="w-5 h-5 text-white animate-spin" />

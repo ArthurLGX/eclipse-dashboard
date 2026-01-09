@@ -1154,7 +1154,7 @@ function PublicGanttView({ tasks, projectName }: {
                   <button
                     onClick={() => handleExportPDF(exportMode)}
                     disabled={isExporting}
-                    className="w-full py-2.5 px-4 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 px-4 bg-accent text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isExporting ? (
                       <>
@@ -1189,7 +1189,7 @@ function PublicGanttView({ tasks, projectName }: {
           onClick={scrollToToday}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors shadow-sm"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-accent text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
         >
           <IconCalendar className="w-4 h-4" />
           {t('today') || "Aujourd'hui"}

@@ -215,10 +215,10 @@ export default function DataTable<T = unknown>({
               {/* Custom actions */}
               {customActions.map((action, index) => {
                 const variantClasses = {
-                  primary: 'bg-accent text-white hover:bg-accent/80',
-                  success: 'bg-success text-white hover:bg-success/80',
-                  warning: 'bg-warning text-white hover:bg-warning/80',
-                  danger: 'bg-danger text-white hover:bg-danger/80',
+                  primary: 'bg-accent text-white hover:bg-[var(--color-accent)]',
+                  success: 'bg-success text-white hover:bg-[var(--color-success)]',
+                  warning: 'bg-warning text-white hover:bg-[var(--color-warning)]',
+                  danger: 'bg-danger text-white hover:bg-[var(--color-danger)]',
                 };
                 return (
                   <button
@@ -240,7 +240,7 @@ export default function DataTable<T = unknown>({
               {onDeleteSelected && (
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger text-white hover:bg-danger/80 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger text-white hover:bg-[var(--color-danger)] transition-colors"
                 >
                   <IconTrash className="w-4 h-4" />
                   {t('delete_selected') || 'Supprimer'} ({selectedIds.size})
@@ -456,7 +456,7 @@ export default function DataTable<T = unknown>({
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="flex items-center gap-2 px-6 py-2 rounded-lg bg-danger text-white hover:bg-danger/80 transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2 rounded-lg bg-danger text-white hover:bg-[var(--color-danger)] transition-colors disabled:opacity-50"
                 >
                   {isDeleting ? (
                     <>

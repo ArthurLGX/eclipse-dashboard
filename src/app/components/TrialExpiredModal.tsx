@@ -203,7 +203,7 @@ export default function TrialExpiredModal({
               </button>
               <button
                 onClick={() => router.push('/pricing')}
-                className="flex-1 bg-accent text-white px-4 py-3 rounded-lg hover:bg-accent/80 transition-colors font-semibold"
+                className="flex-1 bg-accent text-white px-4 py-3 rounded-lg hover:bg-[var(--color-accent)] transition-colors font-semibold"
               >
                 {t('view_all_plans')}
               </button>

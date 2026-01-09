@@ -227,7 +227,7 @@ export default function BusinessSetupModal() {
                 disabled={!selectedType}
                 className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
                   selectedType
-                    ? 'bg-accent text-white hover:bg-accent/90'
+                    ? 'bg-accent text-white hover:bg-[var(--color-accent)]'
                     : 'bg-muted text-muted cursor-not-allowed'
                 }`}
               >
@@ -237,7 +237,7 @@ export default function BusinessSetupModal() {
               <button
                 onClick={handleComplete}
                 disabled={isSaving || !selectedType}
-                className="px-6 py-2.5 rounded-xl font-medium bg-accent text-white hover:bg-accent/90 transition-all flex items-center gap-2"
+                className="px-6 py-2.5 rounded-xl font-medium bg-accent text-white hover:bg-[var(--color-accent)] transition-all flex items-center gap-2"
               >
                 {isSaving ? (
                   <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />

@@ -378,7 +378,7 @@ export default function InvitationPage() {
           <button
             onClick={handleAccept}
             disabled={processing}
-            className="flex-1 py-3 px-4 bg-accent hover:bg-accent/90 disabled:opacity-50 text-white rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 px-4 bg-accent hover:bg-[var(--color-accent)] disabled:opacity-50 text-white rounded-xl transition-colors flex items-center justify-center gap-2"
           >
             {processing ? (
               <IconLoader2 className="w-5 h-5 animate-spin" />

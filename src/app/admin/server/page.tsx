@@ -420,7 +420,7 @@ export default function AdminServerPage() {
           </code>
           <button
             onClick={() => navigator.clipboard.writeText(`${API_URL}/api/health`)}
-            className="px-3 py-1 text-xs bg-accent text-white rounded hover:bg-accent/90"
+            className="px-3 py-1 text-xs bg-accent text-white rounded hover:bg-[var(--color-accent)]"
           >
             {t('copy') || 'Copier'}
           </button>

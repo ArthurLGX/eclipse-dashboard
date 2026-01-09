@@ -1165,7 +1165,7 @@ export default function ShareProjectModal({
                                 <button
                                   type="button"
                                   onClick={() => setCustomBannerImage('')}
-                                  className="absolute top-2 right-2 p-1 bg-danger text-white rounded-full hover:bg-danger/80"
+                                  className="absolute top-2 right-2 p-1 bg-danger text-white rounded-full hover:bg-[var(--color-danger)]"
                                 >
                                   <IconX className="w-3 h-3" />
                                 </button>

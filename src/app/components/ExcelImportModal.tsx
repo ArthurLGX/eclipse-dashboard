@@ -901,7 +901,7 @@ export default function ExcelImportModal({
                     <div className="p-5 pt-0 flex justify-end">
                       <button
                         onClick={() => setError(null)}
-                        className="px-5 py-2.5 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2"
+                        className="px-5 py-2.5 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2"
                       >
                         <IconCheck className="w-4 h-4" />
                         {t('understood') || 'Compris'}
@@ -949,7 +949,7 @@ export default function ExcelImportModal({
                   <p className="text-sm text-muted mb-3">
                     {t('excel_or_click') || 'ou cliquez pour sélectionner'}
                   </p>
-                  <button className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors inline-flex items-center gap-2 text-sm">
+                  <button className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors inline-flex items-center gap-2 text-sm">
                     <IconUpload className="w-4 h-4" />
                     {t('excel_select_file') || 'Sélectionner un fichier'}
                   </button>
@@ -1005,7 +1005,7 @@ export default function ExcelImportModal({
                         handleGoogleSheetImport();
                       }}
                       disabled={loadingGoogleSheet || !googleSheetUrl.trim()}
-                      className="px-4 py-2.5 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                      className="px-4 py-2.5 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     >
                       {loadingGoogleSheet ? (
                         <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -1432,7 +1432,7 @@ export default function ExcelImportModal({
                   <button
                     onClick={generatePreview}
                     disabled={columnMapping.title === null}
-                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {t('continue') || 'Continuer'}
                     <IconArrowRight className="w-4 h-4" />
@@ -1443,7 +1443,7 @@ export default function ExcelImportModal({
                 <button
                   onClick={handleProceedToImport}
                   disabled={importing || previewTasks.length === 0}
-                  className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   <IconArrowRight className="w-4 h-4" />
                   {uniqueAssignedEmails.length > 0 
@@ -1456,7 +1456,7 @@ export default function ExcelImportModal({
                 <button
                   onClick={handleImportFinal}
                   disabled={importing || (sendNotificationEmails && !emailSubject.trim())}
-                  className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {sendNotificationEmails ? (
                     <IconSend className="w-4 h-4" />

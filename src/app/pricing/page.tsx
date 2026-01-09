@@ -170,7 +170,7 @@ export default function Plans() {
         title: 'text-primary',
         description: 'text-secondary',
         price: 'text-accent',
-        button: 'bg-accent hover:bg-accent/80 text-white border-accent',
+        button: 'bg-accent hover:bg-[var(--color-accent)] text-white border-accent',
       };
     }
     if (planName === 'free') {

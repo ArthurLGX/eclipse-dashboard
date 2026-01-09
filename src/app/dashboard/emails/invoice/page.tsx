@@ -358,7 +358,7 @@ Cordialement`;
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
             >
               {showPreview ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
               {showPreview ? (t('edit') || 'Éditer') : (t('preview') || 'Aperçu')}
@@ -598,7 +598,7 @@ Cordialement`;
                       <span>{recipient.name ? `${recipient.name} <${recipient.email}>` : recipient.email}</span>
                       <button
                         onClick={() => removeRecipient(recipient.id)}
-                        className="p-0.5 hover:bg-accent hover:text-white rounded-full transition-colors"
+                        className="p-0.5 hover:bg-[var(--color-accent)] hover:text-white rounded-full transition-colors"
                       >
                         <IconX className="w-3.5 h-3.5" />
                       </button>
@@ -618,7 +618,7 @@ Cordialement`;
                   <button
                     onClick={addRecipient}
                     disabled={!newRecipient.trim()}
-                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
                   >
                     {t('add') || 'Ajouter'}
                   </button>

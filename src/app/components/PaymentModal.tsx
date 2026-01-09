@@ -180,7 +180,7 @@ const CheckoutForm: React.FC<{
         <button
           type="submit"
           disabled={!stripe || loading}
-          className="flex-1 bg-accent text-white px-4 py-3 rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+          className="flex-1 bg-accent text-white px-4 py-3 rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
         >
           {loading
             ? t('processing')
