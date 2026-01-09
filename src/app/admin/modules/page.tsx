@@ -80,7 +80,7 @@ export default function AdminModulesPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto p-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-primary flex items-center gap-3">
@@ -106,14 +106,14 @@ export default function AdminModulesPage() {
           </h2>
         </div>
 
-        <div className="divide-y divide-default">
+        <div>
           {Object.values(ALL_MODULES).map(module => {
             const currentStatus = getModuleStatus(module.id);
             
             return (
               <div
                 key={module.id}
-                className="p-4 flex items-center justify-between hover:bg-hover transition-colors"
+                className="p-4 flex items-center justify-between hover:bg-hover transition-colors border-b border-default last:border-b-0"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">

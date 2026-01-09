@@ -18,6 +18,7 @@ import {
   IconMoon,
   IconChevronLeft,
   IconShield,
+  IconPuzzle,
 } from '@tabler/icons-react';
 import { useAuth } from '@/app/context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
@@ -135,6 +136,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       labelEn: 'Logs & Audit',
       icon: <IconHistory size={20} stroke={1} />,
       path: '/admin/logs',
+    },
+    {
+      id: 'module',
+      label: 'Modules',
+      labelEn: 'Modules',
+      icon: <IconPuzzle size={20} stroke={1} />,
+      path: '/admin/modules',
     },
     {
       id: 'settings',
