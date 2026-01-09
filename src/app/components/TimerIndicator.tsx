@@ -559,7 +559,7 @@ export default function TimerIndicator() {
                   {/* Continue */}
                   <button
                     onClick={handleContinue}
-                    className="w-full flex items-center gap-3 p-4 bg-warning-light hover:bg-warning-light border border-warning/30 rounded-xl transition-colors text-left"
+                    className="w-full flex items-center gap-3 p-4 bg-warning-light hover:!bg-warning border border-warning rounded-xl transition-colors text-left hover:!text-white"
                   >
                     <IconClock className="w-5 h-5 text-warning flex-shrink-0" />
                     <div>
@@ -572,7 +572,7 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer('exceeded_success')}
                     disabled={loading}
-                    className="w-full flex items-center gap-3 p-4 bg-success-light hover:bg-success-light border border-success/30 rounded-xl transition-colors text-left disabled:opacity-50"
+                    className="w-full flex items-center gap-3 p-4 bg-success-light hover:!bg-success border border-success rounded-xl transition-colors text-left hover:!text-white disabled:opacity-50"
                   >
                     <IconCheck className="w-5 h-5 text-success flex-shrink-0" />
                     <div>
@@ -585,7 +585,7 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer('exceeded_failed')}
                     disabled={loading}
-                    className="w-full flex items-center gap-3 p-4 bg-danger-light hover:bg-danger-light border border-danger/30 rounded-xl transition-colors text-left disabled:opacity-50"
+                    className="w-full flex items-center gap-3 p-4 bg-danger-light hover:!bg-danger border border-danger rounded-xl transition-colors text-left hover:!text-white disabled:opacity-50"
                   >
                     <IconX className="w-5 h-5 text-danger flex-shrink-0" />
                     <div>
