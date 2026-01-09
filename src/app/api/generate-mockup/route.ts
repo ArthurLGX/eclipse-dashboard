@@ -9,6 +9,19 @@ import { NextRequest, NextResponse } from 'next/server';
 // TYPES
 // ============================================================================
 
+interface StyleAnalysis {
+  dominantColors?: string[];
+  primaryColor?: string;
+  secondaryColor?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  isDarkMode?: boolean;
+  styleType?: 'modern' | 'minimal' | 'corporate' | 'creative' | 'classic';
+  fontStyle?: 'sans-serif' | 'serif' | 'mixed';
+  hasGradients?: boolean;
+  roundedCorners?: boolean;
+}
+
 interface MockupRequest {
   pageType: 'landing' | 'homepage' | 'product';
   industry?: string;
@@ -16,6 +29,7 @@ interface MockupRequest {
   existingSections: string[];
   siteName?: string;
   style?: 'modern' | 'minimal' | 'corporate' | 'creative';
+  styleAnalysis?: StyleAnalysis;
 }
 
 interface MockupResult {
@@ -37,7 +51,8 @@ const mockupCache = new Map<string, CacheEntry>();
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 function getCacheKey(request: MockupRequest): string {
-  return `mockup::${request.pageType}::${request.missingSections.sort().join(',')}::${request.style || 'modern'}`;
+  const styleKey = request.styleAnalysis?.primaryColor || request.style || 'modern';
+  return `mockup::${request.pageType}::${request.missingSections.sort().join(',')}::${styleKey}`;
 }
 
 function getCachedResult(request: MockupRequest): MockupResult | null {
@@ -95,7 +110,7 @@ const STYLE_DESCRIPTIONS: Record<string, string> = {
 };
 
 function generatePrompt(request: MockupRequest): string {
-  const { pageType, missingSections, existingSections, style = 'modern' } = request;
+  const { pageType, missingSections, existingSections, style = 'modern', styleAnalysis } = request;
   
   // Combine all sections (existing + missing) for the ideal structure
   const allSections = [...new Set([...existingSections, ...missingSections])];
@@ -108,23 +123,71 @@ function generatePrompt(request: MockupRequest): string {
   
   // Page type context
   const pageContext = PAGE_TYPE_CONTEXT[pageType] || PAGE_TYPE_CONTEXT.landing;
-  const styleDesc = STYLE_DESCRIPTIONS[style] || STYLE_DESCRIPTIONS.modern;
+  
+  // Use detected style or fallback
+  const detectedStyle = styleAnalysis?.styleType || style;
+  const styleDesc = STYLE_DESCRIPTIONS[detectedStyle] || STYLE_DESCRIPTIONS.modern;
+  
+  // Build color and style info from analysis
+  let colorInfo = '';
+  let backgroundInfo = 'Clean white background with subtle gray accents';
+  let accentInfo = 'Single accent color (purple or blue) for CTAs and highlights';
+  let fontInfo = 'Modern sans-serif typography (like Inter or SF Pro)';
+  let cornerInfo = 'Soft shadows and rounded corners (8-16px radius)';
+  
+  if (styleAnalysis) {
+    // Primary and secondary colors
+    if (styleAnalysis.primaryColor) {
+      accentInfo = `Primary accent color: ${styleAnalysis.primaryColor} for CTAs, buttons, and highlights`;
+      if (styleAnalysis.secondaryColor) {
+        accentInfo += `, secondary color: ${styleAnalysis.secondaryColor} for accents`;
+      }
+    }
+    
+    // Background based on dark/light mode
+    if (styleAnalysis.isDarkMode) {
+      backgroundInfo = `Dark theme with background color ${styleAnalysis.backgroundColor || '#0F172A'} and text color ${styleAnalysis.textColor || '#F8FAFC'}`;
+    } else {
+      backgroundInfo = `Light theme with clean ${styleAnalysis.backgroundColor || 'white'} background and ${styleAnalysis.textColor || 'dark'} text`;
+    }
+    
+    // Font style
+    if (styleAnalysis.fontStyle === 'serif') {
+      fontInfo = 'Elegant serif typography (like Playfair Display or Merriweather)';
+    } else if (styleAnalysis.fontStyle === 'mixed') {
+      fontInfo = 'Mixed typography with serif headings and sans-serif body text';
+    }
+    
+    // Corners and gradients
+    if (styleAnalysis.roundedCorners) {
+      cornerInfo = 'Rounded corners (12-16px radius) on cards and buttons';
+    }
+    if (styleAnalysis.hasGradients) {
+      cornerInfo += ', subtle gradients for depth';
+    }
+    
+    // Build color palette description
+    if (styleAnalysis.dominantColors && styleAnalysis.dominantColors.length > 0) {
+      colorInfo = `\nCOLOR PALETTE (from original site): ${styleAnalysis.dominantColors.slice(0, 4).join(', ')}`;
+    }
+  }
   
   // Optimized prompt for Stable Diffusion / FLUX image generation
   const prompt = `A stunning high-fidelity website mockup design, ${pageContext}.
 
 STYLE: ${styleDesc}, premium quality design, trending on Dribbble and Behance.
+${colorInfo}
 
 PAGE LAYOUT from top to bottom:
 ${sectionDescriptions}
 
 VISUAL REQUIREMENTS:
 - Full desktop browser view at 1440px width
-- Clean white background with subtle gray accents
-- Single accent color (purple or blue) for CTAs and highlights
-- Modern sans-serif typography (like Inter or SF Pro)
+- ${backgroundInfo}
+- ${accentInfo}
+- ${fontInfo}
 - Realistic placeholder images and icons
-- Soft shadows and rounded corners (8-16px radius)
+- ${cornerInfo}
 - Generous white space and breathing room
 - Professional SaaS/B2B aesthetic
 - Figma or Sketch mockup quality

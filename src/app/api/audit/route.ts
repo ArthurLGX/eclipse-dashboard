@@ -84,6 +84,21 @@ export interface IdealSection {
   idealPosition: number; // order in ideal layout
 }
 
+// Style and color analysis for mockup generation
+export interface StyleAnalysis {
+  dominantColors: string[]; // hex colors
+  primaryColor?: string;
+  secondaryColor?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  isDarkMode: boolean;
+  styleType: 'modern' | 'minimal' | 'corporate' | 'creative' | 'classic';
+  fontStyle: 'sans-serif' | 'serif' | 'mixed';
+  hasGradients: boolean;
+  hasAnimations: boolean;
+  roundedCorners: boolean;
+}
+
 export interface AuditResult {
   url: string;
   pageType: string;
@@ -98,6 +113,7 @@ export interface AuditResult {
   screenshots?: ScreenshotData;
   detectedSections?: DetectedSection[];
   idealSections?: IdealSection[];
+  styleAnalysis?: StyleAnalysis;
 }
 
 // ============================================================================
@@ -380,6 +396,141 @@ function extractTextContent(html: string): string {
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+// ============================================================================
+// STYLE & COLOR ANALYSIS
+// ============================================================================
+
+function analyzeStyle(html: string): StyleAnalysis {
+  const colors: string[] = [];
+  
+  // Extract colors from inline styles and CSS
+  const styleBlocks = html.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) || [];
+  const inlineStyles = html.match(/style=["']([^"']*)["']/gi) || [];
+  const allStyles = [...styleBlocks, ...inlineStyles].join(' ');
+  
+  // Extract hex colors
+  const hexColors = allStyles.match(/#[0-9a-fA-F]{3,6}\b/g) || [];
+  colors.push(...hexColors.map(c => c.toUpperCase()));
+  
+  // Extract rgb/rgba colors and convert to hex
+  const rgbColors = allStyles.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/g) || [];
+  rgbColors.forEach(rgb => {
+    const match = rgb.match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if (match) {
+      const hex = '#' + [match[1], match[2], match[3]]
+        .map(x => parseInt(x).toString(16).padStart(2, '0'))
+        .join('').toUpperCase();
+      colors.push(hex);
+    }
+  });
+  
+  // Count color occurrences to find dominant colors
+  const colorCounts: Record<string, number> = {};
+  colors.forEach(c => {
+    const normalized = normalizeColor(c);
+    colorCounts[normalized] = (colorCounts[normalized] || 0) + 1;
+  });
+  
+  // Sort by frequency
+  const sortedColors = Object.entries(colorCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([color]) => color)
+    .filter(c => !isNeutralColor(c)) // Filter out pure black/white/gray
+    .slice(0, 5);
+  
+  // Detect background color (look for body/html background)
+  const bgMatch = allStyles.match(/(?:body|html)[^{]*\{[^}]*background(?:-color)?:\s*([^;}\s]+)/i) ||
+                  html.match(/class=["'][^"']*(?:bg-|background)[^"']*["']/i);
+  
+  // Check for dark mode indicators
+  const isDarkMode = 
+    allStyles.includes('dark') ||
+    html.includes('dark-mode') ||
+    html.includes('dark-theme') ||
+    html.includes('theme-dark') ||
+    /background(?:-color)?:\s*(?:#[0-3][0-9a-f]{5}|#[0-3][0-9a-f]{2}|rgb\s*\(\s*[0-5]\d)/i.test(allStyles);
+  
+  // Detect gradients
+  const hasGradients = /gradient\s*\(/i.test(allStyles);
+  
+  // Detect animations
+  const hasAnimations = 
+    /animation|transition|@keyframes/i.test(allStyles) ||
+    /animate-|motion-|aos-/i.test(html);
+  
+  // Detect rounded corners
+  const roundedCorners = 
+    /border-radius|rounded/i.test(allStyles) ||
+    /rounded-|radius-/i.test(html);
+  
+  // Detect font style
+  const hasSansSerif = /font-family[^;]*(?:sans-serif|Arial|Helvetica|Inter|Roboto|Open\s*Sans|Poppins|Nunito|Lato)/i.test(allStyles);
+  const hasSerif = /font-family[^;]*(?:serif|Georgia|Times|Playfair|Merriweather)/i.test(allStyles);
+  const fontStyle: 'sans-serif' | 'serif' | 'mixed' = 
+    hasSansSerif && hasSerif ? 'mixed' : 
+    hasSerif ? 'serif' : 'sans-serif';
+  
+  // Determine style type
+  let styleType: 'modern' | 'minimal' | 'corporate' | 'creative' | 'classic' = 'modern';
+  
+  if (hasGradients && hasAnimations && roundedCorners) {
+    styleType = 'modern';
+  } else if (!hasGradients && !hasAnimations && /minimal|clean|simple/i.test(html)) {
+    styleType = 'minimal';
+  } else if (hasSerif && !hasGradients) {
+    styleType = 'classic';
+  } else if (/creative|bold|vibrant/i.test(html) || sortedColors.length > 3) {
+    styleType = 'creative';
+  } else if (/corporate|business|professional/i.test(html)) {
+    styleType = 'corporate';
+  }
+  
+  // Determine primary/secondary colors
+  const primaryColor = sortedColors[0] || '#6366F1'; // Default to indigo if no color found
+  const secondaryColor = sortedColors[1] || '#10B981'; // Default to emerald
+  
+  // Background and text colors
+  const backgroundColor = isDarkMode ? '#0F172A' : '#FFFFFF';
+  const textColor = isDarkMode ? '#F8FAFC' : '#1E293B';
+  
+  return {
+    dominantColors: sortedColors,
+    primaryColor,
+    secondaryColor,
+    backgroundColor,
+    textColor,
+    isDarkMode,
+    styleType,
+    fontStyle,
+    hasGradients,
+    hasAnimations,
+    roundedCorners,
+  };
+}
+
+// Normalize color to 6-digit hex
+function normalizeColor(color: string): string {
+  if (color.length === 4) {
+    // Convert #RGB to #RRGGBB
+    return '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+  }
+  return color.toUpperCase();
+}
+
+// Check if color is neutral (black, white, or gray)
+function isNeutralColor(hex: string): boolean {
+  const clean = hex.replace('#', '');
+  if (clean.length !== 6) return false;
+  
+  const r = parseInt(clean.substr(0, 2), 16);
+  const g = parseInt(clean.substr(2, 2), 16);
+  const b = parseInt(clean.substr(4, 2), 16);
+  
+  // Check if all RGB values are close (grayscale)
+  const maxDiff = Math.max(Math.abs(r - g), Math.abs(g - b), Math.abs(r - b));
+  return maxDiff < 20;
 }
 
 function extractSeoData(html: string): SeoAnalysis {
@@ -798,6 +949,9 @@ async function analyzeUrl(url: string, pageType: string, captureScreenshot = tru
   // Analyze SEO
   const seo = extractSeoData(html);
   
+  // Analyze style and colors
+  const styleAnalysis = analyzeStyle(html);
+  
   // Analyze headings
   const headings = analyzeHeadings(html);
   
@@ -868,6 +1022,7 @@ async function analyzeUrl(url: string, pageType: string, captureScreenshot = tru
     screenshots: captureResult?.screenshots,
     detectedSections: captureResult?.detectedSections,
     idealSections: IDEAL_SECTIONS_CONFIG,
+    styleAnalysis,
   };
 }
 

@@ -450,6 +450,7 @@ export default function GrowthAuditPage() {
               existingSections={result.structure.detectedSections}
               currentScreenshot={result.screenshots?.viewport}
               url={result.url}
+              styleAnalysis={result.styleAnalysis}
             />
 
             {/* Detailed Analysis */}

@@ -16,12 +16,26 @@ import {
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 
+interface StyleAnalysis {
+  dominantColors?: string[];
+  primaryColor?: string;
+  secondaryColor?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  isDarkMode?: boolean;
+  styleType?: 'modern' | 'minimal' | 'corporate' | 'creative' | 'classic';
+  fontStyle?: 'sans-serif' | 'serif' | 'mixed';
+  hasGradients?: boolean;
+  roundedCorners?: boolean;
+}
+
 interface GeneratedMockupProps {
   pageType: 'landing' | 'homepage' | 'product';
   missingSections: string[];
   existingSections: string[];
   currentScreenshot?: string;
   url: string;
+  styleAnalysis?: StyleAnalysis;
 }
 
 interface MockupResult {
@@ -37,6 +51,7 @@ export default function GeneratedMockup({
   existingSections,
   currentScreenshot,
   url,
+  styleAnalysis,
 }: GeneratedMockupProps) {
   const { t } = useLanguage();
   const [isGenerating, setIsGenerating] = useState(false);
@@ -118,7 +133,8 @@ export default function GeneratedMockup({
           pageType,
           missingSections,
           existingSections,
-          style: 'modern',
+          style: styleAnalysis?.styleType || 'modern',
+          styleAnalysis,
         }),
       });
       
