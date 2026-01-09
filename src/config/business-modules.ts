@@ -42,6 +42,38 @@ export interface ModuleConfig {
   descriptionEn: string;
 }
 
+// Status des modules (beta, new, etc.)
+export type ModuleStatus = 'beta' | 'new' | null;
+
+export interface ModuleStatusConfig {
+  moduleId: string;
+  status: ModuleStatus;
+  expiresAt?: string; // Date d'expiration optionnelle (ex: pour "new")
+}
+
+// Configuration des statuts des modules - peut être overridée par l'admin
+// Cette config est la config par défaut, les admins peuvent la modifier via l'API
+export const DEFAULT_MODULE_STATUSES: ModuleStatusConfig[] = [
+  { moduleId: 'growth_audit', status: 'beta' },
+  // Ajouter d'autres modules ici si nécessaire
+  // { moduleId: 'calendar', status: 'new', expiresAt: '2026-03-01' },
+];
+
+// Helper function to get module status
+export function getModuleStatus(moduleId: string, customStatuses?: ModuleStatusConfig[]): ModuleStatus {
+  const statuses = customStatuses || DEFAULT_MODULE_STATUSES;
+  const config = statuses.find(s => s.moduleId === moduleId);
+  
+  if (!config) return null;
+  
+  // Check if status has expired
+  if (config.expiresAt && new Date(config.expiresAt) < new Date()) {
+    return null;
+  }
+  
+  return config.status;
+}
+
 // Configuration des métiers
 export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
   web_developer: {

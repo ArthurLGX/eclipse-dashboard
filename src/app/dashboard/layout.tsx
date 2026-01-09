@@ -53,6 +53,7 @@ import TimerIndicator from '@/app/components/TimerIndicator';
 import { useTheme } from '@/app/context/ThemeContext';
 import { useSidebar } from '@/app/context/SidebarContext';
 import SidebarLogo from '@/app/components/SidebarLogo';
+import { getModuleStatus, ModuleStatusConfig, DEFAULT_MODULE_STATUSES } from '@/config/business-modules';
 
 interface SidebarItem {
   id: string;
@@ -63,6 +64,7 @@ interface SidebarItem {
   menuItems?: SidebarItem[];
   isCategory?: boolean; // Pour les catégories avec sous-menus
   moduleId?: string; // ID du module pour le filtrage dynamique
+  status?: 'beta' | 'new'; // Badge status for the item
 }
 
 // Wrapper component that provides the context
@@ -93,6 +95,7 @@ function DashboardLayoutContent({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isPinned, setIsPinned] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [moduleStatuses, setModuleStatuses] = useState<ModuleStatusConfig[]>(DEFAULT_MODULE_STATUSES);
   const router = useRouter();
 
   const pathname = usePathname();
@@ -101,6 +104,18 @@ function DashboardLayoutContent({
   const { resolvedTheme, setTheme } = useTheme();
   const { isLinkVisible } = useSidebar();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
+
+  // Load module statuses from localStorage (admin-configurable)
+  useEffect(() => {
+    const saved = localStorage.getItem('module_statuses');
+    if (saved) {
+      try {
+        setModuleStatuses(JSON.parse(saved));
+      } catch {
+        setModuleStatuses(DEFAULT_MODULE_STATUSES);
+      }
+    }
+  }, []);
   
   // Hook pour les préférences utilisateur (modules activés) - NOW INSIDE THE PROVIDER
   const userPreferences = useUserPreferencesOptional();
@@ -292,6 +307,7 @@ function DashboardLayoutContent({
           label: t('growth_audit') || 'Growth Audit',
           icon: <IconTargetArrow size={20} stroke={1} />,
           path: '/dashboard/growth-audit',
+          status: getModuleStatus('growth_audit', moduleStatuses) || undefined,
         },
       ],
     },
@@ -379,7 +395,7 @@ function DashboardLayoutContent({
       onClick: logout,
       path: '/login?type=login',
     },
-  ], [t, profilePictureUrl, logout, isAdmin]);
+  ], [t, profilePictureUrl, logout, isAdmin, moduleStatuses]);
 
   // Filtrer les items selon les préférences de visibilité ET les modules activés
   const visibleSidebarItems = useMemo(() => {
@@ -606,6 +622,16 @@ function DashboardLayoutContent({
                                   <span className="!text-sm font-medium whitespace-nowrap">
                                     {menuItem.label}
                                   </span>
+                                  {/* Status badge */}
+                                  {menuItem.status && (
+                                    <span className={`ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                                      menuItem.status === 'beta' 
+                                        ? 'bg-warning-light text-warning border border-warning' 
+                                        : 'bg-success-light text-success border border-success'
+                                    }`}>
+                                      {menuItem.status === 'beta' ? 'Beta' : 'New'}
+                                    </span>
+                                  )}
                                 </motion.button>
                               ))}
                             </motion.div>

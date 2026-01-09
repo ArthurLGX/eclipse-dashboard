@@ -165,7 +165,7 @@ export default function GrowthAuditPage() {
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
+        <div className='relative'>
           <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
             <IconSearch className="w-7 h-7 text-accent" />
             {t('growth_audit')}
