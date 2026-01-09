@@ -52,11 +52,19 @@ export default function TimerIndicator() {
   const [pauseTimeLeft, setPauseTimeLeft] = useState(0);
   const [pausedAtTime, setPausedAtTime] = useState<number>(0);
   const [isPauseHovered, setIsPauseHovered] = useState(false);
+  const [showPauseModal, setShowPauseModal] = useState(false);
+  const [pauseDuration, setPauseDuration] = useState(5 * 60); // Durée de pause sélectionnée
+  const [isIndefinitePause, setIsIndefinitePause] = useState(false);
   const timerRef = useRef<HTMLDivElement>(null);
   const dragControls = useDragControls();
   const constraintsRef = useRef<HTMLDivElement>(null);
   
-  const PAUSE_DURATION = 5 * 60; // 5 minutes en secondes
+  const PAUSE_OPTIONS = [
+    { minutes: 5, label: '5 min' },
+    { minutes: 10, label: '10 min' },
+    { minutes: 15, label: '15 min' },
+    { minutes: 20, label: '20 min' },
+  ];
 
   // Vérifier si le module time_tracking est activé
   const isTimeTrackingEnabled = enabledModules?.includes('time_tracking') ?? false;
@@ -123,14 +131,15 @@ export default function TimerIndicator() {
     }
   }, [runningEntry, exceededModalShown, isPaused, pausedAtTime]);
 
-  // Gérer le décompte de la pause
+  // Gérer le décompte de la pause (seulement si pas indéterminée)
   useEffect(() => {
-    if (isPaused && pauseTimeLeft > 0) {
+    if (isPaused && pauseTimeLeft > 0 && !isIndefinitePause) {
       const interval = setInterval(() => {
         setPauseTimeLeft(prev => {
           if (prev <= 1) {
             // La pause est terminée, reprendre le timer
             setIsPaused(false);
+            setIsIndefinitePause(false);
             return 0;
           }
           return prev - 1;
@@ -139,7 +148,18 @@ export default function TimerIndicator() {
 
       return () => clearInterval(interval);
     }
-  }, [isPaused, pauseTimeLeft]);
+  }, [isPaused, pauseTimeLeft, isIndefinitePause]);
+  
+  // Compteur pour pause indéterminée (compte vers le haut)
+  useEffect(() => {
+    if (isPaused && isIndefinitePause) {
+      const interval = setInterval(() => {
+        setPauseTimeLeft(prev => prev + 1);
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isPaused, isIndefinitePause]);
 
   // Format seconds to HH:MM:SS
   const formatSeconds = useCallback((seconds: number) => {
@@ -222,22 +242,44 @@ export default function TimerIndicator() {
     setShowExceededModal(false);
   };
 
-  // Mettre en pause le timer (pause café)
-  const handlePause = () => {
+  // Ouvrir la modale de sélection de pause
+  const handlePauseClick = () => {
     if (!isPaused) {
-      setIsPaused(true);
-      setPauseTimeLeft(PAUSE_DURATION);
-      setPausedAtTime(prev => prev); // Garder le temps actuel en pause
+      setShowPauseModal(true);
+    }
+  };
+
+  // Démarrer la pause avec une durée sélectionnée
+  const startPause = (minutes: number | null) => {
+    setShowPauseModal(false);
+    setIsPaused(true);
+    
+    if (minutes === null) {
+      // Pause indéterminée
+      setIsIndefinitePause(true);
+      setPauseTimeLeft(0); // Commence à 0 et compte vers le haut
+    } else {
+      // Pause avec durée définie
+      setIsIndefinitePause(false);
+      const durationSeconds = minutes * 60;
+      setPauseDuration(durationSeconds);
+      setPauseTimeLeft(durationSeconds);
     }
   };
 
   // Reprendre le timer avant la fin de la pause
   const handleResume = () => {
     if (isPaused) {
-      // Ajouter le temps de pause au temps "gelé"
-      const pauseDuration = PAUSE_DURATION - pauseTimeLeft;
-      setPausedAtTime(prev => prev + pauseDuration);
+      // Calculer le temps de pause effectif
+      let actualPauseDuration: number;
+      if (isIndefinitePause) {
+        actualPauseDuration = pauseTimeLeft; // Temps écoulé pendant la pause
+      } else {
+        actualPauseDuration = pauseDuration - pauseTimeLeft;
+      }
+      setPausedAtTime(prev => prev + actualPauseDuration);
       setIsPaused(false);
+      setIsIndefinitePause(false);
       setPauseTimeLeft(0);
     }
   };
@@ -370,22 +412,36 @@ export default function TimerIndicator() {
               )}
               {isPaused && (
                 <span className="text-xs text-accent/80 font-medium">
-                  {t('remaining') || 'restant'}
+                  {isIndefinitePause 
+                    ? (t('elapsed') || 'écoulé')
+                    : (t('remaining') || 'restant')
+                  }
                 </span>
               )}
             </div>
 
             {/* Progress Bar */}
-            {(runningEntry.estimated_duration || isPaused) && (
+            {(runningEntry.estimated_duration || (isPaused && !isIndefinitePause)) && (
               <div className={`h-2 rounded-full overflow-hidden mb-3 ${isPaused ? 'bg-accent/30' : 'bg-white/30'}`}>
                 <motion.div 
                   className={`h-full rounded-full ${isPaused ? 'bg-accent' : 'bg-white'}`}
                   initial={{ width: 0 }}
                   animate={{ width: isPaused 
-                    ? `${(pauseTimeLeft / PAUSE_DURATION) * 100}%` 
+                    ? `${(pauseTimeLeft / pauseDuration) * 100}%` 
                     : `${Math.min(progressPercent, 100)}%` 
                   }}
                   transition={{ duration: 0.3 }}
+                />
+              </div>
+            )}
+            
+            {/* Animation pour pause indéterminée */}
+            {isPaused && isIndefinitePause && (
+              <div className="h-2 rounded-full overflow-hidden mb-3 bg-accent/30 relative">
+                <motion.div 
+                  className="absolute inset-y-0 w-1/3 rounded-full bg-accent"
+                  animate={{ x: ['-100%', '400%'] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                 />
               </div>
             )}
@@ -420,7 +476,7 @@ export default function TimerIndicator() {
                   </button>
                   {/* Bouton Pause Café avec animation au survol */}
                   <button
-                    onClick={handlePause}
+                    onClick={handlePauseClick}
                     onMouseEnter={() => setIsPauseHovered(true)}
                     onMouseLeave={() => setIsPauseHovered(false)}
                     className="relative flex items-center p-2 bg-white/25 hover:bg-white/35 text-warning rounded-lg transition-colors shadow-sm overflow-hidden"
@@ -538,6 +594,94 @@ export default function TimerIndicator() {
                     </div>
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Pause Duration Selection Modal */}
+      <AnimatePresence>
+        {showPauseModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[2000] p-4"
+            onClick={() => setShowPauseModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card border border-default rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
+            >
+              {/* Header */}
+              <div className="p-5 bg-accent-light border-b border-accent/30">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                    <IconCoffee className="w-5 h-5 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary">
+                      {t('coffee_break') || 'Pause café'}
+                    </h3>
+                    <p className="text-sm text-muted">
+                      {t('select_pause_duration') || 'Choisir la durée de la pause'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Duration Options */}
+              <div className="p-4 space-y-2">
+                {/* Timed options */}
+                <div className="grid grid-cols-2 gap-2">
+                  {PAUSE_OPTIONS.map((option) => (
+                    <motion.button
+                      key={option.minutes}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => startPause(option.minutes)}
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-accent/10 hover:bg-accent/20 text-accent font-semibold rounded-xl transition-colors border border-accent/20"
+                    >
+                      <IconClock className="w-4 h-4" />
+                      {option.label}
+                    </motion.button>
+                  ))}
+                </div>
+
+                {/* Divider */}
+                <div className="flex items-center gap-3 py-2">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-xs text-muted uppercase">{t('or') || 'ou'}</span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+
+                {/* Indefinite option */}
+                <motion.button
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => startPause(null)}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-muted/10 hover:bg-muted/20 text-secondary font-medium rounded-xl transition-colors border border-default"
+                >
+                  <IconPlayerPlay className="w-4 h-4" />
+                  {t('indefinite_pause') || 'Pause libre'}
+                  <span className="text-xs text-muted ml-1">
+                    ({t('resume_manually') || 'reprendre manuellement'})
+                  </span>
+                </motion.button>
+              </div>
+
+              {/* Cancel */}
+              <div className="px-4 pb-4">
+                <button
+                  onClick={() => setShowPauseModal(false)}
+                  className="w-full py-2 text-sm text-muted hover:text-secondary transition-colors"
+                >
+                  {t('cancel') || 'Annuler'}
+                </button>
               </div>
             </motion.div>
           </motion.div>
