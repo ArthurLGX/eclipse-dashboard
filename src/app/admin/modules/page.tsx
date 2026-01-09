@@ -112,7 +112,7 @@ export default function AdminModulesPage() {
             return (
               <div
                 key={module.id}
-                className="p-4 flex-1 bg-accent-light flex min-h-[100px] flex-col gap-4 items-center justify-between transition-colors border border-default rounded-lg"
+                className="p-4 flex-1 bg-page flex min-h-[100px] flex-col gap-4 items-center justify-between transition-colors border border-default rounded-lg"
               >
                 <div className="flex items-center justify-start w-full  gap-3">
                   <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
@@ -146,7 +146,7 @@ export default function AdminModulesPage() {
                     onClick={() => handleStatusChange(module.id, 'beta')}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
                       currentStatus === 'beta'
-                        ? 'bg-warning text-white font-medium border border-warning'
+                        ? 'bg-warning-light text-warning font-medium border border-warning'
                         : 'text-muted bg-accent-light'
                     }`}
                   >

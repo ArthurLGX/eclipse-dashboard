@@ -123,6 +123,7 @@ function generatePrompt(request: MockupRequest): string {
   
   // Build color and style info from analysis
   let accentInfo = 'Single accent color (purple or blue) for CTAs and highlights';
+  let backgroundInfo = 'Light gray or white background with subtle contrast between sections';
   let cornerInfo = 'Soft shadows and rounded corners (8-16px radius)';
   
   if (styleAnalysis) {
@@ -132,6 +133,13 @@ function generatePrompt(request: MockupRequest): string {
       if (styleAnalysis.secondaryColor) {
         accentInfo += `, secondary color: ${styleAnalysis.secondaryColor} for accents`;
       }
+    }
+    
+    // Background info
+    if (styleAnalysis.isDarkMode) {
+      backgroundInfo = `Dark background (${styleAnalysis.backgroundColor || '#1a1a1a'}) with light text`;
+    } else if (styleAnalysis.backgroundColor) {
+      backgroundInfo = `Background: ${styleAnalysis.backgroundColor} with subtle section contrast`;
     }
     
     // Corners and gradients
