@@ -38,6 +38,7 @@ import {
   IconClock,
   IconFileDescription,
   IconCalendar,
+  IconTargetArrow,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -284,6 +285,13 @@ function DashboardLayoutContent({
           icon: <IconServer size={20} stroke={1} />,
           path: '/dashboard/monitoring',
           moduleId: 'monitoring',
+        },
+        // Audit & Analyse (toujours visible - outil interne)
+        {
+          id: 'growth_audit',
+          label: t('growth_audit') || 'Growth Audit',
+          icon: <IconTargetArrow size={20} stroke={1} />,
+          path: '/dashboard/growth-audit',
         },
       ],
     },

@@ -51,7 +51,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     description: 'Freelance ou indépendant dans le développement web',
     descriptionEn: 'Freelance or independent web developer',
     defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'newsletters'],
-    availableModules: ['monitoring', 'time_tracking', 'contracts', 'quotes', 'calendar'],
+    availableModules: ['monitoring', 'time_tracking', 'contracts', 'quotes', 'calendar', 'growth_audit'],
     terminology: {
       project: 'Projet',
       projectEn: 'Project',
@@ -66,7 +66,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     description: 'Agence web, communication ou marketing',
     descriptionEn: 'Web, communication or marketing agency',
     defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'newsletters', 'team'],
-    availableModules: ['monitoring', 'time_tracking', 'contracts', 'quotes', 'calendar', 'planning'],
+    availableModules: ['monitoring', 'time_tracking', 'contracts', 'quotes', 'calendar', 'planning', 'growth_audit'],
     terminology: {
       project: 'Projet',
       projectEn: 'Project',
@@ -96,7 +96,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     description: 'Consultant indépendant, coach business',
     descriptionEn: 'Independent consultant, business coach',
     defaultModules: ['clients', 'projects', 'invoices', 'emails', 'calendar'],
-    availableModules: ['prospects', 'time_tracking', 'contracts', 'quotes', 'meeting_notes'],
+    availableModules: ['prospects', 'time_tracking', 'contracts', 'quotes', 'meeting_notes', 'growth_audit'],
     terminology: {
       project: 'Mission',
       projectEn: 'Mission',
@@ -156,7 +156,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     description: 'Autre type d\'activité',
     descriptionEn: 'Other type of activity',
     defaultModules: ['clients', 'projects', 'invoices', 'emails'],
-    availableModules: ['prospects', 'newsletters', 'monitoring', 'time_tracking', 'contracts', 'quotes', 'calendar'],
+    availableModules: ['prospects', 'newsletters', 'monitoring', 'time_tracking', 'contracts', 'quotes', 'calendar', 'growth_audit'],
     terminology: {
       project: 'Projet',
       projectEn: 'Project',
@@ -320,6 +320,16 @@ export const ALL_MODULES: Record<string, ModuleConfig> = {
     core: false,
     description: 'Gestion des mentors',
     descriptionEn: 'Manage mentors',
+  },
+  growth_audit: {
+    id: 'growth_audit',
+    label: 'Growth Audit',
+    labelEn: 'Growth Audit',
+    icon: 'IconTargetArrow',
+    path: '/dashboard/growth-audit',
+    core: false,
+    description: 'Audit SEO et structure de pages',
+    descriptionEn: 'SEO and page structure audit',
   },
 };
 
