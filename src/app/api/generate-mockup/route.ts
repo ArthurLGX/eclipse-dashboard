@@ -172,29 +172,39 @@ function generatePrompt(request: MockupRequest): string {
     }
   }
   
-  // Optimized prompt for Stable Diffusion / FLUX image generation
-  const prompt = `A stunning high-fidelity website mockup design, ${pageContext}.
+  // Optimized prompt for WIREFRAME generation (not artistic images)
+  const prompt = `FLAT DESIGN UI WIREFRAME MOCKUP of a ${pageType} website page, bird's eye view of a computer screen showing a web page design.
 
-STYLE: ${styleDesc}, premium quality design, trending on Dribbble and Behance.
-${colorInfo}
+TYPE: Clean flat vector wireframe, NOT a 3D render, NOT a photo, NOT realistic.
 
-PAGE LAYOUT from top to bottom:
+LAYOUT STRUCTURE (vertical sections from top to bottom):
 ${sectionDescriptions}
 
-VISUAL REQUIREMENTS:
-- Full desktop browser view at 1440px width
-- ${backgroundInfo}
+DESIGN STYLE:
+- Flat 2D vector illustration style
+- Simple geometric shapes for placeholder images (gray rectangles)
+- Clean lines and boxes for text (horizontal gray lines)
 - ${accentInfo}
-- ${fontInfo}
-- Realistic placeholder images and icons
+- ${backgroundInfo}
+- Minimalist icons (simple outlines)
+- Grid-based layout with clear sections
 - ${cornerInfo}
-- Generous white space and breathing room
-- Professional SaaS/B2B aesthetic
-- Figma or Sketch mockup quality
-- Sharp, crisp UI elements
-- No watermarks or logos
 
-QUALITY: Ultra detailed, 8K quality, photorealistic UI mockup, professional web design, award-winning design`;
+MUST INCLUDE:
+- Navigation bar at top with logo placeholder and menu items
+- Clear section dividers
+- Button shapes with rounded corners
+- Card components with shadows
+- Footer at bottom
+
+MUST NOT INCLUDE:
+- Real photographs of people or faces
+- 3D elements or perspective
+- Realistic textures
+- Complex illustrations
+- Hands or human body parts
+
+OUTPUT: Clean, professional UI/UX wireframe like Figma or Balsamiq mockup, flat design, 2D vector style, web design blueprint, minimal color palette with ${styleAnalysis?.primaryColor || 'blue'} accent.`;
 
   return prompt;
 }
@@ -209,17 +219,17 @@ async function generateMockupImage(prompt: string): Promise<string> {
   const encodedPrompt = encodeURIComponent(prompt);
   const seed = Math.floor(Math.random() * 1000000);
   
-  // Build the Pollinations.ai URL with optimal parameters
-  // - model=flux : Best quality model for UI/UX mockups
-  // - enhance=true : Auto-enhance the prompt for better results
+  // Build the Pollinations.ai URL with optimal parameters for WIREFRAMES
+  // - model=turbo : Faster model, better for flat designs
+  // - enhance=false : Keep our precise prompt as-is (don't add artistic elements)
   // - nologo=true : Remove watermark
   const params = new URLSearchParams({
     width: '1792',
     height: '1024',
     seed: seed.toString(),
     nologo: 'true',
-    model: 'flux',      // Best quality model
-    enhance: 'true',    // Auto-enhance prompt
+    model: 'turbo',     // Faster, better for flat wireframes
+    enhance: 'false',   // Don't modify our wireframe-specific prompt
   });
   
   // Add token if API key is available
