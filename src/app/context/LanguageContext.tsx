@@ -2103,7 +2103,6 @@ const translations = {
     toggle_comparison: 'Changer le mode de comparaison',
     
     // Portfolio
-    portfolio: 'Portfolio',
     portfolio_subtitle: 'Vitrine de vos réalisations',
     portfolio_add_project: 'Ajouter un projet',
     portfolio_edit_project: 'Modifier le projet',
@@ -4159,7 +4158,6 @@ const translations = {
     toggle_comparison: 'Toggle comparison mode',
     
     // Portfolio
-    portfolio: 'Portfolio',
     portfolio_subtitle: 'Showcase your work',
     portfolio_add_project: 'Add project',
     portfolio_edit_project: 'Edit project',
