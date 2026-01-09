@@ -39,6 +39,7 @@ import {
   IconFileDescription,
   IconCalendar,
   IconTargetArrow,
+  IconPalette,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -321,6 +322,14 @@ function DashboardLayoutContent({
       icon: <IconFolder size={20} stroke={1} />,
       isCategory: true,
       menuItems: [
+        {
+          id: 'portfolio',
+          label: t('portfolio') || 'Portfolio',
+          icon: <IconPalette size={20} stroke={1} />,
+          path: '/dashboard/portfolio',
+          moduleId: 'portfolio',
+          status: getModuleStatus('portfolio', moduleStatuses) || undefined,
+        },
         {
           id: 'media_library',
           label: t('media_library') || 'Bibliothèque',

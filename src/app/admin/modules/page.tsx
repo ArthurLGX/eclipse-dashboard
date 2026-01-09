@@ -136,8 +136,8 @@ export default function AdminModulesPage() {
                     onClick={() => handleStatusChange(module.id, null)}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                       currentStatus === null
-                        ? 'bg-muted text-primary font-medium'
-                        : 'text-muted hover:bg-[var(--color-hover)]'
+                        ? 'bg-accent border border-accent text-white font-medium'
+                        : 'text-muted bg-muted'
                     }`}
                   >
                     {language === 'fr' ? 'Aucun' : 'None'}
@@ -147,7 +147,7 @@ export default function AdminModulesPage() {
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
                       currentStatus === 'beta'
                         ? 'bg-warning-light text-warning font-medium border border-warning'
-                        : 'text-muted bg-accent-light'
+                        : 'text-muted bg-muted'
                     }`}
                   >
                     <IconFlask className="w-4 h-4" />
