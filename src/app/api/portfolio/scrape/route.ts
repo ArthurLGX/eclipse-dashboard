@@ -307,7 +307,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ScrapeRes
 
         // Wait a bit more for any lazy-loaded content
         debug.push('Waiting for dynamic content...');
-        await page.waitForTimeout(3000);
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
         // Scroll down to trigger lazy loading
         await page.evaluate(async () => {
@@ -327,7 +327,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ScrapeRes
         });
 
         // Wait for images to load
-        await page.waitForTimeout(2000);
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
         // Get the rendered HTML
         html = await page.content();
