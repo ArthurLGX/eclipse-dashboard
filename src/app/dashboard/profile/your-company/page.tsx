@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/app/context/AuthContext';
 import { fetchCompanyUser, updateCompanyUser } from '@/lib/api';
 import { clearCache } from '@/hooks/useApi';
-import useLenis from '@/utils/useLenis';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
@@ -13,7 +12,6 @@ import { Company } from '@/app/models/Models';
 
 export default function YourCompanyPage() {
   const { t } = useLanguage();
-  useLenis();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const [companyProfile, setCompanyProfile] = useState<Company | null>(null);

@@ -9,7 +9,6 @@ import {
   fetchPlans,
   createSubscription,
 } from '@/lib/api';
-import useLenis from '@/utils/useLenis';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
@@ -41,7 +40,6 @@ interface Subscription {
 export default function YourSubscriptionPage() {
   const { t, language } = useLanguage();
   const router = useRouter();
-  useLenis();
   const { user, triggerSubscriptionUpdate } = useAuth();
   const { showGlobalPopup } = usePopup();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);

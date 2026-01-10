@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useRouter, usePathname } from 'next/navigation';
-import useLenis from '@/utils/useLenis';
+import { LenisProvider } from '@/app/context/LenisContext';
 import {
   IconLayoutDashboard,
   IconUsers,
@@ -61,9 +61,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     window.addEventListener('resize', checkDesktop);
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
-
-  // Activer Lenis pour le smooth scroll
-  useLenis();
 
   // Vérifier si l'utilisateur est admin
   // IMPORTANT: Seuls les emails explicitement listés ici peuvent accéder au dashboard admin
@@ -225,6 +222,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <ProtectedRoute>
+      <LenisProvider>
       <div className="dashboard-wrapper flex min-h-screen w-full">
         {/* Sidebar Desktop - Fixed */}
         <motion.div
@@ -384,6 +382,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </motion.main>
       </div>
+      </LenisProvider>
     </ProtectedRoute>
   );
 }

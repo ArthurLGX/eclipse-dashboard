@@ -28,8 +28,9 @@ export default function TrialExpiredWrapper({
   }, [pathname]);
 
   // Afficher le skeleton pendant le chargement de la page
-  // Ne pas afficher le skeleton sur la page pricing pour éviter les boucles
-  if ((!hasHydrated || isPageLoading) && pathname !== '/pricing') {
+  // Ne pas afficher le skeleton sur la page pricing et les pages portfolio publiques
+  const isPublicPage = pathname === '/pricing' || pathname?.startsWith('/portfolio/');
+  if ((!hasHydrated || isPageLoading) && !isPublicPage) {
     return <PageSkeleton />;
   }
 

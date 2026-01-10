@@ -7,7 +7,7 @@ import { OnboardingProvider } from '@/app/context/OnboardingContext';
 import { UserPreferencesProvider, useUserPreferencesOptional } from '@/app/context/UserPreferencesContext';
 import OnboardingWizard from '@/app/components/OnboardingWizard';
 import BusinessSetupModal from '@/app/components/BusinessSetupModal';
-import useLenis from '@/utils/useLenis';
+import { LenisProvider } from '@/app/context/LenisContext';
 import {
   IconHome,
   IconUsers,
@@ -77,11 +77,13 @@ export default function DashboardLayout({
   return (
     <ProtectedRoute>
       <TrialExpiredGuard>
-        <UserPreferencesProvider>
-          <OnboardingProvider>
-            <DashboardLayoutContent>{children}</DashboardLayoutContent>
-          </OnboardingProvider>
-        </UserPreferencesProvider>
+        <LenisProvider>
+          <UserPreferencesProvider>
+            <OnboardingProvider>
+              <DashboardLayoutContent>{children}</DashboardLayoutContent>
+            </OnboardingProvider>
+          </UserPreferencesProvider>
+        </LenisProvider>
       </TrialExpiredGuard>
     </ProtectedRoute>
   );
@@ -174,9 +176,6 @@ function DashboardLayoutContent({
     window.addEventListener('resize', checkDesktop);
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
-
-  // Activer Lenis pour le smooth scroll
-  useLenis();
 
   // Définir les items de la sidebar avec catégories en menus déroulants
   const sidebarItems: SidebarItem[] = useMemo(() => [

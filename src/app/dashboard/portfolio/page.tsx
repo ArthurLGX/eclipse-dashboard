@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useModalLenis } from '@/app/context/LenisContext';
+import Image from 'next/image';
 import {
   IconPlus,
   IconX,
@@ -20,20 +22,24 @@ import {
   IconTypography,
   IconSparkles,
   IconEye,
-  IconEyeOff,
   IconChevronLeft,
   IconChevronRight,
   IconPlayerPlay,
   IconUpload,
-  IconGripVertical,
   IconWorld,
   IconLock,
-  IconInfoCircle,
   IconMail,
   IconBrandInstagram,
   IconBrandLinkedin,
   IconBrandDribbble,
+  IconBold,
+  IconLoader2,
+  IconCloudUpload,
+  IconDownload,
+  IconSearch,
+  IconRefresh,
 } from '@tabler/icons-react';
+import { uploadImage } from '@/lib/api';
 
 // ============================================================================
 // TYPES
@@ -67,11 +73,27 @@ interface PortfolioSettings {
   // Branding
   portfolioName: string;
   tagline: string;
-  // Style
-  primaryFont: string;
-  secondaryFont: string;
+  // Typography - Title
+  titleFont: string;
+  titleFontWeight: number;
   titleColor: string;
+  titleSize: string;
+  titleLetterSpacing: string;
+  titleTransform: 'none' | 'uppercase' | 'lowercase' | 'capitalize';
+  // Typography - Subtitle
+  subtitleFont: string;
+  subtitleFontWeight: number;
   subtitleColor: string;
+  subtitleSize: string;
+  // Typography - Project Cards
+  projectTitleFont: string;
+  projectTitleFontWeight: number;
+  projectTitleColor: string;
+  projectSubtitleColor: string;
+  // Custom Font
+  customFontName?: string;
+  customFontUrl?: string;
+  // Colors
   backgroundColor: string;
   accentColor: string;
   // Layout
@@ -96,15 +118,120 @@ interface PortfolioSettings {
 // CONSTANTS
 // ============================================================================
 
-const FONTS = [
-  { id: 'manrope', name: 'Manrope', family: "'Manrope', sans-serif" },
-  { id: 'poppins', name: 'Poppins', family: "'Poppins', sans-serif" },
-  { id: 'geist', name: 'Geist', family: "'Geist', sans-serif" },
-  { id: 'inter', name: 'Inter', family: "'Inter', sans-serif" },
-  { id: 'playfair', name: 'Playfair Display', family: "'Playfair Display', serif" },
-  { id: 'cormorant', name: 'Cormorant', family: "'Cormorant Garamond', serif" },
-  { id: 'space-grotesk', name: 'Space Grotesk', family: "'Space Grotesk', sans-serif" },
-  { id: 'dm-sans', name: 'DM Sans', family: "'DM Sans', sans-serif" },
+// Complete Google Fonts list organized by category
+const GOOGLE_FONTS = {
+  sans: [
+    { id: 'inter', name: 'Inter', family: "'Inter', sans-serif", googleName: 'Inter' },
+    { id: 'roboto', name: 'Roboto', family: "'Roboto', sans-serif", googleName: 'Roboto' },
+    { id: 'open-sans', name: 'Open Sans', family: "'Open Sans', sans-serif", googleName: 'Open+Sans' },
+    { id: 'montserrat', name: 'Montserrat', family: "'Montserrat', sans-serif", googleName: 'Montserrat' },
+    { id: 'lato', name: 'Lato', family: "'Lato', sans-serif", googleName: 'Lato' },
+    { id: 'poppins', name: 'Poppins', family: "'Poppins', sans-serif", googleName: 'Poppins' },
+    { id: 'manrope', name: 'Manrope', family: "'Manrope', sans-serif", googleName: 'Manrope' },
+    { id: 'nunito', name: 'Nunito', family: "'Nunito', sans-serif", googleName: 'Nunito' },
+    { id: 'work-sans', name: 'Work Sans', family: "'Work Sans', sans-serif", googleName: 'Work+Sans' },
+    { id: 'dm-sans', name: 'DM Sans', family: "'DM Sans', sans-serif", googleName: 'DM+Sans' },
+    { id: 'space-grotesk', name: 'Space Grotesk', family: "'Space Grotesk', sans-serif", googleName: 'Space+Grotesk' },
+    { id: 'outfit', name: 'Outfit', family: "'Outfit', sans-serif", googleName: 'Outfit' },
+    { id: 'plus-jakarta-sans', name: 'Plus Jakarta Sans', family: "'Plus Jakarta Sans', sans-serif", googleName: 'Plus+Jakarta+Sans' },
+    { id: 'sora', name: 'Sora', family: "'Sora', sans-serif", googleName: 'Sora' },
+    { id: 'figtree', name: 'Figtree', family: "'Figtree', sans-serif", googleName: 'Figtree' },
+    { id: 'urbanist', name: 'Urbanist', family: "'Urbanist', sans-serif", googleName: 'Urbanist' },
+    { id: 'cabinet-grotesk', name: 'Cabinet Grotesk', family: "'Cabinet Grotesk', sans-serif", googleName: 'Cabinet+Grotesk' },
+    { id: 'satoshi', name: 'Satoshi', family: "'Satoshi', sans-serif", googleName: 'Satoshi' },
+    { id: 'geist', name: 'Geist', family: "'Geist', sans-serif", googleName: 'Geist' },
+    { id: 'general-sans', name: 'General Sans', family: "'General Sans', sans-serif", googleName: 'General+Sans' },
+    { id: 'clash-display', name: 'Clash Display', family: "'Clash Display', sans-serif", googleName: 'Clash+Display' },
+    { id: 'red-hat-display', name: 'Red Hat Display', family: "'Red Hat Display', sans-serif", googleName: 'Red+Hat+Display' },
+    { id: 'archivo', name: 'Archivo', family: "'Archivo', sans-serif", googleName: 'Archivo' },
+    { id: 'be-vietnam-pro', name: 'Be Vietnam Pro', family: "'Be Vietnam Pro', sans-serif", googleName: 'Be+Vietnam+Pro' },
+    { id: 'lexend', name: 'Lexend', family: "'Lexend', sans-serif", googleName: 'Lexend' },
+  ],
+  serif: [
+    { id: 'playfair-display', name: 'Playfair Display', family: "'Playfair Display', serif", googleName: 'Playfair+Display' },
+    { id: 'cormorant', name: 'Cormorant', family: "'Cormorant', serif", googleName: 'Cormorant' },
+    { id: 'cormorant-garamond', name: 'Cormorant Garamond', family: "'Cormorant Garamond', serif", googleName: 'Cormorant+Garamond' },
+    { id: 'lora', name: 'Lora', family: "'Lora', serif", googleName: 'Lora' },
+    { id: 'merriweather', name: 'Merriweather', family: "'Merriweather', serif", googleName: 'Merriweather' },
+    { id: 'libre-baskerville', name: 'Libre Baskerville', family: "'Libre Baskerville', serif", googleName: 'Libre+Baskerville' },
+    { id: 'dm-serif-display', name: 'DM Serif Display', family: "'DM Serif Display', serif", googleName: 'DM+Serif+Display' },
+    { id: 'fraunces', name: 'Fraunces', family: "'Fraunces', serif", googleName: 'Fraunces' },
+    { id: 'crimson-text', name: 'Crimson Text', family: "'Crimson Text', serif", googleName: 'Crimson+Text' },
+    { id: 'spectral', name: 'Spectral', family: "'Spectral', serif", googleName: 'Spectral' },
+    { id: 'eb-garamond', name: 'EB Garamond', family: "'EB Garamond', serif", googleName: 'EB+Garamond' },
+    { id: 'source-serif-pro', name: 'Source Serif Pro', family: "'Source Serif Pro', serif", googleName: 'Source+Serif+Pro' },
+    { id: 'bitter', name: 'Bitter', family: "'Bitter', serif", googleName: 'Bitter' },
+    { id: 'cardo', name: 'Cardo', family: "'Cardo', serif", googleName: 'Cardo' },
+    { id: 'noto-serif', name: 'Noto Serif', family: "'Noto Serif', serif", googleName: 'Noto+Serif' },
+  ],
+  display: [
+    { id: 'bebas-neue', name: 'Bebas Neue', family: "'Bebas Neue', sans-serif", googleName: 'Bebas+Neue' },
+    { id: 'righteous', name: 'Righteous', family: "'Righteous', sans-serif", googleName: 'Righteous' },
+    { id: 'oswald', name: 'Oswald', family: "'Oswald', sans-serif", googleName: 'Oswald' },
+    { id: 'archivo-black', name: 'Archivo Black', family: "'Archivo Black', sans-serif", googleName: 'Archivo+Black' },
+    { id: 'anton', name: 'Anton', family: "'Anton', sans-serif", googleName: 'Anton' },
+    { id: 'rubik', name: 'Rubik', family: "'Rubik', sans-serif", googleName: 'Rubik' },
+    { id: 'josefin-sans', name: 'Josefin Sans', family: "'Josefin Sans', sans-serif", googleName: 'Josefin+Sans' },
+    { id: 'russo-one', name: 'Russo One', family: "'Russo One', sans-serif", googleName: 'Russo+One' },
+    { id: 'space-mono', name: 'Space Mono', family: "'Space Mono', monospace", googleName: 'Space+Mono' },
+    { id: 'alfa-slab-one', name: 'Alfa Slab One', family: "'Alfa Slab One', serif", googleName: 'Alfa+Slab+One' },
+    { id: 'staatliches', name: 'Staatliches', family: "'Staatliches', sans-serif", googleName: 'Staatliches' },
+    { id: 'monoton', name: 'Monoton', family: "'Monoton', cursive", googleName: 'Monoton' },
+  ],
+  handwriting: [
+    { id: 'dancing-script', name: 'Dancing Script', family: "'Dancing Script', cursive", googleName: 'Dancing+Script' },
+    { id: 'pacifico', name: 'Pacifico', family: "'Pacifico', cursive", googleName: 'Pacifico' },
+    { id: 'caveat', name: 'Caveat', family: "'Caveat', cursive", googleName: 'Caveat' },
+    { id: 'sacramento', name: 'Sacramento', family: "'Sacramento', cursive", googleName: 'Sacramento' },
+    { id: 'great-vibes', name: 'Great Vibes', family: "'Great Vibes', cursive", googleName: 'Great+Vibes' },
+    { id: 'satisfy', name: 'Satisfy', family: "'Satisfy', cursive", googleName: 'Satisfy' },
+    { id: 'kalam', name: 'Kalam', family: "'Kalam', cursive", googleName: 'Kalam' },
+  ],
+};
+
+// Flatten fonts for easy access
+const ALL_FONTS = [
+  ...GOOGLE_FONTS.sans,
+  ...GOOGLE_FONTS.serif,
+  ...GOOGLE_FONTS.display,
+  ...GOOGLE_FONTS.handwriting,
+];
+
+// Font weights available
+const FONT_WEIGHTS = [
+  { value: 100, label: 'Thin' },
+  { value: 200, label: 'Extra Light' },
+  { value: 300, label: 'Light' },
+  { value: 400, label: 'Regular' },
+  { value: 500, label: 'Medium' },
+  { value: 600, label: 'Semi Bold' },
+  { value: 700, label: 'Bold' },
+  { value: 800, label: 'Extra Bold' },
+  { value: 900, label: 'Black' },
+];
+
+// Font sizes
+const FONT_SIZES = [
+  { value: '0.75rem', label: 'XS' },
+  { value: '0.875rem', label: 'S' },
+  { value: '1rem', label: 'M' },
+  { value: '1.125rem', label: 'L' },
+  { value: '1.25rem', label: 'XL' },
+  { value: '1.5rem', label: '2XL' },
+  { value: '1.875rem', label: '3XL' },
+  { value: '2.25rem', label: '4XL' },
+];
+
+// Letter spacing options
+const LETTER_SPACINGS = [
+  { value: '-0.05em', label: 'Très serré' },
+  { value: '-0.025em', label: 'Serré' },
+  { value: '0', label: 'Normal' },
+  { value: '0.025em', label: 'Espacé' },
+  { value: '0.05em', label: 'Très espacé' },
+  { value: '0.1em', label: 'Large' },
+  { value: '0.2em', label: 'Très large' },
+  { value: '0.3em', label: 'Ultra large' },
 ];
 
 const CATEGORIES = [
@@ -118,21 +245,43 @@ const CATEGORIES = [
 ];
 
 const DEFAULT_SETTINGS: PortfolioSettings = {
-  portfolioName: 'Mon Portfolio',
-  tagline: 'Créations visuelles & digitales',
-  primaryFont: 'manrope',
-  secondaryFont: 'manrope',
-  titleColor: '#1a1a1a',
-  subtitleColor: '#888888',
-  backgroundColor: '#ffffff',
-  accentColor: '#c9a962',
+  // Branding
+  portfolioName: 'The portfolio',
+  tagline: 'Digital + print.\nConcept to production.',
+  // Typography - Title
+  titleFont: 'playfair-display',
+  titleFontWeight: 700,
+  titleColor: '',  // Empty = use theme
+  titleSize: '5rem',
+  titleLetterSpacing: '-0.02em',
+  titleTransform: 'none',
+  // Typography - Subtitle
+  subtitleFont: 'inter',
+  subtitleFontWeight: 400,
+  subtitleColor: '',  // Empty = use theme
+  subtitleSize: '1rem',
+  // Typography - Project Cards
+  projectTitleFont: 'inter',
+  projectTitleFontWeight: 400,
+  projectTitleColor: '',  // Empty = use theme
+  projectSubtitleColor: '',  // Empty = use theme
+  // Custom Font
+  customFontName: '',
+  customFontUrl: '',
+  // Colors
+  backgroundColor: '',  // Empty = use theme (transparent)
+  accentColor: '',  // Empty = use theme
+  // Layout
   columns: 3,
   gap: 'normal',
-  imageRatio: 'landscape',
+  imageRatio: 'square',
+  // Animations
   enableAnimations: true,
   animationType: 'fade',
+  // Visibility
   isPublic: false,
   shareSlug: '',
+  // Social Links
   showSocialLinks: true,
   instagramUrl: '',
   linkedinUrl: '',
@@ -147,14 +296,14 @@ const DEFAULT_SETTINGS: PortfolioSettings = {
 const MOCK_PROJECTS: PortfolioProject[] = [
   {
     id: '1',
-    title: 'QUICK PORTFOLIO',
-    subtitle: 'Overview of my work',
-    description: 'A comprehensive overview showcasing various projects and creative explorations.',
-    category: 'photography',
-    tags: ['Portfolio', 'Creative'],
+    title: 'Campaign',
+    subtitle: 'Campaign',
+    description: 'Creative campaign showcasing brand identity and visual storytelling.',
+    category: 'design',
+    tags: ['Campaign', 'Creative'],
     media: [
-      { id: 'm1', type: 'image', url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80' },
-      { id: 'm2', type: 'image', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80' },
+      { id: 'm1', type: 'image', url: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80' },
+      { id: 'm2', type: 'image', url: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600&q=80' },
     ],
     coverIndex: 0,
     date: '2024-01-15',
@@ -162,13 +311,13 @@ const MOCK_PROJECTS: PortfolioProject[] = [
   },
   {
     id: '2',
-    title: 'ARCTIC SILENCE',
-    subtitle: 'Greenland',
-    description: 'Capturing the pristine beauty and haunting silence of Greenland\'s Arctic landscapes.',
-    category: 'photography',
-    tags: ['Nature', 'Arctic', 'Landscape'],
+    title: '360° Campaign',
+    subtitle: '360° Campaign',
+    description: 'Full-scope creative campaign including print, digital, and experiential elements.',
+    category: 'design',
+    tags: ['Branding', '360°'],
     media: [
-      { id: 'm3', type: 'image', url: 'https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=800&q=80' },
+      { id: 'm3', type: 'image', url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80' },
     ],
     coverIndex: 0,
     date: '2024-02-20',
@@ -176,13 +325,13 @@ const MOCK_PROJECTS: PortfolioProject[] = [
   },
   {
     id: '3',
-    title: 'CONCRETE MONUMENTS',
-    subtitle: 'Greenland',
-    description: 'Modern architecture meets raw nature in this exploration of Greenland\'s built environment.',
-    category: 'photography',
-    tags: ['Architecture', 'Minimal'],
+    title: 'Branding + identity',
+    subtitle: 'Branding + identity',
+    description: 'Complete brand identity design including logo, typography, and visual system.',
+    category: 'design',
+    tags: ['Branding', 'Identity'],
     media: [
-      { id: 'm4', type: 'image', url: 'https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=800&q=80' },
+      { id: 'm4', type: 'image', url: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=80' },
     ],
     coverIndex: 0,
     date: '2024-03-10',
@@ -190,14 +339,14 @@ const MOCK_PROJECTS: PortfolioProject[] = [
   },
   {
     id: '4',
-    title: 'THE VIKING VILLAGE',
-    subtitle: 'Iceland',
-    description: 'Journey through Iceland\'s historic Viking settlements and dramatic landscapes.',
-    category: 'photography',
-    tags: ['History', 'Iceland'],
-    clientName: 'Iceland Tourism',
+    title: 'Video + digital',
+    subtitle: 'Video + digital',
+    description: 'Digital content creation including video production and motion graphics.',
+    category: 'video',
+    tags: ['Video', 'Digital'],
+    clientName: 'Tech Client',
     media: [
-      { id: 'm5', type: 'image', url: 'https://images.unsplash.com/photo-1504893524553-b855bce32c67?w=800&q=80' },
+      { id: 'm5', type: 'image', url: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&q=80' },
     ],
     coverIndex: 0,
     date: '2024-04-05',
@@ -205,13 +354,13 @@ const MOCK_PROJECTS: PortfolioProject[] = [
   },
   {
     id: '5',
-    title: 'LOW CLOUDS',
-    subtitle: 'Iceland',
-    description: 'Misty mountain peaks and ethereal cloud formations over Iceland\'s highlands.',
+    title: 'Environments',
+    subtitle: 'Environments',
+    description: 'Environmental design and spatial branding for retail and hospitality.',
     category: 'photography',
-    tags: ['Landscape', 'Atmosphere'],
+    tags: ['Environment', 'Spatial'],
     media: [
-      { id: 'm6', type: 'image', url: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&q=80' },
+      { id: 'm6', type: 'image', url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80' },
     ],
     coverIndex: 0,
     date: '2024-05-12',
@@ -219,17 +368,59 @@ const MOCK_PROJECTS: PortfolioProject[] = [
   },
   {
     id: '6',
-    title: 'REMNANTS',
-    subtitle: 'Iceland',
-    description: 'The lasting beauty of glacial remnants in a changing climate.',
-    category: 'photography',
-    tags: ['Climate', 'Glaciers'],
+    title: 'Editorial',
+    subtitle: 'Editorial',
+    description: 'Editorial design and art direction for print and digital publications.',
+    category: 'design',
+    tags: ['Editorial', 'Print'],
     media: [
-      { id: 'm7', type: 'image', url: 'https://images.unsplash.com/photo-1520769669658-f07657f5a307?w=800&q=80' },
+      { id: 'm7', type: 'image', url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80' },
     ],
     coverIndex: 0,
     date: '2024-06-18',
     sortOrder: 5,
+  },
+  {
+    id: '7',
+    title: 'Packaging',
+    subtitle: 'Packaging',
+    description: 'Product packaging design that stands out on shelves.',
+    category: 'design',
+    tags: ['Packaging', 'Product'],
+    media: [
+      { id: 'm8', type: 'image', url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80' },
+    ],
+    coverIndex: 0,
+    date: '2024-07-01',
+    sortOrder: 6,
+  },
+  {
+    id: '8',
+    title: 'Magazine',
+    subtitle: 'Magazine',
+    description: 'Magazine layout and editorial design.',
+    category: 'design',
+    tags: ['Magazine', 'Print'],
+    media: [
+      { id: 'm9', type: 'image', url: 'https://images.unsplash.com/photo-1585241645927-c7a8e5840c42?w=600&q=80' },
+    ],
+    coverIndex: 0,
+    date: '2024-07-15',
+    sortOrder: 7,
+  },
+  {
+    id: '9',
+    title: 'Branding + packaging',
+    subtitle: 'Branding + packaging',
+    description: 'Integrated branding and packaging solutions.',
+    category: 'design',
+    tags: ['Branding', 'Packaging'],
+    media: [
+      { id: 'm10', type: 'image', url: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=600&q=80' },
+    ],
+    coverIndex: 0,
+    date: '2024-08-01',
+    sortOrder: 8,
   },
 ];
 
@@ -246,59 +437,150 @@ interface SettingsPanelProps {
 
 function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: SettingsPanelProps) {
   const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'style' | 'layout' | 'share'>('style');
+  const [activeTab, setActiveTab] = useState<'branding' | 'typography' | 'layout' | 'share'>('branding');
+
+  // Lock Lenis scroll when panel is open
+  useModalLenis(isOpen);
 
   const updateSetting = <K extends keyof PortfolioSettings>(key: K, value: PortfolioSettings[K]) => {
     onSettingsChange({ ...settings, [key]: value });
   };
 
+  // Render font selector with categories
+  const renderFontSelector = (value: string, onChange: (fontId: string) => void, label: string) => (
+    <div>
+      <label className="block text-sm font-medium text-secondary mb-2">{label}</label>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+      >
+        {settings.customFontName && settings.customFontUrl && (
+          <optgroup label="🎨 Police personnalisée">
+            <option value="custom">{settings.customFontName}</option>
+          </optgroup>
+        )}
+        <optgroup label="Sans Serif">
+          {GOOGLE_FONTS.sans.map((font) => (
+            <option key={font.id} value={font.id}>{font.name}</option>
+          ))}
+        </optgroup>
+        <optgroup label="Serif">
+          {GOOGLE_FONTS.serif.map((font) => (
+            <option key={font.id} value={font.id}>{font.name}</option>
+          ))}
+        </optgroup>
+        <optgroup label="Display">
+          {GOOGLE_FONTS.display.map((font) => (
+            <option key={font.id} value={font.id}>{font.name}</option>
+          ))}
+        </optgroup>
+        <optgroup label="Handwriting">
+          {GOOGLE_FONTS.handwriting.map((font) => (
+            <option key={font.id} value={font.id}>{font.name}</option>
+          ))}
+        </optgroup>
+      </select>
+    </div>
+  );
+
+  // Render color picker with reset button
+  const renderColorPicker = (value: string, onChange: (color: string) => void, label: string) => (
+    <div>
+      <label className="block text-sm font-medium text-secondary mb-2">{label}</label>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          value={value || '#7C3AED'}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-10 h-10 rounded-lg border border-input cursor-pointer"
+        />
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Thème par défaut"
+          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm"
+        />
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="px-2 py-2 text-xs text-muted hover:text-primary border border-default rounded-lg hover:bg-hover transition-colors"
+            title="Utiliser le thème par défaut"
+          >
+            Reset
+          </button>
+        )}
+      </div>
+      {!value && (
+        <p className="text-xs text-muted mt-1">✓ Utilise la couleur du thème</p>
+      )}
+    </div>
+  );
+
   if (!isOpen) return null;
 
   return (
-    <motion.div
-      initial={{ x: '100%' }}
-      animate={{ x: 0 }}
-      exit={{ x: '100%' }}
-      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-      className="fixed right-0 top-0 h-full w-96 bg-card border-l border-default z-50 overflow-y-auto shadow-2xl"
-    >
-      {/* Header */}
-      <div className="sticky top-0 bg-card border-b border-default p-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
-          <IconSettings size={20} />
-          {t('portfolio_settings')}
-        </h2>
-        <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg transition-colors">
-          <IconX size={20} className="text-muted" />
-        </button>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex border-b border-default">
-        {[
-          { id: 'style', icon: IconPalette, label: 'Style' },
-          { id: 'layout', icon: IconTypography, label: 'Layout' },
-          { id: 'share', icon: IconShare, label: 'Partage' },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
-            className={`flex-1 py-3 px-4 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-              activeTab === tab.id
-                ? 'text-accent border-b-2 border-accent'
-                : 'text-muted hover:text-primary'
-            }`}
-          >
-            <tab.icon size={16} />
-            {tab.label}
+    <>
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+        onClick={onClose}
+      />
+      
+      {/* Modal from top */}
+      <motion.div
+        initial={{ y: '-100%', opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: '-100%', opacity: 0 }}
+        transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+        className="fixed left-4 right-4 top-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-4xl bg-card border border-default z-[101] shadow-2xl rounded-2xl flex flex-col max-h-[90vh]"
+      >
+        {/* Header */}
+        <div className="flex-shrink-0 bg-card border-b border-default p-4 flex items-center justify-between rounded-t-2xl">
+          <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+            <IconSettings size={20} />
+            {t('portfolio_settings')}
+          </h2>
+          <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg transition-colors">
+            <IconX size={20} className="text-muted" />
           </button>
-        ))}
-      </div>
+        </div>
 
-      {/* Content */}
-      <div className="p-4 space-y-6">
-        {/* Style Tab */}
-        {activeTab === 'style' && (
+        {/* Tabs */}
+        <div className="flex-shrink-0 flex border-b border-default">
+          {[
+            { id: 'branding', icon: IconPalette, label: 'Branding' },
+            { id: 'typography', icon: IconTypography, label: 'Typographie' },
+            { id: 'layout', icon: IconSparkles, label: 'Layout' },
+            { id: 'share', icon: IconShare, label: 'Partage' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`flex-1 py-3 px-4 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                activeTab === tab.id
+                  ? 'text-accent border-b-2 border-accent bg-accent/5'
+                  : 'text-muted hover:text-primary hover:bg-hover'
+              }`}
+            >
+              <tab.icon size={16} />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Content - Scrollable */}
+        <div 
+          className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6 scrollbar-visible"
+          style={{ overscrollBehavior: 'contain' }}
+        >
+        {/* Branding Tab */}
+        {activeTab === 'branding' && (
           <>
             {/* Portfolio Name */}
             <div>
@@ -326,89 +608,51 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
               />
             </div>
 
-            {/* Primary Font */}
-            <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
-                {t('portfolio_primary_font')}
-              </label>
-              <select
-                value={settings.primaryFont}
-                onChange={(e) => updateSetting('primaryFont', e.target.value)}
-                className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
-              >
-                {FONTS.map((font) => (
-                  <option key={font.id} value={font.id}>
-                    {font.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Colors */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-2">
-                  {t('portfolio_title_color')}
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={settings.titleColor}
-                    onChange={(e) => updateSetting('titleColor', e.target.value)}
-                    className="w-10 h-10 rounded-lg border border-input cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={settings.titleColor}
-                    onChange={(e) => updateSetting('titleColor', e.target.value)}
-                    className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-2">
-                  {t('portfolio_accent_color')}
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={settings.accentColor}
-                    onChange={(e) => updateSetting('accentColor', e.target.value)}
-                    className="w-10 h-10 rounded-lg border border-input cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={settings.accentColor}
-                    onChange={(e) => updateSetting('accentColor', e.target.value)}
-                    className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm"
-                  />
-                </div>
-              </div>
-            </div>
-
             {/* Background Color */}
-            <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
-                {t('portfolio_bg_color')}
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={settings.backgroundColor}
-                  onChange={(e) => updateSetting('backgroundColor', e.target.value)}
-                  className="w-10 h-10 rounded-lg border border-input cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={settings.backgroundColor}
-                  onChange={(e) => updateSetting('backgroundColor', e.target.value)}
-                  className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm"
-                />
+            {renderColorPicker(settings.backgroundColor, (c) => updateSetting('backgroundColor', c), t('portfolio_bg_color'))}
+
+            {/* Accent Color */}
+            {renderColorPicker(settings.accentColor, (c) => updateSetting('accentColor', c), t('portfolio_accent_color'))}
+
+            {/* Custom Font Import */}
+            <div className="border-t border-default pt-4">
+              <h4 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
+                <IconCloudUpload size={16} />
+                Importer une police personnalisée
+              </h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-medium text-secondary mb-1">
+                    Nom de la police
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.customFontName || ''}
+                    onChange={(e) => updateSetting('customFontName', e.target.value)}
+                    placeholder="Ma Police"
+                    className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-secondary mb-1">
+                    URL du fichier (Google Fonts ou @font-face)
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.customFontUrl || ''}
+                    onChange={(e) => updateSetting('customFontUrl', e.target.value)}
+                    placeholder="https://fonts.googleapis.com/css2?family=..."
+                    className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  />
+                </div>
+                <p className="text-xs text-muted">
+                  💡 Collez l&apos;URL d&apos;import Google Fonts ou le lien vers un fichier .woff2
+                </p>
               </div>
             </div>
 
             {/* Animations */}
-            <div>
+            <div className="border-t border-default pt-4">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -421,24 +665,160 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                   {t('portfolio_enable_animations')}
                 </span>
               </label>
+              
+              {settings.enableAnimations && (
+                <div className="mt-3">
+                  <select
+                    value={settings.animationType}
+                    onChange={(e) => updateSetting('animationType', e.target.value as PortfolioSettings['animationType'])}
+                    className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+                  >
+                    <option value="fade">Fade</option>
+                    <option value="slide">Slide</option>
+                    <option value="scale">Scale</option>
+                  </select>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Typography Tab */}
+        {activeTab === 'typography' && (
+          <>
+            {/* Title Typography */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
+                <IconBold size={16} />
+                Titre principal
+              </h4>
+              
+              {renderFontSelector(settings.titleFont, (f) => updateSetting('titleFont', f), 'Police')}
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-secondary mb-1">Graisse</label>
+                  <select
+                    value={settings.titleFontWeight}
+                    onChange={(e) => updateSetting('titleFontWeight', Number(e.target.value))}
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  >
+                    {FONT_WEIGHTS.map((w) => (
+                      <option key={w.value} value={w.value}>{w.label} ({w.value})</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-secondary mb-1">Taille</label>
+                  <select
+                    value={settings.titleSize}
+                    onChange={(e) => updateSetting('titleSize', e.target.value)}
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  >
+                    {FONT_SIZES.map((s) => (
+                      <option key={s.value} value={s.value}>{s.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-secondary mb-1">Espacement</label>
+                  <select
+                    value={settings.titleLetterSpacing}
+                    onChange={(e) => updateSetting('titleLetterSpacing', e.target.value)}
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  >
+                    {LETTER_SPACINGS.map((s) => (
+                      <option key={s.value} value={s.value}>{s.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-secondary mb-1">Casse</label>
+                  <select
+                    value={settings.titleTransform}
+                    onChange={(e) => updateSetting('titleTransform', e.target.value as PortfolioSettings['titleTransform'])}
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  >
+                    <option value="none">Normal</option>
+                    <option value="uppercase">MAJUSCULES</option>
+                    <option value="lowercase">minuscules</option>
+                    <option value="capitalize">Capitalize</option>
+                  </select>
+                </div>
+              </div>
+
+              {renderColorPicker(settings.titleColor, (c) => updateSetting('titleColor', c), 'Couleur du titre')}
             </div>
 
-            {settings.enableAnimations && (
+            {/* Subtitle Typography */}
+            <div className="space-y-4 border-t border-default pt-4">
+              <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
+                <IconBold size={16} />
+                Sous-titre / Tagline
+              </h4>
+              
+              {renderFontSelector(settings.subtitleFont, (f) => updateSetting('subtitleFont', f), 'Police')}
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-secondary mb-1">Graisse</label>
+                  <select
+                    value={settings.subtitleFontWeight}
+                    onChange={(e) => updateSetting('subtitleFontWeight', Number(e.target.value))}
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  >
+                    {FONT_WEIGHTS.map((w) => (
+                      <option key={w.value} value={w.value}>{w.label} ({w.value})</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-secondary mb-1">Taille</label>
+                  <select
+                    value={settings.subtitleSize}
+                    onChange={(e) => updateSetting('subtitleSize', e.target.value)}
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  >
+                    {FONT_SIZES.map((s) => (
+                      <option key={s.value} value={s.value}>{s.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {renderColorPicker(settings.subtitleColor, (c) => updateSetting('subtitleColor', c), 'Couleur du sous-titre')}
+            </div>
+
+            {/* Project Card Typography */}
+            <div className="space-y-4 border-t border-default pt-4">
+              <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
+                <IconBold size={16} />
+                Cartes de projets
+              </h4>
+              
+              {renderFontSelector(settings.projectTitleFont, (f) => updateSetting('projectTitleFont', f), 'Police des titres')}
+
               <div>
-                <label className="block text-sm font-medium text-secondary mb-2">
-                  {t('portfolio_animation_type')}
-                </label>
+                <label className="block text-xs font-medium text-secondary mb-1">Graisse des titres</label>
                 <select
-                  value={settings.animationType}
-                  onChange={(e) => updateSetting('animationType', e.target.value as PortfolioSettings['animationType'])}
-                  className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+                  value={settings.projectTitleFontWeight}
+                  onChange={(e) => updateSetting('projectTitleFontWeight', Number(e.target.value))}
+                  className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
                 >
-                  <option value="fade">Fade</option>
-                  <option value="slide">Slide</option>
-                  <option value="scale">Scale</option>
+                  {FONT_WEIGHTS.map((w) => (
+                    <option key={w.value} value={w.value}>{w.label} ({w.value})</option>
+                  ))}
                 </select>
               </div>
-            )}
+
+              <div className="grid grid-cols-2 gap-3">
+                {renderColorPicker(settings.projectTitleColor, (c) => updateSetting('projectTitleColor', c), 'Couleur titre')}
+                {renderColorPicker(settings.projectSubtitleColor, (c) => updateSetting('projectSubtitleColor', c), 'Couleur sous-titre')}
+              </div>
+            </div>
           </>
         )}
 
@@ -457,7 +837,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                     onClick={() => updateSetting('columns', num as 2 | 3 | 4)}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       settings.columns === num
-                        ? 'bg-accent text-white'
+                        ? 'bg-accent text-accent-text'
                         : 'bg-muted text-secondary hover:bg-hover'
                     }`}
                   >
@@ -483,7 +863,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                     onClick={() => updateSetting('gap', gap.id as PortfolioSettings['gap'])}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       settings.gap === gap.id
-                        ? 'bg-accent text-white'
+                        ? 'bg-accent text-accent-text'
                         : 'bg-muted text-secondary hover:bg-hover'
                     }`}
                   >
@@ -550,7 +930,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                       readOnly
                       className="flex-1 px-3 py-2 bg-muted border border-input rounded-lg text-primary text-sm"
                     />
-                    <button className="px-3 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors">
+                    <button className="px-3 py-2 bg-accent text-accent-text rounded-lg hover:bg-accent/90 transition-colors">
                       <IconCopy size={18} />
                     </button>
                   </div>
@@ -636,7 +1016,362 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
             )}
           </>
         )}
-      </div>
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
+// ============================================================================
+// PROJECT CARD COMPONENT
+// ============================================================================
+
+// ============================================================================
+// IMPORT FROM URL MODAL
+// ============================================================================
+
+interface ScrapedProject {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  link?: string;
+  category?: string;
+  selected?: boolean;
+}
+
+interface ImportModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onImport: (projects: PortfolioProject[]) => void;
+}
+
+function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
+  const { t } = useLanguage();
+  const [url, setUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const [showDebug, setShowDebug] = useState(false);
+  const [scrapedProjects, setScrapedProjects] = useState<ScrapedProject[]>([]);
+  const [siteName, setSiteName] = useState<string>('');
+  const [step, setStep] = useState<'url' | 'select'>('url');
+
+  // Lock Lenis scroll when modal is open
+  useModalLenis(isOpen);
+
+  const handleScrape = async () => {
+    if (!url.trim()) return;
+
+    setLoading(true);
+    setError(null);
+    setDebugInfo([]);
+
+    try {
+      const response = await fetch('/api/portfolio/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: url.trim() }),
+      });
+
+      const data = await response.json();
+
+      // Store debug info
+      if (data.debug) {
+        setDebugInfo(data.debug);
+      }
+
+      if (!data.success) {
+        setError(data.error || 'Erreur lors du scraping');
+        return;
+      }
+
+      if (data.projects.length === 0) {
+        setError('Aucun projet trouvé sur cette page. Vérifiez que la page contient des images de projets visibles.');
+        return;
+      }
+
+      setScrapedProjects(data.projects.map((p: ScrapedProject) => ({ ...p, selected: true })));
+      setSiteName(data.siteName || '');
+      setStep('select');
+    } catch (err) {
+      setError('Erreur de connexion: ' + (err instanceof Error ? err.message : 'Erreur inconnue'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleProject = (id: string) => {
+    setScrapedProjects(prev => 
+      prev.map(p => p.id === id ? { ...p, selected: !p.selected } : p)
+    );
+  };
+
+  const toggleAll = () => {
+    const allSelected = scrapedProjects.every(p => p.selected);
+    setScrapedProjects(prev => prev.map(p => ({ ...p, selected: !allSelected })));
+  };
+
+  const handleImport = () => {
+    const selectedProjects = scrapedProjects
+      .filter(p => p.selected)
+      .map((p, index) => ({
+        id: `imported-${Date.now()}-${index}`,
+        title: p.title,
+        subtitle: p.category || '',
+        description: p.description,
+        category: 'other' as const,
+        tags: p.category ? [p.category] : [],
+        projectUrl: p.link,
+        media: p.imageUrl ? [{
+          id: `media-${Date.now()}-${index}`,
+          type: 'image' as const,
+          url: p.imageUrl,
+        }] : [],
+        coverIndex: 0,
+        date: new Date().toISOString().split('T')[0],
+        sortOrder: index,
+      }));
+
+    onImport(selectedProjects);
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setUrl('');
+    setError(null);
+    setDebugInfo([]);
+    setShowDebug(false);
+    setScrapedProjects([]);
+    setSiteName('');
+    setStep('url');
+    onClose();
+  };
+
+  const selectedCount = scrapedProjects.filter(p => p.selected).length;
+
+  if (!isOpen) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-page/80 backdrop-blur-sm"
+      onClick={handleClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        className="bg-card rounded-xl shadow-2xl border border-default w-full max-w-4xl max-h-[85vh] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-default">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-accent/10">
+              <IconDownload size={20} className="text-accent" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-primary">
+                {step === 'url' ? 'Importer depuis un site' : `Sélectionner les projets`}
+              </h2>
+              {siteName && step === 'select' && (
+                <p className="text-sm text-secondary">depuis {siteName}</p>
+              )}
+            </div>
+          </div>
+          <button onClick={handleClose} className="p-2 hover:bg-hover rounded-lg transition-colors">
+            <IconX size={20} className="text-secondary" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 overflow-y-auto max-h-[calc(85vh-140px)]" style={{ overscrollBehavior: 'contain' }}>
+          {step === 'url' ? (
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-secondary mb-2">
+                  URL du portfolio à importer
+                </label>
+                <div className="flex gap-3">
+                  <div className="flex-1 relative">
+                    <IconWorld size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                    <input
+                      type="url"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      placeholder="https://monportfolio.com/projets"
+                      className="w-full !pl-10 pr-4 py-3 bg-input border border-input rounded-lg text-primary placeholder:text-muted focus:outline-none focus:border-accent"
+                      onKeyDown={(e) => e.key === 'Enter' && handleScrape()}
+                    />
+                  </div>
+                  <button
+                    onClick={handleScrape}
+                    disabled={loading || !url.trim()}
+                    className="px-6 py-3 bg-accent text-accent-text rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <IconLoader2 size={18} className="animate-spin" />
+                        Analyse...
+                      </>
+                    ) : (
+                      <>
+                        <IconSearch size={18} />
+                        Analyser
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {error && (
+                <div className="p-4 bg-danger-light border border-danger rounded-lg space-y-3">
+                  <p className="text-danger text-sm font-medium">{error}</p>
+                  <div className="text-xs text-secondary space-y-1">
+                    <p>Conseils :</p>
+                    <ul className="list-disc list-inside space-y-0.5">
+                      <li>Vérifiez que l&apos;URL pointe vers une page avec des images visibles</li>
+                      <li>Essayez l&apos;URL directe de la page projets/portfolio</li>
+                      <li>Certains sites utilisent du JavaScript pour charger les images (non supporté)</li>
+                    </ul>
+                  </div>
+                  {debugInfo.length > 0 && (
+                    <div className="mt-2">
+                      <button
+                        onClick={() => setShowDebug(!showDebug)}
+                        className="text-xs text-accent hover:underline"
+                      >
+                        {showDebug ? 'Masquer' : 'Afficher'} les détails techniques
+                      </button>
+                      {showDebug && (
+                        <pre className="mt-2 p-2 bg-card rounded text-xs text-muted overflow-auto max-h-32">
+                          {debugInfo.join('\n')}
+                        </pre>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="bg-muted/50 rounded-lg p-4">
+                <h3 className="text-sm font-medium text-primary mb-2">💡 Comment ça marche ?</h3>
+                <ul className="text-sm text-secondary space-y-1">
+                  <li>• Entrez l&apos;URL de la page contenant vos projets</li>
+                  <li>• L&apos;outil analyse automatiquement le HTML de la page</li>
+                  <li>• Il extrait les images, titres et descriptions</li>
+                  <li>• Vous sélectionnez les projets à importer</li>
+                </ul>
+              </div>
+
+              <div className="bg-muted/50 rounded-lg p-4">
+                <h3 className="text-sm font-medium text-primary mb-2">🔗 Sites supportés</h3>
+                <p className="text-sm text-secondary">
+                  Fonctionne avec la plupart des sites portfolio : sites personnels, WordPress, 
+                  Squarespace, Wix, et tout site avec une grille de projets visible dans le HTML.
+                </p>
+                <p className="text-xs text-muted mt-2">
+                  Note : Les sites qui chargent les images via JavaScript (React/Vue sans SSR) peuvent ne pas fonctionner.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* Selection controls */}
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={toggleAll}
+                  className="text-sm text-accent hover:underline"
+                >
+                  {scrapedProjects.every(p => p.selected) ? 'Tout désélectionner' : 'Tout sélectionner'}
+                </button>
+                <span className="text-sm text-secondary">
+                  {selectedCount} sur {scrapedProjects.length} sélectionné(s)
+                </span>
+              </div>
+
+              {/* Projects grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {scrapedProjects.map((project) => (
+                  <div
+                    key={project.id}
+                    onClick={() => toggleProject(project.id)}
+                    className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                      project.selected 
+                        ? 'border-accent ring-2 ring-accent/20' 
+                        : 'border-transparent hover:border-default'
+                    }`}
+                  >
+                    {/* Image */}
+                    <div className="aspect-square bg-muted">
+                      {project.imageUrl ? (
+                        <img
+                          src={project.imageUrl}
+                          alt={project.title}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/images/placeholder.png';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <IconPhoto size={32} className="text-muted" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Selection indicator */}
+                    <div className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                      project.selected ? 'bg-accent' : 'bg-card/80'
+                    }`}>
+                      {project.selected && <IconCheck size={14} className="text-accent-text" />}
+                    </div>
+
+                    {/* Title */}
+                    <div className="p-2 bg-card">
+                      <p className="text-xs font-medium text-primary truncate">{project.title}</p>
+                      {project.category && (
+                        <p className="text-xs text-secondary truncate">{project.category}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Back button */}
+              <button
+                onClick={() => setStep('url')}
+                className="text-sm text-secondary hover:text-primary flex items-center gap-1"
+              >
+                <IconChevronLeft size={16} />
+                Retour
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        {step === 'select' && (
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-default bg-muted/30">
+            <button
+              onClick={handleClose}
+              className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              onClick={handleImport}
+              disabled={selectedCount === 0}
+              className="px-6 py-2 bg-accent text-accent-text rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+            >
+              <IconDownload size={18} />
+              Importer {selectedCount} projet(s)
+            </button>
+          </div>
+        )}
+      </motion.div>
     </motion.div>
   );
 }
@@ -654,6 +1389,15 @@ interface ProjectCardProps {
   index: number;
 }
 
+// Helper function to get font family
+function getFontFamily(fontId: string, settings: PortfolioSettings): string {
+  if (fontId === 'custom' && settings.customFontName) {
+    return `'${settings.customFontName}', sans-serif`;
+  }
+  const font = ALL_FONTS.find(f => f.id === fontId);
+  return font?.family || "'Manrope', sans-serif";
+}
+
 function ProjectCard({ project, settings, onClick, onEdit, onDelete, index }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const coverMedia = project.media[project.coverIndex] || project.media[0];
@@ -663,32 +1407,32 @@ function ProjectCard({ project, settings, onClick, onEdit, onDelete, index }: Pr
       case 'square': return 'aspect-square';
       case 'portrait': return 'aspect-[3/4]';
       case 'landscape': return 'aspect-[4/3]';
-      default: return 'aspect-[4/3]';
+      default: return 'aspect-square';
     }
   };
 
   const getAnimation = () => {
     if (!settings.enableAnimations) return {};
     switch (settings.animationType) {
-      case 'fade': return { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { delay: index * 0.1 } };
-      case 'slide': return { initial: { opacity: 0, y: 30 }, animate: { opacity: 1, y: 0 }, transition: { delay: index * 0.1 } };
-      case 'scale': return { initial: { opacity: 0, scale: 0.9 }, animate: { opacity: 1, scale: 1 }, transition: { delay: index * 0.1 } };
+      case 'fade': return { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { delay: index * 0.05, duration: 0.4 } };
+      case 'slide': return { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, transition: { delay: index * 0.05, duration: 0.4 } };
+      case 'scale': return { initial: { opacity: 0, scale: 0.95 }, animate: { opacity: 1, scale: 1 }, transition: { delay: index * 0.05, duration: 0.4 } };
       default: return {};
     }
   };
 
-  const primaryFont = FONTS.find(f => f.id === settings.primaryFont)?.family || "'Manrope', sans-serif";
+  const projectTitleFont = getFontFamily(settings.projectTitleFont, settings);
 
   return (
     <motion.div
       {...getAnimation()}
-      className="group cursor-pointer"
+      className="group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Image */}
+      {/* Image Container */}
       <div
-        className={`relative ${getAspectRatio()} overflow-hidden bg-muted`}
+        className={`relative ${getAspectRatio()} overflow-hidden cursor-pointer`}
         onClick={onClick}
       >
         {coverMedia ? (
@@ -696,75 +1440,68 @@ function ProjectCard({ project, settings, onClick, onEdit, onDelete, index }: Pr
             <img
               src={coverMedia.url}
               alt={project.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-full object-cover"
             />
             {coverMedia.type === 'video' && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center">
-                  <IconPlayerPlay size={32} className="text-white ml-1" />
+              <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center">
+                  <IconPlayerPlay size={24} className="text-page ml-0.5" />
                 </div>
               </div>
             )}
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <IconPhoto size={48} className="text-muted" />
+          <div className="w-full h-full bg-muted flex items-center justify-center">
+            <IconPhoto size={32} className="text-secondary/40" />
           </div>
         )}
 
-        {/* Hover overlay with actions */}
+        {/* Hover Actions - Simple overlay */}
         <AnimatePresence>
           {isHovered && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute top-3 right-3 flex gap-2"
+              transition={{ duration: 0.15 }}
+              className="absolute inset-0 bg-primary/60 flex items-center justify-center gap-3"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={onEdit}
-                className="p-2 rounded-full bg-white/90 text-gray-700 hover:bg-white transition-colors shadow-lg"
+                className="p-2.5 rounded-full bg-page text-primary hover:bg-muted transition-colors"
               >
                 <IconEdit size={16} />
               </button>
               <button
                 onClick={onDelete}
-                className="p-2 rounded-full bg-white/90 text-red-500 hover:bg-white transition-colors shadow-lg"
+                className="p-2.5 rounded-full bg-page text-danger hover:bg-muted transition-colors"
               >
                 <IconTrash size={16} />
               </button>
+              {project.media.length > 1 && (
+                <span className="px-2.5 py-1.5 rounded-full bg-page text-primary text-xs flex items-center gap-1">
+                  <IconPhoto size={12} />
+                  {project.media.length}
+                </span>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Media count badge */}
-        {project.media.length > 1 && (
-          <div className="absolute bottom-3 right-3 px-2 py-1 rounded bg-black/60 text-white text-xs flex items-center gap-1">
-            <IconPhoto size={12} />
-            {project.media.length}
-          </div>
-        )}
       </div>
 
-      {/* Content */}
-      <div className="mt-4" onClick={onClick}>
+      {/* Title - Simple, below image */}
+      <div className="mt-3 cursor-pointer" onClick={onClick}>
         <h3
-          className="font-bold text-sm tracking-wider uppercase"
-          style={{ color: settings.titleColor, fontFamily: primaryFont }}
+          className={`text-sm font-normal ${!settings.projectTitleColor ? 'text-primary' : ''}`}
+          style={{ 
+            color: settings.projectTitleColor || undefined, 
+            fontFamily: projectTitleFont,
+            fontWeight: settings.projectTitleFontWeight || 400,
+          }}
         >
-          {project.title}
+          {project.subtitle || project.title}
         </h3>
-        <p
-          className="text-sm mt-1 font-light"
-          style={{ color: settings.subtitleColor }}
-        >
-          {project.subtitle && (
-            <>
-              <span style={{ color: settings.accentColor }}>—</span> {project.subtitle}
-            </>
-          )}
-        </p>
       </div>
     </motion.div>
   );
@@ -783,10 +1520,13 @@ interface ProjectDetailModalProps {
 function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalProps) {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
 
+  // Lock Lenis scroll when modal is open
+  useModalLenis(!!project);
+
   if (!project) return null;
 
   const currentMedia = project.media[currentMediaIndex];
-  const primaryFont = FONTS.find(f => f.id === settings.primaryFont)?.family || "'Manrope', sans-serif";
+  const titleFont = getFontFamily(settings.titleFont, settings);
 
   return (
     <div className="fixed inset-0 z-50">
@@ -795,14 +1535,14 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/90"
+        className="absolute inset-0 bg-page/95 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 z-10 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+        className="absolute top-6 right-6 z-10 p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent-text transition-colors"
       >
         <IconX size={24} />
       </button>
@@ -816,13 +1556,13 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
             <>
               <button
                 onClick={() => setCurrentMediaIndex((i) => (i > 0 ? i - 1 : project.media.length - 1))}
-                className="absolute left-4 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                className="absolute left-4 p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent-text transition-colors"
               >
                 <IconChevronLeft size={24} />
               </button>
               <button
                 onClick={() => setCurrentMediaIndex((i) => (i < project.media.length - 1 ? i + 1 : 0))}
-                className="absolute right-4 lg:right-auto lg:left-[calc(100%-4rem)] p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                className="absolute right-4 lg:right-auto lg:left-[calc(100%-4rem)] p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent-text transition-colors"
               >
                 <IconChevronRight size={24} />
               </button>
@@ -854,36 +1594,40 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
           {/* Thumbnails */}
           {project.media.length > 1 && (
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
-              {project.media.map((media, idx) => (
-                <button
-                  key={media.id}
-                  onClick={() => setCurrentMediaIndex(idx)}
-                  className={`w-16 h-12 rounded overflow-hidden border-2 transition-all ${
-                    idx === currentMediaIndex ? 'border-white' : 'border-transparent opacity-50 hover:opacity-75'
-                  }`}
-                >
-                  {media.type === 'video' ? (
-                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                      <IconVideo size={16} className="text-white" />
-                    </div>
-                  ) : (
-                    <img src={media.url} alt="" className="w-full h-full object-cover" />
-                  )}
-                </button>
-              ))}
+                {project.media.map((media, idx) => (
+                  <button
+                    key={media.id}
+                    onClick={() => setCurrentMediaIndex(idx)}
+                    className={`w-16 h-12 rounded overflow-hidden border-2 transition-all ${
+                      idx === currentMediaIndex ? 'border-accent' : 'border-transparent opacity-50 hover:opacity-75'
+                    }`}
+                  >
+                    {media.type === 'video' ? (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <IconVideo size={16} className="text-primary" />
+                      </div>
+                    ) : (
+                      <img src={media.url} alt="" className="w-full h-full object-cover" />
+                    )}
+                  </button>
+                ))}
             </div>
           )}
         </div>
 
         {/* Info Section */}
-        <div className="lg:w-96 bg-white p-8 overflow-y-auto" style={{ backgroundColor: settings.backgroundColor }}>
+        <div className="lg:w-96 bg-card p-8 overflow-y-auto border-l border-default" style={{ overscrollBehavior: 'contain' }}>
           <h2
-            className="text-2xl font-bold tracking-wider uppercase"
-            style={{ color: settings.titleColor, fontFamily: primaryFont }}
+            className="text-2xl tracking-wider text-primary"
+            style={{ 
+              fontFamily: titleFont,
+              fontWeight: settings.projectTitleFontWeight,
+              textTransform: 'uppercase',
+            }}
           >
             {project.title}
           </h2>
-          <p className="text-lg mt-2" style={{ color: settings.subtitleColor }}>
+          <p className="text-lg mt-2 text-secondary">
             {project.subtitle}
           </p>
 
@@ -893,8 +1637,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
               {project.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 text-xs font-medium rounded-full"
-                  style={{ backgroundColor: `${settings.accentColor}20`, color: settings.accentColor }}
+                  className="px-3 py-1 text-xs font-medium rounded-full bg-accent-light text-accent"
                 >
                   {tag}
                 </span>
@@ -904,15 +1647,14 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
 
           {/* Description */}
           <div
-            className="mt-6 leading-relaxed"
-            style={{ color: settings.titleColor }}
+            className="mt-6 leading-relaxed text-primary"
             dangerouslySetInnerHTML={{ __html: project.descriptionHtml || project.description }}
           />
 
           {/* Meta */}
           {project.clientName && (
-            <div className="mt-6 pt-6 border-t" style={{ borderColor: `${settings.subtitleColor}30` }}>
-              <p className="text-sm" style={{ color: settings.subtitleColor }}>
+            <div className="mt-6 pt-6 border-t border-default">
+              <p className="text-sm text-secondary">
                 <span className="font-medium">Client:</span> {project.clientName}
               </p>
             </div>
@@ -924,8 +1666,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
               href={project.projectUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-lg text-white font-medium transition-opacity hover:opacity-90"
-              style={{ backgroundColor: settings.accentColor }}
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-lg bg-accent text-accent-text font-medium transition-opacity hover:opacity-90"
             >
               <IconExternalLink size={18} />
               Voir le projet
@@ -960,15 +1701,107 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
     projectUrl: project?.projectUrl || '',
   });
   const [media, setMedia] = useState<MediaItem[]>(project?.media || []);
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [libraryImages, setLibraryImages] = useState<Array<{ id: number; url: string; name: string }>>([]);
+  const [loadingLibrary, setLoadingLibrary] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave({
-      ...formData,
-      tags: formData.tags.split(',').map((t) => t.trim()).filter(Boolean),
-      media,
-      coverIndex: 0,
-    });
+  // Lock Lenis scroll when modal is open
+  useModalLenis(isOpen);
+
+  // Load library when modal opens
+  useEffect(() => {
+    if (showMediaPicker) {
+      loadLibrary();
+    }
+  }, [showMediaPicker]);
+
+  const loadLibrary = async () => {
+    setLoadingLibrary(true);
+    try {
+      const token = localStorage.getItem('token');
+      const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+      const res = await fetch(
+        `${API_URL}/api/user-medias?sort=createdAt:desc&populate=file&filters[type][$eq]=image`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      if (res.ok) {
+        const result = await res.json();
+        const userMedias = result.data || [];
+        setLibraryImages(userMedias.map((item: { id: number; name: string; file: { id: number; url: string } }) => ({
+          id: item.file?.id,
+          url: item.file?.url?.startsWith('http') ? item.file.url : `${API_URL}${item.file?.url}`,
+          name: item.name,
+        })).filter((img: { id: number; url: string }) => img.id && img.url));
+      }
+    } catch (error) {
+      console.error('Error loading library:', error);
+    } finally {
+      setLoadingLibrary(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+      alert('Veuillez sélectionner une image ou une vidéo');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      // Upload to Strapi
+      const result = await uploadImage(file);
+      const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+      const fullUrl = result.url.startsWith('http') ? result.url : `${API_URL}${result.url}`;
+
+      // Create user-media entry
+      const token = localStorage.getItem('token');
+      await fetch(`${API_URL}/api/user-medias`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          data: {
+            name: file.name,
+            file: result.id,
+            type: file.type.startsWith('video/') ? 'video' : 'image',
+            folder: 'portfolio',
+          },
+        }),
+      });
+
+      // Add to media list
+      const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+      setMedia([...media, { id: result.id.toString(), type: mediaType, url: fullUrl }]);
+      
+      // Reload library
+      loadLibrary();
+      setShowMediaPicker(false);
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Erreur lors de l\'upload');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleSelectFromLibrary = (image: { id: number; url: string }) => {
+    setMedia([...media, { id: image.id.toString(), type: 'image', url: image.url }]);
+    setShowMediaPicker(false);
   };
 
   const addMediaUrl = (type: 'image' | 'video') => {
@@ -982,6 +1815,17 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
     setMedia(media.filter((m) => m.id !== id));
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave({
+      ...formData,
+      tags: formData.tags.split(',').map((t) => t.trim()).filter(Boolean),
+      media,
+      coverIndex: 0,
+    });
+    onClose(); // Close modal after saving
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -991,7 +1835,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-page/80 backdrop-blur-sm"
         onClick={onClose}
       />
 
@@ -1000,10 +1844,11 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-auto bg-card border border-default rounded-2xl shadow-2xl"
+        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-card border border-default rounded-2xl shadow-2xl"
+        style={{ overscrollBehavior: 'contain' }}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-card border-b border-default px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-card border-b border-default px-6 py-4 flex items-center justify-between z-10">
           <h2 className="text-xl font-bold text-primary">
             {project ? t('portfolio_edit_project') : t('portfolio_add_project')}
           </h2>
@@ -1026,8 +1871,8 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
               {media.map((item) => (
                 <div key={item.id} className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
                   {item.type === 'video' ? (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-800">
-                      <IconVideo size={24} className="text-white" />
+                    <div className="w-full h-full flex items-center justify-center bg-hover">
+                      <IconVideo size={24} className="text-primary" />
                     </div>
                   ) : (
                     <img src={item.url} alt="" className="w-full h-full object-cover" />
@@ -1035,32 +1880,135 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                   <button
                     type="button"
                     onClick={() => removeMedia(item.id)}
-                    className="absolute top-1 right-1 p-1 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1 right-1 p-1 rounded-full bg-danger text-accent-text opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <IconX size={14} />
                   </button>
                 </div>
               ))}
               
-              {/* Add buttons */}
+              {/* Add button - opens picker */}
               <button
                 type="button"
-                onClick={() => addMediaUrl('image')}
-                className="aspect-square rounded-lg border-2 border-dashed border-default flex flex-col items-center justify-center text-muted hover:text-primary hover:border-accent/50 transition-colors"
+                onClick={() => setShowMediaPicker(true)}
+                className="aspect-square rounded-lg border-2 border-dashed border-default flex flex-col items-center justify-center text-muted hover:text-accent hover:border-accent/50 transition-colors"
               >
-                <IconPhoto size={24} />
-                <span className="text-xs mt-1">Image</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => addMediaUrl('video')}
-                className="aspect-square rounded-lg border-2 border-dashed border-default flex flex-col items-center justify-center text-muted hover:text-primary hover:border-accent/50 transition-colors"
-              >
-                <IconVideo size={24} />
-                <span className="text-xs mt-1">Vidéo</span>
+                <IconPlus size={24} />
+                <span className="text-xs mt-1">Ajouter</span>
               </button>
             </div>
           </div>
+
+          {/* Media Picker Modal */}
+          <AnimatePresence>
+            {showMediaPicker && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center bg-page/80 backdrop-blur-sm p-4"
+                onClick={(e) => e.target === e.currentTarget && setShowMediaPicker(false)}
+              >
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.95, opacity: 0 }}
+                  className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden"
+                  style={{ overscrollBehavior: 'contain' }}
+                >
+                  {/* Header */}
+                  <div className="flex items-center justify-between p-4 border-b border-default">
+                    <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                      <IconPhoto className="w-5 h-5 text-accent" />
+                      Ajouter un média
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setShowMediaPicker(false)}
+                      className="p-2 rounded-lg hover:bg-hover transition-colors"
+                    >
+                      <IconX className="w-5 h-5 text-secondary" />
+                    </button>
+                  </div>
+
+                  {/* Upload Options */}
+                  <div className="p-4 border-b border-default">
+                    <div className="flex gap-3">
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*,video/*"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accent text-accent-text rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                      >
+                        {uploading ? (
+                          <IconLoader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <IconUpload className="w-5 h-5" />
+                        )}
+                        {uploading ? 'Upload...' : 'Importer un fichier'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          addMediaUrl('image');
+                          setShowMediaPicker(false);
+                        }}
+                        className="flex items-center gap-2 py-3 px-4 bg-hover text-primary rounded-lg hover:bg-muted transition-colors"
+                      >
+                        <IconLink className="w-5 h-5" />
+                        URL
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Library */}
+                  <div className="flex-1 overflow-y-auto p-4" style={{ overscrollBehavior: 'contain' }}>
+                    <h4 className="text-sm font-medium text-secondary mb-3">Ma bibliothèque</h4>
+                    {loadingLibrary ? (
+                      <div className="flex items-center justify-center h-48">
+                        <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+                      </div>
+                    ) : libraryImages.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center h-48 text-muted">
+                        <IconPhoto className="w-12 h-12 mb-4 opacity-50" />
+                        <p>Aucune image dans la bibliothèque</p>
+                        <p className="text-xs mt-1">Importez votre première image ci-dessus</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-4 gap-3">
+                        {libraryImages.map((image) => (
+                          <button
+                            key={image.id}
+                            type="button"
+                            onClick={() => handleSelectFromLibrary(image)}
+                            className="relative aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-accent transition-all group"
+                          >
+                            <Image
+                              src={image.url}
+                              alt={image.name}
+                              fill
+                              sizes="120px"
+                              className="object-cover"
+                            />
+                            <div className="absolute inset-0 bg-accent/0 group-hover:bg-accent/20 transition-colors flex items-center justify-center">
+                              <IconCheck className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Title & Subtitle */}
           <div className="grid grid-cols-2 gap-4">
@@ -1179,7 +2127,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-accent text-white font-medium hover:bg-accent/90 transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-accent text-accent-text font-medium hover:bg-accent/90 transition-colors"
             >
               {project ? t('save') : t('portfolio_create')}
             </button>
@@ -1210,7 +2158,7 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
       </p>
       <button
         onClick={onAddProject}
-        className="flex items-center gap-2 px-6 py-3 bg-accent text-white font-medium rounded-xl hover:bg-accent/90 transition-colors"
+        className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-text font-medium rounded-xl hover:bg-accent/90 transition-colors"
       >
         <IconPlus size={20} />
         {t('portfolio_add_first')}
@@ -1229,19 +2177,100 @@ export default function PortfolioPage() {
   const [settings, setSettings] = useState<PortfolioSettings>(DEFAULT_SETTINGS);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<PortfolioProject | null>(null);
   const [viewingProject, setViewingProject] = useState<PortfolioProject | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [linkCopied, setLinkCopied] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load demo data on first visit (to be replaced with API)
+  // Load portfolio data from API
   useEffect(() => {
-    const hasSeenDemo = localStorage.getItem('portfolio_demo_shown');
-    if (!hasSeenDemo) {
-      setProjects(MOCK_PROJECTS);
-      localStorage.setItem('portfolio_demo_shown', 'true');
+    const loadPortfolio = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await fetch('/api/portfolio', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.settings) {
+            setSettings({ ...DEFAULT_SETTINGS, ...data.settings });
+          }
+          if (data.projects && data.projects.length > 0) {
+            setProjects(data.projects);
+          } else {
+            // Show demo projects for first visit
+            const hasSeenDemo = localStorage.getItem('portfolio_demo_shown');
+            if (!hasSeenDemo) {
+              setProjects(MOCK_PROJECTS);
+              localStorage.setItem('portfolio_demo_shown', 'true');
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading portfolio:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPortfolio();
+  }, []);
+
+  // Auto-save settings with debounce
+  const savePortfolio = useCallback(async (newSettings: PortfolioSettings, newProjects: PortfolioProject[]) => {
+    try {
+      setIsSaving(true);
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      await fetch('/api/portfolio', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          settings: newSettings,
+          projects: newProjects,
+        }),
+      });
+    } catch (error) {
+      console.error('Error saving portfolio:', error);
+    } finally {
+      setIsSaving(false);
     }
   }, []);
+
+  // Debounced auto-save when settings or projects change
+  useEffect(() => {
+    if (isLoading) return;
+    
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      savePortfolio(settings, projects);
+    }, 2000); // Save after 2 seconds of inactivity
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [settings, projects, isLoading, savePortfolio]);
 
   // Filter projects
   const filteredProjects = useMemo(() => {
@@ -1309,172 +2338,286 @@ export default function PortfolioPage() {
     setTimeout(() => setLinkCopied(false), 2000);
   };
 
-  const primaryFont = FONTS.find(f => f.id === settings.primaryFont)?.family || "'Manrope', sans-serif";
+  const handleImportProjects = (importedProjects: PortfolioProject[]) => {
+    setProjects(prev => [...prev, ...importedProjects]);
+  };
+
+  // Get font families
+  const titleFont = getFontFamily(settings.titleFont, settings);
+  const subtitleFont = getFontFamily(settings.subtitleFont, settings);
+
+  // Preload ALL Google Fonts on mount (like ThemeCustomizer)
+  useEffect(() => {
+    ALL_FONTS.forEach(font => {
+      const fontName = font.googleName;
+      const linkId = `portfolio-font-${font.id}`;
+      
+      // Only add if not already loaded
+      if (!document.getElementById(linkId)) {
+        const link = document.createElement('link');
+        link.id = linkId;
+        link.rel = 'stylesheet';
+        // Use standard weights syntax (works for all fonts, not just variable fonts)
+        link.href = `https://fonts.googleapis.com/css2?family=${fontName}:wght@100;200;300;400;500;600;700;800;900&display=swap`;
+        document.head.appendChild(link);
+      }
+    });
+  }, []); // Only run once on mount
+
+  // Load custom font if specified
+  useEffect(() => {
+    if (settings.customFontUrl && settings.customFontName) {
+      const customLinkId = 'portfolio-custom-font';
+      const existingLink = document.getElementById(customLinkId);
+      
+      // Check if it's a Google Fonts URL or a direct font file
+      if (settings.customFontUrl.includes('fonts.googleapis.com')) {
+        if (existingLink) {
+          (existingLink as HTMLLinkElement).href = settings.customFontUrl;
+        } else {
+          const customLink = document.createElement('link');
+          customLink.id = customLinkId;
+          customLink.rel = 'stylesheet';
+          customLink.href = settings.customFontUrl;
+          document.head.appendChild(customLink);
+        }
+      } else {
+        // Direct font file - create @font-face
+        if (existingLink) {
+          existingLink.remove();
+        }
+        const customStyle = document.createElement('style');
+        customStyle.id = customLinkId;
+        customStyle.textContent = `
+          @font-face {
+            font-family: '${settings.customFontName}';
+            src: url('${settings.customFontUrl}') format('woff2');
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: swap;
+          }
+        `;
+        document.head.appendChild(customStyle);
+      }
+    }
+  }, [settings.customFontUrl, settings.customFontName]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-page flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <IconLoader2 size={32} className="animate-spin text-accent" />
+          <p className="text-secondary">Chargement du portfolio...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
-      className="min-h-screen transition-colors duration-300"
-      style={{ backgroundColor: settings.backgroundColor }}
+      className="min-h-screen transition-colors duration-300 bg-page"
+      style={settings.backgroundColor ? { backgroundColor: settings.backgroundColor } : undefined}
     >
-      {/* Header - NorthLandscapes style */}
-      <header className="px-8 py-6">
-        <div className="max-w-7xl mx-auto flex items-start justify-between">
-          {/* Left - Logo & Tagline */}
-          <div>
-            <h1
-              className="text-xl font-light tracking-[0.3em] uppercase"
-              style={{ color: settings.titleColor, fontFamily: primaryFont }}
-            >
-              {settings.portfolioName}
-            </h1>
-            <p
-              className="text-sm mt-2 max-w-sm font-light"
-              style={{ color: settings.subtitleColor }}
-            >
-              {settings.tagline}
-            </p>
-          </div>
+      {/* Saving indicator */}
+      {isSaving && (
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 bg-card rounded-lg shadow-lg border border-default">
+          <IconLoader2 size={16} className="animate-spin text-accent" />
+          <span className="text-sm text-secondary">Sauvegarde...</span>
+        </div>
+      )}
+
+      {/* Top Navigation Bar */}
+      <header className="px-6 lg:px-12 py-4 border border-default rounded-lg">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Left - Site Name */}
+          <span className="text-sm text-secondary font-medium tracking-wide">
+            {settings.portfolioName.toLowerCase().replace(/\s+/g, '-')}.com
+          </span>
 
           {/* Right - Navigation & Actions */}
           <div className="flex items-center gap-6">
             {/* Navigation Links */}
-            <nav className="hidden md:flex items-center gap-6 text-sm tracking-wider">
-              <span
-                className="font-medium cursor-pointer"
-                style={{ color: settings.titleColor }}
-              >
-                PORTFOLIO
+            <nav className="hidden md:flex items-center gap-6 text-sm">
+              <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
+                home
               </span>
-              <span
-                className="cursor-pointer hover:opacity-70 transition-opacity"
-                style={{ color: settings.subtitleColor }}
-              >
-                INFO
+              <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
+                about
               </span>
-              <span
-                className="cursor-pointer hover:opacity-70 transition-opacity"
-                style={{ color: settings.subtitleColor }}
-              >
-                CONTACT
+              <span className="text-primary font-medium cursor-pointer border-b border-primary pb-0.5">
+                portfolio
+              </span>
+              <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
+                blog
+              </span>
+              <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
+                contact
               </span>
             </nav>
 
             {/* Social Icons */}
             {settings.showSocialLinks && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {settings.instagramUrl && (
-                  <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer">
-                    <IconBrandInstagram size={18} style={{ color: settings.subtitleColor }} />
+                  <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" 
+                     className="w-8 h-8 rounded-full bg-primary text-page flex items-center justify-center hover:opacity-80 transition-opacity">
+                    <IconBrandInstagram size={14} />
                   </a>
                 )}
                 {settings.linkedinUrl && (
-                  <a href={settings.linkedinUrl} target="_blank" rel="noopener noreferrer">
-                    <IconBrandLinkedin size={18} style={{ color: settings.subtitleColor }} />
+                  <a href={settings.linkedinUrl} target="_blank" rel="noopener noreferrer"
+                     className="w-8 h-8 rounded-full bg-primary text-page flex items-center justify-center hover:opacity-80 transition-opacity">
+                    <IconBrandLinkedin size={14} />
                   </a>
                 )}
               </div>
             )}
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-2">
-              {/* Share button */}
+            {/* Admin Actions - Floating */}
+            <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2">
               {settings.isPublic && (
                 <button
                   onClick={copyShareLink}
-                  className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+                  className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
                   title="Copier le lien"
                 >
                   {linkCopied ? (
-                    <IconCheck size={20} style={{ color: settings.accentColor }} />
+                    <IconCheck size={18} className="text-accent" />
                   ) : (
-                    <IconShare size={20} style={{ color: settings.subtitleColor }} />
+                    <IconShare size={18} className="text-secondary" />
                   )}
                 </button>
               )}
-
-              {/* Preview button */}
               <button
                 onClick={() => window.open(`/portfolio/${settings.shareSlug || 'preview'}`, '_blank')}
-                className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+                className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
                 title="Prévisualiser"
               >
-                <IconEye size={20} style={{ color: settings.subtitleColor }} />
+                <IconEye size={18} className="text-secondary" />
               </button>
-
-              {/* Settings button */}
+              <button
+                onClick={() => setIsImportModalOpen(true)}
+                className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
+                title="Importer depuis un site"
+              >
+                <IconDownload size={18} className="text-secondary" />
+              </button>
               <button
                 onClick={() => setIsSettingsOpen(true)}
-                className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+                className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
                 title="Paramètres"
               >
-                <IconSettings size={20} style={{ color: settings.subtitleColor }} />
+                <IconSettings size={18} className="text-secondary" />
               </button>
-
-              {/* Add project button */}
               <button
                 onClick={() => {
                   setEditingProject(null);
                   setIsFormModalOpen(true);
                 }}
-                className="ml-2 flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-opacity hover:opacity-90"
-                style={{ backgroundColor: settings.accentColor }}
+                className="p-3 rounded-full bg-accent shadow-lg hover:opacity-90 transition-opacity"
+                title="Ajouter un projet"
               >
-                <IconPlus size={18} />
-                Ajouter
+                <IconPlus size={18} className="text-accent-text" />
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Category Filter */}
-      {projects.length > 0 && (
-        <div className="px-8 py-4">
-          <div className="max-w-7xl mx-auto flex flex-wrap gap-4">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className="text-sm tracking-wider transition-all duration-200"
-                style={{
-                  color: selectedCategory === cat.id ? settings.titleColor : settings.subtitleColor,
-                  fontWeight: selectedCategory === cat.id ? 600 : 400,
-                  borderBottom: selectedCategory === cat.id ? `2px solid ${settings.accentColor}` : '2px solid transparent',
-                  paddingBottom: '4px',
-                }}
+      {/* Hero Section */}
+      <section className="px-6 lg:px-12 py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+          {/* Left - Big Title */}
+          <div>
+            <h1
+              className={`leading-[0.9] flex flex-row gap-2 !text-left ${!settings.titleColor ? 'text-primary' : ''}`}
+              style={{ 
+                color: settings.titleColor || undefined, 
+                fontFamily: titleFont,
+                fontWeight: settings.titleFontWeight || 700,
+                fontSize: 'clamp(3rem, 10vw, 6rem)',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              {settings.portfolioName.split(' ').map((word, i) => (
+                <span key={i} className="block">{word}</span>
+              ))}
+              <span className="inline-block">.</span>
+            </h1>
+            <p
+              className={`mt-6 max-w-md text-lg ${!settings.subtitleColor ? 'text-secondary' : ''}`}
+              style={{ 
+                color: settings.subtitleColor || undefined,
+                fontFamily: subtitleFont,
+                fontWeight: settings.subtitleFontWeight,
+              }}
+            >
+              {settings.tagline}
+            </p>
+          </div>
+
+          {/* Right - Connect Button */}
+          <div className="flex items-center gap-4">
+            {settings.emailAddress && (
+              <a
+                href={`mailto:${settings.emailAddress}`}
+                className="px-6 py-2.5 rounded-full border border-primary text-primary text-sm font-medium hover:bg-primary hover:text-page transition-colors"
               >
-                {language === 'en' ? cat.labelEn : cat.label}
-              </button>
-            ))}
+                Connect
+              </a>
+            )}
           </div>
         </div>
-      )}
+      </section>
 
-      {/* Content */}
-      <main className="px-8 py-8">
+      {/* Projects Grid */}
+      <main className="px-6 lg:px-12 pb-24">
         <div className="max-w-7xl mx-auto">
           {projects.length === 0 ? (
             <EmptyState onAddProject={() => setIsFormModalOpen(true)} />
-          ) : filteredProjects.length === 0 ? (
-            <div className="text-center py-20">
-              <p style={{ color: settings.subtitleColor }}>
-                Aucun projet dans cette catégorie
-              </p>
-            </div>
           ) : (
-            <div className={getGridClasses()}>
-              {filteredProjects.map((project, index) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  settings={settings}
-                  onClick={() => setViewingProject(project)}
-                  onEdit={() => handleEdit(project)}
-                  onDelete={() => handleDelete(project)}
-                  index={index}
-                />
-              ))}
-            </div>
+            <>
+              {/* Category Filter - Minimal */}
+              <div className="mb-8 flex flex-wrap gap-6">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`text-sm transition-all duration-200 ${
+                      selectedCategory === cat.id 
+                        ? 'text-primary font-medium' 
+                        : 'text-muted hover:text-secondary'
+                    }`}
+                  >
+                    {language === 'en' ? cat.labelEn : cat.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Grid */}
+              {filteredProjects.length === 0 ? (
+                <div className="text-center py-20">
+                  <p className="text-secondary">
+                    Aucun projet dans cette catégorie
+                  </p>
+                </div>
+              ) : (
+                <div className={getGridClasses()}>
+                  {filteredProjects.map((project, index) => (
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      settings={settings}
+                      onClick={() => setViewingProject(project)}
+                      onEdit={() => handleEdit(project)}
+                      onDelete={() => handleDelete(project)}
+                      index={index}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
@@ -1513,6 +2656,17 @@ export default function PortfolioPage() {
             project={viewingProject}
             settings={settings}
             onClose={() => setViewingProject(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Import Modal */}
+      <AnimatePresence>
+        {isImportModalOpen && (
+          <ImportModal
+            isOpen={isImportModalOpen}
+            onClose={() => setIsImportModalOpen(false)}
+            onImport={handleImportProjects}
           />
         )}
       </AnimatePresence>
