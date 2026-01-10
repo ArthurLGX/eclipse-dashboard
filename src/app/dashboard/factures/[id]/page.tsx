@@ -163,7 +163,7 @@ export default function FacturePage() {
     reference: preferences.invoice.autoNumbering ? `${isQuote ? preferences.invoice.quotePrefix || 'DEV-' : preferences.invoice.invoicePrefix}${new Date().toISOString().slice(0,10).replace(/-/g, '')}-${Math.random().toString(36).substring(2, 6).toUpperCase()}` : '',
     date: today.toISOString().split('T')[0],
     due_date: defaultDueDate.toISOString().split('T')[0],
-    facture_status: isQuote ? undefined : 'draft',
+    facture_status: 'draft' as FactureStatus,
     quote_status: isQuote ? 'draft' : undefined,
     number: 0,
     currency: preferences.format.currency as Currency,
