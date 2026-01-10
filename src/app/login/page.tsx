@@ -12,6 +12,8 @@ import {
 } from '@/lib/api';
 import { BackBtn } from '@/app/components/buttons/backBtn';
 import useLenis from '@/utils/useLenis';
+import { IconBrandGoogle } from '@tabler/icons-react';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface SubscriptionData {
   subscription_status: string;
@@ -30,11 +32,22 @@ function LoginContent() {
   const [confirmPasswordError, setConfirmPasswordError] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
   const router = useRouter();
   const { authenticated, hasHydrated, login, user } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const { t } = useLanguage();
 
   useLenis();
+
+  // Check for OAuth error in URL
+  useEffect(() => {
+    const urlError = searchParams.get('error');
+    if (urlError) {
+      setError(urlError);
+      showGlobalPopup(urlError, 'error');
+    }
+  }, [searchParams, showGlobalPopup]);
 
   // Mettre à jour le mode quand l'URL change
   useEffect(() => {
@@ -157,6 +170,13 @@ function LoginContent() {
       return `Password must contain ${missingRequirements.join(', ')}`;
     }
     return '';
+  };
+
+  const handleGoogleLogin = () => {
+    setIsGoogleLoading(true);
+    // Redirect to Strapi's Google OAuth endpoint
+    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+    window.location.href = `${strapiUrl}/api/connect/google`;
   };
 
   return (
@@ -295,6 +315,35 @@ function LoginContent() {
               className="btn-primary w-full font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
+            </motion.button>
+
+            {/* Divider */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-default"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-card text-secondary">{t('or_continue_with')}</span>
+              </div>
+            </div>
+
+            {/* Google Login Button */}
+            <motion.button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isGoogleLoading}
+              className="w-full flex items-center justify-center gap-3 py-3 px-6 rounded-lg border border-default bg-card hover:bg-hover transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {isGoogleLoading ? (
+                <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <IconBrandGoogle className="w-5 h-5 text-[#4285F4]" />
+              )}
+              <span className="font-medium">
+                {isGoogleLoading ? t('connecting') : t('continue_with_google')}
+              </span>
             </motion.button>
 
             {isLogin && (
