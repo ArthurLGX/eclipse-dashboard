@@ -288,8 +288,11 @@ Cordialement`;
       
       htmlContent += '</div>';
       
-      // Appel API pour envoyer l'email (sans pièce jointe PDF pour l'instant)
-      // TODO: Implémenter la génération de PDF côté serveur
+      // URL du PDF généré par Strapi
+      const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+      const pdfUrl = `${strapiUrl}/api/factures/${selectedInvoice.documentId}/pdf`;
+      
+      // Appel API pour envoyer l'email avec le PDF en pièce jointe
       const response = await fetch('/api/emails/send', {
         method: 'POST',
         headers: {
@@ -300,7 +303,7 @@ Cordialement`;
           to: recipients.map(r => r.email),
           subject,
           html: htmlContent,
-          // attachments désactivés temporairement - la route /api/invoices/[id]/pdf n'existe pas
+          attachments: [{ filename: `${selectedInvoice.document_type === 'quote' ? 'Devis' : 'Facture'}-${selectedInvoice.reference}.pdf`, path: pdfUrl }],
         }),
       });
       
@@ -316,7 +319,7 @@ Cordialement`;
         recipients: recipients.map(r => r.email),
         content: message,
         category: 'invoice',
-        // Pas de pièce jointe pour l'instant
+        attachments: [{ name: `${selectedInvoice.document_type === 'quote' ? 'Devis' : 'Facture'}-${selectedInvoice.reference}.pdf`, url: pdfUrl }],
         sent_at: new Date().toISOString(),
         status_mail: 'sent',
         tracking_id: result.trackingId,
