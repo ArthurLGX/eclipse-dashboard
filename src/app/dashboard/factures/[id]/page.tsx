@@ -155,7 +155,8 @@ export default function FacturePage() {
   const defaultDueDate = new Date(today);
   defaultDueDate.setDate(today.getDate() + preferences.invoice.defaultPaymentDays);
   
-  const isQuote = documentType === 'quote';
+  // Utiliser le type de la facture chargée si elle existe, sinon le type des searchParams
+  const isQuote = facture?.document_type === 'quote' || (isCreationMode && documentType === 'quote');
   
   const emptyFacture: Facture = {
     id: 0,
