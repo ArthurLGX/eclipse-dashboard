@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import UsageProgressBar from '@/app/components/UsageProgressBar';
-import { useClients, useProjects, useProspects, useFactures } from '@/hooks/useApi';
+import PendingQuotesWidget from '@/app/components/PendingQuotesWidget';
+import { useClients, useProjects, useProspects, useFactures, clearCache } from '@/hooks/useApi';
 import type { Client, Project, Prospect, Facture } from '@/types';
 
 export default function DashboardPage() {
@@ -19,9 +20,15 @@ export default function DashboardPage() {
   const { data: clients, loading: loadingClients } = useClients(user?.id);
   const { data: projects, loading: loadingProjects } = useProjects(user?.id);
   const { data: prospects, loading: loadingProspects } = useProspects(user?.id);
-  const { data: factures, loading: loadingFactures } = useFactures(user?.id);
+  const { data: factures, loading: loadingFactures, refetch: refetchFactures } = useFactures(user?.id);
 
   const loading = loadingClients || loadingProjects || loadingProspects || loadingFactures;
+
+  // Callback pour rafraîchir les devis après mise à jour
+  const handleQuoteUpdated = () => {
+    clearCache('factures');
+    refetchFactures();
+  };
 
   // Calculs mémoïsés
   const stats = useMemo(() => {
@@ -186,6 +193,14 @@ export default function DashboardPage() {
             )}
           </div>
         </div>
+
+        {/* Widget Devis en attente */}
+        {!loading && (
+          <PendingQuotesWidget 
+            quotes={(factures as Facture[]) || []} 
+            onQuoteUpdated={handleQuoteUpdated}
+          />
+        )}
 
         {/* Recent Activity & Statistics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
