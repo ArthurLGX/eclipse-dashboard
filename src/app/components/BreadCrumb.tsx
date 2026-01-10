@@ -2,7 +2,7 @@
 
 import { useLanguage } from '@/app/context/LanguageContext';
 import { IconChevronRight } from '@tabler/icons-react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { fetchFactureFromDocumentId, fetchFactureFromId } from '@/lib/api';
 import { useAuth } from '@/app/context/AuthContext';
@@ -11,14 +11,20 @@ interface FactureForBreadcrumb {
   reference?: string;
   client_id?: { name?: string };
   project?: { title?: string };
+  document_type?: 'invoice' | 'quote';
 }
 
 export const BreadCrumb = () => {
   const { t } = useLanguage();
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const [factureData, setFactureData] = useState<{ [key: string]: string }>({});
+  const [documentType, setDocumentType] = useState<'invoice' | 'quote' | null>(null);
+  
+  // Détecter le type depuis les searchParams (pour création)
+  const typeFromUrl = searchParams.get('type') as 'invoice' | 'quote' | null;
 
   // Filtrer les segments vides et créer les chemins
   const pathSegments = pathname.split('/').filter(segment => segment !== '');
@@ -48,6 +54,10 @@ export const BreadCrumb = () => {
             const facture = await fetchFactureFromDocumentId(id);
             const factureItem = facture?.data?.[0] as FactureForBreadcrumb | undefined;
             if (factureItem) {
+              // Sauvegarder le type de document
+              if (factureItem.document_type) {
+                setDocumentType(factureItem.document_type);
+              }
               if (factureItem.client_id?.name) {
                 factureDataMap[id] = factureItem.client_id.name;
               } else if (factureItem.project?.title) {
@@ -55,18 +65,24 @@ export const BreadCrumb = () => {
               } else if (factureItem.reference) {
                 factureDataMap[id] = factureItem.reference;
               } else {
-                factureDataMap[id] = `Facture #${id}`;
+                const label = factureItem.document_type === 'quote' ? 'Devis' : 'Facture';
+                factureDataMap[id] = `${label} #${id}`;
               }
             }
           } else {
             const facture = await fetchFactureFromId(id);
             const factureItem = facture?.data?.[0] as FactureForBreadcrumb | undefined;
             if (factureItem) {
+              // Sauvegarder le type de document
+              if (factureItem.document_type) {
+                setDocumentType(factureItem.document_type);
+              }
               // Priorité 1: Nom du client
               if (factureItem.reference) {
                 factureDataMap[id] = factureItem.reference;
               } else {
-                factureDataMap[id] = `Facture #${id}`;
+                const label = factureItem.document_type === 'quote' ? 'Devis' : 'Facture';
+                factureDataMap[id] = `${label} #${id}`;
               }
             }
           }
@@ -120,6 +136,9 @@ export const BreadCrumb = () => {
       .join(' ');
   }
 
+  // Déterminer le type effectif (depuis URL ou depuis les données)
+  const effectiveType = typeFromUrl || documentType;
+
   // Fonction pour obtenir le label approprié pour chaque segment
   function getSegmentLabel(
     segment: string,
@@ -127,11 +146,23 @@ export const BreadCrumb = () => {
     index: number,
     factureData: { [key: string]: string }
   ) {
+    // Si c'est le segment "factures", afficher "Devis" ou "Factures" selon le type
+    if (segment === 'factures') {
+      if (effectiveType === 'quote') {
+        return t('quotes') || 'Devis';
+      }
+      return t('invoices') || 'Factures';
+    }
+
     // Si c'est dans le segment factures, vérifier si c'est un ID (numérique ou documentId)
     if (segments[index - 1] === 'factures') {
       // Si c'est un nombre ou une chaîne qui ressemble à un documentId
       if (!isNaN(Number(segment)) || segment.length > 10) {
-        return factureData[segment] || `Facture #${segment}`;
+        return factureData[segment] || (effectiveType === 'quote' ? `Devis #${segment}` : `Facture #${segment}`);
+      }
+      // Si c'est "new" ou "add" ou "ajouter", afficher le bon label
+      if (segment.toLowerCase() === 'new' || segment.toLowerCase() === 'add' || segment.toLowerCase() === 'ajouter') {
+        return effectiveType === 'quote' ? t('new_quote') || 'Nouveau devis' : t('new_invoice') || 'Nouvelle facture';
       }
     }
 
