@@ -629,6 +629,7 @@ export async function updateFactureById(
     date: data.date,
     due_date: data.due_date,
     facture_status: data.facture_status,
+    quote_status: data.quote_status, // Ajout du statut de devis
     currency: data.currency,
     description: data.description,
     notes: data.notes,
