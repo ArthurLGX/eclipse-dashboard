@@ -33,7 +33,8 @@ interface InvoiceLine {
  */
 export async function generatePdfBase64(
   facture: Facture,
-  company: Company | null
+  company: Company | null,
+  defaultTaxRate: number = 20 // Taux de TVA par défaut
 ): Promise<string> {
   // Parser les lignes de facture
   let invoiceLines: InvoiceLine[] = [];
@@ -51,8 +52,8 @@ export async function generatePdfBase64(
 
   // Calculer les totaux
   const subtotal = invoiceLines.reduce((sum, line) => sum + (line.total || 0), 0);
-  const tvaApplicable = (facture.tva_rate ?? 0) > 0;
-  const tvaRate = facture.tva_rate ?? 0;
+  const tvaApplicable = facture.tva_applicable ?? false;
+  const tvaRate = tvaApplicable ? defaultTaxRate : 0;
   const tvaAmount = tvaApplicable ? subtotal * (tvaRate / 100) : 0;
   const total = subtotal + tvaAmount;
 
