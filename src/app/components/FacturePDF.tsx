@@ -13,10 +13,16 @@ import { Facture, Company, InvoiceLine } from '../models/Models';
 const styles = StyleSheet.create({
   page: {
     padding: 50,
+    paddingBottom: 80,
     fontSize: 9,
     fontFamily: 'Helvetica',
     backgroundColor: '#ffffff',
     color: '#333333',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  content: {
+    flex: 1,
   },
   
   // En-tête avec deux colonnes
@@ -252,10 +258,10 @@ const styles = StyleSheet.create({
   // Pied de page
   footer: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 30,
     left: 50,
     right: 50,
-    paddingTop: 15,
+    paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: '#dddddd',
   },
@@ -281,29 +287,13 @@ const styles = StyleSheet.create({
   },
   footerCenter: {
     textAlign: 'center',
-    marginTop: 15,
+    marginTop: 12,
   },
   footerCenterText: {
     fontSize: 7,
     color: '#aaaaaa',
   },
 
-  // Statut
-  statusBadge: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    backgroundColor: '#e8f5e9',
-    borderRadius: 2,
-    alignSelf: 'flex-start',
-    marginTop: 8,
-  },
-  statusText: {
-    fontSize: 8,
-    fontFamily: 'Helvetica-Bold',
-    color: '#2e7d32',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
 });
 
 interface FacturePDFProps {
@@ -327,6 +317,13 @@ const FacturePDF = ({
   subtotal,
   total,
 }: FacturePDFProps) => {
+  // Déterminer si c'est un devis ou une facture
+  const isQuote = facture.document_type === 'quote';
+  const documentTitle = isQuote ? 'DEVIS' : 'FACTURE';
+  const dateLabel = isQuote ? 'Valide jusqu\'au' : 'Échéance';
+  const dateValue = isQuote ? facture.valid_until : facture.due_date;
+  const billToLabel = isQuote ? 'Destinataire' : 'Facturer à';
+  
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '-';
     return new Date(dateStr).toLocaleDateString('fr-FR', {
@@ -342,24 +339,6 @@ const FacturePDF = ({
       currency: facture.currency || 'EUR',
     }).format(amount);
   };
-
-  const getStatusStyle = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case 'paid':
-      case 'payée':
-        return { bg: '#e8f5e9', color: '#2e7d32' };
-      case 'sent':
-      case 'envoyée':
-        return { bg: '#e3f2fd', color: '#1565c0' };
-      case 'overdue':
-      case 'en retard':
-        return { bg: '#ffebee', color: '#c62828' };
-      default:
-        return { bg: '#f5f5f5', color: '#616161' };
-    }
-  };
-
-  const statusColors = getStatusStyle(facture.facture_status);
 
   const getUnitLabel = (unit?: string) => {
     switch (unit) {
@@ -410,7 +389,7 @@ const FacturePDF = ({
             </Text>
           </View>
           <View style={styles.headerRight}>
-            <Text style={styles.invoiceLabel}>FACTURE</Text>
+            <Text style={styles.invoiceLabel}>{documentTitle}</Text>
             <Text style={styles.invoiceMeta}>
               <Text style={styles.metaLabel}>N° </Text>
               <Text style={styles.metaValue}>{facture.reference || '-'}</Text>
@@ -419,21 +398,11 @@ const FacturePDF = ({
               <Text style={styles.metaLabel}>Date : </Text>
               <Text style={styles.metaValue}>{formatDate(facture.date)}</Text>
             </Text>
-            <Text style={styles.invoiceMeta}>
-              <Text style={styles.metaLabel}>Échéance : </Text>
-              <Text style={styles.metaValue}>{formatDate(facture.due_date)}</Text>
-            </Text>
-            {facture.facture_status && (
-              <View
-                style={[
-                  styles.statusBadge,
-                  { backgroundColor: statusColors.bg, alignSelf: 'flex-end' },
-                ]}
-              >
-                <Text style={[styles.statusText, { color: statusColors.color }]}>
-                  {facture.facture_status}
-                </Text>
-              </View>
+            {dateValue && (
+              <Text style={styles.invoiceMeta}>
+                <Text style={styles.metaLabel}>{dateLabel} : </Text>
+                <Text style={styles.metaValue}>{formatDate(dateValue)}</Text>
+              </Text>
             )}
           </View>
         </View>
@@ -456,7 +425,7 @@ const FacturePDF = ({
             )}
           </View>
           <View style={styles.addressBlock}>
-            <Text style={styles.addressTitle}>Facturer à</Text>
+            <Text style={styles.addressTitle}>{billToLabel}</Text>
             <Text style={styles.addressName}>
               {facture.client_id?.name || 'Client non spécifié'}
             </Text>
@@ -547,14 +516,14 @@ const FacturePDF = ({
 
         {/* Notes */}
         {facture.notes && (
-          <View style={styles.notesSection}>
+          <View style={styles.notesSection} wrap={false}>
             <Text style={styles.notesTitle}>Notes et conditions</Text>
             <Text style={styles.notesText}>{facture.notes}</Text>
           </View>
         )}
 
         {/* Pied de page */}
-        <View style={styles.footer}>
+        <View style={styles.footer} wrap={false}>
           <View style={styles.footerContent}>
             <View style={styles.footerColumn}>
               <Text style={styles.footerTitle}>Informations légales</Text>
@@ -578,9 +547,18 @@ const FacturePDF = ({
               )}
             </View>
             <View style={styles.footerColumn}>
-              <Text style={styles.footerTitle}>Paiement</Text>
-              <Text style={styles.footerText}>À régler avant le</Text>
-              <Text style={styles.footerText}>{formatDate(facture.due_date)}</Text>
+              <Text style={styles.footerTitle}>{isQuote ? 'Validité' : 'Paiement'}</Text>
+              {isQuote ? (
+                <>
+                  <Text style={styles.footerText}>Devis valable</Text>
+                  <Text style={styles.footerText}>{"jusqu'au"} {formatDate(facture.valid_until || '')}</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.footerText}>À régler avant le</Text>
+                  <Text style={styles.footerText}>{formatDate(facture.due_date || '')}</Text>
+                </>
+              )}
             </View>
           </View>
           <View style={styles.footerCenter}>
