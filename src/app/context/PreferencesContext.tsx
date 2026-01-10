@@ -22,6 +22,7 @@ export interface InvoicePreferences {
   legalMentions: string;
   autoNumbering: boolean;
   invoicePrefix: string;
+  quotePrefix: string;
 }
 
 export interface FormatPreferences {
@@ -51,6 +52,7 @@ const defaultPreferences: Preferences = {
     legalMentions: '',
     autoNumbering: true,
     invoicePrefix: 'FAC-',
+    quotePrefix: 'DEV-',
   },
   format: {
     dateFormat: 'DD/MM/YYYY',
