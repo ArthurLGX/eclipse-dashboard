@@ -128,7 +128,7 @@ export async function getSheetTabs(): Promise<SheetInfo[]> {
 
   const sheetProperties = response.data.sheets || [];
 
-  return sheetProperties.map((sheet: { properties?: { sheetId?: number; title?: string; index?: number; gridProperties?: { rowCount?: number; columnCount?: number } } }) => ({
+  return sheetProperties.map((sheet) => ({
     sheetId: sheet.properties?.sheetId ?? 0,
     title: sheet.properties?.title ?? '',
     index: sheet.properties?.index ?? 0,
