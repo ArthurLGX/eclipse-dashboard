@@ -1,7 +1,6 @@
 import { pdf } from '@react-pdf/renderer';
 import FacturePDF from '@/app/components/FacturePDF';
 import type { Facture } from '@/types';
-import React from 'react';
 
 interface Company {
   name: string;
@@ -57,18 +56,18 @@ export async function generatePdfBase64(
   const tvaAmount = tvaApplicable ? subtotal * (tvaRate / 100) : 0;
   const total = subtotal + tvaAmount;
 
-  // Générer le PDF
+  // Générer le PDF avec JSX
   const blob = await pdf(
-    React.createElement(FacturePDF, {
-      facture,
-      company,
-      invoiceLines,
-      tvaApplicable,
-      tvaRate,
-      tvaAmount,
-      subtotal,
-      total,
-    })
+    <FacturePDF
+      facture={facture}
+      company={company}
+      invoiceLines={invoiceLines}
+      tvaApplicable={tvaApplicable}
+      tvaRate={tvaRate}
+      tvaAmount={tvaAmount}
+      subtotal={subtotal}
+      total={total}
+    />
   ).toBlob();
 
   // Convertir en base64
