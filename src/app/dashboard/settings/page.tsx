@@ -388,80 +388,324 @@ export default function SettingsPage() {
 
         {/* FACTURATION */}
         {activeTab === 'invoice' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <SettingsRow 
-              title={t('payment_delay') || 'Délai de paiement'} 
-              description={t('payment_delay_desc') || 'Délai par défaut sur les nouvelles factures'}
-            >
-              <div className="flex flex-wrap gap-2">
-                {[7, 14, 30, 45, 60].map((days) => (
-                  <OptionButton 
-                    key={days} 
-                    selected={preferences.invoice.defaultPaymentDays === days}
-                    onClick={() => updateInvoice({ defaultPaymentDays: days })}
-                  >
-                    {days} {t('days') || 'jours'}
-                  </OptionButton>
-                ))}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+            {/* Section: Type de facturation */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+                {t('billing_type_section') || 'Type de facturation'}
+              </h3>
+              
+              <SettingsRow 
+                title={t('default_billing_type') || 'Type de facturation par défaut'} 
+                description={t('default_billing_type_desc') || 'Mode de facturation appliqué par défaut aux nouvelles lignes'}
+              >
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: 'hourly', label: t('billing_type_hourly') || 'À l\'heure' },
+                    { value: 'daily', label: t('billing_type_daily') || 'À la journée' },
+                    { value: 'fixed', label: t('billing_type_fixed') || 'Forfait' },
+                    { value: 'project', label: t('billing_type_project') || 'Par projet' },
+                  ].map((type) => (
+                    <OptionButton 
+                      key={type.value} 
+                      selected={preferences.invoice.billingType === type.value}
+                      onClick={() => updateInvoice({ billingType: type.value as 'hourly' | 'daily' | 'fixed' | 'project' })}
+                    >
+                      {type.label}
+                    </OptionButton>
+                  ))}
+                </div>
+              </SettingsRow>
+
+              <SettingsRow 
+                title={t('hourly_rate') || 'Taux horaire'} 
+                description={t('hourly_rate_desc') || 'Votre tarif par heure de travail'}
+              >
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={preferences.invoice.hourlyRate}
+                    onChange={(e) => updateInvoice({ hourlyRate: parseFloat(e.target.value) || 0 })}
+                    className="input px-3 py-2 text-sm w-24"
+                    min="0"
+                    step="1"
+                  />
+                  <span className="text-muted">€ / {t('hour') || 'heure'}</span>
+                </div>
+              </SettingsRow>
+
+              <SettingsRow 
+                title={t('daily_rate') || 'Taux journalier (TJM)'} 
+                description={t('daily_rate_desc') || 'Votre tarif par jour de travail'}
+              >
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={preferences.invoice.dailyRate}
+                    onChange={(e) => updateInvoice({ dailyRate: parseFloat(e.target.value) || 0 })}
+                    className="input px-3 py-2 text-sm w-24"
+                    min="0"
+                    step="1"
+                  />
+                  <span className="text-muted">€ / {t('day') || 'jour'}</span>
+                </div>
+              </SettingsRow>
+
+              <SettingsRow 
+                title={t('default_unit') || 'Unité par défaut'} 
+                description={t('default_unit_desc') || 'Unité utilisée par défaut dans les lignes'}
+              >
+                <select
+                  value={preferences.invoice.defaultUnit}
+                  onChange={(e) => updateInvoice({ defaultUnit: e.target.value as 'hour' | 'day' | 'unit' | 'fixed' | 'project' })}
+                  className="input px-3 py-2 text-sm"
+                >
+                  <option value="hour">{t('unit_hour') || 'Heure'}</option>
+                  <option value="day">{t('unit_day') || 'Jour'}</option>
+                  <option value="unit">{t('unit_unit') || 'Unité'}</option>
+                  <option value="fixed">{t('unit_fixed') || 'Forfait'}</option>
+                  <option value="project">{t('unit_project') || 'Projet'}</option>
+                </select>
+              </SettingsRow>
+            </div>
+
+            {/* Section: TVA */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+                {t('vat_section') || 'TVA'}
+              </h3>
+
+              <SettingsRow 
+                title={t('default_vat_applicable') || 'TVA applicable par défaut'} 
+                description={t('default_vat_applicable_desc') || 'Activer la TVA sur les nouvelles factures/devis'}
+              >
+                <Toggle 
+                  checked={preferences.invoice.tvaApplicable} 
+                  onChange={(v) => updateInvoice({ tvaApplicable: v })}
+                  label={preferences.invoice.tvaApplicable ? (t('yes') || 'Oui') : (t('no') || 'Non')}
+                />
+              </SettingsRow>
+
+              <SettingsRow 
+                title={t('default_tax_rate') || 'Taux de TVA par défaut'} 
+                description={t('default_tax_rate_desc') || 'TVA appliquée automatiquement'}
+              >
+                <div className="flex flex-wrap gap-2">
+                  {[0, 5.5, 10, 20].map((rate) => (
+                    <OptionButton 
+                      key={rate} 
+                      selected={preferences.invoice.defaultTaxRate === rate}
+                      onClick={() => updateInvoice({ defaultTaxRate: rate })}
+                    >
+                      {rate}%
+                    </OptionButton>
+                  ))}
+                </div>
+              </SettingsRow>
+            </div>
+
+            {/* Section: Délais */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+                {t('deadlines_section') || 'Délais'}
+              </h3>
+
+              <SettingsRow 
+                title={t('payment_delay') || 'Délai de paiement'} 
+                description={t('payment_delay_desc') || 'Délai par défaut sur les nouvelles factures'}
+              >
+                <div className="flex flex-wrap gap-2">
+                  {[7, 14, 30, 45, 60].map((days) => (
+                    <OptionButton 
+                      key={days} 
+                      selected={preferences.invoice.defaultPaymentDays === days}
+                      onClick={() => updateInvoice({ defaultPaymentDays: days })}
+                    >
+                      {days} {t('days') || 'jours'}
+                    </OptionButton>
+                  ))}
+                </div>
+              </SettingsRow>
+
+              <SettingsRow 
+                title={t('quote_validity') || 'Validité des devis'} 
+                description={t('quote_validity_desc') || 'Durée de validité par défaut des devis'}
+              >
+                <div className="flex flex-wrap gap-2">
+                  {[15, 30, 60, 90].map((days) => (
+                    <OptionButton 
+                      key={days} 
+                      selected={preferences.invoice.defaultValidityDays === days}
+                      onClick={() => updateInvoice({ defaultValidityDays: days })}
+                    >
+                      {days} {t('days') || 'jours'}
+                    </OptionButton>
+                  ))}
+                </div>
+              </SettingsRow>
+            </div>
+
+            {/* Section: Numérotation */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+                {t('numbering_section') || 'Numérotation'}
+              </h3>
+
+              <SettingsRow 
+                title={t('auto_numbering') || 'Numérotation automatique'} 
+                description={t('auto_numbering_desc') || 'Générer automatiquement les numéros'}
+              >
+                <Toggle 
+                  checked={preferences.invoice.autoNumbering} 
+                  onChange={(v) => updateInvoice({ autoNumbering: v })}
+                  label={preferences.invoice.autoNumbering ? (t('enabled') || 'Activé') : (t('disabled') || 'Désactivé')}
+                />
+              </SettingsRow>
+
+              <SettingsRow 
+                title={t('invoice_prefix') || 'Préfixe factures'} 
+                description={t('invoice_prefix_desc') || 'Préfixe des numéros de facture'}
+              >
+                <input
+                  type="text"
+                  value={preferences.invoice.invoicePrefix}
+                  onChange={(e) => updateInvoice({ invoicePrefix: e.target.value })}
+                  className="input px-3 py-2 text-sm w-32"
+                  placeholder="FAC-"
+                />
+                <p className="text-xs text-muted mt-1">
+                  {t('example') || 'Exemple'}: {preferences.invoice.invoicePrefix}2025-XXXX
+                </p>
+              </SettingsRow>
+
+              <SettingsRow 
+                title={t('quote_prefix') || 'Préfixe devis'} 
+                description={t('quote_prefix_desc') || 'Préfixe des numéros de devis'}
+              >
+                <input
+                  type="text"
+                  value={preferences.invoice.quotePrefix}
+                  onChange={(e) => updateInvoice({ quotePrefix: e.target.value })}
+                  className="input px-3 py-2 text-sm w-32"
+                  placeholder="DEV-"
+                />
+                <p className="text-xs text-muted mt-1">
+                  {t('example') || 'Exemple'}: {preferences.invoice.quotePrefix}2025-XXXX
+                </p>
+              </SettingsRow>
+            </div>
+
+            {/* Section: Informations légales */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+                {t('legal_info_section') || 'Informations légales'}
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <SettingsRow 
+                  title={t('company_siret') || 'SIRET'} 
+                  description={t('company_siret_desc') || 'Numéro SIRET de votre entreprise'}
+                >
+                  <input
+                    type="text"
+                    value={preferences.invoice.siret}
+                    onChange={(e) => updateInvoice({ siret: e.target.value })}
+                    className="input px-3 py-2 text-sm w-full"
+                    placeholder="123 456 789 00012"
+                    maxLength={17}
+                  />
+                </SettingsRow>
+
+                <SettingsRow 
+                  title={t('company_vat_number') || 'N° TVA Intracommunautaire'} 
+                  description={t('company_vat_number_desc') || 'Numéro de TVA pour l\'UE'}
+                >
+                  <input
+                    type="text"
+                    value={preferences.invoice.vatNumber}
+                    onChange={(e) => updateInvoice({ vatNumber: e.target.value })}
+                    className="input px-3 py-2 text-sm w-full"
+                    placeholder="FR12345678901"
+                  />
+                </SettingsRow>
+
+                <SettingsRow 
+                  title={t('rcs') || 'RCS'} 
+                  description={t('rcs_desc') || 'Registre du Commerce et des Sociétés'}
+                >
+                  <input
+                    type="text"
+                    value={preferences.invoice.rcs}
+                    onChange={(e) => updateInvoice({ rcs: e.target.value })}
+                    className="input px-3 py-2 text-sm w-full"
+                    placeholder="Paris B 123 456 789"
+                  />
+                </SettingsRow>
+
+                <SettingsRow 
+                  title={t('capital') || 'Capital social'} 
+                  description={t('capital_desc') || 'Montant du capital social'}
+                >
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={preferences.invoice.capital}
+                      onChange={(e) => updateInvoice({ capital: e.target.value })}
+                      className="input px-3 py-2 text-sm w-full"
+                      placeholder="10 000"
+                    />
+                    <span className="text-muted">€</span>
+                  </div>
+                </SettingsRow>
+
+                <SettingsRow 
+                  title={t('ape_code') || 'Code APE/NAF'} 
+                  description={t('ape_code_desc') || 'Code d\'activité principale'}
+                >
+                  <input
+                    type="text"
+                    value={preferences.invoice.apeCode}
+                    onChange={(e) => updateInvoice({ apeCode: e.target.value })}
+                    className="input px-3 py-2 text-sm w-32"
+                    placeholder="6201Z"
+                    maxLength={6}
+                  />
+                </SettingsRow>
               </div>
-            </SettingsRow>
+            </div>
 
-            <SettingsRow 
-              title={t('default_tax_rate') || 'Taux de TVA par défaut'} 
-              description={t('default_tax_rate_desc') || 'TVA appliquée automatiquement'}
-            >
-              <div className="flex flex-wrap gap-2">
-                {[0, 5.5, 10, 20].map((rate) => (
-                  <OptionButton 
-                    key={rate} 
-                    selected={preferences.invoice.defaultTaxRate === rate}
-                    onClick={() => updateInvoice({ defaultTaxRate: rate })}
-                  >
-                    {rate}%
-                  </OptionButton>
-                ))}
-              </div>
-            </SettingsRow>
+            {/* Section: Mentions */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+                {t('mentions_section') || 'Mentions'}
+              </h3>
 
-            <SettingsRow 
-              title={t('invoice_prefix') || 'Préfixe de numérotation'} 
-              description={t('invoice_prefix_desc') || 'Préfixe des numéros de facture'}
-            >
-              <input
-                type="text"
-                value={preferences.invoice.invoicePrefix}
-                onChange={(e) => updateInvoice({ invoicePrefix: e.target.value })}
-                className="input px-3 py-2 text-sm w-32"
-                placeholder="FAC-"
-              />
-              <p className="text-xs text-muted mt-1">
-                {t('example') || 'Exemple'}: {preferences.invoice.invoicePrefix}001
-              </p>
-            </SettingsRow>
+              <SettingsRow 
+                title={t('payment_terms') || 'Conditions de paiement'} 
+                description={t('payment_terms_desc') || 'Conditions affichées sur les factures'}
+              >
+                <textarea
+                  value={preferences.invoice.paymentTerms}
+                  onChange={(e) => updateInvoice({ paymentTerms: e.target.value })}
+                  className="input w-full px-3 py-2 text-sm resize-y"
+                  rows={3}
+                  placeholder={t('payment_terms_placeholder') || 'Ex: Paiement à 30 jours. En cas de retard de paiement, une pénalité de 3 fois le taux d\'intérêt légal sera appliquée...'}
+                />
+              </SettingsRow>
 
-            <SettingsRow 
-              title={t('auto_numbering') || 'Numérotation automatique'} 
-              description={t('auto_numbering_desc') || 'Générer automatiquement les numéros'}
-            >
-              <Toggle 
-                checked={preferences.invoice.autoNumbering} 
-                onChange={(v) => updateInvoice({ autoNumbering: v })}
-                label={preferences.invoice.autoNumbering ? (t('enabled') || 'Activé') : (t('disabled') || 'Désactivé')}
-              />
-            </SettingsRow>
-
-            <SettingsRow 
-              title={t('legal_mentions') || 'Mentions légales'} 
-              description={t('legal_mentions_desc') || 'Texte affiché en bas des factures'}
-            >
-              <textarea
-                value={preferences.invoice.legalMentions}
-                onChange={(e) => updateInvoice({ legalMentions: e.target.value })}
-                className="input w-full px-3 py-2 text-sm resize-y"
-                rows={6}
-                placeholder={t('legal_mentions_placeholder') || 'Ex: TVA non applicable, art. 293 B du CGI...'}
-              />
-            </SettingsRow>
+              <SettingsRow 
+                title={t('legal_mentions') || 'Mentions légales'} 
+                description={t('legal_mentions_desc') || 'Texte affiché en bas des factures'}
+              >
+                <textarea
+                  value={preferences.invoice.legalMentions}
+                  onChange={(e) => updateInvoice({ legalMentions: e.target.value })}
+                  className="input w-full px-3 py-2 text-sm resize-y"
+                  rows={4}
+                  placeholder={t('legal_mentions_placeholder') || 'Ex: TVA non applicable, art. 293 B du CGI...'}
+                />
+              </SettingsRow>
+            </div>
           </motion.div>
         )}
 

@@ -16,13 +16,40 @@ export interface NotificationPreferences {
   frequency: NotificationFrequency;
 }
 
+export type BillingType = 'hourly' | 'daily' | 'fixed' | 'project';
+export type BillingUnit = 'hour' | 'day' | 'unit' | 'fixed' | 'project';
+
 export interface InvoicePreferences {
-  defaultPaymentDays: number;
-  defaultTaxRate: number;
-  legalMentions: string;
+  // Numérotation
   autoNumbering: boolean;
   invoicePrefix: string;
   quotePrefix: string;
+  
+  // Type de facturation par défaut
+  billingType: BillingType;
+  hourlyRate: number;
+  dailyRate: number;
+  defaultFixedRate: number;
+  defaultUnit: BillingUnit;
+  
+  // TVA
+  tvaApplicable: boolean;
+  defaultTaxRate: number;
+  
+  // Paiement
+  defaultPaymentDays: number;
+  defaultValidityDays: number; // Validité devis
+  
+  // Mentions légales
+  legalMentions: string;
+  paymentTerms: string;
+  
+  // Infos légales entreprise (pour auto-complétion)
+  siret: string;
+  vatNumber: string;
+  rcs: string;
+  capital: string;
+  apeCode: string;
 }
 
 export interface FormatPreferences {
@@ -47,12 +74,36 @@ const defaultPreferences: Preferences = {
     frequency: 'instant',
   },
   invoice: {
-    defaultPaymentDays: 30,
-    defaultTaxRate: 20,
-    legalMentions: '',
+    // Numérotation
     autoNumbering: true,
     invoicePrefix: 'FAC-',
     quotePrefix: 'DEV-',
+    
+    // Type de facturation par défaut
+    billingType: 'hourly',
+    hourlyRate: 50,
+    dailyRate: 400,
+    defaultFixedRate: 0,
+    defaultUnit: 'hour',
+    
+    // TVA
+    tvaApplicable: true,
+    defaultTaxRate: 20,
+    
+    // Paiement
+    defaultPaymentDays: 30,
+    defaultValidityDays: 30,
+    
+    // Mentions légales
+    legalMentions: '',
+    paymentTerms: '',
+    
+    // Infos légales entreprise
+    siret: '',
+    vatNumber: '',
+    rcs: '',
+    capital: '',
+    apeCode: '',
   },
   format: {
     dateFormat: 'DD/MM/YYYY',

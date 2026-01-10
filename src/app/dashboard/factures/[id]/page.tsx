@@ -37,6 +37,8 @@ import {
   IconDownload,
   IconCalculator,
   IconSparkles,
+  IconSettings,
+  IconRefresh,
 } from '@tabler/icons-react';
 import AIInvoiceGenerator from '@/app/components/AIInvoiceGenerator';
 import { useRef } from 'react';
@@ -172,7 +174,7 @@ export default function FacturePage() {
     pdf: [],
     user: emptyUser,
     invoice_lines: [],
-    tva_applicable: preferences.invoice.defaultTaxRate > 0,
+    tva_applicable: preferences.invoice.tvaApplicable,
   };
 
   useEffect(() => {
@@ -299,11 +301,53 @@ export default function FacturePage() {
   };
 
   const handleAddLine = () => {
+    // Utiliser le taux et l'unité des préférences
+    const defaultUnit = preferences.invoice.defaultUnit || 'hour';
+    let defaultRate = 0;
+    
+    if (preferences.invoice.billingType === 'hourly' || defaultUnit === 'hour') {
+      defaultRate = preferences.invoice.hourlyRate || 0;
+    } else if (preferences.invoice.billingType === 'daily' || defaultUnit === 'day') {
+      defaultRate = preferences.invoice.dailyRate || 0;
+    }
+    
     setInvoiceLines([
       ...invoiceLines,
-      { id: Date.now(), description: '', quantity: 1, unit_price: 0, total: 0, unit: 'hour' },
+      { id: Date.now(), description: '', quantity: 1, unit_price: defaultRate, total: defaultRate, unit: defaultUnit },
     ]);
   };
+  
+  // Filtrer les projets par client sélectionné
+  const filteredProjects = formData?.client_id?.id 
+    ? projects.filter(p => p.client?.id === formData.client_id?.id || !p.client)
+    : projects;
+    
+  // Rafraîchir les projets
+  const refreshProjects = async () => {
+    if (!user?.id) return;
+    try {
+      const projectsRes = await fetchProjectsUser(user.id) as { data?: Project[] };
+      setProjects(projectsRes?.data || []);
+      showGlobalPopup(t('projects_refreshed') || 'Projets rafraîchis', 'success');
+    } catch (error) {
+      console.error('Erreur lors du rafraîchissement des projets', error);
+    }
+  };
+  
+  // Rafraîchir les projets quand la fenêtre reprend le focus
+  useEffect(() => {
+    const handleFocus = () => {
+      if (user?.id) {
+        fetchProjectsUser(user.id).then((res) => {
+          const projectsRes = res as { data?: Project[] };
+          setProjects(projectsRes?.data || []);
+        });
+      }
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [user?.id]);
 
   const handleRemoveLine = (index: number) => {
     const updatedLines = [...invoiceLines];
@@ -522,7 +566,18 @@ export default function FacturePage() {
     >
       {/* Header avec actions */}
       <div className="max-w-4xl mx-auto rounded-lg flex flex-col gap-4 overflow-hidden  ">
-        <div className="flex lg:flex-row flex-col gap-2 justify-end">
+        <div className="flex lg:flex-row flex-col gap-2 justify-between">
+          {/* Bouton paramètres de facturation */}
+          <button
+            onClick={() => window.open('/dashboard/settings?tab=invoice', '_blank')}
+            className="flex items-center justify-center gap-2 bg-slate-500/10 text-slate-500 border border-slate-500/20 px-4 py-2 rounded-lg hover:bg-slate-500/20 transition-colors"
+            title={t('billing_settings') || 'Paramètres de facturation'}
+          >
+            <IconSettings className="w-4 h-4" />
+            {t('billing_settings') || 'Paramètres'}
+          </button>
+          
+          <div className="flex lg:flex-row flex-col gap-2">
           {!editing ? (
             <button
               onClick={handleEdit}
@@ -582,6 +637,7 @@ export default function FacturePage() {
               </button>
             </>
           )}
+          </div>
         </div>
 
         {/* Contenu de la facture */}
@@ -745,7 +801,7 @@ export default function FacturePage() {
                       name="project"
                       value={formData?.project?.id || ''}
                       onChange={e => {
-                        const project = projects.find(
+                        const project = filteredProjects.find(
                           p => p.id === Number(e.target.value)
                         );
                         setFormData({ ...formData!, project: project! });
@@ -753,12 +809,20 @@ export default function FacturePage() {
                         className="input border flex-1 rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                     >
                       <option value="">{t('select_project')}</option>
-                      {projects.map(project => (
+                      {filteredProjects.map(project => (
                         <option key={project.id} value={project.id}>
-                          {project.title}
+                          {project.title} {project.client?.name ? `(${project.client.name})` : ''}
                         </option>
                       ))}
                     </select>
+                    <button
+                      type="button"
+                      onClick={refreshProjects}
+                      className="p-2 bg-blue-500/10 text-blue-600 border border-blue-500/30 rounded-lg hover:bg-blue-500/20 transition-colors"
+                      title={t('refresh_projects') || 'Rafraîchir les projets'}
+                    >
+                      <IconRefresh className="w-4 h-4" />
+                    </button>
                     <button
                       type="button"
                       onClick={() => window.open('/dashboard/projects?new=1', '_blank')}
