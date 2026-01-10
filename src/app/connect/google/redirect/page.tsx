@@ -3,13 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { IconBrandGoogle, IconLoader2, IconAlertCircle } from '@tabler/icons-react';
+import { IconBrandGoogle, IconAlertCircle } from '@tabler/icons-react';
 
 export default function GoogleRedirectPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(true);
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -19,13 +18,11 @@ export default function GoogleRedirectPage() {
 
       if (errorParam) {
         setError(errorParam);
-        setIsProcessing(false);
         return;
       }
 
       if (!accessToken) {
         setError('Aucun token reçu de Google');
-        setIsProcessing(false);
         return;
       }
 
@@ -54,7 +51,6 @@ export default function GoogleRedirectPage() {
       } catch (err) {
         console.error('Erreur lors de la connexion Google:', err);
         setError(err instanceof Error ? err.message : 'Erreur de connexion');
-        setIsProcessing(false);
       }
     };
 
