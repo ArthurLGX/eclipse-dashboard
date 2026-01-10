@@ -176,7 +176,7 @@ export interface Prospect {
   image?: string;
 }
 
-export type BillingUnit = 'hour' | 'day' | 'fixed' | 'unit';
+export type BillingUnit = 'hour' | 'day' | 'fixed' | 'unit' | 'project';
 
 export interface InvoiceLine {
   id?: number;
