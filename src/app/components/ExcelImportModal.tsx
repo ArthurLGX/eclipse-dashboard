@@ -184,6 +184,9 @@ export default function ExcelImportModal({
   const [error, setError] = useState<string | null>(null);
   const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const [loadingGoogleSheet, setLoadingGoogleSheet] = useState(false);
+  const [availableTabs, setAvailableTabs] = useState<{ gid: string; name: string; rowCount: number }[]>([]);
+  const [selectedTabGid, setSelectedTabGid] = useState<string | null>(null);
+  const [detectingTabs, setDetectingTabs] = useState(false);
   const [sendNotificationEmails, setSendNotificationEmails] = useState(true);
   const [emailSubject, setEmailSubject] = useState('');
   const [emailMessage, setEmailMessage] = useState('');
@@ -215,6 +218,9 @@ export default function ExcelImportModal({
     setError(null);
     setGoogleSheetUrl('');
     setLoadingGoogleSheet(false);
+    setAvailableTabs([]);
+    setSelectedTabGid(null);
+    setDetectingTabs(false);
     setSendNotificationEmails(true);
     setEmailSubject('');
     setEmailMessage('');
@@ -345,8 +351,60 @@ export default function ExcelImportModal({
     };
   };
 
+  // Détecter les onglets disponibles dans un Google Sheet
+  const detectGoogleSheetTabs = useCallback(async (sheetId: string): Promise<{ gid: string; name: string; rowCount: number }[]> => {
+    const tabs: { gid: string; name: string; rowCount: number }[] = [];
+    const gidsToTest = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']; // Tester les 10 premiers onglets possibles
+    
+    for (const gid of gidsToTest) {
+      try {
+        const exportUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
+        const response = await fetch(exportUrl, { redirect: 'follow' });
+        
+        if (!response.ok) continue;
+        
+        const finalUrl = response.url;
+        if (finalUrl.includes('accounts.google.com') || finalUrl.includes('ServiceLogin')) continue;
+        
+        const csvText = await response.text();
+        const trimmedText = csvText.trim();
+        
+        // Ignorer si c'est du HTML
+        if (trimmedText.startsWith('<!DOCTYPE') || trimmedText.startsWith('<html')) continue;
+        
+        // Parser pour compter les lignes
+        const workbook = XLSX.read(csvText, { type: 'string' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1, defval: '' });
+        
+        // Filtrer les lignes vides
+        const nonEmptyRows = jsonData.filter(row => 
+          row.some(cell => cell !== '' && cell !== null && cell !== undefined)
+        );
+        
+        if (nonEmptyRows.length > 0) {
+          // Essayer d'extraire le nom de l'onglet depuis la première ligne d'en-tête ou utiliser un nom générique
+          const firstHeader = jsonData[0]?.[0] || '';
+          const tabName = gid === '0' ? (t('main_tab') || 'Onglet principal') : `${t('tab') || 'Onglet'} ${parseInt(gid) + 1}`;
+          
+          tabs.push({
+            gid,
+            name: tabName,
+            rowCount: nonEmptyRows.length - 1, // -1 pour exclure l'en-tête
+          });
+        }
+      } catch {
+        // Ignorer les erreurs pour cet onglet
+        continue;
+      }
+    }
+    
+    return tabs;
+  }, [t]);
+
   // Charger un Google Sheet via son URL
-  const handleGoogleSheetImport = useCallback(async () => {
+  const handleGoogleSheetImport = useCallback(async (forceGid?: string) => {
     if (!googleSheetUrl.trim()) {
       setError(t('google_sheet_url_required') || 'Veuillez coller un lien Google Sheets');
       return;
@@ -358,16 +416,49 @@ export default function ExcelImportModal({
       return;
     }
 
+    // Utiliser le gid forcé, ou celui de l'URL, ou celui sélectionné
+    const gidToUse = forceGid || sheetInfo.gid || selectedTabGid;
+
+    // Si pas de gid et pas encore d'onglets détectés, détecter les onglets
+    if (!gidToUse && availableTabs.length === 0) {
+      setDetectingTabs(true);
+      setError(null);
+      
+      try {
+        const tabs = await detectGoogleSheetTabs(sheetInfo.sheetId);
+        
+        if (tabs.length === 0) {
+          setError(t('google_sheet_access_denied') || 'Accès refusé. Vérifiez que le fichier est partagé publiquement.');
+          return;
+        }
+        
+        if (tabs.length === 1) {
+          // Un seul onglet, charger directement
+          setSelectedTabGid(tabs[0].gid);
+          handleGoogleSheetImport(tabs[0].gid);
+          return;
+        }
+        
+        // Plusieurs onglets, afficher la sélection
+        setAvailableTabs(tabs);
+        return;
+      } catch (err) {
+        console.error('Error detecting tabs:', err);
+        setError(t('google_sheet_error') || 'Erreur lors du chargement du Google Sheet');
+        return;
+      } finally {
+        setDetectingTabs(false);
+      }
+    }
+
     setLoadingGoogleSheet(true);
     setError(null);
 
     try {
       // URL d'export CSV public de Google Sheets
-      // Note: Le sheet doit être partagé en "Tout le monde avec le lien peut voir"
-      // On ajoute le gid si présent pour exporter le bon onglet
       let exportUrl = `https://docs.google.com/spreadsheets/d/${sheetInfo.sheetId}/export?format=csv`;
-      if (sheetInfo.gid) {
-        exportUrl += `&gid=${sheetInfo.gid}`;
+      if (gidToUse) {
+        exportUrl += `&gid=${gidToUse}`;
       }
       
       const response = await fetch(exportUrl, {
@@ -406,11 +497,7 @@ export default function ExcelImportModal({
       });
       
       if (jsonData.length < 2) {
-        const hasMultipleSheets = sheetInfo.gid === null;
-        const errorMsg = hasMultipleSheets
-          ? (t('google_sheet_empty_try_tab') || 'L\'onglet semble vide. Si votre fichier a plusieurs onglets, ouvrez l\'onglet souhaité dans Google Sheets puis copiez l\'URL complète (avec #gid=...)')
-          : (t('excel_no_data') || 'Le fichier ne contient pas assez de données');
-        setError(errorMsg);
+        setError(t('excel_no_data') || 'Le fichier ne contient pas assez de données');
         return;
       }
 
@@ -425,13 +512,18 @@ export default function ExcelImportModal({
       }
       
       // Créer un "fake file" pour l'affichage
-      const tabInfo = sheetInfo.gid ? ` (onglet ${sheetInfo.gid})` : '';
+      const selectedTab = availableTabs.find(tab => tab.gid === gidToUse);
+      const tabInfo = selectedTab ? ` - ${selectedTab.name}` : (gidToUse ? ` (onglet ${gidToUse})` : '');
       setFile({ name: `Google Sheet${tabInfo}` } as File);
       setHeaders(headerRow);
       setExcelData(dataRows.map(row => row.map(cell => String(cell || ''))));
       
       // Auto-mapping
       autoMapColumns(headerRow);
+      
+      // Reset tab selection
+      setAvailableTabs([]);
+      setSelectedTabGid(null);
       
       setStep('mapping');
     } catch (err) {
@@ -444,7 +536,7 @@ export default function ExcelImportModal({
     } finally {
       setLoadingGoogleSheet(false);
     }
-  }, [googleSheetUrl, t, autoMapColumns]);
+  }, [googleSheetUrl, t, autoMapColumns, selectedTabGid, availableTabs, detectGoogleSheetTabs]);
 
   // Parse une date depuis différents formats
   const parseDate = (value: string): string | null => {
@@ -1016,10 +1108,86 @@ export default function ExcelImportModal({
                     </button>
                   </div>
                   
-                  <p className="text-xs text-muted mt-3 flex items-start gap-1">
-                    <IconAlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                    {t('google_sheet_share_hint') || 'Fichier > Partager > "Tous ceux disposant du lien peuvent consulter"'}
-                  </p>
+                  {/* Détection des onglets en cours */}
+                  {detectingTabs && (
+                    <div className="mt-4 p-4 bg-muted rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <IconLoader2 className="w-5 h-5 text-accent animate-spin" />
+                        <div>
+                          <p className="text-sm font-medium text-primary">
+                            {t('detecting_tabs') || 'Détection des onglets...'}
+                          </p>
+                          <p className="text-xs text-muted">
+                            {t('detecting_tabs_hint') || 'Recherche des onglets disponibles dans le fichier'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Sélection d'onglet si plusieurs détectés */}
+                  {availableTabs.length > 1 && (
+                    <div className="mt-4 p-4 bg-accent-light border border-accent rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <IconTable className="w-5 h-5 text-accent" />
+                        <h4 className="text-sm font-medium text-primary">
+                          {t('select_tab') || 'Sélectionnez un onglet'}
+                        </h4>
+                      </div>
+                      <p className="text-xs text-muted mb-3">
+                        {t('multiple_tabs_found') || 'Plusieurs onglets ont été détectés dans ce fichier'}
+                      </p>
+                      <div className="space-y-2">
+                        {availableTabs.map((tab) => (
+                          <button
+                            key={tab.gid}
+                            onClick={() => {
+                              setSelectedTabGid(tab.gid);
+                              handleGoogleSheetImport(tab.gid);
+                            }}
+                            disabled={loadingGoogleSheet}
+                            className={`w-full p-3 rounded-lg border transition-all flex items-center justify-between ${
+                              selectedTabGid === tab.gid
+                                ? 'border-accent bg-accent text-white'
+                                : 'border-default bg-card hover:border-accent hover:bg-hover'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                                selectedTabGid === tab.gid ? 'bg-white/20' : 'bg-muted'
+                              }`}>
+                                <IconTable className={`w-4 h-4 ${
+                                  selectedTabGid === tab.gid ? 'text-white' : 'text-accent'
+                                }`} />
+                              </div>
+                              <div className="text-left">
+                                <p className={`text-sm font-medium ${
+                                  selectedTabGid === tab.gid ? 'text-white' : 'text-primary'
+                                }`}>
+                                  {tab.name}
+                                </p>
+                                <p className={`text-xs ${
+                                  selectedTabGid === tab.gid ? 'text-white/70' : 'text-muted'
+                                }`}>
+                                  {tab.rowCount} {t('rows') || 'lignes'}
+                                </p>
+                              </div>
+                            </div>
+                            {loadingGoogleSheet && selectedTabGid === tab.gid && (
+                              <IconLoader2 className="w-4 h-4 animate-spin text-white" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {availableTabs.length === 0 && !detectingTabs && (
+                    <p className="text-xs text-muted mt-3 flex items-start gap-1">
+                      <IconAlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                      {t('google_sheet_share_hint') || 'Fichier > Partager > "Tous ceux disposant du lien peuvent consulter"'}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
