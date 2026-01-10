@@ -399,7 +399,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-hover/50 border border-border rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-accent-light border border-accent rounded-lg">
                   <div className="flex items-center gap-3">
                     <IconUsers className="w-5 h-5 text-emerald-400" />
                     <span className="text-secondary">{t('active_clients')}</span>
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                   <span className="font-bold text-emerald-400">{stats.activeClients.length}</span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-hover/50 border border-border rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-accent-light border border-accent   rounded-lg">
                   <div className="flex items-center gap-3">
                     <IconBriefcase className="w-5 h-5 text-blue-400" />
                     <span className="text-secondary">{t('projects_in_progress')}</span>
@@ -415,7 +415,7 @@ export default function DashboardPage() {
                   <span className="font-bold text-blue-400">{stats.inProgressProjects.length}</span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-hover/50 border border-border rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-accent-light border border-accent rounded-lg">
                   <div className="flex items-center gap-3">
                     <IconCheck className="w-5 h-5 text-green-400" />
                     <span className="text-secondary">{t('completed_projects')}</span>
@@ -423,7 +423,7 @@ export default function DashboardPage() {
                   <span className="font-bold text-green-400">{stats.completedProjects.length}</span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-hover/50 border border-border rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-accent-light border border-accent rounded-lg">
                   <div className="flex items-center gap-3">
                     <IconTrendingUp className="w-5 h-5 text-purple-400" />
                     <span className="text-secondary">{t('conversion_rate')}</span>

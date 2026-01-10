@@ -1,11 +1,12 @@
 'use client';
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 
-export type ThemeMode = 'dark' | 'light' | 'system';
+export type ThemeMode = 'dark' | 'light' | 'brutalist' | 'system';
+export type ResolvedTheme = 'dark' | 'light' | 'brutalist';
 
 interface ThemeContextType {
   theme: ThemeMode;
-  resolvedTheme: 'dark' | 'light';
+  resolvedTheme: ResolvedTheme;
   setTheme: (theme: ThemeMode) => void;
 }
 
@@ -15,11 +16,11 @@ const STORAGE_KEY = 'eclipse-theme';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>('dark');
-  const [resolvedTheme, setResolvedTheme] = useState<'dark' | 'light'>('dark');
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('dark');
   const [mounted, setMounted] = useState(false);
 
   // Déterminer le thème résolu basé sur les préférences système
-  const getResolvedTheme = useCallback((mode: ThemeMode): 'dark' | 'light' => {
+  const getResolvedTheme = useCallback((mode: ThemeMode): ResolvedTheme => {
     if (mode === 'system') {
       if (typeof window !== 'undefined') {
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -30,15 +31,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Appliquer le thème au document
-  const applyTheme = useCallback((resolved: 'dark' | 'light') => {
+  const applyTheme = useCallback((resolved: ResolvedTheme) => {
     const root = document.documentElement;
-    root.classList.remove('light', 'dark');
+    root.classList.remove('light', 'dark', 'brutalist');
     root.classList.add(resolved);
     
     // Mettre à jour les meta tags pour mobile
     const metaTheme = document.querySelector('meta[name="theme-color"]');
     if (metaTheme) {
-      metaTheme.setAttribute('content', resolved === 'dark' ? '#000000' : '#ffffff');
+      metaTheme.setAttribute('content', resolved === 'light' ? '#ffffff' : '#000000');
     }
   }, []);
 
@@ -68,7 +69,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
-      const resolved = e.matches ? 'dark' : 'light';
+      const resolved: ResolvedTheme = e.matches ? 'dark' : 'light';
       setResolvedTheme(resolved);
       applyTheme(resolved);
     };

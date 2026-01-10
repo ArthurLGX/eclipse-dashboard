@@ -180,6 +180,88 @@
 }
 
 /* ============================================
+   BRUTALIST THEME
+   ============================================ */
+:root.brutalist {
+  /* Backgrounds - Raw blacks and whites */
+  --bg-page: #0A0A0A;
+  --bg-card: #141414;
+  --bg-card-hover: #1C1C1C;
+  --bg-input: #0A0A0A;
+  --bg-sidebar: #000000;
+  --bg-hover: #1C1C1C;
+  --bg-muted: #0F0F0F;
+  
+  /* Borders - Strong, visible */
+  --border-default: #333333;
+  --border-input: #444444;
+  --border-muted: #222222;
+  
+  /* Text colors - High contrast */
+  --text-primary: #FFFFFF;
+  --text-secondary: #B0B0B0;
+  --text-muted: #707070;
+  --text-placeholder: #505050;
+  
+  /* Accent colors - Monochrome with white accent */
+  --color-accent: #FFFFFF;
+  --color-accent-light: #E0E0E0;
+  --color-accent-bg: rgba(255, 255, 255, 0.08);
+  --color-accent-muted: rgba(255, 255, 255, 0.12);
+  --color-accent-subtle: rgba(255, 255, 255, 0.18);
+  --color-accent-border: rgba(255, 255, 255, 0.25);
+  --color-accent-text: #000000;
+  
+  /* Navigation active colors */
+  --nav-active-bg: rgba(255, 255, 255, 0.1);
+  --nav-active-text: #FFFFFF;
+  --nav-active-border: rgba(255, 255, 255, 0.3);
+  
+  /* Semantic colors - Muted, industrial */
+  --color-primary: #FFFFFF;
+  --color-primary-bg: rgba(255, 255, 255, 0.08);
+  --color-primary-border: rgba(255, 255, 255, 0.2);
+  --color-primary-text: #FFFFFF;
+  
+  --color-success: #A0A0A0;
+  --color-success-bg: rgba(160, 160, 160, 0.1);
+  --color-success-border: rgba(160, 160, 160, 0.25);
+  --color-success-text: #C0C0C0;
+  
+  --color-info: #909090;
+  --color-info-bg: rgba(144, 144, 144, 0.1);
+  --color-info-border: rgba(144, 144, 144, 0.25);
+  --color-info-text: #B0B0B0;
+  
+  --color-warning: #808080;
+  --color-warning-bg: rgba(128, 128, 128, 0.1);
+  --color-warning-border: rgba(128, 128, 128, 0.25);
+  --color-warning-text: #A0A0A0;
+  
+  --color-danger: #FFFFFF;
+  --color-danger-bg: rgba(255, 255, 255, 0.08);
+  --color-danger-border: rgba(255, 255, 255, 0.2);
+  --color-danger-text: #FFFFFF;
+  
+  /* Shadows - Minimal */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-accent: none;
+  
+  /* Gradients - Flat */
+  --gradient-sidebar: #000000;
+  
+  /* Banner gradients - Monochrome */
+  --banner-blue: linear-gradient(to bottom right, #1a1a1a, #0a0a0a, #0a0a0a);
+  --banner-emerald: linear-gradient(to bottom right, #181818, #0a0a0a, #0a0a0a);
+  --banner-amber: linear-gradient(to bottom right, #1c1c1c, #0a0a0a, #0a0a0a);
+  --banner-purple: linear-gradient(to bottom right, #161616, #0a0a0a, #0a0a0a);
+  --banner-rose: linear-gradient(to bottom right, #141414, #0a0a0a, #0a0a0a);
+  --banner-cyan: linear-gradient(to bottom right, #121212, #0a0a0a, #0a0a0a);
+}
+
+/* ============================================
    UTILITY CLASSES - Use these in TSX files
    ============================================ */
 

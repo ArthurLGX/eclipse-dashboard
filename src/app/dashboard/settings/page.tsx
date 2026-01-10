@@ -34,6 +34,7 @@ import {
   IconCheck,
   IconPlugConnected,
   IconChevronRight,
+  IconSquare,
 } from '@tabler/icons-react';
 import SmtpConfigSection from '@/app/components/SmtpConfigSection';
 import EmailSignatureSection from '@/app/components/EmailSignatureSection';
@@ -260,15 +261,20 @@ export default function SettingsPage() {
                 {[
                   { value: 'light', icon: <IconSun className="w-4 h-4" />, label: t('theme_light') || 'Clair' },
                   { value: 'dark', icon: <IconMoon className="w-4 h-4" />, label: t('theme_dark') || 'Sombre' },
+                  { value: 'brutalist', icon: <IconSquare className="w-4 h-4" />, label: t('theme_brutalist') || 'Brutaliste' },
                   { value: 'system', icon: <IconDeviceDesktop className="w-4 h-4" />, label: t('theme_system') || 'Système' },
                 ].map((opt) => (
-                  <OptionButton key={opt.value} selected={theme === opt.value} onClick={() => setTheme(opt.value as 'light' | 'dark' | 'system')}>
+                  <OptionButton key={opt.value} selected={theme === opt.value} onClick={() => setTheme(opt.value as 'light' | 'dark' | 'brutalist' | 'system')}>
                     {opt.icon} {opt.label}
                   </OptionButton>
                 ))}
               </div>
               <p className="text-xs text-muted mt-2">
-                {t('current_theme') || 'Actuel'}: {resolvedTheme === 'dark' ? (t('theme_dark') || 'Sombre') : (t('theme_light') || 'Clair')}
+                {t('current_theme') || 'Actuel'}: {
+                  resolvedTheme === 'dark' ? (t('theme_dark') || 'Sombre') : 
+                  resolvedTheme === 'brutalist' ? (t('theme_brutalist') || 'Brutaliste') : 
+                  (t('theme_light') || 'Clair')
+                }
               </p>
             </SettingsRow>
 
