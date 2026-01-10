@@ -117,83 +117,61 @@ interface PortfolioSettings {
 // CONSTANTS
 // ============================================================================
 
-// Complete Google Fonts list organized by category
-const GOOGLE_FONTS = {
-  sans: [
-    { id: 'inter', name: 'Inter', family: "'Inter', sans-serif", googleName: 'Inter' },
-    { id: 'roboto', name: 'Roboto', family: "'Roboto', sans-serif", googleName: 'Roboto' },
-    { id: 'open-sans', name: 'Open Sans', family: "'Open Sans', sans-serif", googleName: 'Open+Sans' },
-    { id: 'montserrat', name: 'Montserrat', family: "'Montserrat', sans-serif", googleName: 'Montserrat' },
-    { id: 'lato', name: 'Lato', family: "'Lato', sans-serif", googleName: 'Lato' },
-    { id: 'poppins', name: 'Poppins', family: "'Poppins', sans-serif", googleName: 'Poppins' },
-    { id: 'manrope', name: 'Manrope', family: "'Manrope', sans-serif", googleName: 'Manrope' },
-    { id: 'nunito', name: 'Nunito', family: "'Nunito', sans-serif", googleName: 'Nunito' },
-    { id: 'work-sans', name: 'Work Sans', family: "'Work Sans', sans-serif", googleName: 'Work+Sans' },
-    { id: 'dm-sans', name: 'DM Sans', family: "'DM Sans', sans-serif", googleName: 'DM+Sans' },
-    { id: 'space-grotesk', name: 'Space Grotesk', family: "'Space Grotesk', sans-serif", googleName: 'Space+Grotesk' },
-    { id: 'outfit', name: 'Outfit', family: "'Outfit', sans-serif", googleName: 'Outfit' },
-    { id: 'plus-jakarta-sans', name: 'Plus Jakarta Sans', family: "'Plus Jakarta Sans', sans-serif", googleName: 'Plus+Jakarta+Sans' },
-    { id: 'sora', name: 'Sora', family: "'Sora', sans-serif", googleName: 'Sora' },
-    { id: 'figtree', name: 'Figtree', family: "'Figtree', sans-serif", googleName: 'Figtree' },
-    { id: 'urbanist', name: 'Urbanist', family: "'Urbanist', sans-serif", googleName: 'Urbanist' },
-    { id: 'red-hat-display', name: 'Red Hat Display', family: "'Red Hat Display', sans-serif", googleName: 'Red+Hat+Display' },
-    { id: 'quicksand', name: 'Quicksand', family: "'Quicksand', sans-serif", googleName: 'Quicksand' },
-    { id: 'karla', name: 'Karla', family: "'Karla', sans-serif", googleName: 'Karla' },
-    { id: 'barlow', name: 'Barlow', family: "'Barlow', sans-serif", googleName: 'Barlow' },
-    { id: 'mulish', name: 'Mulish', family: "'Mulish', sans-serif", googleName: 'Mulish' },
-    { id: 'raleway', name: 'Raleway', family: "'Raleway', sans-serif", googleName: 'Raleway' },
-    { id: 'archivo', name: 'Archivo', family: "'Archivo', sans-serif", googleName: 'Archivo' },
-    { id: 'be-vietnam-pro', name: 'Be Vietnam Pro', family: "'Be Vietnam Pro', sans-serif", googleName: 'Be+Vietnam+Pro' },
-    { id: 'lexend', name: 'Lexend', family: "'Lexend', sans-serif", googleName: 'Lexend' },
+// Type for Google Font from API
+interface GoogleFontItem {
+  id: string;
+  name: string;
+  family: string;
+  googleName: string;
+  category: string;
+  variants?: string[];
+  weights?: number[];
+}
+
+// Organized fonts by category (loaded from API)
+interface GoogleFontsCategories {
+  'sans-serif': GoogleFontItem[];
+  serif: GoogleFontItem[];
+  display: GoogleFontItem[];
+  handwriting: GoogleFontItem[];
+  monospace: GoogleFontItem[];
+}
+
+// Default fallback fonts (used while API loads or if it fails)
+const DEFAULT_GOOGLE_FONTS: GoogleFontsCategories = {
+  'sans-serif': [
+    { id: 'inter', name: 'Inter', family: "'Inter', sans-serif", googleName: 'Inter', category: 'sans-serif' },
+    { id: 'roboto', name: 'Roboto', family: "'Roboto', sans-serif", googleName: 'Roboto', category: 'sans-serif' },
+    { id: 'open-sans', name: 'Open Sans', family: "'Open Sans', sans-serif", googleName: 'Open+Sans', category: 'sans-serif' },
+    { id: 'montserrat', name: 'Montserrat', family: "'Montserrat', sans-serif", googleName: 'Montserrat', category: 'sans-serif' },
+    { id: 'poppins', name: 'Poppins', family: "'Poppins', sans-serif", googleName: 'Poppins', category: 'sans-serif' },
   ],
   serif: [
-    { id: 'playfair-display', name: 'Playfair Display', family: "'Playfair Display', serif", googleName: 'Playfair+Display' },
-    { id: 'cormorant', name: 'Cormorant', family: "'Cormorant', serif", googleName: 'Cormorant' },
-    { id: 'cormorant-garamond', name: 'Cormorant Garamond', family: "'Cormorant Garamond', serif", googleName: 'Cormorant+Garamond' },
-    { id: 'lora', name: 'Lora', family: "'Lora', serif", googleName: 'Lora' },
-    { id: 'merriweather', name: 'Merriweather', family: "'Merriweather', serif", googleName: 'Merriweather' },
-    { id: 'libre-baskerville', name: 'Libre Baskerville', family: "'Libre Baskerville', serif", googleName: 'Libre+Baskerville' },
-    { id: 'dm-serif-display', name: 'DM Serif Display', family: "'DM Serif Display', serif", googleName: 'DM+Serif+Display' },
-    { id: 'fraunces', name: 'Fraunces', family: "'Fraunces', serif", googleName: 'Fraunces' },
-    { id: 'crimson-text', name: 'Crimson Text', family: "'Crimson Text', serif", googleName: 'Crimson+Text' },
-    { id: 'spectral', name: 'Spectral', family: "'Spectral', serif", googleName: 'Spectral' },
-    { id: 'eb-garamond', name: 'EB Garamond', family: "'EB Garamond', serif", googleName: 'EB+Garamond' },
-    { id: 'source-serif-pro', name: 'Source Serif Pro', family: "'Source Serif Pro', serif", googleName: 'Source+Serif+Pro' },
-    { id: 'bitter', name: 'Bitter', family: "'Bitter', serif", googleName: 'Bitter' },
-    { id: 'cardo', name: 'Cardo', family: "'Cardo', serif", googleName: 'Cardo' },
-    { id: 'noto-serif', name: 'Noto Serif', family: "'Noto Serif', serif", googleName: 'Noto+Serif' },
+    { id: 'playfair-display', name: 'Playfair Display', family: "'Playfair Display', serif", googleName: 'Playfair+Display', category: 'serif' },
+    { id: 'lora', name: 'Lora', family: "'Lora', serif", googleName: 'Lora', category: 'serif' },
+    { id: 'merriweather', name: 'Merriweather', family: "'Merriweather', serif", googleName: 'Merriweather', category: 'serif' },
   ],
   display: [
-    { id: 'bebas-neue', name: 'Bebas Neue', family: "'Bebas Neue', sans-serif", googleName: 'Bebas+Neue' },
-    { id: 'righteous', name: 'Righteous', family: "'Righteous', sans-serif", googleName: 'Righteous' },
-    { id: 'oswald', name: 'Oswald', family: "'Oswald', sans-serif", googleName: 'Oswald' },
-    { id: 'archivo-black', name: 'Archivo Black', family: "'Archivo Black', sans-serif", googleName: 'Archivo+Black' },
-    { id: 'anton', name: 'Anton', family: "'Anton', sans-serif", googleName: 'Anton' },
-    { id: 'rubik', name: 'Rubik', family: "'Rubik', sans-serif", googleName: 'Rubik' },
-    { id: 'josefin-sans', name: 'Josefin Sans', family: "'Josefin Sans', sans-serif", googleName: 'Josefin+Sans' },
-    { id: 'russo-one', name: 'Russo One', family: "'Russo One', sans-serif", googleName: 'Russo+One' },
-    { id: 'space-mono', name: 'Space Mono', family: "'Space Mono', monospace", googleName: 'Space+Mono' },
-    { id: 'alfa-slab-one', name: 'Alfa Slab One', family: "'Alfa Slab One', serif", googleName: 'Alfa+Slab+One' },
-    { id: 'staatliches', name: 'Staatliches', family: "'Staatliches', sans-serif", googleName: 'Staatliches' },
-    { id: 'monoton', name: 'Monoton', family: "'Monoton', cursive", googleName: 'Monoton' },
+    { id: 'bebas-neue', name: 'Bebas Neue', family: "'Bebas Neue', sans-serif", googleName: 'Bebas+Neue', category: 'display' },
+    { id: 'oswald', name: 'Oswald', family: "'Oswald', sans-serif", googleName: 'Oswald', category: 'display' },
   ],
   handwriting: [
-    { id: 'dancing-script', name: 'Dancing Script', family: "'Dancing Script', cursive", googleName: 'Dancing+Script' },
-    { id: 'pacifico', name: 'Pacifico', family: "'Pacifico', cursive", googleName: 'Pacifico' },
-    { id: 'caveat', name: 'Caveat', family: "'Caveat', cursive", googleName: 'Caveat' },
-    { id: 'sacramento', name: 'Sacramento', family: "'Sacramento', cursive", googleName: 'Sacramento' },
-    { id: 'great-vibes', name: 'Great Vibes', family: "'Great Vibes', cursive", googleName: 'Great+Vibes' },
-    { id: 'satisfy', name: 'Satisfy', family: "'Satisfy', cursive", googleName: 'Satisfy' },
-    { id: 'kalam', name: 'Kalam', family: "'Kalam', cursive", googleName: 'Kalam' },
+    { id: 'dancing-script', name: 'Dancing Script', family: "'Dancing Script', cursive", googleName: 'Dancing+Script', category: 'handwriting' },
+    { id: 'pacifico', name: 'Pacifico', family: "'Pacifico', cursive", googleName: 'Pacifico', category: 'handwriting' },
+  ],
+  monospace: [
+    { id: 'fira-code', name: 'Fira Code', family: "'Fira Code', monospace", googleName: 'Fira+Code', category: 'monospace' },
+    { id: 'jetbrains-mono', name: 'JetBrains Mono', family: "'JetBrains Mono', monospace", googleName: 'JetBrains+Mono', category: 'monospace' },
   ],
 };
 
-// Flatten fonts for easy access
-const ALL_FONTS = [
-  ...GOOGLE_FONTS.sans,
-  ...GOOGLE_FONTS.serif,
-  ...GOOGLE_FONTS.display,
-  ...GOOGLE_FONTS.handwriting,
+// Flatten fonts for easy access (will be updated with API data)
+const getDefaultAllFonts = (): GoogleFontItem[] => [
+  ...DEFAULT_GOOGLE_FONTS['sans-serif'],
+  ...DEFAULT_GOOGLE_FONTS.serif,
+  ...DEFAULT_GOOGLE_FONTS.display,
+  ...DEFAULT_GOOGLE_FONTS.handwriting,
+  ...DEFAULT_GOOGLE_FONTS.monospace,
 ];
 
 // Font weights available
@@ -432,11 +410,15 @@ interface SettingsPanelProps {
   onClose: () => void;
   settings: PortfolioSettings;
   onSettingsChange: (settings: PortfolioSettings) => void;
+  googleFonts: GoogleFontsCategories;
+  fontsLoading?: boolean;
+  allFonts: GoogleFontItem[];
 }
 
-function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: SettingsPanelProps) {
+function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFonts, fontsLoading, allFonts }: SettingsPanelProps) {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'branding' | 'typography' | 'layout' | 'share'>('branding');
+  const [fontSearch, setFontSearch] = useState('');
 
   // Lock Lenis scroll when panel is open
   useModalLenis(isOpen);
@@ -445,41 +427,59 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
     onSettingsChange({ ...settings, [key]: value });
   };
 
-  // Render font selector with categories
+  // Filter fonts by search query
+  const filterFonts = (fonts: GoogleFontItem[]) => {
+    if (!fontSearch) return fonts;
+    return fonts.filter(f => f.name.toLowerCase().includes(fontSearch.toLowerCase()));
+  };
+
+  // Render font selector with categories and search
   const renderFontSelector = (value: string, onChange: (fontId: string) => void, label: string) => (
     <div>
       <label className="block text-sm font-medium text-secondary mb-2">{label}</label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
-      >
-        {settings.customFontName && settings.customFontUrl && (
-          <optgroup label="🎨 Police personnalisée">
-            <option value="custom">{settings.customFontName}</option>
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+        >
+          {settings.customFontName && settings.customFontUrl && (
+            <optgroup label="🎨 Police personnalisée">
+              <option value="custom">{settings.customFontName}</option>
+            </optgroup>
+          )}
+          <optgroup label="Sans Serif">
+            {filterFonts(googleFonts['sans-serif']).map((font) => (
+              <option key={font.id} value={font.id}>{font.name}</option>
+            ))}
           </optgroup>
+          <optgroup label="Serif">
+            {filterFonts(googleFonts.serif).map((font) => (
+              <option key={font.id} value={font.id}>{font.name}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Display">
+            {filterFonts(googleFonts.display).map((font) => (
+              <option key={font.id} value={font.id}>{font.name}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Handwriting">
+            {filterFonts(googleFonts.handwriting).map((font) => (
+              <option key={font.id} value={font.id}>{font.name}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Monospace">
+            {filterFonts(googleFonts.monospace).map((font) => (
+              <option key={font.id} value={font.id}>{font.name}</option>
+            ))}
+          </optgroup>
+        </select>
+        {fontsLoading && (
+          <div className="absolute right-8 top-1/2 -translate-y-1/2">
+            <IconLoader2 size={16} className="animate-spin text-muted" />
+          </div>
         )}
-        <optgroup label="Sans Serif">
-          {GOOGLE_FONTS.sans.map((font) => (
-            <option key={font.id} value={font.id}>{font.name}</option>
-          ))}
-        </optgroup>
-        <optgroup label="Serif">
-          {GOOGLE_FONTS.serif.map((font) => (
-            <option key={font.id} value={font.id}>{font.name}</option>
-          ))}
-        </optgroup>
-        <optgroup label="Display">
-          {GOOGLE_FONTS.display.map((font) => (
-            <option key={font.id} value={font.id}>{font.name}</option>
-          ))}
-        </optgroup>
-        <optgroup label="Handwriting">
-          {GOOGLE_FONTS.handwriting.map((font) => (
-            <option key={font.id} value={font.id}>{font.name}</option>
-          ))}
-        </optgroup>
-      </select>
+      </div>
     </div>
   );
 
@@ -685,6 +685,32 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
         {/* Typography Tab */}
         {activeTab === 'typography' && (
           <>
+            {/* Font Search */}
+            <div className="bg-muted/30 rounded-lg p-3 border border-default">
+              <label className="block text-xs font-medium text-secondary mb-2">{t('portfolio_search_font')}</label>
+              <div className="relative">
+                <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                <input
+                  type="text"
+                  value={fontSearch}
+                  onChange={(e) => setFontSearch(e.target.value)}
+                  placeholder={t('portfolio_search_font_placeholder')}
+                  className="w-full pl-9 pr-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                />
+                {fontSearch && (
+                  <button
+                    onClick={() => setFontSearch('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary"
+                  >
+                    <IconX size={14} />
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-muted mt-2">
+                {fontsLoading ? t('portfolio_loading_fonts') : `${allFonts.length} ${t('portfolio_fonts_available')}`}
+              </p>
+            </div>
+
             {/* Title Typography */}
             <div className="space-y-4">
               <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
@@ -1385,18 +1411,19 @@ interface ProjectCardProps {
   onEdit: () => void;
   onDelete: () => void;
   index: number;
+  allFonts: GoogleFontItem[];
 }
 
 // Helper function to get font family
-function getFontFamily(fontId: string, settings: PortfolioSettings): string {
+function getFontFamily(fontId: string, settings: PortfolioSettings, allFonts: GoogleFontItem[] = getDefaultAllFonts()): string {
   if (fontId === 'custom' && settings.customFontName) {
     return `'${settings.customFontName}', sans-serif`;
   }
-  const font = ALL_FONTS.find(f => f.id === fontId);
+  const font = allFonts.find(f => f.id === fontId);
   return font?.family || "'Manrope', sans-serif";
 }
 
-function ProjectCard({ project, settings, onClick, onEdit, onDelete, index }: ProjectCardProps) {
+function ProjectCard({ project, settings, onClick, onEdit, onDelete, index, allFonts }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const coverMedia = project.media[project.coverIndex] || project.media[0];
 
@@ -1419,7 +1446,7 @@ function ProjectCard({ project, settings, onClick, onEdit, onDelete, index }: Pr
     }
   };
 
-  const projectTitleFont = getFontFamily(settings.projectTitleFont, settings);
+  const projectTitleFont = getFontFamily(settings.projectTitleFont, settings, allFonts);
 
   return (
     <motion.div
@@ -2183,6 +2210,11 @@ export default function PortfolioPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Google Fonts state
+  const [googleFonts, setGoogleFonts] = useState<GoogleFontsCategories>(DEFAULT_GOOGLE_FONTS);
+  const [fontsLoading, setFontsLoading] = useState(true);
+  const [allFonts, setAllFonts] = useState<GoogleFontItem[]>(getDefaultAllFonts());
 
   // Load portfolio data from API
   useEffect(() => {
@@ -2224,6 +2256,48 @@ export default function PortfolioPage() {
     };
 
     loadPortfolio();
+  }, []);
+
+  // Load Google Fonts from API
+  useEffect(() => {
+    const loadGoogleFonts = async () => {
+      try {
+        setFontsLoading(true);
+        const response = await fetch('/api/google-fonts?sort=popularity&limit=300');
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (data.fonts && data.fonts.length > 0) {
+            // Organize fonts by category
+            const organized: GoogleFontsCategories = {
+              'sans-serif': [],
+              serif: [],
+              display: [],
+              handwriting: [],
+              monospace: [],
+            };
+            
+            data.fonts.forEach((font: GoogleFontItem) => {
+              const category = font.category as keyof GoogleFontsCategories;
+              if (organized[category]) {
+                organized[category].push(font);
+              }
+            });
+            
+            setGoogleFonts(organized);
+            setAllFonts(data.fonts);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading Google Fonts:', error);
+        // Keep using default fonts on error
+      } finally {
+        setFontsLoading(false);
+      }
+    };
+
+    loadGoogleFonts();
   }, []);
 
   // Auto-save settings with debounce
@@ -2341,12 +2415,14 @@ export default function PortfolioPage() {
   };
 
   // Get font families
-  const titleFont = getFontFamily(settings.titleFont, settings);
-  const subtitleFont = getFontFamily(settings.subtitleFont, settings);
+  const titleFont = getFontFamily(settings.titleFont, settings, allFonts);
+  const subtitleFont = getFontFamily(settings.subtitleFont, settings, allFonts);
 
-  // Preload ALL Google Fonts on mount (like ThemeCustomizer)
+  // Preload Google Fonts when allFonts changes
   useEffect(() => {
-    ALL_FONTS.forEach(font => {
+    if (allFonts.length === 0) return;
+    
+    allFonts.forEach(font => {
       const fontName = font.googleName;
       const linkId = `portfolio-font-${font.id}`;
       
@@ -2360,7 +2436,7 @@ export default function PortfolioPage() {
         document.head.appendChild(link);
       }
     });
-  }, []); // Only run once on mount
+  }, [allFonts]); // Re-run when fonts are loaded from API
 
   // Load custom font if specified
   useEffect(() => {
@@ -2611,6 +2687,7 @@ export default function PortfolioPage() {
                       onEdit={() => handleEdit(project)}
                       onDelete={() => handleDelete(project)}
                       index={index}
+                      allFonts={allFonts}
                     />
                   ))}
                 </div>
@@ -2628,6 +2705,9 @@ export default function PortfolioPage() {
             onClose={() => setIsSettingsOpen(false)}
             settings={settings}
             onSettingsChange={setSettings}
+            googleFonts={googleFonts}
+            fontsLoading={fontsLoading}
+            allFonts={allFonts}
           />
         )}
       </AnimatePresence>

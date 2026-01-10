@@ -2239,6 +2239,10 @@ const translations = {
     portfolio_show_debug: 'Afficher les détails techniques',
     portfolio_hide_debug: 'Masquer',
     portfolio_editor_soon: 'L\'éditeur de texte riche sera bientôt disponible',
+    portfolio_search_font: 'Rechercher une police',
+    portfolio_search_font_placeholder: 'Ex: Montserrat, Playfair...',
+    portfolio_loading_fonts: 'Chargement des polices...',
+    portfolio_fonts_available: 'polices disponibles',
   },
 
   en: {
@@ -4408,7 +4412,10 @@ const translations = {
     portfolio_show_debug: 'Show technical details',
     portfolio_hide_debug: 'Hide',
     portfolio_editor_soon: 'Rich text editor coming soon',
-
+    portfolio_search_font: 'Search font',
+    portfolio_search_font_placeholder: 'E.g. Montserrat, Playfair...',
+    portfolio_loading_fonts: 'Loading fonts...',
+    portfolio_fonts_available: 'fonts available',
   },
 };
 

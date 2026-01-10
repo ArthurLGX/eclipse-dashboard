@@ -81,54 +81,34 @@ interface PortfolioSettings {
 // GOOGLE FONTS
 // ============================================================================
 
-const GOOGLE_FONTS = {
-  sans: [
-    { id: 'inter', name: 'Inter', family: 'Inter' },
-    { id: 'roboto', name: 'Roboto', family: 'Roboto' },
-    { id: 'open-sans', name: 'Open Sans', family: 'Open Sans' },
-    { id: 'manrope', name: 'Manrope', family: 'Manrope' },
-    { id: 'poppins', name: 'Poppins', family: 'Poppins' },
-    { id: 'montserrat', name: 'Montserrat', family: 'Montserrat' },
-    { id: 'nunito', name: 'Nunito', family: 'Nunito' },
-    { id: 'space-grotesk', name: 'Space Grotesk', family: 'Space Grotesk' },
-    { id: 'dm-sans', name: 'DM Sans', family: 'DM Sans' },
-  ],
-  serif: [
-    { id: 'playfair-display', name: 'Playfair Display', family: 'Playfair Display' },
-    { id: 'lora', name: 'Lora', family: 'Lora' },
-    { id: 'merriweather', name: 'Merriweather', family: 'Merriweather' },
-    { id: 'cormorant', name: 'Cormorant', family: 'Cormorant' },
-    { id: 'libre-baskerville', name: 'Libre Baskerville', family: 'Libre Baskerville' },
-    { id: 'source-serif-pro', name: 'Source Serif Pro', family: 'Source Serif Pro' },
-    { id: 'crimson-pro', name: 'Crimson Pro', family: 'Crimson Pro' },
-  ],
-  display: [
-    { id: 'bebas-neue', name: 'Bebas Neue', family: 'Bebas Neue' },
-    { id: 'oswald', name: 'Oswald', family: 'Oswald' },
-    { id: 'archivo-black', name: 'Archivo Black', family: 'Archivo Black' },
-    { id: 'anton', name: 'Anton', family: 'Anton' },
-    { id: 'righteous', name: 'Righteous', family: 'Righteous' },
-  ],
-  handwriting: [
-    { id: 'dancing-script', name: 'Dancing Script', family: 'Dancing Script' },
-    { id: 'pacifico', name: 'Pacifico', family: 'Pacifico' },
-    { id: 'caveat', name: 'Caveat', family: 'Caveat' },
-  ],
-};
-
-const ALL_FONTS = [
-  ...GOOGLE_FONTS.sans,
-  ...GOOGLE_FONTS.serif,
-  ...GOOGLE_FONTS.display,
-  ...GOOGLE_FONTS.handwriting,
-];
-
+// Font family helper - converts font ID to proper font family name
+// Works with any Google Font by converting kebab-case to Title Case
 const getFontFamily = (fontId: string, settings: PortfolioSettings): string => {
   if (fontId === 'custom' && settings.customFontName) {
     return `'${settings.customFontName}', sans-serif`;
   }
-  const font = ALL_FONTS.find(f => f.id === fontId);
-  return font ? `'${font.family}', sans-serif` : "'Inter', sans-serif";
+  
+  if (!fontId) return "'Inter', sans-serif";
+  
+  // Convert kebab-case to Title Case (e.g., "playfair-display" -> "Playfair Display")
+  const fontName = fontId
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+  
+  return `'${fontName}', sans-serif`;
+};
+
+// Get Google Font URL for a font ID
+const getGoogleFontUrl = (fontId: string): string => {
+  if (!fontId || fontId === 'custom') return '';
+  
+  const fontName = fontId
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('+');
+  
+  return `https://fonts.googleapis.com/css2?family=${fontName}:wght@100;200;300;400;500;600;700;800;900&display=swap`;
 };
 
 // ============================================================================
@@ -537,12 +517,12 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
 
   // Load Google Fonts - dynamically when settings change
   useEffect(() => {
-    const fontsToLoad = new Set<string>();
+    const fontIds = new Set<string>();
     
+    // Collect unique font IDs
     [settings.titleFont, settings.subtitleFont, settings.projectTitleFont].forEach(fontId => {
       if (fontId && fontId !== 'custom') {
-        const font = ALL_FONTS.find(f => f.id === fontId);
-        if (font) fontsToLoad.add(font.family);
+        fontIds.add(fontId);
       }
     });
 
@@ -553,10 +533,19 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
       existingLink.remove();
     }
 
-    if (fontsToLoad.size > 0) {
+    if (fontIds.size > 0) {
+      // Build Google Fonts URL with all fonts
+      const fontFamilies = Array.from(fontIds).map(fontId => {
+        const fontName = fontId
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join('+');
+        return `family=${fontName}:wght@100;200;300;400;500;600;700;800;900`;
+      });
+      
       const link = document.createElement('link');
       link.id = linkId;
-      link.href = `https://fonts.googleapis.com/css2?${Array.from(fontsToLoad).map(f => `family=${f.replace(/\s+/g, '+')}:wght@100;200;300;400;500;600;700;800;900`).join('&')}&display=swap`;
+      link.href = `https://fonts.googleapis.com/css2?${fontFamilies.join('&')}&display=swap`;
       link.rel = 'stylesheet';
       document.head.appendChild(link);
     }
@@ -762,4 +751,5 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
     </div>
   );
 }
+
 
