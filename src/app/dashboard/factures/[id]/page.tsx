@@ -156,7 +156,7 @@ export default function FacturePage() {
     id: 0,
     documentId: '',
     document_type: documentType,
-    reference: preferences.invoice.autoNumbering ? `${documentType === 'quote' ? preferences.invoice.quotePrefix || 'DEV-' : preferences.invoice.invoicePrefix}${Date.now().toString().slice(-6)}` : '',
+    reference: preferences.invoice.autoNumbering ? `${documentType === 'quote' ? preferences.invoice.quotePrefix || 'DEV-' : preferences.invoice.invoicePrefix}${new Date().toISOString().slice(0,10).replace(/-/g, '')}-${Math.random().toString(36).substring(2, 6).toUpperCase()}` : '',
     date: today.toISOString().split('T')[0],
     due_date: defaultDueDate.toISOString().split('T')[0],
     facture_status: 'draft',
