@@ -242,8 +242,7 @@ const translations = {
     view_all_drafts: 'Voir tous les brouillons',
     drafts_page_desc: 'Retrouvez tous vos brouillons d\'emails',
     back_to_emails: 'Retour aux emails',
-    no_subject: 'Sans objet',
-    no_recipients: 'Aucun destinataire',
+    
     just_now: 'À l\'instant',
     click_to_select_invoice: 'Cliquez pour sélectionner une facture',
     search_invoice: 'Rechercher une facture...',
@@ -1018,7 +1017,6 @@ const translations = {
     invitation_accepted: 'Invitation acceptée ! Le projet a été ajouté à votre liste.',
     invitation_rejected: 'Invitation refusée',
     view_all_notifications: 'Voir toutes les notifications',
-    just_now: "À l'instant",
     
     // Invitation de projet
     project_invitation: 'Invitation à collaborer',
@@ -2682,8 +2680,6 @@ const translations = {
     view_all_drafts: 'View all drafts',
     drafts_page_desc: 'Find all your email drafts',
     back_to_emails: 'Back to emails',
-    no_subject: 'No subject',
-    no_recipients: 'No recipients',
     just_now: 'Just now',
     click_to_select_invoice: 'Click to select an invoice',
     search_invoice: 'Search invoice...',
@@ -3305,7 +3301,6 @@ const translations = {
     invitation_accepted: 'Invitation accepted! The project has been added to your list.',
     invitation_rejected: 'Invitation rejected',
     view_all_notifications: 'View all notifications',
-    just_now: 'Just now',
     project_invoicing: 'Project invoicing',
     no_invoices_for_this_project: 'No invoices for this project',
     new_invoice: 'New invoice',
