@@ -15,6 +15,7 @@ import {
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import { updateFactureById } from '@/lib/api';
+import QuoteToProjectModal from './QuoteToProjectModal';
 import type { Facture, Client } from '@/types';
 
 interface PendingQuotesWidgetProps {
@@ -215,99 +216,17 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
       </motion.div>
 
       {/* Modale de conversion devis accepté → projet */}
-      <AnimatePresence>
-        {showConversionModal && (
-          <QuoteAcceptedModal
-            quote={showConversionModal}
-            onClose={() => setShowConversionModal(null)}
-            onCreateProject={() => {
-              // TODO: Implémenter la création de projet
-              router.push(`/dashboard/projects?createFrom=quote&quoteId=${showConversionModal.documentId}`);
-              setShowConversionModal(null);
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {showConversionModal && (
+        <QuoteToProjectModal
+          isOpen={true}
+          quote={showConversionModal}
+          onClose={() => setShowConversionModal(null)}
+          onSuccess={() => {
+            onQuoteUpdated?.();
+          }}
+        />
+      )}
     </>
-  );
-}
-
-// Modale affichée quand un devis est accepté
-interface QuoteAcceptedModalProps {
-  quote: Facture;
-  onClose: () => void;
-  onCreateProject: () => void;
-}
-
-function QuoteAcceptedModal({ quote, onClose, onCreateProject }: QuoteAcceptedModalProps) {
-  const { t } = useLanguage();
-  const router = useRouter();
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-center">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <IconCheck className="w-8 h-8 text-green-500" stroke={2.5} />
-          </div>
-          <h2 className="text-xl font-bold text-white">
-            {t('quote_accepted_title') || 'Devis accepté !'}
-          </h2>
-          <p className="text-white/80 text-sm mt-1">
-            {quote.reference}
-          </p>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 space-y-4">
-          <p className="text-center text-secondary">
-            {t('quote_accepted_description') || 'Félicitations ! Que souhaitez-vous faire maintenant ?'}
-          </p>
-
-          {/* Actions */}
-          <div className="space-y-3">
-            <button
-              onClick={onCreateProject}
-              className="w-full py-3 px-4 bg-violet-500 text-white rounded-xl hover:bg-violet-600 transition-colors flex items-center justify-center gap-2"
-            >
-              <IconFileDescription className="w-5 h-5" />
-              {t('create_project_from_quote') || 'Créer le projet automatiquement'}
-            </button>
-
-            <button
-              onClick={() => {
-                router.push(`/dashboard/emails/invoice?createFrom=quote&quoteId=${quote.documentId}`);
-                onClose();
-              }}
-              className="w-full py-3 px-4 border border-default text-secondary rounded-xl hover:bg-hover transition-colors flex items-center justify-center gap-2"
-            >
-              <IconMail className="w-5 h-5" />
-              {t('send_deposit_invoice') || 'Envoyer une facture d\'acompte'}
-            </button>
-
-            <button
-              onClick={onClose}
-              className="w-full py-2 text-sm text-muted hover:text-primary transition-colors"
-            >
-              {t('later') || 'Plus tard'}
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
   );
 }
 
