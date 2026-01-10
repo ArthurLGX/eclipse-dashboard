@@ -126,7 +126,7 @@ export default function QuoteToProjectModal({
           user: user.id,
         };
 
-        const createdProject = await createProject(projectData);
+        const createdProject = await createProject(projectData) as { id: number; documentId: string };
         setCreatedProjectId(createdProject.documentId);
 
         // Créer les tâches à partir des lignes de prestation
