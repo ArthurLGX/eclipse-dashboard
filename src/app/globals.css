@@ -1077,13 +1077,15 @@ nav button:hover svg, nav a:hover svg {
   border-radius: 0 !important;
 }
 
-/* Brutalist hover effect - Retro press effect */
+/* Brutalist hover effect - 3D lift effect */
 :root.brutalist,
 :root.brutalist-dark,
 :root.brutalist-light {
   --brutalist-shadow-offset: 4px;
   --brutalist-shadow-color: #000000;
-  --brutalist-hover-translate: -3px;
+  /* Lift effect: move up-right, shadow stays fixed below */
+  --brutalist-hover-x: 2px;
+  --brutalist-hover-y: -2px;
 }
 
 :root.brutalist-light {
@@ -1113,15 +1115,15 @@ nav button:hover svg, nav a:hover svg {
               border-color 0.15s ease;
 }
 
-/* Hover effect for buttons */
+/* Hover effect for buttons - 3D lift with fixed shadow below */
 :root.brutalist button:hover:not(:disabled),
 :root.brutalist-dark button:hover:not(:disabled),
 :root.brutalist-light button:hover:not(:disabled),
 :root.brutalist .btn:hover:not(:disabled),
 :root.brutalist-dark .btn:hover:not(:disabled),
 :root.brutalist-light .btn:hover:not(:disabled) {
-  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
-  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
+  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
+  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
 }
 
 /* Hover effect for links */
@@ -1129,24 +1131,24 @@ nav button:hover svg, nav a:hover svg {
 :root.brutalist-dark a:not(.no-brutalist-effect):hover,
 :root.brutalist-light a:not(.no-brutalist-effect):hover {
   display: inline-block;
-  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
-  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
+  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
+  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
 }
 
 /* Hover effect for cards */
 :root.brutalist .card:hover,
 :root.brutalist-dark .card:hover,
 :root.brutalist-light .card:hover {
-  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
-  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
+  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
+  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
 }
 
 /* Hover effect for nav items */
 :root.brutalist .nav-item:hover,
 :root.brutalist-dark .nav-item:hover,
 :root.brutalist-light .nav-item:hover {
-  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
-  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
+  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
+  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
 }
 
 /* Active/pressed state */
@@ -1200,8 +1202,8 @@ nav button:hover svg, nav a:hover svg {
 :root.brutalist select:focus,
 :root.brutalist-dark select:focus,
 :root.brutalist-light select:focus {
-  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
-  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
+  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
+  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
 }
 
 /* Brutalist scrollbar */
