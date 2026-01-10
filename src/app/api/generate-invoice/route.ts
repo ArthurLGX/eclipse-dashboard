@@ -140,7 +140,7 @@ Retourne un JSON avec cette structure exacte:
         .trim();
       
       generatedData = JSON.parse(cleanedResponse);
-    } catch (parseError) {
+    } catch (_parseError) {
       console.error('Failed to parse AI response:', responseText);
       return NextResponse.json(
         { error: 'Erreur lors de l\'analyse de la réponse IA', raw: responseText },
@@ -211,7 +211,7 @@ function buildSettingsContext(settings: GenerateInvoiceRequest['userSettings']):
 function enhanceGeneratedData(
   data: GeneratedInvoiceData,
   settings: GenerateInvoiceRequest['userSettings'],
-  documentType: 'invoice' | 'quote'
+  _documentType: 'invoice' | 'quote'
 ): GeneratedInvoiceData & { 
   tvaApplicable: boolean; 
   tvaRate: number;
