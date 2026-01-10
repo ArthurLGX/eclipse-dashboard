@@ -398,37 +398,37 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-hover/50 border border-border rounded-lg">
                   <div className="flex items-center gap-3">
-                    <IconUsers className="w-5 h-5 text-emerald-500" />
+                    <IconUsers className="w-5 h-5 text-emerald-400" />
                     <span className="text-secondary">{t('active_clients')}</span>
                   </div>
-                  <span className="font-bold text-emerald-500">{stats.activeClients.length}</span>
+                  <span className="font-bold text-emerald-400">{stats.activeClients.length}</span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-hover/50 border border-border rounded-lg">
                   <div className="flex items-center gap-3">
-                    <IconBriefcase className="w-5 h-5 text-blue-500" />
+                    <IconBriefcase className="w-5 h-5 text-blue-400" />
                     <span className="text-secondary">{t('projects_in_progress')}</span>
                   </div>
-                  <span className="font-bold text-blue-500">{stats.inProgressProjects.length}</span>
+                  <span className="font-bold text-blue-400">{stats.inProgressProjects.length}</span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-hover/50 border border-border rounded-lg">
                   <div className="flex items-center gap-3">
-                    <IconCheck className="w-5 h-5 text-green-500" />
+                    <IconCheck className="w-5 h-5 text-green-400" />
                     <span className="text-secondary">{t('completed_projects')}</span>
                   </div>
-                  <span className="font-bold text-green-500">{stats.completedProjects.length}</span>
+                  <span className="font-bold text-green-400">{stats.completedProjects.length}</span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-hover/50 border border-border rounded-lg">
                   <div className="flex items-center gap-3">
-                    <IconTrendingUp className="w-5 h-5 text-purple-500" />
+                    <IconTrendingUp className="w-5 h-5 text-purple-400" />
                     <span className="text-secondary">{t('conversion_rate')}</span>
                   </div>
-                  <span className="font-bold text-purple-500">{stats.conversionRate}%</span>
+                  <span className="font-bold text-purple-400">{stats.conversionRate}%</span>
                 </div>
               </div>
             )}
