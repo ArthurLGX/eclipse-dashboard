@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { useAuth } from '@/app/context/AuthContext';
-import { updateUser, updateUserProfilePicture } from '@/lib/api';
+import { updateUser, updateUserProfilePicture, updateUserPassword } from '@/lib/api';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
@@ -22,6 +22,12 @@ export default function PersonalInformationPage() {
     username: '',
     email: '',
   });
+  
+  // Password change state
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [savingPassword, setSavingPassword] = useState(false);
 
   // Hook pour l'utilisateur courant
   const { data: profileData, loading, refetch: refetchProfile } = useCurrentUser(user?.id);
@@ -84,6 +90,34 @@ export default function PersonalInformationPage() {
       email: profile?.email || '',
     });
     setEditing(false);
+  };
+
+  const handlePasswordChange = async () => {
+    if (!user?.id) return;
+    
+    if (newPassword.length < 6) {
+      showGlobalPopup('Le mot de passe doit contenir au moins 6 caractères', 'error');
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      showGlobalPopup('Les mots de passe ne correspondent pas', 'error');
+      return;
+    }
+    
+    try {
+      setSavingPassword(true);
+      await updateUserPassword(user.id, newPassword);
+      showGlobalPopup('Mot de passe mis à jour avec succès', 'success');
+      setNewPassword('');
+      setConfirmPassword('');
+      setShowPasswordSection(false);
+    } catch (error) {
+      console.error('Error updating password:', error);
+      showGlobalPopup('Erreur lors de la mise à jour du mot de passe', 'error');
+    } finally {
+      setSavingPassword(false);
+    }
   };
 
   if (loading) {
@@ -273,6 +307,86 @@ export default function PersonalInformationPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Section Mot de passe */}
+      <div className="card p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="!text-xl font-semibold text-primary">
+            {t('change_password') || 'Changer le mot de passe'}
+          </h2>
+          {!showPasswordSection && (
+            <button
+              onClick={() => setShowPasswordSection(true)}
+              className="btn-ghost px-4 py-2 text-sm"
+            >
+              {t('modify') || 'Modifier'}
+            </button>
+          )}
+        </div>
+
+        {showPasswordSection && (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-secondary !text-sm font-light">
+                {t('new_password') || 'Nouveau mot de passe'}
+              </label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                className="input w-full p-3"
+                placeholder="••••••••"
+                minLength={6}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-secondary !text-sm font-light">
+                {t('confirm_password') || 'Confirmer le mot de passe'}
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                className="input w-full p-3"
+                placeholder="••••••••"
+                minLength={6}
+              />
+            </div>
+
+            {newPassword && confirmPassword && newPassword !== confirmPassword && (
+              <p className="text-danger text-sm">Les mots de passe ne correspondent pas</p>
+            )}
+
+            <div className="flex gap-4 pt-2">
+              <button
+                onClick={() => {
+                  setShowPasswordSection(false);
+                  setNewPassword('');
+                  setConfirmPassword('');
+                }}
+                className="btn-ghost px-4 py-2"
+                disabled={savingPassword}
+              >
+                {t('cancel') || 'Annuler'}
+              </button>
+              <button
+                onClick={handlePasswordChange}
+                disabled={savingPassword || !newPassword || !confirmPassword || newPassword !== confirmPassword}
+                className="btn-primary px-4 py-2 disabled:opacity-50"
+              >
+                {savingPassword ? (t('saving') || 'Enregistrement...') : (t('save_password') || 'Enregistrer')}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!showPasswordSection && (
+          <p className="text-muted text-sm">
+            {t('password_hint') || 'Cliquez sur Modifier pour changer votre mot de passe'}
+          </p>
+        )}
       </div>
     </motion.div>
   );

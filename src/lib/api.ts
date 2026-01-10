@@ -1031,6 +1031,14 @@ export async function updateUser(
   });
 }
 
+/** Met à jour le mot de passe d'un utilisateur (temporaire - sans vérification de l'ancien) */
+export async function updateUserPassword(userId: number, newPassword: string) {
+  return apiRequest(`users/${userId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ password: newPassword }),
+  });
+}
+
 export async function fetchCreateAccount(
   username: string,
   email: string,
