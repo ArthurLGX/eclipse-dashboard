@@ -28,7 +28,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
-import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, deleteEmailDraft } from '@/lib/api';
+import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft } from '@/lib/api';
 import type { CreateEmailSignatureData, Facture } from '@/types';
 
 interface Recipient {
@@ -105,9 +105,20 @@ function InvoiceEmail() {
             if (invoice) {
               setSelectedInvoice(invoice);
               // Pre-fill subject
-              setSubject(`Facture ${invoice.reference} - ${formatAmount(calculateTotal(invoice), invoice.currency)}`);
+              const invoiceTotal = invoice.invoice_lines?.reduce((sum: number, line: { total?: number; quantity?: number; unit_price?: number }) => {
+                return sum + (line.total || (line.quantity || 0) * (line.unit_price || 0));
+              }, 0) || 0;
+              const formattedAmount = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: invoice.currency || 'EUR' }).format(invoiceTotal);
+              const formattedDate = invoice.date ? new Date(invoice.date).toLocaleDateString('fr-FR') : '-';
+              setSubject(`Facture ${invoice.reference} - ${formattedAmount}`);
               // Pre-fill message
-              setMessage(getDefaultMessage(invoice));
+              setMessage(`Bonjour,
+
+Veuillez trouver ci-joint la facture ${invoice.reference} datée du ${formattedDate} pour un montant de ${formattedAmount}.
+
+Nous restons à votre disposition pour toute question.
+
+Cordialement`);
               // Pre-fill recipient from client
               if (invoice.client_id?.email) {
                 setRecipients([{ id: crypto.randomUUID(), email: invoice.client_id.email, name: invoice.client_id.name }]);

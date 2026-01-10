@@ -28,7 +28,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
-import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, deleteEmailDraft } from '@/lib/api';
+import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft } from '@/lib/api';
 import type { CreateEmailSignatureData, Facture } from '@/types';
 
 interface Recipient {
@@ -104,8 +104,23 @@ function QuoteEmail() {
             const quote = data.data?.find((f: Facture) => f.documentId === quoteId);
             if (quote) {
               setSelectedQuote(quote);
-              setSubject(`Devis ${quote.reference} - ${formatAmount(calculateTotal(quote), quote.currency)}`);
-              setMessage(getDefaultMessage(quote));
+              // Pre-fill subject
+              const quoteTotal = quote.invoice_lines?.reduce((sum: number, line: { total?: number; quantity?: number; unit_price?: number }) => {
+                return sum + (line.total || (line.quantity || 0) * (line.unit_price || 0));
+              }, 0) || 0;
+              const formattedAmount = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: quote.currency || 'EUR' }).format(quoteTotal);
+              const formattedDate = quote.date ? new Date(quote.date).toLocaleDateString('fr-FR') : '-';
+              setSubject(`Devis ${quote.reference} - ${formattedAmount}`);
+              // Pre-fill message
+              setMessage(`Bonjour,
+
+Suite à notre échange, veuillez trouver ci-joint le devis ${quote.reference} daté du ${formattedDate} pour un montant de ${formattedAmount}.
+
+Ce devis est valable 30 jours à compter de sa date d'émission.
+
+N'hésitez pas à nous contacter pour toute question.
+
+Cordialement`);
               if (quote.client_id?.email) {
                 setRecipients([{ id: crypto.randomUUID(), email: quote.client_id.email, name: quote.client_id.name }]);
               }
