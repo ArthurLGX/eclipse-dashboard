@@ -553,10 +553,10 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
         {/* Tabs */}
         <div className="flex-shrink-0 flex border-b border-default">
           {[
-            { id: 'branding', icon: IconPalette, label: 'Branding' },
-            { id: 'typography', icon: IconTypography, label: 'Typographie' },
-            { id: 'layout', icon: IconSparkles, label: 'Layout' },
-            { id: 'share', icon: IconShare, label: 'Partage' },
+            { id: 'branding', icon: IconPalette, label: t('portfolio_tab_branding') },
+            { id: 'typography', icon: IconTypography, label: t('portfolio_tab_typography') },
+            { id: 'layout', icon: IconSparkles, label: t('portfolio_tab_layout') },
+            { id: 'share', icon: IconShare, label: t('portfolio_tab_share') },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -617,7 +617,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
             <div className="border-t border-default pt-4">
               <h4 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
                 <IconCloudUpload size={16} />
-                Importer une police personnalisée
+                {t('portfolio_import_custom_font')}
               </h4>
               <div className="space-y-3">
                 <div>
@@ -689,14 +689,14 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
             <div className="space-y-4">
               <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
                 <IconBold size={16} />
-                Titre principal
+                {t('portfolio_title_typography')}
               </h4>
               
-              {renderFontSelector(settings.titleFont, (f) => updateSetting('titleFont', f), 'Police')}
+              {renderFontSelector(settings.titleFont, (f) => updateSetting('titleFont', f), t('portfolio_font'))}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">Graisse</label>
+                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
                   <select
                     value={settings.titleFontWeight}
                     onChange={(e) => updateSetting('titleFontWeight', Number(e.target.value))}
@@ -708,7 +708,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">Taille</label>
+                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_size')}</label>
                   <select
                     value={settings.titleSize}
                     onChange={(e) => updateSetting('titleSize', e.target.value)}
@@ -723,7 +723,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">Espacement</label>
+                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_letter_spacing')}</label>
                   <select
                     value={settings.titleLetterSpacing}
                     onChange={(e) => updateSetting('titleLetterSpacing', e.target.value)}
@@ -735,35 +735,35 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">Casse</label>
+                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_case')}</label>
                   <select
                     value={settings.titleTransform}
                     onChange={(e) => updateSetting('titleTransform', e.target.value as PortfolioSettings['titleTransform'])}
                     className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
                   >
-                    <option value="none">Normal</option>
-                    <option value="uppercase">MAJUSCULES</option>
-                    <option value="lowercase">minuscules</option>
-                    <option value="capitalize">Capitalize</option>
+                    <option value="none">{t('portfolio_case_normal')}</option>
+                    <option value="uppercase">{t('portfolio_case_uppercase')}</option>
+                    <option value="lowercase">{t('portfolio_case_lowercase')}</option>
+                    <option value="capitalize">{t('portfolio_case_capitalize')}</option>
                   </select>
                 </div>
               </div>
 
-              {renderColorPicker(settings.titleColor, (c) => updateSetting('titleColor', c), 'Couleur du titre')}
+              {renderColorPicker(settings.titleColor, (c) => updateSetting('titleColor', c), t('portfolio_title_color_label'))}
             </div>
 
             {/* Subtitle Typography */}
             <div className="space-y-4 border-t border-default pt-4">
               <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
                 <IconBold size={16} />
-                Sous-titre / Tagline
+                {t('portfolio_subtitle_typography')}
               </h4>
               
-              {renderFontSelector(settings.subtitleFont, (f) => updateSetting('subtitleFont', f), 'Police')}
+              {renderFontSelector(settings.subtitleFont, (f) => updateSetting('subtitleFont', f), t('portfolio_font'))}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">Graisse</label>
+                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
                   <select
                     value={settings.subtitleFontWeight}
                     onChange={(e) => updateSetting('subtitleFontWeight', Number(e.target.value))}
@@ -775,7 +775,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">Taille</label>
+                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_size')}</label>
                   <select
                     value={settings.subtitleSize}
                     onChange={(e) => updateSetting('subtitleSize', e.target.value)}
@@ -788,20 +788,20 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                 </div>
               </div>
 
-              {renderColorPicker(settings.subtitleColor, (c) => updateSetting('subtitleColor', c), 'Couleur du sous-titre')}
+              {renderColorPicker(settings.subtitleColor, (c) => updateSetting('subtitleColor', c), t('portfolio_subtitle_color_label'))}
             </div>
 
             {/* Project Card Typography */}
             <div className="space-y-4 border-t border-default pt-4">
               <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
                 <IconBold size={16} />
-                Cartes de projets
+                {t('portfolio_card_typography')}
               </h4>
               
-              {renderFontSelector(settings.projectTitleFont, (f) => updateSetting('projectTitleFont', f), 'Police des titres')}
+              {renderFontSelector(settings.projectTitleFont, (f) => updateSetting('projectTitleFont', f), t('portfolio_font'))}
 
               <div>
-                <label className="block text-xs font-medium text-secondary mb-1">Graisse des titres</label>
+                <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
                 <select
                   value={settings.projectTitleFontWeight}
                   onChange={(e) => updateSetting('projectTitleFontWeight', Number(e.target.value))}
@@ -814,8 +814,8 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                {renderColorPicker(settings.projectTitleColor, (c) => updateSetting('projectTitleColor', c), 'Couleur titre')}
-                {renderColorPicker(settings.projectSubtitleColor, (c) => updateSetting('projectSubtitleColor', c), 'Couleur sous-titre')}
+                {renderColorPicker(settings.projectTitleColor, (c) => updateSetting('projectTitleColor', c), t('portfolio_project_title_color'))}
+                {renderColorPicker(settings.projectSubtitleColor, (c) => updateSetting('projectSubtitleColor', c), t('portfolio_project_subtitle_color'))}
               </div>
             </div>
           </>
@@ -840,7 +840,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                         : 'bg-muted text-secondary hover:bg-hover'
                     }`}
                   >
-                    {num} col.
+                    {num} {t('portfolio_columns_label')}
                   </button>
                 ))}
               </div>
@@ -853,9 +853,9 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
               </label>
               <div className="flex gap-2">
                 {[
-                  { id: 'tight', label: 'Serré' },
-                  { id: 'normal', label: 'Normal' },
-                  { id: 'wide', label: 'Large' },
+                  { id: 'tight', label: t('portfolio_gap_tight') },
+                  { id: 'normal', label: t('portfolio_gap_normal') },
+                  { id: 'wide', label: t('portfolio_gap_wide') },
                 ].map((gap) => (
                   <button
                     key={gap.id}
@@ -882,10 +882,10 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange }: Settings
                 onChange={(e) => updateSetting('imageRatio', e.target.value as PortfolioSettings['imageRatio'])}
                 className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
               >
-                <option value="auto">Auto</option>
-                <option value="square">Carré (1:1)</option>
-                <option value="landscape">Paysage (4:3)</option>
-                <option value="portrait">Portrait (3:4)</option>
+                <option value="auto">{t('portfolio_ratio_auto')}</option>
+                <option value="square">{t('portfolio_ratio_square')}</option>
+                <option value="landscape">{t('portfolio_ratio_landscape')}</option>
+                <option value="portrait">{t('portfolio_ratio_portrait')}</option>
               </select>
             </div>
           </>
@@ -1046,7 +1046,7 @@ interface ImportModalProps {
 }
 
 function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
-  useLanguage(); // For language context
+  const { t } = useLanguage();
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1086,7 +1086,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
       }
 
       if (data.projects.length === 0) {
-        setError('Aucun projet trouvé sur cette page. Vérifiez que la page contient des images de projets visibles.');
+        setError(t('portfolio_import_no_projects'));
         return;
       }
 
@@ -1174,10 +1174,10 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-primary">
-                {step === 'url' ? 'Importer depuis un site' : `Sélectionner les projets`}
+                {step === 'url' ? t('portfolio_import_title') : t('portfolio_import_select')}
               </h2>
               {siteName && step === 'select' && (
-                <p className="text-sm text-secondary">depuis {siteName}</p>
+                <p className="text-sm text-secondary">{t('portfolio_import_from')} {siteName}</p>
               )}
             </div>
           </div>
@@ -1192,7 +1192,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-secondary mb-2">
-                  URL du portfolio à importer
+                  {t('portfolio_import_url_label')}
                 </label>
                 <div className="flex gap-3">
                   <div className="flex-1 relative">
@@ -1214,12 +1214,12 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                     {loading ? (
                       <>
                         <IconLoader2 size={18} className="animate-spin" />
-                        Analyse...
+                        {t('portfolio_import_analyzing')}
                       </>
                     ) : (
                       <>
                         <IconSearch size={18} />
-                        Analyser
+                        {t('portfolio_import_analyze')}
                       </>
                     )}
                   </button>
@@ -1232,9 +1232,9 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                   <div className="text-xs text-secondary space-y-1">
                     <p>Conseils :</p>
                     <ul className="list-disc list-inside space-y-0.5">
-                      <li>Vérifiez que l&apos;URL pointe vers une page avec des images visibles</li>
-                      <li>Essayez l&apos;URL directe de la page projets/portfolio</li>
-                      <li>Certains sites utilisent du JavaScript pour charger les images (non supporté)</li>
+                      <li>{t('portfolio_tips_url')}</li>
+                      <li>{t('portfolio_tips_direct')}</li>
+                      <li>{t('portfolio_tips_js')}</li>
                     </ul>
                   </div>
                   {debugInfo.length > 0 && (
@@ -1243,7 +1243,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                         onClick={() => setShowDebug(!showDebug)}
                         className="text-xs text-accent hover:underline"
                       >
-                        {showDebug ? 'Masquer' : 'Afficher'} les détails techniques
+                        {showDebug ? t('portfolio_hide_debug') : t('portfolio_show_debug')}
                       </button>
                       {showDebug && (
                         <pre className="mt-2 p-2 bg-card rounded text-xs text-muted overflow-auto max-h-32">
@@ -1256,23 +1256,22 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               )}
 
               <div className="bg-muted/50 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-primary mb-2">💡 Comment ça marche ?</h3>
+                <h3 className="text-sm font-medium text-primary mb-2">💡 {t('portfolio_import_how_title')}</h3>
                 <ul className="text-sm text-secondary space-y-1">
-                  <li>• Entrez l&apos;URL de la page contenant vos projets</li>
-                  <li>• L&apos;outil analyse automatiquement le HTML de la page</li>
-                  <li>• Il extrait les images, titres et descriptions</li>
-                  <li>• Vous sélectionnez les projets à importer</li>
+                  <li>• {t('portfolio_import_how_1')}</li>
+                  <li>• {t('portfolio_import_how_2')}</li>
+                  <li>• {t('portfolio_import_how_3')}</li>
+                  <li>• {t('portfolio_import_how_4')}</li>
                 </ul>
               </div>
 
               <div className="bg-muted/50 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-primary mb-2">🔗 Sites supportés</h3>
+                <h3 className="text-sm font-medium text-primary mb-2">🔗 {t('portfolio_import_supported_title')}</h3>
                 <p className="text-sm text-secondary">
-                  Fonctionne avec la plupart des sites portfolio : sites personnels, WordPress, 
-                  Squarespace, Wix, et tout site avec une grille de projets visible dans le HTML.
+                  {t('portfolio_import_supported_desc')}
                 </p>
                 <p className="text-xs text-muted mt-2">
-                  Note : Les sites qui chargent les images via JavaScript (React/Vue sans SSR) peuvent ne pas fonctionner.
+                  {t('portfolio_import_js_note')}
                 </p>
               </div>
             </div>
@@ -1284,10 +1283,10 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                   onClick={toggleAll}
                   className="text-sm text-accent hover:underline"
                 >
-                  {scrapedProjects.every(p => p.selected) ? 'Tout désélectionner' : 'Tout sélectionner'}
+                  {scrapedProjects.every(p => p.selected) ? t('portfolio_import_deselect_all') : t('portfolio_import_select_all')}
                 </button>
                 <span className="text-sm text-secondary">
-                  {selectedCount} sur {scrapedProjects.length} sélectionné(s)
+                  {selectedCount} / {scrapedProjects.length} {t('portfolio_import_selected')}
                 </span>
               </div>
 
@@ -1345,7 +1344,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                 className="text-sm text-secondary hover:text-primary flex items-center gap-1"
               >
                 <IconChevronLeft size={16} />
-                Retour
+                {t('portfolio_import_back')}
               </button>
             </div>
           )}
@@ -1358,7 +1357,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               onClick={handleClose}
               className="px-4 py-2 text-secondary hover:text-primary transition-colors"
             >
-              Annuler
+              {t('cancel')}
             </button>
             <button
               onClick={handleImport}
@@ -1366,7 +1365,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               className="px-6 py-2 bg-accent text-accent-text rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
             >
               <IconDownload size={18} />
-              Importer {selectedCount} projet(s)
+              {t('portfolio_import_btn')} {selectedCount} {t('portfolio_import_projects')}
             </button>
           </div>
         )}
@@ -2407,7 +2406,7 @@ export default function PortfolioPage() {
       <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <IconLoader2 size={32} className="animate-spin text-accent" />
-          <p className="text-secondary">Chargement du portfolio...</p>
+          <p className="text-secondary">{t('portfolio_loading')}</p>
         </div>
       </div>
     );
@@ -2422,7 +2421,7 @@ export default function PortfolioPage() {
       {isSaving && (
         <div className="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 bg-card rounded-lg shadow-lg border border-default">
           <IconLoader2 size={16} className="animate-spin text-accent" />
-          <span className="text-sm text-secondary">Sauvegarde...</span>
+          <span className="text-sm text-secondary">{t('portfolio_saving')}</span>
         </div>
       )}
 
@@ -2439,19 +2438,19 @@ export default function PortfolioPage() {
             {/* Navigation Links */}
             <nav className="hidden md:flex items-center gap-6 text-sm">
               <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
-                home
+                {t('portfolio_nav_home')}
               </span>
               <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
-                about
+                {t('portfolio_nav_about')}
               </span>
               <span className="text-primary font-medium cursor-pointer border-b border-primary pb-0.5">
-                portfolio
+                {t('portfolio_nav_portfolio')}
               </span>
               <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
-                blog
+                {t('portfolio_nav_blog')}
               </span>
               <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
-                contact
+                {t('portfolio_nav_contact')}
               </span>
             </nav>
 
@@ -2479,7 +2478,7 @@ export default function PortfolioPage() {
                 <button
                   onClick={copyShareLink}
                   className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
-                  title="Copier le lien"
+                  title={t('portfolio_copy_link')}
                 >
                   {linkCopied ? (
                     <IconCheck size={18} className="text-accent" />
@@ -2491,21 +2490,21 @@ export default function PortfolioPage() {
               <button
                 onClick={() => window.open(`/portfolio/${settings.shareSlug || 'preview'}`, '_blank')}
                 className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
-                title="Prévisualiser"
+                title={t('portfolio_preview')}
               >
                 <IconEye size={18} className="text-secondary" />
               </button>
               <button
                 onClick={() => setIsImportModalOpen(true)}
                 className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
-                title="Importer depuis un site"
+                title={t('portfolio_import_from_site')}
               >
                 <IconDownload size={18} className="text-secondary" />
               </button>
               <button
                 onClick={() => setIsSettingsOpen(true)}
                 className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
-                title="Paramètres"
+                title={t('portfolio_settings')}
               >
                 <IconSettings size={18} className="text-secondary" />
               </button>
@@ -2515,7 +2514,7 @@ export default function PortfolioPage() {
                   setIsFormModalOpen(true);
                 }}
                 className="p-3 rounded-full bg-accent shadow-lg hover:opacity-90 transition-opacity"
-                title="Ajouter un projet"
+                title={t('portfolio_add_project')}
               >
                 <IconPlus size={18} className="text-accent-text" />
               </button>
@@ -2563,7 +2562,7 @@ export default function PortfolioPage() {
                 href={`mailto:${settings.emailAddress}`}
                 className="px-6 py-2.5 rounded-full border border-primary text-primary text-sm font-medium hover:bg-primary hover:text-page transition-colors"
               >
-                Connect
+                {t('portfolio_connect')}
               </a>
             )}
           </div>
@@ -2598,7 +2597,7 @@ export default function PortfolioPage() {
               {filteredProjects.length === 0 ? (
                 <div className="text-center py-20">
                   <p className="text-secondary">
-                    Aucun projet dans cette catégorie
+                    {t('portfolio_no_category')}
                   </p>
                 </div>
               ) : (

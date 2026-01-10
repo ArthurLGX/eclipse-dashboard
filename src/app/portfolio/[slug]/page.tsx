@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useLenis from '@/utils/useLenis';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 import {
   IconBrandInstagram,
@@ -353,6 +354,7 @@ interface ProjectDetailModalProps {
 }
 
 function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 'settings'>) {
+  const { t } = useLanguage();
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
 
   const nextMedia = () => {
@@ -462,7 +464,7 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"
               >
-                Voir le projet <IconExternalLink size={14} />
+                {t('portfolio_view')} <IconExternalLink size={14} />
               </a>
             )}
             {project.tags.length > 0 && (
@@ -490,6 +492,7 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
 
 export default function PublicPortfolioPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
+  const { t } = useLanguage();
   const [settings, setSettings] = useState<PortfolioSettings>(DEFAULT_SETTINGS);
   const [projects, setProjects] = useState<PortfolioProject[]>(MOCK_PROJECTS);
   const [viewingProject, setViewingProject] = useState<PortfolioProject | null>(null);
@@ -619,8 +622,8 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Portfolio non trouvé</h1>
-          <p className="text-gray-600">Ce portfolio n&apos;existe pas ou n&apos;est pas public.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('portfolio_not_found')}</h1>
+          <p className="text-gray-600">{t('portfolio_not_found_desc')}</p>
         </div>
       </div>
     );
@@ -644,16 +647,16 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
             {/* Navigation Links */}
             <nav className="hidden md:flex items-center gap-6 text-sm">
               <span className="text-gray-500 hover:text-gray-900 cursor-pointer transition-colors">
-                home
+                {t('portfolio_nav_home')}
               </span>
               <span className="text-gray-500 hover:text-gray-900 cursor-pointer transition-colors">
-                about
+                {t('portfolio_nav_about')}
               </span>
               <span className="text-gray-900 font-medium cursor-pointer border-b border-gray-900 pb-0.5">
-                portfolio
+                {t('portfolio_nav_portfolio')}
               </span>
               <span className="text-gray-500 hover:text-gray-900 cursor-pointer transition-colors">
-                contact
+                {t('portfolio_nav_contact')}
               </span>
             </nav>
 
@@ -717,7 +720,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
                 href={`mailto:${settings.emailAddress}`}
                 className="px-6 py-2.5 rounded-full border border-gray-900 text-gray-900 text-sm font-medium hover:bg-gray-900 hover:text-white transition-colors"
               >
-                Connect
+                {t('portfolio_connect')}
               </a>
             )}
           </div>
@@ -729,7 +732,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
         <div className="max-w-7xl mx-auto">
           {projects.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-gray-500">Aucun projet à afficher</p>
+              <p className="text-gray-500">{t('portfolio_no_projects')}</p>
             </div>
           ) : (
             <div className={getGridClasses()}>
