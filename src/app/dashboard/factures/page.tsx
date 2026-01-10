@@ -616,7 +616,7 @@ export default function FacturesPage() {
         onConfirm={handleDeleteFacture}
         title={isQuoteMode ? (t('delete_quote') || 'Supprimer le devis') : (t('delete_facture') || 'Supprimer la facture')}
         itemName={deleteModal.facture?.reference || ''}
-        itemType={isQuoteMode ? 'devis' : 'facture'}
+        itemType={isQuoteMode ? 'quote' : 'facture'}
       />
     </ProtectedRoute>
   );
