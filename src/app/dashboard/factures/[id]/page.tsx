@@ -59,6 +59,8 @@ export default function FacturePage() {
   // Client prérempli depuis l'URL (quand on vient de la page client)
   const prefilledClientId = searchParams.get('clientId');
   const prefilledClientName = searchParams.get('clientName');
+  // Type de document (quote ou invoice)
+  const documentType = searchParams.get('type') === 'quote' ? 'quote' : 'invoice';
 
   const [showPreview, setShowPreview] = useState(false);
   const [facture, setFacture] = useState<Facture | null>(null);
@@ -147,8 +149,8 @@ export default function FacturePage() {
   const emptyFacture: Facture = {
     id: 0,
     documentId: '',
-    document_type: 'invoice',
-    reference: preferences.invoice.autoNumbering ? `${preferences.invoice.invoicePrefix}${Date.now().toString().slice(-6)}` : '',
+    document_type: documentType,
+    reference: preferences.invoice.autoNumbering ? `${documentType === 'quote' ? preferences.invoice.quotePrefix || 'DEV-' : preferences.invoice.invoicePrefix}${Date.now().toString().slice(-6)}` : '',
     date: today.toISOString().split('T')[0],
     due_date: defaultDueDate.toISOString().split('T')[0],
     facture_status: 'draft',
@@ -172,7 +174,7 @@ export default function FacturePage() {
    
       // Mode création - comparaison insensible à la casse
       const rawIdLower = rawId.toLowerCase();
-      if (rawIdLower === 'add' || rawIdLower === 'ajouter' || rawIdLower === t('add').toLowerCase()) {
+      if (rawIdLower === 'add' || rawIdLower === 'ajouter' || rawIdLower === 'new' || rawIdLower === t('add').toLowerCase()) {
         setEditing(true);
         
         // Préremplir le client si fourni dans l'URL
@@ -312,7 +314,8 @@ export default function FacturePage() {
         total: line.total,
       }));
 
-      if (id === t('create') || id === 'ajouter') {
+      const idLower = id.toLowerCase();
+      if (idLower === 'add' || idLower === 'ajouter' || idLower === 'new' || idLower === t('add').toLowerCase()) {
         // Création d'une nouvelle facture - Strapi v5: utiliser documentId pour les relations
         await createFacture({
           reference: formData?.reference ?? '',
