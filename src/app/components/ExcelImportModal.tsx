@@ -773,7 +773,27 @@ export default function ExcelImportModal({
     }).filter(task => task.title && task.title !== 'Sans titre');
 
     if (tasks.length === 0) {
-      setError(t('excel_no_valid_tasks') || 'Aucune tâche valide trouvée');
+      // Debug: afficher les infos pour aider l'utilisateur
+      const titleColIndex = columnMapping.title;
+      const sampleTitles = titleColIndex !== null 
+        ? excelData.slice(0, 3).map(row => row[titleColIndex] || '(vide)')
+        : [];
+      
+      console.log('Debug import:', {
+        titleColumnIndex: titleColIndex,
+        headers: headers,
+        sampleTitles,
+        firstRow: excelData[0],
+      });
+      
+      if (titleColIndex === null) {
+        setError(t('excel_title_not_mapped') || 'Veuillez mapper la colonne "Titre" dans les options de mapping ci-dessus');
+      } else {
+        setError(
+          (t('excel_no_valid_tasks') || 'Aucune tâche valide trouvée') + 
+          `. ${t('excel_title_column_empty') || 'La colonne titre semble vide. Vérifiez le mapping.'}`
+        );
+      }
       return;
     }
 
