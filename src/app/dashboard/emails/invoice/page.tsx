@@ -288,10 +288,8 @@ Cordialement`;
       
       htmlContent += '</div>';
       
-      // Générer l'URL du PDF de la facture
-      const pdfUrl = `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/api/invoices/${selectedInvoice.documentId}/pdf`;
-      
-      // Appel API pour envoyer l'email
+      // Appel API pour envoyer l'email (sans pièce jointe PDF pour l'instant)
+      // TODO: Implémenter la génération de PDF côté serveur
       const response = await fetch('/api/emails/send', {
         method: 'POST',
         headers: {
@@ -302,7 +300,7 @@ Cordialement`;
           to: recipients.map(r => r.email),
           subject,
           html: htmlContent,
-          attachments: [{ filename: `Facture-${selectedInvoice.reference}.pdf`, path: pdfUrl }],
+          // attachments désactivés temporairement - la route /api/invoices/[id]/pdf n'existe pas
         }),
       });
       
@@ -318,7 +316,7 @@ Cordialement`;
         recipients: recipients.map(r => r.email),
         content: message,
         category: 'invoice',
-        attachments: [{ name: `Facture-${selectedInvoice.reference}.pdf`, url: pdfUrl }],
+        // Pas de pièce jointe pour l'instant
         sent_at: new Date().toISOString(),
         status_mail: 'sent',
         tracking_id: result.trackingId,
