@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   IconCheck,
   IconX,
-  IconFileDescription,
   IconFolder,
   IconListCheck,
   IconCalendar,

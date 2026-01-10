@@ -68,7 +68,6 @@ export default function EmailSentSuccessModal({
   };
 
   const config = getConfig();
-  const Icon = config.icon;
 
   return (
     <AnimatePresence>
