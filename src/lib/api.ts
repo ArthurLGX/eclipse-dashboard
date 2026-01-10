@@ -1902,6 +1902,7 @@ export const setDefaultCustomTemplate = async (
 // ============================================================================
 
 import type { EmailSignature, CreateEmailSignatureData, UpdateEmailSignatureData, SentEmail, CreateSentEmailData, EmailCategory } from '@/types';
+export type { EmailCategory };
 
 /** Récupère la signature email d'un utilisateur */
 export const fetchEmailSignature = async (userId: number): Promise<EmailSignature | null> => {
