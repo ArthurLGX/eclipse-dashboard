@@ -49,15 +49,33 @@ export async function GET(request: NextRequest) {
     
     // Convert snake_case to camelCase for frontend
     const settings = data.settings ? toCamelCase(data.settings) : null;
-    const projects = data.projects?.map((p: Record<string, unknown>) => ({
-      ...toCamelCase(p),
-      media: p.gallery ? (p.gallery as Array<{ url: string }>).map((img, idx) => ({
-        id: `media-${idx}`,
-        type: 'image',
-        url: (img.url as string).startsWith('http') ? img.url : `${API_URL}${img.url}`,
-      })) : [],
-      coverIndex: 0,
-    })) || [];
+    const projects = data.projects?.map((p: Record<string, unknown>) => {
+      const mediaUrls = p.media_urls as string[] | null;
+      const gallery = p.gallery as Array<{ url: string }> | null;
+      
+      let media: Array<{ id: string; type: string; url: string }> = [];
+      
+      // Priority: media_urls > gallery
+      if (mediaUrls && mediaUrls.length > 0) {
+        media = mediaUrls.map((url, idx) => ({
+          id: `media-${idx}`,
+          type: 'image',
+          url: url.startsWith('http') ? url : `${API_URL}${url}`,
+        }));
+      } else if (gallery) {
+        media = gallery.map((img, idx) => ({
+          id: `media-${idx}`,
+          type: 'image',
+          url: img.url.startsWith('http') ? img.url : `${API_URL}${img.url}`,
+        }));
+      }
+      
+      return {
+        ...toCamelCase(p),
+        media,
+        coverIndex: p.cover_index || 0,
+      };
+    }) || [];
 
     return NextResponse.json({ settings, projects });
   } catch (error) {

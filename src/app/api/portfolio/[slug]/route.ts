@@ -40,34 +40,47 @@ export async function GET(
     const projects = data.projects?.map((p: Record<string, unknown>) => {
       const converted = toCamelCase(p);
       
-      // Build media array from gallery
+      // Build media array from media_urls (JSON field) or gallery
+      const mediaUrls = p.media_urls as string[] | null;
       const gallery = p.gallery as Array<{ url: string }> | null;
       const image = p.image as { url: string } | null;
       
       const media: Array<{ id: string; type: string; url: string }> = [];
-      if (image?.url) {
-        media.push({
-          id: 'cover',
-          type: 'image',
-          url: image.url.startsWith('http') ? image.url : `${API_URL}${image.url}`,
+      
+      // Priority: media_urls > gallery > image
+      if (mediaUrls && mediaUrls.length > 0) {
+        mediaUrls.forEach((url, idx) => {
+          media.push({
+            id: `media-${idx}`,
+            type: 'image',
+            url: url.startsWith('http') ? url : `${API_URL}${url}`,
+          });
         });
-      }
-      if (gallery) {
-        gallery.forEach((img, idx) => {
-          if (img.url && !media.some(m => m.url.includes(img.url))) {
-            media.push({
-              id: `gallery-${idx}`,
-              type: 'image',
-              url: img.url.startsWith('http') ? img.url : `${API_URL}${img.url}`,
-            });
-          }
-        });
+      } else {
+        if (image?.url) {
+          media.push({
+            id: 'cover',
+            type: 'image',
+            url: image.url.startsWith('http') ? image.url : `${API_URL}${image.url}`,
+          });
+        }
+        if (gallery) {
+          gallery.forEach((img, idx) => {
+            if (img.url && !media.some(m => m.url.includes(img.url))) {
+              media.push({
+                id: `gallery-${idx}`,
+                type: 'image',
+                url: img.url.startsWith('http') ? img.url : `${API_URL}${img.url}`,
+              });
+            }
+          });
+        }
       }
       
       return {
         ...converted,
         media,
-        coverIndex: 0,
+        coverIndex: p.cover_index || 0,
       };
     }) || [];
 

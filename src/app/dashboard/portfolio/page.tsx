@@ -257,7 +257,7 @@ const DEFAULT_SETTINGS: PortfolioSettings = {
   animationType: 'fade',
   // Visibility
   isPublic: false,
-  shareSlug: '',
+  shareSlug: `portfolio-${Date.now()}`,
   // Social Links
   showSocialLinks: true,
   instagramUrl: '',
