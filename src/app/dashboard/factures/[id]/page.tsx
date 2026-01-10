@@ -154,14 +154,17 @@ export default function FacturePage() {
   const defaultDueDate = new Date(today);
   defaultDueDate.setDate(today.getDate() + preferences.invoice.defaultPaymentDays);
   
+  const isQuote = documentType === 'quote';
+  
   const emptyFacture: Facture = {
     id: 0,
     documentId: '',
     document_type: documentType,
-    reference: preferences.invoice.autoNumbering ? `${documentType === 'quote' ? preferences.invoice.quotePrefix || 'DEV-' : preferences.invoice.invoicePrefix}${new Date().toISOString().slice(0,10).replace(/-/g, '')}-${Math.random().toString(36).substring(2, 6).toUpperCase()}` : '',
+    reference: preferences.invoice.autoNumbering ? `${isQuote ? preferences.invoice.quotePrefix || 'DEV-' : preferences.invoice.invoicePrefix}${new Date().toISOString().slice(0,10).replace(/-/g, '')}-${Math.random().toString(36).substring(2, 6).toUpperCase()}` : '',
     date: today.toISOString().split('T')[0],
     due_date: defaultDueDate.toISOString().split('T')[0],
-    facture_status: 'draft',
+    facture_status: isQuote ? undefined : 'draft',
+    quote_status: isQuote ? 'draft' : undefined,
     number: 0,
     currency: preferences.format.currency as Currency,
     description: '',
@@ -373,7 +376,11 @@ export default function FacturePage() {
           number: total, // Montant total calculé automatiquement (avec ou sans TVA)
           date: formData?.date ?? '',
           due_date: formData?.due_date ?? '',
-          facture_status: formData?.facture_status ?? '',
+          // Utiliser le bon champ de statut selon le type de document
+          ...(isQuote 
+            ? { quote_status: formData?.quote_status ?? 'draft' }
+            : { facture_status: formData?.facture_status ?? 'draft' }
+          ),
           currency: formData?.currency ?? '',
           description: formData?.description ?? '',
           notes: formData?.notes ?? '',
@@ -406,7 +413,11 @@ export default function FacturePage() {
         number: total, // Montant total calculé automatiquement (avec ou sans TVA)
         date: formData.date || facture.date,
         due_date: formData.due_date || facture.due_date,
-        facture_status: formData.facture_status || facture.facture_status,
+        // Utiliser le bon champ de statut selon le type de document
+        ...(isQuote 
+          ? { quote_status: formData.quote_status || facture.quote_status }
+          : { facture_status: formData.facture_status || facture.facture_status }
+        ),
         currency: formData.currency || facture.currency,
         description: formData.description ?? '',
         notes: formData.notes ?? '',
@@ -683,19 +694,34 @@ export default function FacturePage() {
                   {t('status')}
                 </label>
                 {editing ? (
-                  <select
-                    name="facture_status"
-                    value={formData?.facture_status || ''}
-                    onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                  >
-                    <option value="draft">{t('draft')}</option>
-                    <option value="sent">{t('sent')}</option>
-                    <option value="paid">{t('paid')}</option>
-                  </select>
+                  isQuote ? (
+                    <select
+                      name="quote_status"
+                      value={formData?.quote_status || ''}
+                      onChange={handleInputChange}
+                      className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                    >
+                      <option value="draft">{t('draft')}</option>
+                      <option value="sent">{t('sent')}</option>
+                      <option value="accepted">{t('accepted')}</option>
+                      <option value="rejected">{t('rejected')}</option>
+                      <option value="expired">{t('expired')}</option>
+                    </select>
+                  ) : (
+                    <select
+                      name="facture_status"
+                      value={formData?.facture_status || ''}
+                      onChange={handleInputChange}
+                      className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                    >
+                      <option value="draft">{t('draft')}</option>
+                      <option value="sent">{t('sent')}</option>
+                      <option value="paid">{t('paid')}</option>
+                    </select>
+                  )
                 ) : (
                   <p className="!text-zinc-800 text-sm font-semibold">
-                    {t(facture?.facture_status || '')}
+                    {t(isQuote ? (facture?.quote_status || '') : (facture?.facture_status || ''))}
                   </p>
                 )}
               </div>
