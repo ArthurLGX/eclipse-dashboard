@@ -2,8 +2,9 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
+import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { useAuth } from '@/app/context/AuthContext';
-import { updateUser, updateUserProfilePicture, updateUserPassword } from '@/lib/api';
+import { updateUser, updateUserProfilePicture, changePassword } from '@/lib/api';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
@@ -25,9 +26,15 @@ export default function PersonalInformationPage() {
   
   // Password change state
   const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [savingPassword, setSavingPassword] = useState(false);
+  
+  // Password visibility toggles
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Hook pour l'utilisateur courant
   const { data: profileData, loading, refetch: refetchProfile } = useCurrentUser(user?.id);
@@ -95,26 +102,33 @@ export default function PersonalInformationPage() {
   const handlePasswordChange = async () => {
     if (!user?.id) return;
     
+    if (!currentPassword) {
+      showGlobalPopup(t('current_password_required') || 'Veuillez entrer votre mot de passe actuel', 'error');
+      return;
+    }
+    
     if (newPassword.length < 6) {
-      showGlobalPopup('Le mot de passe doit contenir au moins 6 caractères', 'error');
+      showGlobalPopup(t('password_min_length') || 'Le mot de passe doit contenir au moins 6 caractères', 'error');
       return;
     }
     
     if (newPassword !== confirmPassword) {
-      showGlobalPopup('Les mots de passe ne correspondent pas', 'error');
+      showGlobalPopup(t('passwords_not_match') || 'Les mots de passe ne correspondent pas', 'error');
       return;
     }
     
     try {
       setSavingPassword(true);
-      await updateUserPassword(user.id, newPassword);
-      showGlobalPopup('Mot de passe mis à jour avec succès', 'success');
+      await changePassword(currentPassword, newPassword, confirmPassword);
+      showGlobalPopup(t('password_updated') || 'Mot de passe mis à jour avec succès', 'success');
+      setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
       setShowPasswordSection(false);
     } catch (error) {
       console.error('Error updating password:', error);
-      showGlobalPopup('Erreur lors de la mise à jour du mot de passe', 'error');
+      const errorMessage = error instanceof Error ? error.message : (t('password_update_error') || 'Erreur lors de la mise à jour du mot de passe');
+      showGlobalPopup(errorMessage, 'error');
     } finally {
       setSavingPassword(false);
     }
@@ -313,70 +327,115 @@ export default function PersonalInformationPage() {
       <div className="card p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="!text-xl font-semibold text-primary">
-            {t('change_password') || 'Changer le mot de passe'}
+            {t('change_password')}
           </h2>
           {!showPasswordSection && (
             <button
               onClick={() => setShowPasswordSection(true)}
               className="btn-ghost px-4 py-2 text-sm"
             >
-              {t('modify') || 'Modifier'}
+              {t('modify')}
             </button>
           )}
         </div>
 
         {showPasswordSection && (
           <div className="space-y-4">
+            {/* Current Password */}
             <div className="space-y-2">
               <label className="text-secondary !text-sm font-light">
-                {t('new_password') || 'Nouveau mot de passe'}
+                {t('current_password')}
               </label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-                className="input w-full p-3"
-                placeholder="••••••••"
-                minLength={6}
-              />
+              <div className="relative">
+                <input
+                  type={showCurrentPassword ? 'text' : 'password'}
+                  value={currentPassword}
+                  onChange={e => setCurrentPassword(e.target.value)}
+                  className="input w-full p-3 pr-12"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                >
+                  {showCurrentPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                </button>
+              </div>
             </div>
 
+            {/* New Password */}
             <div className="space-y-2">
               <label className="text-secondary !text-sm font-light">
-                {t('confirm_password') || 'Confirmer le mot de passe'}
+                {t('new_password')}
               </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                className="input w-full p-3"
-                placeholder="••••••••"
-                minLength={6}
-              />
+              <div className="relative">
+                <input
+                  type={showNewPassword ? 'text' : 'password'}
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                  className="input w-full p-3 pr-12"
+                  placeholder="••••••••"
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                >
+                  {showNewPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                </button>
+              </div>
+              <p className="text-xs text-muted">{t('password_min_chars')}</p>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="space-y-2">
+              <label className="text-secondary !text-sm font-light">
+                {t('confirm_password')}
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  className="input w-full p-3 pr-12"
+                  placeholder="••••••••"
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                >
+                  {showConfirmPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                </button>
+              </div>
             </div>
 
             {newPassword && confirmPassword && newPassword !== confirmPassword && (
-              <p className="text-danger text-sm">Les mots de passe ne correspondent pas</p>
+              <p className="text-danger text-sm">{t('passwords_not_match')}</p>
             )}
 
             <div className="flex gap-4 pt-2">
               <button
                 onClick={() => {
                   setShowPasswordSection(false);
+                  setCurrentPassword('');
                   setNewPassword('');
                   setConfirmPassword('');
                 }}
                 className="btn-ghost px-4 py-2"
                 disabled={savingPassword}
               >
-                {t('cancel') || 'Annuler'}
+                {t('cancel')}
               </button>
               <button
                 onClick={handlePasswordChange}
-                disabled={savingPassword || !newPassword || !confirmPassword || newPassword !== confirmPassword}
+                disabled={savingPassword || !currentPassword || !newPassword || !confirmPassword || newPassword !== confirmPassword}
                 className="btn-primary px-4 py-2 disabled:opacity-50"
               >
-                {savingPassword ? (t('saving') || 'Enregistrement...') : (t('save_password') || 'Enregistrer')}
+                {savingPassword ? t('saving') : t('save_password')}
               </button>
             </div>
           </div>
@@ -384,7 +443,7 @@ export default function PersonalInformationPage() {
 
         {!showPasswordSection && (
           <p className="text-muted text-sm">
-            {t('password_hint') || 'Cliquez sur Modifier pour changer votre mot de passe'}
+            {t('password_hint')}
           </p>
         )}
       </div>

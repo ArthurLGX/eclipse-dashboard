@@ -341,6 +341,21 @@ const translations = {
     pending_account: 'Compte en attente',
     last_updated: 'Dernière mise à jour',
     member_since: 'Membre depuis',
+    // Password
+    change_password: 'Changer le mot de passe',
+    current_password: 'Mot de passe actuel',
+    new_password: 'Nouveau mot de passe',
+    confirm_password: 'Confirmer le mot de passe',
+    password_min_chars: 'Minimum 6 caractères',
+    passwords_not_match: 'Les mots de passe ne correspondent pas',
+    password_hint: 'Cliquez sur Modifier pour changer votre mot de passe',
+    save_password: 'Enregistrer le mot de passe',
+    current_password_required: 'Veuillez entrer votre mot de passe actuel',
+    password_min_length: 'Le mot de passe doit contenir au moins 6 caractères',
+    password_updated: 'Mot de passe mis à jour avec succès',
+    password_update_error: 'Erreur lors de la mise à jour du mot de passe',
+    modify: 'Modifier',
+    saving: 'Enregistrement...',
 
     //Your Subscription
     your_subscription: 'Votre abonnement',
@@ -2352,6 +2367,21 @@ const translations = {
     pending_account: 'Pending Account',
     last_updated: 'Last Updated',
     member_since: 'Member since',
+    // Password
+    change_password: 'Change Password',
+    current_password: 'Current Password',
+    new_password: 'New Password',
+    confirm_password: 'Confirm Password',
+    password_min_chars: 'Minimum 6 characters',
+    passwords_not_match: 'Passwords do not match',
+    password_hint: 'Click Modify to change your password',
+    save_password: 'Save Password',
+    current_password_required: 'Please enter your current password',
+    password_min_length: 'Password must be at least 6 characters',
+    password_updated: 'Password updated successfully',
+    password_update_error: 'Error updating password',
+    modify: 'Modify',
+    saving: 'Saving...',
 
     // Messages
     error_loading_profile: 'Error loading profile',

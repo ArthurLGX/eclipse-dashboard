@@ -1031,12 +1031,30 @@ export async function updateUser(
   });
 }
 
-/** Met à jour le mot de passe d'un utilisateur (temporaire - sans vérification de l'ancien) */
-export async function updateUserPassword(userId: number, newPassword: string) {
-  return apiRequest(`users/${userId}`, {
-    method: 'PUT',
-    body: JSON.stringify({ password: newPassword }),
+/** Change le mot de passe d'un utilisateur (avec vérification de l'ancien) */
+export async function changePassword(currentPassword: string, newPassword: string, passwordConfirmation: string) {
+  const res = await fetch(`${API_URL}/api/auth/change-password`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify({ 
+      currentPassword, 
+      password: newPassword, 
+      passwordConfirmation 
+    }),
   });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    if (data?.error?.message?.includes('password is invalid')) {
+      throw new Error('Mot de passe actuel incorrect');
+    }
+    throw new Error(data?.error?.message || 'Erreur lors du changement de mot de passe');
+  }
+
+  return res.json();
 }
 
 export async function fetchCreateAccount(
