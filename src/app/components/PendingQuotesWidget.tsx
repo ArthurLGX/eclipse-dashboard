@@ -157,7 +157,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                     </div>
                     <div className="flex items-center gap-1 text-xs text-muted mt-1">
                       <IconClock className="w-3 h-3" />
-                      {`${t('sent') || 'Envoyé'} ${daysSince} ${t('days_ago') || 'jour(s)'}`}
+                      {t('sent_days_ago', { days: daysSince })}
                     </div>
                   </div>
 

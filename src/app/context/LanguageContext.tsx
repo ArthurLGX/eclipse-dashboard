@@ -7,7 +7,7 @@ type Language = 'fr' | 'en';
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
@@ -2022,8 +2022,11 @@ const translations = {
     project_title: 'Titre du projet',
     project_start_date: 'Date de début du projet',
     tasks_preview: 'Aperçu des tâches',
-     creating_project: 'Création du projet en cours...',
-     tasks_created_count: '{{count}} tâches ont été créées',
+    creating_project: 'Création du projet en cours...',
+    new_client: 'Nouveau client',
+    days_ago: 'il y a {{days}} jour(s)',
+    tasks_created_count: '{{count}} tâches ont été créées',
+    view_all: 'Voir tout',
     project_ready: 'Le projet est prêt',
     view_project: 'Voir le projet',
     search_placeholder_quotes: 'Rechercher un devis...',
@@ -3626,6 +3629,10 @@ const translations = {
     select_banner_image: 'Select a banner image',
     view_project_progress: 'View project progress',
     link_valid_info: 'This link allows you to check the project progress at any time.',
+    view_all: 'See all',
+    days_ago: '{{days}} days ago',
+    tasks_created_count: '{{count}} tasks have been created',
+
  
     // Public share page
     loading_project: 'Loading project...',
@@ -4112,6 +4119,7 @@ const translations = {
     disable_app_access: 'Disable access to the application',
     enable_registration: 'Enable registration',
     allow_new_users: 'Allow new users to create an account',
+    new_client: 'New client',
     notifications_settings: 'Notifications',
     receive_important_alerts: 'Receive important alerts by email',
     slack_integration: 'Slack integration',
@@ -4354,7 +4362,6 @@ const translations = {
     project_start_date: 'Project start date',
     tasks_preview: 'Tasks preview',
       creating_project: 'Creating project...',
-     tasks_created_count: '{{count}} tasks have been created',
     project_ready: 'The project is ready',
     view_project: 'View project',
     search_placeholder_quotes: 'Search a quote...',
@@ -4754,8 +4761,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('language', lang);
   };
 
-  const t = (key: string): string => {
-    return (translations[language] as Record<string, string>)[key] || key;
+  const t = (key: string, params?: Record<string, string | number>): string => {
+    let text = (translations[language] as Record<string, string>)[key] || key;
+    if (params) {
+      Object.entries(params).forEach(([paramKey, value]) => {
+        text = text.replace(new RegExp(`{{${paramKey}}}`, 'g'), String(value));
+      });
+    }
+    return text;
   };
 
   return (
