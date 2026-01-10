@@ -2057,6 +2057,147 @@ export const countSentEmailsByCategory = async (
 };
 
 // ============================================================================
+// EMAIL DRAFTS
+// ============================================================================
+
+export interface EmailDraft {
+  id: number;
+  documentId: string;
+  name?: string;
+  subject?: string;
+  recipients?: Array<{ id: string; email: string; name?: string }>;
+  content?: string;
+  category: 'newsletter' | 'invoice' | 'quote' | 'classic';
+  attachments?: Array<{ name: string; url: string }>;
+  related_document_id?: string;
+  related_document_type?: 'invoice' | 'quote' | 'newsletter' | 'none';
+  include_signature?: boolean;
+  footer_language?: 'fr' | 'en';
+  last_modified?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEmailDraftData {
+  name?: string;
+  subject?: string;
+  recipients?: Array<{ id: string; email: string; name?: string }>;
+  content?: string;
+  category: 'newsletter' | 'invoice' | 'quote' | 'classic';
+  attachments?: Array<{ name: string; url: string }>;
+  related_document_id?: string;
+  related_document_type?: 'invoice' | 'quote' | 'newsletter' | 'none';
+  include_signature?: boolean;
+  footer_language?: 'fr' | 'en';
+}
+
+/** Récupère les brouillons d'emails d'un utilisateur */
+export const fetchEmailDrafts = async (
+  userId: number,
+  category?: EmailCategory
+): Promise<EmailDraft[]> => {
+  let url = `email-drafts?filters[user][id][$eq]=${userId}&sort=updatedAt:desc`;
+  
+  if (category) {
+    url += `&filters[category][$eq]=${category}`;
+  }
+  
+  const response = await get<ApiResponse<EmailDraft[]>>(url);
+  return response.data || [];
+};
+
+/** Récupère un brouillon par son ID */
+export const fetchEmailDraft = async (documentId: string): Promise<EmailDraft | null> => {
+  try {
+    const response = await get<ApiResponse<EmailDraft>>(`email-drafts/${documentId}`);
+    return response.data || null;
+  } catch {
+    return null;
+  }
+};
+
+/** Crée un brouillon d'email */
+export const createEmailDraft = async (
+  userId: number,
+  data: CreateEmailDraftData
+): Promise<EmailDraft> => {
+  const response = await post<ApiResponse<EmailDraft>>(
+    'email-drafts',
+    { 
+      ...data, 
+      user: userId,
+      last_modified: new Date().toISOString()
+    }
+  );
+  return response.data;
+};
+
+/** Met à jour un brouillon d'email */
+export const updateEmailDraft = async (
+  documentId: string,
+  data: Partial<CreateEmailDraftData>
+): Promise<EmailDraft> => {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+  
+  const response = await fetch(`${API_URL}/api/email-drafts/${documentId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ 
+      data: {
+        ...data,
+        last_modified: new Date().toISOString()
+      }
+    }),
+  });
+  
+  if (!response.ok) throw new Error('Erreur lors de la mise à jour du brouillon');
+  
+  const result = await response.json();
+  return result.data;
+};
+
+/** Supprime un brouillon d'email */
+export const deleteEmailDraft = async (documentId: string): Promise<void> => {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+  
+  const response = await fetch(`${API_URL}/api/email-drafts/${documentId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  
+  if (!response.ok) throw new Error('Erreur lors de la suppression du brouillon');
+};
+
+/** Compte les brouillons par catégorie */
+export const countEmailDraftsByCategory = async (
+  userId: number
+): Promise<Record<EmailCategory, number>> => {
+  const categories: EmailCategory[] = ['newsletter', 'invoice', 'quote', 'classic'];
+  const counts: Record<EmailCategory, number> = {
+    newsletter: 0,
+    invoice: 0,
+    quote: 0,
+    classic: 0,
+  };
+  
+  for (const category of categories) {
+    const response = await get<ApiResponse<EmailDraft[]>>(
+      `email-drafts?filters[user][id][$eq]=${userId}&filters[category][$eq]=${category}&pagination[pageSize]=1`
+    );
+    counts[category] = response.meta?.pagination?.total || 0;
+  }
+  
+  return counts;
+};
+
+// ============================================================================
 // AUDIT LOGS (Admin)
 // ============================================================================
 

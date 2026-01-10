@@ -20,6 +20,7 @@ import {
   IconFileText,
   IconCalendar,
   IconPencil,
+  IconDeviceFloppy,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -27,7 +28,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
-import { fetchEmailSignature, createSentEmail } from '@/lib/api';
+import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, deleteEmailDraft } from '@/lib/api';
 import type { CreateEmailSignatureData, Facture } from '@/types';
 
 interface Recipient {
@@ -68,6 +69,10 @@ function InvoiceEmail() {
   // UI state
   const [sending, setSending] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [savingDraft, setSavingDraft] = useState(false);
+  
+  // Draft state (si on reprend un brouillon)
+  const [currentDraftId, setCurrentDraftId] = useState<string | null>(null);
   
   // Signature data
   const [signatureData, setSignatureData] = useState<CreateEmailSignatureData | null>(null);
@@ -161,6 +166,38 @@ function InvoiceEmail() {
     
     loadSignature();
   }, [user?.id]);
+  
+  // Charger un brouillon si présent dans l'URL
+  useEffect(() => {
+    const loadDraft = async () => {
+      const draftId = searchParams.get('draft');
+      if (!draftId) return;
+      
+      try {
+        const draft = await fetchEmailDraft(draftId);
+        if (draft) {
+          setCurrentDraftId(draft.documentId);
+          if (draft.subject) setSubject(draft.subject);
+          if (draft.content) setMessage(draft.content);
+          if (draft.recipients) setRecipients(draft.recipients as Recipient[]);
+          if (draft.include_signature !== undefined) setIncludeSignature(draft.include_signature);
+          if (draft.footer_language) setFooterLanguage(draft.footer_language);
+          
+          // Si un document lié existe, le sélectionner
+          if (draft.related_document_id && invoices.length > 0) {
+            const invoice = invoices.find(f => f.documentId === draft.related_document_id);
+            if (invoice) setSelectedInvoice(invoice);
+          }
+          
+          showGlobalPopup(t('draft_loaded') || 'Brouillon chargé', 'success');
+        }
+      } catch (error) {
+        console.error('Error loading draft:', error);
+      }
+    };
+    
+    loadDraft();
+  }, [searchParams, invoices, showGlobalPopup, t]);
   
   // Helper functions
   const calculateTotal = (invoice: Facture): number => {
@@ -335,6 +372,43 @@ Cordialement`;
     }
   };
   
+  // Sauvegarder en brouillon
+  const handleSaveDraft = async () => {
+    if (!user?.id) return;
+    
+    setSavingDraft(true);
+    
+    try {
+      const draftData = {
+        name: subject || `Brouillon facture - ${new Date().toLocaleDateString('fr-FR')}`,
+        subject,
+        recipients: recipients.map(r => ({ id: r.id, email: r.email, name: r.name })),
+        content: message,
+        category: 'invoice' as const,
+        related_document_id: selectedInvoice?.documentId,
+        related_document_type: 'invoice' as const,
+        include_signature: includeSignature,
+        footer_language: footerLanguage,
+      };
+      
+      if (currentDraftId) {
+        // Mettre à jour le brouillon existant
+        await updateEmailDraft(currentDraftId, draftData);
+        showGlobalPopup(t('draft_updated') || 'Brouillon mis à jour', 'success');
+      } else {
+        // Créer un nouveau brouillon
+        const draft = await createEmailDraft(user.id, draftData);
+        setCurrentDraftId(draft.documentId);
+        showGlobalPopup(t('draft_saved') || 'Brouillon enregistré', 'success');
+      }
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      showGlobalPopup(t('draft_save_error') || 'Erreur lors de l\'enregistrement du brouillon', 'error');
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -363,6 +437,19 @@ Cordialement`;
             >
               {showPreview ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
               {showPreview ? (t('edit') || 'Éditer') : (t('preview') || 'Aperçu')}
+            </button>
+            
+            <button
+              onClick={handleSaveDraft}
+              disabled={savingDraft}
+              className="flex items-center gap-2 px-4 py-2 text-sm border border-default text-secondary hover:bg-hover rounded-lg transition-colors disabled:opacity-50"
+            >
+              {savingDraft ? (
+                <IconLoader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <IconDeviceFloppy className="w-4 h-4" />
+              )}
+              {currentDraftId ? (t('update_draft') || 'Mettre à jour') : (t('save_draft') || 'Brouillon')}
             </button>
             
             <button
