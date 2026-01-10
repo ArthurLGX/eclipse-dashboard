@@ -55,10 +55,16 @@ export default function FacturesPage() {
   // Hook avec cache
   const { data: facturesData, loading, refetch } = useFactures(user?.id);
   // Filtrer par type de document
+  // Les factures sans document_type sont considérées comme des factures (invoice)
   const factures = useMemo(() => {
     const all = (facturesData as Facture[]) || [];
-    return all.filter(f => f.document_type === documentType);
-  }, [facturesData, documentType]);
+    if (isQuoteMode) {
+      return all.filter(f => f.document_type === 'quote');
+    } else {
+      // Inclure les factures avec document_type='invoice' OU sans document_type (anciennes factures)
+      return all.filter(f => f.document_type === 'invoice' || !f.document_type);
+    }
+  }, [facturesData, isQuoteMode]);
 
   // Générer un slug parlant pour une facture
   const getFactureSlug = (facture: Facture) => {

@@ -36,7 +36,6 @@ import {
   IconShield,
   IconServer,
   IconClock,
-  IconFileDescription,
   IconCalendar,
   IconTargetArrow,
   IconPalette,
@@ -242,19 +241,12 @@ function DashboardLayoutContent({
       icon: <IconBriefcase size={20} stroke={1} />,
       isCategory: true,
       menuItems: [
-        // Facturation (Factures + Devis)
+        // Facturation (Factures + Devis - page unifiée)
         {
           id: 'factures',
-          label: t('factures'),
+          label: t('invoices_and_quotes') || 'Factures / Devis',
           icon: <IconFileInvoice size={20} stroke={1} />,
           path: '/dashboard/factures',
-        },
-        {
-          id: 'quotes',
-          label: t('quotes') || 'Devis',
-          icon: <IconFileDescription size={20} stroke={1} />,
-          path: '/dashboard/devis',
-          moduleId: 'quotes',
         },
         // Projets & Organisation
         {
