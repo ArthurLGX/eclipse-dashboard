@@ -600,7 +600,7 @@ export async function createFacture(data: {
 export async function updateFactureById(
   factureId: string,
   data: {
-    reference: string;
+    reference?: string; // Ne pas envoyer pour éviter erreur d'unicité
     number: number;
     date: string;
     due_date: string;
@@ -623,7 +623,7 @@ export async function updateFactureById(
 ) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const payload: any = {
-    reference: data.reference,
+    // Ne pas inclure reference - c'est un UID unique qui ne doit pas être renvoyé lors de l'update
     number: data.number,
     date: data.date,
     due_date: data.due_date,
