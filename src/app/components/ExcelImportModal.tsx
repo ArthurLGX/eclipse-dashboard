@@ -83,17 +83,17 @@ type TaskFieldKey = typeof TASK_FIELDS[number]['key'];
 
 // Synonymes pour le mapping automatique
 const FIELD_SYNONYMS: Record<TaskFieldKey, string[]> = {
-  title: ['title', 'titre', 'nom', 'name', 'tâche', 'task', 'intitulé', 'libellé'],
-  description: ['description', 'desc', 'détails', 'details', 'notes', 'commentaire', 'comment'],
-  task_status: ['status', 'statut', 'état', 'state', 'etat'],
-  priority: ['priority', 'priorité', 'urgence', 'importance', 'priorite'],
-  progress: ['progress', 'progression', 'avancement', '%', 'pourcentage', 'percent', 'completion'],
-  start_date: ['start_date', 'start', 'début', 'debut', 'date_début', 'date_debut', 'commence', 'begin', 'from'],
-  due_date: ['due_date', 'end_date', 'end', 'fin', 'date_fin', 'échéance', 'echeance', 'deadline', 'to', 'due'],
-  estimated_hours: ['estimated_hours', 'estimated', 'heures_estimées', 'estimation', 'estimate', 'temps_prévu'],
-  actual_hours: ['actual_hours', 'actual', 'heures_réelles', 'heures_passées', 'temps_réel', 'spent', 'worked'],
-  assigned_to: ['assigned_to', 'assigné', 'assigne', 'responsable', 'owner', 'user', 'utilisateur', 'membre', 'member'],
-  tags: ['tags', 'tag', 'étiquettes', 'etiquettes', 'labels', 'label', 'catégories', 'categories', 'category'],
+  title: ['title', 'titre', 'nom', 'name', 'tâche', 'tache', 'task', 'intitulé', 'intitule', 'libellé', 'libelle', 'sujet', 'subject'],
+  description: ['description', 'desc', 'détails', 'details', 'notes', 'note', 'commentaire', 'commentaires', 'comment', 'comments', 'remarques', 'remarque'],
+  task_status: ['status', 'statut', 'état', 'etat', 'state', 'avancement', 'progression'],
+  priority: ['priority', 'priorité', 'priorite', 'urgence', 'importance', 'niveau'],
+  progress: ['progress', 'progression', '%', 'pourcentage', 'percent', 'completion', 'completé', 'complete'],
+  start_date: ['start_date', 'start', 'début', 'debut', 'date_début', 'date_debut', 'date_de_début', 'date_de_debut', 'commence', 'begin', 'from', 'démarrage', 'demarrage'],
+  due_date: ['due_date', 'end_date', 'end', 'fin', 'date_fin', 'date_de_fin', 'échéance', 'echeance', 'deadline', 'to', 'due', 'livraison', 'delivery'],
+  estimated_hours: ['estimated_hours', 'estimated', 'heures_estimées', 'heures_estimees', 'estimation', 'estimate', 'temps_prévu', 'temps_prevu', 'heures_prévues', 'heures_prevues'],
+  actual_hours: ['actual_hours', 'actual', 'heures_réelles', 'heures_reelles', 'heures_passées', 'heures_passees', 'temps_réel', 'temps_reel', 'spent', 'worked', 'temps_passé', 'temps_passe'],
+  assigned_to: ['assigned_to', 'assigné', 'assigne', 'responsable', 'owner', 'user', 'utilisateur', 'membre', 'member', 'propriétaire', 'proprietaire', 'affecté', 'affecte', 'attribué', 'attribue'],
+  tags: ['tags', 'tag', 'étiquettes', 'etiquettes', 'labels', 'label', 'catégories', 'categories', 'category', 'type', 'types'],
   color: ['color', 'couleur', 'colour', 'hex', 'code_couleur'],
 };
 
