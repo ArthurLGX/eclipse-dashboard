@@ -47,6 +47,8 @@ interface DashboardPageTemplateProps<T> {
   customActions?: CustomAction<T>[];
   getItemId?: (item: T) => string;
   getItemName?: (item: T) => string;
+  // Header extra content (tabs, etc.)
+  headerExtra?: React.ReactNode;
 }
 
 export default function DashboardPageTemplate<T>({
@@ -75,6 +77,7 @@ export default function DashboardPageTemplate<T>({
   customActions = [],
   getItemId,
   getItemName,
+  headerExtra,
 }: DashboardPageTemplateProps<T>) {
   return (
     <motion.div
@@ -115,6 +118,9 @@ export default function DashboardPageTemplate<T>({
           </button>
         </div>
       </div>
+
+      {/* Header extra content (tabs, etc.) */}
+      {headerExtra}
 
       {loading ? (
         <LandingPageSkeleton />

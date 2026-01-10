@@ -134,17 +134,9 @@ export const BreadCrumb = () => {
     index: number,
     factureDataMap: { [key: string]: string }
   ): string => {
-    // Si c'est le segment "devis", toujours afficher "Devis"
-    if (segment === 'devis') {
-      return t('quotes') || 'Devis';
-    }
-
-    // Si c'est le segment "factures", afficher "Devis" ou "Factures" selon le type
+    // Si c'est le segment "factures", toujours afficher "Factures / Devis"
     if (segment === 'factures') {
-      if (effectiveType === 'quote') {
-        return t('quotes') || 'Devis';
-      }
-      return t('invoices') || 'Factures';
+      return t('invoices_and_quotes') || 'Factures / Devis';
     }
 
     // Si c'est dans le segment factures, vérifier si c'est un ID (numérique ou documentId)

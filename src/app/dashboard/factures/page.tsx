@@ -555,10 +555,39 @@ export default function FacturesPage() {
     }
   }, [stats, isQuoteMode, t, formatCurrency]);
 
+  // Onglets pour basculer entre Factures et Devis
+  const tabs = (
+    <div className="flex gap-1 p-1 bg-hover rounded-lg mb-6">
+      <button
+        onClick={() => router.push('/dashboard/factures')}
+        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+          !isQuoteMode
+            ? 'bg-card text-amber-600 dark:text-amber-400 shadow-sm'
+            : 'text-muted hover:text-primary'
+        }`}
+      >
+        <IconFileInvoice className="w-4 h-4" />
+        {t('invoices') || 'Factures'}
+      </button>
+      <button
+        onClick={() => router.push('/dashboard/factures?type=quote')}
+        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+          isQuoteMode
+            ? 'bg-card text-violet-600 dark:text-violet-400 shadow-sm'
+            : 'text-muted hover:text-primary'
+        }`}
+      >
+        <IconFileDescription className="w-4 h-4" />
+        {t('quotes') || 'Devis'}
+      </button>
+    </div>
+  );
+
   return (
     <ProtectedRoute>
       <DashboardPageTemplate<Facture>
-        title={isQuoteMode ? (t('quotes') || 'Devis') : t('invoices')}
+        title={t('invoices_and_quotes') || 'Factures / Devis'}
+        headerExtra={tabs}
         onRowClick={row => router.push(`/dashboard/factures/${getFactureSlug(row)}${isQuoteMode ? '?type=quote' : ''}`)}
         actionButtonLabel={isQuoteMode ? (t('create_quote') || 'Créer un devis') : t('create_facture')}
         onActionButtonClick={() => router.push(`/dashboard/factures/new${isQuoteMode ? '?type=quote' : ''}`)}
