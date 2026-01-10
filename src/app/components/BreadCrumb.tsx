@@ -104,20 +104,8 @@ export const BreadCrumb = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, user?.id]);
 
-  const breadcrumbItems = pathSegments.map((segment, index) => {
-    const path = '/' + pathSegments.slice(0, index + 1).join('/');
-    const isLast = index === pathSegments.length - 1;
-
-    return {
-      segment,
-      path,
-      isLast,
-      label: getSegmentLabel(segment, pathSegments, index, factureData),
-    };
-  });
-
   // Fonction pour extraire le titre d'un slug (format: titre-du-projet--documentId)
-  function extractTitleFromSlug(slug: string): string {
+  const extractTitleFromSlug = (slug: string): string => {
     // Nouveau format avec double tiret : titre--documentId
     if (slug.includes('--')) {
       const titlePart = slug.split('--')[0];
@@ -134,18 +122,23 @@ export const BreadCrumb = () => {
     return parts
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
-  }
+  };
 
   // Déterminer le type effectif (depuis URL ou depuis les données)
   const effectiveType = typeFromUrl || documentType;
 
   // Fonction pour obtenir le label approprié pour chaque segment
-  function getSegmentLabel(
+  const getSegmentLabel = (
     segment: string,
     segments: string[],
     index: number,
-    factureData: { [key: string]: string }
-  ) {
+    factureDataMap: { [key: string]: string }
+  ): string => {
+    // Si c'est le segment "devis", toujours afficher "Devis"
+    if (segment === 'devis') {
+      return t('quotes') || 'Devis';
+    }
+
     // Si c'est le segment "factures", afficher "Devis" ou "Factures" selon le type
     if (segment === 'factures') {
       if (effectiveType === 'quote') {
@@ -158,7 +151,7 @@ export const BreadCrumb = () => {
     if (segments[index - 1] === 'factures') {
       // Si c'est un nombre ou une chaîne qui ressemble à un documentId
       if (!isNaN(Number(segment)) || segment.length > 10) {
-        return factureData[segment] || (effectiveType === 'quote' ? `Devis #${segment}` : `Facture #${segment}`);
+        return factureDataMap[segment] || (effectiveType === 'quote' ? `Devis #${segment}` : `Facture #${segment}`);
       }
       // Si c'est "new" ou "add" ou "ajouter", afficher le bon label
       if (segment.toLowerCase() === 'new' || segment.toLowerCase() === 'add' || segment.toLowerCase() === 'ajouter') {
@@ -187,7 +180,20 @@ export const BreadCrumb = () => {
 
     // Utiliser la traduction pour les segments textuels
     return t(segment) || segment;
-  }
+  };
+
+  // Construire les items du breadcrumb APRÈS les déclarations des fonctions helper
+  const breadcrumbItems = pathSegments.map((segment, index) => {
+    const path = '/' + pathSegments.slice(0, index + 1).join('/');
+    const isLast = index === pathSegments.length - 1;
+
+    return {
+      segment,
+      path,
+      isLast,
+      label: getSegmentLabel(segment, pathSegments, index, factureData),
+    };
+  });
 
   // Segments qui n'ont pas de page (chemins intermédiaires uniquement)
   const nonClickableSegments = ['profile'];
@@ -199,7 +205,12 @@ export const BreadCrumb = () => {
 
   const handleNavigation = (path: string, segment: string, isLast: boolean) => {
     if (isSegmentClickable(segment, isLast)) {
-      router.push(path);
+      // Si on clique sur "factures" et qu'on est dans un contexte devis, ajouter ?type=quote
+      if (segment === 'factures' && effectiveType === 'quote') {
+        router.push(`${path}?type=quote`);
+      } else {
+        router.push(path);
+      }
     }
   };
 
