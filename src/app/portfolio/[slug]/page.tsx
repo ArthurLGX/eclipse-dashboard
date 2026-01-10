@@ -99,18 +99,6 @@ const getFontFamily = (fontId: string, settings: PortfolioSettings): string => {
   return `'${fontName}', sans-serif`;
 };
 
-// Get Google Font URL for a font ID
-const getGoogleFontUrl = (fontId: string): string => {
-  if (!fontId || fontId === 'custom') return '';
-  
-  const fontName = fontId
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join('+');
-  
-  return `https://fonts.googleapis.com/css2?family=${fontName}:wght@100;200;300;400;500;600;700;800;900&display=swap`;
-};
-
 // ============================================================================
 // DEFAULT SETTINGS
 // ============================================================================
