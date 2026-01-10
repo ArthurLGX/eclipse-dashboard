@@ -29,6 +29,7 @@ import ProtectedRoute from '@/app/components/ProtectedRoute';
 import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
 import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft } from '@/lib/api';
+import EmailSentSuccessModal from '@/app/components/EmailSentSuccessModal';
 import type { CreateEmailSignatureData, Facture } from '@/types';
 
 interface Recipient {
@@ -70,6 +71,7 @@ function InvoiceEmail() {
   const [sending, setSending] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   
   // Draft state (si on reprend un brouillon)
   const [currentDraftId, setCurrentDraftId] = useState<string | null>(null);
@@ -373,8 +375,8 @@ Cordialement`;
         tracking_id: result.trackingId,
       });
       
-      showGlobalPopup(t('email_sent') || 'Email envoyé avec succès', 'success');
-      router.push('/dashboard/emails');
+      // Afficher la modale de succès
+      setShowSuccessModal(true);
     } catch (error) {
       console.error('Error sending email:', error);
       showGlobalPopup(t('email_send_error') || 'Erreur lors de l\'envoi', 'error');
@@ -811,6 +813,18 @@ Cordialement`;
           )}
         </AnimatePresence>
       </div>
+
+      {/* Success Modal */}
+      <EmailSentSuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => {
+          setShowSuccessModal(false);
+          router.push('/dashboard/emails');
+        }}
+        type="invoice"
+        recipientCount={recipients.length}
+        documentReference={selectedInvoice?.reference}
+      />
     </div>
   );
 }
