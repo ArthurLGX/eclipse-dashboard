@@ -60,11 +60,14 @@ export interface ScreenshotData {
   capturedAt?: string;
 }
 
+// Section type union
+export type SectionType = 'hero' | 'problem' | 'solution' | 'proof' | 'cta' | 'features' | 'pricing' | 'faq' | 'footer' | 'navigation' | 'unknown';
+
 // Section detected with position info for wireframe mapping
 export interface DetectedSection {
   id: string;
   name: string;
-  type: 'hero' | 'problem' | 'solution' | 'proof' | 'cta' | 'features' | 'pricing' | 'faq' | 'footer' | 'navigation' | 'unknown';
+  type: SectionType;
   detected: boolean;
   position?: {
     top: number; // percentage from top
@@ -78,7 +81,7 @@ export interface DetectedSection {
 export interface IdealSection {
   id: string;
   name: string;
-  type: string;
+  type: SectionType;
   description: string;
   importance: 'critical' | 'important' | 'optional';
   idealPosition: number; // order in ideal layout
