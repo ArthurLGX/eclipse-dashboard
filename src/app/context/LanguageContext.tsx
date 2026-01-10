@@ -345,7 +345,6 @@ const translations = {
     change_password: 'Changer le mot de passe',
     current_password: 'Mot de passe actuel',
     new_password: 'Nouveau mot de passe',
-    confirm_password: 'Confirmer le mot de passe',
     password_min_chars: 'Minimum 6 caractères',
     passwords_not_match: 'Les mots de passe ne correspondent pas',
     password_hint: 'Cliquez sur Modifier pour changer votre mot de passe',
@@ -355,7 +354,6 @@ const translations = {
     password_updated: 'Mot de passe mis à jour avec succès',
     password_update_error: 'Erreur lors de la mise à jour du mot de passe',
     modify: 'Modifier',
-    saving: 'Enregistrement...',
 
     //Your Subscription
     your_subscription: 'Votre abonnement',
@@ -2371,7 +2369,6 @@ const translations = {
     change_password: 'Change Password',
     current_password: 'Current Password',
     new_password: 'New Password',
-    confirm_password: 'Confirm Password',
     password_min_chars: 'Minimum 6 characters',
     passwords_not_match: 'Passwords do not match',
     password_hint: 'Click Modify to change your password',
@@ -2524,7 +2521,6 @@ const translations = {
     signature_saved: 'Signature saved successfully',
     signature_save_error: 'Error saving signature',
     save_signature: 'Save Signature',
-    saving: 'Saving...',
     preview: 'Preview',
     
     // Emails
