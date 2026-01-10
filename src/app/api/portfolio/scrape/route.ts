@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
-import puppeteer from 'puppeteer';
+import puppeteer, { Browser } from 'puppeteer';
 
 interface ScrapedProject {
   id: string;
@@ -253,7 +253,7 @@ function extractProjectsFromHtml($: cheerio.CheerioAPI, baseUrl: string, debug: 
 
 export async function POST(request: NextRequest): Promise<NextResponse<ScrapeResult>> {
   const debug: string[] = [];
-  let browser = null;
+  let browser: Browser | null = null;
   
   try {
     const { url, useJavaScript = true } = await request.json();
