@@ -180,10 +180,11 @@
 }
 
 /* ============================================
-   BRUTALIST THEME
+   BRUTALIST THEME - DARK MODE
    ============================================ */
-:root.brutalist {
-  /* Backgrounds - Raw blacks and whites */
+:root.brutalist,
+:root.brutalist-dark {
+  /* Backgrounds - Raw blacks */
   --bg-page: #0A0A0A;
   --bg-card: #141414;
   --bg-card-hover: #1C1C1C;
@@ -259,6 +260,88 @@
   --banner-purple: linear-gradient(to bottom right, #161616, #0a0a0a, #0a0a0a);
   --banner-rose: linear-gradient(to bottom right, #141414, #0a0a0a, #0a0a0a);
   --banner-cyan: linear-gradient(to bottom right, #121212, #0a0a0a, #0a0a0a);
+}
+
+/* ============================================
+   BRUTALIST THEME - LIGHT MODE
+   ============================================ */
+:root.brutalist-light {
+  /* Backgrounds - Raw whites */
+  --bg-page: #FFFFFF;
+  --bg-card: #FAFAFA;
+  --bg-card-hover: #F0F0F0;
+  --bg-input: #FFFFFF;
+  --bg-sidebar: #FFFFFF;
+  --bg-hover: #F0F0F0;
+  --bg-muted: #F5F5F5;
+  
+  /* Borders - Strong, visible */
+  --border-default: #000000;
+  --border-input: #000000;
+  --border-muted: #333333;
+  
+  /* Text colors - High contrast */
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --text-placeholder: #999999;
+  
+  /* Accent colors - Monochrome with black accent */
+  --color-accent: #000000;
+  --color-accent-light: #333333;
+  --color-accent-bg: rgba(0, 0, 0, 0.05);
+  --color-accent-muted: rgba(0, 0, 0, 0.1);
+  --color-accent-subtle: rgba(0, 0, 0, 0.15);
+  --color-accent-border: #000000;
+  --color-accent-text: #FFFFFF;
+  
+  /* Navigation active colors */
+  --nav-active-bg: rgba(0, 0, 0, 0.08);
+  --nav-active-text: #000000;
+  --nav-active-border: #000000;
+  
+  /* Semantic colors - Muted, industrial */
+  --color-primary: #000000;
+  --color-primary-bg: rgba(0, 0, 0, 0.05);
+  --color-primary-border: #000000;
+  --color-primary-text: #000000;
+  
+  --color-success: #404040;
+  --color-success-bg: rgba(64, 64, 64, 0.08);
+  --color-success-border: #404040;
+  --color-success-text: #404040;
+  
+  --color-info: #505050;
+  --color-info-bg: rgba(80, 80, 80, 0.08);
+  --color-info-border: #505050;
+  --color-info-text: #505050;
+  
+  --color-warning: #606060;
+  --color-warning-bg: rgba(96, 96, 96, 0.08);
+  --color-warning-border: #606060;
+  --color-warning-text: #606060;
+  
+  --color-danger: #000000;
+  --color-danger-bg: rgba(0, 0, 0, 0.05);
+  --color-danger-border: #000000;
+  --color-danger-text: #000000;
+  
+  /* Shadows - Minimal */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-accent: none;
+  
+  /* Gradients - Flat */
+  --gradient-sidebar: #FFFFFF;
+  
+  /* Banner gradients - Monochrome */
+  --banner-blue: linear-gradient(to bottom right, #F0F0F0, #FFFFFF, #FFFFFF);
+  --banner-emerald: linear-gradient(to bottom right, #F5F5F5, #FFFFFF, #FFFFFF);
+  --banner-amber: linear-gradient(to bottom right, #EBEBEB, #FFFFFF, #FFFFFF);
+  --banner-purple: linear-gradient(to bottom right, #F2F2F2, #FFFFFF, #FFFFFF);
+  --banner-rose: linear-gradient(to bottom right, #F8F8F8, #FFFFFF, #FFFFFF);
+  --banner-cyan: linear-gradient(to bottom right, #EDEDED, #FFFFFF, #FFFFFF);
 }
 
 /* ============================================

@@ -6,10 +6,10 @@ import { IconSun, IconMoon } from '@tabler/icons-react';
 import { useTheme } from '@/app/context/ThemeContext';
 
 export default function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedMode, setThemeMode } = useTheme();
 
   const toggleTheme = () => {
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+    setThemeMode(resolvedMode === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -22,13 +22,13 @@ export default function ThemeToggle() {
       aria-label="Toggle theme"
     >
       <motion.div
-        key={resolvedTheme}
+        key={resolvedMode}
         initial={{ rotate: -90, opacity: 0 }}
         animate={{ rotate: 0, opacity: 1 }}
         exit={{ rotate: 90, opacity: 0 }}
         transition={{ duration: 0.3 }}
       >
-        {resolvedTheme === 'dark' ? (
+        {resolvedMode === 'dark' ? (
           <IconSun
             size={18}
             className="text-warning group-hover:opacity-80 transition-colors"

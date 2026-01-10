@@ -75,12 +75,12 @@ const THEME_COLORS = {
 
 // Hook pour récupérer les couleurs du thème
 function useThemeColors() {
-  const { resolvedTheme } = useTheme();
+  const { resolvedMode } = useTheme();
   
   // Retourne directement les couleurs basées sur le thème résolu
   const colors = useMemo(() => {
-    return resolvedTheme === 'light' ? THEME_COLORS.light : THEME_COLORS.dark;
-  }, [resolvedTheme]);
+    return resolvedMode === 'light' ? THEME_COLORS.light : THEME_COLORS.dark;
+  }, [resolvedMode]);
 
   return colors;
 }

@@ -103,7 +103,7 @@ function DashboardLayoutContent({
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const { t } = useLanguage();
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedMode, setThemeMode } = useTheme();
   const { isLinkVisible } = useSidebar();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
 
@@ -535,11 +535,11 @@ function DashboardLayoutContent({
                   <div className="flex items-center gap-1">
                     {/* Theme Switch */}
                     <button
-                      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                      onClick={() => setThemeMode(resolvedMode === 'dark' ? 'light' : 'dark')}
                       className="btn-ghost p-1.5"
-                      title={resolvedTheme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+                      title={resolvedMode === 'dark' ? 'Mode clair' : 'Mode sombre'}
                     >
-                      {resolvedTheme === 'dark' ? (
+                      {resolvedMode === 'dark' ? (
                         <IconSun size={16} className="text-warning" />
                       ) : (
                         <IconMoon size={16} className="text-accent" />

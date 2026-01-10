@@ -116,8 +116,8 @@ interface SidebarItem {
 export default function Home() {
   useLenis();
   const { t } = useLanguage();
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
+  const { resolvedMode } = useTheme();
+  const isDark = resolvedMode === 'dark';
   const [isVisible, setIsVisible] = useState(false);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);

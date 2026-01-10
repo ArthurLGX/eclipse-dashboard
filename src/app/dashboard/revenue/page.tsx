@@ -56,7 +56,7 @@ ChartJS.defaults.font.family = "'Manrope', sans-serif";
 
 // Hook pour récupérer les couleurs du thème CSS
 function useThemeColors() {
-  const { resolvedTheme } = useTheme();
+  const { resolvedMode } = useTheme();
   const [colors, setColors] = useState({
     textPrimary: '#E8E4F0',
     textSecondary: '#A89EC8',
@@ -92,7 +92,7 @@ function useThemeColors() {
 
   useEffect(() => {
     updateColors();
-  }, [resolvedTheme, updateColors]);
+  }, [resolvedMode, updateColors]);
 
   return colors;
 }

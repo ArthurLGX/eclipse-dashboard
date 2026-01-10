@@ -47,7 +47,7 @@ type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'side
 
 export default function SettingsPage() {
   const { t, language, setLanguage } = useLanguage();
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { themeStyle, themeMode, resolvedMode, setThemeStyle, setThemeMode } = useTheme();
   const { visibleLinks, toggleLink, resetToDefault } = useSidebar();
   const { preferences, updateNotifications, updateInvoice, updateFormat } = usePreferences();
   const { 
@@ -257,23 +257,43 @@ export default function SettingsPage() {
               title={t('theme') || 'Thème'} 
               description={t('appearance_desc') || 'Choisissez le mode d\'affichage'}
             >
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { value: 'light', icon: <IconSun className="w-4 h-4" />, label: t('theme_light') || 'Clair' },
-                  { value: 'dark', icon: <IconMoon className="w-4 h-4" />, label: t('theme_dark') || 'Sombre' },
-                  { value: 'brutalist', icon: <IconSquare className="w-4 h-4" />, label: t('theme_brutalist') || 'Brutaliste' },
-                  { value: 'system', icon: <IconDeviceDesktop className="w-4 h-4" />, label: t('theme_system') || 'Système' },
-                ].map((opt) => (
-                  <OptionButton key={opt.value} selected={theme === opt.value} onClick={() => setTheme(opt.value as 'light' | 'dark' | 'brutalist' | 'system')}>
-                    {opt.icon} {opt.label}
-                  </OptionButton>
-                ))}
+              <div className="space-y-4">
+                {/* Style de thème */}
+                <div>
+                  <p className="text-sm text-secondary mb-2">{t('theme_style') || 'Style'}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: 'default', icon: <IconSettings className="w-4 h-4" />, label: t('theme_default') || 'Défaut' },
+                      { value: 'brutalist', icon: <IconSquare className="w-4 h-4" />, label: t('theme_brutalist') || 'Brutaliste' },
+                    ].map((opt) => (
+                      <OptionButton key={opt.value} selected={themeStyle === opt.value} onClick={() => setThemeStyle(opt.value as 'default' | 'brutalist')}>
+                        {opt.icon} {opt.label}
+                      </OptionButton>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Mode clair/sombre */}
+                <div>
+                  <p className="text-sm text-secondary mb-2">{t('theme_mode') || 'Mode'}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: 'light', icon: <IconSun className="w-4 h-4" />, label: t('theme_light') || 'Clair' },
+                      { value: 'dark', icon: <IconMoon className="w-4 h-4" />, label: t('theme_dark') || 'Sombre' },
+                      { value: 'system', icon: <IconDeviceDesktop className="w-4 h-4" />, label: t('theme_system') || 'Système' },
+                    ].map((opt) => (
+                      <OptionButton key={opt.value} selected={themeMode === opt.value} onClick={() => setThemeMode(opt.value as 'light' | 'dark' | 'system')}>
+                        {opt.icon} {opt.label}
+                      </OptionButton>
+                    ))}
+                  </div>
+                </div>
               </div>
               <p className="text-xs text-muted mt-2">
                 {t('current_theme') || 'Actuel'}: {
-                  resolvedTheme === 'dark' ? (t('theme_dark') || 'Sombre') : 
-                  resolvedTheme === 'brutalist' ? (t('theme_brutalist') || 'Brutaliste') : 
-                  (t('theme_light') || 'Clair')
+                  themeStyle === 'brutalist' ? (t('theme_brutalist') || 'Brutaliste') : (t('theme_default') || 'Défaut')
+                } - {
+                  resolvedMode === 'dark' ? (t('theme_dark') || 'Sombre') : (t('theme_light') || 'Clair')
                 }
               </p>
             </SettingsRow>
