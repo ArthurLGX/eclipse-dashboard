@@ -21,6 +21,7 @@ import { extractIdFromSlug } from '@/utils/slug';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import {
   Facture,
+  FactureStatus,
   Company,
   Client,
   Project,
@@ -376,11 +377,10 @@ export default function FacturePage() {
           number: total, // Montant total calculé automatiquement (avec ou sans TVA)
           date: formData?.date ?? '',
           due_date: formData?.due_date ?? '',
-          // Utiliser le bon champ de statut selon le type de document
-          ...(isQuote 
-            ? { quote_status: formData?.quote_status ?? 'draft' }
-            : { facture_status: formData?.facture_status ?? 'draft' }
-          ),
+          // Toujours inclure facture_status (requis par le type)
+          facture_status: isQuote ? 'draft' : (formData?.facture_status ?? 'draft'),
+          // Ajouter quote_status si c'est un devis
+          ...(isQuote && { quote_status: formData?.quote_status ?? 'draft' }),
           currency: formData?.currency ?? '',
           description: formData?.description ?? '',
           notes: formData?.notes ?? '',
