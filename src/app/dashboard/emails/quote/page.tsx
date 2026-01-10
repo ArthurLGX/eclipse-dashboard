@@ -31,23 +31,7 @@ import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpSta
 import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser } from '@/lib/api';
 import { generatePdfBase64 } from '@/lib/generatePdfBase64';
 import EmailSentSuccessModal from '@/app/components/EmailSentSuccessModal';
-
-interface Company {
-  name: string;
-  address?: string;
-  city?: string;
-  postal_code?: string;
-  country?: string;
-  phone?: string;
-  email?: string;
-  siret?: string;
-  siren?: string;
-  vat_number?: string;
-  rcs?: string;
-  capital_social?: string;
-  code_ape?: string;
-}
-import type { CreateEmailSignatureData, Facture } from '@/types';
+import type { CreateEmailSignatureData, Facture, Company } from '@/types';
 
 interface Recipient {
   id: string;
