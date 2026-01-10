@@ -435,13 +435,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ScrapeRes
     console.error('Scrape error:', error);
     debug.push(`Error: ${error}`);
     
-    if (browser) {
-      try {
-        await browser.close();
-      } catch {
-        // Ignore close errors
-      }
-    }
+    // Browser is already closed in the inner try-catch blocks
     
     return NextResponse.json({ 
       success: false, 
