@@ -157,7 +157,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                     </div>
                     <div className="flex items-center gap-1 text-xs text-muted mt-1">
                       <IconClock className="w-3 h-3" />
-                      {t('sent_days_ago', { days: daysSince }) || `Envoyé il y a ${daysSince} jour${daysSince > 1 ? 's' : ''}`}
+                      {`${t('sent') || 'Envoyé'} ${daysSince} ${t('days_ago') || 'jour(s)'}`}
                     </div>
                   </div>
 
@@ -209,7 +209,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
               onClick={() => router.push('/dashboard/factures?type=quote')}
               className="text-sm text-violet-500 hover:text-violet-600"
             >
-              {t('and_more_quotes', { count: pendingQuotes.length - 5 }) || `+ ${pendingQuotes.length - 5} autres devis`}
+              {`+ ${pendingQuotes.length - 5} ${t('other_quotes') || 'autres devis'}`}
             </button>
           </div>
         )}

@@ -479,7 +479,7 @@ export default function QuoteToProjectModal({
                   </h3>
                   <p className="text-secondary text-sm mb-6">
                     {importTasksOption && invoiceLines.length > 0
-                      ? t('tasks_created_count', { count: invoiceLines.length }) || `${invoiceLines.length} tâches ont été créées`
+                      ? `${invoiceLines.length} ${t('tasks_created') || 'tâches ont été créées'}`
                       : t('project_ready') || 'Le projet est prêt'}
                   </p>
 
