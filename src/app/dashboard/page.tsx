@@ -17,14 +17,12 @@ import {
   IconCurrencyEuro,
   IconTrendingUp,
   IconTrendingDown,
-  IconClock,
   IconFileInvoice,
   IconAlertTriangle,
   IconArrowUpRight,
   IconCalendarEvent,
   IconUserPlus,
   IconFolderPlus,
-  IconMail,
   IconCheck,
 } from '@tabler/icons-react';
 
