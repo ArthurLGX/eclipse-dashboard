@@ -221,6 +221,8 @@ export default function ExcelImportModal({
     setAvailableTabs([]);
     setSelectedTabGid(null);
     setDetectingTabs(false);
+    setFullWorkbook(null);
+    setSheetIdForWorkbook(null);
     setSendNotificationEmails(true);
     setEmailSubject('');
     setEmailMessage('');
@@ -351,60 +353,66 @@ export default function ExcelImportModal({
     };
   };
 
-  // Détecter les onglets disponibles dans un Google Sheet
+  // Stocker le workbook complet pour éviter de le re-télécharger
+  const [fullWorkbook, setFullWorkbook] = useState<XLSX.WorkBook | null>(null);
+  const [sheetIdForWorkbook, setSheetIdForWorkbook] = useState<string | null>(null);
+
+  // Détecter les onglets disponibles dans un Google Sheet en téléchargeant le fichier XLSX complet
   const detectGoogleSheetTabs = useCallback(async (sheetId: string): Promise<{ gid: string; name: string; rowCount: number }[]> => {
     const tabs: { gid: string; name: string; rowCount: number }[] = [];
-    const gidsToTest = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']; // Tester les 10 premiers onglets possibles
     
-    for (const gid of gidsToTest) {
-      try {
-        const exportUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
-        const response = await fetch(exportUrl, { redirect: 'follow' });
-        
-        if (!response.ok) continue;
-        
-        const finalUrl = response.url;
-        if (finalUrl.includes('accounts.google.com') || finalUrl.includes('ServiceLogin')) continue;
-        
-        const csvText = await response.text();
-        const trimmedText = csvText.trim();
-        
-        // Ignorer si c'est du HTML
-        if (trimmedText.startsWith('<!DOCTYPE') || trimmedText.startsWith('<html')) continue;
-        
-        // Parser pour compter les lignes
-        const workbook = XLSX.read(csvText, { type: 'string' });
-        const sheetName = workbook.SheetNames[0];
+    try {
+      // Télécharger le fichier XLSX complet (contient tous les onglets)
+      const xlsxUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=xlsx`;
+      const response = await fetch(xlsxUrl, { redirect: 'follow' });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error(t('google_sheet_not_found') || 'Google Sheet non trouvé');
+        }
+        throw new Error(t('google_sheet_access_denied') || 'Accès refusé');
+      }
+      
+      // Vérifier si on a été redirigé vers une page de connexion
+      const finalUrl = response.url;
+      if (finalUrl.includes('accounts.google.com') || finalUrl.includes('ServiceLogin')) {
+        throw new Error(t('google_sheet_must_be_public') || 'Le Google Sheet doit être partagé publiquement');
+      }
+      
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer);
+      
+      // Stocker le workbook pour ne pas avoir à le retélécharger
+      setFullWorkbook(workbook);
+      setSheetIdForWorkbook(sheetId);
+      
+      // Parcourir tous les onglets (sheets)
+      workbook.SheetNames.forEach((sheetName, index) => {
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1, defval: '' });
         
-        // Filtrer les lignes vides
+        // Compter les lignes non vides
         const nonEmptyRows = jsonData.filter(row => 
           row.some(cell => cell !== '' && cell !== null && cell !== undefined)
         );
         
-        if (nonEmptyRows.length > 0) {
-          // Essayer d'extraire le nom de l'onglet depuis la première ligne d'en-tête ou utiliser un nom générique
-          const firstHeader = jsonData[0]?.[0] || '';
-          const tabName = gid === '0' ? (t('main_tab') || 'Onglet principal') : `${t('tab') || 'Onglet'} ${parseInt(gid) + 1}`;
-          
-          tabs.push({
-            gid,
-            name: tabName,
-            rowCount: nonEmptyRows.length - 1, // -1 pour exclure l'en-tête
-          });
-        }
-      } catch {
-        // Ignorer les erreurs pour cet onglet
-        continue;
-      }
+        tabs.push({
+          gid: String(index), // On utilise l'index comme identifiant
+          name: sheetName,
+          rowCount: Math.max(0, nonEmptyRows.length - 1), // -1 pour l'en-tête
+        });
+      });
+      
+    } catch (error) {
+      console.error('Error detecting tabs:', error);
+      throw error;
     }
     
     return tabs;
   }, [t]);
 
   // Charger un Google Sheet via son URL
-  const handleGoogleSheetImport = useCallback(async (forceGid?: string) => {
+  const handleGoogleSheetImport = useCallback(async (forceTabIndex?: string) => {
     if (!googleSheetUrl.trim()) {
       setError(t('google_sheet_url_required') || 'Veuillez coller un lien Google Sheets');
       return;
@@ -416,11 +424,11 @@ export default function ExcelImportModal({
       return;
     }
 
-    // Utiliser le gid forcé, ou celui de l'URL, ou celui sélectionné
-    const gidToUse = forceGid || sheetInfo.gid || selectedTabGid;
+    // Utiliser l'index d'onglet forcé, ou celui sélectionné
+    const tabIndexToUse = forceTabIndex || selectedTabGid;
 
-    // Si pas de gid et pas encore d'onglets détectés, détecter les onglets
-    if (!gidToUse && availableTabs.length === 0) {
+    // Si pas d'index et pas encore d'onglets détectés, détecter les onglets
+    if (!tabIndexToUse && availableTabs.length === 0 && !sheetInfo.gid) {
       setDetectingTabs(true);
       setError(null);
       
@@ -444,7 +452,11 @@ export default function ExcelImportModal({
         return;
       } catch (err) {
         console.error('Error detecting tabs:', err);
-        setError(t('google_sheet_error') || 'Erreur lors du chargement du Google Sheet');
+        setError(
+          err instanceof Error 
+            ? err.message 
+            : (t('google_sheet_error') || 'Erreur lors du chargement du Google Sheet')
+        );
         return;
       } finally {
         setDetectingTabs(false);
@@ -455,46 +467,73 @@ export default function ExcelImportModal({
     setError(null);
 
     try {
-      // URL d'export CSV public de Google Sheets
-      let exportUrl = `https://docs.google.com/spreadsheets/d/${sheetInfo.sheetId}/export?format=csv`;
-      if (gidToUse) {
-        exportUrl += `&gid=${gidToUse}`;
-      }
+      let jsonData: string[][] = [];
+      let sheetName = '';
       
-      const response = await fetch(exportUrl, {
-        redirect: 'follow',
-      });
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error(t('google_sheet_not_found') || 'Google Sheet non trouvé');
+      // Si on a déjà le workbook en mémoire, l'utiliser directement
+      if (fullWorkbook && sheetIdForWorkbook === sheetInfo.sheetId && tabIndexToUse) {
+        const tabIndex = parseInt(tabIndexToUse);
+        sheetName = fullWorkbook.SheetNames[tabIndex] || fullWorkbook.SheetNames[0];
+        const worksheet = fullWorkbook.Sheets[sheetName];
+        jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1, defval: '' });
+      } else {
+        // Sinon, télécharger le CSV de l'onglet spécifique ou le fichier XLSX complet
+        if (sheetInfo.gid || tabIndexToUse === '0') {
+          // Si on a un gid dans l'URL, utiliser l'export CSV
+          let exportUrl = `https://docs.google.com/spreadsheets/d/${sheetInfo.sheetId}/export?format=csv`;
+          if (sheetInfo.gid) {
+            exportUrl += `&gid=${sheetInfo.gid}`;
+          }
+          
+          const response = await fetch(exportUrl, { redirect: 'follow' });
+          
+          if (!response.ok) {
+            if (response.status === 404) {
+              throw new Error(t('google_sheet_not_found') || 'Google Sheet non trouvé');
+            }
+            throw new Error(t('google_sheet_access_denied') || 'Accès refusé');
+          }
+          
+          const finalUrl = response.url;
+          if (finalUrl.includes('accounts.google.com') || finalUrl.includes('ServiceLogin')) {
+            throw new Error(t('google_sheet_must_be_public') || 'Le Google Sheet doit être partagé publiquement');
+          }
+          
+          const csvText = await response.text();
+          if (csvText.trim().startsWith('<!DOCTYPE') || csvText.trim().startsWith('<html')) {
+            throw new Error(t('google_sheet_must_be_public') || 'Le Google Sheet doit être partagé publiquement');
+          }
+          
+          const workbook = XLSX.read(csvText, { type: 'string' });
+          sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1, defval: '' });
+        } else {
+          // Télécharger le fichier XLSX complet
+          const xlsxUrl = `https://docs.google.com/spreadsheets/d/${sheetInfo.sheetId}/export?format=xlsx`;
+          const response = await fetch(xlsxUrl, { redirect: 'follow' });
+          
+          if (!response.ok) {
+            throw new Error(t('google_sheet_access_denied') || 'Accès refusé');
+          }
+          
+          const finalUrl = response.url;
+          if (finalUrl.includes('accounts.google.com') || finalUrl.includes('ServiceLogin')) {
+            throw new Error(t('google_sheet_must_be_public') || 'Le Google Sheet doit être partagé publiquement');
+          }
+          
+          const arrayBuffer = await response.arrayBuffer();
+          const workbook = XLSX.read(arrayBuffer);
+          
+          setFullWorkbook(workbook);
+          setSheetIdForWorkbook(sheetInfo.sheetId);
+          
+          const tabIndex = tabIndexToUse ? parseInt(tabIndexToUse) : 0;
+          sheetName = workbook.SheetNames[tabIndex] || workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1, defval: '' });
         }
-        throw new Error(t('google_sheet_access_denied') || 'Accès refusé. Vérifiez que le fichier est partagé publiquement.');
       }
-      
-      // Vérifier si on a été redirigé vers une page de connexion Google
-      const finalUrl = response.url;
-      if (finalUrl.includes('accounts.google.com') || finalUrl.includes('ServiceLogin')) {
-        throw new Error(t('google_sheet_must_be_public') || 'Le Google Sheet doit être partagé publiquement. Allez dans Fichier > Partager > "Tous ceux disposant du lien peuvent consulter"');
-      }
-      
-      const csvText = await response.text();
-      
-      // Vérifier que le contenu ressemble à du CSV et pas à du HTML
-      const trimmedText = csvText.trim();
-      if (trimmedText.startsWith('<!DOCTYPE') || trimmedText.startsWith('<html') || trimmedText.includes('<head>')) {
-        throw new Error(t('google_sheet_must_be_public') || 'Le Google Sheet doit être partagé publiquement. Allez dans Fichier > Partager > "Tous ceux disposant du lien peuvent consulter"');
-      }
-      
-      // Parser le CSV avec xlsx
-      const workbook = XLSX.read(csvText, { type: 'string' });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      
-      const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { 
-        header: 1,
-        defval: '',
-      });
       
       if (jsonData.length < 2) {
         setError(t('excel_no_data') || 'Le fichier ne contient pas assez de données');
@@ -512,8 +551,8 @@ export default function ExcelImportModal({
       }
       
       // Créer un "fake file" pour l'affichage
-      const selectedTab = availableTabs.find(tab => tab.gid === gidToUse);
-      const tabInfo = selectedTab ? ` - ${selectedTab.name}` : (gidToUse ? ` (onglet ${gidToUse})` : '');
+      const selectedTab = availableTabs.find(tab => tab.gid === tabIndexToUse);
+      const tabInfo = selectedTab ? ` - ${selectedTab.name}` : (sheetName ? ` - ${sheetName}` : '');
       setFile({ name: `Google Sheet${tabInfo}` } as File);
       setHeaders(headerRow);
       setExcelData(dataRows.map(row => row.map(cell => String(cell || ''))));
@@ -524,6 +563,8 @@ export default function ExcelImportModal({
       // Reset tab selection
       setAvailableTabs([]);
       setSelectedTabGid(null);
+      setFullWorkbook(null);
+      setSheetIdForWorkbook(null);
       
       setStep('mapping');
     } catch (err) {
@@ -536,7 +577,7 @@ export default function ExcelImportModal({
     } finally {
       setLoadingGoogleSheet(false);
     }
-  }, [googleSheetUrl, t, autoMapColumns, selectedTabGid, availableTabs, detectGoogleSheetTabs]);
+  }, [googleSheetUrl, t, autoMapColumns, selectedTabGid, availableTabs, detectGoogleSheetTabs, fullWorkbook, sheetIdForWorkbook]);
 
   // Parse une date depuis différents formats
   const parseDate = (value: string): string | null => {
