@@ -36,7 +36,9 @@ import {
   IconMail,
   IconDownload,
   IconCalculator,
+  IconSparkles,
 } from '@tabler/icons-react';
+import AIInvoiceGenerator from '@/app/components/AIInvoiceGenerator';
 import { useRef } from 'react';
 import { pdf } from '@react-pdf/renderer';
 import FacturePDF from '@/app/components/FacturePDF';
@@ -63,8 +65,12 @@ export default function FacturePage() {
   const documentType = searchParams.get('type') === 'quote' ? 'quote' : 'invoice';
 
   const [showPreview, setShowPreview] = useState(false);
+  const [showAIGenerator, setShowAIGenerator] = useState(false);
   const [facture, setFacture] = useState<Facture | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
+  
+  // Déterminer si on est en mode création
+  const isCreationMode = rawId.toLowerCase() === 'add' || rawId.toLowerCase() === 'ajouter' || rawId.toLowerCase() === 'new' || rawId.toLowerCase() === t('add').toLowerCase();
   
   // Mettre à jour le titre de l'onglet avec la référence de la facture
   useDocumentTitle(facture?.reference, { prefix: t('invoice') });
@@ -395,6 +401,55 @@ export default function FacturePage() {
     }
   };
 
+  // Handler pour les données générées par l'IA
+  const handleAIGenerated = (data: {
+    clientName?: string;
+    clientEnterprise?: string;
+    clientEmail?: string;
+    matchedClientId?: number;
+    matchedClientDocumentId?: string;
+    projectTitle?: string;
+    projectDescription?: string;
+    lines: InvoiceLine[];
+    notes?: string;
+    totalEstimate: number;
+    suggestedDueDate?: string;
+    tvaApplicable: boolean;
+    tvaRate: number;
+    currency: string;
+    confidence: number;
+  }) => {
+    // Mettre à jour les lignes de facture
+    setInvoiceLines(data.lines);
+    
+    // Mettre à jour la TVA
+    setTvaApplicable(data.tvaApplicable);
+    
+    // Trouver le client correspondant si matchedClientId
+    if (data.matchedClientId) {
+      const matchedClient = clients.find(c => c.id === data.matchedClientId);
+      if (matchedClient) {
+        setFormData(prev => prev ? { ...prev, client_id: matchedClient } : prev);
+      }
+    }
+    
+    // Mettre à jour les notes si fournies
+    if (data.notes) {
+      setFormData(prev => prev ? { 
+        ...prev, 
+        notes: data.notes || prev.notes,
+        description: data.projectTitle || prev.description,
+      } : prev);
+    }
+    
+    // Mettre à jour la date d'échéance si fournie
+    if (data.suggestedDueDate) {
+      setFormData(prev => prev ? { ...prev, due_date: data.suggestedDueDate! } : prev);
+    }
+    
+    showGlobalPopup(t('ai_invoice_success'), 'success');
+  };
+
   const handleSendEmail = () => {
     if (!facture) {
       showGlobalPopup('Erreur: facture non trouvée', 'error');
@@ -477,6 +532,16 @@ export default function FacturePage() {
             </button>
           ) : (
             <>
+              {/* Bouton AI - uniquement en mode création */}
+              {isCreationMode && (
+                <button
+                  onClick={() => setShowAIGenerator(true)}
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-500 border border-purple-500/20 px-4 py-2 rounded-lg hover:from-purple-500/20 hover:to-pink-500/20 transition-all"
+                >
+                  <IconSparkles className="w-4 h-4" />
+                  {t('ai_invoice_button')}
+                </button>
+              )}
               <button
                 onClick={handleSave}
                 className="flex items-center justify-center gap-2 bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-colors"
@@ -1046,6 +1111,14 @@ export default function FacturePage() {
           t={t}
         />
       </Modal>
+
+      {/* Modal AI Invoice Generator */}
+      <AIInvoiceGenerator
+        isOpen={showAIGenerator}
+        onClose={() => setShowAIGenerator(false)}
+        documentType={documentType}
+        onGenerated={handleAIGenerated}
+      />
     </motion.div>
   );
 }

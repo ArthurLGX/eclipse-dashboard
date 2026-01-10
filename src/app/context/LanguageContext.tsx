@@ -735,6 +735,25 @@ const translations = {
     emission_date: "Date d'émission",
     overdue: 'En retard',
 
+    // AI Invoice Generator
+    ai_invoice_button: 'Générer avec IA',
+    ai_invoice_title: 'Générer un',
+    ai_invoice_subtitle: 'Collez un email ou message pour extraire automatiquement les informations',
+    ai_invoice_paste_text: 'Texte à analyser',
+    ai_invoice_placeholder: 'Collez ici un email, un message client, un brief de projet...\n\nExemple:\n"Bonjour,\nSuite à notre échange, je souhaiterais vous confier la création de mon site vitrine. Il me faudrait 5 pages avec un design moderne, responsive et un formulaire de contact. Budget prévu : environ 2000€.\nCordialement,\nJean Dupont - Entreprise ABC"',
+    ai_invoice_hint: 'L\'IA va analyser ce texte pour en extraire le client, les prestations et estimer les montants.',
+    ai_invoice_analyze: 'Analyser',
+    ai_invoice_generate: 'Générer',
+    ai_invoice_settings_required: 'Pour une meilleure estimation, veuillez renseigner vos tarifs ci-dessous.',
+    ai_invoice_hourly_rate: 'Taux horaire',
+    ai_invoice_daily_rate: 'Taux journalier',
+    ai_invoice_billing_type: 'Mode de facturation préféré',
+    ai_invoice_confidence: 'Confiance',
+    ai_invoice_client_matched: 'Client existant reconnu',
+    ai_invoice_use_this: 'Utiliser ce résultat',
+    ai_invoice_success: 'Données générées avec succès !',
+    ai_invoice_error_empty_text: 'Veuillez entrer du texte à analyser',
+
     // Enterprise
 
     create_your_enterprise: 'Créer votre entreprise',
@@ -2905,6 +2924,26 @@ const translations = {
     vat_applicable: 'VAT applicable',
     overdue: 'Overdue',
     create_facture: 'Create Facture',
+    
+    // AI Invoice Generator
+    ai_invoice_button: 'Generate with AI',
+    ai_invoice_title: 'Generate a',
+    ai_invoice_subtitle: 'Paste an email or message to automatically extract information',
+    ai_invoice_paste_text: 'Text to analyze',
+    ai_invoice_placeholder: 'Paste an email, client message, or project brief here...\n\nExample:\n"Hello,\nFollowing our discussion, I would like to entrust you with creating my showcase website. I need 5 pages with a modern, responsive design and a contact form. Planned budget: around €2000.\nBest regards,\nJohn Doe - ABC Company"',
+    ai_invoice_hint: 'AI will analyze this text to extract client info, services, and estimate amounts.',
+    ai_invoice_analyze: 'Analyze',
+    ai_invoice_generate: 'Generate',
+    ai_invoice_settings_required: 'For a better estimate, please enter your rates below.',
+    ai_invoice_hourly_rate: 'Hourly rate',
+    ai_invoice_daily_rate: 'Daily rate',
+    ai_invoice_billing_type: 'Preferred billing type',
+    ai_invoice_confidence: 'Confidence',
+    ai_invoice_client_matched: 'Existing client matched',
+    ai_invoice_use_this: 'Use this result',
+    ai_invoice_success: 'Data generated successfully!',
+    ai_invoice_error_empty_text: 'Please enter text to analyze',
+
     // Revenue
     top_project: 'Top Project',
     top_client: 'Top Client',
