@@ -71,16 +71,43 @@ const THEME_COLORS = {
     bgCard: '#FFFFFF',
     borderDefault: '#E5E7EB',
   },
+  brutalistDark: {
+    textPrimary: '#FFFFFF',
+    textSecondary: '#B0B0B0',
+    textMuted: '#707070',
+    accent: '#FFFFFF',
+    success: '#B0B0B0',
+    info: '#909090',
+    warning: '#808080',
+    danger: '#FFFFFF',
+    bgCard: '#141414',
+    borderDefault: '#444444',
+  },
+  brutalistLight: {
+    textPrimary: '#000000',
+    textSecondary: '#333333',
+    textMuted: '#666666',
+    accent: '#000000',
+    success: '#404040',
+    info: '#505050',
+    warning: '#606060',
+    danger: '#000000',
+    bgCard: '#FAFAFA',
+    borderDefault: '#000000',
+  },
 };
 
 // Hook pour récupérer les couleurs du thème
 function useThemeColors() {
-  const { resolvedMode } = useTheme();
+  const { resolvedMode, themeStyle } = useTheme();
   
   // Retourne directement les couleurs basées sur le thème résolu
   const colors = useMemo(() => {
+    if (themeStyle === 'brutalist') {
+      return resolvedMode === 'light' ? THEME_COLORS.brutalistLight : THEME_COLORS.brutalistDark;
+    }
     return resolvedMode === 'light' ? THEME_COLORS.light : THEME_COLORS.dark;
-  }, [resolvedMode]);
+  }, [resolvedMode, themeStyle]);
 
   return colors;
 }

@@ -1067,6 +1067,353 @@ nav button:hover svg, nav a:hover svg {
 }
 
 /* ============================================
+   BRUTALIST THEME - SPECIAL STYLES
+   ============================================ */
+
+/* Remove all rounded corners in brutalist theme */
+:root.brutalist *,
+:root.brutalist-dark *,
+:root.brutalist-light * {
+  border-radius: 0 !important;
+}
+
+/* Brutalist hover effect - Retro press effect */
+:root.brutalist,
+:root.brutalist-dark,
+:root.brutalist-light {
+  --brutalist-shadow-offset: 4px;
+  --brutalist-shadow-color: #000000;
+  --brutalist-hover-translate: -3px;
+}
+
+:root.brutalist-light {
+  --brutalist-shadow-color: #000000;
+}
+
+/* Brutalist buttons, links, and interactive elements */
+:root.brutalist button,
+:root.brutalist-dark button,
+:root.brutalist-light button,
+:root.brutalist a:not(.no-brutalist-effect),
+:root.brutalist-dark a:not(.no-brutalist-effect),
+:root.brutalist-light a:not(.no-brutalist-effect),
+:root.brutalist .btn,
+:root.brutalist-dark .btn,
+:root.brutalist-light .btn,
+:root.brutalist .card,
+:root.brutalist-dark .card,
+:root.brutalist-light .card,
+:root.brutalist .nav-item,
+:root.brutalist-dark .nav-item,
+:root.brutalist-light .nav-item {
+  position: relative;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.15s ease,
+              border-color 0.15s ease;
+}
+
+/* Hover effect for buttons */
+:root.brutalist button:hover:not(:disabled),
+:root.brutalist-dark button:hover:not(:disabled),
+:root.brutalist-light button:hover:not(:disabled),
+:root.brutalist .btn:hover:not(:disabled),
+:root.brutalist-dark .btn:hover:not(:disabled),
+:root.brutalist-light .btn:hover:not(:disabled) {
+  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
+  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
+}
+
+/* Hover effect for links */
+:root.brutalist a:not(.no-brutalist-effect):hover,
+:root.brutalist-dark a:not(.no-brutalist-effect):hover,
+:root.brutalist-light a:not(.no-brutalist-effect):hover {
+  display: inline-block;
+  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
+  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
+}
+
+/* Hover effect for cards */
+:root.brutalist .card:hover,
+:root.brutalist-dark .card:hover,
+:root.brutalist-light .card:hover {
+  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
+  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
+}
+
+/* Hover effect for nav items */
+:root.brutalist .nav-item:hover,
+:root.brutalist-dark .nav-item:hover,
+:root.brutalist-light .nav-item:hover {
+  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
+  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
+}
+
+/* Active/pressed state */
+:root.brutalist button:active:not(:disabled),
+:root.brutalist-dark button:active:not(:disabled),
+:root.brutalist-light button:active:not(:disabled),
+:root.brutalist .btn:active:not(:disabled),
+:root.brutalist-dark .btn:active:not(:disabled),
+:root.brutalist-light .btn:active:not(:disabled),
+:root.brutalist a:not(.no-brutalist-effect):active,
+:root.brutalist-dark a:not(.no-brutalist-effect):active,
+:root.brutalist-light a:not(.no-brutalist-effect):active {
+  transform: translate(0, 0);
+  box-shadow: none;
+}
+
+/* Brutalist borders - stronger, more visible */
+:root.brutalist,
+:root.brutalist-dark {
+  --border-default: #444444;
+  --border-input: #555555;
+}
+
+:root.brutalist-light {
+  --border-default: #000000;
+  --border-input: #000000;
+}
+
+/* Brutalist inputs - sharp, industrial */
+:root.brutalist input,
+:root.brutalist-dark input,
+:root.brutalist-light input,
+:root.brutalist textarea,
+:root.brutalist-dark textarea,
+:root.brutalist-light textarea,
+:root.brutalist select,
+:root.brutalist-dark select,
+:root.brutalist-light select {
+  border-width: 2px;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.15s ease;
+}
+
+:root.brutalist input:focus,
+:root.brutalist-dark input:focus,
+:root.brutalist-light input:focus,
+:root.brutalist textarea:focus,
+:root.brutalist-dark textarea:focus,
+:root.brutalist-light textarea:focus,
+:root.brutalist select:focus,
+:root.brutalist-dark select:focus,
+:root.brutalist-light select:focus {
+  box-shadow: calc(var(--brutalist-shadow-offset) * -1) var(--brutalist-shadow-offset) 0 0 var(--brutalist-shadow-color);
+  transform: translate(var(--brutalist-hover-translate), var(--brutalist-hover-translate));
+}
+
+/* Brutalist scrollbar */
+:root.brutalist::-webkit-scrollbar-thumb,
+:root.brutalist-dark::-webkit-scrollbar-thumb,
+:root.brutalist-light::-webkit-scrollbar-thumb {
+  border-radius: 0 !important;
+}
+
+/* Brutalist badges - square */
+:root.brutalist .badge,
+:root.brutalist-dark .badge,
+:root.brutalist-light .badge {
+  border: 2px solid currentColor;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Brutalist table - heavy borders */
+:root.brutalist table,
+:root.brutalist-dark table,
+:root.brutalist-light table {
+  border: 2px solid var(--border-default);
+}
+
+:root.brutalist th,
+:root.brutalist-dark th,
+:root.brutalist-light th {
+  border-bottom: 2px solid var(--border-default);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+}
+
+:root.brutalist td,
+:root.brutalist-dark td,
+:root.brutalist-light td {
+  border-bottom: 1px solid var(--border-default);
+}
+
+/* Brutalist chart colors */
+:root.brutalist,
+:root.brutalist-dark {
+  --chart-1: #FFFFFF;
+  --chart-2: #B0B0B0;
+  --chart-3: #808080;
+  --chart-4: #505050;
+  --chart-5: #303030;
+}
+
+:root.brutalist-light {
+  --chart-1: #000000;
+  --chart-2: #333333;
+  --chart-3: #666666;
+  --chart-4: #999999;
+  --chart-5: #CCCCCC;
+}
+
+/* Brutalist typography - bolder */
+:root.brutalist h1,
+:root.brutalist-dark h1,
+:root.brutalist-light h1,
+:root.brutalist h2,
+:root.brutalist-dark h2,
+:root.brutalist-light h2,
+:root.brutalist h3,
+:root.brutalist-dark h3,
+:root.brutalist-light h3 {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+:root.brutalist-light h2 {
+  color: #000000;
+}
+
+/* ============================================
+   BRUTALIST COLOR OVERRIDES
+   Force grayscale on hardcoded Tailwind colors
+   ============================================ */
+
+/* Dark brutalist - convert colors to white/gray shades */
+:root.brutalist,
+:root.brutalist-dark {
+  /* Override colored backgrounds */
+  & .bg-violet-500\/10, & .from-violet-500\/10,
+  & .bg-emerald-500\/10, & .from-emerald-500\/10,
+  & .bg-blue-500\/10, & .from-blue-500\/10,
+  & .bg-purple-500\/10, & .from-purple-500\/10,
+  & .bg-red-500\/10, & .from-red-500\/10,
+  & .bg-gray-500\/10, & .from-gray-500\/10 {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-image: none !important;
+  }
+  
+  & .bg-violet-500\/20, & .bg-emerald-500\/20, & .bg-blue-500\/20,
+  & .bg-purple-500\/20, & .bg-red-500\/20, & .bg-gray-500\/20,
+  & .bg-green-500\/20, & .bg-orange-500\/20, & .bg-yellow-500\/20 {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  /* Override colored borders */
+  & .border-violet-500\/20, & .border-emerald-500\/20,
+  & .border-blue-500\/20, & .border-purple-500\/20,
+  & .border-red-500\/20, & .border-gray-500\/20 {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+  
+  /* Override colored text - convert to white/gray */
+  & .text-violet-500, & .text-violet-400, & .text-violet-600,
+  & .text-emerald-500, & .text-emerald-400,
+  & .text-blue-500, & .text-blue-400,
+  & .text-purple-500, & .text-purple-400,
+  & .text-green-500, & .text-green-400,
+  & .text-orange-500, & .text-amber-500 {
+    color: #FFFFFF !important;
+  }
+  
+  & .text-red-500, & .text-red-400 {
+    color: #B0B0B0 !important;
+  }
+  
+  & .text-gray-500, & .text-gray-400 {
+    color: #808080 !important;
+  }
+  
+  /* Override chart/graph bar colors */
+  & .bg-violet-500\/80 {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+  }
+  
+  & .hover\:bg-violet-500:hover {
+    background-color: #FFFFFF !important;
+  }
+  
+  /* Activity item backgrounds */
+  & .bg-emerald-100, & .bg-blue-100, & .bg-green-100, & .bg-gray-100 {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+  }
+  
+  & .dark\:bg-emerald-900\/30, & .dark\:bg-blue-900\/30,
+  & .dark\:bg-green-900\/30, & .dark\:bg-gray-900\/30 {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+/* Light brutalist - convert colors to black/gray shades */
+:root.brutalist-light {
+  /* Override colored backgrounds */
+  & .bg-violet-500\/10, & .from-violet-500\/10,
+  & .bg-emerald-500\/10, & .from-emerald-500\/10,
+  & .bg-blue-500\/10, & .from-blue-500\/10,
+  & .bg-purple-500\/10, & .from-purple-500\/10,
+  & .bg-red-500\/10, & .from-red-500\/10,
+  & .bg-gray-500\/10, & .from-gray-500\/10 {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+    background-image: none !important;
+  }
+  
+  & .bg-violet-500\/20, & .bg-emerald-500\/20, & .bg-blue-500\/20,
+  & .bg-purple-500\/20, & .bg-red-500\/20, & .bg-gray-500\/20,
+  & .bg-green-500\/20, & .bg-orange-500\/20, & .bg-yellow-500\/20 {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+  }
+  
+  /* Override colored borders */
+  & .border-violet-500\/20, & .border-emerald-500\/20,
+  & .border-blue-500\/20, & .border-purple-500\/20,
+  & .border-red-500\/20, & .border-gray-500\/20 {
+    border-color: rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Override colored text - convert to black/gray */
+  & .text-violet-500, & .text-violet-400, & .text-violet-600,
+  & .text-emerald-500, & .text-emerald-400,
+  & .text-blue-500, & .text-blue-400,
+  & .text-purple-500, & .text-purple-400,
+  & .text-green-500, & .text-green-400,
+  & .text-orange-500, & .text-amber-500 {
+    color: #000000 !important;
+  }
+  
+  & .text-red-500, & .text-red-400 {
+    color: #333333 !important;
+  }
+  
+  & .text-gray-500, & .text-gray-400 {
+    color: #666666 !important;
+  }
+  
+  /* Override chart/graph bar colors */
+  & .bg-violet-500\/80 {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  & .hover\:bg-violet-500:hover {
+    background-color: #000000 !important;
+  }
+  
+  /* Activity item backgrounds */
+  & .bg-emerald-100, & .bg-blue-100, & .bg-green-100, & .bg-gray-100 {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+  
+  & .dark\:bg-emerald-900\/30, & .dark\:bg-blue-900\/30,
+  & .dark\:bg-green-900\/30, & .dark\:bg-gray-900\/30 {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+}
+
+/* ============================================
    EMAIL PREVIEW - Force light theme for realistic email preview
    ============================================ */
 
