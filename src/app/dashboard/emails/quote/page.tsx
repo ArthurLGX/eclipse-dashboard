@@ -28,8 +28,25 @@ import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
-import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft } from '@/lib/api';
+import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser } from '@/lib/api';
+import { generatePdfBase64 } from '@/lib/generatePdfBase64';
 import EmailSentSuccessModal from '@/app/components/EmailSentSuccessModal';
+
+interface Company {
+  name: string;
+  address?: string;
+  city?: string;
+  postal_code?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+  siret?: string;
+  siren?: string;
+  vat_number?: string;
+  rcs?: string;
+  capital_social?: string;
+  code_ape?: string;
+}
 import type { CreateEmailSignatureData, Facture } from '@/types';
 
 interface Recipient {
@@ -66,6 +83,7 @@ function QuoteEmail() {
   const [loadingQuotes, setLoadingQuotes] = useState(true);
   const [quoteSearch, setQuoteSearch] = useState('');
   const [showQuoteSelector, setShowQuoteSelector] = useState(false);
+  const [company, setCompany] = useState<Company | null>(null);
   
   // UI state
   const [sending, setSending] = useState(false);
@@ -138,6 +156,22 @@ Cordialement`);
     
     loadQuotes();
   }, [user?.id, token, searchParams]);
+
+  // Load company data for PDF generation
+  useEffect(() => {
+    const loadCompany = async () => {
+      if (!user?.id) return;
+      try {
+        const companyResponse = await fetchCompanyUser(user.id) as { data?: Company[] };
+        if (companyResponse?.data && companyResponse.data.length > 0) {
+          setCompany(companyResponse.data[0]);
+        }
+      } catch {
+        // Silencieux - les données de l'entreprise sont optionnelles
+      }
+    };
+    loadCompany();
+  }, [user?.id]);
   
   // Charger la signature email
   useEffect(() => {
@@ -336,8 +370,9 @@ Cordialement`;
       
       htmlContent += '</div>';
       
-      const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
-      const pdfUrl = `${strapiUrl}/api/factures/${selectedQuote.documentId}/pdf`;
+      // Générer le PDF côté client
+      const pdfBase64 = await generatePdfBase64(selectedQuote, company);
+      const filename = `Devis-${selectedQuote.reference}.pdf`;
       
       const response = await fetch('/api/emails/send', {
         method: 'POST',
@@ -349,7 +384,11 @@ Cordialement`;
           to: recipients.map(r => r.email),
           subject,
           html: htmlContent,
-          attachments: [{ filename: `Devis-${selectedQuote.reference}.pdf`, path: pdfUrl }],
+          attachments: [{ 
+            filename,
+            content: pdfBase64,
+            contentType: 'application/pdf',
+          }],
         }),
       });
       
@@ -364,7 +403,7 @@ Cordialement`;
         recipients: recipients.map(r => r.email),
         content: message,
         category: 'quote',
-        attachments: [{ name: `Devis-${selectedQuote.reference}.pdf`, url: pdfUrl }],
+        attachments: [{ name: filename, url: '' }],
         sent_at: new Date().toISOString(),
         status_mail: 'sent',
         tracking_id: result.trackingId,
