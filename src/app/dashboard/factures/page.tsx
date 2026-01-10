@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { deleteFacture } from '@/lib/api';
 import TableActions from '@/app/components/TableActions';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
@@ -54,6 +54,14 @@ export default function FacturesPage() {
 
   // Hook avec cache
   const { data: facturesData, loading, refetch } = useFactures(user?.id);
+
+  // Rafraîchir les données au montage de la page (invalide le cache)
+  useEffect(() => {
+    clearCache('factures');
+    refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Filtrer par type de document
   // Les factures sans document_type sont considérées comme des factures (invoice)
   const factures = useMemo(() => {
@@ -563,7 +571,7 @@ export default function FacturesPage() {
 
   // Onglets pour basculer entre Factures et Devis
   const tabs = (
-    <div className="flex gap-1 p-1 bg-hover rounded-lg mb-6">
+    <div className="flex w-fit gap-1 p-1 bg-hover rounded-lg mb-6">
       <button
         onClick={() => router.push('/dashboard/factures')}
         className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
