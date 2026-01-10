@@ -10,6 +10,23 @@ import UsageProgressBar from '@/app/components/UsageProgressBar';
 import PendingQuotesWidget from '@/app/components/PendingQuotesWidget';
 import { useClients, useProjects, useProspects, useFactures, clearCache } from '@/hooks/useApi';
 import type { Client, Project, Prospect, Facture } from '@/types';
+import {
+  IconUsers,
+  IconBriefcase,
+  IconUserSearch,
+  IconCurrencyEuro,
+  IconTrendingUp,
+  IconTrendingDown,
+  IconClock,
+  IconFileInvoice,
+  IconAlertTriangle,
+  IconArrowUpRight,
+  IconCalendarEvent,
+  IconUserPlus,
+  IconFolderPlus,
+  IconMail,
+  IconCheck,
+} from '@tabler/icons-react';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -30,44 +47,55 @@ export default function DashboardPage() {
     refetchFactures();
   };
 
-  // Calculs mémoïsés
+  // Calculs mémoïsés enrichis
   const stats = useMemo(() => {
     const clientsList = (clients as Client[]) || [];
     const projectsList = (projects as Project[]) || [];
     const prospectsList = (prospects as Prospect[]) || [];
     const facturesList = (factures as Facture[]) || [];
 
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
-    // Chiffre d'affaires
-    const totalCA = facturesList
-      .filter(f => f.facture_status === 'paid')
+    // Fonction helper pour filtrer par mois
+    const isInMonth = (dateStr: string, month: number, year: number) => {
+      const date = new Date(dateStr);
+      return date.getMonth() === month && date.getFullYear() === year;
+    };
+
+    // Revenus
+    const paidInvoices = facturesList.filter(f => f.facture_status === 'paid');
+    const totalCA = paidInvoices.reduce((acc, f) => acc + (Number(f.number) || 0), 0);
+    
+    const caThisMonth = paidInvoices
+      .filter(f => isInMonth(f.date, currentMonth, currentYear))
+      .reduce((acc, f) => acc + (Number(f.number) || 0), 0);
+    
+    const caLastMonth = paidInvoices
+      .filter(f => isInMonth(f.date, lastMonth, lastMonthYear))
       .reduce((acc, f) => acc + (Number(f.number) || 0), 0);
 
-    // Nouveaux clients ce mois
-    const newClientsThisMonth = clientsList.filter(client => {
-      const clientDate = new Date(client.createdAt);
-      return clientDate.getMonth() === currentMonth && clientDate.getFullYear() === currentYear;
-    });
+    const caTrend = caLastMonth > 0 
+      ? Math.round(((caThisMonth - caLastMonth) / caLastMonth) * 100) 
+      : caThisMonth > 0 ? 100 : 0;
 
-    // Projets terminés
-    const completedProjects = projectsList.filter(
-      p => p.project_status === 'completed'
-    );
+    // Clients
+    const newClientsThisMonth = clientsList.filter(c => isInMonth(c.createdAt, currentMonth, currentYear));
+    const newClientsLastMonth = clientsList.filter(c => isInMonth(c.createdAt, lastMonth, lastMonthYear));
+    const clientsTrend = newClientsLastMonth.length > 0 
+      ? Math.round(((newClientsThisMonth.length - newClientsLastMonth.length) / newClientsLastMonth.length) * 100)
+      : newClientsThisMonth.length > 0 ? 100 : 0;
 
-    // Projets en cours
-    const inProgressProjects = projectsList.filter(
-      p => p.project_status === 'in_progress'
-    );
+    // Projets
+    const completedProjects = projectsList.filter(p => p.project_status === 'completed');
+    const inProgressProjects = projectsList.filter(p => p.project_status === 'in_progress');
+    const plannedProjects = projectsList.filter(p => p.project_status === 'planning');
 
-    // Nouveaux prospects ce mois
-    const newProspectsThisMonth = prospectsList.filter(prospect => {
-      const prospectDate = new Date(prospect.createdAt);
-      return prospectDate.getMonth() === currentMonth && prospectDate.getFullYear() === currentYear;
-    });
-
-    // Clients actifs
+    // Prospects
+    const newProspectsThisMonth = prospectsList.filter(p => isInMonth(p.createdAt, currentMonth, currentYear));
     const activeClients = clientsList.filter(c => c.processStatus === 'client');
 
     // Taux de conversion
@@ -76,50 +104,125 @@ export default function DashboardPage() {
       ? Math.round((activeClients.length / totalProspects) * 100)
       : 0;
 
+    // Factures impayées
+    const unpaidInvoices = facturesList.filter(f => 
+      f.facture_status === 'sent' && 
+      f.document_type !== 'quote' &&
+      new Date(f.due_date) < now
+    );
+    const unpaidTotal = unpaidInvoices.reduce((acc, f) => acc + (Number(f.number) || 0), 0);
+
+    // Revenus par mois (6 derniers mois) pour le mini-graphique
+    const revenueByMonth: { month: string; value: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const m = new Date(currentYear, currentMonth - i, 1);
+      const monthInvoices = paidInvoices.filter(f => isInMonth(f.date, m.getMonth(), m.getFullYear()));
+      revenueByMonth.push({
+        month: m.toLocaleDateString('fr-FR', { month: 'short' }),
+        value: monthInvoices.reduce((acc, f) => acc + (Number(f.number) || 0), 0),
+      });
+    }
+
     return {
+      // Compteurs
       clientsCount: clientsList.length,
       projectsCount: projectsList.length,
       prospectsCount: prospectsList.length,
       totalCA,
+      caThisMonth,
+      caTrend,
+      
+      // Clients
       newClientsThisMonth,
+      clientsTrend,
+      activeClients,
+      
+      // Projets
       completedProjects,
       inProgressProjects,
+      plannedProjects,
+      
+      // Prospects
       newProspectsThisMonth,
-      activeClients,
       conversionRate,
+      
+      // Factures
+      unpaidInvoices,
+      unpaidTotal,
+      
+      // Graphiques
+      revenueByMonth,
     };
   }, [clients, projects, prospects, factures]);
 
-  // Activités récentes
+  // Activités récentes enrichies
   const recentActivities = useMemo(() => {
-    const activities = [];
+    const activities: { icon: React.ElementType; message: string; color: string; time?: string }[] = [];
+    const clientsList = (clients as Client[]) || [];
+    const projectsList = (projects as Project[]) || [];
+    const facturesList = (factures as Facture[]) || [];
 
-    if (stats.newClientsThisMonth.length > 0) {
-      activities.push({
-        type: 'client',
-        message: `${t('new_clients_this_month')}: ${stats.newClientsThisMonth.length}`,
-        color: 'emerald',
+    // Derniers clients (3)
+    clientsList
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 2)
+      .forEach(c => {
+        activities.push({
+          icon: IconUserPlus,
+          message: `${t('new_client')}: ${c.name}`,
+          color: 'emerald',
+          time: new Date(c.createdAt).toLocaleDateString('fr-FR'),
+        });
       });
-    }
 
-    if (stats.completedProjects.length > 0) {
-      activities.push({
-        type: 'project',
-        message: `${stats.completedProjects.length} ${t('completed_projects')}`,
-        color: 'blue',
+    // Derniers projets (2)
+    projectsList
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 2)
+      .forEach(p => {
+        activities.push({
+          icon: IconFolderPlus,
+          message: `${t('new_project')}: ${p.title}`,
+          color: 'blue',
+          time: new Date(p.createdAt).toLocaleDateString('fr-FR'),
+        });
       });
-    }
 
-    if (stats.newProspectsThisMonth.length > 0) {
-      activities.push({
-        type: 'prospect',
-        message: `${t('new_prospects_this_month')}: ${stats.newProspectsThisMonth.length}`,
-        color: 'purple',
+    // Dernières factures payées (2)
+    facturesList
+      .filter(f => f.facture_status === 'paid')
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      .slice(0, 2)
+      .forEach(f => {
+        activities.push({
+          icon: IconCheck,
+          message: `${t('invoice_paid')}: ${f.reference}`,
+          color: 'green',
+          time: new Date(f.updatedAt).toLocaleDateString('fr-FR'),
+        });
       });
-    }
 
-    return activities;
-  }, [stats, t]);
+    // Trier par date
+    return activities.slice(0, 6);
+  }, [clients, projects, factures, t]);
+
+  // Render du mini-graphique revenus
+  const renderMiniChart = () => {
+    const maxValue = Math.max(...stats.revenueByMonth.map(m => m.value), 1);
+    return (
+      <div className="flex items-end gap-1 h-12">
+        {stats.revenueByMonth.map((month, i) => (
+          <div key={i} className="flex-1 flex flex-col items-center gap-1">
+            <div 
+              className="w-full bg-violet-500/80 rounded-t transition-all hover:bg-violet-500"
+              style={{ height: `${(month.value / maxValue) * 100}%`, minHeight: month.value > 0 ? '4px' : '2px' }}
+            />
+            <span className="text-[10px] text-muted">{month.month}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <ProtectedRoute>
@@ -136,131 +239,245 @@ export default function DashboardPage() {
         </div>
         <UsageProgressBar />
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div
-            onClick={() => router.push('/dashboard/clients')}
-            className="card cursor-pointer p-6"
+        {/* KPIs principaux avec tendances */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {/* Revenus */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            onClick={() => router.push('/dashboard/revenue')}
+            className="card cursor-pointer p-4 bg-gradient-to-br from-violet-500/10 to-transparent border-violet-500/20"
           >
-            <h3 className="!text-lg font-semibold text-primary mb-2">
-              {t('clients')}
-            </h3>
-            <p className="!text-3xl font-bold text-success">
+            <div className="flex items-start justify-between mb-2">
+              <div className="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center">
+                <IconCurrencyEuro className="w-5 h-5 text-violet-500" />
+              </div>
+              {stats.caTrend !== 0 && (
+                <div className={`flex items-center gap-0.5 text-xs font-medium ${stats.caTrend > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  {stats.caTrend > 0 ? <IconTrendingUp className="w-3 h-3" /> : <IconTrendingDown className="w-3 h-3" />}
+                  {Math.abs(stats.caTrend)}%
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-muted mb-1">{t('revenue_this_month')}</p>
+            <p className="text-xl font-bold text-primary">
+              {loading ? '...' : stats.caThisMonth.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
+            </p>
+          </motion.div>
+
+          {/* Clients */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            onClick={() => router.push('/dashboard/clients')}
+            className="card cursor-pointer p-4 bg-gradient-to-br from-emerald-500/10 to-transparent border-emerald-500/20"
+          >
+            <div className="flex items-start justify-between mb-2">
+              <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                <IconUsers className="w-5 h-5 text-emerald-500" />
+              </div>
+              {stats.newClientsThisMonth.length > 0 && (
+                <div className="flex items-center gap-0.5 text-xs font-medium text-emerald-500">
+                  +{stats.newClientsThisMonth.length}
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-muted mb-1">{t('clients')}</p>
+            <p className="text-xl font-bold text-primary">
               {loading ? '...' : stats.clientsCount}
             </p>
-          </div>
+          </motion.div>
 
-          <div
-            onClick={() => router.push('/dashboard/prospects')}
-            className="card cursor-pointer p-6"
-          >
-            <h3 className="!text-lg font-semibold text-primary mb-2">
-              {t('prospects')}
-            </h3>
-            <p className="!text-3xl font-bold text-info">
-              {loading ? '...' : stats.prospectsCount}
-            </p>
-          </div>
-
-          <div
+          {/* Projets */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
             onClick={() => router.push('/dashboard/projects')}
-            className="card cursor-pointer p-6"
+            className="card cursor-pointer p-4 bg-gradient-to-br from-blue-500/10 to-transparent border-blue-500/20"
           >
-            <h3 className="!text-lg font-semibold text-primary mb-2">
-              {t('projects')}
-            </h3>
-            <p className="!text-3xl font-bold text-color-primary">
+            <div className="flex items-start justify-between mb-2">
+              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <IconBriefcase className="w-5 h-5 text-blue-500" />
+              </div>
+              <div className="text-xs text-muted">
+                {stats.inProgressProjects.length} {t('in_progress_short')}
+              </div>
+            </div>
+            <p className="text-xs text-muted mb-1">{t('projects')}</p>
+            <p className="text-xl font-bold text-primary">
               {loading ? '...' : stats.projectsCount}
             </p>
+          </motion.div>
+
+          {/* Prospects */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            onClick={() => router.push('/dashboard/prospects')}
+            className="card cursor-pointer p-4 bg-gradient-to-br from-purple-500/10 to-transparent border-purple-500/20"
+          >
+            <div className="flex items-start justify-between mb-2">
+              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <IconUserSearch className="w-5 h-5 text-purple-500" />
+              </div>
+              <div className="text-xs font-medium text-purple-500">
+                {stats.conversionRate}% conv.
+              </div>
+            </div>
+            <p className="text-xs text-muted mb-1">{t('prospects')}</p>
+            <p className="text-xl font-bold text-primary">
+              {loading ? '...' : stats.prospectsCount}
+            </p>
+          </motion.div>
+
+          {/* Factures impayées */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            onClick={() => router.push('/dashboard/factures')}
+            className={`card cursor-pointer p-4 ${stats.unpaidInvoices.length > 0 ? 'bg-gradient-to-br from-red-500/10 to-transparent border-red-500/20' : 'bg-gradient-to-br from-gray-500/10 to-transparent'}`}
+          >
+            <div className="flex items-start justify-between mb-2">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stats.unpaidInvoices.length > 0 ? 'bg-red-500/20' : 'bg-gray-500/20'}`}>
+                <IconFileInvoice className={`w-5 h-5 ${stats.unpaidInvoices.length > 0 ? 'text-red-500' : 'text-gray-500'}`} />
+              </div>
+              {stats.unpaidInvoices.length > 0 && (
+                <IconAlertTriangle className="w-4 h-4 text-red-500" />
+              )}
+            </div>
+            <p className="text-xs text-muted mb-1">{t('overdue_invoices')}</p>
+            <p className={`text-xl font-bold ${stats.unpaidInvoices.length > 0 ? 'text-red-500' : 'text-primary'}`}>
+              {loading ? '...' : stats.unpaidInvoices.length}
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Ligne 2 : Mini-graphique + Devis en attente */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Mini-graphique revenus */}
+          <div className="card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-primary">{t('revenue_evolution')}</h3>
+              <button 
+                onClick={() => router.push('/dashboard/revenue')}
+                className="text-xs text-violet-500 hover:text-violet-600 flex items-center gap-1"
+              >
+                {t('view_details')}
+                <IconArrowUpRight className="w-3 h-3" />
+              </button>
+            </div>
+            {loading ? (
+              <div className="h-16 bg-hover rounded animate-pulse" />
+            ) : (
+              renderMiniChart()
+            )}
+            <div className="mt-3 pt-3 border-t border-default flex justify-between text-sm">
+              <span className="text-muted">{t('total_revenue')}</span>
+              <span className="font-semibold text-violet-500">
+                {stats.totalCA.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
+              </span>
+            </div>
           </div>
 
-          <div
-            className="card p-6 flex flex-col justify-between cursor-pointer"
-            onClick={() => router.push('/dashboard/revenue')}
-          >
-            <h3 className="!text-lg font-semibold text-primary mb-2">
-              {t('revenue')}
-            </h3>
-            {loading ? (
-              <p className="!text-3xl font-bold text-muted">...</p>
-            ) : (
-              <p className="!text-3xl font-bold text-success">
-                {stats.totalCA.toLocaleString('fr-FR', {
-                  style: 'currency',
-                  currency: 'EUR',
-                })}
-              </p>
+          {/* Widget Devis en attente - occupe 2 colonnes */}
+          <div className="lg:col-span-2">
+            {!loading && (
+              <PendingQuotesWidget 
+                quotes={(factures as Facture[]) || []} 
+                onQuoteUpdated={handleQuoteUpdated}
+              />
             )}
           </div>
         </div>
 
-        {/* Widget Devis en attente */}
-        {!loading && (
-          <PendingQuotesWidget 
-            quotes={(factures as Facture[]) || []} 
-            onQuoteUpdated={handleQuoteUpdated}
-          />
-        )}
-
-        {/* Recent Activity & Statistics */}
+        {/* Ligne 3 : Stats détaillées + Activité récente */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Statistiques détaillées */}
           <div className="card p-6">
-            <h3 className="!text-lg font-semibold text-primary mb-4">
-              {t('recent_activity')}
-            </h3>
+            <h3 className="font-semibold text-primary mb-4">{t('statistics')}</h3>
             {loading ? (
               <div className="space-y-3">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-muted rounded-full animate-pulse"></div>
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="flex justify-between">
                     <div className="h-4 bg-hover rounded w-32 animate-pulse"></div>
+                    <div className="h-4 bg-hover rounded w-16 animate-pulse"></div>
                   </div>
                 ))}
-              </div>
-            ) : recentActivities.length === 0 ? (
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-muted rounded-full"></div>
-                <p className="text-muted">{t('no_recent_activity')}</p>
               </div>
             ) : (
-              <div className="space-y-3">
-                {recentActivities.slice(0, 3).map((activity, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${activity.color === 'emerald' ? 'bg-success' : activity.color === 'blue' ? 'bg-info' : 'bg-accent'}`}></div>
-                    <p className="text-secondary">{activity.message}</p>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <IconUsers className="w-5 h-5 text-emerald-500" />
+                    <span className="text-secondary">{t('active_clients')}</span>
                   </div>
-                ))}
+                  <span className="font-bold text-emerald-500">{stats.activeClients.length}</span>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <IconBriefcase className="w-5 h-5 text-blue-500" />
+                    <span className="text-secondary">{t('projects_in_progress')}</span>
+                  </div>
+                  <span className="font-bold text-blue-500">{stats.inProgressProjects.length}</span>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <IconCheck className="w-5 h-5 text-green-500" />
+                    <span className="text-secondary">{t('completed_projects')}</span>
+                  </div>
+                  <span className="font-bold text-green-500">{stats.completedProjects.length}</span>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <IconTrendingUp className="w-5 h-5 text-purple-500" />
+                    <span className="text-secondary">{t('conversion_rate')}</span>
+                  </div>
+                  <span className="font-bold text-purple-500">{stats.conversionRate}%</span>
+                </div>
               </div>
             )}
           </div>
 
+          {/* Activité récente enrichie */}
           <div className="card p-6">
-            <h3 className="!text-lg font-semibold text-primary mb-4">
-              {t('statistics')}
-            </h3>
+            <h3 className="font-semibold text-primary mb-4">{t('recent_activity')}</h3>
             {loading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="flex justify-between">
-                    <div className="h-4 bg-hover rounded w-24 animate-pulse"></div>
-                    <div className="h-4 bg-hover rounded w-12 animate-pulse"></div>
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-hover rounded-full animate-pulse"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-hover rounded w-40 animate-pulse"></div>
+                    </div>
                   </div>
                 ))}
               </div>
+            ) : recentActivities.length === 0 ? (
+              <div className="text-center py-8 text-muted">
+                <IconCalendarEvent className="w-12 h-12 mx-auto mb-2 opacity-30" />
+                <p>{t('no_recent_activity')}</p>
+              </div>
             ) : (
               <div className="space-y-3">
-                <div className="flex justify-between">
-                  <p className="text-muted">{t('conversion_rate')}</p>
-                  <p className="text-success font-semibold">{stats.conversionRate}%</p>
-                </div>
-                <div className="flex justify-between">
-                  <p className="text-muted">{t('active_clients')}</p>
-                  <p className="text-info font-semibold">{stats.activeClients.length}</p>
-                </div>
-                <div className="flex justify-between">
-                  <p className="text-muted">{t('projects_in_progress')}</p>
-                  <p className="text-color-primary font-semibold">{stats.inProgressProjects.length}</p>
-                </div>
+                {recentActivities.map((activity, index) => {
+                  const Icon = activity.icon;
+                  return (
+                    <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-hover transition-colors">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        activity.color === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500' :
+                        activity.color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-500' :
+                        activity.color === 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-500' :
+                        'bg-gray-100 dark:bg-gray-900/30 text-gray-500'
+                      }`}>
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-secondary truncate">{activity.message}</p>
+                        {activity.time && (
+                          <p className="text-xs text-muted">{activity.time}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
