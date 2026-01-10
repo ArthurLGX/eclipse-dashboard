@@ -395,7 +395,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ScrapeRes
           if (['CreativeWork', 'ImageObject', 'Product', 'Article'].includes(item['@type'])) {
             const existing = projects.find(p => p.title === item.name);
             if (!existing && (item.image || item.name)) {
-              let imgUrl = typeof item.image === 'string' ? item.image : item.image?.url || '';
+              const imgUrl = typeof item.image === 'string' ? item.image : item.image?.url || '';
               if (imgUrl || item.name) {
                 projects.push({
                   id: `ld-${projects.length}-${Date.now()}`,

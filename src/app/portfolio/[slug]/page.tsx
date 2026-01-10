@@ -352,7 +352,7 @@ interface ProjectDetailModalProps {
   onClose: () => void;
 }
 
-function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalProps) {
+function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 'settings'>) {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
 
   const nextMedia = () => {
@@ -620,7 +620,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Portfolio non trouvé</h1>
-          <p className="text-gray-600">Ce portfolio n'existe pas ou n'est pas public.</p>
+          <p className="text-gray-600">Ce portfolio n&apos;existe pas ou n&apos;est pas public.</p>
         </div>
       </div>
     );
@@ -752,7 +752,6 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
         {viewingProject && (
           <ProjectDetailModal
             project={viewingProject}
-            settings={settings}
             onClose={() => setViewingProject(null)}
           />
         )}

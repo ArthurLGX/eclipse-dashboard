@@ -94,23 +94,28 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   testimonials: 'testimonial section with customer quotes, photos and company names',
 };
 
-// Page type specific additions
-const PAGE_TYPE_CONTEXT: Record<string, string> = {
+// Page type specific additions (reserved for future use)
+const _PAGE_TYPE_CONTEXT: Record<string, string> = {
   landing: 'high-converting landing page focused on a single product or service, optimized for conversions',
   homepage: 'company homepage that showcases brand identity and provides navigation to key sections',
   product: 'product page highlighting features, benefits, pricing and purchase options',
 };
 
-// Style descriptions
-const STYLE_DESCRIPTIONS: Record<string, string> = {
+// Style descriptions (reserved for future use)
+const _STYLE_DESCRIPTIONS: Record<string, string> = {
   modern: 'modern, clean design with subtle gradients, rounded corners, and ample white space',
   minimal: 'minimalist design with lots of white space, simple typography, and subtle accents',
   corporate: 'professional corporate design with structured layout and business-appropriate colors',
   creative: 'creative, bold design with unique layouts and eye-catching visual elements',
 };
 
+// Suppress unused variable warnings
+void _PAGE_TYPE_CONTEXT;
+void _STYLE_DESCRIPTIONS;
+
 function generatePrompt(request: MockupRequest): string {
-  const { pageType, missingSections, existingSections, style = 'modern', styleAnalysis } = request;
+  const { pageType, missingSections, existingSections, style: _style = 'modern', styleAnalysis } = request;
+  void _style; // Reserved for future use
   
   // Combine all sections (existing + missing) for the ideal structure
   const allSections = [...new Set([...existingSections, ...missingSections])];

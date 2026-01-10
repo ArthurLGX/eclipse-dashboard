@@ -37,7 +37,6 @@ import {
   IconCloudUpload,
   IconDownload,
   IconSearch,
-  IconRefresh,
 } from '@tabler/icons-react';
 import { uploadImage } from '@/lib/api';
 
@@ -1047,7 +1046,7 @@ interface ImportModalProps {
 }
 
 function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
-  const { t } = useLanguage();
+  useLanguage(); // For language context
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
