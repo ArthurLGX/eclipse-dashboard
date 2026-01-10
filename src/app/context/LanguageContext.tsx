@@ -753,6 +753,8 @@ const translations = {
     ai_invoice_use_this: 'Utiliser ce résultat',
     ai_invoice_success: 'Données générées avec succès !',
     ai_invoice_error_empty_text: 'Veuillez entrer du texte à analyser',
+    quote_created: 'Devis créé avec succès',
+    invoice_created: 'Facture créée avec succès',
 
     // Enterprise
 
@@ -2943,6 +2945,8 @@ const translations = {
     ai_invoice_use_this: 'Use this result',
     ai_invoice_success: 'Data generated successfully!',
     ai_invoice_error_empty_text: 'Please enter text to analyze',
+    quote_created: 'Quote created successfully',
+    invoice_created: 'Invoice created successfully',
 
     // Revenue
     top_project: 'Top Project',

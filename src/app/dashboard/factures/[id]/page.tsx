@@ -324,6 +324,7 @@ export default function FacturePage() {
       if (idLower === 'add' || idLower === 'ajouter' || idLower === 'new' || idLower === t('add').toLowerCase()) {
         // Création d'une nouvelle facture - Strapi v5: utiliser documentId pour les relations
         await createFacture({
+          document_type: documentType,
           reference: formData?.reference ?? '',
           number: total, // Montant total calculé automatiquement (avec ou sans TVA)
           date: formData?.date ?? '',
@@ -339,7 +340,7 @@ export default function FacturePage() {
           invoice_lines: cleanLines,
           pdf: facture?.pdf?.[0]?.url ?? '',
         });
-        showGlobalPopup('Facture créée', 'success');
+        showGlobalPopup(documentType === 'quote' ? t('quote_created') : t('invoice_created'), 'success');
         setEditing(false);
         // Rediriger vers la liste ou la nouvelle facture si besoin
         return;

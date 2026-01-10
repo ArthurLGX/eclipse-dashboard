@@ -557,6 +557,7 @@ export async function createFacture(data: {
   project?: string; // documentId du projet
   user: number;
   tva_applicable: boolean;
+  document_type?: 'invoice' | 'quote'; // Type de document
   invoice_lines: {
     description: string;
     quantity: number;
@@ -566,6 +567,7 @@ export async function createFacture(data: {
 }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const payload: any = {
+    document_type: data.document_type || 'invoice',
     reference: data.reference,
     number: data.number,
     date: data.date,
