@@ -599,18 +599,19 @@ export async function createFacture(data: {
 
 export async function updateFactureById(
   factureId: string,
-  data: {
-    reference?: string; // Ne pas envoyer pour éviter erreur d'unicité
+  data: Partial<{
+    reference: string;
     number: number;
     date: string;
     due_date: string;
     facture_status: string;
+    quote_status: string;
     currency: string;
     description: string;
     notes: string;
-    pdf?: string;
-    client_id: string; // documentId du client
-    project?: string; // documentId du projet
+    pdf: string;
+    client_id: string;
+    project: string;
     user: number;
     tva_applicable: boolean;
     invoice_lines: {
@@ -619,7 +620,7 @@ export async function updateFactureById(
       unit_price: number;
       total: number;
     }[];
-  }
+  }>
 ) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const payload: any = {
