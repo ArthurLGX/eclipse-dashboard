@@ -41,7 +41,7 @@ const CheckoutForm: React.FC<{
   const stripe = useStripe();
   const elements = useElements();
   const { t, language } = useLanguage();
-  const { theme } = useTheme();
+  const { resolvedMode } = useTheme();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,12 +50,12 @@ const CheckoutForm: React.FC<{
     style: {
       base: {
         fontSize: '16px',
-        color: theme === 'dark' ? '#e4e4e7' : '#18181b',
+        color: resolvedMode === 'dark' ? '#e4e4e7' : '#18181b',
         backgroundColor: 'transparent',
         '::placeholder': {
-          color: theme === 'dark' ? '#71717a' : '#a1a1aa',
+          color: resolvedMode === 'dark' ? '#71717a' : '#a1a1aa',
         },
-        iconColor: theme === 'dark' ? '#a1a1aa' : '#71717a',
+        iconColor: resolvedMode === 'dark' ? '#a1a1aa' : '#71717a',
       },
       invalid: {
         color: '#ef4444',
