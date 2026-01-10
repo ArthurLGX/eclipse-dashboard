@@ -1,31 +1,6 @@
 import { pdf } from '@react-pdf/renderer';
 import FacturePDF from '@/app/components/FacturePDF';
-import type { Facture } from '@/types';
-
-interface Company {
-  name: string;
-  address?: string;
-  city?: string;
-  postal_code?: string;
-  country?: string;
-  phone?: string;
-  email?: string;
-  siret?: string;
-  siren?: string;
-  vat_number?: string;
-  rcs?: string;
-  capital_social?: string;
-  code_ape?: string;
-}
-
-interface InvoiceLine {
-  id?: number;
-  description: string;
-  quantity: number;
-  unit_price: number;
-  total: number;
-  unit?: string;
-}
+import type { Facture, Company, InvoiceLine } from '@/types';
 
 /**
  * Génère un PDF de facture/devis et le retourne en base64
@@ -79,4 +54,5 @@ export async function generatePdfBase64(
   }
   return btoa(binary);
 }
+
 
