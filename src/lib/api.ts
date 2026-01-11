@@ -256,6 +256,7 @@ export async function addClientUser(
     pipeline_status?: string;
     isActive?: boolean;
     image?: number; // ID du fichier uploadé sur Strapi
+    phone?: string;
   },
   options: { 
     skipDuplicateCheck?: boolean; 

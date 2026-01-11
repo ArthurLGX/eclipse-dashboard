@@ -6,5 +6,8 @@
 		{
 			"path": "../eclipsestudiodev-backend"
 		}
-	]
+	],
+	"settings": {
+		"powershell.cwd": "eclipse-dashboard"
+	}
 }
