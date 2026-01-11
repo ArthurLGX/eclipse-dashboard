@@ -502,6 +502,24 @@ export default function UnifiedOnboardingModal() {
     }
   }, [loading, preferences, user?.id]);
 
+  // Block body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      // Calculate scrollbar width to prevent layout shift
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
+  }, [isOpen]);
+
   // Get objectives for selected business type
   const objectives = useMemo(() => {
     if (!selectedBusinessType) return [];
@@ -684,6 +702,7 @@ export default function UnifiedOnboardingModal() {
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           className="relative w-full max-w-4xl bg-card border border-default rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto outline-none"
+          style={{ overscrollBehavior: 'contain' }}
         >
           {/* Header */}
           <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent via-accent-lightto-transparent">
