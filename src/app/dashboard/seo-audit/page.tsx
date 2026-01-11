@@ -151,7 +151,7 @@ export default function SEOAuditPage() {
       const diagnostics = Object.values(lighthouse.audits)
         .filter((audit: unknown) => {
           const a = audit as { details?: { type?: string }; score?: number };
-          return a.details?.type === 'table' && a.score !== null && a.score < 1;
+          return a.details?.type === 'table' && a.score !== null && a.score !== undefined && a.score < 1;
         })
         .map((audit: unknown) => {
           const a = audit as { id: string; title: string; description: string; score: number };
