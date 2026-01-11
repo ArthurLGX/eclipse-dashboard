@@ -493,13 +493,37 @@ export default function UnifiedOnboardingModal() {
   const [createdProject, setCreatedProject] = useState<{ id: number; documentId: string; title: string } | null>(null);
   const [createdTasksCount, setCreatedTasksCount] = useState(0);
 
+  // LocalStorage key for onboarding completion
+  const ONBOARDING_COMPLETED_KEY = 'eclipse_unified_onboarding_completed';
+
+  // Check if onboarding was completed (from localStorage or preferences)
+  const isOnboardingCompleted = (): boolean => {
+    // Check localStorage first (faster, survives refresh during onboarding)
+    if (typeof window !== 'undefined') {
+      const localCompleted = localStorage.getItem(ONBOARDING_COMPLETED_KEY);
+      if (localCompleted === 'true') {
+        return true;
+      }
+    }
+    // Then check preferences from API
+    return preferences?.onboarding_completed === true;
+  };
+
+  // Mark onboarding as completed in localStorage
+  const markOnboardingCompleted = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true');
+    }
+  };
+
   // Show modal if preferences don't exist or onboarding not completed
   useEffect(() => {
     if (!loading && user?.id) {
-      if (!preferences || !preferences.onboarding_completed) {
+      if (!isOnboardingCompleted()) {
         setIsOpen(true);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, preferences, user?.id]);
 
   // Block body scroll when modal is open
@@ -639,7 +663,10 @@ export default function UnifiedOnboardingModal() {
       // 5. Refresh preferences
       await refreshPreferences();
 
-      // 6. Go to success step
+      // 6. Mark onboarding as completed in localStorage
+      markOnboardingCompleted();
+
+      // 7. Go to success step
       setStep('success');
     } catch (error) {
       console.error('Error during onboarding:', error);
@@ -656,6 +683,7 @@ export default function UnifiedOnboardingModal() {
     try {
       await initializeUserPreferences(user.id, 'other', getDefaultModules('other'));
       await refreshPreferences();
+      markOnboardingCompleted();
       setIsOpen(false);
     } catch (error) {
       console.error('Error skipping setup:', error);
