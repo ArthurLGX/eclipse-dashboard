@@ -260,7 +260,7 @@ export async function addClientUser(
     source?: string;
     priority?: string;
     estimated_value?: number;
-    budget?: string;
+    budget?: number;
     notes?: string;
     next_action?: string;
     next_action_date?: string;
