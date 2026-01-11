@@ -73,7 +73,7 @@ function ProspectCard({
   return (
     <div
       className={`
-        group relative bg-card border border-border rounded-lg p-3 cursor-pointer
+        group relative bg-card border border-muted rounded-lg p-3 cursor-pointer
         transition-all duration-200 hover:shadow-md hover:border-accent/50
         ${isDragging ? 'opacity-50 rotate-2 scale-105 shadow-xl' : ''}
       `}
@@ -105,7 +105,7 @@ function ProspectCard({
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
-              <div className="absolute right-0 top-6 z-50 bg-card border border-border rounded-lg shadow-lg py-1 min-w-[140px]">
+              <div className="absolute right-0 top-6 z-50 bg-card border border-muted rounded-lg shadow-lg py-1 min-w-[140px]">
                 <button
                   onClick={(e) => { e.stopPropagation(); onClick(); setShowMenu(false); }}
                   className="w-full px-3 py-2 text-left text-sm hover:bg-hover flex items-center gap-2"
@@ -174,7 +174,7 @@ function ProspectCard({
       </div>
 
       {/* Footer avec budget, date, priorité */}
-      <div className="flex items-center justify-between gap-2 pt-2 border-t border-border">
+      <div className="flex items-center justify-between gap-2 pt-2 border-t border-muted">
         <div className="flex items-center gap-2">
           {prospect.estimated_value && (
             <span className="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-0.5">
@@ -362,7 +362,7 @@ export default function KanbanBoard({
   return (
     <div className="space-y-4">
       {/* Stats bar */}
-      <div className="flex flex-wrap gap-4 p-4 bg-card rounded-lg border border-border">
+      <div className="flex flex-wrap gap-4 p-4 bg-card rounded-lg border border-muted">
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">{t('pipeline_total_prospects') || 'Total prospects'}:</span>
           <span className="font-semibold text-foreground">{totalProspects}</span>
