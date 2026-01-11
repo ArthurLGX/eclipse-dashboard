@@ -88,7 +88,6 @@ function SubscriptionModal({
   projects: Project[];
   onSave: (data: SubscriptionFormData) => Promise<void>;
 }) {
-  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: subscription?.name || '',
