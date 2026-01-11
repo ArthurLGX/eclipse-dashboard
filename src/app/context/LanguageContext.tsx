@@ -2106,6 +2106,20 @@ const translations = {
     months: 'Mois',
     three_months: '3 mois',
     
+    // Profitability / Rentabilité
+    profitability: 'Rentabilité',
+    estimated_time: 'Temps estimé',
+    time_consumption: 'Consommation temps',
+    project_on_budget: 'Budget respecté',
+    budget_exceeded: 'Budget dépassé',
+    approaching_limit: 'Proche de la limite',
+    on_track: 'En bonne voie',
+    overtime: 'Dépassement',
+    time_saved: 'Économie',
+    actual_cost: 'Coût réel',
+    no_time_estimates: 'Aucune estimation de temps',
+    add_estimates_to_tasks: 'Ajoutez des estimations aux tâches pour suivre la rentabilité',
+
     // Time Tracking Analytics
     time_analytics: 'Analyse du temps',
     time_analytics_desc: 'Évaluez la précision de vos estimations',
@@ -4593,6 +4607,20 @@ const translations = {
     end_time: 'End time',
     this_month: 'This month',
     
+    // Profitability
+    profitability: 'Profitability',
+    estimated_time: 'Estimated time',
+    time_consumption: 'Time consumption',
+    project_on_budget: 'On budget',
+    budget_exceeded: 'Budget exceeded',
+    approaching_limit: 'Approaching limit',
+    on_track: 'On track',
+    overtime: 'Overtime',
+    time_saved: 'Time saved',
+    actual_cost: 'Actual cost',
+    no_time_estimates: 'No time estimates',
+    add_estimates_to_tasks: 'Add estimates to tasks to track profitability',
+
     // Time Tracking Analytics
     time_analytics: 'Time Analytics',
     time_analytics_desc: 'Evaluate the accuracy of your estimations',

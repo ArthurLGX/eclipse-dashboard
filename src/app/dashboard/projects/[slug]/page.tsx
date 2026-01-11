@@ -41,6 +41,7 @@ import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ShareProjectModal from '@/app/components/ShareProjectModal';
 import ProjectTasks from '@/app/components/ProjectTasks';
 import RichTextEditor from '@/app/components/RichTextEditor';
+import ProjectProfitabilityCard from '@/app/components/ProjectProfitabilityCard';
 import { 
   canDeleteProject, 
   fetchProjectCollaborators, 
@@ -1130,6 +1131,9 @@ const PROJECT_TYPES = [
 
           {/* Sidebar */}
           <div className="space-y-4">
+            {/* Profitability Card - Nouveau bloc rentabilité */}
+            <ProjectProfitabilityCard tasks={tasks} />
+
             {/* Dates Card */}
             <div className="card p-5">
               <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">

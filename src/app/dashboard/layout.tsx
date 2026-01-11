@@ -39,8 +39,6 @@ import {
   IconCalendar,
   IconTargetArrow,
   IconPalette,
-  IconSearch,
-  IconTemplate,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -307,33 +305,16 @@ function DashboardLayoutContent({
           path: '/dashboard/monitoring',
           moduleId: 'monitoring',
         },
-        // Audit & Analyse (toujours visible - outil interne)
+        // Audit & Analyse (modules optionnels - OFF par défaut)
         {
           id: 'growth_audit',
           label: t('growth_audit') || 'Growth Audit',
           icon: <IconTargetArrow size={20} stroke={1} />,
           path: '/dashboard/growth-audit',
+          moduleId: 'growth_audit',
           status: getModuleStatus('growth_audit', moduleStatuses) || undefined,
         },
-        {
-          id: 'seo_audit',
-          label: t('seo_audit') || 'Audit SEO',
-          icon: <IconSearch size={20} stroke={1} />,
-          path: '/dashboard/seo-audit',
-        },
-        // Templates
-        {
-          id: 'project_templates',
-          label: t('project_templates') || 'Templates Projet',
-          icon: <IconTemplate size={20} stroke={1} />,
-          path: '/dashboard/projects/templates',
-        },
-        {
-          id: 'email_templates',
-          label: t('email_templates') || 'Templates Email',
-          icon: <IconTemplate size={20} stroke={1} />,
-          path: '/dashboard/emails/templates',
-        },
+        // NOTE: Templates retirés de la sidebar - accessibles uniquement via onboarding et création de projet
       ],
     },
 
