@@ -783,7 +783,7 @@ export default function UnifiedOnboardingModal() {
                             relative flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all cursor-pointer
                             ${isSelected 
                               ? 'border-accent bg-accent-light text-accent shadow-lg' 
-                              : 'border-default bg-card hover:border-accent/50 hover:bg-accent/5'
+                              : 'border-default bg-card hover:border-accent hover:bg-accent-light'
                             }
                           `}
                         >
@@ -847,7 +847,7 @@ export default function UnifiedOnboardingModal() {
                             relative flex flex-col items-start gap-3 p-5 rounded-xl border-2 transition-all cursor-pointer text-left
                             ${isSelected 
                               ? 'border-accent bg-accent-light text-accent shadow-lg' 
-                              : 'border-default bg-card hover:border-accent/50 hover:bg-accent/5'
+                              : 'border-default bg-card hover:border-accent hover:bg-accent-light'
                             }
                           `}
                         >
@@ -878,7 +878,7 @@ export default function UnifiedOnboardingModal() {
                             <div className="flex items-center gap-3 text-xs text-muted mt-2">
                               <span className="flex items-center gap-1">
                                 <IconTemplate className="w-3 h-3" />
-                                {stats.taskCount} {t('tasks') || 'tâches'}
+                                {stats.taskCount} {t('onboarding_tasks') || 'tâches'}
                               </span>
                               <span className="flex items-center gap-1">
                                 <IconClock className="w-3 h-3" />
@@ -924,61 +924,61 @@ export default function UnifiedOnboardingModal() {
                           value={clientName}
                           onChange={(e) => setClientName(e.target.value)}
                           placeholder={t('client_name_placeholder') || 'Ex: Entreprise ABC'}
-                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-2 focus:ring-accent-light transition-all"
                         />
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-primary mb-2">
                           <IconBriefcase className="w-4 h-4 inline mr-2" />
-                          {t('project_name') || 'Nom du projet'}
+                          {t('onboarding_project_name') || 'Nom du projet'}
                         </label>
                         <input
                           type="text"
                           value={projectName}
                           onChange={(e) => setProjectName(e.target.value)}
                           placeholder={language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
-                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-2 focus:ring-accent-light transition-all"
                         />
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-primary mb-2">
                           <IconCurrencyEuro className="w-4 h-4 inline mr-2" />
-                          {t('hourly_rate') || 'Taux horaire (€/h)'}
+                          {t('onboarding_hourly_rate') || 'Taux horaire (€/h)'}
                         </label>
                         <input
                           type="number"
                           value={hourlyRate}
                           onChange={(e) => setHourlyRate(Number(e.target.value))}
                           min={0}
-                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-2 focus:ring-accent-light transition-all"
                         />
                       </div>
                     </div>
 
                     {/* Right: Template Preview */}
-                    <div className="bg-muted/30 rounded-xl p-6 space-y-4">
+                    <div className="bg-muted-light rounded-xl p-6 space-y-4">
                       <h4 className="font-semibold text-primary flex items-center gap-2">
                         <IconTemplate className="w-5 h-5 text-accent" />
-                        {t('template_preview') || 'Aperçu du template'}
+                        {t('onboarding_template_preview') || 'Aperçu du template'}
                       </h4>
                       
                       <div className="space-y-3">
                         <div className="flex items-center justify-between py-2 border-b border-default">
-                          <span className="text-muted">{t('tasks') || 'Tâches'}</span>
+                          <span className="text-muted">{t('onboarding_tasks') || 'Tâches'}</span>
                           <span className="font-medium text-primary">{templateStats.taskCount}</span>
                         </div>
                         <div className="flex items-center justify-between py-2 border-b border-default">
-                          <span className="text-muted">{t('estimated_time') || 'Temps estimé'}</span>
+                          <span className="text-muted">{t('onboarding_estimated_time') || 'Temps estimé'}</span>
                           <span className="font-medium text-primary">{templateStats.totalHours}h</span>
                         </div>
                         <div className="flex items-center justify-between py-2 border-b border-default">
-                          <span className="text-muted">{t('duration') || 'Durée'}</span>
-                          <span className="font-medium text-primary">{selectedTemplate.estimated_duration_days} {t('days') || 'jours'}</span>
+                          <span className="text-muted">{t('onboarding_duration') || 'Durée'}</span>
+                          <span className="font-medium text-primary">{selectedTemplate.estimated_duration_days} {t('onboarding_days') || 'jours'}</span>
                         </div>
                         <div className="flex items-center justify-between py-2 border-b border-default">
-                          <span className="text-muted">{t('phases') || 'Phases'}</span>
+                          <span className="text-muted">{t('onboarding_phases') || 'Phases'}</span>
                           <span className="font-medium text-primary">{templateStats.phases.length}</span>
                         </div>
                       </div>
@@ -987,7 +987,7 @@ export default function UnifiedOnboardingModal() {
                         <div className="mt-4 p-4 bg-accent-light border border-accent rounded-xl">
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-accent font-medium">
-                            {t('estimated_value') || 'Valeur estimée'}
+                            {t('onboarding_estimated_value') || 'Valeur estimée'}
                           </span>
                           <span className="text-2xl font-bold text-accent">
                             {estimatedValue.toLocaleString('fr-FR')} €
@@ -1000,7 +1000,7 @@ export default function UnifiedOnboardingModal() {
 
                       {/* Phases */}
                       <div className="mt-4">
-                        <p className="text-sm text-muted mb-2">{t('phases') || 'Phases'} :</p>
+                        <p className="text-sm text-muted mb-2">{t('onboarding_phases') || 'Phases'} :</p>
                         <div className="flex flex-wrap gap-2">
                           {templateStats.phases.map((phase) => (
                             <span 
@@ -1057,7 +1057,7 @@ export default function UnifiedOnboardingModal() {
                     </div>
                     <div className="p-5 bg-info-light border border-info rounded-xl">
                       <IconTemplate className="w-8 h-8 text-info mx-auto mb-2" />
-                      <p className="font-semibold text-primary">{createdTasksCount} {t('tasks') || 'tâches'}</p>
+                      <p className="font-semibold text-primary">{createdTasksCount} {t('onboarding_tasks') || 'tâches'}</p>
                       <p className="text-sm text-muted">{t('tasks_created') || 'Tâches créées'}</p>
                     </div>
                   </div>
