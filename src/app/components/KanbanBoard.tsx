@@ -79,6 +79,32 @@ function ContactCard({
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
+  // Récupérer l'URL de l'image/logo du contact (gère les différents formats Strapi)
+  const getImageUrl = () => {
+    // Format objet direct: contact.image.url
+    if (contact.image?.url) {
+      const url = contact.image.url;
+      // Si l'URL est relative, ajouter le préfixe Strapi
+      if (url.startsWith('/')) {
+        return `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+      }
+      return url;
+    }
+    // Format tableau: contact.image[0].url (Strapi media parfois)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const imageArray = contact.image as any;
+    if (Array.isArray(imageArray) && imageArray[0]?.url) {
+      const url = imageArray[0].url;
+      if (url.startsWith('/')) {
+        return `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+      }
+      return url;
+    }
+    return null;
+  };
+
+  const imageUrl = getImageUrl();
+
   return (
     <div
       className={`
@@ -98,12 +124,12 @@ function ContactCard({
         <div className="flex items-center gap-2 min-w-0">
           <IconGripVertical size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
           
-          {/* Avatar */}
-          {contact.image?.url ? (
+          {/* Avatar / Logo du client */}
+          {imageUrl ? (
             <img 
-              src={contact.image.url} 
+              src={imageUrl} 
               alt={contact.name}
-              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+              className="w-8 h-8 rounded-full object-cover flex-shrink-0 border border-muted"
             />
           ) : (
             <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">

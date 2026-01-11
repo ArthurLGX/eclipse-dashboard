@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -84,7 +84,7 @@ function SelectContactModal({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={t('search_contacts') || 'Rechercher...'}
-              className="w-full pl-9 pr-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+              className="w-full !pl-9 pr-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
               autoFocus
             />
           </div>
@@ -473,7 +473,18 @@ export default function PipelinePage() {
 
   // Données - utiliser les Contacts (Clients) unifiés
   const { data: contactsData, loading, refetch } = useContacts(user?.id);
-  const allContacts = useMemo(() => (contactsData as Client[]) || [], [contactsData]);
+  
+  // État local pour les mises à jour optimistes (évite le rechargement complet)
+  const [localContacts, setLocalContacts] = useState<Client[] | null>(null);
+  
+  // Synchroniser les données API avec l'état local
+  useEffect(() => {
+    if (contactsData) {
+      setLocalContacts(contactsData as Client[]);
+    }
+  }, [contactsData]);
+  
+  const allContacts = useMemo(() => localContacts || (contactsData as Client[]) || [], [localContacts, contactsData]);
 
   // Filtrer pour n'afficher que les contacts avec un pipeline_status défini (dans le pipeline)
   const pipelineContacts = useMemo(() => {
@@ -505,19 +516,45 @@ export default function PipelinePage() {
 
   // Handlers
   const handleStatusChange = useCallback(async (contactId: string, newStatus: PipelineStatus) => {
+    // Mise à jour optimiste - modifier l'état local immédiatement
+    const previousContacts = localContacts;
+    
+    setLocalContacts(prev => {
+      if (!prev) return prev;
+      return prev.map(contact => 
+        contact.documentId === contactId 
+          ? { ...contact, pipeline_status: newStatus }
+          : contact
+      );
+    });
+    
     try {
+      // Envoyer la mise à jour au serveur en arrière-plan
       await updateClient(contactId, { pipeline_status: newStatus });
       clearCache('clients');
       clearCache('contacts');
-      await refetch();
-      showGlobalPopup(t('status_updated') || 'Statut mis à jour', 'success');
+      // Pas de refetch pour éviter le rechargement - l'état local est déjà à jour
     } catch (error) {
       console.error('Error updating status:', error);
+      // En cas d'erreur, revenir à l'état précédent
+      setLocalContacts(previousContacts);
       showGlobalPopup(t('error_updating_status') || 'Erreur lors de la mise à jour', 'error');
     }
-  }, [refetch, showGlobalPopup, t]);
+  }, [localContacts, showGlobalPopup, t]);
 
   const handleSelectExistingContact = useCallback(async (contact: Client, status: PipelineStatus) => {
+    // Mise à jour optimiste
+    const updatedContact = { 
+      ...contact, 
+      pipeline_status: status,
+      processStatus: contact.processStatus === 'archived' ? 'prospect' as const : contact.processStatus
+    };
+    
+    setLocalContacts(prev => {
+      if (!prev) return prev;
+      return prev.map(c => c.documentId === contact.documentId ? updatedContact : c);
+    });
+    
     try {
       await updateClient(contact.documentId, { 
         pipeline_status: status,
@@ -525,23 +562,33 @@ export default function PipelinePage() {
       });
       clearCache('clients');
       clearCache('contacts');
-      await refetch();
       showGlobalPopup(t('contact_added_to_pipeline') || 'Contact ajouté au pipeline', 'success');
     } catch (error) {
       console.error('Error adding contact to pipeline:', error);
+      // Revenir à l'état précédent
+      setLocalContacts(prev => {
+        if (!prev) return prev;
+        return prev.map(c => c.documentId === contact.documentId ? contact : c);
+      });
       showGlobalPopup(t('error_adding_contact') || 'Erreur lors de l\'ajout', 'error');
     }
-  }, [refetch, showGlobalPopup, t]);
+  }, [showGlobalPopup, t]);
 
   const handleSaveContact = useCallback(async (data: Partial<Client>) => {
     try {
       if (contactModal.contact) {
-        // Update
+        // Mise à jour optimiste
+        const updatedContact = { ...contactModal.contact, ...data };
+        setLocalContacts(prev => {
+          if (!prev) return prev;
+          return prev.map(c => c.documentId === contactModal.contact!.documentId ? updatedContact as Client : c);
+        });
+        
         await updateClient(contactModal.contact.documentId, data);
         showGlobalPopup(t('contact_updated') || 'Contact mis à jour', 'success');
       } else {
         // Create - nouveau contact avec pipeline_status
-        await addClientUser(user?.id || 0, {
+        const result = await addClientUser(user?.id || 0, {
           name: data.name || '',
           email: data.email || `${(data.name || 'contact').toLowerCase().replace(/\s+/g, '.')}@placeholder.com`,
           enterprise: data.enterprise || '',
@@ -557,13 +604,25 @@ export default function PipelinePage() {
           next_action: data.next_action,
           next_action_date: data.next_action_date,
         });
+        
+        // Ajouter le nouveau contact à l'état local
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newContact = (result as any)?.data;
+        if (newContact) {
+          setLocalContacts(prev => prev ? [...prev, newContact] : [newContact]);
+        } else {
+          // Fallback: refetch si on ne peut pas récupérer le nouveau contact
+          await refetch();
+        }
+        
         showGlobalPopup(t('contact_created') || 'Contact créé', 'success');
       }
       clearCache('clients');
       clearCache('contacts');
-      await refetch();
     } catch (error) {
       console.error('Error saving contact:', error);
+      // Refetch pour synchroniser l'état en cas d'erreur
+      await refetch();
       showGlobalPopup(t('error_saving') || 'Erreur lors de la sauvegarde', 'error');
       throw error;
     }
@@ -572,18 +631,27 @@ export default function PipelinePage() {
   const handleDeleteContact = useCallback(async () => {
     if (!deleteModal.contact) return;
     
+    const contactToDelete = deleteModal.contact;
+    
+    // Mise à jour optimiste - retirer le contact immédiatement
+    setLocalContacts(prev => {
+      if (!prev) return prev;
+      return prev.filter(c => c.documentId !== contactToDelete.documentId);
+    });
+    setDeleteModal({ isOpen: false, contact: null });
+    
     try {
-      await deleteClient(deleteModal.contact.documentId);
+      await deleteClient(contactToDelete.documentId);
       clearCache('clients');
       clearCache('contacts');
-      await refetch();
       showGlobalPopup(t('contact_deleted') || 'Contact supprimé', 'success');
-      setDeleteModal({ isOpen: false, contact: null });
     } catch (error) {
       console.error('Error deleting contact:', error);
+      // Remettre le contact en cas d'erreur
+      setLocalContacts(prev => prev ? [...prev, contactToDelete] : [contactToDelete]);
       showGlobalPopup(t('error_deleting') || 'Erreur lors de la suppression', 'error');
     }
-  }, [deleteModal.contact, refetch, showGlobalPopup, t]);
+  }, [deleteModal.contact, showGlobalPopup, t]);
 
   return (
     <div className="p-6 space-y-6">
