@@ -633,13 +633,29 @@ export default function UnifiedOnboardingModal() {
       const endDate = new Date(today);
       endDate.setDate(endDate.getDate() + selectedTemplate.estimated_duration_days);
 
+      // Map template IDs to valid project types
+      const templateToProjectType: Record<string, string> = {
+        redesign: 'development',
+        vitrine: 'development',
+        ecommerce: 'development',
+        maintenance: 'maintenance',
+        branding: 'design',
+        ui_ux: 'design',
+        strategy: 'development',
+        coaching: 'development',
+        shooting: 'design',
+        video: 'design',
+        custom_order: 'development',
+      };
+      const projectType = templateToProjectType[selectedObjective.templateId] || 'development';
+
       const projectData = {
         title: projectName || `${language === 'en' ? selectedObjective.labelEn : selectedObjective.label} - ${clientName || 'Client'}`,
         description: language === 'en' ? selectedTemplate.descriptionEn : selectedTemplate.description,
         project_status: 'planning',
         start_date: today.toISOString().split('T')[0],
         end_date: endDate.toISOString().split('T')[0],
-        type: selectedObjective.templateId,
+        type: projectType,
         client: client.id,
         user: user.id,
       };
