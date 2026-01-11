@@ -57,11 +57,11 @@ interface SubscriptionFormData {
 }
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; label: string }> = {
-  active: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400', label: 'Actif' },
-  pending: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', label: 'En attente' },
-  cancelled: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-400', label: 'Annulé' },
-  expired: { bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-600 dark:text-slate-400', label: 'Expiré' },
-  paused: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-400', label: 'Pausé' },
+  active: { bg: 'bg-success-light', text: 'text-success', label: 'Actif' },
+  pending: { bg: 'bg-warning-light', text: 'text-warning', label: 'En attente' },
+  cancelled: { bg: 'bg-danger-light', text: 'text-danger', label: 'Annulé' },
+  expired: { bg: 'bg-hover', text: 'text-muted', label: 'Expiré' },
+  paused: { bg: 'bg-info-light', text: 'text-info', label: 'Pausé' },
 };
 
 function formatCurrency(amount: number, currency: string = 'EUR') {

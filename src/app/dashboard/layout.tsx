@@ -722,13 +722,13 @@ function DashboardLayoutContent({
 
           {/* Contenu principal - scroll géré par Lenis sur le body */}
           <motion.main
-            className="min-h-screen w-full "
+            className="min-h-screen flex-1 overflow-x-hidden"
             animate={{
               marginLeft: isDesktop ? (isExpanded || isPinned ? 300 : 64) : 0,
             }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
           >
-            <div className="w-full lg:p-6 p-4">
+            <div className="w-full max-w-full lg:p-6 p-4">
               <BreadCrumb />
               {children}
             </div>
