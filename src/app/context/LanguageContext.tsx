@@ -175,9 +175,13 @@ const translations = {
     google_sheets_desc: 'Importer des tâches depuis Google Sheets',
     more_integrations_coming: 'Plus d\'intégrations bientôt...',
 
-    // Email Templates
+    // Templates
     email_templates: 'Templates d\'emails',
     email_templates_desc: 'Emails pré-écrits pour chaque étape du pipeline',
+    project_templates: 'Templates de projet',
+    project_templates_desc: 'Tâches pré-définies pour démarrer rapidement vos projets',
+    seo_audit: 'Audit SEO',
+    subscriptions: 'Abonnements',
     new_template: 'Nouveau template',
     edit_template: 'Modifier le template',
     template_name: 'Nom du template',
@@ -2670,9 +2674,13 @@ const translations = {
     google_sheets_desc: 'Import tasks from Google Sheets',
     more_integrations_coming: 'More integrations coming soon...',
 
-    // Email Templates
+    // Templates
     email_templates: 'Email Templates',
     email_templates_desc: 'Pre-written emails for each pipeline stage',
+    project_templates: 'Project Templates',
+    project_templates_desc: 'Pre-defined tasks to quickly start your projects',
+    seo_audit: 'SEO Audit',
+    subscriptions: 'Subscriptions',
     new_template: 'New template',
     edit_template: 'Edit template',
     template_name: 'Template name',

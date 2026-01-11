@@ -40,6 +40,8 @@ import {
   IconCalendar,
   IconTargetArrow,
   IconPalette,
+  IconSearch,
+  IconTemplate,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -236,6 +238,12 @@ function DashboardLayoutContent({
           icon: <IconBrain size={20} stroke={1} />,
           path: '/dashboard/mentors',
         },
+        {
+          id: 'subscriptions',
+          label: t('subscriptions') || 'Abonnements',
+          icon: <IconCreditCard size={20} stroke={1} />,
+          path: '/dashboard/subscriptions',
+        },
       ],
     },
 
@@ -307,6 +315,25 @@ function DashboardLayoutContent({
           icon: <IconTargetArrow size={20} stroke={1} />,
           path: '/dashboard/growth-audit',
           status: getModuleStatus('growth_audit', moduleStatuses) || undefined,
+        },
+        {
+          id: 'seo_audit',
+          label: t('seo_audit') || 'Audit SEO',
+          icon: <IconSearch size={20} stroke={1} />,
+          path: '/dashboard/seo-audit',
+        },
+        // Templates
+        {
+          id: 'project_templates',
+          label: t('project_templates') || 'Templates Projet',
+          icon: <IconTemplate size={20} stroke={1} />,
+          path: '/dashboard/projects/templates',
+        },
+        {
+          id: 'email_templates',
+          label: t('email_templates') || 'Templates Email',
+          icon: <IconTemplate size={20} stroke={1} />,
+          path: '/dashboard/emails/templates',
         },
       ],
     },
