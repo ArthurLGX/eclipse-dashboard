@@ -84,24 +84,24 @@ export default function ProspectsPage() {
   // Options de filtres
   const statusOptions: FilterOption[] = useMemo(() => [
     {
-      value: 'prospect',
-      label: t('prospect') || 'Prospect',
-      count: prospects.filter(p => p.prospect_status === 'prospect').length,
+      value: 'new',
+      label: t('new') || 'Nouveau',
+      count: prospects.filter(p => p.prospect_status === 'new').length,
     },
     {
-      value: 'answer',
-      label: t('answer') || 'Réponse',
-      count: prospects.filter(p => p.prospect_status === 'answer').length,
+      value: 'form_sent',
+      label: t('form_sent') || 'Formulaire envoyé',
+      count: prospects.filter(p => p.prospect_status === 'form_sent').length,
     },
     {
-      value: 'to_be_contacted',
-      label: t('to_be_contacted') || 'À contacter',
-      count: prospects.filter(p => p.prospect_status === 'to_be_contacted').length,
+      value: 'qualified',
+      label: t('qualified') || 'Qualifié',
+      count: prospects.filter(p => p.prospect_status === 'qualified').length,
     },
     {
-      value: 'contacted',
-      label: t('contacted') || 'Contacté',
-      count: prospects.filter(p => p.prospect_status === 'contacted').length,
+      value: 'quote_sent',
+      label: t('quote_sent') || 'Devis envoyé',
+      count: prospects.filter(p => p.prospect_status === 'quote_sent').length,
     },
   ], [prospects, t]);
 
