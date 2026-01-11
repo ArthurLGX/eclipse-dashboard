@@ -367,12 +367,15 @@ export default function FacturePage() {
 
   const handleSave = async () => {
     try {
+      // TODO: Activer l'envoi du champ 'unit' une fois ajouté au backend Strapi
+      // Pour ajouter le support dans Strapi, ajoutez ce champ au composant invoice_lines :
+      // "unit": { "type": "enumeration", "enum": ["hour", "day", "fixed", "unit", "project"], "default": "hour" }
       const cleanLines = invoiceLines.map(line => ({
         description: line.description,
         quantity: line.quantity,
         unit_price: line.unit_price,
         total: line.total,
-        unit: line.unit || 'hour', // Inclure le type d'unité
+        // unit: line.unit || 'hour', // Décommentez après avoir ajouté le champ dans Strapi
       }));
 
       const idLower = id.toLowerCase();
