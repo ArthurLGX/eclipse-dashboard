@@ -350,6 +350,11 @@ export async function updateClientStatus(clientDocumentId: string, processStatus
   return put(`clients/${clientDocumentId}`, { processStatus });
 }
 
+/** Met à jour un client (générique) */
+export async function updateClient(clientDocumentId: string, data: Partial<Client>) {
+  return put(`clients/${clientDocumentId}`, data);
+}
+
 /** Supprime un client par son documentId */
 export const deleteClient = (documentId: string) =>
   del(`clients/${documentId}`);

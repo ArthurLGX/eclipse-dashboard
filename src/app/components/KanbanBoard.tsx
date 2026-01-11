@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar, IconUser } from '@tabler/icons-react';
+import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar } from '@tabler/icons-react';
 import type { Client, PipelineStatus, ContactPriority } from '@/types';
 
 // Configuration des colonnes du pipeline
