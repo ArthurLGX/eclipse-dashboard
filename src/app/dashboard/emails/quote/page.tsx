@@ -198,12 +198,13 @@ Cordialement`);
     loadSignature();
   }, [user?.id]);
   
-  // Charger un brouillon si présent dans l'URL
+  // Charger un brouillon si présent dans l'URL (une seule fois)
+  const [draftLoaded, setDraftLoaded] = useState(false);
   useEffect(() => {
+    const draftId = searchParams.get('draft');
+    if (!draftId || draftLoaded) return;
+    
     const loadDraft = async () => {
-      const draftId = searchParams.get('draft');
-      if (!draftId) return;
-      
       try {
         const draft = await fetchEmailDraft(draftId);
         if (draft) {
@@ -220,15 +221,16 @@ Cordialement`);
             if (quote) setSelectedQuote(quote);
           }
           
-          showGlobalPopup(t('draft_loaded') || 'Brouillon chargé', 'success');
+          setDraftLoaded(true);
         }
       } catch (error) {
         console.error('Error loading draft:', error);
+        setDraftLoaded(true); // Prevent infinite retry
       }
     };
     
     loadDraft();
-  }, [searchParams, quotes, showGlobalPopup, t]);
+  }, [searchParams, quotes, draftLoaded]);
   
   // Helper functions
   const calculateTotal = (quote: Facture): number => {
