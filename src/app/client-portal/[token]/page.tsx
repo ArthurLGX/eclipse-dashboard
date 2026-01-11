@@ -2,18 +2,14 @@
 
 import React, { useState, useEffect, use } from 'react';
 import { 
-  IconCheck, 
-  IconX,
+  IconCheck,
   IconMessageCircle,
   IconPhoto,
-  IconCalendar,
   IconProgress,
   IconAlertTriangle,
   IconCircleCheck,
-  IconSend,
   IconArrowLeft,
-  IconArrowRight,
-  IconZoomIn
+  IconArrowRight
 } from '@tabler/icons-react';
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://api.dashboard.eclipsestudiodev.fr';

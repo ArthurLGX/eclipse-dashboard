@@ -11,8 +11,6 @@ import {
   IconTrash,
   IconCopy,
   IconSearch,
-  IconX,
-  IconGripVertical,
   IconClock,
   IconCheck,
   IconArrowLeft
@@ -183,8 +181,8 @@ export default function ProjectTemplatesPage() {
   const [templates, setTemplates] = useState<ProjectTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingTemplate, setEditingTemplate] = useState<ProjectTemplate | null>(null);
+  const [_modalOpen, setModalOpen] = useState(false);
+  const [_editingTemplate, setEditingTemplate] = useState<ProjectTemplate | null>(null);
 
   // Fetch templates
   const fetchTemplates = async () => {

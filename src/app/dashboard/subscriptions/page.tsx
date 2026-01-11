@@ -13,11 +13,7 @@ import {
   IconX,
   IconCalendar,
   IconCurrencyEuro,
-  IconCheck,
-  IconPlayerPause,
   IconRefresh,
-  IconFileInvoice,
-  IconArrowRight,
   IconBuilding
 } from '@tabler/icons-react';
 import type { Client, Project } from '@/types';
@@ -117,7 +113,7 @@ function SubscriptionModal({
       <div className="relative bg-card border border-border rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto m-4">
         <div className="sticky top-0 bg-card border-b border-border p-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">
-            {subscription ? 'Modifier l\'abonnement' : 'Nouvel abonnement'}
+            {subscription ? 'Modifier l&apos;abonnement' : 'Nouvel abonnement'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
             <IconX size={20} />
@@ -257,7 +253,7 @@ function SubscriptionModal({
 }
 
 export default function SubscriptionsPage() {
-  const { t } = useLanguage();
+  useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const token = typeof window !== 'undefined' ? localStorage.getItem('jwt') : null;

@@ -13,7 +13,7 @@ import {
   IconUsers,
   IconBuilding,
   IconMagnet,
-  IconPipeline,
+  IconChartBar,
   IconBrain,
   IconMail,
   IconSend,
@@ -227,7 +227,7 @@ function DashboardLayoutContent({
         {
           id: 'pipeline',
           label: t('pipeline') || 'Pipeline CRM',
-          icon: <IconPipeline size={20} stroke={1} />,
+          icon: <IconChartBar size={20} stroke={1} />,
           path: '/dashboard/pipeline',
         },
         {

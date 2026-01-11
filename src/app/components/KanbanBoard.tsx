@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar, IconFlag } from '@tabler/icons-react';
+import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar } from '@tabler/icons-react';
 import type { Prospect, ProspectStatus, ProspectPriority } from '@/types';
 
 // Configuration des colonnes du pipeline
@@ -43,14 +43,12 @@ const PRIORITY_COLORS: Record<ProspectPriority, { bg: string; text: string; icon
 
 // Composant carte prospect
 function ProspectCard({ 
-  prospect, 
-  onStatusChange,
+  prospect,
   onClick,
   onDelete,
   isDragging 
 }: { 
   prospect: Prospect;
-  onStatusChange: (prospectId: string, newStatus: ProspectStatus) => Promise<void>;
   onClick: () => void;
   onDelete?: () => void;
   isDragging: boolean;
@@ -229,7 +227,7 @@ function KanbanColumn({
 }) {
   const { t } = useLanguage();
   const [isDragOver, setIsDragOver] = useState(false);
-  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [_draggingId, _setDraggingId] = useState<string | null>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -299,10 +297,9 @@ function KanbanColumn({
           <ProspectCard
             key={prospect.documentId}
             prospect={prospect}
-            onStatusChange={onStatusChange}
             onClick={() => onProspectClick(prospect)}
             onDelete={onDeleteProspect ? () => onDeleteProspect(prospect) : undefined}
-            isDragging={draggingId === prospect.documentId}
+            isDragging={_draggingId === prospect.documentId}
           />
         ))}
         

@@ -10,11 +10,9 @@ import {
   IconPhone,
   IconMapPin,
   IconCalendar,
-  IconCurrencyEuro,
   IconAlertTriangle,
   IconCircleCheck,
   IconCircleX,
-  IconDownload,
   IconSignature
 } from '@tabler/icons-react';
 
@@ -184,7 +182,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
               <IconCircleX size={64} className="mx-auto text-red-500 mb-4" />
               <h1 className="text-2xl font-bold text-slate-800 mb-2">Devis refusé</h1>
               <p className="text-slate-600 mb-4">
-                Nous avons bien pris note de votre décision. N'hésitez pas à nous recontacter si vous changez d'avis.
+                Nous avons bien pris note de votre décision. N&apos;hésitez pas à nous recontacter si vous changez d&apos;avis.
               </p>
               <p className="text-sm text-slate-500">
                 Devis n°{quote.reference}
@@ -303,7 +301,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
               <div className="flex items-center gap-2">
                 <IconCalendar size={18} className="text-amber-500" />
                 <span className="text-sm text-slate-600">
-                  Valable jusqu'au: <strong>{formatDate(quote.valid_until)}</strong>
+                  Valable jusqu&apos;au: <strong>{formatDate(quote.valid_until)}</strong>
                 </span>
               </div>
             )}
@@ -386,7 +384,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
             Valider votre décision
           </h3>
           <p className="text-slate-600 mb-6">
-            Après avoir lu attentivement ce devis, vous pouvez l'accepter ou le refuser en cliquant sur l'un des boutons ci-dessous.
+            Après avoir lu attentivement ce devis, vous pouvez l&apos;accepter ou le refuser en cliquant sur l&apos;un des boutons ci-dessous.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
@@ -463,7 +461,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
                     className="mt-1 w-4 h-4 text-violet-600 rounded focus:ring-violet-500"
                   />
                   <span className="text-sm text-slate-600">
-                    J'accepte ce devis et les conditions mentionnées. Je comprends que cette acceptation a valeur contractuelle.
+                    J&apos;accepte ce devis et les conditions mentionnées. Je comprends que cette acceptation a valeur contractuelle.
                   </span>
                 </label>
               )}

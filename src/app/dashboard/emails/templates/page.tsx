@@ -10,9 +10,7 @@ import {
   IconEdit, 
   IconTrash,
   IconCopy,
-  IconSend,
   IconSearch,
-  IconFilter,
   IconX
 } from '@tabler/icons-react';
 import type { ProspectStatus } from '@/types';

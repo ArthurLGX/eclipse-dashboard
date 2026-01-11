@@ -8,15 +8,10 @@ import {
   IconRocket, 
   IconDeviceDesktop,
   IconDeviceMobile,
-  IconCheck,
-  IconX,
   IconAlertTriangle,
   IconRefresh,
-  IconDownload,
   IconExternalLink,
   IconClock,
-  IconPhoto,
-  IconFileText,
   IconBrandGoogle
 } from '@tabler/icons-react';
 
@@ -82,7 +77,7 @@ function ScoreCircle({ score, label, size = 'md' }: { score: number; label: stri
   );
 }
 
-function MetricCard({ title, value, displayValue, score }: { title: string; value: number; displayValue: string; score: number }) {
+function MetricCard({ title, displayValue, score }: { title: string; displayValue: string; score: number }) {
   const color = getScoreColor(score * 100);
   
   return (
@@ -227,7 +222,7 @@ export default function SEOAuditPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('seo_audit') || 'Audit SEO & Performance'}</h1>
           <p className="text-sm text-muted-foreground">
-            {t('seo_audit_desc') || 'Analysez les performances de n\'importe quel site web'}
+            {t('seo_audit_desc') || 'Analysez les performances de n&apos;importe quel site web'}
           </p>
         </div>
       </div>
@@ -344,32 +339,27 @@ export default function SEOAuditPage() {
             <h2 className="text-lg font-semibold mb-4">Core Web Vitals</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <MetricCard 
-                title="FCP (First Contentful Paint)" 
-                value={result.metrics.fcp.value}
+                title="FCP (First Contentful Paint)"
                 displayValue={result.metrics.fcp.displayValue}
                 score={result.metrics.fcp.score}
               />
               <MetricCard 
-                title="LCP (Largest Contentful Paint)" 
-                value={result.metrics.lcp.value}
+                title="LCP (Largest Contentful Paint)"
                 displayValue={result.metrics.lcp.displayValue}
                 score={result.metrics.lcp.score}
               />
               <MetricCard 
-                title="CLS (Cumulative Layout Shift)" 
-                value={result.metrics.cls.value}
+                title="CLS (Cumulative Layout Shift)"
                 displayValue={result.metrics.cls.displayValue}
                 score={result.metrics.cls.score}
               />
               <MetricCard 
-                title="TBT (Total Blocking Time)" 
-                value={result.metrics.tbt.value}
+                title="TBT (Total Blocking Time)"
                 displayValue={result.metrics.tbt.displayValue}
                 score={result.metrics.tbt.score}
               />
               <MetricCard 
-                title="SI (Speed Index)" 
-                value={result.metrics.si.value}
+                title="SI (Speed Index)"
                 displayValue={result.metrics.si.displayValue}
                 score={result.metrics.si.score}
               />

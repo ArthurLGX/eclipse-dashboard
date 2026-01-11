@@ -10,9 +10,8 @@ import KanbanBoard, { PIPELINE_COLUMNS } from '@/app/components/KanbanBoard';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import type { Prospect, ProspectStatus, ProspectSource, ProspectPriority } from '@/types';
 import { 
-  IconPipeline, 
-  IconPlus, 
-  IconFilter, 
+  IconChartBar, 
+  IconPlus,
   IconSearch,
   IconX,
   IconMail,
@@ -427,7 +426,7 @@ export default function PipelinePage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <IconPipeline size={28} className="text-accent" />
+          <IconChartBar size={28} className="text-accent" />
           <div>
             <h1 className="text-2xl font-bold text-foreground">
               {t('pipeline') || 'Pipeline CRM'}
