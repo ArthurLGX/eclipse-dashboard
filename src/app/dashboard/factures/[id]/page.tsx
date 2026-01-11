@@ -155,6 +155,10 @@ export default function FacturePage() {
   const defaultDueDate = new Date(today);
   defaultDueDate.setDate(today.getDate() + preferences.invoice.defaultPaymentDays);
   
+  // Calcul de la date de validité par défaut pour les devis
+  const defaultValidUntil = new Date(today);
+  defaultValidUntil.setDate(today.getDate() + preferences.invoice.defaultValidityDays);
+  
   // Utiliser le type de la facture chargée si elle existe, sinon le type des searchParams
   const isQuote = facture?.document_type === 'quote' || (isCreationMode && documentType === 'quote');
   
@@ -165,6 +169,7 @@ export default function FacturePage() {
     reference: preferences.invoice.autoNumbering ? `${isQuote ? preferences.invoice.quotePrefix || 'DEV-' : preferences.invoice.invoicePrefix}${new Date().toISOString().slice(0,10).replace(/-/g, '')}-${Math.random().toString(36).substring(2, 6).toUpperCase()}` : '',
     date: today.toISOString().split('T')[0],
     due_date: defaultDueDate.toISOString().split('T')[0],
+    valid_until: isQuote ? defaultValidUntil.toISOString().split('T')[0] : undefined,
     facture_status: 'draft' as FactureStatus,
     quote_status: isQuote ? 'draft' : undefined,
     number: 0,
@@ -367,6 +372,7 @@ export default function FacturePage() {
         quantity: line.quantity,
         unit_price: line.unit_price,
         total: line.total,
+        unit: line.unit || 'hour', // Inclure le type d'unité
       }));
 
       const idLower = id.toLowerCase();
@@ -380,8 +386,11 @@ export default function FacturePage() {
           due_date: formData?.due_date ?? '',
           // Toujours inclure facture_status (requis par le type)
           facture_status: isQuote ? 'draft' : (formData?.facture_status ?? 'draft'),
-          // Ajouter quote_status si c'est un devis
-          ...(isQuote && { quote_status: formData?.quote_status ?? 'draft' }),
+          // Ajouter quote_status et valid_until si c'est un devis
+          ...(isQuote && { 
+            quote_status: formData?.quote_status ?? 'draft',
+            valid_until: formData?.valid_until ?? '',
+          }),
           currency: formData?.currency ?? '',
           description: formData?.description ?? '',
           notes: formData?.notes ?? '',
@@ -416,7 +425,10 @@ export default function FacturePage() {
         due_date: formData.due_date || facture.due_date,
         // Utiliser le bon champ de statut selon le type de document
         ...(isQuote 
-          ? { quote_status: formData.quote_status || facture.quote_status }
+          ? { 
+              quote_status: formData.quote_status || facture.quote_status,
+              valid_until: formData.valid_until || facture.valid_until,
+            }
           : { facture_status: formData.facture_status || facture.facture_status }
         ),
         currency: formData.currency || facture.currency,
@@ -748,23 +760,39 @@ export default function FacturePage() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 !text-zinc-800">
-                  {t('due_date')}
+                  {isQuote ? t('valid_until') || 'Valide jusqu\'au' : t('due_date')}
                 </label>
                 {editing ? (
-                  <input
-                    type="date"
-                    name="due_date"
-                    value={
-                      formData?.due_date ? formData.due_date.slice(0, 10) : ''
-                    }
-                    onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                  />
+                  isQuote ? (
+                    <input
+                      type="date"
+                      name="valid_until"
+                      value={
+                        formData?.valid_until ? formData.valid_until.slice(0, 10) : ''
+                      }
+                      onChange={handleInputChange}
+                      className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                    />
+                  ) : (
+                    <input
+                      type="date"
+                      name="due_date"
+                      value={
+                        formData?.due_date ? formData.due_date.slice(0, 10) : ''
+                      }
+                      onChange={handleInputChange}
+                      className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                    />
+                  )
                 ) : (
                   <p className="!text-zinc-800 text-sm font-semibold">
-                    {facture?.due_date
-                      ? new Date(facture.due_date).toLocaleDateString('fr-FR')
-                      : ''}
+                    {isQuote 
+                      ? (facture?.valid_until
+                          ? new Date(facture.valid_until).toLocaleDateString('fr-FR')
+                          : '-')
+                      : (facture?.due_date
+                          ? new Date(facture.due_date).toLocaleDateString('fr-FR')
+                          : '')}
                   </p>
                 )}
               </div>

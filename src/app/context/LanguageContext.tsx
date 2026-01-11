@@ -930,6 +930,7 @@ const translations = {
     top_client: 'Client le plus rentable',
     average_invoice: 'Moyenne des factures',
     due_date: "Date d'échéance",
+    valid_until: "Valide jusqu'au",
     view_invoice: 'Voir la facture',
     add_invoice: 'Créer une facture',
     // Factures
@@ -3531,6 +3532,7 @@ const translations = {
     top_client: 'Top Client',
     average_invoice: 'Average Invoice',
     due_date: 'Due Date',
+    valid_until: 'Valid Until',
     view_invoice: 'View Invoice',
     target_revenue: 'Target Revenue',
     progress_to_target: 'Progress to target revenue',

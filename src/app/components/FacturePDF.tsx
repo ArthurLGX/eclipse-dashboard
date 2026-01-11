@@ -334,10 +334,16 @@ const FacturePDF = ({
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: facture.currency || 'EUR',
-    }).format(amount);
+    // Formatage manuel pour éviter les caractères Unicode problématiques dans @react-pdf/renderer
+    const currency = facture.currency || 'EUR';
+    const currencySymbol = currency === 'EUR' ? 'EUR' : currency === 'USD' ? '$' : currency === 'GBP' ? 'GBP' : currency;
+    
+    // Formater le nombre avec 2 décimales et séparateur de milliers
+    const parts = amount.toFixed(2).split('.');
+    const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const formattedAmount = `${integerPart},${parts[1]}`;
+    
+    return `${formattedAmount} ${currencySymbol}`;
   };
 
   const getUnitLabel = (unit?: string) => {

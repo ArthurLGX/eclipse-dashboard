@@ -638,11 +638,14 @@ export async function createFacture(data: {
   user: number;
   tva_applicable: boolean;
   document_type?: 'invoice' | 'quote'; // Type de document
+  valid_until?: string; // Date de validité pour les devis
+  quote_status?: string; // Statut du devis
   invoice_lines: {
     description: string;
     quantity: number;
     unit_price: number;
     total: number;
+    unit?: string; // Type d'unité: hour, day, fixed, unit
   }[];
 }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -659,6 +662,14 @@ export async function createFacture(data: {
     tva_applicable: data.tva_applicable,
     invoice_lines: data.invoice_lines,
   };
+  
+  // Champs spécifiques aux devis
+  if (data.valid_until) {
+    payload.valid_until = data.valid_until;
+  }
+  if (data.quote_status) {
+    payload.quote_status = data.quote_status;
+  }
 
   // Relations Strapi v5 - utiliser documentId
   if (data.client_id) {
@@ -694,11 +705,13 @@ export async function updateFactureById(
     project: string;
     user: number;
     tva_applicable: boolean;
+    valid_until: string; // Date de validité pour les devis
     invoice_lines: {
       description: string;
       quantity: number;
       unit_price: number;
       total: number;
+      unit?: string; // Type d'unité: hour, day, fixed, unit
     }[];
   }>
 ) {
