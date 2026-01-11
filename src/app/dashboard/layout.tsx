@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { OnboardingProvider } from '@/app/context/OnboardingContext';
 import { UserPreferencesProvider, useUserPreferencesOptional } from '@/app/context/UserPreferencesContext';
-import OnboardingWizard from '@/app/components/OnboardingWizard';
-import BusinessSetupModal from '@/app/components/BusinessSetupModal';
+import UnifiedOnboardingModal from '@/app/components/UnifiedOnboardingModal';
 import { LenisProvider } from '@/app/context/LenisContext';
 import {
   IconHome,
@@ -525,11 +524,8 @@ function DashboardLayoutContent({
 
   return (
     <>
-      {/* Business Setup Modal - S'affiche si les préférences ne sont pas configurées */}
-      <BusinessSetupModal />
-      
-      {/* Onboarding Wizard Modal */}
-      <OnboardingWizard />
+      {/* Unified Onboarding Modal - Creates first project with client and tasks */}
+      <UnifiedOnboardingModal />
       
       {/* Timer Indicator - Fixed en haut à droite (à côté des notifications) */}
       <TimerIndicator />
