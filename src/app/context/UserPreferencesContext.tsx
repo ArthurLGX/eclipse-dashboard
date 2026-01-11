@@ -44,6 +44,7 @@ interface UserPreferencesContextType {
   
   // Onboarding
   isOnboardingCompleted: boolean;
+  resetOnboarding: () => Promise<void>;
   
   // Actions
   updateBusinessType: (type: BusinessType) => Promise<void>;
@@ -187,6 +188,27 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
     await loadPreferences();
   }, [loadPreferences]);
 
+  // Réinitialiser l'onboarding
+  const resetOnboarding = useCallback(async () => {
+    if (!preferences?.documentId) return;
+    
+    try {
+      const updated = await updateUserPreferences(preferences.documentId, {
+        onboarding_completed: false,
+        onboarding_step: 0,
+      });
+      setPreferences(updated);
+      
+      // Also clear localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('eclipse_unified_onboarding_completed');
+      }
+    } catch (err) {
+      console.error('Error resetting onboarding:', err);
+      throw err;
+    }
+  }, [preferences?.documentId]);
+
   const value: UserPreferencesContextType = {
     preferences,
     loading,
@@ -199,6 +221,7 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
     toggleModule,
     terminology,
     isOnboardingCompleted: preferences?.onboarding_completed ?? false,
+    resetOnboarding,
     updateBusinessType,
     updateEnabledModules,
     refreshPreferences,

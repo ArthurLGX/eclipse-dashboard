@@ -55,6 +55,7 @@ export default function SettingsPage() {
     enabledModules, 
     updateBusinessType, 
     updateEnabledModules,
+    resetOnboarding,
     loading: loadingPrefs 
   } = useUserPreferences();
   const { showGlobalPopup } = usePopup();
@@ -829,13 +830,16 @@ export default function SettingsPage() {
                     </p>
                   </div>
                   <button
-                    onClick={() => {
-                      // Clear localStorage flag
-                      if (typeof window !== 'undefined') {
-                        localStorage.removeItem('eclipse_unified_onboarding_completed');
+                    onClick={async () => {
+                      try {
+                        // Reset onboarding in preferences (also clears localStorage)
+                        await resetOnboarding();
+                        // Reload page to show onboarding modal
+                        window.location.reload();
+                      } catch (error) {
+                        console.error('Error resetting onboarding:', error);
+                        showGlobalPopup(t('error') || 'Erreur', 'error');
                       }
-                      // Reload page to show onboarding modal
-                      window.location.reload();
                     }}
                     className="btn-ghost px-4 py-2.5 flex items-center gap-2 rounded-lg border border-default hover:border-accent hover:bg-accent-light transition-all"
                   >
