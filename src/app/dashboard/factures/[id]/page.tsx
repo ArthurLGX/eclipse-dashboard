@@ -103,7 +103,7 @@ export default function FacturePage() {
     enterprise: '',
     adress: '',
     website: '',
-    processStatus: '',
+    processStatus: 'client',
     client_id: '',
     createdAt: '',
     updatedAt: '',
