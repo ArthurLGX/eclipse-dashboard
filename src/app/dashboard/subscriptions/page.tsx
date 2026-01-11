@@ -73,6 +73,7 @@ function SubscriptionModal({
   projects: Project[];
   onSave: (data: Partial<ClientSubscription>) => Promise<void>;
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -122,7 +123,7 @@ function SubscriptionModal({
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Nom de l'abonnement *</label>
+            <label className="block text-sm font-medium mb-1">Nom de l&apos;abonnement *</label>
             <input
               type="text"
               value={formData.name}

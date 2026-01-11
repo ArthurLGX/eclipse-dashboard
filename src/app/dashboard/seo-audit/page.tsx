@@ -371,7 +371,7 @@ export default function SEOAuditPage() {
             <div className="bg-card border border-border rounded-xl p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <IconRocket size={20} className="text-amber-500" />
-                Opportunités d'amélioration
+                Opportunités d&apos;amélioration
               </h2>
               <div className="space-y-3">
                 {result.opportunities.map((opp) => (

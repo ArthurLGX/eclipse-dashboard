@@ -181,7 +181,9 @@ export default function ProjectTemplatesPage() {
   const [templates, setTemplates] = useState<ProjectTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_modalOpen, setModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_editingTemplate, setEditingTemplate] = useState<ProjectTemplate | null>(null);
 
   // Fetch templates

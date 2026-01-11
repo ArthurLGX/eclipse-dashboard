@@ -227,6 +227,7 @@ function KanbanColumn({
 }) {
   const { t } = useLanguage();
   const [isDragOver, setIsDragOver] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_draggingId, _setDraggingId] = useState<string | null>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
