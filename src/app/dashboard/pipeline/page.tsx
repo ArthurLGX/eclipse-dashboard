@@ -527,7 +527,8 @@ export default function PipelinePage() {
         onClose={() => setDeleteModal({ isOpen: false, prospect: null })}
         onConfirm={handleDeleteProspect}
         title={t('delete_prospect') || 'Supprimer le prospect'}
-        message={t('delete_prospect_confirm') || `Êtes-vous sûr de vouloir supprimer "${deleteModal.prospect?.title}" ?`}
+        itemName={deleteModal.prospect?.title || ''}
+        itemType="prospect"
       />
     </div>
   );
