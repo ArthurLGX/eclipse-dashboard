@@ -697,6 +697,17 @@ export async function updateFactureById(
 export const deleteFacture = (documentId: string) =>
   del(`factures/${documentId}`);
 
+/** Generate signature link for a quote */
+export const generateQuoteSignatureLink = async (documentId: string): Promise<{
+  success: boolean;
+  token?: string;
+  url?: string;
+  expiresAt?: string;
+}> => {
+  const response = await post(`factures/${documentId}/generate-signature-link`, {});
+  return response as { success: boolean; token?: string; url?: string; expiresAt?: string };
+};
+
 // ============================================================================
 // MENTORS
 // ============================================================================
