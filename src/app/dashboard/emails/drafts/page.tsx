@@ -194,7 +194,7 @@ function DraftsContent() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('search_drafts') || 'Rechercher un brouillon...'}
-            className="w-full pl-10 pr-4 py-3 bg-card border border-default rounded-lg focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+            className="w-full !pl-10 !pr-4 py-3 bg-card border border-default rounded-lg focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
           />
         </div>
         
@@ -204,7 +204,7 @@ function DraftsContent() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as EmailCategory | 'all')}
-            className="pl-10 pr-8 py-3 bg-card border border-default rounded-lg focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all appearance-none cursor-pointer"
+            className="pl-10 !pr-8 py-3 bg-card border border-default rounded-lg focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all appearance-none cursor-pointer"
           >
             {categories.map(cat => (
               <option key={cat.value} value={cat.value}>{cat.label}</option>

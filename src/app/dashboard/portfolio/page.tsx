@@ -695,7 +695,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   value={fontSearch}
                   onChange={(e) => setFontSearch(e.target.value)}
                   placeholder={t('portfolio_search_font_placeholder')}
-                  className="w-full pl-9 pr-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  className="w-full !pl-9 !pr-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
                 />
                 {fontSearch && (
                   <button
@@ -1228,7 +1228,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
                       placeholder="https://monportfolio.com/projets"
-                      className="w-full !pl-10 pr-4 py-3 bg-input border border-input rounded-lg text-primary placeholder:text-muted focus:outline-none focus:border-accent"
+                      className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-lg text-primary placeholder:text-muted focus:outline-none focus:border-accent"
                       onKeyDown={(e) => e.key === 'Enter' && handleScrape()}
                     />
                   </div>

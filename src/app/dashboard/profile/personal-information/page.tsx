@@ -351,7 +351,7 @@ export default function PersonalInformationPage() {
                   type={showCurrentPassword ? 'text' : 'password'}
                   value={currentPassword}
                   onChange={e => setCurrentPassword(e.target.value)}
-                  className="input w-full p-3 pr-12"
+                  className="input w-full p-3 !pr-12"
                   placeholder="••••••••"
                 />
                 <button
@@ -374,7 +374,7 @@ export default function PersonalInformationPage() {
                   type={showNewPassword ? 'text' : 'password'}
                   value={newPassword}
                   onChange={e => setNewPassword(e.target.value)}
-                  className="input w-full p-3 pr-12"
+                  className="input w-full p-3 !pr-12"
                   placeholder="••••••••"
                   minLength={6}
                 />
@@ -399,7 +399,7 @@ export default function PersonalInformationPage() {
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
-                  className="input w-full p-3 pr-12"
+                  className="input w-full p-3 !pr-12"
                   placeholder="••••••••"
                   minLength={6}
                 />

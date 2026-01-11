@@ -585,7 +585,7 @@ export default function RichTextEditor({
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-1 p-2 border-b border-default bg-hover">
         {/* Text format */}
-        <div className="flex items-center gap-0.5 border-r border-default pr-2 mr-1">
+        <div className="flex items-center gap-0.5 border-r border-default !pr-2 mr-1">
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h1')}
@@ -613,7 +613,7 @@ export default function RichTextEditor({
         </div>
 
         {/* Bold & Italic */}
-        <div className="flex items-center gap-0.5 border-r border-default pr-2 mr-1">
+        <div className="flex items-center gap-0.5 border-r border-default !pr-2 mr-1">
           <button
             type="button"
             onClick={() => execCommand('bold')}
@@ -633,7 +633,7 @@ export default function RichTextEditor({
         </div>
 
         {/* Lists */}
-        <div className="flex items-center gap-0.5 border-r border-default pr-2 mr-1">
+        <div className="flex items-center gap-0.5 border-r border-default !pr-2 mr-1">
           <button
             type="button"
             onClick={() => execCommand('insertUnorderedList')}
@@ -653,7 +653,7 @@ export default function RichTextEditor({
         </div>
 
         {/* Alignment */}
-        <div className="flex items-center gap-0.5 border-r border-default pr-2 mr-1">
+        <div className="flex items-center gap-0.5 border-r border-default !pr-2 mr-1">
           <button
             type="button"
             onClick={() => execCommand('justifyLeft')}
@@ -681,7 +681,7 @@ export default function RichTextEditor({
         </div>
 
         {/* Link */}
-        <div className="relative flex items-center gap-0.5 border-r border-default pr-2 mr-1">
+        <div className="relative flex items-center gap-0.5 border-r border-default !pr-2 mr-1">
           <button
             type="button"
             onClick={() => setShowLinkInput(!showLinkInput)}
@@ -828,7 +828,7 @@ export default function RichTextEditor({
           onMouseDown={handleEditorMouseDown}
           onMouseMove={handleEditorMouseMove}
           onMouseLeave={handleEditorMouseLeave}
-          className="focus:outline-none prose prose-sm max-w-none dark:prose-invert overflow-y-auto pl-8
+          className="focus:outline-none prose prose-sm max-w-none dark:prose-invert overflow-y-auto !pl-8
             [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:text-primary
             [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:text-primary
             [&_p]:mb-2 [&_p]:text-secondary

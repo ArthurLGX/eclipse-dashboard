@@ -184,7 +184,7 @@ function SubscriptionModal({
                   type="number"
                   value={formData.monthly_amount}
                   onChange={(e) => setFormData({ ...formData, monthly_amount: parseFloat(e.target.value) })}
-                  className="w-full px-3 py-2 bg-background border border-border rounded-lg pr-8"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg !pr-8"
                   required
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
@@ -445,7 +445,7 @@ export default function SubscriptionsPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Rechercher..."
-            className="w-full pl-9 pr-3 py-2 bg-background border border-border rounded-lg"
+            className="w-full !pl-9 !pr-3 py-2 bg-background border border-border rounded-lg"
           />
         </div>
         <select

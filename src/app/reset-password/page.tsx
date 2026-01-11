@@ -167,7 +167,7 @@ function ResetPasswordContent() {
                         setPassword(e.target.value);
                         setPasswordError(validatePassword(e.target.value));
                       }}
-                      className="w-full p-3 pr-10 auth-input rounded-lg transition-all duration-200"
+                      className="w-full p-3 !pr-10 auth-input rounded-lg transition-all duration-200"
                     />
                     <button
                       type="button"
@@ -197,7 +197,7 @@ function ResetPasswordContent() {
                           setConfirmError('');
                         }
                       }}
-                      className="w-full p-3 pr-10 auth-input rounded-lg transition-all duration-200"
+                      className="w-full p-3 !pr-10 auth-input rounded-lg transition-all duration-200"
                     />
                     <button
                       type="button"

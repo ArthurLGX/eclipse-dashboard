@@ -19,7 +19,7 @@ export const TryBtn = () => {
       <Link
         id="tryBtn"
         href="/login?type=register"
-        className="btn-primary group flex flex-row md:w-fit w-full items-center justify-center gap-4 hover:gap-2 !text-xs capitalize rounded-full !pl-2 pr-4 !py-2"
+        className="btn-primary group flex flex-row md:w-fit w-full items-center justify-center gap-4 hover:gap-2 !text-xs capitalize rounded-full !pl-2 !pr-4 !py-2"
       >
         <span>
           <IconArrowRight

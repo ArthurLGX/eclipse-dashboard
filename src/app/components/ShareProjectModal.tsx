@@ -606,7 +606,7 @@ export default function ShareProjectModal({
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="email@exemple.com"
-                          className="w-full !pl-10 pr-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-success transition-colors"
+                          className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-success transition-colors"
                         />
                       </div>
                       <button
@@ -1038,7 +1038,7 @@ export default function ShareProjectModal({
                       value={emailRecipient}
                       onChange={(e) => setEmailRecipient(e.target.value)}
                       placeholder="client@exemple.com"
-                      className="w-full !pl-10 pr-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
+                      className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
                     />
                   </div>
                 </div>

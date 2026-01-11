@@ -19,7 +19,7 @@ export const PricingBtn = () => {
       <Link
         id="pricingBtn"
         href="/pricing"
-        className="btn-secondary group flex flex-row md:w-fit w-full items-center justify-center gap-4 hover:gap-2 !text-xs capitalize rounded-full !pl-2 pr-4 !py-2"
+        className="btn-secondary group flex flex-row md:w-fit w-full items-center justify-center gap-4 hover:gap-2 !text-xs capitalize rounded-full !pl-2 !pr-4 !py-2"
       >
         <span>
           <IconArrowRight

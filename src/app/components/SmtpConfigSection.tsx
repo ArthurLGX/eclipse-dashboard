@@ -495,7 +495,7 @@ export default function SmtpConfigSection() {
               value={formData.smtp_password}
               onChange={(e) => handleChange('smtp_password', e.target.value)}
               placeholder={existingConfig ? '••••••••' : 'Mot de passe ou app password'}
-              className="input w-full pr-10"
+              className="input w-full !pr-10"
             />
             <button
               type="button"
@@ -580,7 +580,7 @@ export default function SmtpConfigSection() {
         <button
           type="button"
           onClick={() => setShowImapConfig(!showImapConfig)}
-          className="w-full flex items-center justify-between p-4 rounded-xl bg-secondary/5 hover:bg-secondary/10 transition-colors"
+          className="w-full flex items-center justify-between p-4 rounded-xl bg-secondary-light hover:bg-secondary transition-colors"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
@@ -733,7 +733,7 @@ export default function SmtpConfigSection() {
                             value={formData.imap_password || ''}
                             onChange={(e) => handleChange('imap_password', e.target.value)}
                             placeholder={existingConfig?.imap_enabled ? '••••••••' : 'App password'}
-                            className="input w-full pr-10"
+                            className="input w-full !pr-10"
                           />
                           <button
                             type="button"

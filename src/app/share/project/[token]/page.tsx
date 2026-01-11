@@ -1388,7 +1388,7 @@ function PublicGanttView({ tasks, projectName }: {
                                 key={subtask.documentId}
                                 className="hover:bg-muted/5 h-[34px]"
                               >
-                                <td className="py-1 pl-10 pr-4 sticky left-0 z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                <td className="py-1 !pl-10 !pr-4 sticky left-0 z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <div className="flex items-center gap-2">
                                     <div 
                                       className="w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0"

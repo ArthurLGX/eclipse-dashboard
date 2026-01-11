@@ -1148,7 +1148,7 @@ export default function ExcelImportModal({
                         value={googleSheetUrl}
                         onChange={(e) => setGoogleSheetUrl(e.target.value)}
                         placeholder="https://docs.google.com/spreadsheets/d/..."
-                        className="w-full pl-10 pr-4 py-2.5 bg-muted border border-default rounded-lg text-primary text-sm placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                        className="w-full !pl-10 !pr-4 py-2.5 bg-muted border border-default rounded-lg text-primary text-sm placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>

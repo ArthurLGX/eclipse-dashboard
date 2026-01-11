@@ -119,7 +119,7 @@ export default function TableFilters({
             placeholder={searchPlaceholder}
             value={searchValue}
             onChange={e => onSearchChangeAction(e.target.value)}
-            className="input w-full py-2.5 pr-4 !pl-10 placeholder:text-muted"
+            className="input w-full py-2.5 !pr-4 !pl-10 placeholder:text-muted"
           />
           {searchValue && (
             <button
@@ -335,7 +335,7 @@ export default function TableFilters({
                             ...(filter.value as DateRangeFilter || { from: '', to: '' }),
                             from: e.target.value
                           })}
-                          className="input cursor-pointer pr-2 py-2 text-sm min-w-[140px]"
+                          className="input cursor-pointer !pr-2 py-2 text-sm min-w-[140px]"
                         />
                       </div>
                       <span className="text-muted text-sm">→</span>
@@ -347,7 +347,7 @@ export default function TableFilters({
                             ...(filter.value as DateRangeFilter || { from: '', to: '' }),
                             to: e.target.value
                           })}
-                          className="input cursor-pointer pr-2 py-2 text-sm min-w-[140px]"
+                          className="input cursor-pointer !pr-2 py-2 text-sm min-w-[140px]"
                         />
                       </div>
                     </div>

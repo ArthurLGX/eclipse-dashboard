@@ -1337,7 +1337,7 @@ function TaskCard({
               
               {/* Liste des sous-tâches */}
               {hasSubtasks && (
-                <div className="space-y-2 pl-4 border-l-2" style={{ borderColor: taskColor + '40' }}>
+                <div className="space-y-2 !pl-4 border-l-2" style={{ borderColor: taskColor + '40' }}>
                   <p className="text-xs font-medium text-muted mb-2">{t('subtasks') || 'Sous-tâches'}</p>
                   {task.subtasks?.map(subtask => (
                     <div 
@@ -2539,7 +2539,7 @@ function TaskGanttView({
                   <React.Fragment key={group.color}>
                     {/* En-tête du groupe */}
                     <tr 
-                      className="cursor-pointer hover:bg-muted/10 transition-colors"
+                      className="cursor-pointer hover:bg-muted transition-colors"
                       onClick={() => toggleGroup(group.color)}
                     >
                       <td className="py-2.5 px-4 sticky left-0 z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
@@ -2584,7 +2584,7 @@ function TaskGanttView({
                         <React.Fragment key={task.documentId}>
                           {/* Ligne de tâche principale */}
                           <tr 
-                            className="hover:bg-muted/5 cursor-pointer group h-[44px]"
+                            className="hover:bg-muted cursor-pointer group h-[44px]"
                             onClick={() => onEdit(task)}
                           >
                             {/* Task Name */}
@@ -2614,7 +2614,7 @@ function TaskGanttView({
                               </div>
                             </td>
                             {/* Due Range */}
-                            <td className="py-2 px-1 text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                            <td className="py-2 px-1 text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                               <span 
                                 className="text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
                                 style={{ backgroundColor: group.color + '20', color: group.color }}
@@ -2623,7 +2623,7 @@ function TaskGanttView({
                               </span>
                             </td>
                             {/* Duration */}
-                            <td className="py-2 px-1 text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted/5 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                            <td className="py-2 px-1 text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
                               <span className="text-xs text-muted whitespace-nowrap">
                                 {getDurationDays(task.start_date, task.due_date)} {t('days_short') || 'd'}
                               </span>
@@ -2636,7 +2636,7 @@ function TaskGanttView({
                                   {dayHeaders.map((day, i) => (
                                     <div 
                                       key={i} 
-                                      className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/3' : ''}`} 
+                                      className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted' : ''}`} 
                                     />
                                   ))}
                                 </div>
@@ -2673,10 +2673,10 @@ function TaskGanttView({
                             return (
                               <tr 
                                 key={subtask.documentId}
-                                className="hover:bg-muted/5 cursor-pointer h-[34px]"
+                                  className="hover:bg-muted cursor-pointer h-[34px]"
                                 onClick={() => onEdit(task)}
                               >
-                                <td className="py-1 pl-10 pr-4 sticky left-0 z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                <td className="py-1 !pl-10 !pr-4 sticky left-0 z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <div className="flex items-center gap-2">
                                     <div 
                                       className="w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
@@ -2733,7 +2733,7 @@ function TaskGanttView({
                                 onClick={(e) => { e.stopPropagation(); onAddSubtask(task); }}
                                 style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}
                               >
-                                <div className="flex items-center gap-2 text-muted hover:text-accent">
+                                  <div className="flex items-center gap-2 text-muted hover:text-accent">
                                   <IconPlus className="w-3.5 h-3.5" />
                                   <span className="text-xs">{t('add_task') || 'Add task...'}</span>
                                 </div>

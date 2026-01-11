@@ -470,7 +470,7 @@ export default function CalendarPage() {
                       {dayEvents.slice(0, 3).map((event) => (
                         <div
                           key={event.documentId}
-                          className="relative text-xs px-1 py-0.5 rounded truncate pr-5"
+                          className="relative text-xs px-1 py-0.5 rounded truncate !pr-5"
                           style={{ 
                             backgroundColor: `${event.color || EVENT_COLORS[event.event_type]}20`,
                             color: event.color || EVENT_COLORS[event.event_type],

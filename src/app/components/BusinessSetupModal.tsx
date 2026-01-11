@@ -119,11 +119,11 @@ export default function BusinessSetupModal() {
           className="relative w-full max-w-3xl bg-card border border-default rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto outline-none"
         >
           {/* Header */}
-          <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent/20 via-accent-light to-transparent">
+            <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent-light via-accent-light to-muted">
             <button
               onClick={handleSkip}
               disabled={isSaving}
-              className="absolute top-4 right-4 p-2 text-muted hover:text-primary rounded-lg hover:bg-white/10 transition-colors"
+              className="absolute top-4 right-4 p-2 text-muted hover:text-primary rounded-lg hover:bg-muted transition-colors"
               title={t('skip') || 'Passer'}
             >
               <IconX className="w-5 h-5" />

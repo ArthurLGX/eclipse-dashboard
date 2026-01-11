@@ -278,7 +278,7 @@ export default function AdminSubscriptionsPage() {
             className="card p-6"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className={`p-2 rounded-lg bg-muted/10 ${stat.color}`}>
+              <div className={`p-2 rounded-lg bg-muted ${stat.color}`}>
                 {stat.icon}
               </div>
               <span className="text-xs text-muted">{stat.count} users</span>
@@ -394,7 +394,7 @@ export default function AdminSubscriptionsPage() {
               {filteredSubscriptions.map((sub, index) => (
                 <tr 
                   key={sub.id} 
-                  className={`hover:bg-hover/50 transition-colors ${
+                  className={`hover:bg-hover transition-colors ${
                     index !== filteredSubscriptions.length - 1 ? 'border-b border-muted' : ''
                   }`}
                 >
@@ -563,7 +563,7 @@ export default function AdminSubscriptionsPage() {
                     <label className="block text-sm font-medium text-secondary mb-2">
                       {t('features') || 'Fonctionnalités'}
                     </label>
-                    <div className="bg-muted/10 rounded-lg p-3 max-h-60 overflow-y-auto">
+                    <div className="bg-muted rounded-lg p-3 max-h-60 overflow-y-auto">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {Object.entries(editingPlan.features).map(([key, value]) => (
                           <div key={key} className="flex items-center justify-between p-2 rounded-lg bg-card border border-default">

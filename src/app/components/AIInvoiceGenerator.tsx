@@ -273,7 +273,7 @@ export default function AIInvoiceGenerator({
                   </div>
 
                   {error && (
-                    <div className="flex items-center gap-2 p-3 bg-danger/10 border border-danger/20 rounded-lg text-danger text-sm">
+                    <div className="flex items-center gap-2 p-3 bg-danger-light border border-danger rounded-lg text-danger text-sm">
                       <IconAlertCircle size={18} />
                       {error}
                     </div>
@@ -283,7 +283,7 @@ export default function AIInvoiceGenerator({
 
               {step === 'settings' && (
                 <div className="space-y-6">
-                  <div className="flex items-center gap-2 p-4 bg-warning/10 border border-warning/20 rounded-lg">
+                  <div className="flex items-center gap-2 p-4 bg-warning-light border border-warning rounded-lg">
                     <IconInfoCircle size={20} className="text-warning flex-shrink-0" />
                     <p className="text-sm text-secondary">
                       {t('ai_invoice_settings_required')}
@@ -305,7 +305,7 @@ export default function AIInvoiceGenerator({
                             hourlyRate: parseFloat(e.target.value) || 0,
                           }))}
                           placeholder="0"
-                          className="w-full px-4 py-2 pr-8 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+                          className="w-full px-4 py-2 !pr-8 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted">€/h</span>
                       </div>
@@ -325,7 +325,7 @@ export default function AIInvoiceGenerator({
                             dailyRate: parseFloat(e.target.value) || 0,
                           }))}
                           placeholder="0"
-                          className="w-full px-4 py-2 pr-10 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+                          className="w-full px-4 py-2 !pr-10 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted">€/j</span>
                       </div>
@@ -382,7 +382,7 @@ export default function AIInvoiceGenerator({
                   </div>
 
                   {error && (
-                    <div className="flex items-center gap-2 p-3 bg-danger/10 border border-danger/20 rounded-lg text-danger text-sm">
+                    <div className="flex items-center gap-2 p-3 bg-danger-light border border-danger rounded-lg text-danger text-sm">
                       <IconAlertCircle size={18} />
                       {error}
                     </div>
@@ -395,10 +395,10 @@ export default function AIInvoiceGenerator({
                   {/* Confidence indicator */}
                   <div className={`flex items-center gap-2 p-3 rounded-lg ${
                     result.confidence >= 70 
-                      ? 'bg-success/10 border border-success/20' 
+                      ? 'bg-success-light border border-success' 
                       : result.confidence >= 40 
-                        ? 'bg-warning/10 border border-warning/20'
-                        : 'bg-danger/10 border border-danger/20'
+                        ? 'bg-warning-light border border-warning'
+                        : 'bg-danger-light border border-danger'
                   }`}>
                     <IconCheck size={18} className={
                       result.confidence >= 70 ? 'text-success' : 
@@ -417,7 +417,7 @@ export default function AIInvoiceGenerator({
 
                   {/* Client info */}
                   {(result.clientName || result.clientEnterprise) && (
-                    <div className="p-4 bg-muted/30 rounded-lg">
+                    <div className="p-4 bg-muted rounded-lg">
                       <h4 className="text-sm font-medium text-secondary mb-2">{t('client')}</h4>
                       <p className="text-primary font-medium">
                         {result.clientName}
@@ -426,7 +426,7 @@ export default function AIInvoiceGenerator({
                         )}
                       </p>
                       {result.matchedClientId && (
-                        <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">
+                        <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-success-light text-success text-xs rounded-full">
                           <IconCheck size={12} />
                           {t('ai_invoice_client_matched')}
                         </span>
@@ -436,7 +436,7 @@ export default function AIInvoiceGenerator({
 
                   {/* Project info */}
                   {result.projectTitle && (
-                    <div className="p-4 bg-muted/30 rounded-lg">
+                    <div className="p-4 bg-muted rounded-lg">
                       <h4 className="text-sm font-medium text-secondary mb-2">{t('project')}</h4>
                       <p className="text-primary font-medium">{result.projectTitle}</p>
                       {result.projectDescription && (
@@ -471,7 +471,7 @@ export default function AIInvoiceGenerator({
                   </div>
 
                   {/* Total */}
-                  <div className="flex items-center justify-between p-4 bg-accent/10 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-accent-light rounded-lg">
                     <span className="font-medium text-secondary">{t('total')} HT</span>
                     <span className="text-xl font-bold text-accent">
                       <IconCurrencyEuro size={20} className="inline" />
@@ -481,7 +481,7 @@ export default function AIInvoiceGenerator({
 
                   {/* Notes */}
                   {result.notes && (
-                    <div className="p-4 bg-muted/30 rounded-lg">
+                    <div className="p-4 bg-muted rounded-lg">
                       <h4 className="text-sm font-medium text-secondary mb-2">{t('notes')}</h4>
                       <p className="text-sm text-muted">{result.notes}</p>
                     </div>
@@ -491,7 +491,7 @@ export default function AIInvoiceGenerator({
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between p-6 border-t border-default bg-muted/30">
+              <div className="flex items-center justify-between p-6 border-t border-default bg-muted">
               {step !== 'input' && (
                 <button
                   onClick={() => setStep(step === 'result' ? 'input' : 'input')}
