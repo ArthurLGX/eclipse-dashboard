@@ -253,6 +253,7 @@ export async function addClientUser(
     adress: string;
     website: string;
     processStatus: string;
+    pipeline_status?: string;
     isActive?: boolean;
     image?: number; // ID du fichier uploadé sur Strapi
   },

@@ -32,8 +32,10 @@ import { useUserPreferences } from '@/app/context/UserPreferencesContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { BusinessType, getDefaultModules, BUSINESS_CONFIGS } from '@/config/business-modules';
-import { initializeUserPreferences, addClientUser, createProject, createProjectTask } from '@/lib/api';
+import { initializeUserPreferences, addClientUser, createProject, createProjectTask, fetchContacts } from '@/lib/api';
+import { Client } from '@/types';
 import { useRouter } from 'next/navigation';
+import { clearCache } from '@/hooks/useApi';
 
 // Types
 type OnboardingStep = 'business' | 'objective' | 'project' | 'success';
@@ -609,23 +611,44 @@ export default function UnifiedOnboardingModal() {
       // 1. Save user preferences
       await initializeUserPreferences(user.id, selectedBusinessType, getDefaultModules(selectedBusinessType));
 
-      // 2. Create client
-      // Generate a placeholder email based on client name
-      const sanitizedClientName = (clientName || 'client').toLowerCase().replace(/[^a-z0-9]/g, '');
-      const placeholderEmail = `${sanitizedClientName}@example.com`;
+      // 2. Create or find existing client
+      const clientNameToUse = clientName || 'Mon premier client';
       
-      const clientData = {
-        name: clientName || 'Mon premier client',
-        email: placeholderEmail,
-        number: '',
-        enterprise: '',
-        adress: '',
-        website: '',
-        processStatus: 'client',
-        isActive: true,
-      };
-      const clientResponse = await addClientUser(user.id, clientData, { skipDuplicateCheck: true }) as { data: { id: number; documentId: string; name: string } };
-      const client = clientResponse.data;
+      // Check if client already exists
+      let client: { id: number; documentId: string; name: string } | null = null;
+      try {
+        const existingContacts = await fetchContacts(user.id) as { data: Client[] };
+        const existingClient = existingContacts.data?.find(
+          (c: Client) => c.name?.toLowerCase() === clientNameToUse.toLowerCase()
+        );
+        if (existingClient) {
+          client = { id: existingClient.id, documentId: existingClient.documentId, name: existingClient.name };
+          console.log('[Onboarding] Using existing client:', client);
+        }
+      } catch (err) {
+        console.log('[Onboarding] Error checking existing clients:', err);
+      }
+      
+      // Create client if not found
+      if (!client) {
+        const sanitizedClientName = clientNameToUse.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const placeholderEmail = `${sanitizedClientName}@example.com`;
+        
+        const clientData = {
+          name: clientNameToUse,
+          email: placeholderEmail,
+          number: '',
+          enterprise: '',
+          adress: '',
+          website: '',
+          processStatus: 'client',
+          pipeline_status: 'qualified', // Client créé via onboarding = qualifié
+          isActive: true,
+        };
+        const clientResponse = await addClientUser(user.id, clientData, { skipDuplicateCheck: true }) as { data: { id: number; documentId: string; name: string } };
+        client = clientResponse.data;
+        console.log('[Onboarding] Created new client:', client);
+      }
       setCreatedClient({ id: client.id, documentId: client.documentId, name: client.name });
 
       // 3. Create project
@@ -724,11 +747,21 @@ export default function UnifiedOnboardingModal() {
   };
 
   // Go to project
-  const handleGoToProject = () => {
-    setIsOpen(false);
+  const handleGoToProject = async () => {
     if (createdProject) {
+      // Clear cache to ensure the newly created project is fetched
+      clearCache('project');
+      clearCache('projects');
+      // Set flag to trigger guided tour on project page
+      localStorage.setItem('eclipse_show_project_tour', 'true');
+      // Small delay to ensure cache is cleared
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setIsOpen(false);
       router.push(`/dashboard/projects/${createdProject.documentId}`);
+      // Force refresh to bypass any stale cache
+      router.refresh();
     } else {
+      setIsOpen(false);
       router.push('/dashboard/projects');
     }
   };

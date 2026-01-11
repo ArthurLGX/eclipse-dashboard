@@ -42,6 +42,7 @@ import ShareProjectModal from '@/app/components/ShareProjectModal';
 import ProjectTasks from '@/app/components/ProjectTasks';
 import RichTextEditor from '@/app/components/RichTextEditor';
 import ProjectProfitabilityCard from '@/app/components/ProjectProfitabilityCard';
+import ProjectGuidedTour, { useProjectGuidedTour } from '@/app/components/ProjectGuidedTour';
 import { 
   canDeleteProject, 
   fetchProjectCollaborators, 
@@ -108,6 +109,9 @@ export default function ProjectDetailsPage() {
   const [collaborationRequestStatus, setCollaborationRequestStatus] = useState<'none' | 'pending' | 'approved' | 'rejected'>('none');
   const [isRequestingAccess, setIsRequestingAccess] = useState(false);
 
+  // Tour guidé pour les nouveaux projets (onboarding)
+  const { isOpen: isTourOpen, openTour, closeTour } = useProjectGuidedTour();
+
   const PROJECT_STATUS = [
   { value: 'planning', label: t('planning'), color: 'blue', icon: IconClockPause },
   { value: 'in_progress', label: t('in_progress'), color: 'amber', icon: IconProgress },
@@ -147,6 +151,21 @@ const PROJECT_TYPES = [
       }
     }
   }, [project, slug, router]);
+
+  // Ouvrir le tour guidé après l'onboarding
+  useEffect(() => {
+    if (project && !loading) {
+      // Check if coming from onboarding (via localStorage flag)
+      const fromOnboarding = localStorage.getItem('eclipse_show_project_tour');
+      if (fromOnboarding === 'true') {
+        localStorage.removeItem('eclipse_show_project_tour');
+        // Small delay to let the page render
+        setTimeout(() => {
+          openTour(project.title);
+        }, 500);
+      }
+    }
+  }, [project, loading, openTour]);
 
   // Charger les factures du projet
   useEffect(() => {
@@ -1322,6 +1341,14 @@ const PROJECT_TYPES = [
         isOwner={isOwner}
         ownerName={project.user?.username}
         ownerEmail={project.user?.email}
+      />
+
+      {/* Guided Tour */}
+      <ProjectGuidedTour
+        isOpen={isTourOpen}
+        onClose={closeTour}
+        onComplete={closeTour}
+        projectTitle={project.title}
       />
     </motion.div>
   );
