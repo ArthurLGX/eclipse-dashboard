@@ -98,6 +98,12 @@ export interface User {
   role?: Role;
 }
 
+// Types pour Contact/Client unifié
+export type ContactStatus = 'prospect' | 'client' | 'archived';
+export type PipelineStatus = 'new' | 'contacted' | 'form_sent' | 'qualified' | 'quote_sent' | 'quote_accepted' | 'negotiation' | 'won' | 'lost';
+export type ContactSource = 'cold_outreach' | 'referral' | 'website' | 'social_media' | 'typeform' | 'other';
+export type ContactPriority = 'low' | 'medium' | 'high';
+
 export interface Client {
   id: number;
   documentId: string;
@@ -107,7 +113,21 @@ export interface Client {
   enterprise: string;
   adress: string | null;
   website: string | null;
-  processStatus: string;
+  phone?: string | null;
+  processStatus: ContactStatus;
+  // Champs pipeline/prospection
+  pipeline_status?: PipelineStatus;
+  source?: ContactSource;
+  priority?: ContactPriority;
+  budget?: number;
+  estimated_value?: number;
+  notes?: string;
+  contacted_date?: string;
+  next_action?: string;
+  next_action_date?: string;
+  lost_reason?: string;
+  typeform_response_id?: string;
+  // Champs existants
   client_id?: string;
   createdAt: string;
   updatedAt: string;
