@@ -19,6 +19,10 @@ import {
   fetchCompanyUser,
   fetchSubscriptionsUser,
   fetchPlans,
+  // Contacts unifiés
+  fetchContacts,
+  fetchContactsByStatus,
+  ContactStatusFilter,
 } from '@/lib/api';
 
 // ============================================================================
@@ -163,6 +167,26 @@ export function useClients(userId: number | undefined) {
   return useApiQuery(
     `clients-${userId}`,
     () => fetchClientsUser(userId!),
+    [userId],
+    { enabled: !!userId }
+  );
+}
+
+// Contacts unifiés (Prospects + Clients)
+export function useContacts(userId: number | undefined, statusFilter: ContactStatusFilter = 'all') {
+  return useApiQuery(
+    `contacts-${userId}-${statusFilter}`,
+    () => fetchContactsByStatus(userId!, statusFilter),
+    [userId, statusFilter],
+    { enabled: !!userId }
+  );
+}
+
+// Alias pour récupérer tous les contacts
+export function useAllContacts(userId: number | undefined) {
+  return useApiQuery(
+    `contacts-all-${userId}`,
+    () => fetchContacts(userId!),
     [userId],
     { enabled: !!userId }
   );

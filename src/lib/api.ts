@@ -282,6 +282,36 @@ export async function addClientUser(
 export const fetchClientsUser = (userId: number) =>
   fetchUserEntities('clients', userId);
 
+// ============================================================================
+// CONTACTS UNIFIÉS (Prospects + Clients dans le même modèle)
+// ============================================================================
+
+export type ContactStatusFilter = 'all' | 'prospect' | 'client' | 'archived';
+
+/** Récupère tous les contacts (prospects + clients) */
+export const fetchContacts = (userId: number) =>
+  fetchUserEntities<Client>('clients', userId);
+
+/** Récupère les contacts filtrés par processStatus */
+export const fetchContactsByStatus = (userId: number, status: ContactStatusFilter) => {
+  if (status === 'all') {
+    return fetchUserEntities<Client>('clients', userId);
+  }
+  return fetchUserEntities<Client>('clients', userId, 'users', `&filters[processStatus][$eq]=${status}`);
+};
+
+/** Récupère uniquement les prospects */
+export const fetchProspectsFromContacts = (userId: number) =>
+  fetchContactsByStatus(userId, 'prospect');
+
+/** Récupère uniquement les clients confirmés */
+export const fetchClientsConfirmed = (userId: number) =>
+  fetchContactsByStatus(userId, 'client');
+
+/** Récupère les contacts par pipeline_status */
+export const fetchContactsByPipelineStatus = (userId: number, pipelineStatus: string) =>
+  fetchUserEntities<Client>('clients', userId, 'users', `&filters[pipeline_status][$eq]=${pipelineStatus}`);
+
 export const fetchNumberOfClientsUser = (userId: number) =>
   fetchCount('clients', userId);
 

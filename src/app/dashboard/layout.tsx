@@ -11,7 +11,6 @@ import {
   IconHome,
   IconUsers,
   IconBuilding,
-  IconMagnet,
   IconChartBar,
   IconBrain,
   IconMail,
@@ -211,18 +210,14 @@ function DashboardLayoutContent({
       icon: <IconUsersGroup size={20} stroke={1} />,
       isCategory: true,
       menuItems: [
+        // Contacts unifiés (anciennement Clients + Prospects)
         {
-          id: 'clients',
-          label: t('clients'),
+          id: 'contacts',
+          label: t('contacts') || 'Contacts',
           icon: <IconUsers size={20} stroke={1} />,
           path: '/dashboard/clients',
         },
-        {
-          id: 'prospects',
-          label: t('prospects'),
-          icon: <IconMagnet size={20} stroke={1} />,
-          path: '/dashboard/prospects',
-        },
+        // Pipeline CRM (vue Kanban des contacts avec filtrage par pipeline_status)
         {
           id: 'pipeline',
           label: t('pipeline') || 'Pipeline CRM',

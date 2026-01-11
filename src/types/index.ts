@@ -47,7 +47,10 @@ export type FactureStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 export type DocumentType = 'invoice' | 'quote';
 export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
 export type Currency = 'EUR' | 'USD' | 'GBP' | 'CHF';
+// @deprecated - Utiliser ContactStatus à la place
 export type ProcessStatus = 'client' | 'prospect';
+
+// @deprecated - Ces types sont conservés pour compatibilité, utiliser les nouveaux types Contact*
 export type ProspectStatus = 'new' | 'form_sent' | 'qualified' | 'quote_sent' | 'quote_accepted' | 'in_progress' | 'delivered' | 'maintenance' | 'lost';
 export type ProspectSource = 'cold_outreach' | 'referral' | 'website' | 'social_media' | 'typeform' | 'other';
 export type ProspectPriority = 'low' | 'medium' | 'high';
@@ -137,6 +140,9 @@ export interface Client {
   projects?: Project[];
   factures?: Facture[];
 }
+
+// Alias Contact = Client pour le modèle unifié
+export type Contact = Client;
 
 export interface Project {
   id: number;

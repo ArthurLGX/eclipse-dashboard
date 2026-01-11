@@ -15,7 +15,6 @@ import {
   IconDeviceDesktop,
   IconChartLine,
   IconUsers,
-  IconMagnet,
   IconBuilding,
   IconBrain,
   IconMail,
@@ -145,8 +144,8 @@ export default function SettingsPage() {
       label: t('category_relations') || 'Relations',
       icon: <IconUsersGroup className="w-4 h-4" />,
       links: [
-        { id: 'clients', label: t('clients') || 'Clients', icon: <IconUsers className="w-4 h-4" /> },
-        { id: 'prospects', label: t('prospects') || 'Prospects', icon: <IconMagnet className="w-4 h-4" /> },
+        { id: 'contacts', label: t('contacts') || 'Contacts', icon: <IconUsers className="w-4 h-4" /> },
+        { id: 'pipeline', label: t('pipeline') || 'Pipeline CRM', icon: <IconChartLine className="w-4 h-4" /> },
         { id: 'mentors', label: t('mentors') || 'Mentors', icon: <IconBrain className="w-4 h-4" /> },
       ],
     },

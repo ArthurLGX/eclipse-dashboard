@@ -621,10 +621,15 @@ export default function ClientsPage() {
     },
   ];
 
+  // Calcul des prospects pour les stats
+  const prospectsCount = useMemo(() => 
+    visibleClients.filter(c => c.processStatus === 'prospect').length
+  , [visibleClients]);
+
   return (
     <ProtectedRoute>
       <DashboardPageTemplate<Client>
-        title={t('clients')}
+        title={t('contacts') || 'Contacts'}
         onRowClick={row => router.push(`/dashboard/clients/${generateClientSlug(row.name)}`)}
         actionButtonLabel={canAdd('clients') ? t('add_client') : `${t('add_client')} (${t('quota_reached') || 'Quota atteint'})`}
         onActionButtonClick={canAdd('clients') ? () => setShowAddModal(true) : () => showGlobalPopup(t('quota_reached_message') || 'Quota atteint. Passez à un plan supérieur.', 'warning')}
@@ -638,22 +643,22 @@ export default function ClientsPage() {
         ]}
         stats={[
           {
-            label: t('total_clients'),
+            label: t('all_contacts') || 'Tous les contacts',
             value: stats.limit > 0 ? `${stats.total}/${stats.limit}` : stats.total,
             colorClass: 'text-success',
             icon: <IconUsers className="w-6 h-6 text-success" />,
           },
           {
-            label: t('active_clients'),
+            label: t('clients') || 'Clients',
             value: stats.active,
             colorClass: 'text-info',
             icon: <IconUserCheck className="w-6 h-6 text-info" />,
           },
           {
-            label: t('new_clients_this_month'),
-            value: stats.newThisMonth,
-            colorClass: 'text-color-primary',
-            icon: <IconUserPlus className="w-6 h-6 text-color-primary" />,
+            label: t('prospects') || 'Prospects',
+            value: prospectsCount,
+            colorClass: 'text-warning',
+            icon: <IconUserPlus className="w-6 h-6 text-warning" />,
           },
         ]}
         loading={loading}
