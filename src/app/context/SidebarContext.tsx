@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 // Définition des IDs de liens de la sidebar (excluant home, profile, et logout qui sont toujours visibles)
 export type SidebarLinkId = 
   | 'revenue'
+  | 'contacts'
   | 'clients'
   | 'prospects'
   | 'projects'
@@ -28,6 +29,7 @@ export type SidebarLinkId =
 // Tous les liens configurables
 export const CONFIGURABLE_LINKS: SidebarLinkId[] = [
   'revenue',
+  'contacts',
   'clients',
   'prospects',
   'projects',
@@ -87,7 +89,7 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
         const validLinks = parsed.filter(link => CONFIGURABLE_LINKS.includes(link));
         
         // Ajouter les nouveaux liens qui n'existaient pas avant (migration)
-        const newLinks: SidebarLinkId[] = ['media_library', 'settings', 'emails', 'monitoring', 'time_tracking', 'quotes', 'calendar', 'growth_audit', 'portfolio', 'pipeline', 'subscriptions', 'seo_audit', 'project_templates', 'email_templates'];
+        const newLinks: SidebarLinkId[] = ['contacts', 'media_library', 'settings', 'emails', 'monitoring', 'time_tracking', 'quotes', 'calendar', 'growth_audit', 'portfolio', 'pipeline', 'subscriptions', 'seo_audit', 'project_templates', 'email_templates'];
         const missingNewLinks = newLinks.filter(link => !validLinks.includes(link));
         
         setVisibleLinksState([...validLinks, ...missingNewLinks]);
