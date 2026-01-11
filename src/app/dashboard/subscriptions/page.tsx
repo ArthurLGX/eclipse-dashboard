@@ -41,6 +41,21 @@ interface ClientSubscription {
   project?: Project;
 }
 
+// Type pour les données du formulaire (utilise des IDs au lieu d'objets)
+interface SubscriptionFormData {
+  name: string;
+  description: string;
+  client: string | number;
+  project: string | number;
+  status: 'active' | 'pending' | 'cancelled' | 'expired' | 'paused';
+  monthly_amount: number;
+  currency: string;
+  billing_day: number;
+  start_date: string;
+  auto_invoice: boolean;
+  services_included: string[];
+}
+
 const STATUS_COLORS: Record<string, { bg: string; text: string; label: string }> = {
   active: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400', label: 'Actif' },
   pending: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', label: 'En attente' },
@@ -71,9 +86,8 @@ function SubscriptionModal({
   subscription: ClientSubscription | null;
   clients: Client[];
   projects: Project[];
-  onSave: (data: Partial<ClientSubscription>) => Promise<void>;
+  onSave: (data: SubscriptionFormData) => Promise<void>;
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -254,7 +268,7 @@ function SubscriptionModal({
 }
 
 export default function SubscriptionsPage() {
-  useLanguage();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const token = typeof window !== 'undefined' ? localStorage.getItem('jwt') : null;
@@ -326,7 +340,7 @@ export default function SubscriptionsPage() {
   }, [subscriptions, searchTerm, statusFilter]);
 
   // Save subscription
-  const handleSaveSubscription = async (data: Partial<ClientSubscription>) => {
+  const handleSaveSubscription = async (data: SubscriptionFormData) => {
     try {
       const url = editingSubscription
         ? `${strapiUrl}/api/client-subscriptions/${editingSubscription.documentId}`
