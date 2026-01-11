@@ -593,7 +593,7 @@ export default function UnifiedOnboardingModal() {
         enterprise: '',
         adress: '',
         website: '',
-        processStatus: 'en_cours',
+        processStatus: 'client',
         isActive: true,
       };
       const clientResponse = await addClientUser(user.id, clientData, { skipDuplicateCheck: true }) as { data: { id: number; documentId: string; name: string } };
