@@ -89,24 +89,48 @@ function SubscriptionModal({
   onSave: (data: SubscriptionFormData) => Promise<void>;
 }) {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: subscription?.name || '',
-    description: subscription?.description || '',
-    client: subscription?.client?.id || '',
-    project: subscription?.project?.id || '',
-    status: subscription?.status || 'pending',
-    monthly_amount: subscription?.monthly_amount || 20,
-    currency: subscription?.currency || 'EUR',
-    billing_day: subscription?.billing_day || 1,
-    start_date: subscription?.start_date || new Date().toISOString().split('T')[0],
-    auto_invoice: subscription?.auto_invoice ?? true,
-    services_included: subscription?.services_included || [
+  const [formData, setFormData] = useState<SubscriptionFormData>({
+    name: '',
+    description: '',
+    client: '',
+    project: '',
+    status: 'pending',
+    monthly_amount: 20,
+    currency: 'EUR',
+    billing_day: 1,
+    start_date: new Date().toISOString().split('T')[0],
+    auto_invoice: true,
+    services_included: [
       'Mises à jour de sécurité',
       'Corrections de bugs',
       'Optimisations SEO',
       'Support prioritaire',
     ],
   });
+
+  // Synchroniser le formulaire quand le modal s'ouvre ou le subscription change
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        name: subscription?.name || '',
+        description: subscription?.description || '',
+        client: subscription?.client?.id || '',
+        project: subscription?.project?.id || '',
+        status: subscription?.status || 'pending',
+        monthly_amount: subscription?.monthly_amount || 20,
+        currency: subscription?.currency || 'EUR',
+        billing_day: subscription?.billing_day || 1,
+        start_date: subscription?.start_date || new Date().toISOString().split('T')[0],
+        auto_invoice: subscription?.auto_invoice ?? true,
+        services_included: subscription?.services_included || [
+          'Mises à jour de sécurité',
+          'Corrections de bugs',
+          'Optimisations SEO',
+          'Support prioritaire',
+        ],
+      });
+    }
+  }, [isOpen, subscription]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -268,9 +292,8 @@ function SubscriptionModal({
 
 export default function SubscriptionsPage() {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { showGlobalPopup } = usePopup();
-  const token = typeof window !== 'undefined' ? localStorage.getItem('jwt') : null;
 
   const [subscriptions, setSubscriptions] = useState<ClientSubscription[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
@@ -283,15 +306,20 @@ export default function SubscriptionsPage() {
 
   // Fetch data
   const fetchData = async () => {
+    if (!user?.id || !token) {
+      setLoading(false);
+      return;
+    }
+    
     try {
       const [subsRes, clientsRes, projectsRes] = await Promise.all([
-        fetch(`${strapiUrl}/api/client-subscriptions?filters[users][id][$eq]=${user?.id}&populate=*`, {
+        fetch(`${strapiUrl}/api/client-subscriptions?filters[users][id][$eq]=${user.id}&populate=*`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(`${strapiUrl}/api/clients?filters[users][id][$eq]=${user?.id}&populate=*`, {
+        fetch(`${strapiUrl}/api/clients?filters[users][id][$eq]=${user.id}&populate=*`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(`${strapiUrl}/api/projects?filters[user][id][$eq]=${user?.id}&populate=*`, {
+        fetch(`${strapiUrl}/api/projects?filters[user][id][$eq]=${user.id}&populate=*`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -313,9 +341,8 @@ export default function SubscriptionsPage() {
   };
 
   useEffect(() => {
-    if (user?.id && token) {
-      fetchData();
-    }
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, token]);
 
   // Stats
