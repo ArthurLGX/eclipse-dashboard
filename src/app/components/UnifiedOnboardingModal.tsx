@@ -659,8 +659,19 @@ export default function UnifiedOnboardingModal() {
         client: client.id,
         user: user.id,
       };
-      const projectResponse = await createProject(projectData, true) as { data: { id: number; documentId: string; title: string } };
-      const project = projectResponse.data;
+      console.log('[Onboarding] Creating project with data:', projectData);
+      const projectResponse = await createProject(projectData, true);
+      console.log('[Onboarding] Project response:', projectResponse);
+      
+      // Handle different response formats
+      const project = (projectResponse as { data?: { id: number; documentId: string; title: string }; id?: number; documentId?: string; title?: string }).data 
+        || projectResponse as { id: number; documentId: string; title: string };
+      
+      if (!project?.documentId) {
+        console.error('[Onboarding] Invalid project response - no documentId:', projectResponse);
+        throw new Error('Invalid project response');
+      }
+      
       setCreatedProject({ id: project.id, documentId: project.documentId, title: project.title });
 
       // 4. Create tasks from template
