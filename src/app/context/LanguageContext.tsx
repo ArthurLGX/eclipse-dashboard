@@ -143,6 +143,38 @@ const translations = {
     error_updating_status: 'Erreur lors de la mise à jour',
     search_prospects: 'Rechercher...',
     clear_filters: 'Effacer',
+
+    // Intégrations
+    integrations: 'Intégrations',
+    integrations_description: 'Connectez vos outils externes',
+    integration_active: 'Actif',
+    integration_inactive: 'Inactif',
+    integration_pending: 'En attente',
+    webhook_url: 'URL du Webhook',
+    copied_to_clipboard: 'Copié dans le presse-papiers !',
+    copy_failed: 'Erreur lors de la copie',
+    configured: 'Configuré',
+    
+    // Typeform
+    typeform_description: 'Recevez automatiquement les prospects depuis vos formulaires Typeform',
+    typeform_setup_title: 'Comment configurer ?',
+    typeform_step_1: 'Ouvrez votre formulaire Typeform',
+    typeform_step_2: 'Allez dans Connect → Webhooks',
+    typeform_step_3: 'Cliquez sur "Add a webhook"',
+    typeform_step_4: 'Collez l\'URL du webhook ci-dessus',
+    typeform_step_5: 'Activez le webhook',
+    typeform_mapping_title: 'Mappage des champs',
+    typeform_mapping_description: 'Pour un mappage automatique optimal, nommez vos champs Typeform avec ces références :',
+    typeform_docs: 'Documentation Typeform Webhooks',
+    
+    // Google
+    google_description: 'Connexion Google et import Google Sheets',
+    google_login: 'Connexion Google',
+    google_login_desc: 'Se connecter avec votre compte Google',
+    google_sheets: 'Google Sheets',
+    google_sheets_desc: 'Importer des tâches depuis Google Sheets',
+    more_integrations_coming: 'Plus d\'intégrations bientôt...',
+
     language: 'Langue',
     language_desc: "Choisissez la langue de l'interface",
     settings_saved_locally: 'Vos préférences sont enregistrées localement dans votre navigateur.',
@@ -2598,6 +2630,38 @@ const translations = {
     error_updating_status: 'Error updating status',
     search_prospects: 'Search...',
     clear_filters: 'Clear',
+
+    // Integrations
+    integrations: 'Integrations',
+    integrations_description: 'Connect your external tools',
+    integration_active: 'Active',
+    integration_inactive: 'Inactive',
+    integration_pending: 'Pending',
+    webhook_url: 'Webhook URL',
+    copied_to_clipboard: 'Copied to clipboard!',
+    copy_failed: 'Copy failed',
+    configured: 'Configured',
+    
+    // Typeform
+    typeform_description: 'Automatically receive prospects from your Typeform forms',
+    typeform_setup_title: 'How to configure?',
+    typeform_step_1: 'Open your Typeform form',
+    typeform_step_2: 'Go to Connect → Webhooks',
+    typeform_step_3: 'Click "Add a webhook"',
+    typeform_step_4: 'Paste the webhook URL above',
+    typeform_step_5: 'Enable the webhook',
+    typeform_mapping_title: 'Field mapping',
+    typeform_mapping_description: 'For optimal automatic mapping, name your Typeform fields with these references:',
+    typeform_docs: 'Typeform Webhooks Documentation',
+    
+    // Google
+    google_description: 'Google login and Google Sheets import',
+    google_login: 'Google Login',
+    google_login_desc: 'Sign in with your Google account',
+    google_sheets: 'Google Sheets',
+    google_sheets_desc: 'Import tasks from Google Sheets',
+    more_integrations_coming: 'More integrations coming soon...',
+
     language: 'Language',
     language_desc: 'Choose the interface language',
     settings_saved_locally: 'Your preferences are saved locally in your browser.',
