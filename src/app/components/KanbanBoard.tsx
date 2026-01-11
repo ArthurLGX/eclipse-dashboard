@@ -24,21 +24,21 @@ interface KanbanBoardProps {
 }
 
 const PIPELINE_COLUMNS: PipelineColumn[] = [
-  { id: 'new', title: 'pipeline_new', color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-950/30', borderColor: 'border-blue-200 dark:border-blue-800' },
-  { id: 'form_sent', title: 'pipeline_form_sent', color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-50 dark:bg-purple-950/30', borderColor: 'border-purple-200 dark:border-purple-800' },
-  { id: 'qualified', title: 'pipeline_qualified', color: 'text-cyan-600 dark:text-cyan-400', bgColor: 'bg-cyan-50 dark:bg-cyan-950/30', borderColor: 'border-cyan-200 dark:border-cyan-800' },
-  { id: 'quote_sent', title: 'pipeline_quote_sent', color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-50 dark:bg-orange-950/30', borderColor: 'border-orange-200 dark:border-orange-800' },
-  { id: 'quote_accepted', title: 'pipeline_quote_accepted', color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-50 dark:bg-green-950/30', borderColor: 'border-green-200 dark:border-green-800' },
-  { id: 'in_progress', title: 'pipeline_in_progress', color: 'text-yellow-600 dark:text-yellow-400', bgColor: 'bg-yellow-50 dark:bg-yellow-950/30', borderColor: 'border-yellow-200 dark:border-yellow-800' },
-  { id: 'delivered', title: 'pipeline_delivered', color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-50 dark:bg-emerald-950/30', borderColor: 'border-emerald-200 dark:border-emerald-800' },
-  { id: 'maintenance', title: 'pipeline_maintenance', color: 'text-teal-600 dark:text-teal-400', bgColor: 'bg-teal-50 dark:bg-teal-950/30', borderColor: 'border-teal-200 dark:border-teal-800' },
-  { id: 'lost', title: 'pipeline_lost', color: 'text-red-600 dark:text-red-400', bgColor: 'bg-red-50 dark:bg-red-950/30', borderColor: 'border-red-200 dark:border-red-800' },
+  { id: 'new', title: 'pipeline_new', color: 'text-info', bgColor: 'bg-info-light', borderColor: 'border-info' },
+  { id: 'form_sent', title: 'pipeline_form_sent', color: 'text-accent', bgColor: 'bg-accent-light', borderColor: 'border-accent' },
+  { id: 'qualified', title: 'pipeline_qualified', color: 'text-info', bgColor: 'bg-info-light', borderColor: 'border-info' },
+  { id: 'quote_sent', title: 'pipeline_quote_sent', color: 'text-warning', bgColor: 'bg-warning-light', borderColor: 'border-warning' },
+  { id: 'quote_accepted', title: 'pipeline_quote_accepted', color: 'text-success', bgColor: 'bg-success-light', borderColor: 'border-success' },
+  { id: 'in_progress', title: 'pipeline_in_progress', color: 'text-warning', bgColor: 'bg-warning-light', borderColor: 'border-warning' },
+  { id: 'delivered', title: 'pipeline_delivered', color: 'text-success', bgColor: 'bg-success-light', borderColor: 'border-success' },
+  { id: 'maintenance', title: 'pipeline_maintenance', color: 'text-info', bgColor: 'bg-info-light', borderColor: 'border-info' },
+  { id: 'lost', title: 'pipeline_lost', color: 'text-danger', bgColor: 'bg-danger-light', borderColor: 'border-danger' },
 ];
 
 const PRIORITY_COLORS: Record<ProspectPriority, { bg: string; text: string; icon: string }> = {
-  low: { bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-600 dark:text-slate-400', icon: 'text-slate-400' },
-  medium: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', icon: 'text-amber-500' },
-  high: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-400', icon: 'text-red-500' },
+  low: { bg: 'bg-muted', text: 'text-muted-foreground', icon: 'text-muted-foreground' },
+  medium: { bg: 'bg-warning-light', text: 'text-warning', icon: 'text-warning' },
+  high: { bg: 'bg-danger-light', text: 'text-danger', icon: 'text-danger' },
 };
 
 // Composant carte prospect
@@ -266,7 +266,7 @@ function KanbanColumn({
       onDrop={handleDrop}
     >
       {/* Header */}
-      <div className={`p-3 rounded-t-lg ${column.bgColor} border-b ${column.borderColor}`}>
+      <div className={`kanban-header p-3 rounded-t-lg ${column.bgColor} border-b ${column.borderColor}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h3 className={`font-semibold text-sm ${column.color}`}>

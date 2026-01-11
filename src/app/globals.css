@@ -1416,6 +1416,73 @@ nav button:hover svg, nav a:hover svg {
 }
 
 /* ============================================
+   KANBAN PIPELINE - Text contrast on light backgrounds
+   ============================================ */
+
+/* Dark mode: Force darker text on light semantic backgrounds for readability */
+:root.dark,
+:root:not(.light) {
+  /* Text colors for use ON light backgrounds */
+  --text-on-info-light: #1E40AF;      /* Dark blue */
+  --text-on-success-light: #065F46;   /* Dark green */
+  --text-on-warning-light: #92400E;   /* Dark orange */
+  --text-on-danger-light: #991B1B;    /* Dark red */
+  --text-on-accent-light: #5B21B6;    /* Dark purple */
+}
+
+/* Light mode uses same colors */
+:root.light {
+  --text-on-info-light: #1E40AF;
+  --text-on-success-light: #065F46;
+  --text-on-warning-light: #92400E;
+  --text-on-danger-light: #991B1B;
+  --text-on-accent-light: #5B21B6;
+}
+
+/* Utility classes for text on light backgrounds */
+.text-on-info-light { color: var(--text-on-info-light) !important; }
+.text-on-success-light { color: var(--text-on-success-light) !important; }
+.text-on-warning-light { color: var(--text-on-warning-light) !important; }
+.text-on-danger-light { color: var(--text-on-danger-light) !important; }
+.text-on-accent-light { color: var(--text-on-accent-light) !important; }
+
+/* Kanban column headers - force readable text colors on light backgrounds */
+.kanban-header.bg-info-light .text-info,
+.kanban-header.bg-info-light h3,
+.kanban-header.bg-info-light span,
+.kanban-header.bg-info-light button {
+  color: var(--text-on-info-light) !important;
+}
+
+.kanban-header.bg-success-light .text-success,
+.kanban-header.bg-success-light h3,
+.kanban-header.bg-success-light span,
+.kanban-header.bg-success-light button {
+  color: var(--text-on-success-light) !important;
+}
+
+.kanban-header.bg-warning-light .text-warning,
+.kanban-header.bg-warning-light h3,
+.kanban-header.bg-warning-light span,
+.kanban-header.bg-warning-light button {
+  color: var(--text-on-warning-light) !important;
+}
+
+.kanban-header.bg-danger-light .text-danger,
+.kanban-header.bg-danger-light h3,
+.kanban-header.bg-danger-light span,
+.kanban-header.bg-danger-light button {
+  color: var(--text-on-danger-light) !important;
+}
+
+.kanban-header.bg-accent-light .text-accent,
+.kanban-header.bg-accent-light h3,
+.kanban-header.bg-accent-light span,
+.kanban-header.bg-accent-light button {
+  color: var(--text-on-accent-light) !important;
+}
+
+/* ============================================
    EMAIL PREVIEW - Force light theme for realistic email preview
    ============================================ */
 
