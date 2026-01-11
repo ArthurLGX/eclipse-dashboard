@@ -610,9 +610,13 @@ export default function UnifiedOnboardingModal() {
       await initializeUserPreferences(user.id, selectedBusinessType, getDefaultModules(selectedBusinessType));
 
       // 2. Create client
+      // Generate a placeholder email based on client name
+      const sanitizedClientName = (clientName || 'client').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const placeholderEmail = `${sanitizedClientName}@example.com`;
+      
       const clientData = {
         name: clientName || 'Mon premier client',
-        email: '',
+        email: placeholderEmail,
         number: '',
         enterprise: '',
         adress: '',
