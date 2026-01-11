@@ -177,20 +177,41 @@ function ContactModal({
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<Partial<Client>>({
-    name: contact?.name || '',
-    enterprise: contact?.enterprise || '',
-    email: contact?.email || '',
-    phone: contact?.phone || '',
-    website: contact?.website || '',
-    notes: contact?.notes || '',
-    pipeline_status: contact?.pipeline_status || initialStatus || 'new',
-    source: contact?.source || 'cold_outreach',
-    priority: contact?.priority || 'medium',
-    estimated_value: contact?.estimated_value || undefined,
-    next_action: contact?.next_action || '',
-    next_action_date: contact?.next_action_date || '',
-    budget: contact?.budget || undefined,
+    name: '',
+    enterprise: '',
+    email: '',
+    phone: '',
+    website: '',
+    notes: '',
+    pipeline_status: 'new',
+    source: 'cold_outreach',
+    priority: 'medium',
+    estimated_value: undefined,
+    next_action: '',
+    next_action_date: '',
+    budget: undefined,
   });
+
+  // Synchroniser formData quand le contact ou le modal change
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        name: contact?.name || '',
+        enterprise: contact?.enterprise || '',
+        email: contact?.email || '',
+        phone: contact?.phone || '',
+        website: contact?.website || '',
+        notes: contact?.notes || '',
+        pipeline_status: contact?.pipeline_status || initialStatus || 'new',
+        source: contact?.source || 'cold_outreach',
+        priority: contact?.priority || 'medium',
+        estimated_value: contact?.estimated_value || undefined,
+        next_action: contact?.next_action || '',
+        next_action_date: contact?.next_action_date || '',
+        budget: contact?.budget || undefined,
+      });
+    }
+  }, [isOpen, contact, initialStatus]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
