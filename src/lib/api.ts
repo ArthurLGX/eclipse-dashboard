@@ -248,15 +248,22 @@ export async function addClientUser(
   data: {
     name: string;
     email: string;
-    number: string;
-    enterprise: string;
-    adress: string;
-    website: string;
+    number?: string;
+    enterprise?: string;
+    adress?: string;
+    website?: string;
     processStatus: string;
     pipeline_status?: string;
     isActive?: boolean;
     image?: number; // ID du fichier uploadé sur Strapi
     phone?: string;
+    source?: string;
+    priority?: string;
+    estimated_value?: number;
+    budget?: string;
+    notes?: string;
+    next_action?: string;
+    next_action_date?: string;
   },
   options: { 
     skipDuplicateCheck?: boolean; 
