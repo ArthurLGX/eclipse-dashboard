@@ -1997,6 +1997,9 @@ const translations = {
     portfolio: 'Portfolio',
     modules_saved: 'Préférences enregistrées avec succès !',
     modules_save_error: 'Erreur lors de l\'enregistrement des préférences',
+    restart_onboarding: 'Relancer l\'onboarding',
+    restart_onboarding_desc: 'Reconfigurer votre profil et créer un nouveau projet guidé',
+    launch_onboarding: 'Lancer l\'assistant de configuration',
     
     // Intégrations
      integrations_desc: 'Connectez des services externes pour automatiser votre workflow.',
@@ -4508,6 +4511,9 @@ const translations = {
     save_changes: 'Save changes',
     modules_saved: 'Preferences saved successfully!',
     modules_save_error: 'Error saving preferences',
+    restart_onboarding: 'Restart onboarding',
+    restart_onboarding_desc: 'Reconfigure your profile and create a new guided project',
+    launch_onboarding: 'Launch setup wizard',
     
     // Integrations
      integrations_desc: 'Connect external services to automate your workflow.',

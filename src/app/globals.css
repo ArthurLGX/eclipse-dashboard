@@ -12,7 +12,7 @@
   /* Fonts */
   --font-manrope: 'Manrope', sans-serif;
   --font-poppins: 'Poppins', sans-serif;
-  --font-geist: 'Geist', sans-serif;
+  --font-poppins: 'Geist', sans-serif;
   --font-dm-sans: 'DM Sans', sans-serif;
   --font-dm-serif-text: 'DM Serif Text', serif;
   --font-racing: 'Racing Sans One', cursive;
@@ -591,7 +591,7 @@ button {
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
   color: var(--text-muted);
-  font-family: var(--font-dm-sans), sans-serif;
+  font-family: var(--font-racing), cursive;
   font-weight: 500;
   font-size: 14px;
   transition: all 0.2s ease;
@@ -829,7 +829,7 @@ body {
   min-height: 100vh;
   width: 100%;
   color: var(--text-primary);
-  font-family: var(--font-geist), Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
   padding: 8px;
   margin: 0;
   overflow-x: hidden;
@@ -859,46 +859,50 @@ main {
   justify-content: start;
   width: 100%;
   height: 100%;
-  font-family: var(--font-dm-serif-text), sans-serif;
+  font-family: var(--font-poppins), sans-serif;
 }
 
 h1 {
   font-size: 2.5rem;
-  font-family: var(--font-racing), cursive;
+  font-family: var(--font-poppins), sans-serif;
   text-align: left;
-  font-weight: 400;
+  font-weight: 800;
   line-height: 1.1;
+  font-style: normal;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--text-primary);
 }
 
 h2 {
-  font-family: var(--font-racing), cursive;
+  font-family: var(--font-poppins), sans-serif;
   font-size: 1.75rem;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
+  font-style: normal !important;
   color: var(--text-primary);
 }
 
 h3 {
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-family: var(--font-poppins), sans-serif;
+  font-size: 1rem;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em;
+  font-style: normal !important;
   color: var(--text-primary);
 }
 
 h4 {
-  font-family: var(--font-dm-sans), sans-serif;
+  font-family: var(--font-poppins), sans-serif;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
+  font-style: normal !important;
   color: var(--text-primary);
 }
 
 p {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-poppins), sans-serif;
   color: var(--text-secondary);
   font-size: 14px;
   font-weight: 400;
@@ -906,13 +910,13 @@ p {
 }
 
 button {
-  font-family: var(--font-dm-sans), sans-serif;
+  font-family: var(--font-poppins), sans-serif;
   font-size: 14px;
   font-weight: 500;
 }
 
 a {
-  font-family: var(--font-dm-sans), sans-serif;
+  font-family: var(--font-poppins), sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: var(--color-accent);
@@ -923,19 +927,19 @@ a:hover {
 }
 
 label {
-  font-family: var(--font-dm-sans), sans-serif;
+    font-family: var(--font-poppins), sans-serif;
   font-weight: 500;
   color: var(--text-secondary);
 }
 
 span {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-poppins), sans-serif;
 }
 
 /* Form elements */
 input, textarea, select {
-  font-family: var(--font-geist), sans-serif;
-  font-size: 14px;
+    font-family: var(--font-poppins), sans-serif;
+  font-size: 14px !important;
   background-color: var(--bg-input);
   border: 1px solid var(--border-input);
   color: var(--text-primary);

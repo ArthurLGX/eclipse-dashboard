@@ -34,6 +34,7 @@ import {
   IconPlugConnected,
   IconChevronRight,
   IconSquare,
+  IconRocket,
 } from '@tabler/icons-react';
 import SmtpConfigSection from '@/app/components/SmtpConfigSection';
 import EmailSignatureSection from '@/app/components/EmailSignatureSection';
@@ -816,6 +817,32 @@ export default function SettingsPage() {
                     </button>
                   </motion.div>
                 )}
+
+                {/* Section : Relancer l'onboarding */}
+                <div className="space-y-4 pt-6 border-t border-default">
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary">
+                      {t('restart_onboarding') || 'Relancer l\'onboarding'}
+                    </h3>
+                    <p className="text-sm text-muted mt-1">
+                      {t('restart_onboarding_desc') || 'Reconfigurer votre profil et créer un nouveau projet guidé'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      // Clear localStorage flag
+                      if (typeof window !== 'undefined') {
+                        localStorage.removeItem('eclipse_unified_onboarding_completed');
+                      }
+                      // Reload page to show onboarding modal
+                      window.location.reload();
+                    }}
+                    className="btn-ghost px-4 py-2.5 flex items-center gap-2 rounded-lg border border-default hover:border-accent hover:bg-accent-light transition-all"
+                  >
+                    <IconRocket className="w-5 h-5 text-accent" />
+                    <span>{t('launch_onboarding') || 'Lancer l\'assistant de configuration'}</span>
+                  </button>
+                </div>
               </>
             )}
           </motion.div>
