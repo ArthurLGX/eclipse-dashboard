@@ -692,7 +692,7 @@ export default function UnifiedOnboardingModal() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-hidden"
       >
         <motion.div
           ref={modalRef}
@@ -701,9 +701,13 @@ export default function UnifiedOnboardingModal() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-4xl bg-card border border-default rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto outline-none"
-          style={{ overscrollBehavior: 'contain' }}
+          className="relative w-full max-w-4xl bg-card border border-default rounded-2xl shadow-2xl max-h-[90vh] flex flex-col outline-none overflow-hidden"
         >
+          {/* Scrollable content wrapper */}
+          <div 
+            className="flex-1 overflow-y-auto scrollbar-visible"
+            style={{ overscrollBehavior: 'contain' }}
+          >
           {/* Header */}
           <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent via-accent-lightto-transparent">
             <div className="flex items-center gap-4 mb-6">
@@ -1115,10 +1119,11 @@ export default function UnifiedOnboardingModal() {
               )}
             </AnimatePresence>
           </div>
+          </div>
 
           {/* Footer - Navigation buttons */}
           {step !== 'success' && (
-            <div className="px-8 pb-8 flex items-center justify-between border-t border-default pt-6">
+            <div className="px-8 pb-8 flex items-center justify-between border-t border-default pt-6 bg-card shrink-0">
               <div>
                 {step === 'business' ? (
                   <button
