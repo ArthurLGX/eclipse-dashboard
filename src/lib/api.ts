@@ -509,13 +509,49 @@ export const fetchProspectById = (id: string) =>
 export const fetchNumberOfProspectsUser = (userId: number) =>
   fetchCount('prospects', userId);
 
+/** Crée un nouveau prospect */
+export const createProspect = async (data: {
+  title: string;
+  company?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+  description?: string;
+  notes?: string;
+  prospect_status?: string;
+  source?: string;
+  priority?: string;
+  estimated_value?: number;
+  budget?: number;
+  next_action?: string;
+  next_action_date?: string;
+  users?: number[];
+}) => {
+  const response = await post('prospects', { data });
+  return response;
+};
+
 /** Supprime un prospect par son documentId */
 export const deleteProspect = (documentId: string) =>
   del(`prospects/${documentId}`);
 
 /** Met à jour un prospect par son documentId */
 export const updateProspect = (documentId: string, data: Partial<{ 
+  title: string;
+  company: string;
+  email: string;
+  phone: string;
+  website: string;
+  description: string;
+  notes: string;
   prospect_status: string;
+  source: string;
+  priority: string;
+  estimated_value: number;
+  budget: number;
+  next_action: string;
+  next_action_date: string;
+  lost_reason: string;
   isActive: boolean;
   [key: string]: unknown;
 }>) =>

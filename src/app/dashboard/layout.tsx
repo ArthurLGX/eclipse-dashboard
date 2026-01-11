@@ -13,6 +13,7 @@ import {
   IconUsers,
   IconBuilding,
   IconMagnet,
+  IconPipeline,
   IconBrain,
   IconMail,
   IconSend,
@@ -222,6 +223,12 @@ function DashboardLayoutContent({
           label: t('prospects'),
           icon: <IconMagnet size={20} stroke={1} />,
           path: '/dashboard/prospects',
+        },
+        {
+          id: 'pipeline',
+          label: t('pipeline') || 'Pipeline CRM',
+          icon: <IconPipeline size={20} stroke={1} />,
+          path: '/dashboard/pipeline',
         },
         {
           id: 'mentors',
