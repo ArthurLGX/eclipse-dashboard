@@ -2,12 +2,12 @@
 
 import React, { useState, useCallback } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar } from '@tabler/icons-react';
-import type { Prospect, ProspectStatus, ProspectPriority } from '@/types';
+import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar, IconUser } from '@tabler/icons-react';
+import type { Client, PipelineStatus, ContactPriority } from '@/types';
 
 // Configuration des colonnes du pipeline
 export interface PipelineColumn {
-  id: ProspectStatus;
+  id: PipelineStatus;
   title: string;
   color: string;
   bgColor: string;
@@ -15,40 +15,44 @@ export interface PipelineColumn {
 }
 
 interface KanbanBoardProps {
-  prospects: Prospect[];
-  onStatusChange: (prospectId: string, newStatus: ProspectStatus) => Promise<void>;
-  onProspectClick: (prospect: Prospect) => void;
-  onAddProspect?: (status: ProspectStatus) => void;
-  onDeleteProspect?: (prospect: Prospect) => void;
+  contacts: Client[];
+  onStatusChange: (contactId: string, newStatus: PipelineStatus) => Promise<void>;
+  onContactClick: (contact: Client) => void;
+  onAddContact?: (status: PipelineStatus) => void;
+  onDeleteContact?: (contact: Client) => void;
+  onSelectExistingContact?: (status: PipelineStatus) => void;
   loading?: boolean;
 }
 
 const PIPELINE_COLUMNS: PipelineColumn[] = [
   { id: 'new', title: 'pipeline_new', color: 'text-info', bgColor: 'bg-info-light', borderColor: 'border-info' },
+  { id: 'contacted', title: 'pipeline_contacted', color: 'text-accent', bgColor: 'bg-accent-light', borderColor: 'border-accent' },
   { id: 'form_sent', title: 'pipeline_form_sent', color: 'text-accent', bgColor: 'bg-accent-light', borderColor: 'border-accent' },
   { id: 'qualified', title: 'pipeline_qualified', color: 'text-info', bgColor: 'bg-info-light', borderColor: 'border-info' },
   { id: 'quote_sent', title: 'pipeline_quote_sent', color: 'text-warning', bgColor: 'bg-warning-light', borderColor: 'border-warning' },
   { id: 'quote_accepted', title: 'pipeline_quote_accepted', color: 'text-success', bgColor: 'bg-success-light', borderColor: 'border-success' },
-  { id: 'in_progress', title: 'pipeline_in_progress', color: 'text-warning', bgColor: 'bg-warning-light', borderColor: 'border-warning' },
+  { id: 'negotiation', title: 'pipeline_negotiation', color: 'text-warning', bgColor: 'bg-warning-light', borderColor: 'border-warning' },
+  { id: 'in_progress', title: 'pipeline_in_progress', color: 'text-accent', bgColor: 'bg-accent-light', borderColor: 'border-accent' },
   { id: 'delivered', title: 'pipeline_delivered', color: 'text-success', bgColor: 'bg-success-light', borderColor: 'border-success' },
+  { id: 'won', title: 'pipeline_won', color: 'text-success', bgColor: 'bg-success-light', borderColor: 'border-success' },
   { id: 'maintenance', title: 'pipeline_maintenance', color: 'text-info', bgColor: 'bg-info-light', borderColor: 'border-info' },
   { id: 'lost', title: 'pipeline_lost', color: 'text-danger', bgColor: 'bg-danger-light', borderColor: 'border-danger' },
 ];
 
-const PRIORITY_COLORS: Record<ProspectPriority, { bg: string; text: string; icon: string }> = {
+const PRIORITY_COLORS: Record<ContactPriority, { bg: string; text: string; icon: string }> = {
   low: { bg: 'bg-muted', text: 'text-muted-foreground', icon: 'text-muted-foreground' },
   medium: { bg: 'bg-warning-light', text: 'text-warning', icon: 'text-warning' },
   high: { bg: 'bg-danger-light', text: 'text-danger', icon: 'text-danger' },
 };
 
-// Composant carte prospect
-function ProspectCard({ 
-  prospect,
+// Composant carte contact
+function ContactCard({ 
+  contact,
   onClick,
   onDelete,
   isDragging 
 }: { 
-  prospect: Prospect;
+  contact: Client;
   onClick: () => void;
   onDelete?: () => void;
   isDragging: boolean;
@@ -56,8 +60,8 @@ function ProspectCard({
   const { t } = useLanguage();
   const [showMenu, setShowMenu] = useState(false);
 
-  const priorityStyle = prospect.priority 
-    ? PRIORITY_COLORS[prospect.priority] 
+  const priorityStyle = contact.priority 
+    ? PRIORITY_COLORS[contact.priority] 
     : PRIORITY_COLORS.medium;
 
   const formatCurrency = (value: number | undefined) => {
@@ -70,6 +74,11 @@ function ProspectCard({
     return new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   };
 
+  // Get initials for avatar
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
+
   return (
     <div
       className={`
@@ -80,15 +89,36 @@ function ProspectCard({
       onClick={onClick}
       draggable
       onDragStart={(e) => {
-        e.dataTransfer.setData('prospectId', prospect.documentId);
-        e.dataTransfer.setData('currentStatus', prospect.prospect_status);
+        e.dataTransfer.setData('contactId', contact.documentId);
+        e.dataTransfer.setData('currentStatus', contact.pipeline_status || 'new');
       }}
     >
-      {/* Header avec titre et menu */}
+      {/* Header avec avatar, titre et menu */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2 min-w-0">
           <IconGripVertical size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-          <h4 className="font-medium text-sm text-foreground truncate">{prospect.title}</h4>
+          
+          {/* Avatar */}
+          {contact.image?.url ? (
+            <img 
+              src={contact.image.url} 
+              alt={contact.name}
+              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
+              <span className="text-xs font-medium text-accent">{getInitials(contact.name)}</span>
+            </div>
+          )}
+          
+          <div className="min-w-0">
+            <h4 className="font-medium text-sm text-foreground truncate">{contact.name}</h4>
+            {contact.processStatus === 'client' && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
+                Client
+              </span>
+            )}
+          </div>
         </div>
         
         <div className="relative flex-shrink-0">
@@ -132,37 +162,37 @@ function ProspectCard({
         </div>
       </div>
 
-      {/* Company */}
-      {prospect.company && (
+      {/* Entreprise */}
+      {contact.enterprise && (
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
           <IconBuilding size={12} />
-          <span className="truncate">{prospect.company}</span>
+          <span className="truncate">{contact.enterprise}</span>
         </div>
       )}
 
       {/* Contact info */}
       <div className="flex flex-wrap gap-2 mb-2">
-        {prospect.email && (
+        {contact.email && (
           <a 
-            href={`mailto:${prospect.email}`} 
+            href={`mailto:${contact.email}`} 
             onClick={(e) => e.stopPropagation()}
             className="text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
           >
             <IconMail size={12} />
           </a>
         )}
-        {prospect.phone && (
+        {contact.phone && (
           <a 
-            href={`tel:${prospect.phone}`}
+            href={`tel:${contact.phone}`}
             onClick={(e) => e.stopPropagation()}
             className="text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
           >
             <IconPhone size={12} />
           </a>
         )}
-        {prospect.website && (
+        {contact.website && (
           <a 
-            href={prospect.website}
+            href={contact.website}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
@@ -176,31 +206,31 @@ function ProspectCard({
       {/* Footer avec budget, date, priorité */}
       <div className="flex items-center justify-between gap-2 pt-2 border-t border-muted">
         <div className="flex items-center gap-2">
-          {prospect.estimated_value && (
+          {contact.estimated_value && (
             <span className="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-0.5">
               <IconCurrencyEuro size={12} />
-              {formatCurrency(prospect.estimated_value)?.replace('€', '')}
+              {formatCurrency(contact.estimated_value)?.replace('€', '')}
             </span>
           )}
-          {prospect.next_action_date && (
+          {contact.next_action_date && (
             <span className="text-xs text-muted-foreground flex items-center gap-0.5">
               <IconCalendar size={12} />
-              {formatDate(prospect.next_action_date)}
+              {formatDate(contact.next_action_date)}
             </span>
           )}
         </div>
         
-        {prospect.priority && (
+        {contact.priority && (
           <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${priorityStyle.bg} ${priorityStyle.text}`}>
-            {t(`priority_${prospect.priority}`) || prospect.priority}
+            {t(`priority_${contact.priority}`) || contact.priority}
           </span>
         )}
       </div>
 
       {/* Next action reminder */}
-      {prospect.next_action && (
+      {contact.next_action && (
         <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-950/30 rounded text-xs text-amber-700 dark:text-amber-400 truncate">
-          📌 {prospect.next_action}
+          📌 {contact.next_action}
         </div>
       )}
     </div>
@@ -210,19 +240,21 @@ function ProspectCard({
 // Composant colonne
 function KanbanColumn({ 
   column, 
-  prospects,
+  contacts,
   onStatusChange,
-  onProspectClick,
-  onAddProspect,
-  onDeleteProspect,
+  onContactClick,
+  onAddContact,
+  onSelectExistingContact,
+  onDeleteContact,
   totalValue,
 }: {
   column: PipelineColumn;
-  prospects: Prospect[];
-  onStatusChange: (prospectId: string, newStatus: ProspectStatus) => Promise<void>;
-  onProspectClick: (prospect: Prospect) => void;
-  onAddProspect?: () => void;
-  onDeleteProspect?: (prospect: Prospect) => void;
+  contacts: Client[];
+  onStatusChange: (contactId: string, newStatus: PipelineStatus) => Promise<void>;
+  onContactClick: (contact: Client) => void;
+  onAddContact?: () => void;
+  onSelectExistingContact?: () => void;
+  onDeleteContact?: (contact: Client) => void;
   totalValue: number;
 }) {
   const { t } = useLanguage();
@@ -243,11 +275,11 @@ function KanbanColumn({
     e.preventDefault();
     setIsDragOver(false);
     
-    const prospectId = e.dataTransfer.getData('prospectId');
+    const contactId = e.dataTransfer.getData('contactId');
     const currentStatus = e.dataTransfer.getData('currentStatus');
     
-    if (prospectId && currentStatus !== column.id) {
-      await onStatusChange(prospectId, column.id);
+    if (contactId && currentStatus !== column.id) {
+      await onStatusChange(contactId, column.id);
     }
   }, [column.id, onStatusChange]);
 
@@ -273,13 +305,14 @@ function KanbanColumn({
               {t(column.title) || column.title}
             </h3>
             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${column.bgColor} ${column.color} border ${column.borderColor}`}>
-              {prospects.length}
+              {contacts.length}
             </span>
           </div>
-          {onAddProspect && (
+          {(onAddContact || onSelectExistingContact) && (
             <button
-              onClick={onAddProspect}
+              onClick={onSelectExistingContact || onAddContact}
               className={`p-1 rounded hover:bg-white/50 dark:hover:bg-black/20 transition-colors ${column.color}`}
+              title={t('add_contact') || 'Ajouter un contact'}
             >
               <IconPlus size={16} />
             </button>
@@ -294,20 +327,20 @@ function KanbanColumn({
 
       {/* Cards */}
       <div className="flex-1 p-2 space-y-2 overflow-y-auto max-h-[calc(100vh-300px)] min-h-[200px]">
-        {prospects.map((prospect) => (
-          <ProspectCard
-            key={prospect.documentId}
-            prospect={prospect}
-            onClick={() => onProspectClick(prospect)}
-            onDelete={onDeleteProspect ? () => onDeleteProspect(prospect) : undefined}
-            isDragging={_draggingId === prospect.documentId}
+        {contacts.map((contact) => (
+          <ContactCard
+            key={contact.documentId}
+            contact={contact}
+            onClick={() => onContactClick(contact)}
+            onDelete={onDeleteContact ? () => onDeleteContact(contact) : undefined}
+            isDragging={_draggingId === contact.documentId}
           />
         ))}
         
-        {prospects.length === 0 && (
+        {contacts.length === 0 && (
           <div className="h-full min-h-[100px] flex items-center justify-center">
             <p className="text-xs text-muted-foreground text-center">
-              {t('pipeline_empty_column') || 'Glissez un prospect ici'}
+              {t('pipeline_empty_column') || 'Glissez un contact ici'}
             </p>
           </div>
         )}
@@ -318,34 +351,36 @@ function KanbanColumn({
 
 // Composant principal KanbanBoard
 export default function KanbanBoard({
-  prospects,
+  contacts,
   onStatusChange,
-  onProspectClick,
-  onAddProspect,
-  onDeleteProspect,
+  onContactClick,
+  onAddContact,
+  onSelectExistingContact,
+  onDeleteContact,
   loading = false,
 }: KanbanBoardProps) {
   const { t } = useLanguage();
 
-  // Grouper les prospects par statut
-  const prospectsByStatus = PIPELINE_COLUMNS.reduce((acc, column) => {
-    acc[column.id] = prospects.filter(p => p.prospect_status === column.id);
+  // Grouper les contacts par pipeline_status
+  const contactsByStatus = PIPELINE_COLUMNS.reduce((acc, column) => {
+    acc[column.id] = contacts.filter(c => (c.pipeline_status || 'new') === column.id);
     return acc;
-  }, {} as Record<ProspectStatus, Prospect[]>);
+  }, {} as Record<PipelineStatus, Client[]>);
 
   // Calculer la valeur totale par colonne
   const valueByStatus = PIPELINE_COLUMNS.reduce((acc, column) => {
-    acc[column.id] = prospectsByStatus[column.id].reduce((sum, p) => sum + (p.estimated_value || 0), 0);
+    acc[column.id] = contactsByStatus[column.id].reduce((sum, c) => sum + (c.estimated_value || 0), 0);
     return acc;
-  }, {} as Record<ProspectStatus, number>);
+  }, {} as Record<PipelineStatus, number>);
 
   // Stats globales
-  const totalProspects = prospects.length;
-  const totalValue = prospects.reduce((sum, p) => sum + (p.estimated_value || 0), 0);
-  const wonValue = prospectsByStatus['quote_accepted'].reduce((sum, p) => sum + (p.estimated_value || 0), 0)
-    + prospectsByStatus['in_progress'].reduce((sum, p) => sum + (p.estimated_value || 0), 0)
-    + prospectsByStatus['delivered'].reduce((sum, p) => sum + (p.estimated_value || 0), 0)
-    + prospectsByStatus['maintenance'].reduce((sum, p) => sum + (p.estimated_value || 0), 0);
+  const totalContacts = contacts.length;
+  const totalValue = contacts.reduce((sum, c) => sum + (c.estimated_value || 0), 0);
+  const wonValue = (contactsByStatus['quote_accepted']?.reduce((sum, c) => sum + (c.estimated_value || 0), 0) || 0)
+    + (contactsByStatus['in_progress']?.reduce((sum, c) => sum + (c.estimated_value || 0), 0) || 0)
+    + (contactsByStatus['delivered']?.reduce((sum, c) => sum + (c.estimated_value || 0), 0) || 0)
+    + (contactsByStatus['won']?.reduce((sum, c) => sum + (c.estimated_value || 0), 0) || 0)
+    + (contactsByStatus['maintenance']?.reduce((sum, c) => sum + (c.estimated_value || 0), 0) || 0);
   
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value);
@@ -364,8 +399,8 @@ export default function KanbanBoard({
       {/* Stats bar */}
       <div className="flex flex-wrap gap-4 p-4 bg-card rounded-lg border border-muted">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">{t('pipeline_total_prospects') || 'Total prospects'}:</span>
-          <span className="font-semibold text-foreground">{totalProspects}</span>
+          <span className="text-sm text-muted-foreground">{t('pipeline_total_contacts') || 'Total contacts'}:</span>
+          <span className="font-semibold text-foreground">{totalContacts}</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">{t('pipeline_potential_value') || 'Valeur potentielle'}:</span>
@@ -383,12 +418,13 @@ export default function KanbanBoard({
           <KanbanColumn
             key={column.id}
             column={column}
-            prospects={prospectsByStatus[column.id]}
+            contacts={contactsByStatus[column.id] || []}
             onStatusChange={onStatusChange}
-            onProspectClick={onProspectClick}
-            onAddProspect={onAddProspect ? () => onAddProspect(column.id) : undefined}
-            onDeleteProspect={onDeleteProspect}
-            totalValue={valueByStatus[column.id]}
+            onContactClick={onContactClick}
+            onAddContact={onAddContact ? () => onAddContact(column.id) : undefined}
+            onSelectExistingContact={onSelectExistingContact ? () => onSelectExistingContact(column.id) : undefined}
+            onDeleteContact={onDeleteContact}
+            totalValue={valueByStatus[column.id] || 0}
           />
         ))}
       </div>
@@ -397,4 +433,3 @@ export default function KanbanBoard({
 }
 
 export { PIPELINE_COLUMNS };
-

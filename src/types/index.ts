@@ -103,7 +103,7 @@ export interface User {
 
 // Types pour Contact/Client unifié
 export type ContactStatus = 'prospect' | 'client' | 'archived';
-export type PipelineStatus = 'new' | 'contacted' | 'form_sent' | 'qualified' | 'quote_sent' | 'quote_accepted' | 'negotiation' | 'won' | 'lost';
+export type PipelineStatus = 'new' | 'contacted' | 'form_sent' | 'qualified' | 'quote_sent' | 'quote_accepted' | 'negotiation' | 'in_progress' | 'delivered' | 'maintenance' | 'won' | 'lost';
 export type ContactSource = 'cold_outreach' | 'referral' | 'website' | 'social_media' | 'typeform' | 'other';
 export type ContactPriority = 'low' | 'medium' | 'high';
 

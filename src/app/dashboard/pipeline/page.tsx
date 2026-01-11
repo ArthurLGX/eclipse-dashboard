@@ -4,11 +4,11 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
-import { useProspects, clearCache } from '@/hooks/useApi';
-import { updateProspect, deleteProspect, createProspect } from '@/lib/api';
+import { useContacts, clearCache } from '@/hooks/useApi';
+import { updateClient, deleteClient, addClientUser } from '@/lib/api';
 import KanbanBoard, { PIPELINE_COLUMNS } from '@/app/components/KanbanBoard';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
-import type { Prospect, ProspectStatus, ProspectSource, ProspectPriority } from '@/types';
+import type { Client, PipelineStatus, ContactSource, ContactPriority } from '@/types';
 import { 
   IconChartBar, 
   IconPlus,
@@ -21,40 +21,175 @@ import {
   IconCurrencyEuro,
   IconCalendar,
   IconFlag,
-  IconNotes
+  IconNotes,
+  IconUsers
 } from '@tabler/icons-react';
 
-// Modal pour créer/éditer un prospect
-function ProspectModal({ 
+// Modal pour sélectionner un contact existant
+function SelectContactModal({
+  isOpen,
+  onClose,
+  contacts,
+  onSelect,
+  targetStatus,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  contacts: Client[];
+  onSelect: (contact: Client, status: PipelineStatus) => void;
+  targetStatus: PipelineStatus;
+}) {
+  const { t } = useLanguage();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Filtrer les contacts qui ne sont pas déjà dans le pipeline (pas de pipeline_status ou archivés)
+  const availableContacts = useMemo(() => {
+    return contacts.filter(c => {
+      // Exclure ceux déjà dans le pipeline actif
+      const isInPipeline = c.pipeline_status && c.pipeline_status !== 'lost';
+      const matchesSearch = !searchTerm || 
+        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.enterprise?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.email?.toLowerCase().includes(searchTerm.toLowerCase());
+      return !isInPipeline && matchesSearch;
+    });
+  }, [contacts, searchTerm]);
+
+  if (!isOpen) return null;
+
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative bg-card border border-default rounded-xl shadow-xl w-full max-w-md m-4">
+        <div className="sticky top-0 bg-card border-b border-default p-4 rounded-t-xl">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+              <IconUsers size={20} />
+              {t('select_existing_contact') || 'Sélectionner un contact'}
+            </h2>
+            <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
+              <IconX size={20} />
+            </button>
+          </div>
+          
+          {/* Barre de recherche */}
+          <div className="relative">
+            <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder={t('search_contacts') || 'Rechercher...'}
+              className="w-full pl-9 pr-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+              autoFocus
+            />
+          </div>
+        </div>
+
+        {/* Liste des contacts avec scroll */}
+        <div className="max-h-[400px] overflow-y-auto p-2">
+          {availableContacts.length === 0 ? (
+            <div className="p-8 text-center text-muted-foreground">
+              <IconUsers size={48} className="mx-auto mb-2 opacity-30" />
+              <p>{t('no_contacts_available') || 'Aucun contact disponible'}</p>
+              <p className="text-sm mt-1">{t('all_contacts_in_pipeline') || 'Tous vos contacts sont déjà dans le pipeline'}</p>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              {availableContacts.map((contact) => (
+                <button
+                  key={contact.documentId}
+                  onClick={() => {
+                    onSelect(contact, targetStatus);
+                    onClose();
+                  }}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-hover transition-colors text-left"
+                >
+                  {/* Avatar */}
+                  {contact.image?.url ? (
+                    <img 
+                      src={contact.image.url} 
+                      alt={contact.name}
+                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
+                      <span className="text-sm font-medium text-accent">{getInitials(contact.name)}</span>
+                    </div>
+                  )}
+                  
+                  {/* Infos */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-foreground truncate">{contact.name}</span>
+                      {contact.processStatus === 'client' && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex-shrink-0">
+                          Client
+                        </span>
+                      )}
+                      {contact.processStatus === 'prospect' && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 flex-shrink-0">
+                          Prospect
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      {contact.enterprise && <span className="truncate">{contact.enterprise}</span>}
+                      {contact.enterprise && contact.email && <span>•</span>}
+                      {contact.email && <span className="truncate">{contact.email}</span>}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-default p-3">
+          <p className="text-xs text-muted-foreground text-center">
+            {availableContacts.length} {t('contacts_available') || 'contact(s) disponible(s)'}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Modal pour créer/éditer un contact
+function ContactModal({ 
   isOpen, 
   onClose, 
-  prospect,
+  contact,
   initialStatus,
   onSave 
 }: { 
   isOpen: boolean;
   onClose: () => void;
-  prospect?: Prospect | null;
-  initialStatus?: ProspectStatus;
-  onSave: (data: Partial<Prospect>) => Promise<void>;
+  contact?: Client | null;
+  initialStatus?: PipelineStatus;
+  onSave: (data: Partial<Client>) => Promise<void>;
 }) {
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<Partial<Prospect>>({
-    title: prospect?.title || '',
-    company: prospect?.company || '',
-    email: prospect?.email || '',
-    phone: prospect?.phone || '',
-    website: prospect?.website || '',
-    description: prospect?.description || '',
-    notes: prospect?.notes || '',
-    prospect_status: prospect?.prospect_status || initialStatus || 'new',
-    source: prospect?.source || 'cold_outreach',
-    priority: prospect?.priority || 'medium',
-    estimated_value: prospect?.estimated_value || undefined,
-    next_action: prospect?.next_action || '',
-    next_action_date: prospect?.next_action_date || '',
-    budget: prospect?.budget || undefined,
+  const [formData, setFormData] = useState<Partial<Client>>({
+    name: contact?.name || '',
+    enterprise: contact?.enterprise || '',
+    email: contact?.email || '',
+    phone: contact?.phone || '',
+    website: contact?.website || '',
+    notes: contact?.notes || '',
+    pipeline_status: contact?.pipeline_status || initialStatus || 'new',
+    source: contact?.source || 'cold_outreach',
+    priority: contact?.priority || 'medium',
+    estimated_value: contact?.estimated_value || undefined,
+    next_action: contact?.next_action || '',
+    next_action_date: contact?.next_action_date || '',
+    budget: contact?.budget || undefined,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,7 +199,7 @@ function ProspectModal({
       await onSave(formData);
       onClose();
     } catch (error) {
-      console.error('Error saving prospect:', error);
+      console.error('Error saving contact:', error);
     } finally {
       setLoading(false);
     }
@@ -72,7 +207,7 @@ function ProspectModal({
 
   if (!isOpen) return null;
 
-  const sourceOptions: { value: ProspectSource; label: string }[] = [
+  const sourceOptions: { value: ContactSource; label: string }[] = [
     { value: 'cold_outreach', label: t('source_cold_outreach') || 'Prospection froide' },
     { value: 'referral', label: t('source_referral') || 'Recommandation' },
     { value: 'website', label: t('source_website') || 'Site web' },
@@ -81,7 +216,7 @@ function ProspectModal({
     { value: 'other', label: t('source_other') || 'Autre' },
   ];
 
-  const priorityOptions: { value: ProspectPriority; label: string }[] = [
+  const priorityOptions: { value: ContactPriority; label: string }[] = [
     { value: 'low', label: t('priority_low') || 'Basse' },
     { value: 'medium', label: t('priority_medium') || 'Moyenne' },
     { value: 'high', label: t('priority_high') || 'Haute' },
@@ -93,7 +228,7 @@ function ProspectModal({
       <div className="relative bg-card border border-default rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
         <div className="sticky top-0 bg-card border-b border-default p-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-primary">
-            {prospect ? t('edit_prospect') || 'Modifier le prospect' : t('new_prospect') || 'Nouveau prospect'}
+            {contact ? t('edit_contact') || 'Modifier le contact' : t('new_contact') || 'Nouveau contact'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
             <IconX size={20} />
@@ -105,12 +240,12 @@ function ProspectModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-primary mb-1">
-                {t('prospect_name') || 'Nom du prospect'} *
+                {t('contact_name') || 'Nom du contact'} *
               </label>
               <input
                 type="text"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
                 required
               />
@@ -122,8 +257,8 @@ function ProspectModal({
               </label>
               <input
                 type="text"
-                value={formData.company}
-                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                value={formData.enterprise}
+                onChange={(e) => setFormData({ ...formData, enterprise: e.target.value })}
                 className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
               />
             </div>
@@ -150,7 +285,7 @@ function ProspectModal({
               </label>
               <input
                 type="tel"
-                value={formData.phone}
+                value={formData.phone || ''}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
               />
@@ -162,7 +297,7 @@ function ProspectModal({
               </label>
               <input
                 type="url"
-                value={formData.website}
+                value={formData.website || ''}
                 onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                 className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
               />
@@ -176,8 +311,8 @@ function ProspectModal({
                 {t('status') || 'Statut'}
               </label>
               <select
-                value={formData.prospect_status}
-                onChange={(e) => setFormData({ ...formData, prospect_status: e.target.value as ProspectStatus })}
+                value={formData.pipeline_status}
+                onChange={(e) => setFormData({ ...formData, pipeline_status: e.target.value as PipelineStatus })}
                 className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
               >
                 {PIPELINE_COLUMNS.map((col) => (
@@ -193,7 +328,7 @@ function ProspectModal({
               </label>
               <select
                 value={formData.source}
-                onChange={(e) => setFormData({ ...formData, source: e.target.value as ProspectSource })}
+                onChange={(e) => setFormData({ ...formData, source: e.target.value as ContactSource })}
                 className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
               >
                 {sourceOptions.map((opt) => (
@@ -208,7 +343,7 @@ function ProspectModal({
               </label>
               <select
                 value={formData.priority}
-                onChange={(e) => setFormData({ ...formData, priority: e.target.value as ProspectPriority })}
+                onChange={(e) => setFormData({ ...formData, priority: e.target.value as ContactPriority })}
                 className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
               >
                 {priorityOptions.map((opt) => (
@@ -250,7 +385,7 @@ function ProspectModal({
           {/* Next action */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block text-sm font-medium text-primary mb-1">
                 {t('next_action') || 'Prochaine action'}
               </label>
               <input
@@ -273,20 +408,6 @@ function ProspectModal({
                 className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
               />
             </div>
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-primary mb-1">
-              {t('description') || 'Description du projet'}
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent resize-none"
-              rows={3}
-              placeholder="Décrivez brièvement le projet..."
-            />
           </div>
 
           {/* Notes */}
@@ -315,10 +436,10 @@ function ProspectModal({
             </button>
             <button
               type="submit"
-              disabled={loading || !formData.title}
+              disabled={loading || !formData.name}
               className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
             >
-              {loading ? '...' : (prospect ? t('save') || 'Enregistrer' : t('create') || 'Créer')}
+              {loading ? '...' : (contact ? t('save') || 'Enregistrer' : t('create') || 'Créer')}
             </button>
           </div>
         </form>
@@ -334,50 +455,60 @@ export default function PipelinePage() {
 
   // États
   const [searchTerm, setSearchTerm] = useState('');
-  const [priorityFilter, setPriorityFilter] = useState<ProspectPriority | ''>('');
-  const [sourceFilter, setSourceFilter] = useState<ProspectSource | ''>('');
-  const [prospectModal, setProspectModal] = useState<{ 
+  const [priorityFilter, setPriorityFilter] = useState<ContactPriority | ''>('');
+  const [sourceFilter, setSourceFilter] = useState<ContactSource | ''>('');
+  const [contactModal, setContactModal] = useState<{ 
     isOpen: boolean; 
-    prospect: Prospect | null;
-    initialStatus?: ProspectStatus;
-  }>({ isOpen: false, prospect: null });
-  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; prospect: Prospect | null }>({
+    contact: Client | null;
+    initialStatus?: PipelineStatus;
+  }>({ isOpen: false, contact: null });
+  const [selectModal, setSelectModal] = useState<{
+    isOpen: boolean;
+    targetStatus: PipelineStatus;
+  }>({ isOpen: false, targetStatus: 'new' });
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; contact: Client | null }>({
     isOpen: false,
-    prospect: null,
+    contact: null,
   });
 
-  // Données
-  const { data: prospectsData, loading, refetch } = useProspects(user?.id);
-  const allProspects = useMemo(() => (prospectsData as Prospect[]) || [], [prospectsData]);
+  // Données - utiliser les Contacts (Clients) unifiés
+  const { data: contactsData, loading, refetch } = useContacts(user?.id);
+  const allContacts = useMemo(() => (contactsData as Client[]) || [], [contactsData]);
 
-  // Filtrage
-  const filteredProspects = useMemo(() => {
-    return allProspects.filter((prospect) => {
+  // Filtrer pour n'afficher que les contacts avec un pipeline_status défini (dans le pipeline)
+  const pipelineContacts = useMemo(() => {
+    return allContacts.filter(c => c.pipeline_status && c.processStatus !== 'archived');
+  }, [allContacts]);
+
+  // Filtrage supplémentaire
+  const filteredContacts = useMemo(() => {
+    return pipelineContacts.filter((contact) => {
       // Recherche
       if (searchTerm) {
         const search = searchTerm.toLowerCase();
         const matchesSearch = 
-          prospect.title?.toLowerCase().includes(search) ||
-          prospect.company?.toLowerCase().includes(search) ||
-          prospect.email?.toLowerCase().includes(search);
+          contact.name?.toLowerCase().includes(search) ||
+          contact.enterprise?.toLowerCase().includes(search) ||
+          contact.email?.toLowerCase().includes(search);
         if (!matchesSearch) return false;
       }
 
       // Filtre priorité
-      if (priorityFilter && prospect.priority !== priorityFilter) return false;
+      if (priorityFilter && contact.priority !== priorityFilter) return false;
 
       // Filtre source
-      if (sourceFilter && prospect.source !== sourceFilter) return false;
+      if (sourceFilter && contact.source !== sourceFilter) return false;
 
       return true;
     });
-  }, [allProspects, searchTerm, priorityFilter, sourceFilter]);
+  }, [pipelineContacts, searchTerm, priorityFilter, sourceFilter]);
 
   // Handlers
-  const handleStatusChange = useCallback(async (prospectId: string, newStatus: ProspectStatus) => {
+  const handleStatusChange = useCallback(async (contactId: string, newStatus: PipelineStatus) => {
     try {
-      await updateProspect(prospectId, { prospect_status: newStatus });
-      clearCache('prospects');
+      await updateClient(contactId, { pipeline_status: newStatus });
+      clearCache('clients');
+      clearCache('contacts');
       await refetch();
       showGlobalPopup(t('status_updated') || 'Statut mis à jour', 'success');
     } catch (error) {
@@ -386,40 +517,73 @@ export default function PipelinePage() {
     }
   }, [refetch, showGlobalPopup, t]);
 
-  const handleSaveProspect = useCallback(async (data: Partial<Prospect>) => {
+  const handleSelectExistingContact = useCallback(async (contact: Client, status: PipelineStatus) => {
     try {
-      if (prospectModal.prospect) {
+      await updateClient(contact.documentId, { 
+        pipeline_status: status,
+        processStatus: contact.processStatus === 'archived' ? 'prospect' : contact.processStatus
+      });
+      clearCache('clients');
+      clearCache('contacts');
+      await refetch();
+      showGlobalPopup(t('contact_added_to_pipeline') || 'Contact ajouté au pipeline', 'success');
+    } catch (error) {
+      console.error('Error adding contact to pipeline:', error);
+      showGlobalPopup(t('error_adding_contact') || 'Erreur lors de l\'ajout', 'error');
+    }
+  }, [refetch, showGlobalPopup, t]);
+
+  const handleSaveContact = useCallback(async (data: Partial<Client>) => {
+    try {
+      if (contactModal.contact) {
         // Update
-        await updateProspect(prospectModal.prospect.documentId, data);
-        showGlobalPopup(t('prospect_updated') || 'Prospect mis à jour', 'success');
+        await updateClient(contactModal.contact.documentId, data);
+        showGlobalPopup(t('contact_updated') || 'Contact mis à jour', 'success');
       } else {
-        // Create
-        await createProspect({ ...data, users: user?.id ? [user.id] : [] } as Prospect);
-        showGlobalPopup(t('prospect_created') || 'Prospect créé', 'success');
+        // Create - nouveau contact avec pipeline_status
+        await addClientUser(user?.id || 0, {
+          name: data.name || '',
+          email: data.email || `${(data.name || 'contact').toLowerCase().replace(/\s+/g, '.')}@placeholder.com`,
+          enterprise: data.enterprise || '',
+          phone: data.phone || '',
+          website: data.website || '',
+          processStatus: 'prospect',
+          pipeline_status: data.pipeline_status || 'new',
+          source: data.source,
+          priority: data.priority,
+          estimated_value: data.estimated_value,
+          budget: data.budget,
+          notes: data.notes,
+          next_action: data.next_action,
+          next_action_date: data.next_action_date,
+        });
+        showGlobalPopup(t('contact_created') || 'Contact créé', 'success');
       }
-      clearCache('prospects');
+      clearCache('clients');
+      clearCache('contacts');
       await refetch();
     } catch (error) {
-      console.error('Error saving prospect:', error);
+      console.error('Error saving contact:', error);
       showGlobalPopup(t('error_saving') || 'Erreur lors de la sauvegarde', 'error');
       throw error;
     }
-  }, [prospectModal.prospect, user?.id, refetch, showGlobalPopup, t]);
+  }, [contactModal.contact, user?.id, refetch, showGlobalPopup, t]);
 
-  const handleDeleteProspect = useCallback(async () => {
-    if (!deleteModal.prospect) return;
+  const handleDeleteContact = useCallback(async () => {
+    if (!deleteModal.contact) return;
     
     try {
-      await deleteProspect(deleteModal.prospect.documentId);
-      clearCache('prospects');
+      await deleteClient(deleteModal.contact.documentId);
+      clearCache('clients');
+      clearCache('contacts');
       await refetch();
-      showGlobalPopup(t('prospect_deleted') || 'Prospect supprimé', 'success');
-      setDeleteModal({ isOpen: false, prospect: null });
+      showGlobalPopup(t('contact_deleted') || 'Contact supprimé', 'success');
+      setDeleteModal({ isOpen: false, contact: null });
     } catch (error) {
-      console.error('Error deleting prospect:', error);
+      console.error('Error deleting contact:', error);
       showGlobalPopup(t('error_deleting') || 'Erreur lors de la suppression', 'error');
     }
-  }, [deleteModal.prospect, refetch, showGlobalPopup, t]);
+  }, [deleteModal.contact, refetch, showGlobalPopup, t]);
 
   return (
     <div className="p-6 space-y-6">
@@ -432,17 +596,17 @@ export default function PipelinePage() {
               {t('pipeline') || 'Pipeline CRM'}
             </h1>
             <p className="text-sm text-muted">
-              {t('pipeline_description') || 'Suivez vos prospects de la prise de contact à la conversion'}
+              {t('pipeline_description') || 'Suivez vos contacts de la prise de contact à la conversion'}
             </p>
           </div>
         </div>
 
         <button
-          onClick={() => setProspectModal({ isOpen: true, prospect: null })}
+          onClick={() => setContactModal({ isOpen: true, contact: null })}
           className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
         >
           <IconPlus size={18} />
-          {t('new_prospect') || 'Nouveau prospect'}
+          {t('new_contact') || 'Nouveau contact'}
         </button>
       </div>
 
@@ -455,7 +619,7 @@ export default function PipelinePage() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder={t('search_prospects') || 'Rechercher...'}
+            placeholder={t('search_contacts') || 'Rechercher...'}
             className="w-full !pl-9 !pr-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
           />
         </div>
@@ -463,7 +627,7 @@ export default function PipelinePage() {
         {/* Filtre priorité */}
         <select
           value={priorityFilter}
-          onChange={(e) => setPriorityFilter(e.target.value as ProspectPriority | '')}
+          onChange={(e) => setPriorityFilter(e.target.value as ContactPriority | '')}
           className="px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
         >
           <option value="">{t('all_priorities') || 'Toutes priorités'}</option>
@@ -475,8 +639,8 @@ export default function PipelinePage() {
         {/* Filtre source */}
         <select
           value={sourceFilter}
-          onChange={(e) => setSourceFilter(e.target.value as ProspectSource | '')}
-              className="px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+          onChange={(e) => setSourceFilter(e.target.value as ContactSource | '')}
+          className="px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
         >
           <option value="">{t('all_sources') || 'Toutes sources'}</option>
           <option value="cold_outreach">{t('source_cold_outreach') || 'Prospection'}</option>
@@ -505,32 +669,40 @@ export default function PipelinePage() {
 
       {/* Kanban Board */}
       <KanbanBoard
-        prospects={filteredProspects}
+        contacts={filteredContacts}
         onStatusChange={handleStatusChange}
-        onProspectClick={(prospect) => setProspectModal({ isOpen: true, prospect })}
-        onAddProspect={(status) => setProspectModal({ isOpen: true, prospect: null, initialStatus: status })}
-        onDeleteProspect={(prospect) => setDeleteModal({ isOpen: true, prospect })}
+        onContactClick={(contact) => setContactModal({ isOpen: true, contact })}
+        onAddContact={(status) => setContactModal({ isOpen: true, contact: null, initialStatus: status })}
+        onSelectExistingContact={(status) => setSelectModal({ isOpen: true, targetStatus: status })}
+        onDeleteContact={(contact) => setDeleteModal({ isOpen: true, contact })}
         loading={loading}
       />
 
       {/* Modals */}
-      <ProspectModal
-        isOpen={prospectModal.isOpen}
-        onClose={() => setProspectModal({ isOpen: false, prospect: null })}
-        prospect={prospectModal.prospect}
-        initialStatus={prospectModal.initialStatus}
-        onSave={handleSaveProspect}
+      <ContactModal
+        isOpen={contactModal.isOpen}
+        onClose={() => setContactModal({ isOpen: false, contact: null })}
+        contact={contactModal.contact}
+        initialStatus={contactModal.initialStatus}
+        onSave={handleSaveContact}
+      />
+
+      <SelectContactModal
+        isOpen={selectModal.isOpen}
+        onClose={() => setSelectModal({ isOpen: false, targetStatus: 'new' })}
+        contacts={allContacts}
+        onSelect={handleSelectExistingContact}
+        targetStatus={selectModal.targetStatus}
       />
 
       <DeleteConfirmModal
         isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, prospect: null })}
-        onConfirm={handleDeleteProspect}
-        title={t('delete_prospect') || 'Supprimer le prospect'}
-        itemName={deleteModal.prospect?.title || ''}
-        itemType="prospect"
+        onClose={() => setDeleteModal({ isOpen: false, contact: null })}
+        onConfirm={handleDeleteContact}
+        title={t('delete_contact') || 'Supprimer le contact'}
+        itemName={deleteModal.contact?.name || ''}
+        itemType="contact"
       />
     </div>
   );
 }
-

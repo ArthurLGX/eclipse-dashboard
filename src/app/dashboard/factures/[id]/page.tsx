@@ -801,7 +801,15 @@ export default function FacturePage() {
                       const client = clients.find(
                         c => c.id === Number(e.target.value)
                       );
-                      setFormData({ ...formData!, client_id: client! });
+                      // Réinitialiser le projet si on change de client
+                      const currentProjectClientId = formData?.project?.client?.id;
+                      const newClientId = client?.id;
+                      const shouldResetProject = currentProjectClientId && newClientId && currentProjectClientId !== newClientId;
+                      setFormData({ 
+                        ...formData!, 
+                        client_id: client!,
+                        project: shouldResetProject ? undefined : formData?.project
+                      });
                     }}
                     className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   >
