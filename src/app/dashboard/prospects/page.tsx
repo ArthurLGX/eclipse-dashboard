@@ -168,8 +168,8 @@ export default function ProspectsPage() {
   const stats = useMemo(() => ({
     total: prospects.length,
     limit: limits.prospects,
-    answers: prospects.filter(p => p.prospect_status === 'answer').length,
-    contacted: prospects.filter(p => p.prospect_status === 'contacted').length,
+    qualified: prospects.filter(p => p.prospect_status === 'qualified').length,
+    quote_sent: prospects.filter(p => p.prospect_status === 'quote_sent').length,
   }), [prospects, limits]);
 
   // Colonnes
@@ -277,14 +277,14 @@ export default function ProspectsPage() {
           icon: <IconUsers className="w-6 h-6 text-info" />,
         },
         {
-          label: t('answer') || 'Réponses',
-          value: stats.answers,
+          label: t('qualified') || 'Qualifiés',
+          value: stats.qualified,
           colorClass: 'text-warning',
           icon: <IconUserCheck className="w-6 h-6 text-warning" />,
         },
         {
-          label: t('contacted'),
-          value: stats.contacted,
+          label: t('quote_sent') || 'Devis envoyés',
+          value: stats.quote_sent,
           colorClass: 'text-success',
           icon: <IconUserPlus className="w-6 h-6 text-success" />,
         },
