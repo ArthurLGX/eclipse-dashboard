@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import ClientAvatar from '@/app/components/ClientAvatar';
-import { addClientUser, deleteClient, updateClientStatus, DuplicateCheckMode } from '@/lib/api';
+import { addClientUser, deleteClient, updateClientStatus, DuplicateCheckMode, toggleClientFavorite, updateClientsOrder } from '@/lib/api';
 import TableActions from '@/app/components/TableActions';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import { usePopup } from '@/app/context/PopupContext';
@@ -169,6 +169,33 @@ export default function ClientsPage() {
 
     clearCache('clients');
     await refetch();
+  };
+
+  // Handle toggle favorite
+  const handleToggleFavorite = async (client: Client) => {
+    try {
+      await toggleClientFavorite(client.documentId, !client.is_favorite);
+      clearCache('clients');
+      await refetch();
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      showGlobalPopup(t('error') || 'Erreur', 'error');
+    }
+  };
+
+  // Handle reorder
+  const handleReorder = async (reorderedClients: Client[]) => {
+    try {
+      const updates = reorderedClients.map((c, index) => ({
+        documentId: c.documentId,
+        sort_order: index,
+      }));
+      await updateClientsOrder(updates);
+      clearCache('clients');
+    } catch (error) {
+      console.error('Error reordering clients:', error);
+      showGlobalPopup(t('error') || 'Erreur', 'error');
+    }
   };
 
   // Convertir les prospects/autres en clients
@@ -678,6 +705,12 @@ export default function ClientsPage() {
         customActions={customActions}
         getItemId={(client) => client.documentId || ''}
         getItemName={(client) => client.name}
+        sortable={true}
+        showFavorites={true}
+        isFavorite={(client) => client.is_favorite || false}
+        onToggleFavorite={handleToggleFavorite}
+        draggable={true}
+        onReorder={handleReorder}
       />
 
       <AddClientModal
