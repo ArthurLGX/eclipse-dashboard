@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { IconBolt, IconClock, IconEdit, IconMix, IconChartLine, IconAlertTriangle, IconTrendingUp } from '@tabler/icons-react';
+import { IconBolt, IconClock, IconEdit, IconBlendMode, IconChartLine, IconAlertTriangle, IconTrendingUp } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 
 // Types de badges disponibles
@@ -77,7 +77,7 @@ export function TimeSourceBadge({ source }: TimeSourceBadgeProps) {
     mixed: {
       label: t('time_source_mixed') || 'Mixte',
       tooltip: t('time_source_mixed_tooltip') || 'Combinaison de temps automatique et manuel',
-      icon: <IconMix size={12} />,
+      icon: <IconBlendMode size={12} />,
       bgColor: 'bg-slate-100 dark:bg-slate-800',
       textColor: 'text-slate-600 dark:text-slate-400',
       borderColor: 'border-slate-200 dark:border-slate-700',

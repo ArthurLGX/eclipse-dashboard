@@ -29,7 +29,8 @@ import {
   fetchRunningTimeEntry,
 } from '@/lib/api';
 import { useProjects } from '@/hooks/useApi';
-import type { TimeEntry, Project } from '@/types';
+import type { TimeEntry, Project, TimeEntrySource } from '@/types';
+import { TimeSourceBadge } from '@/app/components/StatusBadge';
 import useSWR from 'swr';
 import { TIMER_REFRESH_EVENT } from '@/app/components/TimerIndicator';
 
@@ -458,6 +459,9 @@ export default function TimeTrackingPage() {
                               <p className="font-medium text-primary truncate flex items-center gap-2">
                                 {entry.description || t('no_description') || 'Sans description'}
                                 {isRunning && <span className="text-xs text-warning font-normal">({t('running') || 'en cours'})</span>}
+                                {entry.source && entry.source !== 'manual' && (
+                                  <TimeSourceBadge source={entry.source as TimeEntrySource} />
+                                )}
                               </p>
                               <p className="text-xs text-muted flex items-center gap-1">
                                 {new Date(entry.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}

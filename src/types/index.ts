@@ -920,6 +920,8 @@ export interface CreateMonitoringLogData {
 // TIME TRACKING (Suivi du temps)
 // ============================================================================
 
+export type TimeEntrySource = 'manual' | 'ide' | 'auto';
+
 export interface TimeEntry {
   id: number;
   documentId: string;
@@ -933,6 +935,7 @@ export interface TimeEntry {
   hourly_rate: number | null;
   is_running: boolean;
   timer_status: 'active' | 'completed' | 'exceeded' | null; // statut du timer
+  source: TimeEntrySource; // source du temps (manuel, IDE, auto)
   project?: Project;
   task?: ProjectTask;
   client?: Client;
