@@ -144,10 +144,103 @@ export default function CalendarPage() {
   }, [currentDate]);
 
   // Fetch events
-  const { data: events, mutate } = useSWR(
+  const { data: rawEvents, mutate } = useSWR(
     user?.id ? ['calendar-events', user.id, currentDate.getMonth(), currentDate.getFullYear()] : null,
     () => fetchCalendarEvents(user!.id, monthRange)
   );
+
+  // Generate recurring event occurrences
+  const events = useMemo(() => {
+    if (!rawEvents) return undefined;
+    
+    const allEvents: CalendarEvent[] = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Generate occurrences for the next 6 months
+    const endDate = new Date(today);
+    endDate.setMonth(endDate.getMonth() + 6);
+    
+    rawEvents.forEach(event => {
+      // Always add the original event
+      allEvents.push(event);
+      
+      // Skip if no recurrence or recurrence is 'none'
+      if (!event.recurrence || event.recurrence === 'none') return;
+      
+      const eventStart = new Date(event.start_date);
+      const eventEnd = event.end_date ? new Date(event.end_date) : null;
+      const recurrenceEnd = event.recurrence_end_date ? new Date(event.recurrence_end_date) : endDate;
+      
+      // Calculate event duration for end_date
+      const duration = eventEnd ? eventEnd.getTime() - eventStart.getTime() : 0;
+      
+      let currentDate = new Date(eventStart);
+      let iterations = 0;
+      const maxIterations = 365; // Safety limit
+      
+      while (iterations < maxIterations) {
+        iterations++;
+        
+        // Calculate next occurrence based on recurrence type
+        switch (event.recurrence) {
+          case 'daily':
+            currentDate.setDate(currentDate.getDate() + 1);
+            break;
+          case 'weekdays':
+            do {
+              currentDate.setDate(currentDate.getDate() + 1);
+            } while (currentDate.getDay() === 0 || currentDate.getDay() === 6);
+            break;
+          case 'weekly':
+            currentDate.setDate(currentDate.getDate() + 7);
+            break;
+          case 'biweekly':
+            currentDate.setDate(currentDate.getDate() + 14);
+            break;
+          case 'monthly':
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            break;
+          case 'yearly':
+            currentDate.setFullYear(currentDate.getFullYear() + 1);
+            break;
+          case 'custom':
+            // For custom, find the next day in recurrence_days
+            if (!event.recurrence_days || event.recurrence_days.length === 0) break;
+            let found = false;
+            for (let i = 1; i <= 7 && !found; i++) {
+              const nextDate = new Date(currentDate);
+              nextDate.setDate(nextDate.getDate() + i);
+              if (event.recurrence_days.includes(nextDate.getDay())) {
+                currentDate = nextDate;
+                found = true;
+              }
+            }
+            if (!found) currentDate.setDate(currentDate.getDate() + 7);
+            break;
+          default:
+            return; // Unknown recurrence type
+        }
+        
+        // Stop if we've passed the recurrence end date or our display limit
+        if (currentDate > recurrenceEnd || currentDate > endDate) break;
+        
+        // Create the recurring instance
+        const newStart = new Date(currentDate);
+        const newEnd = duration ? new Date(newStart.getTime() + duration) : null;
+        
+        allEvents.push({
+          ...event,
+          documentId: `${event.documentId}_${currentDate.getTime()}`, // Unique ID for display
+          start_date: newStart.toISOString(),
+          end_date: newEnd?.toISOString() || null,
+          recurrence_parent_id: event.documentId, // Link to parent event
+        });
+      }
+    });
+    
+    return allEvents;
+  }, [rawEvents]);
 
   // Enable/disable notifications
   const toggleNotifications = async () => {
@@ -277,6 +370,19 @@ export default function CalendarPage() {
   const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
   const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
   const goToToday = () => setCurrentDate(new Date());
+
+  // Handle editing event - get parent if it's a recurring instance
+  const handleEditEvent = useCallback((event: CalendarEvent) => {
+    // If this is a generated recurring instance, find and edit the parent event
+    if (event.recurrence_parent_id && rawEvents) {
+      const parentEvent = rawEvents.find(e => e.documentId === event.recurrence_parent_id);
+      if (parentEvent) {
+        setEditingEvent(parentEvent);
+        return;
+      }
+    }
+    setEditingEvent(event);
+  }, [rawEvents]);
 
   // Check if date is today
   const isToday = (date: Date) => {
@@ -477,7 +583,7 @@ export default function CalendarPage() {
                           }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setEditingEvent(event);
+                            handleEditEvent(event);
                           }}
                         >
                           {event.all_day ? '' : formatTime(event.start_date) + ' '}
@@ -522,7 +628,7 @@ export default function CalendarPage() {
                     <div
                       key={event.documentId}
                       className="p-3 rounded-lg border border-default hover:border-accent transition-colors cursor-pointer"
-                      onClick={() => setEditingEvent(event)}
+                      onClick={() => handleEditEvent(event)}
                     >
                       <div className="flex items-start gap-2">
                         <div
@@ -619,7 +725,7 @@ export default function CalendarPage() {
                               </button>
                             )}
                             <button
-                              onClick={() => setEditingEvent(event)}
+                              onClick={() => handleEditEvent(event)}
                               className="p-1 hover:bg-hover rounded"
                             >
                               <IconEdit className="w-3 h-3" />
