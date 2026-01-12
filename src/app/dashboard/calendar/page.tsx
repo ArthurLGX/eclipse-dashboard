@@ -909,8 +909,8 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
         reminder_minutes: reminderMinutes,
         use_fathom: noteMode === 'fathom' && fathomConfigured === true,
         recurrence: recurrence as RecurrenceType,
-        recurrence_days: recurrenceDays,
-        recurrence_end_date: recurrenceEndDate,
+        recurrence_days: recurrenceDays.length > 0 ? recurrenceDays : undefined,
+        recurrence_end_date: recurrenceEndDate || undefined, // Envoyer undefined si vide, pas ""
         project: projectId ? projects.find(p => p.documentId === projectId)?.id : undefined,
         client: clientId ? clients.find(c => c.documentId === clientId)?.id : undefined,
       } as CreateCalendarEventData);
