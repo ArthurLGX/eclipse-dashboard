@@ -473,17 +473,31 @@ export default function ProjectsPage() {
     }
   };
 
-  // Handle toggle favorite
+  // Local state for optimistic favorite updates
+  const [localFavorites, setLocalFavorites] = useState<Record<string, boolean>>({});
+  
+  // Handle toggle favorite (optimistic update)
   const handleToggleFavorite = async (project: Project) => {
+    const currentState = localFavorites[project.documentId] ?? project.is_favorite ?? false;
+    const newFavoriteState = !currentState;
+    
+    // Optimistic update
+    setLocalFavorites(prev => ({ ...prev, [project.documentId]: newFavoriteState }));
+    
     try {
-      await toggleProjectFavorite(project.documentId, !project.is_favorite);
+      await toggleProjectFavorite(project.documentId, newFavoriteState);
       clearCache('projects');
-      await refetchProjects();
     } catch (error) {
+      // Revert on error
+      setLocalFavorites(prev => ({ ...prev, [project.documentId]: currentState }));
       console.error('Error toggling favorite:', error);
       showGlobalPopup(t('error') || 'Erreur', 'error');
     }
   };
+  
+  // Function to check if project is favorite (with optimistic state)
+  const isProjectFavorite = (project: Project) => 
+    localFavorites[project.documentId] ?? project.is_favorite ?? false;
 
   // Handle reorder
   const handleReorder = async (reorderedProjects: Project[]) => {
@@ -553,10 +567,9 @@ export default function ProjectsPage() {
         getItemName={(project) => project.title}
         sortable={true}
         showFavorites={true}
-        isFavorite={(project) => project.is_favorite || false}
+        isFavorite={isProjectFavorite}
         onToggleFavorite={handleToggleFavorite}
-        draggable={true}
-        onReorder={handleReorder}
+        draggable={false}
       />
 
       <NewProjectModal

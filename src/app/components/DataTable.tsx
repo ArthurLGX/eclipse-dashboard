@@ -463,16 +463,13 @@ export default function DataTable<T = unknown>({
             })}
           </tr>
         </thead>
-        <tbody>
-          {displayData.length > 0 ? (
-            draggable ? (
-              <Reorder.Group 
-                as="tr" 
-                axis="y" 
-                values={localData} 
-                onReorder={handleReorder}
-                className="contents"
-              >
+        {draggable && displayData.length > 0 ? (
+          <Reorder.Group 
+            as="tbody" 
+            axis="y" 
+            values={localData} 
+            onReorder={handleReorder}
+          >
                 {localData.map((row, index) => {
                   const itemId = getItemId(row);
                   const isSelected = selectedIds.has(itemId);
@@ -540,8 +537,10 @@ export default function DataTable<T = unknown>({
                     </Reorder.Item>
                   );
                 })}
-              </Reorder.Group>
-            ) : (
+          </Reorder.Group>
+        ) : (
+          <tbody>
+            {displayData.length > 0 ? (
               displayData.map((row, index) => {
                 const itemId = getItemId(row);
                 const isSelected = selectedIds.has(itemId);
@@ -604,18 +603,18 @@ export default function DataTable<T = unknown>({
                   </tr>
                 );
               })
-            )
-          ) : (
-            <tr>
-              <td
-                colSpan={columns.length + (selectable ? 1 : 0) + (showFavorites ? 1 : 0) + (draggable ? 1 : 0)}
-                className="py-8 px-2 lg:px-4 !text-center text-muted"
-              >
-                {emptyMessage}
-              </td>
-            </tr>
-          )}
-        </tbody>
+            ) : (
+              <tr>
+                <td
+                  colSpan={columns.length + (selectable ? 1 : 0) + (showFavorites ? 1 : 0)}
+                  className="py-8 px-2 lg:px-4 !text-center text-muted"
+                >
+                  {emptyMessage}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        )}
       </table>
 
       {/* Pagination */}

@@ -171,17 +171,31 @@ export default function ClientsPage() {
     await refetch();
   };
 
-  // Handle toggle favorite
+  // Local state for optimistic favorite updates
+  const [localFavorites, setLocalFavorites] = useState<Record<string, boolean>>({});
+  
+  // Handle toggle favorite (optimistic update)
   const handleToggleFavorite = async (client: Client) => {
+    const currentState = localFavorites[client.documentId] ?? client.is_favorite ?? false;
+    const newFavoriteState = !currentState;
+    
+    // Optimistic update
+    setLocalFavorites(prev => ({ ...prev, [client.documentId]: newFavoriteState }));
+    
     try {
-      await toggleClientFavorite(client.documentId, !client.is_favorite);
+      await toggleClientFavorite(client.documentId, newFavoriteState);
       clearCache('clients');
-      await refetch();
     } catch (error) {
+      // Revert on error
+      setLocalFavorites(prev => ({ ...prev, [client.documentId]: currentState }));
       console.error('Error toggling favorite:', error);
       showGlobalPopup(t('error') || 'Erreur', 'error');
     }
   };
+  
+  // Function to check if client is favorite (with optimistic state)
+  const isClientFavorite = (client: Client) => 
+    localFavorites[client.documentId] ?? client.is_favorite ?? false;
 
   // Handle reorder
   const handleReorder = async (reorderedClients: Client[]) => {
@@ -707,10 +721,9 @@ export default function ClientsPage() {
         getItemName={(client) => client.name}
         sortable={true}
         showFavorites={true}
-        isFavorite={(client) => client.is_favorite || false}
+        isFavorite={isClientFavorite}
         onToggleFavorite={handleToggleFavorite}
-        draggable={true}
-        onReorder={handleReorder}
+        draggable={false}
       />
 
       <AddClientModal
