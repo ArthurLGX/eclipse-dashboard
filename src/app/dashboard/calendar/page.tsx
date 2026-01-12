@@ -922,21 +922,36 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden">
       <motion.div
         ref={modalRef}
         tabIndex={-1}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-y-auto outline-none"
+        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] flex flex-col outline-none"
       >
-        <div className="p-6 border-b border-default">
+        {/* Header fixe */}
+        <div className="flex items-center justify-between p-4 border-b border-default bg-card rounded-t-xl sticky top-0 z-10">
           <h2 className="text-lg font-semibold text-primary">
             {event ? (t('edit_event') || 'Modifier l\'événement') : (t('new_event') || 'Nouvel événement')}
           </h2>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={onClose} className="btn-ghost px-3 py-1.5 text-sm">
+              {t('cancel') || 'Annuler'}
+            </button>
+            <button
+              type="submit"
+              form="event-form"
+              disabled={isSaving}
+              className="btn-primary px-3 py-1.5 text-sm rounded-lg flex items-center gap-2 disabled:opacity-50"
+            >
+              {isSaving && <div className="animate-spin w-3 h-3 border-2 border-white border-t-transparent rounded-full" />}
+              {event ? (t('save') || 'Sauvegarder') : (t('create') || 'Créer')}
+            </button>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form id="event-form" onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto flex-1" style={{ overscrollBehavior: 'contain' }}>
           <div>
             <label className="block text-sm font-medium text-secondary mb-1">
               {t('title') || 'Titre'} *
@@ -1038,22 +1053,12 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-secondary mb-1">
-                {t('end_date') || 'Date de fin'}
-              </label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="input w-full"
-              />
-            </div>
-            {!allDay && endDate && (
+          {/* Durée ou heure de fin */}
+          {!allDay && (
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">
-                  {t('end_time') || 'Heure'}
+                  {t('end_time') || 'Heure de fin'}
                 </label>
                 <input
                   type="time"
@@ -1062,20 +1067,57 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                   className="input w-full"
                 />
               </div>
-            )}
-          </div>
+              <div>
+                <label className="block text-sm font-medium text-secondary mb-1">
+                  {t('duration') || 'Durée'}
+                </label>
+                <div className="text-sm text-muted py-2.5 px-3 bg-muted/30 rounded-lg">
+                  {(() => {
+                    const start = new Date(`2000-01-01T${startTime}`);
+                    const end = new Date(`2000-01-01T${endTime}`);
+                    if (end <= start) return '-';
+                    const diff = (end.getTime() - start.getTime()) / 60000;
+                    const hours = Math.floor(diff / 60);
+                    const mins = diff % 60;
+                    if (hours > 0 && mins > 0) return `${hours}h ${mins}min`;
+                    if (hours > 0) return `${hours}h`;
+                    return `${mins}min`;
+                  })()}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Date de fin (pour événements multi-jours) */}
+          {allDay && (
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-1">
+                {t('end_date') || 'Date de fin'} ({t('optional') || 'optionnel'})
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                min={startDate}
+                className="input w-full"
+              />
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-secondary mb-1">
-              {t('location') || 'Lieu'}
+              {t('location') || 'Lieu'} / {t('meeting_link') || 'Lien de réunion'}
             </label>
             <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="Zoom, Bureau, etc."
+              placeholder="https://meet.google.com/... ou https://zoom.us/j/..."
               className="input w-full"
             />
+            <p className="text-xs text-muted mt-1">
+              {t('location_hint') || 'Ajoutez le lien Google Meet ou Zoom pour le matching Fathom'}
+            </p>
           </div>
 
           {/* Récurrence */}
@@ -1291,34 +1333,29 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-4">
-            {/* Bouton supprimer - uniquement en mode édition */}
-            {event && onDelete ? (
+          {/* Actions: supprimer */}
+          {event && onDelete && (
+            <div className="flex items-center pt-2">
               <button
                 type="button"
                 onClick={onDelete}
-                className="flex items-center gap-2 px-3 py-2 text-error hover:bg-error/10 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-error hover:bg-error/10 rounded-lg transition-colors text-sm"
               >
                 <IconTrash className="w-4 h-4" />
                 {t('delete') || 'Supprimer'}
               </button>
-            ) : (
-              <div />
-            )}
-            
-            <div className="flex items-center gap-2">
-              <button type="button" onClick={onClose} className="btn-ghost px-4 py-2">
-                {t('cancel') || 'Annuler'}
-              </button>
-              <button
-                type="submit"
-                disabled={isSaving}
-                className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
-              >
-                {isSaving && <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />}
-                {event ? (t('save') || 'Sauvegarder') : (t('create') || 'Créer')}
-              </button>
             </div>
+          )}
+
+          {/* Conseils pour le matching Fathom */}
+          <div className="p-4 rounded-xl border border-default bg-hover/30 mt-4">
+            <p className="text-xs text-muted leading-relaxed">
+              <span className="font-medium text-secondary">💡 {t('tips_title') || 'Conseils pour le matching Fathom'} :</span><br />
+              • {t('tip_meeting_link') || 'Mets le lien Google Meet/Zoom dans le champ "Lieu"'}<br />
+              • {t('tip_similar_title') || 'Utilise des titres similaires entre Eclipse et la réunion réelle'}<br />
+              • {t('tip_associate_project') || 'Associe toujours un projet pour retrouver les notes facilement'}<br />
+              • {t('tip_create_before') || 'Crée l\'événement avant la réunion pour que le matching fonctionne'}
+            </p>
           </div>
 
           {/* Meeting Notes Panel - Only for existing meeting events */}
