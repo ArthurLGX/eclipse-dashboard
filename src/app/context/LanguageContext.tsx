@@ -292,6 +292,23 @@ const translations = {
     api_token_step_4: 'Collez le token et liez vos dossiers aux projets',
     download_extension: 'Télécharger l\'extension VS Code',
 
+    // Status Badges
+    time_source_auto: 'Auto',
+    time_source_auto_tooltip: 'Temps collecté automatiquement',
+    time_source_ide_tooltip: 'Temps collecté automatiquement depuis l\'IDE',
+    time_source_manual: 'Manuel',
+    time_source_manual_tooltip: 'Temps saisi manuellement',
+    time_source_mixed: 'Mixte',
+    time_source_mixed_tooltip: 'Combinaison de temps automatique et manuel',
+    tracking_active: 'Tracking actif',
+    tracking_active_tooltip: 'Le temps est actuellement suivi sur ce projet',
+    profitability_on_track: 'On track',
+    profitability_on_track_tooltip: 'Le projet respecte les estimations',
+    profitability_warning: 'À surveiller',
+    profitability_warning_tooltip: 'Le temps consommé approche des estimations',
+    profitability_exceeded: 'Dépassement',
+    profitability_exceeded_tooltip: 'Le temps consommé dépasse les estimations',
+
     // Templates
     email_templates: 'Templates d\'emails',
     email_templates_desc: 'Emails pré-écrits pour chaque étape du pipeline',
@@ -2945,6 +2962,23 @@ const translations = {
     api_token_step_3: 'In VS Code: Ctrl+Shift+P → Eclipse: Configure API Token',
     api_token_step_4: 'Paste the token and link your folders to projects',
     download_extension: 'Download VS Code extension',
+
+    // Status Badges
+    time_source_auto: 'Auto',
+    time_source_auto_tooltip: 'Time collected automatically',
+    time_source_ide_tooltip: 'Time collected automatically from IDE',
+    time_source_manual: 'Manual',
+    time_source_manual_tooltip: 'Time entered manually',
+    time_source_mixed: 'Mixed',
+    time_source_mixed_tooltip: 'Combination of automatic and manual time',
+    tracking_active: 'Tracking active',
+    tracking_active_tooltip: 'Time is currently being tracked on this project',
+    profitability_on_track: 'On track',
+    profitability_on_track_tooltip: 'Project is within estimates',
+    profitability_warning: 'Watch',
+    profitability_warning_tooltip: 'Time spent is approaching estimates',
+    profitability_exceeded: 'Exceeded',
+    profitability_exceeded_tooltip: 'Time spent exceeds estimates',
 
     // Templates
     email_templates: 'Email Templates',

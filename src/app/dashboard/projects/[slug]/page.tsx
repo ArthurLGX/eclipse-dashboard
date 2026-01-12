@@ -45,6 +45,7 @@ import RichTextEditor from '@/app/components/RichTextEditor';
 import ProjectProfitabilityCard from '@/app/components/ProjectProfitabilityCard';
 import ProjectGuidedTour, { useProjectGuidedTour } from '@/app/components/ProjectGuidedTour';
 import QuickProjectModal from '@/app/components/QuickProjectModal';
+import { ProfitabilityBadge, TrackingStateBadge, getProfitabilityStatus } from '@/app/components/StatusBadge';
 import { 
   canDeleteProject, 
   fetchProjectCollaborators, 
@@ -669,6 +670,17 @@ const PROJECT_TYPES = [
                       {project.client.name}
                     </Link>
                   )}
+                  {/* Badges de rentabilité */}
+                  {(() => {
+                    const activeTasks = tasks.filter(t => t.task_status !== 'cancelled');
+                    const estimatedHours = activeTasks.reduce((sum, task) => sum + (task.estimated_hours || 0), 0);
+                    const actualHours = activeTasks.reduce((sum, task) => sum + (task.actual_hours || 0), 0);
+                    if (estimatedHours > 0) {
+                      const status = getProfitabilityStatus(actualHours, estimatedHours);
+                      return <ProfitabilityBadge status={status} />;
+                    }
+                    return null;
+                  })()}
                 </>
               )}
             </div>
