@@ -207,10 +207,11 @@ export default function DataTable<T = unknown>({
   const allCurrentPageSelected = currentPageIds.length > 0 && currentPageIds.every(id => selectedIds.has(id));
   const someCurrentPageSelected = currentPageIds.some(id => selectedIds.has(id));
   const allSelected = allIds.length > 0 && allIds.every(id => selectedIds.has(id));
+  const isSelectionMode = selectable && selectedIds.size > 0;
 
   // Toggle single item selection
-  const toggleItem = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const toggleItem = (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
     const newSelected = new Set(selectedIds);
     if (newSelected.has(id)) {
       newSelected.delete(id);
@@ -218,6 +219,15 @@ export default function DataTable<T = unknown>({
       newSelected.add(id);
     }
     setSelectedIds(newSelected);
+  };
+
+  // Handle row click - toggle selection if in selection mode, otherwise navigate
+  const handleRowClick = (row: T, itemId: string) => {
+    if (isSelectionMode) {
+      toggleItem(itemId);
+    } else {
+      onRowClick?.(row);
+    }
   };
 
   // Toggle all items on current page
@@ -473,7 +483,7 @@ export default function DataTable<T = unknown>({
                       as="tr"
                       key={itemId || index}
                       value={row}
-                      onClick={() => onRowClick?.(row)}
+                      onClick={() => handleRowClick(row, itemId)}
                       className={`cursor-pointer border-b border-default !font-light transition-colors ${
                         isSelected ? 'bg-accent/5' : ''
                       } ${rowIsFavorite ? 'bg-warning/5' : ''}`}
@@ -540,7 +550,7 @@ export default function DataTable<T = unknown>({
                 return (
                   <tr
                     key={itemId || index}
-                    onClick={() => onRowClick?.(row)}
+                    onClick={() => handleRowClick(row, itemId)}
                     className={`cursor-pointer border-b border-default !font-light transition-colors hover:bg-hover ${
                       isSelected ? 'bg-accent/5' : ''
                     } ${rowIsFavorite ? 'bg-warning/5' : ''}`}
