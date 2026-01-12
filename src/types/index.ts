@@ -119,7 +119,7 @@ export interface Client {
   phone?: string | null;
   processStatus: ContactStatus;
   // Champs pipeline/prospection
-  pipeline_status?: PipelineStatus;
+  pipeline_status?: PipelineStatus | null;
   source?: ContactSource;
   priority?: ContactPriority;
   budget?: number;
