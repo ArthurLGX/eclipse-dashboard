@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { createProject, deleteProject, fetchProjectTasks } from '@/lib/api';
+import { createProject, deleteProject, fetchProjectTasks, toggleProjectFavorite, updateProjectsOrder } from '@/lib/api';
 import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
@@ -473,6 +473,33 @@ export default function ProjectsPage() {
     }
   };
 
+  // Handle toggle favorite
+  const handleToggleFavorite = async (project: Project) => {
+    try {
+      await toggleProjectFavorite(project.documentId, !project.is_favorite);
+      clearCache('projects');
+      await refetchProjects();
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      showGlobalPopup(t('error') || 'Erreur', 'error');
+    }
+  };
+
+  // Handle reorder
+  const handleReorder = async (reorderedProjects: Project[]) => {
+    try {
+      const updates = reorderedProjects.map((p, index) => ({
+        documentId: p.documentId,
+        sort_order: index,
+      }));
+      await updateProjectsOrder(updates);
+      clearCache('projects');
+    } catch (error) {
+      console.error('Error reordering projects:', error);
+      showGlobalPopup(t('error') || 'Erreur', 'error');
+    }
+  };
+
   return (
     <ProtectedRoute>
       <DashboardPageTemplate<Project>
@@ -524,6 +551,12 @@ export default function ProjectsPage() {
         onDeleteSelected={handleDeleteMultipleProjects}
         getItemId={(project) => project.documentId || ''}
         getItemName={(project) => project.title}
+        sortable={true}
+        showFavorites={true}
+        isFavorite={(project) => project.is_favorite || false}
+        onToggleFavorite={handleToggleFavorite}
+        draggable={true}
+        onReorder={handleReorder}
       />
 
       <NewProjectModal

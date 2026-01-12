@@ -49,6 +49,14 @@ interface DashboardPageTemplateProps<T> {
   getItemName?: (item: T) => string;
   // Header extra content (tabs, etc.)
   headerExtra?: React.ReactNode;
+  // Sorting, favorites, drag & drop
+  sortable?: boolean;
+  draggable?: boolean;
+  showFavorites?: boolean;
+  favoritesFirst?: boolean;
+  isFavorite?: (item: T) => boolean;
+  onToggleFavorite?: (item: T) => void;
+  onReorder?: (items: T[]) => void;
 }
 
 export default function DashboardPageTemplate<T>({
@@ -78,6 +86,13 @@ export default function DashboardPageTemplate<T>({
   getItemId,
   getItemName,
   headerExtra,
+  sortable = true,
+  draggable = false,
+  showFavorites = false,
+  favoritesFirst = true,
+  isFavorite,
+  onToggleFavorite,
+  onReorder,
 }: DashboardPageTemplateProps<T>) {
   return (
     <motion.div
@@ -186,6 +201,13 @@ export default function DashboardPageTemplate<T>({
                 customActions={customActions}
                 getItemId={getItemId}
                 getItemName={getItemName}
+                sortable={sortable}
+                draggable={draggable}
+                showFavorites={showFavorites}
+                favoritesFirst={favoritesFirst}
+                isFavorite={isFavorite}
+                onToggleFavorite={onToggleFavorite}
+                onReorder={onReorder}
               />
             </div>
           </div>
