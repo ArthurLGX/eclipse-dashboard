@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { IconTrash, IconX, IconSquare, IconSquareCheck, IconSquareMinus } from '@tabler/icons-react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
+import { IconTrash, IconX, IconSquare, IconSquareCheck, IconSquareMinus, IconChevronUp, IconChevronDown, IconGripVertical, IconStar, IconStarFilled } from '@tabler/icons-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export interface Column<T = unknown> {
@@ -10,6 +10,7 @@ export interface Column<T = unknown> {
   label: string;
   render?: (value: unknown, row: T) => React.ReactNode;
   className?: string;
+  sortable?: boolean; // Enable sorting for this column
 }
 
 export interface CustomAction<T = unknown> {
@@ -19,6 +20,8 @@ export interface CustomAction<T = unknown> {
   className?: string;
   variant?: 'primary' | 'success' | 'warning' | 'danger';
 }
+
+export type SortDirection = 'asc' | 'desc' | null;
 
 export interface DataTableProps<T = unknown> {
   columns: Column<T>[];
@@ -33,6 +36,18 @@ export interface DataTableProps<T = unknown> {
   customActions?: CustomAction<T>[];
   getItemId?: (item: T) => string;
   getItemName?: (item: T) => string;
+  // Sorting props
+  sortable?: boolean;
+  defaultSortKey?: string;
+  defaultSortDirection?: SortDirection;
+  // Drag & drop props
+  draggable?: boolean;
+  onReorder?: (items: T[]) => void;
+  // Favorites props
+  showFavorites?: boolean;
+  onToggleFavorite?: (item: T) => void;
+  isFavorite?: (item: T) => boolean;
+  favoritesFirst?: boolean;
 }
 
 export default function DataTable<T = unknown>({
@@ -47,17 +62,121 @@ export default function DataTable<T = unknown>({
   customActions = [],
   getItemId = (item) => (item as { id?: string; documentId?: string }).documentId || (item as { id?: string }).id || '',
   getItemName = (item) => (item as { name?: string }).name || '',
+  // Sorting
+  sortable = false,
+  defaultSortKey,
+  defaultSortDirection = null,
+  // Drag & drop
+  draggable = false,
+  onReorder,
+  // Favorites
+  showFavorites = false,
+  onToggleFavorite,
+  isFavorite,
+  favoritesFirst = true,
 }: DataTableProps<T>) {
   const { t } = useLanguage();
   
+  // Sorting state
+  const [sortKey, setSortKey] = useState<string | null>(defaultSortKey || null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(defaultSortDirection);
+
+  // Handle column sort
+  const handleSort = useCallback((key: string) => {
+    if (sortKey === key) {
+      // Cycle through: asc -> desc -> null
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortDirection(null);
+        setSortKey(null);
+      } else {
+        setSortDirection('asc');
+      }
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  }, [sortKey, sortDirection]);
+
+  // Sort data
+  const sortedData = useMemo(() => {
+    let result = [...data];
+    
+    // Sort favorites first if enabled
+    if (showFavorites && favoritesFirst && isFavorite) {
+      result.sort((a, b) => {
+        const aFav = isFavorite(a) ? 1 : 0;
+        const bFav = isFavorite(b) ? 1 : 0;
+        return bFav - aFav;
+      });
+    }
+    
+    // Apply column sorting
+    if (sortKey && sortDirection) {
+      result.sort((a, b) => {
+        const aVal = (a as Record<string, unknown>)[sortKey];
+        const bVal = (b as Record<string, unknown>)[sortKey];
+        
+        // Handle null/undefined
+        if (aVal == null && bVal == null) return 0;
+        if (aVal == null) return sortDirection === 'asc' ? 1 : -1;
+        if (bVal == null) return sortDirection === 'asc' ? -1 : 1;
+        
+        // Compare values
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+          return sortDirection === 'asc' 
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+        }
+        
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+        
+        // Date comparison
+        if (aVal instanceof Date && bVal instanceof Date) {
+          return sortDirection === 'asc' 
+            ? aVal.getTime() - bVal.getTime()
+            : bVal.getTime() - aVal.getTime();
+        }
+        
+        // String comparison as fallback
+        return sortDirection === 'asc'
+          ? String(aVal).localeCompare(String(bVal))
+          : String(bVal).localeCompare(String(aVal));
+      });
+    }
+    
+    return result;
+  }, [data, sortKey, sortDirection, showFavorites, favoritesFirst, isFavorite]);
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const paginatedData = data.slice(
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  // For drag & drop, we need local state
+  const [localData, setLocalData] = useState<T[]>(paginatedData);
+  useEffect(() => {
+    setLocalData(paginatedData);
+  }, [paginatedData]);
+
+  // Handle reorder
+  const handleReorder = useCallback((newOrder: T[]) => {
+    setLocalData(newOrder);
+    if (onReorder) {
+      // Reconstruct full data with new order
+      const beforePage = sortedData.slice(0, (currentPage - 1) * itemsPerPage);
+      const afterPage = sortedData.slice(currentPage * itemsPerPage);
+      const fullNewOrder = [...beforePage, ...newOrder, ...afterPage];
+      onReorder(fullNewOrder);
+    }
+  }, [sortedData, currentPage, itemsPerPage, onReorder]);
 
   // Selection state
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -71,14 +190,14 @@ export default function DataTable<T = unknown>({
 
   // Get IDs of current page items
   const currentPageIds = useMemo(() => 
-    paginatedData.map(item => getItemId(item)),
-    [paginatedData, getItemId]
+    (draggable ? localData : paginatedData).map(item => getItemId(item)),
+    [draggable, localData, paginatedData, getItemId]
   );
 
   // Get IDs of all items
   const allIds = useMemo(() => 
-    data.map(item => getItemId(item)),
-    [data, getItemId]
+    sortedData.map(item => getItemId(item)),
+    [sortedData, getItemId]
   );
 
   // Check selection state
@@ -137,7 +256,10 @@ export default function DataTable<T = unknown>({
   };
 
   // Get selected items
-  const selectedItems = data.filter(item => selectedIds.has(getItemId(item)));
+  const selectedItems = sortedData.filter(item => selectedIds.has(getItemId(item)));
+  
+  // Display data (drag mode uses local state)
+  const displayData = draggable ? localData : paginatedData;
 
   if (loading) {
     return (
@@ -145,6 +267,16 @@ export default function DataTable<T = unknown>({
         <table className="table w-full">
           <thead>
             <tr className="border-b border-default">
+              {draggable && (
+                <th className="w-10 py-3 px-2">
+                  <div className="h-4 w-4 bg-hover rounded animate-pulse"></div>
+                </th>
+              )}
+              {showFavorites && (
+                <th className="w-10 py-3 px-2">
+                  <div className="h-4 w-4 bg-hover rounded animate-pulse"></div>
+                </th>
+              )}
               {selectable && (
                 <th className="w-12 py-3 px-4">
                   <div className="h-5 w-5 bg-hover rounded animate-pulse"></div>
@@ -163,6 +295,16 @@ export default function DataTable<T = unknown>({
           <tbody>
             {[1, 2, 3].map(i => (
               <tr key={i} className="border-b border-default">
+                {draggable && (
+                  <td className="w-10 px-2">
+                    <div className="h-4 w-4 bg-hover rounded animate-pulse"></div>
+                  </td>
+                )}
+                {showFavorites && (
+                  <td className="w-10 px-2">
+                    <div className="h-4 w-4 bg-hover rounded animate-pulse"></div>
+                  </td>
+                )}
                 {selectable && (
                   <td className="w-12 px-4">
                     <div className="h-5 w-5 bg-hover rounded animate-pulse"></div>
@@ -254,6 +396,16 @@ export default function DataTable<T = unknown>({
       <table className="table w-full">
         <thead>
           <tr className="border-b border-default">
+            {draggable && (
+              <th className="w-10 py-3 px-2">
+                {/* Drag handle column */}
+              </th>
+            )}
+            {showFavorites && (
+              <th className="w-10 py-3 px-2">
+                <IconStar className="w-4 h-4 text-muted" />
+              </th>
+            )}
             {selectable && (
               <th className="w-12 py-3 px-2 lg:px-4">
                 <button
@@ -270,66 +422,180 @@ export default function DataTable<T = unknown>({
                 </button>
               </th>
             )}
-            {columns.map((column, index) => (
-              <th
-                key={index}
-                className="!text-left py-3 px-2 lg:px-4 text-secondary font-semibold !capitalize"
-              >
-                {column.label}
-              </th>
-            ))}
+            {columns.map((column, index) => {
+              const isSortable = sortable && column.sortable !== false;
+              const isCurrentSort = sortKey === column.key;
+              
+              return (
+                <th
+                  key={index}
+                  className={`!text-left py-3 px-2 lg:px-4 text-secondary font-semibold !capitalize ${isSortable ? 'cursor-pointer hover:text-primary select-none' : ''}`}
+                  onClick={isSortable ? () => handleSort(column.key) : undefined}
+                >
+                  <div className="flex items-center gap-1">
+                    {column.label}
+                    {isSortable && (
+                      <span className="flex flex-col">
+                        <IconChevronUp 
+                          className={`w-3 h-3 -mb-1 ${isCurrentSort && sortDirection === 'asc' ? 'text-accent' : 'text-muted'}`} 
+                        />
+                        <IconChevronDown 
+                          className={`w-3 h-3 ${isCurrentSort && sortDirection === 'desc' ? 'text-accent' : 'text-muted'}`} 
+                        />
+                      </span>
+                    )}
+                  </div>
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>
-          {paginatedData.length > 0 ? (
-            paginatedData.map((row, index) => {
-              const itemId = getItemId(row);
-              const isSelected = selectedIds.has(itemId);
-              
-              return (
-                <tr
-                  key={itemId || index}
-                  onClick={() => onRowClick?.(row)}
-                  className={`cursor-pointer border-b border-default !font-light transition-colors ${
-                    isSelected ? 'bg-accent/5' : ''
-                  }`}
-                >
-                  {selectable && (
-                    <td className="w-12 py-4 px-2 lg:px-4">
-                      <button
-                        onClick={(e) => toggleItem(itemId, e)}
-                        className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
-                      >
-                        {isSelected ? (
-                          <IconSquareCheck className="w-5 h-5 text-accent" />
-                        ) : (
-                          <IconSquare className="w-5 h-5" />
-                        )}
-                      </button>
-                    </td>
-                  )}
-                  {columns.map((column, colIndex) => (
-                    <td
-                      key={colIndex}
-                      className={`py-4 px-2 lg:px-4 text-muted !font-light ${column.className || ''}`}
+          {displayData.length > 0 ? (
+            draggable ? (
+              <Reorder.Group 
+                as="tr" 
+                axis="y" 
+                values={localData} 
+                onReorder={handleReorder}
+                className="contents"
+              >
+                {localData.map((row, index) => {
+                  const itemId = getItemId(row);
+                  const isSelected = selectedIds.has(itemId);
+                  const rowIsFavorite = isFavorite ? isFavorite(row) : false;
+                  
+                  return (
+                    <Reorder.Item
+                      as="tr"
+                      key={itemId || index}
+                      value={row}
+                      onClick={() => onRowClick?.(row)}
+                      className={`cursor-pointer border-b border-default !font-light transition-colors ${
+                        isSelected ? 'bg-accent/5' : ''
+                      } ${rowIsFavorite ? 'bg-warning/5' : ''}`}
                     >
-                      {column.render
-                        ? column.render(
-                            (row as Record<string, unknown>)[column.key],
-                            row
-                          )
-                        : ((row as Record<string, unknown>)[
-                            column.key
-                          ] as string) || 'N/A'}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })
+                      <td className="w-10 py-4 px-2">
+                        <IconGripVertical className="w-4 h-4 text-muted cursor-grab active:cursor-grabbing" />
+                      </td>
+                      {showFavorites && (
+                        <td className="w-10 py-4 px-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onToggleFavorite?.(row);
+                            }}
+                            className="text-muted hover:text-warning transition-colors"
+                          >
+                            {rowIsFavorite ? (
+                              <IconStarFilled className="w-4 h-4 text-warning" />
+                            ) : (
+                              <IconStar className="w-4 h-4" />
+                            )}
+                          </button>
+                        </td>
+                      )}
+                      {selectable && (
+                        <td className="w-12 py-4 px-2 lg:px-4">
+                          <button
+                            onClick={(e) => toggleItem(itemId, e)}
+                            className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
+                          >
+                            {isSelected ? (
+                              <IconSquareCheck className="w-5 h-5 text-accent" />
+                            ) : (
+                              <IconSquare className="w-5 h-5" />
+                            )}
+                          </button>
+                        </td>
+                      )}
+                      {columns.map((column, colIndex) => (
+                        <td
+                          key={colIndex}
+                          className={`py-4 px-2 lg:px-4 text-muted !font-light ${column.className || ''}`}
+                        >
+                          {column.render
+                            ? column.render(
+                                (row as Record<string, unknown>)[column.key],
+                                row
+                              )
+                            : ((row as Record<string, unknown>)[
+                                column.key
+                              ] as string) || 'N/A'}
+                        </td>
+                      ))}
+                    </Reorder.Item>
+                  );
+                })}
+              </Reorder.Group>
+            ) : (
+              displayData.map((row, index) => {
+                const itemId = getItemId(row);
+                const isSelected = selectedIds.has(itemId);
+                const rowIsFavorite = isFavorite ? isFavorite(row) : false;
+                
+                return (
+                  <tr
+                    key={itemId || index}
+                    onClick={() => onRowClick?.(row)}
+                    className={`cursor-pointer border-b border-default !font-light transition-colors hover:bg-hover ${
+                      isSelected ? 'bg-accent/5' : ''
+                    } ${rowIsFavorite ? 'bg-warning/5' : ''}`}
+                  >
+                    {showFavorites && (
+                      <td className="w-10 py-4 px-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleFavorite?.(row);
+                          }}
+                          className="text-muted hover:text-warning transition-colors"
+                        >
+                          {rowIsFavorite ? (
+                            <IconStarFilled className="w-4 h-4 text-warning" />
+                          ) : (
+                            <IconStar className="w-4 h-4" />
+                          )}
+                        </button>
+                      </td>
+                    )}
+                    {selectable && (
+                      <td className="w-12 py-4 px-2 lg:px-4">
+                        <button
+                          onClick={(e) => toggleItem(itemId, e)}
+                          className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
+                        >
+                          {isSelected ? (
+                            <IconSquareCheck className="w-5 h-5 text-accent" />
+                          ) : (
+                            <IconSquare className="w-5 h-5" />
+                          )}
+                        </button>
+                      </td>
+                    )}
+                    {columns.map((column, colIndex) => (
+                      <td
+                        key={colIndex}
+                        className={`py-4 px-2 lg:px-4 text-muted !font-light ${column.className || ''}`}
+                      >
+                        {column.render
+                          ? column.render(
+                              (row as Record<string, unknown>)[column.key],
+                              row
+                            )
+                          : ((row as Record<string, unknown>)[
+                              column.key
+                            ] as string) || 'N/A'}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })
+            )
           ) : (
             <tr>
               <td
-                colSpan={columns.length + (selectable ? 1 : 0)}
+                colSpan={columns.length + (selectable ? 1 : 0) + (showFavorites ? 1 : 0) + (draggable ? 1 : 0)}
                 className="py-8 px-2 lg:px-4 !text-center text-muted"
               >
                 {emptyMessage}
