@@ -21,7 +21,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import { useProjects, useClients, clearCache } from '@/hooks/useApi';
 import { useModalFocus } from '@/hooks/useModalFocus';
 import { createProject, createProjectTask, fetchProjectTasks } from '@/lib/api';
-import type { Client, Project, Task } from '@/types';
+import type { Client, Project, ProjectTask } from '@/types';
 
 interface QuickProjectModalProps {
   isOpen: boolean;
@@ -93,7 +93,7 @@ export default function QuickProjectModal({
   const [step, setStep] = useState<Step>('choice');
   const [selectedSourceProject, setSelectedSourceProject] = useState<Project | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<typeof QUICK_TEMPLATES[0] | null>(null);
-  const [sourceTasks, setSourceTasks] = useState<Task[]>([]);
+  const [sourceTasks, setSourceTasks] = useState<ProjectTask[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [loadingTasks, setLoadingTasks] = useState(false);
   
