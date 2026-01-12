@@ -683,6 +683,38 @@ export default function PipelinePage() {
     }
   }, [deleteModal.contact, showGlobalPopup, t]);
 
+  const handleRemoveFromKanban = useCallback(async (contact: Client) => {
+    const previousContact = contact;
+    
+    // Mise à jour optimiste - retirer le pipeline_status
+    setLocalContacts(prev => {
+      if (!prev) return prev;
+      return prev.map(c => 
+        c.documentId === contact.documentId 
+          ? { ...c, pipeline_status: undefined }
+          : c
+      );
+    });
+    
+    try {
+      // Mettre le pipeline_status à null dans la base de données
+      await updateClient(contact.documentId, { pipeline_status: null });
+      clearCache('clients');
+      clearCache('contacts');
+      showGlobalPopup(t('contact_removed_from_kanban') || 'Contact retiré du pipeline', 'success');
+    } catch (error) {
+      console.error('Error removing from kanban:', error);
+      // Remettre l'état précédent en cas d'erreur
+      setLocalContacts(prev => {
+        if (!prev) return prev;
+        return prev.map(c => 
+          c.documentId === contact.documentId ? previousContact : c
+        );
+      });
+      showGlobalPopup(t('error_removing_from_kanban') || 'Erreur lors du retrait', 'error');
+    }
+  }, [showGlobalPopup, t]);
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -773,6 +805,7 @@ export default function PipelinePage() {
         onAddContact={(status) => setContactModal({ isOpen: true, contact: null, initialStatus: status })}
         onSelectExistingContact={(status) => setSelectModal({ isOpen: true, targetStatus: status })}
         onDeleteContact={(contact) => setDeleteModal({ isOpen: true, contact })}
+        onRemoveFromKanban={handleRemoveFromKanban}
         loading={loading}
       />
 

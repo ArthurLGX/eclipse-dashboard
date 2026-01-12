@@ -2,7 +2,8 @@
 
 import React, { useState, useCallback } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar } from '@tabler/icons-react';
+import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar, IconUserMinus } from '@tabler/icons-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { Client, PipelineStatus, ContactPriority } from '@/types';
 
 // Configuration des colonnes du pipeline
@@ -20,6 +21,7 @@ interface KanbanBoardProps {
   onContactClick: (contact: Client) => void;
   onAddContact?: (status: PipelineStatus) => void;
   onDeleteContact?: (contact: Client) => void;
+  onRemoveFromKanban?: (contact: Client) => void;
   onSelectExistingContact?: (status: PipelineStatus) => void;
   loading?: boolean;
 }
@@ -50,12 +52,16 @@ function ContactCard({
   contact,
   onClick,
   onDelete,
-  isDragging 
+  isDragging,
+  onDragStart,
+  onDragEnd,
 }: { 
   contact: Client;
   onClick: () => void;
   onDelete?: () => void;
   isDragging: boolean;
+  onDragStart?: (e: React.DragEvent, contactId: string) => void;
+  onDragEnd?: () => void;
 }) {
   const { t } = useLanguage();
   const [showMenu, setShowMenu] = useState(false);
@@ -117,6 +123,10 @@ function ContactCard({
       onDragStart={(e) => {
         e.dataTransfer.setData('contactId', contact.documentId);
         e.dataTransfer.setData('currentStatus', contact.pipeline_status || 'new');
+        onDragStart?.(e, contact.documentId);
+      }}
+      onDragEnd={() => {
+        onDragEnd?.();
       }}
     >
       {/* Header avec avatar, titre et menu */}
@@ -273,6 +283,9 @@ function KanbanColumn({
   onSelectExistingContact,
   onDeleteContact,
   totalValue,
+  onCardDragStart,
+  onCardDragEnd,
+  draggingContactId,
 }: {
   column: PipelineColumn;
   contacts: Client[];
@@ -282,11 +295,12 @@ function KanbanColumn({
   onSelectExistingContact?: () => void;
   onDeleteContact?: (contact: Client) => void;
   totalValue: number;
+  onCardDragStart?: (e: React.DragEvent, contactId: string) => void;
+  onCardDragEnd?: () => void;
+  draggingContactId?: string | null;
 }) {
   const { t } = useLanguage();
   const [isDragOver, setIsDragOver] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_draggingId, _setDraggingId] = useState<string | null>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -359,7 +373,9 @@ function KanbanColumn({
             contact={contact}
             onClick={() => onContactClick(contact)}
             onDelete={onDeleteContact ? () => onDeleteContact(contact) : undefined}
-            isDragging={_draggingId === contact.documentId}
+            isDragging={draggingContactId === contact.documentId}
+            onDragStart={onCardDragStart}
+            onDragEnd={onCardDragEnd}
           />
         ))}
         
@@ -383,9 +399,74 @@ export default function KanbanBoard({
   onAddContact,
   onSelectExistingContact,
   onDeleteContact,
+  onRemoveFromKanban,
   loading = false,
 }: KanbanBoardProps) {
   const { t } = useLanguage();
+  const [isDragging, setIsDragging] = useState(false);
+  const [draggingContactId, setDraggingContactId] = useState<string | null>(null);
+  const [isOverRemoveZone, setIsOverRemoveZone] = useState(false);
+  const [isOverDeleteZone, setIsOverDeleteZone] = useState(false);
+
+  // Global drag listeners
+  const handleGlobalDragStart = useCallback((e: React.DragEvent, contactId: string) => {
+    setIsDragging(true);
+    setDraggingContactId(contactId);
+    e.dataTransfer.setData('contactId', contactId);
+  }, []);
+
+  const handleGlobalDragEnd = useCallback(() => {
+    setIsDragging(false);
+    setDraggingContactId(null);
+    setIsOverRemoveZone(false);
+    setIsOverDeleteZone(false);
+  }, []);
+
+  // Remove zone handlers
+  const handleRemoveZoneDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsOverRemoveZone(true);
+  }, []);
+
+  const handleRemoveZoneDragLeave = useCallback(() => {
+    setIsOverRemoveZone(false);
+  }, []);
+
+  const handleRemoveZoneDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsOverRemoveZone(false);
+    const contactId = e.dataTransfer.getData('contactId');
+    if (contactId && onRemoveFromKanban) {
+      const contact = contacts.find(c => c.documentId === contactId);
+      if (contact) {
+        onRemoveFromKanban(contact);
+      }
+    }
+    handleGlobalDragEnd();
+  }, [contacts, onRemoveFromKanban, handleGlobalDragEnd]);
+
+  // Delete zone handlers
+  const handleDeleteZoneDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsOverDeleteZone(true);
+  }, []);
+
+  const handleDeleteZoneDragLeave = useCallback(() => {
+    setIsOverDeleteZone(false);
+  }, []);
+
+  const handleDeleteZoneDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsOverDeleteZone(false);
+    const contactId = e.dataTransfer.getData('contactId');
+    if (contactId && onDeleteContact) {
+      const contact = contacts.find(c => c.documentId === contactId);
+      if (contact) {
+        onDeleteContact(contact);
+      }
+    }
+    handleGlobalDragEnd();
+  }, [contacts, onDeleteContact, handleGlobalDragEnd]);
 
   // Grouper les contacts par pipeline_status
   const contactsByStatus = PIPELINE_COLUMNS.reduce((acc, column) => {
@@ -451,9 +532,73 @@ export default function KanbanBoard({
             onSelectExistingContact={onSelectExistingContact ? () => onSelectExistingContact(column.id) : undefined}
             onDeleteContact={onDeleteContact}
             totalValue={valueByStatus[column.id] || 0}
+            onCardDragStart={handleGlobalDragStart}
+            onCardDragEnd={handleGlobalDragEnd}
+            draggingContactId={draggingContactId}
           />
         ))}
       </div>
+
+      {/* Drop zones at bottom - appear when dragging */}
+      <AnimatePresence>
+        {isDragging && (
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed bottom-0 left-0 right-0 z-50 p-4 flex justify-center gap-4"
+          >
+            {/* Remove from Kanban zone */}
+            {onRemoveFromKanban && (
+              <motion.div
+                onDragOver={handleRemoveZoneDragOver}
+                onDragLeave={handleRemoveZoneDragLeave}
+                onDrop={handleRemoveZoneDrop}
+                className={`
+                  flex items-center gap-3 px-6 py-4 rounded-xl border-2 border-dashed transition-all duration-200
+                  ${isOverRemoveZone 
+                    ? 'bg-warning/20 border-warning scale-105 shadow-lg' 
+                    : 'bg-card/95 border-warning/50 backdrop-blur-sm shadow-md'
+                  }
+                `}
+              >
+                <IconUserMinus 
+                  size={24} 
+                  className={`transition-colors ${isOverRemoveZone ? 'text-warning' : 'text-warning/70'}`} 
+                />
+                <span className={`font-medium ${isOverRemoveZone ? 'text-warning' : 'text-warning/70'}`}>
+                  {t('remove_from_kanban') || 'Retirer du Kanban'}
+                </span>
+              </motion.div>
+            )}
+
+            {/* Delete zone */}
+            {onDeleteContact && (
+              <motion.div
+                onDragOver={handleDeleteZoneDragOver}
+                onDragLeave={handleDeleteZoneDragLeave}
+                onDrop={handleDeleteZoneDrop}
+                className={`
+                  flex items-center gap-3 px-6 py-4 rounded-xl border-2 border-dashed transition-all duration-200
+                  ${isOverDeleteZone 
+                    ? 'bg-danger/20 border-danger scale-105 shadow-lg' 
+                    : 'bg-card/95 border-danger/50 backdrop-blur-sm shadow-md'
+                  }
+                `}
+              >
+                <IconTrash 
+                  size={24} 
+                  className={`transition-colors ${isOverDeleteZone ? 'text-danger' : 'text-danger/70'}`} 
+                />
+                <span className={`font-medium ${isOverDeleteZone ? 'text-danger' : 'text-danger/70'}`}>
+                  {t('delete') || 'Supprimer'}
+                </span>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
