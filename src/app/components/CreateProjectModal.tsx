@@ -196,8 +196,8 @@ export default function CreateProjectModal({
     
     setIsSaving(true);
     try {
-      // 1. Create or get client
-      let clientDocId = selectedClientId;
+      // 1. Create or get client ID (numeric)
+      let clientId: number | undefined;
       
       if (showNewClientForm && newClientName) {
         const clientResponse = await addClientUser(user.id, {
@@ -206,9 +206,15 @@ export default function CreateProjectModal({
           enterprise: newClientName,
           processStatus: 'client',
         });
-        const newClient = (clientResponse as { data?: { documentId: string } }).data;
-        if (newClient?.documentId) {
-          clientDocId = newClient.documentId;
+        const newClient = (clientResponse as { data?: { id: number; documentId: string } }).data;
+        if (newClient?.id) {
+          clientId = newClient.id;
+        }
+      } else if (selectedClientId) {
+        // Find the numeric ID from the selected client documentId
+        const selectedClient = clients.find(c => c.documentId === selectedClientId);
+        if (selectedClient?.id) {
+          clientId = selectedClient.id;
         }
       }
       
@@ -226,7 +232,7 @@ export default function CreateProjectModal({
         start_date: startDate,
         end_date: end.toISOString().split('T')[0],
         user: user.id,
-        client: clientDocId || undefined,
+        client: clientId,
       });
       
       const project = (projectResponse as { data?: Project }).data || projectResponse as Project;

@@ -689,7 +689,8 @@ function ComposeEmail() {
         emailData={{
           title: title || undefined,
           subject,
-          content: message,
+          content: '', // Texte brut vide car on utilise htmlContent
+          htmlContent: message, // Le contenu HTML du RichTextEditor
         }}
         senderInfo={senderInfo}
         signatureData={includeSignature ? signatureData : null}
