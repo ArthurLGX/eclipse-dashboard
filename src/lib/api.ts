@@ -403,7 +403,16 @@ export async function updateClientStatus(clientDocumentId: string, processStatus
 
 /** Met à jour un client (générique) */
 export async function updateClient(clientDocumentId: string, data: Partial<Client>) {
-  return put(`clients/${clientDocumentId}`, data);
+  // Nettoyer les champs de date vides (Strapi attend null ou une date valide, pas une chaîne vide)
+  const cleanedData = { ...data };
+  if (cleanedData.next_action_date === '') {
+    cleanedData.next_action_date = undefined;
+  }
+  // Filtrer les valeurs undefined pour ne pas les envoyer
+  const payload = Object.fromEntries(
+    Object.entries(cleanedData).filter(([, v]) => v !== undefined)
+  );
+  return put(`clients/${clientDocumentId}`, payload);
 }
 
 /** Toggle le statut favori d'un client */

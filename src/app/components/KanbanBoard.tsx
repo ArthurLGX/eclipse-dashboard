@@ -321,7 +321,10 @@ function KanbanColumn({
     if (contactId && currentStatus !== column.id) {
       await onStatusChange(contactId, column.id);
     }
-  }, [column.id, onStatusChange]);
+    
+    // Réinitialiser l'état de drag global
+    onCardDragEnd?.();
+  }, [column.id, onStatusChange, onCardDragEnd]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value);
