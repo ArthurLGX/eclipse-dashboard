@@ -426,14 +426,40 @@ export default function CalendarPage() {
     return new Date(dateStr).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Upcoming events
+  // Upcoming events - show only one entry per recurring event
   const upcomingEvents = useMemo(() => {
     if (!events) return [];
     const now = new Date();
-    return events
+    
+    // Get all future events sorted by date
+    const futureEvents = events
       .filter(e => new Date(e.start_date) >= now && !e.is_completed)
-      .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
-      .slice(0, 5);
+      .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+    
+    // For recurring events, only show the next occurrence
+    const seenParentIds = new Set<string>();
+    const uniqueEvents = futureEvents.filter(event => {
+      // If this is a generated occurrence, check if we've already seen an occurrence from this parent
+      if (event.recurrence_parent_id) {
+        if (seenParentIds.has(event.recurrence_parent_id)) {
+          return false; // Skip this occurrence, we already have one from this series
+        }
+        seenParentIds.add(event.recurrence_parent_id);
+        return true;
+      }
+      
+      // If this is a parent event with recurrence, mark it as seen
+      if (event.recurrence && event.recurrence !== 'none') {
+        if (seenParentIds.has(event.documentId)) {
+          return false; // We already have an occurrence from this series
+        }
+        seenParentIds.add(event.documentId);
+      }
+      
+      return true;
+    });
+    
+    return uniqueEvents.slice(0, 5);
   }, [events]);
 
   return (
@@ -668,6 +694,27 @@ export default function CalendarPage() {
                               />
                               <span className="text-[10px] font-medium">
                                 {t('notetaker_by_fathom') || 'Notetaker by Fathom'}
+                              </span>
+                            </div>
+                          )}
+                          {/* Recurring indicator */}
+                          {(event.recurrence && event.recurrence !== 'none' || event.recurrence_parent_id) && (
+                            <div className="flex items-center gap-1 mt-1.5 px-1.5 py-0.5 bg-accent/10 rounded text-accent w-fit">
+                              <IconCalendarEvent className="w-3 h-3" />
+                              <span className="text-[10px] font-medium">
+                                {(() => {
+                                  const rec = event.recurrence || 'weekly';
+                                  switch (rec) {
+                                    case 'daily': return t('recurrence_daily') || 'Tous les jours';
+                                    case 'weekdays': return t('recurrence_weekdays') || 'Jours ouvrés';
+                                    case 'weekly': return t('recurrence_weekly') || 'Toutes les semaines';
+                                    case 'biweekly': return t('recurrence_biweekly') || 'Toutes les 2 sem.';
+                                    case 'monthly': return t('recurrence_monthly') || 'Tous les mois';
+                                    case 'yearly': return t('recurrence_yearly') || 'Tous les ans';
+                                    case 'custom': return t('recurrence_custom') || 'Personnalisée';
+                                    default: return t('recurring') || 'Récurrent';
+                                  }
+                                })()}
                               </span>
                             </div>
                           )}

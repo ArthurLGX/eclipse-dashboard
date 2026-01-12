@@ -136,6 +136,7 @@ const translations = {
     recurrence_yearly: 'Tous les ans',
     recurrence_weekdays: 'Jours ouvrés (Lun-Ven)',
     recurrence_custom: 'Personnalisée',
+    recurring: 'Récurrent',
     recurrence_days: 'Jours de répétition',
     recurrence_end_date: 'Fin de récurrence',
     
@@ -2750,6 +2751,7 @@ const translations = {
     recurrence_yearly: 'Yearly',
     recurrence_weekdays: 'Weekdays (Mon-Fri)',
     recurrence_custom: 'Custom',
+    recurring: 'Recurring',
     recurrence_days: 'Repeat days',
     recurrence_end_date: 'Recurrence end date',
     
