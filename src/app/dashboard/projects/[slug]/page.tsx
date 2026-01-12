@@ -45,7 +45,7 @@ import RichTextEditor from '@/app/components/RichTextEditor';
 import ProjectProfitabilityCard from '@/app/components/ProjectProfitabilityCard';
 import ProjectGuidedTour, { useProjectGuidedTour } from '@/app/components/ProjectGuidedTour';
 import QuickProjectModal from '@/app/components/QuickProjectModal';
-import { ProfitabilityBadge, TrackingStateBadge, getProfitabilityStatus } from '@/app/components/StatusBadge';
+import { ProfitabilityBadge, getProfitabilityStatus } from '@/app/components/StatusBadge';
 import { 
   canDeleteProject, 
   fetchProjectCollaborators, 
