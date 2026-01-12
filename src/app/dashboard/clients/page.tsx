@@ -723,8 +723,8 @@ export default function ClientsPage() {
         showFavorites={true}
         isFavorite={isClientFavorite}
         onToggleFavorite={handleToggleFavorite}
-        draggable={false}
-        // onReorder={handleReorder} // Désactivé temporairement - fix DB: ALTER TABLE meeting_notes_client_lnk AUTO_INCREMENT = 1000;
+        draggable={true}
+        onReorder={handleReorder}
       />
 
       <AddClientModal
