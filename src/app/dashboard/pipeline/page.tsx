@@ -505,7 +505,16 @@ export default function PipelinePage() {
     }
   }, [contactsData]);
   
-  const allContacts = useMemo(() => localContacts || (contactsData as Client[]) || [], [localContacts, contactsData]);
+  // Dédupliquer les contacts par documentId pour éviter les doublons
+  const allContacts = useMemo(() => {
+    const contacts = localContacts || (contactsData as Client[]) || [];
+    const seen = new Set<string>();
+    return contacts.filter(c => {
+      if (!c.documentId || seen.has(c.documentId)) return false;
+      seen.add(c.documentId);
+      return true;
+    });
+  }, [localContacts, contactsData]);
 
   // Filtrer pour n'afficher que les contacts avec un pipeline_status défini (dans le pipeline)
   const pipelineContacts = useMemo(() => {

@@ -147,6 +147,7 @@ export async function fetchUserEntities<T>(
   pageSize: number = 100 // Strapi limite par défaut à 100 max
 ): Promise<ApiResponse<T[]>> {
   const allData: T[] = [];
+  const seenIds = new Set<string>();
   let page = 1;
   let hasMore = true;
 
@@ -156,7 +157,17 @@ export async function fetchUserEntities<T>(
     );
 
     if (response.data && response.data.length > 0) {
-      allData.push(...response.data);
+      // Dédupliquer par documentId pour éviter les doublons
+      for (const item of response.data) {
+        const docId = (item as { documentId?: string }).documentId;
+        if (docId && !seenIds.has(docId)) {
+          seenIds.add(docId);
+          allData.push(item);
+        } else if (!docId) {
+          // Si pas de documentId, ajouter quand même
+          allData.push(item);
+        }
+      }
     }
 
     // Vérifier s'il y a plus de pages
