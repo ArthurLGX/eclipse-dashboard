@@ -1,6 +1,6 @@
 'use client';
 
-import { IconBuilding, IconFileInvoice } from '@tabler/icons-react';
+import { IconBuilding, IconFileInvoice, IconTransform } from '@tabler/icons-react';
 import React, { useRef, useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -10,6 +10,8 @@ interface TableActionsProps {
   onView?: () => void;
   onFactures?: () => void;
   onProjects?: () => void;
+  onConvert?: () => void;
+  convertLabel?: string;
   className?: string;
 }
 
@@ -19,6 +21,8 @@ export default function TableActions({
   onView,
   onFactures,
   onProjects,
+  onConvert,
+  convertLabel,
   className = '',
 }: TableActionsProps) {
   const [open, setOpen] = useState(false);
@@ -150,6 +154,20 @@ export default function TableActions({
             >
               <IconBuilding className="w-4 h-4" />
               {t('projects_list')}
+            </button>
+          )}
+          {onConvert && (
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                setOpen(false);
+                onConvert();
+              }}
+              className="m-1 rounded-lg w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-700 dark:hover:text-green-400 transition-colors"
+              type="button"
+            >
+              <IconTransform className="w-4 h-4" />
+              {convertLabel || t('convert_to_invoice')}
             </button>
           )}
           {onDelete && (

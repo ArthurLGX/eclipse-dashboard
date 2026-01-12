@@ -15,6 +15,7 @@ import {
   updateFactureById,
   createFacture,
   fetchFactureFromDocumentId,
+  convertQuoteToInvoice,
 } from '@/lib/api';
 import { clearCache } from '@/hooks/useApi';
 import { extractIdFromSlug } from '@/utils/slug';
@@ -40,6 +41,8 @@ import {
   IconSparkles,
   IconSettings,
   IconRefresh,
+  IconFileInvoice,
+  IconCheck,
 } from '@tabler/icons-react';
 import AIInvoiceGenerator from '@/app/components/AIInvoiceGenerator';
 import { useRef } from 'react';
@@ -69,6 +72,9 @@ export default function FacturePage() {
 
   const [showPreview, setShowPreview] = useState(false);
   const [showAIGenerator, setShowAIGenerator] = useState(false);
+  const [showConvertModal, setShowConvertModal] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
+  const [updateClientOnConvert, setUpdateClientOnConvert] = useState(true);
   const [facture, setFacture] = useState<Facture | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
   
@@ -470,6 +476,74 @@ export default function FacturePage() {
     }
   };
 
+  // Handler pour convertir un devis en facture
+  const handleConvertToInvoice = async () => {
+    if (!facture || !user?.id) return;
+    
+    // Vérifier si le devis n'est pas déjà accepté ou converti
+    if (facture.quote_status === 'accepted') {
+      showGlobalPopup(t('quote_already_accepted') || 'Ce devis a déjà été accepté', 'warning');
+      return;
+    }
+
+    setIsConverting(true);
+    try {
+      // Extraire le documentId du client
+      const clientDocId = facture.client_id && typeof facture.client_id === 'object' 
+        ? (facture.client_id as Client).documentId 
+        : undefined;
+
+      const result = await convertQuoteToInvoice(
+        {
+          documentId: facture.documentId,
+          reference: facture.reference,
+          number: facture.number,
+          date: facture.date,
+          currency: facture.currency,
+          description: facture.description || '',
+          notes: facture.notes || '',
+          tva_applicable: facture.tva_applicable,
+          invoice_lines: invoiceLines.map(line => ({
+            description: line.description,
+            quantity: line.quantity,
+            unit_price: line.unit_price,
+            total: line.total,
+            unit: line.unit,
+          })),
+          client_id: facture.client_id,
+          project: facture.project,
+        },
+        user.id,
+        {
+          updateClientStatus: updateClientOnConvert,
+          clientDocumentId: clientDocId,
+          invoicePrefix: preferences.invoice.invoicePrefix,
+          defaultPaymentDays: preferences.invoice.defaultPaymentDays,
+        }
+      );
+
+      setShowConvertModal(false);
+      showGlobalPopup(t('quote_converted_success') || 'Devis converti en facture avec succès !', 'success');
+      
+      // Invalider le cache et rediriger vers la nouvelle facture
+      clearCache('factures');
+      
+      // Extraire le documentId de la nouvelle facture
+      const invoiceData = result.invoice as { data?: { documentId?: string } };
+      if (invoiceData?.data?.documentId) {
+        window.location.href = `/dashboard/factures/${invoiceData.data.documentId}`;
+      } else {
+        // Fallback : retourner à la liste des factures
+        window.location.href = '/dashboard/factures';
+      }
+    } catch (error) {
+      console.error('Error converting quote:', error);
+      showGlobalPopup(t('quote_converted_error') || 'Erreur lors de la conversion', 'error');
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
   // Handler pour les données générées par l'IA
   const handleAIGenerated = (data: {
     clientName?: string;
@@ -638,6 +712,23 @@ export default function FacturePage() {
           )}
           {!editing && (
             <>
+              {/* Bouton de conversion devis → facture (uniquement pour les devis non encore acceptés) */}
+              {isQuote && facture?.quote_status !== 'accepted' && (
+                <button
+                  onClick={() => setShowConvertModal(true)}
+                  className="flex items-center justify-center gap-2 bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-colors"
+                >
+                  <IconFileInvoice className="w-4 h-4" />
+                  {t('convert_to_invoice') || 'Convertir en facture'}
+                </button>
+              )}
+              {/* Badge devis accepté */}
+              {isQuote && facture?.quote_status === 'accepted' && (
+                <div className="flex items-center gap-2 bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg">
+                  <IconCheck className="w-4 h-4" />
+                  {t('quote_accepted') || 'Devis accepté'}
+                </div>
+              )}
               <button
                 onClick={handleSendEmail}
                 className="flex items-center justify-center gap-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 px-4 py-2 rounded-lg hover:bg-amber-500/20 transition-colors"
@@ -1247,6 +1338,75 @@ export default function FacturePage() {
         documentType={documentType}
         onGenerated={handleAIGenerated}
       />
+
+      {/* Modal de confirmation de conversion devis → facture */}
+      <Modal isOpen={showConvertModal} onClose={() => setShowConvertModal(false)}>
+        <div className="p-6 space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
+              <IconFileInvoice className="w-6 h-6 text-green-500" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-primary">
+                {t('convert_quote_to_invoice') || 'Convertir ce devis en facture'}
+              </h3>
+              <p className="text-sm text-muted">
+                {facture?.reference}
+              </p>
+            </div>
+          </div>
+
+          <p className="text-secondary">
+            {t('convert_quote_confirm_desc') || 'Le devis sera marqué comme "accepté" et une nouvelle facture sera créée avec les mêmes informations.'}
+          </p>
+
+          {/* Option pour mettre à jour le statut du client */}
+          <div className="flex items-start gap-3 p-4 bg-hover rounded-lg">
+            <input
+              type="checkbox"
+              id="updateClientStatus"
+              checked={updateClientOnConvert}
+              onChange={(e) => setUpdateClientOnConvert(e.target.checked)}
+              className="mt-1 w-4 h-4 rounded border-default text-accent focus:ring-accent"
+            />
+            <div>
+              <label htmlFor="updateClientStatus" className="text-sm font-medium text-primary cursor-pointer">
+                {t('update_client_status') || 'Mettre à jour le statut du client'}
+              </label>
+              <p className="text-xs text-muted mt-1">
+                {t('update_client_status_desc') || 'Passer le client en "Devis accepté" dans le pipeline'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setShowConvertModal(false)}
+              disabled={isConverting}
+              className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+            >
+              {t('cancel') || 'Annuler'}
+            </button>
+            <button
+              onClick={handleConvertToInvoice}
+              disabled={isConverting}
+              className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+            >
+              {isConverting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  {t('converting_quote') || 'Conversion...'}
+                </>
+              ) : (
+                <>
+                  <IconCheck className="w-4 h-4" />
+                  {t('convert_to_invoice') || 'Convertir en facture'}
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </motion.div>
   );
 }

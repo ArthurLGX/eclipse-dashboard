@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { deleteFacture } from '@/lib/api';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { deleteFacture, convertQuoteToInvoice } from '@/lib/api';
 import TableActions from '@/app/components/TableActions';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
+import Modal from '@/app/components/Modal';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePreferences } from '@/app/context/PreferencesContext';
@@ -21,6 +22,7 @@ import {
   IconCalendar,
   IconHourglass,
   IconX,
+  IconTransform,
 } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { generateSlug } from '@/utils/slug';
@@ -39,12 +41,22 @@ export default function FacturesPage() {
   const documentType = searchParams.get('type') === 'quote' ? 'quote' : 'invoice';
   const isQuoteMode = documentType === 'quote';
 
+  const { preferences } = usePreferences();
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; facture: Facture | null }>({
     isOpen: false,
     facture: null,
   });
+  
+  // Convert quote modal state
+  const [convertModal, setConvertModal] = useState<{ isOpen: boolean; quote: Facture | null }>({
+    isOpen: false,
+    quote: null,
+  });
+  const [isConverting, setIsConverting] = useState(false);
+  const [updateClientOnConvert, setUpdateClientOnConvert] = useState(true);
 
   // Advanced filters state
   const [clientFilter, setClientFilter] = useState('');
@@ -459,6 +471,8 @@ export default function FacturesPage() {
           <TableActions
             onEdit={() => router.push(`/dashboard/factures/${getFactureSlug(row)}?edit=1${isQuoteMode ? '&type=quote' : ''}`)}
             onDelete={() => setDeleteModal({ isOpen: true, facture: row })}
+            onConvert={isQuoteMode && row.quote_status !== 'accepted' ? () => setConvertModal({ isOpen: true, quote: row }) : undefined}
+            convertLabel={t('convert_to_invoice') || 'Convertir en facture'}
           />
         ),
       }
@@ -480,6 +494,77 @@ export default function FacturesPage() {
     clearCache('factures');
     await refetch();
   };
+
+  // Handler pour convertir un devis en facture
+  const handleConvertQuote = useCallback(async () => {
+    if (!convertModal.quote || !user?.id) return;
+    
+    const quote = convertModal.quote;
+    
+    // Vérifier si le devis n'est pas déjà accepté
+    if (quote.quote_status === 'accepted') {
+      showGlobalPopup(t('quote_already_accepted') || 'Ce devis a déjà été accepté', 'warning');
+      setConvertModal({ isOpen: false, quote: null });
+      return;
+    }
+
+    setIsConverting(true);
+    try {
+      // Extraire le documentId du client
+      const clientDocId = quote.client_id && typeof quote.client_id === 'object' 
+        ? (quote.client_id as Client).documentId 
+        : (quote.client && typeof quote.client === 'object' 
+            ? (quote.client as Client).documentId 
+            : undefined);
+
+      const result = await convertQuoteToInvoice(
+        {
+          documentId: quote.documentId,
+          reference: quote.reference,
+          number: quote.number,
+          date: quote.date,
+          currency: quote.currency,
+          description: quote.description || '',
+          notes: quote.notes || '',
+          tva_applicable: quote.tva_applicable,
+          invoice_lines: (quote.invoice_lines || []).map(line => ({
+            description: line.description,
+            quantity: line.quantity,
+            unit_price: line.unit_price,
+            total: line.total,
+            unit: line.unit,
+          })),
+          client_id: quote.client_id || quote.client,
+          project: quote.project,
+        },
+        user.id,
+        {
+          updateClientStatus: updateClientOnConvert,
+          clientDocumentId: clientDocId,
+          invoicePrefix: preferences.invoice.invoicePrefix,
+          defaultPaymentDays: preferences.invoice.defaultPaymentDays,
+        }
+      );
+
+      setConvertModal({ isOpen: false, quote: null });
+      showGlobalPopup(t('quote_converted_success') || 'Devis converti en facture avec succès !', 'success');
+      
+      // Invalider le cache et rafraîchir
+      clearCache('factures');
+      await refetch();
+      
+      // Optionnel : rediriger vers la nouvelle facture
+      const invoiceData = result.invoice as { data?: { documentId?: string } };
+      if (invoiceData?.data?.documentId) {
+        router.push(`/dashboard/factures/${invoiceData.data.documentId}`);
+      }
+    } catch (error) {
+      console.error('Error converting quote:', error);
+      showGlobalPopup(t('quote_converted_error') || 'Erreur lors de la conversion', 'error');
+    } finally {
+      setIsConverting(false);
+    }
+  }, [convertModal.quote, user?.id, updateClientOnConvert, preferences.invoice, showGlobalPopup, t, refetch, router]);
 
   // Handle multiple deletion
   const handleDeleteMultipleFactures = async (facturesToDelete: Facture[]) => {
@@ -632,6 +717,75 @@ export default function FacturesPage() {
         itemName={deleteModal.facture?.reference || ''}
         itemType={isQuoteMode ? 'quote' : 'facture'}
       />
+
+      {/* Modal de confirmation de conversion devis → facture */}
+      <Modal isOpen={convertModal.isOpen} onClose={() => setConvertModal({ isOpen: false, quote: null })}>
+        <div className="p-6 space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
+              <IconFileInvoice className="w-6 h-6 text-green-500" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-primary">
+                {t('convert_quote_to_invoice') || 'Convertir ce devis en facture'}
+              </h3>
+              <p className="text-sm text-muted">
+                {convertModal.quote?.reference}
+              </p>
+            </div>
+          </div>
+
+          <p className="text-secondary">
+            {t('convert_quote_confirm_desc') || 'Le devis sera marqué comme "accepté" et une nouvelle facture sera créée avec les mêmes informations.'}
+          </p>
+
+          {/* Option pour mettre à jour le statut du client */}
+          <div className="flex items-start gap-3 p-4 bg-hover rounded-lg">
+            <input
+              type="checkbox"
+              id="updateClientStatusTable"
+              checked={updateClientOnConvert}
+              onChange={(e) => setUpdateClientOnConvert(e.target.checked)}
+              className="mt-1 w-4 h-4 rounded border-default text-accent focus:ring-accent"
+            />
+            <div>
+              <label htmlFor="updateClientStatusTable" className="text-sm font-medium text-primary cursor-pointer">
+                {t('update_client_status') || 'Mettre à jour le statut du client'}
+              </label>
+              <p className="text-xs text-muted mt-1">
+                {t('update_client_status_desc') || 'Passer le client en "Devis accepté" dans le pipeline'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setConvertModal({ isOpen: false, quote: null })}
+              disabled={isConverting}
+              className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+            >
+              {t('cancel') || 'Annuler'}
+            </button>
+            <button
+              onClick={handleConvertQuote}
+              disabled={isConverting}
+              className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+            >
+              {isConverting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  {t('converting_quote') || 'Conversion...'}
+                </>
+              ) : (
+                <>
+                  <IconCheck className="w-4 h-4" />
+                  {t('convert_to_invoice') || 'Convertir en facture'}
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </ProtectedRoute>
   );
 }

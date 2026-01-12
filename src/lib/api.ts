@@ -823,6 +823,92 @@ export async function updateFactureById(
 export const deleteFacture = (documentId: string) =>
   del(`factures/${documentId}`);
 
+/** Convertit un devis en facture */
+export async function convertQuoteToInvoice(
+  quote: {
+    documentId: string;
+    reference: string;
+    number: number;
+    date: string;
+    currency: string;
+    description: string;
+    notes: string;
+    tva_applicable?: boolean;
+    invoice_lines: {
+      description: string;
+      quantity: number;
+      unit_price: number;
+      total: number;
+      unit?: string;
+    }[];
+    client_id?: { documentId: string } | string;
+    project?: { documentId: string } | string;
+  },
+  userId: number,
+  options?: {
+    updateClientStatus?: boolean;
+    clientDocumentId?: string;
+    invoicePrefix?: string;
+    defaultPaymentDays?: number;
+  }
+): Promise<{ invoice: unknown; quote: unknown }> {
+  // Générer une nouvelle référence pour la facture
+  const today = new Date();
+  const prefix = options?.invoicePrefix || 'FAC-';
+  const invoiceReference = `${prefix}${today.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+  
+  // Calculer la date d'échéance
+  const dueDate = new Date(today);
+  dueDate.setDate(today.getDate() + (options?.defaultPaymentDays || 30));
+
+  // Extraire les documentIds des relations
+  const clientDocId = typeof quote.client_id === 'object' && quote.client_id?.documentId 
+    ? quote.client_id.documentId 
+    : (typeof quote.client_id === 'string' ? quote.client_id : '');
+  const projectDocId = typeof quote.project === 'object' && quote.project?.documentId 
+    ? quote.project.documentId 
+    : (typeof quote.project === 'string' ? quote.project : undefined);
+
+  // Créer la nouvelle facture
+  const invoiceData = {
+    document_type: 'invoice' as const,
+    reference: invoiceReference,
+    number: quote.number,
+    date: today.toISOString().split('T')[0],
+    due_date: dueDate.toISOString().split('T')[0],
+    facture_status: 'sent', // Facture à envoyer/envoyée
+    currency: quote.currency,
+    description: quote.description,
+    notes: quote.notes,
+    tva_applicable: quote.tva_applicable ?? true,
+    invoice_lines: quote.invoice_lines,
+    client_id: clientDocId,
+    project: projectDocId,
+    user: userId,
+    pdf: '',
+    converted_from_quote: quote.documentId, // Référence au devis original
+  };
+
+  const invoiceResult = await post('factures', invoiceData);
+
+  // Mettre à jour le devis comme "accepté" et marquer qu'il a été converti
+  const quoteResult = await put(`factures/${quote.documentId}`, {
+    quote_status: 'accepted',
+  });
+
+  // Optionnel : mettre à jour le statut du client dans le pipeline
+  if (options?.updateClientStatus && (options.clientDocumentId || clientDocId)) {
+    const clientToUpdate = options.clientDocumentId || clientDocId;
+    if (clientToUpdate) {
+      await put(`clients/${clientToUpdate}`, {
+        pipeline_status: 'quote_accepted',
+      });
+    }
+  }
+
+  return { invoice: invoiceResult, quote: quoteResult };
+}
+
 /** Generate signature link for a quote */
 export const generateQuoteSignatureLink = async (documentId: string): Promise<{
   success: boolean;
