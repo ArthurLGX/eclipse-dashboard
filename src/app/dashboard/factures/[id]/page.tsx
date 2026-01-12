@@ -1340,7 +1340,7 @@ export default function FacturePage() {
       />
 
       {/* Modal de confirmation de conversion devis → facture */}
-      <Modal isOpen={showConvertModal} onClose={() => setShowConvertModal(false)}>
+      <Modal open={showConvertModal} onClose={() => setShowConvertModal(false)}>
         <div className="p-6 space-y-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">

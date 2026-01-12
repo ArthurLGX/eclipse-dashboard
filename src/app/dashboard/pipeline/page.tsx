@@ -4,11 +4,13 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
-import { useContacts, clearCache } from '@/hooks/useApi';
+import { usePreferences } from '@/app/context/PreferencesContext';
+import { useContacts, useFactures, useProjects, clearCache } from '@/hooks/useApi';
 import { updateClient, deleteClient, addClientUser } from '@/lib/api';
 import KanbanBoard, { PIPELINE_COLUMNS } from '@/app/components/KanbanBoard';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
-import type { Client, PipelineStatus, ContactSource, ContactPriority } from '@/types';
+import type { Client, PipelineStatus, ContactSource, ContactPriority, Facture, Project } from '@/types';
+import { calculatePipelineKPIs } from '@/utils/pipelineSync';
 import { 
   IconChartBar, 
   IconPlus,
@@ -22,8 +24,37 @@ import {
   IconCalendar,
   IconFlag,
   IconNotes,
-  IconUsers
+  IconUsers,
+  IconTrendingUp,
+  IconReceipt,
+  IconCheck,
+  IconClock,
+  IconChartLine,
 } from '@tabler/icons-react';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+
+// Enregistrer les composants Chart.js
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 // Modal pour sélectionner un contact existant
 function SelectContactModal({
@@ -473,11 +504,13 @@ export default function PipelinePage() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const { formatCurrency } = usePreferences();
 
   // États
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilter, setPriorityFilter] = useState<ContactPriority | ''>('');
   const [sourceFilter, setSourceFilter] = useState<ContactSource | ''>('');
+  const [showKPIs, setShowKPIs] = useState(true);
   const [contactModal, setContactModal] = useState<{ 
     isOpen: boolean; 
     contact: Client | null;
@@ -494,6 +527,9 @@ export default function PipelinePage() {
 
   // Données - utiliser les Contacts (Clients) unifiés
   const { data: contactsData, loading, refetch } = useContacts(user?.id);
+  // Données pour les KPIs
+  const { data: facturesData } = useFactures(user?.id);
+  const { data: projectsData } = useProjects(user?.id);
   
   // État local pour les mises à jour optimistes (évite le rechargement complet)
   const [localContacts, setLocalContacts] = useState<Client[] | null>(null);
@@ -515,6 +551,98 @@ export default function PipelinePage() {
       return true;
     });
   }, [localContacts, contactsData]);
+
+  // Calcul des KPIs du pipeline
+  const kpis = useMemo(() => {
+    const factures = (facturesData as Facture[]) || [];
+    const projects = (projectsData as Project[]) || [];
+    return calculatePipelineKPIs(allContacts, factures, projects);
+  }, [allContacts, facturesData, projectsData]);
+
+  // Configuration du graphique d'évolution
+  const chartData = useMemo(() => ({
+    labels: kpis.monthlyPotential.map(m => m.month),
+    datasets: [
+      {
+        label: t('kpi_potential_value') || 'Potentiel (Devis envoyés)',
+        data: kpis.monthlyPotential.map(m => m.potential),
+        borderColor: 'rgb(139, 92, 246)',
+        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+        fill: true,
+        tension: 0.4,
+      },
+      {
+        label: t('kpi_won_value') || 'Gagné (Devis acceptés)',
+        data: kpis.monthlyPotential.map(m => m.won),
+        borderColor: 'rgb(34, 197, 94)',
+        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  }), [kpis.monthlyPotential, t]);
+
+  const chartOptions = useMemo(() => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+        labels: {
+          usePointStyle: true,
+          padding: 20,
+        },
+      },
+      tooltip: {
+        mode: 'index' as const,
+        intersect: false,
+        callbacks: {
+          label: function(context: { dataset: { label?: string }; parsed: { y: number | null } }) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat('fr-FR', { 
+                style: 'currency', 
+                currency: 'EUR',
+                maximumFractionDigits: 0,
+              }).format(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function(value: number | string) {
+            return new Intl.NumberFormat('fr-FR', { 
+              style: 'currency', 
+              currency: 'EUR',
+              maximumFractionDigits: 0,
+              notation: 'compact',
+            }).format(typeof value === 'number' ? value : parseInt(value));
+          }
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)',
+        },
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+    },
+    interaction: {
+      mode: 'nearest' as const,
+      axis: 'x' as const,
+      intersect: false,
+    },
+  }), []);
 
   // Filtrer pour n'afficher que les contacts avec un pipeline_status défini (dans le pipeline)
   const pipelineContacts = useMemo(() => {
@@ -731,14 +859,130 @@ export default function PipelinePage() {
           </div>
         </div>
 
-        <button
-          onClick={() => setContactModal({ isOpen: true, contact: null })}
-          className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
-        >
-          <IconPlus size={18} />
-          {t('new_contact') || 'Nouveau contact'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowKPIs(!showKPIs)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+              showKPIs 
+                ? 'bg-accent/10 text-accent border-accent/30' 
+                : 'bg-card text-muted border-default hover:bg-hover'
+            }`}
+          >
+            <IconChartLine size={18} />
+            {t('show_kpis') || 'KPIs'}
+          </button>
+          <button
+            onClick={() => setContactModal({ isOpen: true, contact: null })}
+            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
+          >
+            <IconPlus size={18} />
+            {t('new_contact') || 'Nouveau contact'}
+          </button>
+        </div>
       </div>
+
+      {/* KPIs et Graphique */}
+      {showKPIs && (
+        <div className="space-y-4">
+          {/* Cartes de stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {/* CA Potentiel (Devis envoyés) */}
+            <div className="bg-card border border-default rounded-xl p-4">
+              <div className="flex items-center gap-2 text-muted mb-2">
+                <IconReceipt size={16} />
+                <span className="text-xs font-medium">{t('kpi_potential_revenue') || 'CA Potentiel'}</span>
+              </div>
+              <p className="text-xl font-bold text-violet-500">
+                {formatCurrency(kpis.potentialValue + kpis.inNegotiationValue)}
+              </p>
+              <p className="text-xs text-muted mt-1">
+                {kpis.quotesSentCount} {t('kpi_quotes_sent') || 'devis envoyés'}
+              </p>
+            </div>
+
+            {/* CA Gagné */}
+            <div className="bg-card border border-default rounded-xl p-4">
+              <div className="flex items-center gap-2 text-muted mb-2">
+                <IconCheck size={16} />
+                <span className="text-xs font-medium">{t('kpi_won_revenue') || 'CA Gagné'}</span>
+              </div>
+              <p className="text-xl font-bold text-success">
+                {formatCurrency(kpis.wonValue)}
+              </p>
+              <p className="text-xs text-muted mt-1">
+                {kpis.quotesAcceptedCount} {t('kpi_quotes_accepted') || 'devis acceptés'}
+              </p>
+            </div>
+
+            {/* Taux de conversion */}
+            <div className="bg-card border border-default rounded-xl p-4">
+              <div className="flex items-center gap-2 text-muted mb-2">
+                <IconTrendingUp size={16} />
+                <span className="text-xs font-medium">{t('conversion_rate') || 'Conversion'}</span>
+              </div>
+              <p className="text-xl font-bold text-accent">
+                {kpis.conversionRate.toFixed(1)}%
+              </p>
+              <p className="text-xs text-muted mt-1">
+                {t('kpi_quotes_to_deals') || 'devis → clients'}
+              </p>
+            </div>
+
+            {/* Contacts dans le pipeline */}
+            <div className="bg-card border border-default rounded-xl p-4">
+              <div className="flex items-center gap-2 text-muted mb-2">
+                <IconUsers size={16} />
+                <span className="text-xs font-medium">{t('total_contacts') || 'Total contacts'}</span>
+              </div>
+              <p className="text-xl font-bold text-primary">
+                {kpis.totalContacts}
+              </p>
+              <p className="text-xs text-muted mt-1">
+                {kpis.newContacts} {t('kpi_new_this_month') || 'nouveaux'}
+              </p>
+            </div>
+
+            {/* En cours */}
+            <div className="bg-card border border-default rounded-xl p-4">
+              <div className="flex items-center gap-2 text-muted mb-2">
+                <IconClock size={16} />
+                <span className="text-xs font-medium">{t('in_progress') || 'En cours'}</span>
+              </div>
+              <p className="text-xl font-bold text-warning">
+                {kpis.inProgressCount}
+              </p>
+              <p className="text-xs text-muted mt-1">
+                {t('active_projects') || 'projets actifs'}
+              </p>
+            </div>
+
+            {/* Gagnés */}
+            <div className="bg-card border border-default rounded-xl p-4">
+              <div className="flex items-center gap-2 text-muted mb-2">
+                <IconCheck size={16} />
+                <span className="text-xs font-medium">{t('won') || 'Gagnés'}</span>
+              </div>
+              <p className="text-xl font-bold text-success">
+                {kpis.wonCount}
+              </p>
+              <p className="text-xs text-muted mt-1">
+                {kpis.lostCount} {t('lost') || 'perdus'}
+              </p>
+            </div>
+          </div>
+
+          {/* Graphique d'évolution */}
+          <div className="bg-card border border-default rounded-xl p-4">
+            <h3 className="text-sm font-medium text-primary mb-4 flex items-center gap-2">
+              <IconChartLine size={18} />
+              {t('kpi_revenue_evolution') || 'Évolution du CA (12 derniers mois)'}
+            </h3>
+            <div className="h-[200px]">
+              <Line data={chartData} options={chartOptions} />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filtres */}
       <div className="flex flex-wrap gap-3 p-4 bg-card rounded-lg border border-default">

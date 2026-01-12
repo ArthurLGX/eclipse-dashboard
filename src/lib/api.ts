@@ -4,7 +4,8 @@
  */
 
 import type { 
-  Client, 
+  Client,
+  Project, 
   Facture, 
   CreateFactureData,
   ServerCredentialMetadata,
@@ -516,6 +517,49 @@ export async function updateProject(
   return put(`projects/${projectDocumentId}`, data);
 }
 
+/**
+ * Met à jour le statut d'un projet et synchronise automatiquement le statut pipeline du client
+ */
+export async function updateProjectStatusWithSync(
+  projectDocumentId: string,
+  newProjectStatus: 'planning' | 'in_progress' | 'development' | 'review' | 'completed' | 'on_hold' | 'archived',
+  clientDocumentId?: string
+): Promise<void> {
+  // Mettre à jour le statut du projet
+  await put(`projects/${projectDocumentId}`, { project_status: newProjectStatus });
+  
+  // Si on a le client, mettre à jour son statut pipeline
+  if (clientDocumentId) {
+    let newPipelineStatus: string | null = null;
+    
+    switch (newProjectStatus) {
+      case 'in_progress':
+      case 'development':
+      case 'review':
+        newPipelineStatus = 'in_progress';
+        break;
+      case 'completed':
+        newPipelineStatus = 'delivered';
+        break;
+      case 'archived':
+        newPipelineStatus = 'won';
+        break;
+      // planning, on_hold ne changent pas le statut pipeline automatiquement
+    }
+    
+    if (newPipelineStatus) {
+      // Récupérer le statut actuel du client pour ne pas écraser les statuts manuels
+      const clientResponse = await get<ApiResponse<Client>>(`clients/${clientDocumentId}`);
+      const client = (clientResponse as { data?: Client })?.data;
+      
+      const manualStatuses = ['lost', 'maintenance'];
+      if (client && (!client.pipeline_status || !manualStatuses.includes(client.pipeline_status))) {
+        await put(`clients/${clientDocumentId}`, { pipeline_status: newPipelineStatus });
+      }
+    }
+  }
+}
+
 /** Toggle le statut favori d'un projet */
 export async function toggleProjectFavorite(projectDocumentId: string, isFavorite: boolean) {
   return put(`projects/${projectDocumentId}`, { is_favorite: isFavorite });
@@ -822,6 +866,125 @@ export async function updateFactureById(
 /** Supprime une facture par son documentId */
 export const deleteFacture = (documentId: string) =>
   del(`factures/${documentId}`);
+
+/**
+ * Met à jour le statut d'un devis et synchronise automatiquement le statut pipeline du client
+ */
+export async function updateQuoteStatusWithSync(
+  quoteDocumentId: string,
+  newQuoteStatus: 'draft' | 'sent' | 'negotiation' | 'accepted' | 'rejected',
+  clientDocumentId?: string
+): Promise<void> {
+  // Mettre à jour le statut du devis
+  await put(`factures/${quoteDocumentId}`, { quote_status: newQuoteStatus });
+  
+  // Si on a le client, mettre à jour son statut pipeline
+  if (clientDocumentId) {
+    let newPipelineStatus: string | null = null;
+    
+    switch (newQuoteStatus) {
+      case 'sent':
+        newPipelineStatus = 'quote_sent';
+        break;
+      case 'negotiation':
+        newPipelineStatus = 'negotiation';
+        break;
+      case 'accepted':
+        newPipelineStatus = 'quote_accepted';
+        break;
+      case 'rejected':
+        newPipelineStatus = 'lost';
+        break;
+      // draft ne change pas le statut pipeline
+    }
+    
+    if (newPipelineStatus) {
+      await put(`clients/${clientDocumentId}`, { pipeline_status: newPipelineStatus });
+    }
+  }
+}
+
+/**
+ * Synchronise le statut pipeline d'un client basé sur ses données actuelles
+ * Appeler cette fonction après toute modification de devis/projet/facture
+ */
+export async function syncClientPipelineStatus(
+  clientDocumentId: string,
+  userId: number
+): Promise<{ oldStatus: string | null; newStatus: string }> {
+  // Récupérer toutes les données du client
+  const [clientResponse, quotesResponse, projectsResponse] = await Promise.all([
+    get<ApiResponse<Client>>(`clients/${clientDocumentId}?populate=*`),
+    get<ApiResponse<Facture[]>>(`factures?filters[client_id][documentId][$eq]=${clientDocumentId}&filters[document_type][$eq]=quote&populate=*`),
+    get<ApiResponse<Project[]>>(`projects?filters[client][documentId][$eq]=${clientDocumentId}&populate=*`),
+  ]);
+  
+  const client = (clientResponse as { data?: Client })?.data;
+  const quotes = (quotesResponse as { data?: Facture[] })?.data || [];
+  const projects = (projectsResponse as { data?: Project[] })?.data || [];
+  
+  if (!client) {
+    throw new Error('Client not found');
+  }
+  
+  const oldStatus = client.pipeline_status || null;
+  
+  // Calculer le nouveau statut basé sur les données
+  let newStatus: string = 'new';
+  
+  // Ordre de priorité (du plus important au moins important)
+  
+  // 1. Projets terminés -> won ou delivered
+  // Note: Cast en string pour supporter les statuts étendus qui peuvent exister en base
+  const completedProjects = projects.filter(p => {
+    const status = p.project_status as string;
+    return status === 'completed' || status === 'archived';
+  });
+  const activeProjects = projects.filter(p => {
+    const status = p.project_status as string;
+    return status === 'in_progress' || status === 'development';
+  });
+  
+  if (completedProjects.length > 0 && activeProjects.length === 0) {
+    newStatus = 'won';
+  } else if (completedProjects.length > 0) {
+    newStatus = 'delivered';
+  }
+  // 2. Projets en cours -> in_progress
+  else if (activeProjects.length > 0) {
+    newStatus = 'in_progress';
+  }
+  // 3. Devis acceptés -> quote_accepted
+  else if (quotes.some(q => q.quote_status === 'accepted')) {
+    newStatus = 'quote_accepted';
+  }
+  // 4. Devis en négociation -> negotiation (statut étendu)
+  else if (quotes.some(q => (q.quote_status as string) === 'negotiation')) {
+    newStatus = 'negotiation';
+  }
+  // 5. Devis envoyés -> quote_sent
+  else if (quotes.some(q => q.quote_status === 'sent')) {
+    newStatus = 'quote_sent';
+  }
+  // 6. Devis en brouillon -> qualified
+  else if (quotes.some(q => q.quote_status === 'draft')) {
+    newStatus = 'qualified';
+  }
+  // 7. Sinon -> new
+  
+  // Ne pas écraser les statuts manuels (lost, maintenance)
+  const manualStatuses = ['lost', 'maintenance'];
+  if (oldStatus && manualStatuses.includes(oldStatus)) {
+    return { oldStatus, newStatus: oldStatus };
+  }
+  
+  // Mettre à jour si le statut a changé
+  if (newStatus !== oldStatus) {
+    await put(`clients/${clientDocumentId}`, { pipeline_status: newStatus });
+  }
+  
+  return { oldStatus, newStatus };
+}
 
 /** Convertit un devis en facture */
 export async function convertQuoteToInvoice(
@@ -3184,49 +3347,6 @@ export const createQuote = async (
       user: { connect: [{ id: data.user }] },
     }
   );
-  return response.data;
-};
-
-/** Convertit un devis en facture */
-export const convertQuoteToInvoice = async (
-  quoteDocumentId: string,
-  userId: number
-): Promise<Facture> => {
-  // Récupérer le devis
-  const quoteResponse = await get<ApiResponse<Facture>>(
-    `factures/${quoteDocumentId}?populate[0]=client_id&populate[1]=project&populate[2]=invoice_lines`
-  );
-  const quote = quoteResponse.data;
-  
-  if (!quote) throw new Error('Quote not found');
-  
-  // Créer la facture à partir du devis
-  const clientId = quote.client_id?.id || quote.client?.id;
-  const projectId = quote.project?.id;
-  
-  const invoiceData = {
-    document_type: 'invoice',
-    reference: quote.reference.replace('DEV', 'FAC'),
-    date: new Date().toISOString().split('T')[0],
-    due_date: quote.due_date,
-    facture_status: 'draft',
-    number: quote.number,
-    currency: quote.currency,
-    description: quote.description,
-    notes: quote.notes,
-    tva_applicable: quote.tva_applicable,
-    invoice_lines: quote.invoice_lines,
-    converted_from_quote: { connect: [{ documentId: quoteDocumentId }] },
-    ...(clientId && { client_id: { connect: [{ id: clientId }] } }),
-    ...(projectId && { project: { connect: [{ id: projectId }] } }),
-    user: { connect: [{ id: userId }] },
-  };
-  
-  const response = await post<ApiResponse<Facture>>('factures', invoiceData);
-  
-  // Marquer le devis comme accepté
-  await put(`factures/${quoteDocumentId}`, { quote_status: 'accepted' });
-  
   return response.data;
 };
 
