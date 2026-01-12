@@ -3143,3 +3143,41 @@ export const convertQuoteToInvoice = async (
   
   return response.data;
 };
+
+// ============================================================================
+// API TOKENS (pour extensions VS Code, etc.)
+// ============================================================================
+
+export interface ApiToken {
+  id: number;
+  documentId: string;
+  name: string;
+  token?: string; // Seulement présent à la création
+  token_preview: string;
+  last_used_at: string | null;
+  expires_at: string | null;
+  is_active: boolean;
+  scopes: string[];
+  createdAt: string;
+}
+
+/** Récupère tous les API tokens de l'utilisateur */
+export const fetchApiTokens = async (): Promise<ApiToken[]> => {
+  const response = await get<{ data: ApiToken[] }>('api-tokens');
+  return response.data || [];
+};
+
+/** Crée un nouveau API token */
+export const createApiToken = async (data: {
+  name: string;
+  expires_at?: string;
+  scopes?: string[];
+}): Promise<ApiToken> => {
+  const response = await post<{ data: ApiToken }>('api-tokens', { data });
+  return response.data;
+};
+
+/** Supprime (révoque) un API token */
+export const deleteApiToken = async (tokenId: number): Promise<void> => {
+  await del(`api-tokens/${tokenId}`);
+};
