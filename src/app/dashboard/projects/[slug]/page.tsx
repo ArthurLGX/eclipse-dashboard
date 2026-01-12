@@ -28,6 +28,7 @@ import {
   IconClock,
   IconUsers,
   IconPlayerPlay,
+  IconCopy,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
@@ -43,6 +44,7 @@ import ProjectTasks from '@/app/components/ProjectTasks';
 import RichTextEditor from '@/app/components/RichTextEditor';
 import ProjectProfitabilityCard from '@/app/components/ProjectProfitabilityCard';
 import ProjectGuidedTour, { useProjectGuidedTour } from '@/app/components/ProjectGuidedTour';
+import QuickProjectModal from '@/app/components/QuickProjectModal';
 import { 
   canDeleteProject, 
   fetchProjectCollaborators, 
@@ -98,6 +100,7 @@ export default function ProjectDetailsPage() {
 
   // États pour le partage et les onglets
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [isOwner, setIsOwner] = useState(true);
   const [collaborators, setCollaborators] = useState<ProjectCollaborator[]>([]);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
@@ -524,13 +527,23 @@ const PROJECT_TYPES = [
             {/* Actions */}
             <div className="flex items-center gap-2">
               {!isEditMode && (
-                <button
-                  onClick={() => setShowShareModal(true)}
-                  className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
-                >
-                  <IconShare className="w-4 h-4" />
-                  <span className="hidden sm:inline">{t('share') || 'Partager'}</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => setShowDuplicateModal(true)}
+                    className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
+                    title={t('duplicate_project') || 'Dupliquer ce projet'}
+                  >
+                    <IconCopy className="w-4 h-4" />
+                    <span className="hidden sm:inline">{t('duplicate') || 'Dupliquer'}</span>
+                  </button>
+                  <button
+                    onClick={() => setShowShareModal(true)}
+                    className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
+                  >
+                    <IconShare className="w-4 h-4" />
+                    <span className="hidden sm:inline">{t('share') || 'Partager'}</span>
+                  </button>
+                </>
               )}
               
               {canEdit && (
@@ -1341,6 +1354,17 @@ const PROJECT_TYPES = [
         isOwner={isOwner}
         ownerName={project.user?.username}
         ownerEmail={project.user?.email}
+      />
+
+      {/* Duplicate Project Modal */}
+      <QuickProjectModal
+        isOpen={showDuplicateModal}
+        onClose={() => setShowDuplicateModal(false)}
+        defaultSourceProject={project}
+        onProjectCreated={(newProject) => {
+          clearCache('projects');
+          router.push(`/dashboard/projects/${generateSlug(newProject.title, newProject.documentId)}`);
+        }}
       />
 
       {/* Guided Tour */}

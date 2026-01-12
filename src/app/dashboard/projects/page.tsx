@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { createProject, deleteProject, fetchProjectTasks, toggleProjectFavorite, updateProjectsOrder } from '@/lib/api';
+import { deleteProject, fetchProjectTasks, toggleProjectFavorite, updateProjectsOrder } from '@/lib/api';
 import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
@@ -18,7 +18,7 @@ import {
   IconCalendarEvent,
 } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import NewProjectModal, { CreateProjectData } from './NewProjectModal';
+import QuickProjectModal from '@/app/components/QuickProjectModal';
 import { usePopup } from '@/app/context/PopupContext';
 import { generateSlug } from '@/utils/slug';
 import { useProjects, useClients, clearCache } from '@/hooks/useApi';
@@ -392,39 +392,6 @@ export default function ProjectsPage() {
     },
   ];
 
-  // Fonction pour créer un nouveau projet
-  const handleCreateProject = async (projectData: CreateProjectData) => {
-    if (!user?.id) {
-      showGlobalPopup('Vous devez être connecté', 'error');
-      throw new Error('Not authenticated');
-    }
-
-    try {
-      await createProject({
-        title: projectData.title,
-        description: projectData.description,
-        project_status: projectData.project_status,
-        start_date: projectData.start_date,
-        end_date: projectData.end_date,
-        notes: projectData.notes,
-        type: projectData.type,
-        technologies: projectData.technologies,
-        client: projectData.client as number,
-        user: user.id,
-      });
-
-      showGlobalPopup(t('project_created_success') || 'Projet créé avec succès', 'success');
-
-      // Invalider le cache et recharger
-      clearCache('projects');
-      await refetchProjects();
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
-      showGlobalPopup(errorMessage, 'error');
-      throw error;
-    }
-  };
-
   const handleDeleteProject = async () => {
     if (!deleteModal.project?.documentId) return;
     
@@ -590,12 +557,12 @@ export default function ProjectsPage() {
         onReorder={handleReorder}
       />
 
-      <NewProjectModal
+      <QuickProjectModal
         isOpen={showNewProjectModal}
         onClose={() => setShowNewProjectModal(false)}
-        onAdd={handleCreateProject}
-        clients={clients}
-        t={t}
+        onProjectCreated={async () => {
+          await refetchProjects();
+        }}
       />
 
       <DeleteConfirmModal
