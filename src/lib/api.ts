@@ -200,53 +200,84 @@ export async function fetchEntityById<T>(
 
 export type DuplicateCheckMode = 'email_only' | 'name_only' | 'name_and_email' | 'name_or_email';
 
+/** Normalise un nom pour la comparaison (minuscules, sans accents, sans espaces multiples) */
+function normalizeName(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Supprime les accents
+    .replace(/\s+/g, ' ') // Normalise les espaces
+    .trim();
+}
+
 export async function checkClientDuplicate(
   userId: number,
   name: string,
   email: string,
   mode: DuplicateCheckMode = 'email_only'
-): Promise<{ isDuplicate: boolean; duplicateField: 'name' | 'email' | 'both' | null }> {
+): Promise<{ isDuplicate: boolean; duplicateField: 'name' | 'email' | 'both' | null; existingClient?: { id: number; name: string; email: string } }> {
   
   // Vérifier l'email (pagination pour éviter la limite de 25 par défaut)
-  const emailCheck = await get<ApiResponse<unknown[]>>(
+  const emailCheck = await get<ApiResponse<{ id: number; name: string; email: string }[]>>(
     `clients?pagination[pageSize]=1&filters[users][id][$eq]=${userId}&filters[email][$eqi]=${encodeURIComponent(email)}`
   );
   const emailExists = (emailCheck.data?.length ?? 0) > 0;
+  const existingByEmail = emailCheck.data?.[0];
 
-  // Vérifier le nom
-  const nameCheck = await get<ApiResponse<unknown[]>>(
-    `clients?pagination[pageSize]=1&filters[users][id][$eq]=${userId}&filters[name][$eqi]=${encodeURIComponent(name)}`
-  );
-  const nameExists = (nameCheck.data?.length ?? 0) > 0;
+  // Pour la vérification du nom, on doit récupérer tous les clients et comparer les noms normalisés
+  // car Strapi ne supporte pas la normalisation des accents
+  const normalizedInputName = normalizeName(name);
+  let nameExists = false;
+  let existingByName: { id: number; name: string; email: string } | undefined;
+
+  if (mode !== 'email_only') {
+    // Récupérer les clients dont le nom contient une partie du nom recherché (pour limiter les résultats)
+    // On utilise $containsi pour une recherche approximative, puis on compare les noms normalisés
+    const firstWord = name.split(' ')[0];
+    const nameCheck = await get<ApiResponse<{ id: number; name: string; email: string }[]>>(
+      `clients?pagination[pageSize]=100&filters[users][id][$eq]=${userId}&filters[name][$containsi]=${encodeURIComponent(firstWord)}`
+    );
+    
+    // Comparer les noms normalisés
+    if (nameCheck.data) {
+      for (const client of nameCheck.data) {
+        if (normalizeName(client.name) === normalizedInputName) {
+          nameExists = true;
+          existingByName = client;
+          break;
+        }
+      }
+    }
+  }
 
   switch (mode) {
     case 'email_only':
       // Recommandé : l'email est unique par nature
       if (emailExists) {
-        return { isDuplicate: true, duplicateField: 'email' };
+        return { isDuplicate: true, duplicateField: 'email', existingClient: existingByEmail };
       }
       break;
     
     case 'name_only':
       if (nameExists) {
-        return { isDuplicate: true, duplicateField: 'name' };
+        return { isDuplicate: true, duplicateField: 'name', existingClient: existingByName };
       }
       break;
     
     case 'name_and_email':
       // Très permissif : bloque seulement si les deux existent
       if (nameExists && emailExists) {
-        return { isDuplicate: true, duplicateField: 'both' };
+        return { isDuplicate: true, duplicateField: 'both', existingClient: existingByEmail || existingByName };
       }
       break;
     
     case 'name_or_email':
-      // Ancien comportement, très restrictif
+      // Comportement restrictif : bloque si le nom OU l'email existe
       if (nameExists) {
-        return { isDuplicate: true, duplicateField: 'name' };
+        return { isDuplicate: true, duplicateField: 'name', existingClient: existingByName };
       }
       if (emailExists) {
-        return { isDuplicate: true, duplicateField: 'email' };
+        return { isDuplicate: true, duplicateField: 'email', existingClient: existingByEmail };
       }
       break;
   }
