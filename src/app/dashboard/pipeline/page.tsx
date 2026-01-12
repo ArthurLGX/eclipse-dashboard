@@ -5,7 +5,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { usePreferences } from '@/app/context/PreferencesContext';
-import { useContacts, useFactures, useProjects, clearCache } from '@/hooks/useApi';
+import { useContacts, useFactures, clearCache } from '@/hooks/useApi';
 import { updateClient, deleteClient, addClientUser } from '@/lib/api';
 import KanbanBoard, { PIPELINE_COLUMNS } from '@/app/components/KanbanBoard';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
