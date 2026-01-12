@@ -101,7 +101,7 @@ export default function DataTable<T = unknown>({
 
   // Sort data
   const sortedData = useMemo(() => {
-    let result = [...data];
+    const result = [...data];
     
     // Sort favorites first if enabled
     if (showFavorites && favoritesFirst && isFavorite) {

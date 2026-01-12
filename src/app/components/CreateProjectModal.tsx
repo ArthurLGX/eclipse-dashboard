@@ -11,7 +11,6 @@ import {
   IconListCheck,
   IconPlus,
   IconUser,
-  IconBuilding,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
