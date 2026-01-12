@@ -409,14 +409,33 @@ export default function RevenuePage() {
     {
       key: 'facture_status',
       label: t('status') || 'Statut',
-      render: v => (
-        <span className={`text-xs px-2 py-0.5 rounded-full ${
-          (v as string) === 'paid' ? 'bg-success-light text-success' :
-          (v as string) === 'draft' ? 'bg-warning-light text-warning' : 'bg-muted text-muted'
-        }`}>
-          {v === 'paid' ? 'Payée' : v === 'draft' ? 'Brouillon' : v as string}
-        </span>
-      ),
+      render: (v, row) => {
+        // Déterminer le statut à afficher (facture ou devis)
+        const isQuote = row.document_type === 'quote';
+        const status = isQuote ? row.quote_status : (v as string);
+        
+        // Configuration des statuts
+        const statusConfig: Record<string, { label: string; className: string }> = {
+          // Statuts facture
+          paid: { label: t('paid') || 'Payée', className: 'bg-success-light text-success' },
+          sent: { label: t('sent') || 'Envoyée', className: 'bg-accent/10 text-accent' },
+          draft: { label: t('draft') || 'Brouillon', className: 'bg-warning-light text-warning' },
+          overdue: { label: t('overdue') || 'En retard', className: 'bg-danger/10 text-danger' },
+          cancelled: { label: t('cancelled') || 'Annulée', className: 'bg-muted/20 text-muted' },
+          // Statuts devis
+          accepted: { label: t('accepted') || 'Accepté', className: 'bg-success-light text-success' },
+          rejected: { label: t('rejected') || 'Refusé', className: 'bg-danger/10 text-danger' },
+          negotiation: { label: t('negotiation') || 'Négociation', className: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' },
+        };
+        
+        const config = statusConfig[status || ''] || { label: status || '-', className: 'bg-muted/20 text-muted' };
+        
+        return (
+          <span className={`text-xs px-2 py-0.5 rounded-full ${config.className}`}>
+            {config.label}
+          </span>
+        );
+      },
     },
     {
       key: 'date',
