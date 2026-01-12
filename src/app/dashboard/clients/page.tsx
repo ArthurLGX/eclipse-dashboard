@@ -723,7 +723,8 @@ export default function ClientsPage() {
         showFavorites={true}
         isFavorite={isClientFavorite}
         onToggleFavorite={handleToggleFavorite}
-        draggable={false}
+        draggable={true}
+        onReorder={handleReorder}
       />
 
       <AddClientModal

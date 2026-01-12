@@ -569,7 +569,8 @@ export default function ProjectsPage() {
         showFavorites={true}
         isFavorite={isProjectFavorite}
         onToggleFavorite={handleToggleFavorite}
-        draggable={false}
+        draggable={true}
+        onReorder={handleReorder}
       />
 
       <NewProjectModal
