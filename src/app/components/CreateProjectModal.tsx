@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   IconX,
@@ -16,6 +16,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { useClients } from '@/hooks/useApi';
+import { useModalFocus } from '@/hooks/useModalFocus';
 import { addClientUser, createProject, createProjectTask } from '@/lib/api';
 import type { Client, Project } from '@/types';
 
@@ -150,7 +151,7 @@ export default function CreateProjectModal({
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useModalFocus(isOpen);
   
   // Data
   const { data: clientsData } = useClients(user?.id);
@@ -169,13 +170,6 @@ export default function CreateProjectModal({
   const [showNewClientForm, setShowNewClientForm] = useState(false);
   const [hourlyRate, setHourlyRate] = useState(50);
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
-
-  // Focus trap
-  useEffect(() => {
-    if (isOpen && modalRef.current) {
-      modalRef.current.focus();
-    }
-  }, [isOpen, step]);
 
   // Reset on close
   useEffect(() => {
@@ -274,7 +268,10 @@ export default function CreateProjectModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden"
+      onClick={onClose}
+    >
       <motion.div
         ref={modalRef}
         tabIndex={-1}
@@ -307,7 +304,10 @@ export default function CreateProjectModal({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div 
+          className="flex-1 overflow-y-auto p-6"
+          style={{ overscrollBehavior: 'contain' }}
+        >
           <AnimatePresence mode="wait">
             {step === 'template' ? (
               <motion.div
