@@ -1045,10 +1045,14 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
         ? new Date(startDate).toISOString()
         : new Date(`${startDate}T${startTime}`).toISOString();
       
-      const endDateTime = endDate
+      // Pour les événements non "toute la journée", utiliser startDate si endDate n'est pas défini
+      // Cela permet de sauvegarder l'heure de fin même sans date de fin séparée
+      const effectiveEndDate = endDate || (!allDay ? startDate : '');
+      
+      const endDateTime = effectiveEndDate
         ? (allDay
-            ? new Date(endDate).toISOString()
-            : new Date(`${endDate}T${endTime}`).toISOString())
+            ? new Date(effectiveEndDate).toISOString()
+            : new Date(`${effectiveEndDate}T${endTime}`).toISOString())
         : undefined;
 
       await onSave({
