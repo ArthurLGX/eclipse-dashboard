@@ -1072,6 +1072,7 @@ const translations = {
     no_data: 'Aucune donnée',
     revenue_this_month: 'CA ce mois',
     in_progress_short: 'en cours',
+    create_quote: 'Créer un devis',
     hours_this_week: 'Heures cette semaine',
     overdue_invoices: 'Factures en retard',
     total_revenue: 'CA total',
@@ -4049,6 +4050,7 @@ const translations = {
     actual_hours: 'Actual hours',
     no_collaborators_yet: 'No collaborators yet',
     new_email: 'New email',
+    create_quote: 'Create quote',
 
     // Excel / Google Sheets Import
     import: 'Import',

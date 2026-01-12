@@ -470,7 +470,7 @@ export default function FacturesPage() {
           <TableActions
             onEdit={() => router.push(`/dashboard/factures/${getFactureSlug(row)}?edit=1${isQuoteMode ? '&type=quote' : ''}`)}
             onDelete={() => setDeleteModal({ isOpen: true, facture: row })}
-            onConvert={isQuoteMode && row.quote_status !== 'accepted' ? () => setConvertModal({ isOpen: true, quote: row }) : undefined}
+            onConvert={isQuoteMode && row.quote_status !== 'rejected' ? () => setConvertModal({ isOpen: true, quote: row }) : undefined}
             convertLabel={t('convert_to_invoice') || 'Convertir en facture'}
           />
         ),
