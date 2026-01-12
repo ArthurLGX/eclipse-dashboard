@@ -332,7 +332,7 @@ function ContactModal({
                 {t('status') || 'Statut'}
               </label>
               <select
-                value={formData.pipeline_status}
+                value={formData.pipeline_status ?? 'new'}
                 onChange={(e) => setFormData({ ...formData, pipeline_status: e.target.value as PipelineStatus })}
                 className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
               >
