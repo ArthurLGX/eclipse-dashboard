@@ -38,7 +38,7 @@ import {
 import MeetingNotePanel from '@/app/components/MeetingNotePanel';
 import { useProjects, useClients } from '@/hooks/useApi';
 import { useNotifications, scheduleNotification } from '@/hooks/useNotifications';
-import type { CalendarEvent, EventType, Project, Client } from '@/types';
+import type { CalendarEvent, EventType, Project, Client, RecurrenceType, CreateCalendarEventData } from '@/types';
 import useSWR from 'swr';
 import Link from 'next/link';
 
@@ -908,12 +908,12 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
         location: location || undefined,
         reminder_minutes: reminderMinutes,
         use_fathom: noteMode === 'fathom' && fathomConfigured === true,
-        recurrence: recurrence,
-        recurrence_days: recurrence === 'custom' ? recurrenceDays : undefined,
-        recurrence_end_date: recurrenceEndDate || undefined,
+        recurrence: recurrence as RecurrenceType,
+        recurrence_days: recurrenceDays,
+        recurrence_end_date: recurrenceEndDate,
         project: projectId ? projects.find(p => p.documentId === projectId)?.id : undefined,
         client: clientId ? clients.find(c => c.documentId === clientId)?.id : undefined,
-      });
+      } as CreateCalendarEventData);
     } finally {
       setIsSaving(false);
     }

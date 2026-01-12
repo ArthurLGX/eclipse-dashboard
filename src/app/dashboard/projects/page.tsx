@@ -569,8 +569,8 @@ export default function ProjectsPage() {
         showFavorites={true}
         isFavorite={isProjectFavorite}
         onToggleFavorite={handleToggleFavorite}
-        draggable={true}
-        onReorder={handleReorder}
+        draggable={false}
+        // onReorder={handleReorder} // Désactivé temporairement - fix DB AUTO_INCREMENT
       />
 
       <NewProjectModal
