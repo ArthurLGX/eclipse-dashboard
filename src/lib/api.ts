@@ -410,11 +410,11 @@ export async function toggleClientFavorite(clientDocumentId: string, isFavorite:
   return put(`clients/${clientDocumentId}`, { is_favorite: isFavorite });
 }
 
-/** Met à jour l'ordre de plusieurs clients en une fois */
+/** Met à jour l'ordre de plusieurs clients en une fois (séquentiel pour éviter les deadlocks) */
 export async function updateClientsOrder(clients: { documentId: string; sort_order: number }[]) {
-  return Promise.all(
-    clients.map(c => put(`clients/${c.documentId}`, { sort_order: c.sort_order }))
-  );
+  for (const c of clients) {
+    await put(`clients/${c.documentId}`, { sort_order: c.sort_order });
+  }
 }
 
 /** Supprime un client par son documentId */
@@ -522,10 +522,11 @@ export async function toggleProjectFavorite(projectDocumentId: string, isFavorit
 }
 
 /** Met à jour l'ordre de plusieurs projets en une fois */
+/** Met à jour l'ordre de plusieurs projets en une fois (séquentiel pour éviter les deadlocks) */
 export async function updateProjectsOrder(projects: { documentId: string; sort_order: number }[]) {
-  return Promise.all(
-    projects.map(p => put(`projects/${p.documentId}`, { sort_order: p.sort_order }))
-  );
+  for (const p of projects) {
+    await put(`projects/${p.documentId}`, { sort_order: p.sort_order });
+  }
 }
 
 export async function checkProjectDuplicateForClient(
