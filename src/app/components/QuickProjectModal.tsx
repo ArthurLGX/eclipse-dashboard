@@ -184,7 +184,7 @@ export default function QuickProjectModal({
     try {
       // Calculer la date de fin
       let durationDays = 14;
-      if (selectedSourceProject) {
+      if (selectedSourceProject?.start_date && selectedSourceProject?.end_date) {
         const start = new Date(selectedSourceProject.start_date);
         const end = new Date(selectedSourceProject.end_date);
         durationDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
