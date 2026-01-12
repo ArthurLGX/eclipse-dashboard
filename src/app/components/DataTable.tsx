@@ -155,9 +155,12 @@ export default function DataTable<T = unknown>({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-  const paginatedData = sortedData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  const paginatedData = useMemo(() => 
+    sortedData.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    ),
+    [sortedData, currentPage, itemsPerPage]
   );
 
   // For drag & drop, we need local state
