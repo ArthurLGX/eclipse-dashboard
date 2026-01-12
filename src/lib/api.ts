@@ -910,7 +910,7 @@ export async function updateQuoteStatusWithSync(
  */
 export async function syncClientPipelineStatus(
   clientDocumentId: string,
-  userId: number
+  _userId: number
 ): Promise<{ oldStatus: string | null; newStatus: string }> {
   // Récupérer toutes les données du client
   const [clientResponse, quotesResponse, projectsResponse] = await Promise.all([

@@ -202,7 +202,7 @@ export interface PipelineKPIs {
 export function calculatePipelineKPIs(
   contacts: Client[],
   quotes: Facture[],
-  projects: Project[]
+  _projects: Project[]
 ): PipelineKPIs {
   // Filtrer uniquement les devis (pas les factures)
   const onlyQuotes = quotes.filter(q => q.document_type === 'quote');
