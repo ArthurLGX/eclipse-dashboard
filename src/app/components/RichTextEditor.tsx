@@ -271,7 +271,7 @@ export default function RichTextEditor({
     const { node, offset } = emojiStartPosition.current;
     const selection = window.getSelection();
     
-    if (!selection || !node.textContent) return;
+    if (!selection || !node || !node.textContent) return;
     
     // Calculate the text to replace (from ":" to cursor)
     const currentOffset = selection.getRangeAt(0).startOffset;
