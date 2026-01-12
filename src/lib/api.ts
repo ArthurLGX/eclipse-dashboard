@@ -281,7 +281,7 @@ export async function addClientUser(
     duplicateCheckMode?: DuplicateCheckMode 
   } = {}
 ) {
-  const { skipDuplicateCheck = false, duplicateCheckMode = 'email_only' } = options;
+  const { skipDuplicateCheck = false, duplicateCheckMode = 'name_or_email' } = options;
   
   if (!skipDuplicateCheck) {
     const duplicateCheck = await checkClientDuplicate(userId, data.name, data.email, duplicateCheckMode);
