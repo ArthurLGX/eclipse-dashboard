@@ -153,6 +153,7 @@ export default function TimeTrackingAnalyticsPage() {
         dailyData: [],
         projectData: [],
         accuracyData: [],
+        groupedDeviations: [],
         statusDistribution: { completed: 0, exceeded: 0, active: 0 },
       };
     }
