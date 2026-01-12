@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createProject, deleteProject, fetchProjectTasks, toggleProjectFavorite, updateProjectsOrder } from '@/lib/api';
 import { Column } from '@/app/components/DataTable';
 import TableActions from '@/app/components/TableActions';
@@ -500,19 +500,36 @@ export default function ProjectsPage() {
     localFavorites[project.documentId] ?? project.is_favorite ?? false;
 
   // Handle reorder
-  const handleReorder = async (reorderedProjects: Project[]) => {
-    try {
-      const updates = reorderedProjects.map((p, index) => ({
-        documentId: p.documentId,
-        sort_order: index,
-      }));
-      await updateProjectsOrder(updates);
-      clearCache('projects');
-    } catch (error) {
-      console.error('Error reordering projects:', error);
-      showGlobalPopup(t('error') || 'Erreur', 'error');
+  // Debounce pour éviter les appels multiples lors du drag & drop
+  const reorderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isReorderingRef = useRef(false);
+  
+  const handleReorder = useCallback(async (reorderedProjects: Project[]) => {
+    // Si déjà en cours, annuler le timeout précédent
+    if (reorderTimeoutRef.current) {
+      clearTimeout(reorderTimeoutRef.current);
     }
-  };
+    
+    // Debounce de 500ms pour attendre la fin du drag
+    reorderTimeoutRef.current = setTimeout(async () => {
+      if (isReorderingRef.current) return;
+      isReorderingRef.current = true;
+      
+      try {
+        const updates = reorderedProjects.map((p, index) => ({
+          documentId: p.documentId,
+          sort_order: index,
+        }));
+        await updateProjectsOrder(updates);
+        clearCache('projects');
+      } catch (error) {
+        console.error('Error reordering projects:', error);
+        showGlobalPopup(t('error') || 'Erreur', 'error');
+      } finally {
+        isReorderingRef.current = false;
+      }
+    }, 500);
+  }, [showGlobalPopup, t]);
 
   return (
     <ProtectedRoute>

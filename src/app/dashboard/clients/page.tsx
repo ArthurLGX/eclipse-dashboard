@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import ClientAvatar from '@/app/components/ClientAvatar';
 import { addClientUser, deleteClient, updateClientStatus, DuplicateCheckMode, toggleClientFavorite, updateClientsOrder } from '@/lib/api';
 import TableActions from '@/app/components/TableActions';
@@ -198,19 +198,36 @@ export default function ClientsPage() {
     localFavorites[client.documentId] ?? client.is_favorite ?? false;
 
   // Handle reorder
-  const handleReorder = async (reorderedClients: Client[]) => {
-    try {
-      const updates = reorderedClients.map((c, index) => ({
-        documentId: c.documentId,
-        sort_order: index,
-      }));
-      await updateClientsOrder(updates);
-      clearCache('clients');
-    } catch (error) {
-      console.error('Error reordering clients:', error);
-      showGlobalPopup(t('error') || 'Erreur', 'error');
+  // Debounce pour éviter les appels multiples lors du drag & drop
+  const reorderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isReorderingRef = useRef(false);
+  
+  const handleReorder = useCallback(async (reorderedClients: Client[]) => {
+    // Si déjà en cours, annuler le timeout précédent
+    if (reorderTimeoutRef.current) {
+      clearTimeout(reorderTimeoutRef.current);
     }
-  };
+    
+    // Debounce de 500ms pour attendre la fin du drag
+    reorderTimeoutRef.current = setTimeout(async () => {
+      if (isReorderingRef.current) return;
+      isReorderingRef.current = true;
+      
+      try {
+        const updates = reorderedClients.map((c, index) => ({
+          documentId: c.documentId,
+          sort_order: index,
+        }));
+        await updateClientsOrder(updates);
+        clearCache('clients');
+      } catch (error) {
+        console.error('Error reordering clients:', error);
+        showGlobalPopup(t('error') || 'Erreur', 'error');
+      } finally {
+        isReorderingRef.current = false;
+      }
+    }, 500);
+  }, [showGlobalPopup, t]);
 
   // Convertir les prospects/autres en clients
   const handleConvertToClient = async (clientsToConvert: Client[]) => {
