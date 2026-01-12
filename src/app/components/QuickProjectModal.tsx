@@ -140,8 +140,8 @@ export default function QuickProjectModal({
   const loadProjectTasks = async (projectDocumentId: string) => {
     setLoadingTasks(true);
     try {
-      const tasks = await fetchProjectTasks(projectDocumentId);
-      setSourceTasks(tasks || []);
+      const response = await fetchProjectTasks(projectDocumentId);
+      setSourceTasks(response.data || []);
     } catch (error) {
       console.error('Error loading tasks:', error);
     } finally {
