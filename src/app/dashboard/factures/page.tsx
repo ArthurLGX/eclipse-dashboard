@@ -499,13 +499,6 @@ export default function FacturesPage() {
     if (!convertModal.quote || !user?.id) return;
     
     const quote = convertModal.quote;
-    
-    // Vérifier si le devis n'est pas déjà accepté
-    if (quote.quote_status === 'accepted') {
-      showGlobalPopup(t('quote_already_accepted') || 'Ce devis a déjà été accepté', 'warning');
-      setConvertModal({ isOpen: false, quote: null });
-      return;
-    }
 
     setIsConverting(true);
     try {

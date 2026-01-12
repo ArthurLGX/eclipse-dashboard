@@ -479,12 +479,6 @@ export default function FacturePage() {
   // Handler pour convertir un devis en facture
   const handleConvertToInvoice = async () => {
     if (!facture || !user?.id) return;
-    
-    // Vérifier si le devis n'est pas déjà accepté ou converti
-    if (facture.quote_status === 'accepted') {
-      showGlobalPopup(t('quote_already_accepted') || 'Ce devis a déjà été accepté', 'warning');
-      return;
-    }
 
     setIsConverting(true);
     try {
