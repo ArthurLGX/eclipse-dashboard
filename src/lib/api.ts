@@ -829,35 +829,26 @@ export async function updateFactureById(
   }>
 ) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const payload: any = {
-    // Ne pas inclure reference - c'est un UID unique qui ne doit pas être renvoyé lors de l'update
-    number: data.number,
-    date: data.date,
-    due_date: data.due_date,
-    facture_status: data.facture_status,
-    quote_status: data.quote_status, // Ajout du statut de devis
-    currency: data.currency,
-    description: data.description,
-    notes: data.notes,
-    tva_applicable: data.tva_applicable,
-    invoice_lines: data.invoice_lines,
-  };
+  const payload: Record<string, any> = {};
+
+  // Ajouter uniquement les champs définis (non undefined/null)
+  if (data.number !== undefined) payload.number = data.number;
+  if (data.date) payload.date = data.date;
+  if (data.due_date) payload.due_date = data.due_date;
+  if (data.facture_status) payload.facture_status = data.facture_status;
+  if (data.quote_status) payload.quote_status = data.quote_status;
+  if (data.currency) payload.currency = data.currency;
+  if (data.description !== undefined) payload.description = data.description;
+  if (data.notes !== undefined) payload.notes = data.notes;
+  if (data.tva_applicable !== undefined) payload.tva_applicable = data.tva_applicable;
+  if (data.valid_until) payload.valid_until = data.valid_until;
+  if (data.invoice_lines) payload.invoice_lines = data.invoice_lines;
 
   // Relations Strapi - le champ s'appelle client_id dans votre schéma
-  if (data.client_id) {
-    payload.client_id = data.client_id;
-  }
-  if (data.project) {
-    payload.project = data.project;
-  }
-  if (data.user) {
-    payload.user = data.user;
-  }
-  if (data.pdf) {
-    payload.pdf = data.pdf;
-  }
-
- 
+  if (data.client_id) payload.client_id = data.client_id;
+  if (data.project) payload.project = data.project;
+  if (data.user) payload.user = data.user;
+  if (data.pdf) payload.pdf = data.pdf;
   
   const result = await put(`factures/${factureId}`, payload);
   return result;

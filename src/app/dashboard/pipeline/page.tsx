@@ -9,7 +9,7 @@ import { useContacts, useFactures, useProjects, clearCache } from '@/hooks/useAp
 import { updateClient, deleteClient, addClientUser } from '@/lib/api';
 import KanbanBoard, { PIPELINE_COLUMNS } from '@/app/components/KanbanBoard';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
-import type { Client, PipelineStatus, ContactSource, ContactPriority, Facture, Project } from '@/types';
+import type { Client, PipelineStatus, ContactSource, ContactPriority, Facture } from '@/types';
 import { calculatePipelineKPIs } from '@/utils/pipelineSync';
 import { 
   IconChartBar, 
@@ -529,7 +529,6 @@ export default function PipelinePage() {
   const { data: contactsData, loading, refetch } = useContacts(user?.id);
   // Données pour les KPIs
   const { data: facturesData } = useFactures(user?.id);
-  const { data: projectsData } = useProjects(user?.id);
   
   // État local pour les mises à jour optimistes (évite le rechargement complet)
   const [localContacts, setLocalContacts] = useState<Client[] | null>(null);
