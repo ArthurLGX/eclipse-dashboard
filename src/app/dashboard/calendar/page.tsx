@@ -742,6 +742,11 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
   const [isSaving, setIsSaving] = useState(false);
   const [errors, setErrors] = useState<{ title?: string; startDate?: string }>({});
   
+  // Récurrence
+  const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly' | 'weekdays' | 'custom'>('none');
+  const [recurrenceDays, setRecurrenceDays] = useState<number[]>([]);
+  const [recurrenceEndDate, setRecurrenceEndDate] = useState('');
+  
   // Notes de réunion
   const [noteMode, setNoteMode] = useState<'none' | 'manual' | 'fathom'>('none');
 
@@ -817,6 +822,10 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
       } else {
         setNoteMode('none');
       }
+      // Récurrence
+      setRecurrence(event.recurrence || 'none');
+      setRecurrenceDays(event.recurrence_days || []);
+      setRecurrenceEndDate(event.recurrence_end_date || '');
     } else {
       setTitle('');
       setDescription('');
@@ -839,6 +848,9 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
       setProjectId(defaultProject?.documentId || '');
       setClientId(defaultClient?.documentId || defaultProject?.client?.documentId || '');
       setNoteMode('none');
+      setRecurrence('none');
+      setRecurrenceDays([]);
+      setRecurrenceEndDate('');
     }
     setErrors({});
   }, [event, defaultDate, defaultProject, defaultClient]);
@@ -896,6 +908,9 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
         location: location || undefined,
         reminder_minutes: reminderMinutes,
         use_fathom: noteMode === 'fathom' && fathomConfigured === true,
+        recurrence: recurrence,
+        recurrence_days: recurrence === 'custom' ? recurrenceDays : undefined,
+        recurrence_end_date: recurrenceEndDate || undefined,
         project: projectId ? projects.find(p => p.documentId === projectId)?.id : undefined,
         client: clientId ? clients.find(c => c.documentId === clientId)?.id : undefined,
       });
@@ -1061,6 +1076,84 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
               placeholder="Zoom, Bureau, etc."
               className="input w-full"
             />
+          </div>
+
+          {/* Récurrence */}
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-1">
+                {t('recurrence') || 'Récurrence'}
+              </label>
+              <select
+                value={recurrence}
+                onChange={(e) => setRecurrence(e.target.value as typeof recurrence)}
+                className="input w-full"
+              >
+                <option value="none">{t('recurrence_none') || 'Aucune'}</option>
+                <option value="daily">{t('recurrence_daily') || 'Tous les jours'}</option>
+                <option value="weekdays">{t('recurrence_weekdays') || 'Jours ouvrés (Lun-Ven)'}</option>
+                <option value="weekly">{t('recurrence_weekly') || 'Toutes les semaines'}</option>
+                <option value="biweekly">{t('recurrence_biweekly') || 'Toutes les deux semaines'}</option>
+                <option value="monthly">{t('recurrence_monthly') || 'Tous les mois'}</option>
+                <option value="yearly">{t('recurrence_yearly') || 'Tous les ans'}</option>
+                <option value="custom">{t('recurrence_custom') || 'Personnalisée'}</option>
+              </select>
+            </div>
+            
+            {/* Jours personnalisés */}
+            {recurrence === 'custom' && (
+              <div>
+                <label className="block text-sm font-medium text-secondary mb-2">
+                  {t('recurrence_days') || 'Jours de répétition'}
+                </label>
+                <div className="flex gap-2 flex-wrap">
+                  {[
+                    { day: 0, label: 'D' },
+                    { day: 1, label: 'L' },
+                    { day: 2, label: 'M' },
+                    { day: 3, label: 'M' },
+                    { day: 4, label: 'J' },
+                    { day: 5, label: 'V' },
+                    { day: 6, label: 'S' },
+                  ].map(({ day, label }) => (
+                    <button
+                      key={day}
+                      type="button"
+                      onClick={() => {
+                        if (recurrenceDays.includes(day)) {
+                          setRecurrenceDays(recurrenceDays.filter(d => d !== day));
+                        } else {
+                          setRecurrenceDays([...recurrenceDays, day].sort());
+                        }
+                      }}
+                      className={`w-9 h-9 rounded-full text-sm font-medium transition-colors ${
+                        recurrenceDays.includes(day)
+                          ? 'bg-accent text-white'
+                          : 'bg-muted text-secondary hover:bg-hover'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Date de fin de récurrence */}
+            {recurrence !== 'none' && (
+              <div>
+                <label className="block text-sm font-medium text-secondary mb-1">
+                  {t('recurrence_end_date') || 'Fin de récurrence'} ({t('optional') || 'optionnel'})
+                </label>
+                <input
+                  type="date"
+                  value={recurrenceEndDate}
+                  onChange={(e) => setRecurrenceEndDate(e.target.value)}
+                  min={startDate}
+                  className="input w-full"
+                />
+              </div>
+            )}
           </div>
 
           <div>
