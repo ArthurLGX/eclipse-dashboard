@@ -21,6 +21,7 @@ import {
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import MediaPickerModal from './MediaPickerModal';
+import { searchEmojis, type EmojiData } from '@/data/emojis';
 
 /**
  * Nettoie le HTML généré par le RichTextEditor pour l'envoi d'emails
@@ -97,6 +98,14 @@ export default function RichTextEditor({
   const [linkUrl, setLinkUrl] = useState('');
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [mediaPickerType, setMediaPickerType] = useState<'image' | 'pdf'>('image');
+  
+  // Emoji picker state
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [emojiSearch, setEmojiSearch] = useState('');
+  const [emojiResults, setEmojiResults] = useState<EmojiData[]>([]);
+  const [emojiPickerPosition, setEmojiPickerPosition] = useState({ top: 0, left: 0 });
+  const [selectedEmojiIndex, setSelectedEmojiIndex] = useState(0);
+  const emojiStartPosition = useRef<{ node: Node | null; offset: number } | null>(null);
   
   // Selected media state
   const [selectedMedia, setSelectedMedia] = useState<HTMLElement | null>(null);
@@ -187,6 +196,8 @@ export default function RichTextEditor({
   const handleInput = () => {
     notifyChange();
     setTimeout(setupDraggableElements, 10);
+    // Check for emoji trigger after a small delay to let the DOM update
+    setTimeout(checkForEmojiTrigger, 0);
   };
 
   // Insert link
@@ -197,6 +208,117 @@ export default function RichTextEditor({
       setShowLinkInput(false);
     }
   };
+
+  // Emoji picker functions
+  const getCaretPosition = useCallback(() => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return null;
+    
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    const editorRect = editorRef.current?.getBoundingClientRect();
+    
+    if (!editorRect) return null;
+    
+    return {
+      top: rect.bottom - editorRect.top + 5,
+      left: rect.left - editorRect.left,
+    };
+  }, []);
+
+  const checkForEmojiTrigger = useCallback(() => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+    
+    const range = selection.getRangeAt(0);
+    const textNode = range.startContainer;
+    
+    if (textNode.nodeType !== Node.TEXT_NODE) return;
+    
+    const text = textNode.textContent || '';
+    const cursorPosition = range.startOffset;
+    
+    // Look for ":" followed by word characters
+    const beforeCursor = text.substring(0, cursorPosition);
+    const colonMatch = beforeCursor.match(/:([a-zA-Z0-9_àâäéèêëïîôùûüç]*)$/);
+    
+    if (colonMatch) {
+      const searchQuery = colonMatch[1];
+      const position = getCaretPosition();
+      
+      if (position) {
+        setEmojiSearch(searchQuery);
+        setEmojiResults(searchEmojis(searchQuery, 8));
+        setEmojiPickerPosition(position);
+        setShowEmojiPicker(true);
+        setSelectedEmojiIndex(0);
+        
+        // Save position for later insertion
+        emojiStartPosition.current = {
+          node: textNode,
+          offset: cursorPosition - colonMatch[0].length,
+        };
+      }
+    } else {
+      setShowEmojiPicker(false);
+      emojiStartPosition.current = null;
+    }
+  }, [getCaretPosition]);
+
+  const insertEmoji = useCallback((emoji: string) => {
+    if (!emojiStartPosition.current || !editorRef.current) return;
+    
+    const { node, offset } = emojiStartPosition.current;
+    const selection = window.getSelection();
+    
+    if (!selection || !node.textContent) return;
+    
+    // Calculate the text to replace (from ":" to cursor)
+    const currentOffset = selection.getRangeAt(0).startOffset;
+    const textBefore = node.textContent.substring(0, offset);
+    const textAfter = node.textContent.substring(currentOffset);
+    
+    // Replace the text
+    node.textContent = textBefore + emoji + textAfter;
+    
+    // Move cursor after emoji
+    const range = document.createRange();
+    range.setStart(node, offset + emoji.length);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    // Cleanup
+    setShowEmojiPicker(false);
+    emojiStartPosition.current = null;
+    notifyChange();
+    editorRef.current.focus();
+  }, [notifyChange]);
+
+  const handleEmojiKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (!showEmojiPicker || emojiResults.length === 0) return;
+    
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedEmojiIndex(prev => (prev + 1) % emojiResults.length);
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedEmojiIndex(prev => (prev - 1 + emojiResults.length) % emojiResults.length);
+        break;
+      case 'Enter':
+      case 'Tab':
+        e.preventDefault();
+        insertEmoji(emojiResults[selectedEmojiIndex].emoji);
+        break;
+      case 'Escape':
+        e.preventDefault();
+        setShowEmojiPicker(false);
+        emojiStartPosition.current = null;
+        break;
+    }
+  }, [showEmojiPicker, emojiResults, selectedEmojiIndex, insertEmoji]);
 
   // Update toolbar position
   const updateToolbarPosition = useCallback((element: HTMLElement) => {
@@ -825,6 +947,7 @@ export default function RichTextEditor({
           dir="ltr"
           onInput={handleInput}
           onClick={handleEditorClick}
+          onKeyDown={handleEmojiKeyDown}
           onMouseDown={handleEditorMouseDown}
           onMouseMove={handleEditorMouseMove}
           onMouseLeave={handleEditorMouseLeave}
@@ -849,6 +972,42 @@ export default function RichTextEditor({
           data-placeholder={placeholder || t('write_description') || 'Écrivez votre description...'}
           suppressContentEditableWarning
         />
+
+        {/* Emoji Picker Popup */}
+        {showEmojiPicker && emojiResults.length > 0 && (
+          <div
+            className="absolute z-50 bg-card border border-muted rounded-lg shadow-xl p-2 min-w-[200px] max-w-[320px]"
+            style={{
+              top: emojiPickerPosition.top,
+              left: Math.max(0, Math.min(emojiPickerPosition.left, 200)),
+            }}
+          >
+            <div className="text-xs text-muted px-2 py-1 mb-1 flex items-center gap-2">
+              <span>:{emojiSearch}</span>
+              <span className="text-muted/50">• ↑↓ naviguez • ↵ sélectionner</span>
+            </div>
+            <div className="space-y-0.5">
+              {emojiResults.map((emoji, index) => (
+                <button
+                  key={emoji.emoji}
+                  type="button"
+                  onClick={() => insertEmoji(emoji.emoji)}
+                  onMouseEnter={() => setSelectedEmojiIndex(index)}
+                  className={`w-full flex items-center gap-3 px-2 py-1.5 rounded-md transition-colors ${
+                    index === selectedEmojiIndex
+                      ? 'bg-accent/10 text-accent'
+                      : 'hover:bg-hover text-primary'
+                  }`}
+                >
+                  <span className="text-xl">{emoji.emoji}</span>
+                  <span className="text-sm truncate">
+                    {emoji.names[0]}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Resize handles for selected image */}
         {selectedMedia && selectedMedia.tagName === 'IMG' && (
