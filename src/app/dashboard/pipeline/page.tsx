@@ -555,9 +555,8 @@ export default function PipelinePage() {
   // Calcul des KPIs du pipeline
   const kpis = useMemo(() => {
     const factures = (facturesData as Facture[]) || [];
-    const projects = (projectsData as Project[]) || [];
-    return calculatePipelineKPIs(allContacts, factures, projects);
-  }, [allContacts, facturesData, projectsData]);
+    return calculatePipelineKPIs(allContacts, factures);
+  }, [allContacts, facturesData]);
 
   // Configuration du graphique d'évolution
   const chartData = useMemo(() => ({

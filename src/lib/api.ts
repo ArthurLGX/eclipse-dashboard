@@ -909,8 +909,7 @@ export async function updateQuoteStatusWithSync(
  * Appeler cette fonction après toute modification de devis/projet/facture
  */
 export async function syncClientPipelineStatus(
-  clientDocumentId: string,
-  _userId: number
+  clientDocumentId: string
 ): Promise<{ oldStatus: string | null; newStatus: string }> {
   // Récupérer toutes les données du client
   const [clientResponse, quotesResponse, projectsResponse] = await Promise.all([
