@@ -1031,9 +1031,10 @@ export async function convertQuoteToInvoice(
     ? quote.project.documentId 
     : (typeof quote.project === 'string' ? quote.project : undefined);
 
-  // Créer la nouvelle facture
-  const invoiceData = {
-    document_type: 'invoice' as const,
+  // Créer la nouvelle facture (sans le champ pdf pour éviter les erreurs de relation)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const invoiceData: Record<string, any> = {
+    document_type: 'invoice',
     reference: invoiceReference,
     number: quote.number,
     date: today.toISOString().split('T')[0],
@@ -1044,12 +1045,13 @@ export async function convertQuoteToInvoice(
     notes: quote.notes,
     tva_applicable: quote.tva_applicable ?? true,
     invoice_lines: quote.invoice_lines,
-    client_id: clientDocId,
-    project: projectDocId,
     user: userId,
-    pdf: '',
     converted_from_quote: quote.documentId, // Référence au devis original
   };
+  
+  // Ajouter les relations seulement si elles existent
+  if (clientDocId) invoiceData.client_id = clientDocId;
+  if (projectDocId) invoiceData.project = projectDocId;
 
   const invoiceResult = await post('factures', invoiceData);
 
