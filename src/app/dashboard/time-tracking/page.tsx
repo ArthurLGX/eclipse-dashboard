@@ -456,20 +456,24 @@ export default function TimeTrackingPage() {
                             <div className={`w-1 h-12 rounded-full ${statusColor}`} />
                             <div className="flex-1 min-w-0">
                               <p className="font-medium text-primary truncate flex items-center gap-2">
-                                {entry.project?.title || entry.description || t('no_description') || 'Sans description'}
+                                {entry.description || t('no_description') || 'Sans description'}
                                 {isRunning && <span className="text-xs text-warning font-normal">({t('running') || 'en cours'})</span>}
                               </p>
-                              <p className="text-xs text-muted">
+                              <p className="text-xs text-muted flex items-center gap-1">
                                 {new Date(entry.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                                 {isRunning && entry.estimated_duration ? (
-                                  // Pour tâche en cours avec durée estimée : afficher l'heure de fin prévue
                                   ` - ${new Date(new Date(entry.start_time).getTime() + entry.estimated_duration * 60000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
                                 ) : entry.end_time ? (
-                                  // Pour tâche terminée : afficher l'heure de fin réelle
                                   ` - ${new Date(entry.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
                                 ) : isRunning ? (
                                   ` - ${t('now') || 'maintenant'}`
                                 ) : null}
+                                {entry.project && (
+                                  <span className="flex items-center gap-1 ml-2">
+                                    <IconBriefcase className="w-3 h-3" />
+                                    <span>{entry.project.title}</span>
+                                  </span>
+                                )}
                                 {entry.client && ` • ${entry.client.name}`}
                               </p>
                             </div>

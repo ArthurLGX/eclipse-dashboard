@@ -10,6 +10,7 @@ import {
   IconChartBar,
   IconArrowLeft,
   IconCalendar,
+  IconBriefcase,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -167,6 +168,16 @@ export default function TimeTrackingAnalyticsPage() {
     const entriesWithEstimate = entries.filter(e => e.estimated_duration && e.duration);
     const accuracyByEntry: { entry: TimeEntry; accuracy: number; diff: number }[] = [];
 
+    // Regrouper les entrées par projet pour éviter les doublons
+    const projectDeviations = new Map<string, { 
+      projectId: string;
+      projectName: string;
+      taskName: string;
+      totalActual: number;
+      totalEstimated: number;
+      entries: TimeEntry[];
+    }>();
+
     entriesWithEstimate.forEach(entry => {
       const actual = entry.duration || 0;
       const estimated = entry.estimated_duration || 0;
@@ -176,6 +187,30 @@ export default function TimeTrackingAnalyticsPage() {
       totalTime += actual;
       totalEstimated += estimated;
       
+      // Regrouper par projet si un projet est associé
+      const projectKey = entry.project?.documentId || `task-${entry.documentId}`;
+      const existing = projectDeviations.get(projectKey);
+      
+      if (existing) {
+        existing.totalActual += actual;
+        existing.totalEstimated += estimated;
+        existing.entries.push(entry);
+        // Garder la description de la tâche la plus récente
+        if (!existing.taskName && entry.description) {
+          existing.taskName = entry.description;
+        }
+      } else {
+        projectDeviations.set(projectKey, {
+          projectId: projectKey,
+          projectName: entry.project?.title || '',
+          taskName: entry.description || '',
+          totalActual: actual,
+          totalEstimated: estimated,
+          entries: [entry],
+        });
+      }
+
+      // Pour les stats individuelles (inchangé)
       accuracyByEntry.push({ entry, accuracy, diff });
 
       // Tolérance de 10%
@@ -187,6 +222,22 @@ export default function TimeTrackingAnalyticsPage() {
         accurateCount++;
       }
     });
+
+    // Calculer les écarts par projet/tâche regroupé
+    const groupedDeviations = Array.from(projectDeviations.values()).map(group => {
+      const diff = group.totalActual - group.totalEstimated;
+      const accuracy = group.totalEstimated > 0 ? (group.totalActual / group.totalEstimated) * 100 : 100;
+      return {
+        projectId: group.projectId,
+        projectName: group.projectName,
+        taskName: group.taskName,
+        diff,
+        accuracy,
+        totalActual: group.totalActual,
+        totalEstimated: group.totalEstimated,
+        entryCount: group.entries.length,
+      };
+    }).sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff)).slice(0, 10);
 
     // Status distribution
     entries.forEach(entry => {
@@ -245,6 +296,7 @@ export default function TimeTrackingAnalyticsPage() {
       dailyData,
       projectData,
       accuracyData: accuracyByEntry.sort((a, b) => b.diff - a.diff).slice(0, 10),
+      groupedDeviations,
       statusDistribution: { 
         completed: completedTasks, 
         exceeded: exceededTasks, 
@@ -590,28 +642,42 @@ export default function TimeTrackingAnalyticsPage() {
                 </div>
               </div>
 
-              {/* Top Deviated Tasks */}
+              {/* Top Deviated Tasks - Regroupées par projet */}
               <div className="card p-6">
                 <h3 className="text-lg font-semibold text-primary mb-4">
                   {t('biggest_deviations') || 'Plus grands écarts'}
                 </h3>
                 <div className="space-y-3 max-h-72 overflow-y-auto">
-                  {analytics.accuracyData.length === 0 ? (
+                  {analytics.groupedDeviations.length === 0 ? (
                     <p className="text-muted text-sm text-center py-8">
                       {t('no_data') || 'Aucune donnée'}
                     </p>
                   ) : (
-                    analytics.accuracyData.map(({ entry, accuracy, diff }) => (
-                      <div key={entry.documentId} className="flex items-center justify-between p-2 rounded-lg bg-hover">
-                        <div className="flex items-center gap-2 min-w-0">
-                          {getAccuracyIcon(accuracy)}
-                          <span className="text-sm text-primary truncate">
-                            {entry.project?.title || entry.description || t('no_description')}
-                          </span>
+                    analytics.groupedDeviations.map((item) => (
+                      <div key={item.projectId} className="flex items-center justify-between p-2 rounded-lg bg-hover">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          {getAccuracyIcon(item.accuracy)}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm text-primary truncate font-medium">
+                              {item.taskName || item.projectName || t('no_description')}
+                            </p>
+                            {item.projectName && item.taskName && (
+                              <p className="text-xs text-muted flex items-center gap-1 truncate">
+                                <IconBriefcase className="w-3 h-3 flex-shrink-0" />
+                                <span className="truncate">{item.projectName}</span>
+                                {item.entryCount > 1 && (
+                                  <span className="text-muted/60">({item.entryCount} entrées)</span>
+                                )}
+                              </p>
+                            )}
+                            {!item.projectName && item.entryCount > 1 && (
+                              <p className="text-xs text-muted">({item.entryCount} entrées)</p>
+                            )}
+                          </div>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className={`text-sm font-mono ${getAccuracyColor(accuracy)}`}>
-                            {diff > 0 ? '+' : ''}{diff}min
+                          <span className={`text-sm font-mono ${getAccuracyColor(item.accuracy)}`}>
+                            {item.diff > 0 ? '+' : ''}{item.diff}min
                           </span>
                         </div>
                       </div>
