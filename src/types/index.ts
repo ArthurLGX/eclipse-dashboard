@@ -139,6 +139,8 @@ export interface Client {
   image?: ImageFile;
   projects?: Project[];
   factures?: Facture[];
+  is_favorite?: boolean;
+  sort_order?: number;
 }
 
 // Alias Contact = Client pour le modèle unifié
@@ -161,6 +163,8 @@ export interface Project {
   user?: User;
   technologies?: Technology[];
   tasks?: ProjectTask[];
+  is_favorite?: boolean;
+  sort_order?: number;
 }
 
 export interface ProjectTask {
@@ -959,7 +963,7 @@ export type UpdateTimeEntryData = Partial<CreateTimeEntryData>;
 // ============================================================================
 
 export type EventType = 'meeting' | 'deadline' | 'reminder' | 'delivery' | 'call' | 'personal';
-export type RecurrenceType = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
+export type RecurrenceType = 'none' | 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly' | 'weekdays' | 'custom';
 
 export interface CalendarEvent {
   id: number;
@@ -975,6 +979,9 @@ export interface CalendarEvent {
   reminder_minutes: number;
   is_completed: boolean;
   recurrence: RecurrenceType;
+  recurrence_days?: number[]; // Jours de la semaine (0=dimanche, 1=lundi, etc.)
+  recurrence_end_date?: string; // Date de fin de la récurrence
+  recurrence_parent_id?: string; // ID de l'événement parent pour les occurrences
   use_fathom?: boolean; // Si l'événement utilise Fathom AI pour les notes
   project?: Project;
   client?: Client;

@@ -261,9 +261,9 @@ export default function DataTable<T = unknown>({
                   className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
                 >
                   {allCurrentPageSelected ? (
-                    <IconSquareCheck className="w-5 h-5 text-accent" />
+                    <IconSquareCheck stroke={1} className="w-5 h-5 text-accent" />
                   ) : someCurrentPageSelected ? (
-                    <IconSquareMinus className="w-5 h-5 text-accent" />
+                    <IconSquareMinus stroke={1} className="w-5 h-5 text-accent" />
                   ) : (
                     <IconSquare className="w-5 h-5" />
                   )}

@@ -405,6 +405,18 @@ export async function updateClient(clientDocumentId: string, data: Partial<Clien
   return put(`clients/${clientDocumentId}`, data);
 }
 
+/** Toggle le statut favori d'un client */
+export async function toggleClientFavorite(clientDocumentId: string, isFavorite: boolean) {
+  return put(`clients/${clientDocumentId}`, { is_favorite: isFavorite });
+}
+
+/** Met à jour l'ordre de plusieurs clients en une fois */
+export async function updateClientsOrder(clients: { documentId: string; sort_order: number }[]) {
+  return Promise.all(
+    clients.map(c => put(`clients/${c.documentId}`, { sort_order: c.sort_order }))
+  );
+}
+
 /** Supprime un client par son documentId */
 export const deleteClient = (documentId: string) =>
   del(`clients/${documentId}`);
@@ -497,9 +509,23 @@ export async function updateProject(
     end_date?: string;
     type?: string;
     client?: string | null;
+    is_favorite?: boolean;
+    sort_order?: number;
   }
 ) {
   return put(`projects/${projectDocumentId}`, data);
+}
+
+/** Toggle le statut favori d'un projet */
+export async function toggleProjectFavorite(projectDocumentId: string, isFavorite: boolean) {
+  return put(`projects/${projectDocumentId}`, { is_favorite: isFavorite });
+}
+
+/** Met à jour l'ordre de plusieurs projets en une fois */
+export async function updateProjectsOrder(projects: { documentId: string; sort_order: number }[]) {
+  return Promise.all(
+    projects.map(p => put(`projects/${p.documentId}`, { sort_order: p.sort_order }))
+  );
 }
 
 export async function checkProjectDuplicateForClient(
