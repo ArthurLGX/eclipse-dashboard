@@ -13,7 +13,6 @@ import {
   IconCheck,
   IconLoader2,
   IconUser,
-  IconCalendar,
   IconBriefcase,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -21,7 +20,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { useProjects, useClients, clearCache } from '@/hooks/useApi';
 import { useModalFocus } from '@/hooks/useModalFocus';
-import { createProject, createProjectTask, fetchProjectTasks, addClientUser } from '@/lib/api';
+import { createProject, createProjectTask, fetchProjectTasks } from '@/lib/api';
 import type { Client, Project, Task } from '@/types';
 
 interface QuickProjectModalProps {

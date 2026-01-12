@@ -73,10 +73,12 @@ export default function ProjectsPage() {
     return [...visibleOwnedProjects, ...collaboratedProjects];
   }, [allProjects, getVisibleCount]);
 
-  const clients = useMemo(() => 
+  // Liste des clients pour le modal de création de projet
+  const _clients = useMemo(() => 
     ((clientsData as Client[]) || []).map(c => ({ id: c.id, name: c.name })),
     [clientsData]
   );
+  void _clients; // Utilisé par QuickProjectModal via useClients
 
   // Quota exceeded detection (only for owned projects)
   const ownedProjects = useMemo(() => 
