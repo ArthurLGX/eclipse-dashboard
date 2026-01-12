@@ -1001,7 +1001,10 @@ export interface CreateCalendarEventData {
   color?: string;
   location?: string;
   reminder_minutes?: number;
+  use_fathom?: boolean;
   recurrence?: RecurrenceType;
+  recurrence_days?: number[];
+  recurrence_end_date?: string;
   project?: number;
   client?: number;
 }
