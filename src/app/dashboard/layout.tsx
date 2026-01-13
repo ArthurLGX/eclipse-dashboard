@@ -38,6 +38,7 @@ import {
   IconCalendar,
   IconTargetArrow,
   IconPalette,
+  IconFileText,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -254,6 +255,14 @@ function DashboardLayoutContent({
           label: t('invoices_and_quotes') || 'Factures / Devis',
           icon: <IconFileInvoice size={20} stroke={1} />,
           path: '/dashboard/factures',
+        },
+        // Contrats
+        {
+          id: 'contracts',
+          label: t('contracts') || 'Contrats',
+          icon: <IconFileText size={20} stroke={1} />,
+          path: '/dashboard/contracts',
+          moduleId: 'contracts',
         },
         // Projets & Organisation
         {
