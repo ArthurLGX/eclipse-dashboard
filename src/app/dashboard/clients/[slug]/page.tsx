@@ -173,9 +173,9 @@ export default function ClientDetailsPage() {
       clearCache('client');
       setIsEditMode(false);
       
-      // Mettre à jour l'URL si le nom a changé
+      // Mettre à jour l'URL si le nom a changé (documentId reste le même)
       if (newName !== client.name) {
-        const newSlug = generateClientSlug(newName);
+        const newSlug = generateClientSlug(newName, client.documentId);
         router.replace(`/dashboard/clients/${newSlug}`);
       } else {
         await refetchClient();
@@ -228,8 +228,8 @@ export default function ClientDetailsPage() {
     );
   }
 
-  // Générer le slug actuel pour les liens
-  const currentSlug = generateClientSlug(client.name);
+  // Générer le slug actuel pour les liens (avec documentId pour fiabilité)
+  const currentSlug = generateClientSlug(client.name, client.documentId);
 
   // Handler pour l'upload d'image client
   const handleClientImageUpload = async (imageId: number) => {

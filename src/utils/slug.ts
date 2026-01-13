@@ -23,12 +23,14 @@ export function generateSlug(title: string, documentId: string): string {
 }
 
 /**
- * Génère un slug à partir d'un nom (sans ID)
- * Format: nom-slugifie
- * Exemple: "John Doe" → "john-doe"
+ * Génère un slug à partir d'un nom et d'un documentId (stable)
+ * Format: nom-slugifie--documentId
+ * Exemple: "John Doe" avec documentId "abc123" → "john-doe--abc123"
+ * Si pas de documentId, retourne juste le nom slugifié (rétrocompatibilité)
  */
-export function generateClientSlug(name: string): string {
-  return slugifyText(name);
+export function generateClientSlug(name: string, documentId?: string): string {
+  const slugifiedName = slugifyText(name);
+  return documentId ? `${slugifiedName}--${documentId}` : slugifiedName;
 }
 
 /**

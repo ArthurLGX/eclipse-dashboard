@@ -603,7 +603,7 @@ export default function ClientsPage() {
       render: (value, row) => (
         <div
           className="flex items-center gap-3 cursor-pointer transition-colors"
-          onClick={() => router.push(`/dashboard/clients/${generateClientSlug(row.name)}`)}
+          onClick={() => router.push(`/dashboard/clients/${generateClientSlug(row.name, row.documentId)}`)}
         >
           <ClientAvatar
             name={row.name}
@@ -661,7 +661,7 @@ export default function ClientsPage() {
       key: 'actions',
       label: t('actions'),
       render: (_, row) => {
-        const clientSlug = generateClientSlug(row.name);
+        const clientSlug = generateClientSlug(row.name, row.documentId);
         return (
           <div className="flex items-center gap-2">
             <TableActions
@@ -688,7 +688,7 @@ export default function ClientsPage() {
     <ProtectedRoute>
       <DashboardPageTemplate<Client>
         title={t('contacts') || 'Contacts'}
-        onRowClick={row => router.push(`/dashboard/clients/${generateClientSlug(row.name)}`)}
+        onRowClick={row => router.push(`/dashboard/clients/${generateClientSlug(row.name, row.documentId)}`)}
         actionButtonLabel={canAdd('clients') ? t('add_client') : `${t('add_client')} (${t('quota_reached') || 'Quota atteint'})`}
         onActionButtonClick={canAdd('clients') ? () => setShowAddModal(true) : () => showGlobalPopup(t('quota_reached_message') || 'Quota atteint. Passez à un plan supérieur.', 'warning')}
         additionalActions={[

@@ -373,12 +373,21 @@ export const fetchClientById = (id: number) =>
 export const fetchClientByDocumentId = (documentId: string) =>
   fetchEntityById('clients', documentId, true);
 
-/** Recherche un client par son nom (slug) - filtré par utilisateur */
+/** Recherche un client par son slug (nom--documentId ou nom seul) - filtré par utilisateur */
 export const fetchClientBySlug = async (slug: string, userId?: number): Promise<ApiResponse<Client[]>> => {
-  // Convertit le slug en pattern de recherche (remplace les tirets par des espaces pour la recherche)
-  // On fait une recherche insensible à la casse
-  const searchTerm = slug.replace(/-/g, ' ');
   const userFilter = userId ? `&filters[users][id][$eq]=${userId}` : '';
+  
+  // Vérifie si le slug contient un documentId (format: nom-slugifie--documentId)
+  const parts = slug.split('--');
+  if (parts.length > 1) {
+    // Recherche par documentId (méthode exacte et fiable)
+    const documentId = parts[parts.length - 1];
+    return get<ApiResponse<Client[]>>(`clients?populate=*&filters[documentId][$eq]=${documentId}${userFilter}`);
+  }
+  
+  // Fallback: recherche par nom (rétrocompatibilité avec anciens liens)
+  // Convertit le slug en pattern de recherche (remplace les tirets par des espaces)
+  const searchTerm = slug.replace(/-/g, ' ');
   return get<ApiResponse<Client[]>>(`clients?populate=*&filters[name][$containsi]=${encodeURIComponent(searchTerm)}${userFilter}`);
 };
 

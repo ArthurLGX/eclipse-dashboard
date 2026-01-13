@@ -688,7 +688,7 @@ const PROJECT_TYPES = [
                   </span>
                   {project.client && (
                     <Link 
-                      href={`/dashboard/clients/${generateClientSlug(project.client.name)}`}
+                      href={`/dashboard/clients/${generateClientSlug(project.client.name, project.client.documentId)}`}
                       className="text-secondary hover:text-accent text-sm flex items-center gap-1.5 transition-colors"
                     >
                       <IconBuilding className="w-4 h-4" />
@@ -1279,7 +1279,7 @@ const PROJECT_TYPES = [
                 </select>
               ) : project.client ? (
                 <Link
-                  href={`/dashboard/clients/${generateClientSlug(project.client.name)}`}
+                  href={`/dashboard/clients/${generateClientSlug(project.client.name, project.client.documentId)}`}
                   className="flex items-center gap-3 p-3 bg-hover rounded-lg hover:bg-muted transition-colors group"
                 >
                   <div className="w-10 h-10 bg-info-light rounded-full flex items-center justify-center">

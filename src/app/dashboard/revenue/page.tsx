@@ -451,7 +451,7 @@ export default function RevenuePage() {
         return (
           <span
             className="text-sm cursor-pointer hover:text-accent transition-colors"
-            onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/clients/${generateClientSlug(client.name)}`); }}
+            onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/clients/${generateClientSlug(client.name, client.documentId)}`); }}
           >
             {client.name}
           </span>
