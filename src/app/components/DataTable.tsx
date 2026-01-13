@@ -23,6 +23,8 @@ export interface CustomAction<T = unknown> {
 
 export type SortDirection = 'asc' | 'desc' | null;
 
+export type ViewMode = 'table' | 'cards';
+
 export interface DataTableProps<T = unknown> {
   columns: Column<T>[];
   data: T[];
@@ -48,6 +50,17 @@ export interface DataTableProps<T = unknown> {
   onToggleFavorite?: (item: T) => void;
   isFavorite?: (item: T) => boolean;
   favoritesFirst?: boolean;
+  // View mode props (table vs cards)
+  viewMode?: ViewMode;
+  onViewModeChange?: (mode: ViewMode) => void;
+  mobileBreakpoint?: number; // Default 768
+  // Card display customization
+  cardTitleKey?: string; // Column key for card title
+  cardSubtitleKey?: string; // Column key for card subtitle
+  cardStatusKey?: string; // Column key for status badge
+  cardTimeKey?: string; // Column key for time/date display
+  cardImageKey?: string; // Column key for image (used in desktop grid)
+  cardAvatarKey?: string; // Column key for avatar image
 }
 
 export default function DataTable<T = unknown>({
@@ -74,8 +87,42 @@ export default function DataTable<T = unknown>({
   onToggleFavorite,
   isFavorite,
   favoritesFirst = true,
+  // View mode
+  viewMode: controlledViewMode,
+  onViewModeChange,
+  mobileBreakpoint = 768,
+  cardTitleKey,
+  cardSubtitleKey,
+  cardStatusKey,
+  cardTimeKey,
+  cardImageKey,
+  cardAvatarKey,
 }: DataTableProps<T>) {
   const { t } = useLanguage();
+  
+  // Detect mobile screen
+  const [isMobile, setIsMobile] = useState(false);
+  const [internalViewMode, setInternalViewMode] = useState<ViewMode>('table');
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < mobileBreakpoint;
+      setIsMobile(mobile);
+      // Auto-switch to cards on mobile if not controlled
+      if (!controlledViewMode && mobile) {
+        setInternalViewMode('cards');
+      } else if (!controlledViewMode && !mobile) {
+        setInternalViewMode('table');
+      }
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [mobileBreakpoint, controlledViewMode]);
+  
+  // Use controlled or internal view mode
+  const viewMode = controlledViewMode ?? internalViewMode;
+  const setViewMode = onViewModeChange ?? setInternalViewMode;
   
   // Sorting state
   const [sortKey, setSortKey] = useState<string | null>(defaultSortKey || null);
@@ -185,6 +232,10 @@ export default function DataTable<T = unknown>({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Drag state - prevent click after drag
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartPos = React.useRef<{ x: number; y: number } | null>(null);
 
   // Reset selection when data changes
   useEffect(() => {
@@ -222,7 +273,12 @@ export default function DataTable<T = unknown>({
   };
 
   // Handle row click - toggle selection if in selection mode, otherwise navigate
+  // Skip if we just finished dragging
   const handleRowClick = (row: T, itemId: string) => {
+    if (isDragging) {
+      setIsDragging(false);
+      return;
+    }
     if (isSelectionMode) {
       toggleItem(itemId);
     } else {
@@ -336,6 +392,242 @@ export default function DataTable<T = unknown>({
     );
   }
 
+  // Render mobile list view (like appointment list - clean design)
+  const renderMobileListView = () => (
+    <div className="space-y-0">
+      {displayData.length === 0 ? (
+        <div className="text-center py-12 text-secondary">
+          {emptyMessage}
+        </div>
+      ) : (
+        displayData.map((row, index) => {
+          const itemId = getItemId(row);
+          const isSelected = selectedIds.has(itemId);
+          const isFav = isFavorite?.(row);
+          
+          // Get values from configured keys
+          const titleCol = columns.find(c => c.key === cardTitleKey) || columns[0];
+          const subtitleCol = columns.find(c => c.key === cardSubtitleKey) || columns[1];
+          const statusCol = columns.find(c => c.key === cardStatusKey);
+          const avatarCol = columns.find(c => c.key === cardAvatarKey);
+          
+          const titleValue = titleCol ? (row as Record<string, unknown>)[titleCol.key] : '';
+          const subtitleValue = subtitleCol ? (row as Record<string, unknown>)[subtitleCol.key] : '';
+          const statusValue = statusCol ? (row as Record<string, unknown>)[statusCol.key] : null;
+          const avatarValue = avatarCol ? (row as Record<string, unknown>)[avatarCol.key] : null;
+          
+          return (
+            <motion.div
+              key={itemId}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: index * 0.02 }}
+              className={`flex items-center gap-3 py-3 px-4 mb-2 border-default border cursor-pointer transition-colors hover:bg-card-hover active:bg-card-hover rounded-xl ${
+                isSelected ? 'bg-accent-light' : 'bg-muted'
+              }`}
+              onClick={() => handleRowClick(row, itemId)}
+            >
+              {/* Selection checkbox (drag not supported in cards mode) */}
+              {selectable && (
+                <button
+                  onClick={(e) => toggleItem(itemId, e)}
+                  className="flex-shrink-0"
+                >
+                  {isSelected ? (
+                    <IconSquareCheck stroke={1} className="w-5 h-5 text-accent" />
+                  ) : (
+                    <IconSquare className="w-5 h-5 text-muted" />
+                  )}
+                </button>
+              )}
+              
+              {/* Logo client - affiché seulement si cardAvatarKey est configuré et a une valeur */}
+{!!avatarValue && (
+                  <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-card flex items-center justify-center">
+                  <img 
+                    src={typeof avatarValue === 'string' ? avatarValue : ''} 
+                    alt="" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              )}
+              
+              {/* Name + Description */}
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-primary truncate">
+                  {titleCol?.render ? titleCol.render(titleValue, row) : String(titleValue || '')}
+                </div>
+                {subtitleValue !== undefined && subtitleValue !== null && subtitleValue !== '' && (
+                  <div className="text-sm text-muted truncate">
+                    {subtitleCol?.render ? subtitleCol.render(subtitleValue, row) : String(subtitleValue)}
+                  </div>
+                )}
+              </div>
+              
+              {/* Status badge */}
+              {statusValue !== null && statusValue !== undefined && (
+                <div className="flex-shrink-0">
+                  {statusCol?.render ? statusCol.render(statusValue, row) : (
+                    <span className="px-2.5 py-1 rounded-full bg-success-light text-success text-xs font-medium">
+                      {String(statusValue)}
+                    </span>
+                  )}
+                </div>
+              )}
+              
+              {/* Favorite star - à droite */}
+              {showFavorites && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleFavorite?.(row);
+                  }}
+                  className="flex-shrink-0"
+                >
+                  {isFav ? (
+                    <IconStarFilled className="w-5 h-5 text-warning" />
+                  ) : (
+                    <IconStar className="w-5 h-5 text-muted" />
+                  )}
+                </button>
+              )}
+            </motion.div>
+          );
+        })
+      )}
+    </div>
+  );
+
+  // Render desktop grid view (visual cards with images)
+  const renderDesktopGridView = () => (
+    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+      {displayData.length === 0 ? (
+        <div className="col-span-full text-center py-12 text-secondary">
+          {emptyMessage}
+        </div>
+      ) : (
+        displayData.map((row, index) => {
+          const itemId = getItemId(row);
+          const isSelected = selectedIds.has(itemId);
+          const isFav = isFavorite?.(row);
+          
+          // Get values from configured keys
+          const titleCol = columns.find(c => c.key === cardTitleKey) || columns[0];
+          const subtitleCol = columns.find(c => c.key === cardSubtitleKey) || columns[1];
+          const statusCol = columns.find(c => c.key === cardStatusKey);
+          const imageCol = columns.find(c => c.key === cardImageKey);
+          
+          const titleValue = titleCol ? (row as Record<string, unknown>)[titleCol.key] : '';
+          const subtitleValue = subtitleCol ? (row as Record<string, unknown>)[subtitleCol.key] : '';
+          const statusValue = statusCol ? (row as Record<string, unknown>)[statusCol.key] : null;
+          const imageValue = imageCol ? (row as Record<string, unknown>)[imageCol.key] : null;
+          
+          return (
+            <motion.div
+              key={itemId}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.015 }}
+              className={`group card overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] ${
+                isSelected ? 'ring-1 ring-[var(--color-accent)] bg-accent-light' : ''
+              }`}
+              onClick={() => handleRowClick(row, itemId)}
+            >
+              {/* Image header */}
+              <div className="relative aspect-square bg-gradient-to-br from-muted to-muted overflow-hidden">
+                {imageValue ? (
+                  <img 
+                    src={typeof imageValue === 'string' ? imageValue : ''} 
+                    alt="" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted-light to-muted">
+                    <span className="text-5xl font-bold text-secondary">
+                      {String(titleValue || '').charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                
+                {/* Top left overlays: Checkbox (drag not supported in grid mode) */}
+                <div className="absolute top-2 left-2 flex items-center gap-1">
+                  {/* Selection checkbox */}
+                  {selectable && (
+                    <button
+                      onClick={(e) => toggleItem(itemId, e)}
+                      className={`p-1 rounded-lg transition-opacity ${
+                        isSelected ? 'bg-accent' : 'bg-card-hover backdrop-blur shadow-sm opacity-0 group-hover:opacity-100'
+                      }`}
+                    >
+                      {isSelected ? (
+                        <IconSquareCheck stroke={1} className="w-5 h-5 text-white" />
+                      ) : (
+                        <IconSquare className="w-5 h-5 text-secondary" />
+                      )}
+                    </button>
+                  )}
+                </div>
+                
+                {/* Status badge overlay - top right */}
+                {statusValue !== null && statusValue !== undefined && (
+                  <div className="absolute top-2 right-2">
+                    {statusCol?.render ? statusCol.render(statusValue, row) : (
+                      <span className="px-2 py-1 rounded-lg bg-card/90 backdrop-blur text-xs font-medium text-primary shadow-sm">
+                        {String(statusValue)}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+              
+              {/* Card content */}
+              <div className="p-3">
+                <div className="flex items-start gap-2">
+                  {/* Favorite star */}
+                  {showFavorites && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleFavorite?.(row);
+                      }}
+                      className="flex-shrink-0 mt-0.5"
+                    >
+                      {isFav ? (
+                        <IconStarFilled className="w-4 h-4 text-warning" />
+                      ) : (
+                        <IconStar className="w-4 h-4 text-muted hover:text-warning transition-colors" />
+                      )}
+                    </button>
+                  )}
+                  
+                  {/* Title and subtitle */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-primary truncate text-sm">
+                      {titleCol?.render ? titleCol.render(titleValue, row) : String(titleValue || '')}
+                    </h3>
+                    {subtitleValue !== undefined && subtitleValue !== null && subtitleValue !== '' && (
+                      <div className="text-xs text-muted truncate mt-0.5">
+                        {subtitleCol?.render ? subtitleCol.render(subtitleValue, row) : String(subtitleValue)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })
+      )}
+    </div>
+  );
+
+  // Choose which card view to render based on screen size
+  const renderCardsView = () => {
+    if (isMobile) {
+      return renderMobileListView();
+    }
+    return renderDesktopGridView();
+  };
+
   return (
     <div className={` h-fit ${className}`}>
       {/* Selection action bar */}
@@ -345,7 +637,7 @@ export default function DataTable<T = unknown>({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center justify-between gap-4 mb-4 p-3 rounded-xl bg-muted border border-muted"
+            className="flex flex-wrap items-center justify-between gap-4 mb-4 p-3 rounded-xl bg-muted border border-muted"
           >
             <div className="flex items-center gap-3">
               <span className="text-sm text-primary font-medium">
@@ -406,6 +698,12 @@ export default function DataTable<T = unknown>({
         )}
       </AnimatePresence>
 
+      {/* Cards view for mobile */}
+      {viewMode === 'cards' && renderCardsView()}
+      
+      {/* Table view for desktop */}
+      {viewMode === 'table' && (
+      <div className="overflow-x-auto">
       <table className="table w-full">
         <thead>
           <tr className="border-b border-default">
@@ -480,10 +778,12 @@ export default function DataTable<T = unknown>({
                       as="tr"
                       key={itemId || index}
                       value={row}
+                      onDragStart={() => setIsDragging(true)}
+                      onDragEnd={() => setTimeout(() => setIsDragging(false), 100)}
                       onClick={() => handleRowClick(row, itemId)}
                       className={`cursor-pointer border-b border-default !font-light transition-colors ${
-                        isSelected ? 'bg-accent/5' : ''
-                      } ${rowIsFavorite ? 'bg-warning/5' : ''}`}
+                          isSelected ? 'bg-accent-light' : ''
+                      } ${rowIsFavorite ? 'bg-warning-light' : ''}`}
                     >
                       <td className="w-10 py-4 px-2">
                         <IconGripVertical className="w-4 h-4 text-muted cursor-grab active:cursor-grabbing" />
@@ -551,8 +851,8 @@ export default function DataTable<T = unknown>({
                     key={itemId || index}
                     onClick={() => handleRowClick(row, itemId)}
                     className={`cursor-pointer border-b border-default !font-light transition-colors hover:bg-hover ${
-                      isSelected ? 'bg-accent/5' : ''
-                    } ${rowIsFavorite ? 'bg-warning/5' : ''}`}
+                      isSelected ? 'bg-accent-light' : ''
+                    } ${rowIsFavorite ? 'bg-warning-light' : ''}`}
                   >
                     {showFavorites && (
                       <td className="w-10 py-4 px-2">
@@ -616,6 +916,8 @@ export default function DataTable<T = unknown>({
           </tbody>
         )}
       </table>
+      </div>
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (
@@ -723,7 +1025,7 @@ export default function DataTable<T = unknown>({
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-end gap-3 p-6 border-t border-default bg-card-hover/50">
+              <div className="flex items-center justify-end gap-3 p-6 border-t border-default bg-card-hover">
                 <button
                   onClick={() => setShowDeleteModal(false)}
                   disabled={isDeleting}

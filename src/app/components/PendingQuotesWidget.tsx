@@ -204,7 +204,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
 
         {/* Footer si plus de 5 devis */}
         {pendingQuotes.length > 5 && (
-          <div className="px-6 py-3 border-t border-default bg-hover/50 text-center">
+          <div className="px-6 py-3 border-t border-default bg-hover text-center">
             <button
               onClick={() => router.push('/dashboard/factures?type=quote')}
               className="text-sm text-violet-500 hover:text-violet-600"

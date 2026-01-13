@@ -1281,7 +1281,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                 </div>
               )}
 
-              <div className="bg-muted/50 rounded-lg p-4">
+              <div className="bg-muted rounded-lg p-4">
                 <h3 className="text-sm font-medium text-primary mb-2">💡 {t('portfolio_import_how_title')}</h3>
                 <ul className="text-sm text-secondary space-y-1">
                   <li>• {t('portfolio_import_how_1')}</li>
@@ -1291,7 +1291,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                 </ul>
               </div>
 
-              <div className="bg-muted/50 rounded-lg p-4">
+              <div className="bg-muted rounded-lg p-4">
                 <h3 className="text-sm font-medium text-primary mb-2">🔗 {t('portfolio_import_supported_title')}</h3>
                 <p className="text-sm text-secondary">
                   {t('portfolio_import_supported_desc')}

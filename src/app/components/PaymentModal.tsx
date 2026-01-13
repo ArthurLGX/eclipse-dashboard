@@ -134,7 +134,7 @@ const CheckoutForm: React.FC<{
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
-        <div className="bg-hover/50 p-4 rounded-lg border border-default">
+        <div className="bg-hover p-4 rounded-lg border border-default">
           <h3 className="!text-lg font-semibold text-primary mb-2">
             {plan.name.charAt(0).toUpperCase() + plan.name.slice(1)} Plan
           </h3>

@@ -34,20 +34,20 @@ export default function MobileDrawer({
 }: MobileDrawerProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const [expandedCategories, setExpandedCategories] = React.useState<string[]>([]);
+  // Une seule catégorie ouverte à la fois (null = toutes fermées)
+  const [expandedCategory, setExpandedCategory] = React.useState<string | null>(null);
 
-  // Ouvrir automatiquement la catégorie active
+  // Quand le drawer s'ouvre, ouvrir uniquement la catégorie de la page courante
   React.useEffect(() => {
-    if (activeCategory && !expandedCategories.includes(activeCategory)) {
-      setExpandedCategories(prev => [...prev, activeCategory]);
+    if (isOpen) {
+      setExpandedCategory(activeCategory);
     }
-  }, [activeCategory, expandedCategories]);
+  }, [isOpen, activeCategory]);
 
+  // Accordéon exclusif : ouvrir une catégorie ferme les autres
   const toggleCategory = (categoryId: string) => {
-    setExpandedCategories(prev =>
-      prev.includes(categoryId)
-        ? prev.filter(id => id !== categoryId)
-        : [...prev, categoryId]
+    setExpandedCategory(prev => 
+      prev === categoryId ? null : categoryId
     );
   };
 
@@ -84,20 +84,20 @@ export default function MobileDrawer({
             className="fixed left-0 top-0 bottom-0 w-[85%] max-w-[320px] z-[1101] overflow-hidden"
           >
             {/* Glass container */}
-            <div className="h-full bg-card/95 backdrop-blur-xl border-r border-default/50 flex flex-col">
+            <div className="mobile-drawer-glass h-full flex flex-col">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-default/50">
+              <div className="flex items-center justify-between p-4 border-b border-default">
                 <SidebarLogo />
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-xl bg-hover hover:bg-muted transition-colors"
+                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-hover hover:bg-muted transition-colors active:scale-95"
                 >
                   <IconX size={20} className="text-secondary" />
                 </button>
               </div>
 
               {/* Navigation */}
-              <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+              <nav className="flex-1 overflow-y-auto p-3 space-y-1 mobile-drawer-scroll">
                 {items.map(item => (
                   <div key={item.id}>
                     {item.isCategory ? (
@@ -107,7 +107,7 @@ export default function MobileDrawer({
                           onClick={() => toggleCategory(item.id)}
                           className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
                             activeCategory === item.id
-                              ? 'bg-accent/10 text-accent'
+                              ? 'bg-accent-muted text-accent'
                               : 'text-secondary hover:bg-hover'
                           }`}
                         >
@@ -118,14 +118,14 @@ export default function MobileDrawer({
                           <IconChevronRight
                             size={18}
                             className={`transition-transform duration-200 ${
-                              expandedCategories.includes(item.id) ? 'rotate-90' : ''
+                              expandedCategory === item.id ? 'rotate-90' : ''
                             }`}
                           />
                         </button>
 
                         {/* Category items */}
                         <AnimatePresence>
-                          {expandedCategories.includes(item.id) && item.menuItems && (
+                          {expandedCategory === item.id && item.menuItems && (
                             <motion.div
                               initial={{ height: 0, opacity: 0 }}
                               animate={{ height: 'auto', opacity: 1 }}
@@ -133,14 +133,14 @@ export default function MobileDrawer({
                               transition={{ duration: 0.2 }}
                               className="overflow-hidden"
                             >
-                              <div className="ml-4 mt-1 space-y-1 border-l-2 border-default/30 pl-3">
+                              <div className="ml-4 mt-1 space-y-1 border-l-2 border-default pl-3">
                                 {item.menuItems.map(subItem => (
                                   <button
                                     key={subItem.id}
                                     onClick={() => handleItemClick(subItem)}
-                                    className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-all ${
+                                    className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-all active:scale-98 ${
                                       activeItem === subItem.id || pathname === subItem.path
-                                        ? 'bg-accent/15 text-accent font-medium'
+                                        ? 'bg-accent-muted text-accent font-medium'
                                         : 'text-secondary hover:bg-hover hover:text-primary'
                                     }`}
                                   >
@@ -149,8 +149,8 @@ export default function MobileDrawer({
                                     {subItem.status && (
                                       <span className={`ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                         subItem.status === 'beta'
-                                          ? 'bg-warning/20 text-warning border border-warning/30'
-                                          : 'bg-success/20 text-success border border-success/30'
+                                          ? 'bg-warning-light text-warning border border-warning'
+                                          : 'bg-success-light text-success border border-success'
                                       }`}>
                                         {subItem.status === 'beta' ? 'Beta' : 'New'}
                                       </span>
@@ -166,9 +166,9 @@ export default function MobileDrawer({
                       /* Regular item (logout, admin, etc.) */
                       <button
                         onClick={() => handleItemClick(item)}
-                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
+                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all active:scale-98 ${
                           activeItem === item.id
-                            ? 'bg-accent/10 text-accent font-medium'
+                            ? 'bg-accent-muted text-accent font-medium'
                             : 'text-secondary hover:bg-hover hover:text-primary'
                         }`}
                       >
@@ -181,7 +181,7 @@ export default function MobileDrawer({
               </nav>
 
               {/* Footer */}
-              <div className="p-4 border-t border-default/50">
+              <div className="p-4 border-t border-default">
                 <p className="text-xs text-muted text-center">
                   Eclipse Dashboard © 2026
                 </p>
@@ -193,4 +193,3 @@ export default function MobileDrawer({
     </AnimatePresence>
   );
 }
-

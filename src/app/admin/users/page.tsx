@@ -407,7 +407,7 @@ export default function AdminUsersPage() {
               {filteredUsers.map((user, index) => (
                 <tr
                   key={user.id}
-                  className={`hover:bg-hover/50 transition-colors ${
+                  className={`hover:bg-hover transition-colors ${
                     selectedUsers.includes(user.id) ? 'bg-accent/5' : ''
                   } ${index !== filteredUsers.length - 1 ? 'border-b border-muted' : ''}`}
                 >

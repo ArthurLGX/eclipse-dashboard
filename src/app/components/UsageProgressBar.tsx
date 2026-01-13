@@ -222,7 +222,7 @@ export default function UsageProgressBar() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col gap-4 w-full card backdrop-blur-sm p-4 lg:!mt-8 !mt-32 !mb-16"
+      className="flex flex-col gap-4 w-full card backdrop-blur-sm p-4 !mt-8 !mb-16"
     >
       {/* Barre de progression du trial pour le plan gratuit */}
       {trialData && (

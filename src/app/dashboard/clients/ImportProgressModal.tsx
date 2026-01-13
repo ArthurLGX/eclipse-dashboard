@@ -244,7 +244,7 @@ export default function ImportProgressModal({
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="!p-6 border-t border-default bg-card-hover/50"
+            className="!p-6 border-t border-default bg-card-hover"
           >
             <div className="flex items-center justify-between">
               <div>

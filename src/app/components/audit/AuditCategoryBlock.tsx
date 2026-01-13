@@ -37,7 +37,7 @@ export default function AuditCategoryBlock({
       {/* Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-3 flex items-center justify-between bg-hover/50 hover:bg-hover transition-colors"
+        className="w-full px-4 py-3 flex items-center justify-between bg-hover hover:bg-hover transition-colors"
       >
         <div className="flex items-center gap-3">
           {icon && (

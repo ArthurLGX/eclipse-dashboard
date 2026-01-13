@@ -124,7 +124,7 @@ export default function FreePlanModal({
             </div>
 
             {/* Détails du plan */}
-            <div className="bg-hover/50 rounded-lg p-4 mb-6">
+            <div className="bg-hover rounded-lg p-4 mb-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-secondary font-medium capitalize">
                   {plan.name}

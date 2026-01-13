@@ -1405,7 +1405,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
 
           {/* Section Notes de réunion - pour les événements de type meeting */}
           {eventType === 'meeting' && (
-            <div className="p-4 rounded-xl border border-default bg-hover/50 space-y-3">
+            <div className="p-4 rounded-xl border border-default bg-hover space-y-3">
               <div className="flex items-center gap-2 text-sm font-medium text-primary">
                 <IconNotes className="w-4 h-4 text-accent" />
                 {t('meeting_notes') || 'Notes de réunion'}

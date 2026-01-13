@@ -225,7 +225,7 @@ export default function SaveTemplateModal({
               className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-all ${
                 isDefault
                   ? 'border-yellow-500/50 bg-yellow-500/10'
-                  : 'border-default hover:border-accent-light hover:bg-hover/50'
+                  : 'border-default hover:border-accent-light hover:bg-hover'
               }`}
             >
               {isDefault ? (

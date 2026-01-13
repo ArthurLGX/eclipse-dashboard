@@ -1581,7 +1581,7 @@ function TaskCard({
                   {task.subtasks?.map(subtask => (
                     <div 
                       key={subtask.documentId}
-                      className="group flex items-center gap-2 p-2 rounded-lg bg-hover/50 hover:bg-hover transition-colors cursor-pointer"
+                      className="group flex items-center gap-2 p-2 rounded-lg bg-hover hover:bg-hover transition-colors cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         onEditSubtask(subtask); // Ouvre l'édition de la sous-tâche
@@ -1959,7 +1959,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                 </div>
                 
                 {hasSubtasks ? (
-                  <div className="space-y-2 p-3 rounded-lg bg-hover/50 border border-default">
+                  <div className="space-y-2 p-3 rounded-lg bg-hover border border-default">
                     {task.subtasks?.map(subtask => (
                       <div 
                         key={subtask.documentId}
@@ -1991,7 +1991,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-4 text-muted text-sm rounded-lg bg-hover/50 border border-default">
+                  <div className="text-center py-4 text-muted text-sm rounded-lg bg-hover border border-default">
                     {t('no_subtasks') || 'Aucune sous-tâche'}
                   </div>
                 )}
@@ -2670,7 +2670,7 @@ function TaskGanttView({
                       className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
                         exportMode === 'light' 
                           ? 'border-accent bg-accent-light' 
-                          : 'border-default bg-muted/50 hover:border-accent/50'
+                          : 'border-default bg-muted hover:border-accent/50'
                       }`}
                     >
                       <div className="flex flex-col items-center gap-1">
@@ -2685,7 +2685,7 @@ function TaskGanttView({
                       className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
                         exportMode === 'dark' 
                           ? 'border-accent bg-accent-light' 
-                          : 'border-default bg-muted/50 hover:border-accent/50'
+                          : 'border-default bg-muted hover:border-accent/50'
                       }`}
                     >
                       <div className="flex flex-col items-center gap-1">

@@ -836,7 +836,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-default bg-card-hover/50">
+          <div className="flex items-center justify-end gap-3 p-6 border-t border-default bg-card-hover">
             <button
               onClick={handleClose}
               className="px-4 py-2 rounded-lg text-secondary hover:text-primary hover:bg-card-hover transition-colors"

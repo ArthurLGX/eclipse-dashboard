@@ -39,6 +39,7 @@ import {
   IconTargetArrow,
   IconPalette,
   IconFileText,
+  IconBell,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -694,17 +695,24 @@ function DashboardLayoutContent({
           <MobileHeader
             onMenuClick={() => setIsMobileDrawerOpen(true)}
             rightContent={
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 {/* Theme toggle mobile */}
                 <button
                   onClick={() => setThemeMode(resolvedMode === 'dark' ? 'light' : 'dark')}
-                  className="p-2 rounded-xl hover:bg-hover transition-colors"
+                  className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-hover transition-colors"
                 >
                   {resolvedMode === 'dark' ? (
                     <IconSun size={18} className="text-warning" />
                   ) : (
                     <IconMoon size={18} className="text-accent" />
                   )}
+                </button>
+                {/* Notification bell mobile */}
+                <button
+                  onClick={() => router.push('/dashboard/notifications')}
+                  className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-hover transition-colors"
+                >
+                  <IconBell size={18} className="text-secondary" />
                 </button>
               </div>
             }

@@ -252,8 +252,8 @@ export default function NotificationBell() {
 
   return (
     <>
-      {/* Bell Button - Fixed en haut à droite */}
-      <div ref={dropdownRef} className="fixed top-4 right-10 z-[1002]">
+      {/* Bell Button - Fixed en haut à droite (desktop only) */}
+      <div ref={dropdownRef} className="hidden lg:block fixed top-5 right-5 z-[1002]">
         <button
           onClick={handleToggle}
           className="relative p-3 rounded-xl bg-card backdrop-blur-sm border border-default hover:bg-hover text-muted hover:text-primary transition-all shadow-theme-lg"

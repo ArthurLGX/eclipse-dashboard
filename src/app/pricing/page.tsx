@@ -496,7 +496,7 @@ export default function Plans() {
                             {sectionFeatures.map(featureKey => (
                               <tr
                                 key={featureKey}
-                                className="border-b border-default/50 hover:bg-hover/50 transition-colors"
+                                className="border-b border-default hover:bg-hover transition-colors"
                               >
                                 <td className="p-4 text-secondary font-medium">
                                   {(() => {

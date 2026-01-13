@@ -375,7 +375,7 @@ export default function SEOAuditPage() {
               </h2>
               <div className="space-y-3">
                 {result.opportunities.map((opp) => (
-                  <div key={opp.id} className="flex items-start gap-3 p-3 bg-hover/50 rounded-lg">
+                  <div key={opp.id} className="flex items-start gap-3 p-3 bg-hover rounded-lg">
                     <div className={`w-2 h-2 rounded-full mt-2 ${
                       opp.score >= 0.9 ? 'bg-green-500' : opp.score >= 0.5 ? 'bg-amber-500' : 'bg-red-500'
                     }`} />
@@ -402,7 +402,7 @@ export default function SEOAuditPage() {
               </h2>
               <div className="space-y-3">
                 {result.diagnostics.map((diag) => (
-                  <div key={diag.id} className="flex items-start gap-3 p-3 bg-hover/50 rounded-lg">
+                  <div key={diag.id} className="flex items-start gap-3 p-3 bg-hover rounded-lg">
                     <div className={`w-2 h-2 rounded-full mt-2 ${
                       diag.score >= 0.9 ? 'bg-green-500' : diag.score >= 0.5 ? 'bg-amber-500' : 'bg-red-500'
                     }`} />

@@ -64,7 +64,7 @@ export default function SidebarLogo() {
   // Cas 1: Website existe et favicon disponible
   if (faviconUrl && !faviconError) {
     return (
-      <div className="w-8 h-8 rounded-lg overflow-hidden bg-card border border-default flex items-center justify-center">
+      <div className="w-8 h-8 rounded-lg overflow-hidden bg-card flex items-center justify-center">
         <Image
           src={faviconUrl}
           alt={companyData?.name || 'Company logo'}
@@ -90,12 +90,14 @@ export default function SidebarLogo() {
 
   // Cas 3: Pas de fiche entreprise → logo Eclipse par défaut
   return (
-    <Image
-      src="/images/logo/eclipse-logo.png"
-      alt="Eclipse Studio"
-      width={32}
-      height={32}
-    />
+    <div className="w-8 h-8 rounded-lg overflow-hidden bg-card  flex items-center justify-center">
+      <Image
+        src="/images/logo/eclipse-logo.png"
+        alt="Eclipse Studio"
+        width={24}
+        height={24}
+      />
+    </div>
   );
 }
 

@@ -7,9 +7,12 @@ import {
   IconFilter, 
   IconX, 
   IconChevronDown,
-  IconAdjustments
+  IconAdjustments,
+  IconTable,
+  IconLayoutGrid
 } from '@tabler/icons-react';
 import ToggleButton from './ToggleButton';
+import type { ViewMode } from './DataTable';
 
 export interface FilterOption {
   value: string;
@@ -42,6 +45,10 @@ export interface TableFiltersProps {
   advancedFilters?: AdvancedFilter[];
   onAdvancedFilterChange?: (filterId: string, value: string | string[] | boolean | DateRangeFilter) => void;
   showAdvancedToggle?: boolean;
+  // View mode toggle
+  viewMode?: ViewMode;
+  onViewModeChange?: (mode: ViewMode) => void;
+  showViewToggle?: boolean;
 }
 
 export default function TableFilters({
@@ -54,6 +61,9 @@ export default function TableFilters({
   advancedFilters = [],
   onAdvancedFilterChange,
   showAdvancedToggle = true,
+  viewMode = 'table',
+  onViewModeChange,
+  showViewToggle = true,
 }: TableFiltersProps) {
   const { t } = useLanguage();
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -169,6 +179,34 @@ export default function TableFilters({
             )}
             <IconChevronDown className={`w-4 h-4 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
           </button>
+        )}
+
+        {/* View mode toggle */}
+        {showViewToggle && onViewModeChange && (
+          <div className="flex items-center rounded-lg border border-default overflow-hidden bg-card">
+            <button
+              onClick={() => onViewModeChange('table')}
+              className={`flex items-center justify-center p-2.5 transition-all ${
+                viewMode === 'table'
+                  ? 'bg-accent text-white'
+                  : 'text-secondary hover:text-primary hover:bg-muted'
+              }`}
+              title={t('table_view') || 'Vue tableau'}
+            >
+              <IconTable className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => onViewModeChange('cards')}
+              className={`flex items-center justify-center p-2.5 transition-all ${
+                viewMode === 'cards'
+                  ? 'bg-accent text-white'
+                  : 'text-secondary hover:text-primary hover:bg-muted'
+              }`}
+              title={t('cards_view') || 'Vue cartes'}
+            >
+              <IconLayoutGrid className="w-5 h-5" />
+            </button>
+          </div>
         )}
 
         {/* Clear all filters */}

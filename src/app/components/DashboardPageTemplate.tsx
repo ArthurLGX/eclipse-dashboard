@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import TableFilters, { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
-import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
+import DataTable, { Column, CustomAction, ViewMode } from '@/app/components/DataTable';
 import LandingPageSkeleton from './LandingPageSkeleton';
 
 interface StatCard {
@@ -57,6 +57,14 @@ interface DashboardPageTemplateProps<T> {
   isFavorite?: (item: T) => boolean;
   onToggleFavorite?: (item: T) => void;
   onReorder?: (items: T[]) => void;
+  // View mode
+  showViewToggle?: boolean;
+  cardTitleKey?: string;
+  cardSubtitleKey?: string;
+  cardStatusKey?: string;
+  cardTimeKey?: string;
+  cardImageKey?: string;
+  cardAvatarKey?: string;
 }
 
 export default function DashboardPageTemplate<T>({
@@ -93,7 +101,16 @@ export default function DashboardPageTemplate<T>({
   isFavorite,
   onToggleFavorite,
   onReorder,
+  showViewToggle = true,
+  cardTitleKey,
+  cardSubtitleKey,
+  cardStatusKey,
+  cardTimeKey,
+  cardImageKey,
+  cardAvatarKey,
 }: DashboardPageTemplateProps<T>) {
+  const [viewMode, setViewMode] = useState<ViewMode>('table');
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 0 }}
@@ -111,7 +128,7 @@ export default function DashboardPageTemplate<T>({
           {additionalActions.map((action, index) => (
             <button
               key={index}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-all duration-300 cursor-pointer ${
+              className={`flex items-center justify-center gap-2 rounded-lg px-4 py-2 transition-all duration-300 cursor-pointer lg:w-fit w-full ${
                 action.variant === 'outline' 
                   ? 'btn-outline border border-default text-secondary hover:bg-card-hover' 
                   : action.variant === 'primary'
@@ -189,6 +206,9 @@ export default function DashboardPageTemplate<T>({
                 advancedFilters={advancedFilters}
                 onAdvancedFilterChange={onAdvancedFilterChange}
                 showAdvancedToggle={showAdvancedToggle}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                showViewToggle={showViewToggle}
               />
               <DataTable<T>
                 columns={columns}
@@ -208,6 +228,14 @@ export default function DashboardPageTemplate<T>({
                 isFavorite={isFavorite}
                 onToggleFavorite={onToggleFavorite}
                 onReorder={onReorder}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                cardTitleKey={cardTitleKey}
+                cardSubtitleKey={cardSubtitleKey}
+                cardStatusKey={cardStatusKey}
+                cardTimeKey={cardTimeKey}
+                cardImageKey={cardImageKey}
+                cardAvatarKey={cardAvatarKey}
               />
             </div>
           </div>
