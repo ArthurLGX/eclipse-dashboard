@@ -257,6 +257,23 @@ export default function ProjectTasks({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectDocumentId]);
 
+  // Héritage des données de la tâche parente pour les sous-tâches
+  useEffect(() => {
+    if (parentTaskForSubtask) {
+      setNewTask({
+        title: '',
+        description: '',
+        task_status: parentTaskForSubtask.task_status || 'todo',
+        priority: parentTaskForSubtask.priority || 'medium',
+        start_date: parentTaskForSubtask.start_date || '',
+        due_date: parentTaskForSubtask.due_date || '',
+        estimated_hours: '', // On ne copie pas les heures estimées
+        assigned_to: parentTaskForSubtask.assigned_to?.documentId || '',
+        color: parentTaskForSubtask.color || TASK_COLORS[0],
+      });
+    }
+  }, [parentTaskForSubtask]);
+
   const loadTasks = async () => {
     try {
       setLoading(true);
