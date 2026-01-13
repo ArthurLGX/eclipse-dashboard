@@ -219,17 +219,17 @@ export function useClientByDocumentId(documentId: string | undefined) {
   );
 }
 
-export function useClientBySlug(slug: string | undefined) {
+export function useClientBySlug(slug: string | undefined, userId?: number) {
   return useApiQuery(
-    `client-slug-${slug}`,
+    `client-slug-${slug}-${userId}`,
     async () => {
       const { fetchClientBySlug } = await import('@/lib/api');
-      const response = await fetchClientBySlug(slug!);
+      const response = await fetchClientBySlug(slug!, userId);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return { data: (response as any).data?.[0] || null };
     },
-    [slug],
-    { enabled: !!slug }
+    [slug, userId],
+    { enabled: !!slug && !!userId }
   );
 }
 

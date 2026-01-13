@@ -55,8 +55,8 @@ export default function ClientDetailsPage() {
   // Le slug est directement le nom du client slugifié
   const slug = params.slug as string;
 
-  // Hook avec slug (basé sur le nom)
-  const { data: clientData, loading: clientLoading, refetch: refetchClient } = useClientBySlug(slug);
+  // Hook avec slug (basé sur le nom) - filtré par utilisateur
+  const { data: clientData, loading: clientLoading, refetch: refetchClient } = useClientBySlug(slug, user?.id);
   const client = clientData as Client | null;
   
   // Mettre à jour le titre de l'onglet avec le nom du client
