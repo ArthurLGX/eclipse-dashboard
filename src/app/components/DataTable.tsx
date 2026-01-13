@@ -89,7 +89,8 @@ export default function DataTable<T = unknown>({
   favoritesFirst = true,
   // View mode
   viewMode: controlledViewMode,
-  onViewModeChange: _onViewModeChange,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onViewModeChange,
   mobileBreakpoint = 768,
   cardTitleKey,
   cardSubtitleKey,
