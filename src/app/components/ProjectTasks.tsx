@@ -1129,6 +1129,7 @@ export default function ProjectTasks({
                   onDuplicate={(includeSubtasks) => handleDuplicateTask(task, includeSubtasks)}
                   onEditSubtask={(subtask) => setEditingTask(subtask)}
                   onDuplicateSubtask={(subtask) => handleDuplicateTask(subtask, false)}
+                  onDeleteSubtask={(subtask) => handleDeleteTask(subtask.documentId)}
                   getStatusStyle={getStatusStyle}
                   getPriorityStyle={getPriorityStyle}
                   taskStatusOptions={TASK_STATUS_OPTIONS}
@@ -1220,6 +1221,7 @@ interface TaskCardProps {
   onDuplicate: (includeSubtasks?: boolean) => void;
   onEditSubtask: (subtask: ProjectTask) => void;
   onDuplicateSubtask: (subtask: ProjectTask) => void;
+  onDeleteSubtask: (subtask: ProjectTask) => void;
   getStatusStyle: (status: TaskStatus) => string;
   getPriorityStyle: (priority: TaskPriority) => string;
   taskStatusOptions: TaskStatusOption[];
@@ -1242,6 +1244,7 @@ function TaskCard({
   onDuplicate,
   onEditSubtask,
   onDuplicateSubtask,
+  onDeleteSubtask,
   getStatusStyle,
   getPriorityStyle,
   taskStatusOptions,
@@ -1517,6 +1520,16 @@ function TaskCard({
                               title={t('edit') || 'Modifier'}
                             >
                               <IconEdit className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onDeleteSubtask(subtask);
+                              }}
+                              className="p-1 text-muted hover:text-red-400 transition-colors"
+                              title={t('delete') || 'Supprimer'}
+                            >
+                              <IconTrash className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         )}
