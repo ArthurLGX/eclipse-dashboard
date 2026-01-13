@@ -94,7 +94,6 @@ export default function DataTable<T = unknown>({
   cardTitleKey,
   cardSubtitleKey,
   cardStatusKey,
-  cardTimeKey,
   cardImageKey,
   cardAvatarKey,
 }: DataTableProps<T>) {
@@ -122,7 +121,7 @@ export default function DataTable<T = unknown>({
   
   // Use controlled or internal view mode
   const viewMode = controlledViewMode ?? internalViewMode;
-  const setViewMode = onViewModeChange ?? setInternalViewMode;
+  // Note: setViewMode available via onViewModeChange prop if needed
   
   // Sorting state
   const [sortKey, setSortKey] = useState<string | null>(defaultSortKey || null);
@@ -235,7 +234,6 @@ export default function DataTable<T = unknown>({
   
   // Drag state - prevent click after drag
   const [isDragging, setIsDragging] = useState(false);
-  const dragStartPos = React.useRef<{ x: number; y: number } | null>(null);
 
   // Reset selection when data changes
   useEffect(() => {
