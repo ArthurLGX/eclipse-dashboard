@@ -198,16 +198,18 @@ Cordialement`);
     loadSignature();
   }, [user?.id]);
   
-  // Charger un brouillon si présent dans l'URL (une seule fois)
+  // Charger un brouillon si présent dans l'URL (une seule fois, après que les factures soient chargées)
   const [draftLoaded, setDraftLoaded] = useState(false);
+  const [restoringFromDraft, setRestoringFromDraft] = useState(false);
   useEffect(() => {
     const draftId = searchParams.get('draft');
-    if (!draftId || draftLoaded) return;
+    if (!draftId || draftLoaded || loadingInvoices) return;
     
     const loadDraft = async () => {
       try {
         const draft = await fetchEmailDraft(draftId);
         if (draft) {
+          setRestoringFromDraft(true);
           setCurrentDraftId(draft.documentId);
           if (draft.subject) setSubject(draft.subject);
           if (draft.content) setMessage(draft.content);
@@ -215,13 +217,15 @@ Cordialement`);
           if (draft.include_signature !== undefined) setIncludeSignature(draft.include_signature);
           if (draft.footer_language) setFooterLanguage(draft.footer_language);
           
-          // Si un document lié existe, le sélectionner
+          // Si un document lié existe, le sélectionner (sans écraser le message/sujet)
           if (draft.related_document_id && invoices.length > 0) {
             const invoice = invoices.find(f => f.documentId === draft.related_document_id);
             if (invoice) setSelectedInvoice(invoice);
           }
           
           setDraftLoaded(true);
+          // Reset flag après un court délai pour permettre les futures sélections
+          setTimeout(() => setRestoringFromDraft(false), 100);
         }
       } catch (error) {
         console.error('Error loading draft:', error);
@@ -230,7 +234,7 @@ Cordialement`);
     };
     
     loadDraft();
-  }, [searchParams, invoices, draftLoaded]);
+  }, [searchParams, invoices, draftLoaded, loadingInvoices]);
   
   // Helper functions
   const calculateTotal = (invoice: Facture): number => {
@@ -265,20 +269,24 @@ Nous vous remercions de votre confiance et restons à votre disposition pour tou
 Cordialement`;
   };
   
-  // Select invoice
-  const handleSelectInvoice = (invoice: Facture) => {
+  // Select invoice (ne pas écraser les champs si on restaure un brouillon)
+  const handleSelectInvoice = (invoice: Facture, skipPrefill: boolean = false) => {
     setSelectedInvoice(invoice);
     setShowInvoiceSelector(false);
-    setSubject(`Facture ${invoice.reference} - ${formatAmount(calculateTotal(invoice), invoice.currency)}`);
-    setMessage(getDefaultMessage(invoice));
     
-    // Pre-fill recipient from client
-    if (invoice.client_id?.email && !recipients.some(r => r.email === invoice.client_id?.email)) {
-      setRecipients(prev => [...prev, { 
-        id: crypto.randomUUID(), 
-        email: invoice.client_id!.email!, 
-        name: invoice.client_id!.name 
-      }]);
+    // Ne pas pré-remplir si on restaure depuis un brouillon ou si explicitement demandé
+    if (!skipPrefill && !restoringFromDraft) {
+      setSubject(`Facture ${invoice.reference} - ${formatAmount(calculateTotal(invoice), invoice.currency)}`);
+      setMessage(getDefaultMessage(invoice));
+      
+      // Pre-fill recipient from client
+      if (invoice.client_id?.email && !recipients.some(r => r.email === invoice.client_id?.email)) {
+        setRecipients(prev => [...prev, { 
+          id: crypto.randomUUID(), 
+          email: invoice.client_id!.email!, 
+          name: invoice.client_id!.name 
+        }]);
+      }
     }
   };
   

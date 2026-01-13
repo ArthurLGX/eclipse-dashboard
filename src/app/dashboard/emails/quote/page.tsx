@@ -198,16 +198,18 @@ Cordialement`);
     loadSignature();
   }, [user?.id]);
   
-  // Charger un brouillon si présent dans l'URL (une seule fois)
+  // Charger un brouillon si présent dans l'URL (une seule fois, après que les devis soient chargés)
   const [draftLoaded, setDraftLoaded] = useState(false);
+  const [restoringFromDraft, setRestoringFromDraft] = useState(false);
   useEffect(() => {
     const draftId = searchParams.get('draft');
-    if (!draftId || draftLoaded) return;
+    if (!draftId || draftLoaded || loadingQuotes) return;
     
     const loadDraft = async () => {
       try {
         const draft = await fetchEmailDraft(draftId);
         if (draft) {
+          setRestoringFromDraft(true);
           setCurrentDraftId(draft.documentId);
           if (draft.subject) setSubject(draft.subject);
           if (draft.content) setMessage(draft.content);
@@ -215,13 +217,15 @@ Cordialement`);
           if (draft.include_signature !== undefined) setIncludeSignature(draft.include_signature);
           if (draft.footer_language) setFooterLanguage(draft.footer_language);
           
-          // Si un document lié existe, le sélectionner
+          // Si un document lié existe, le sélectionner (sans écraser le message/sujet)
           if (draft.related_document_id && quotes.length > 0) {
             const quote = quotes.find(f => f.documentId === draft.related_document_id);
             if (quote) setSelectedQuote(quote);
           }
           
           setDraftLoaded(true);
+          // Reset flag après un court délai pour permettre les futures sélections
+          setTimeout(() => setRestoringFromDraft(false), 100);
         }
       } catch (error) {
         console.error('Error loading draft:', error);
@@ -230,7 +234,7 @@ Cordialement`);
     };
     
     loadDraft();
-  }, [searchParams, quotes, draftLoaded]);
+  }, [searchParams, quotes, draftLoaded, loadingQuotes]);
   
   // Helper functions
   const calculateTotal = (quote: Facture): number => {
@@ -266,19 +270,23 @@ N'hésitez pas à nous contacter pour toute question ou pour valider ce devis.
 Cordialement`;
   };
   
-  // Select quote
-  const handleSelectQuote = (quote: Facture) => {
+  // Select quote (ne pas écraser les champs si on restaure un brouillon)
+  const handleSelectQuote = (quote: Facture, skipPrefill: boolean = false) => {
     setSelectedQuote(quote);
     setShowQuoteSelector(false);
-    setSubject(`Devis ${quote.reference} - ${formatAmount(calculateTotal(quote), quote.currency)}`);
-    setMessage(getDefaultMessage(quote));
     
-    if (quote.client_id?.email && !recipients.some(r => r.email === quote.client_id?.email)) {
-      setRecipients(prev => [...prev, { 
-        id: crypto.randomUUID(), 
-        email: quote.client_id!.email!, 
-        name: quote.client_id!.name 
-      }]);
+    // Ne pas pré-remplir si on restaure depuis un brouillon ou si explicitement demandé
+    if (!skipPrefill && !restoringFromDraft) {
+      setSubject(`Devis ${quote.reference} - ${formatAmount(calculateTotal(quote), quote.currency)}`);
+      setMessage(getDefaultMessage(quote));
+      
+      if (quote.client_id?.email && !recipients.some(r => r.email === quote.client_id?.email)) {
+        setRecipients(prev => [...prev, { 
+          id: crypto.randomUUID(), 
+          email: quote.client_id!.email!, 
+          name: quote.client_id!.name 
+        }]);
+      }
     }
   };
   
