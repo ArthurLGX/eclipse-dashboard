@@ -328,7 +328,13 @@ export async function addClientUser(
     }
   }
 
-  return post('clients', { ...data, users: userId });
+  // Nettoyer les champs de date vides (Strapi attend null ou une date valide, pas une chaîne vide)
+  const cleanedData = { ...data };
+  if (cleanedData.next_action_date === '') {
+    delete cleanedData.next_action_date;
+  }
+
+  return post('clients', { ...cleanedData, users: userId });
 }
 
 export const fetchClientsUser = (userId: number) =>
