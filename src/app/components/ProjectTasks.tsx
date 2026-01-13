@@ -291,6 +291,8 @@ export default function ProjectTasks({
     e.preventDefault();
     if (!newTask.title.trim()) return;
 
+    const parentDocId = parentTaskForSubtask?.documentId;
+
     try {
       await createProjectTask({
         project: projectDocumentId,
@@ -304,7 +306,7 @@ export default function ProjectTasks({
         created_user: userId,
         assigned_to: newTask.assigned_to ? allMembers.find(m => m.documentId === newTask.assigned_to)?.id : undefined,
         order: tasks.length,
-        parent_task: parentTaskForSubtask?.documentId || undefined,
+        parent_task: parentDocId || undefined,
         color: parentTaskForSubtask ? parentTaskForSubtask.color : newTask.color,
       });
 
@@ -323,19 +325,112 @@ export default function ProjectTasks({
       setNewTask({ title: '', description: '', task_status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', assigned_to: '', color: TASK_COLORS[0] });
       setShowNewTaskForm(false);
       setParentTaskForSubtask(null);
-      loadTasks();
+      
+      // Recharger les tâches
+      await loadTasks();
+      
+      // Si c'était une sous-tâche, synchroniser la tâche parente
+      if (parentDocId) {
+        setTimeout(async () => {
+          await syncParentTaskFromSubtasks(parentDocId);
+          loadTasks();
+        }, 100);
+      }
     } catch (error) {
       console.error('Error creating task:', error);
       showGlobalPopup(t('error_generic') || 'Erreur', 'error');
     }
   };
 
+  // Synchroniser les valeurs agrégées de la tâche parente depuis ses sous-tâches
+  const syncParentTaskFromSubtasks = async (parentTaskDocId: string) => {
+    try {
+      // Récupérer les données fraîches depuis l'API
+      const response = await fetchProjectTasks(projectDocumentId);
+      const freshTasks = response.data || [];
+      
+      // Trouver la tâche parente
+      const parentTask = freshTasks.find(t => t.documentId === parentTaskDocId);
+      if (!parentTask) return;
+
+      // Récupérer toutes les sous-tâches de cette tâche parente
+      const subtasks = freshTasks.filter(t => t.parent_task?.documentId === parentTaskDocId);
+      if (subtasks.length === 0) return;
+
+      // Calculer la somme des heures estimées
+      const totalEstimatedHours = subtasks.reduce((sum, st) => {
+        return sum + (st.estimated_hours || 0);
+      }, 0);
+
+      // Trouver les dates min/max
+      const startDates = subtasks
+        .map(st => st.start_date)
+        .filter((d): d is string => !!d)
+        .map(d => new Date(d));
+      
+      const endDates = subtasks
+        .map(st => st.due_date)
+        .filter((d): d is string => !!d)
+        .map(d => new Date(d));
+
+      const updates: Parameters<typeof updateProjectTask>[1] = {};
+      
+      // Mettre à jour les heures estimées (somme des sous-tâches)
+      if (totalEstimatedHours > 0) {
+        updates.estimated_hours = totalEstimatedHours;
+      }
+
+      // Mettre à jour la date de début (min des sous-tâches)
+      if (startDates.length > 0) {
+        const minStartDate = new Date(Math.min(...startDates.map(d => d.getTime())));
+        const minStartDateStr = minStartDate.toISOString().split('T')[0];
+        // Toujours prendre la date min des sous-tâches pour englober
+        if (!parentTask.start_date || new Date(parentTask.start_date) > minStartDate) {
+          updates.start_date = minStartDateStr;
+        }
+      }
+
+      // Mettre à jour la date de fin (max des sous-tâches)
+      if (endDates.length > 0) {
+        const maxEndDate = new Date(Math.max(...endDates.map(d => d.getTime())));
+        const maxEndDateStr = maxEndDate.toISOString().split('T')[0];
+        // Toujours prendre la date max des sous-tâches pour englober
+        if (!parentTask.due_date || new Date(parentTask.due_date) < maxEndDate) {
+          updates.due_date = maxEndDateStr;
+        }
+      }
+
+      // Appliquer les mises à jour si nécessaire
+      if (Object.keys(updates).length > 0) {
+        await updateProjectTask(parentTaskDocId, updates);
+      }
+    } catch (error) {
+      console.error('Error syncing parent task:', error);
+    }
+  };
+
   const handleUpdateTask = async (taskDocumentId: string, updates: Partial<ProjectTask>) => {
     try {
+      // Trouver la tâche pour savoir si c'est une sous-tâche
+      const task = tasks.find(t => t.documentId === taskDocumentId);
+      const isSubtask = !!task?.parent_task;
+      const parentTaskDocId = task?.parent_task?.documentId;
+
       await updateProjectTask(taskDocumentId, updates as Parameters<typeof updateProjectTask>[1]);
       showGlobalPopup(t('task_updated') || 'Tâche mise à jour', 'success');
       setEditingTask(null);
-      loadTasks();
+      
+      // Recharger les tâches d'abord
+      await loadTasks();
+      
+      // Si c'est une sous-tâche, synchroniser la tâche parente
+      if (isSubtask && parentTaskDocId) {
+        // Attendre un peu pour que loadTasks se termine
+        setTimeout(async () => {
+          await syncParentTaskFromSubtasks(parentTaskDocId);
+          loadTasks(); // Recharger pour voir les changements du parent
+        }, 100);
+      }
     } catch (error) {
       console.error('Error updating task:', error);
       showGlobalPopup(t('error_generic') || 'Erreur', 'error');
@@ -345,10 +440,24 @@ export default function ProjectTasks({
   const handleDeleteTask = async (taskDocumentId: string) => {
     if (!confirm(t('confirm_delete_task') || 'Supprimer cette tâche ?')) return;
 
+    // Trouver la tâche pour savoir si c'est une sous-tâche
+    const task = tasks.find(t => t.documentId === taskDocumentId);
+    const parentTaskDocId = task?.parent_task?.documentId;
+
     try {
       await deleteProjectTask(taskDocumentId);
       showGlobalPopup(t('task_deleted') || 'Tâche supprimée', 'success');
-      loadTasks();
+      
+      // Recharger les tâches
+      await loadTasks();
+      
+      // Si c'était une sous-tâche, synchroniser la tâche parente
+      if (parentTaskDocId) {
+        setTimeout(async () => {
+          await syncParentTaskFromSubtasks(parentTaskDocId);
+          loadTasks();
+        }, 100);
+      }
     } catch (error) {
       console.error('Error deleting task:', error);
       showGlobalPopup(t('error_generic') || 'Erreur', 'error');
