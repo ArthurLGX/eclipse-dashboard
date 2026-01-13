@@ -54,6 +54,8 @@ import { useTheme } from '@/app/context/ThemeContext';
 import { useSidebar } from '@/app/context/SidebarContext';
 import SidebarLogo from '@/app/components/SidebarLogo';
 import { getModuleStatus, ModuleStatusConfig, DEFAULT_MODULE_STATUSES } from '@/config/business-modules';
+import { MobileDrawer, MobileHeader, MobileBottomNav } from '@/app/components/mobile';
+import type { MobileDrawerItem } from '@/app/components/mobile';
 
 interface SidebarItem {
   id: string;
@@ -97,6 +99,7 @@ function DashboardLayoutContent({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isPinned, setIsPinned] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [moduleStatuses, setModuleStatuses] = useState<ModuleStatusConfig[]>(DEFAULT_MODULE_STATUSES);
   const router = useRouter();
 
@@ -683,23 +686,44 @@ function DashboardLayoutContent({
             </nav>
           </motion.div>
 
-          {/* Mobile Bottom Navigation - Ne pas afficher les catégories */}
-          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-card border-t border-default backdrop-blur-sm transition-colors duration-300">
-            <nav className="flex items-center justify-around p-2">
-              {visibleSidebarItems
-                .filter(item => !item.isCategory)
-                .slice(0, 5) // Limiter à 5 items pour mobile
-                .map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleItemClick(item)}
-                    className={`nav-item flex-col min-w-0 ${activeItem === item.id ? 'active' : ''}`}
-                  >
-                    <div className="flex-shrink-0">{item.icon}</div>
-                  </button>
-                ))}
-            </nav>
-          </div>
+          {/* ═══════════════════════════════════════════════════════════════
+              MOBILE NAVIGATION
+              ═══════════════════════════════════════════════════════════════ */}
+          
+          {/* Mobile Header - Glass effect avec hamburger */}
+          <MobileHeader
+            onMenuClick={() => setIsMobileDrawerOpen(true)}
+            rightContent={
+              <div className="flex items-center gap-1">
+                {/* Theme toggle mobile */}
+                <button
+                  onClick={() => setThemeMode(resolvedMode === 'dark' ? 'light' : 'dark')}
+                  className="p-2 rounded-xl hover:bg-hover transition-colors"
+                >
+                  {resolvedMode === 'dark' ? (
+                    <IconSun size={18} className="text-warning" />
+                  ) : (
+                    <IconMoon size={18} className="text-accent" />
+                  )}
+                </button>
+              </div>
+            }
+          />
+
+          {/* Mobile Drawer - Menu complet slide-over */}
+          <MobileDrawer
+            isOpen={isMobileDrawerOpen}
+            onClose={() => setIsMobileDrawerOpen(false)}
+            items={visibleSidebarItems as MobileDrawerItem[]}
+            activeItem={activeItem}
+            activeCategory={activeCategory}
+          />
+
+          {/* Mobile Bottom Nav - Glass effect, arrondie */}
+          <MobileBottomNav
+            onNavigate={(path) => router.push(path)}
+            onMoreClick={() => setIsMobileDrawerOpen(true)}
+          />
 
           {/* Contenu principal - scroll géré par Lenis sur le body */}
           <motion.main
@@ -709,7 +733,8 @@ function DashboardLayoutContent({
             }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
           >
-            <div className="w-full max-w-full lg:p-6 p-4">
+            {/* Padding ajusté pour mobile: header (60px) + bottom nav (80px) */}
+            <div className="w-full max-w-full lg:p-6 p-4 lg:pt-6 pt-20 lg:pb-6 pb-24">
               <BreadCrumb />
               {children}
             </div>

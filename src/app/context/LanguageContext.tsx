@@ -1354,6 +1354,7 @@ const translations = {
 
     // Tâches de projet
     project_tasks: 'Tâches du projet',
+    project_invoices: 'Factures du projet',
     progress: 'progression',
     overall_progress: 'Progression globale',
     add_task: 'Nouvelle tâche',
@@ -4028,6 +4029,7 @@ const translations = {
 
     // Project tasks
     project_tasks: 'Project Tasks',
+    project_invoices: 'Project Invoices',
     tasks_pending: 'Tasks pending',
     tasks_completed: 'Tasks completed',
     progress: 'progress',

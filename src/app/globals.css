@@ -1566,3 +1566,76 @@ nav button:hover svg, nav a:hover svg {
     display: none !important;
   }
 }
+
+/* ============================================
+   MOBILE NAVIGATION - Glass & Safe Areas
+   ============================================ */
+
+/* iOS Safe Area support */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .h-safe-area-inset-bottom {
+    height: env(safe-area-inset-bottom);
+  }
+  
+  /* Bottom nav avec safe area */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Glass effect pour mobile nav */
+.mobile-glass {
+  background: rgba(var(--bg-card-rgb, 26, 20, 40), 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(var(--border-default-rgb, 46, 38, 72), 0.5);
+}
+
+/* Animation pour le drawer */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+/* Masquer le scrollbar sur le drawer mobile */
+.mobile-drawer-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mobile-drawer-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Amélioration touch targets pour mobile */
+@media (max-width: 1023px) {
+  /* Augmenter les zones tactiles */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Désactiver le hover sur touch devices */
+  @media (hover: none) {
+    .nav-item:hover {
+      background-color: transparent;
+    }
+  }
+}
