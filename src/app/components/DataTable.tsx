@@ -89,7 +89,6 @@ export default function DataTable<T = unknown>({
   favoritesFirst = true,
   // View mode
   viewMode: controlledViewMode,
-  onViewModeChange,
   mobileBreakpoint = 768,
   cardTitleKey,
   cardSubtitleKey,
