@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { updateProject, fetchFacturesByProject, fetchProjectTasks, fetchMeetingNotes } from '@/lib/api';
+import { updateProject, updateProjectStatusWithSync, fetchFacturesByProject, fetchProjectTasks, fetchMeetingNotes } from '@/lib/api';
 import { useEffect, useState, useRef, useMemo } from 'react';
 import {
   IconCalendar,
@@ -276,22 +276,47 @@ const PROJECT_TYPES = [
     setIsSaving(true);
 
     try {
-      await updateProject(project.documentId, {
-        title: newTitle,
-        description: editDescription || '',
-        notes: editNotes || '',
-        project_status: selectedStatus,
-        type: selectedType,
-        start_date: startDate || undefined,
-        end_date: endDate || undefined,
-        client: selectedClientId || null,
-      });
+      // Vérifier si le statut a changé
+      const statusChanged = selectedStatus !== project.project_status;
+      
+      // Si le statut a changé, utiliser la synchronisation du pipeline
+      if (statusChanged && selectedStatus) {
+        await updateProjectStatusWithSync(
+          project.documentId,
+          selectedStatus as 'planning' | 'in_progress' | 'development' | 'review' | 'completed' | 'on_hold' | 'archived',
+          project.client?.documentId
+        );
+        
+        // Mettre à jour les autres champs séparément
+        await updateProject(project.documentId, {
+          title: newTitle,
+          description: editDescription || '',
+          notes: editNotes || '',
+          type: selectedType,
+          start_date: startDate || undefined,
+          end_date: endDate || undefined,
+          client: selectedClientId || null,
+        });
+      } else {
+        // Mise à jour normale
+        await updateProject(project.documentId, {
+          title: newTitle,
+          description: editDescription || '',
+          notes: editNotes || '',
+          project_status: selectedStatus,
+          type: selectedType,
+          start_date: startDate || undefined,
+          end_date: endDate || undefined,
+          client: selectedClientId || null,
+        });
+      }
 
       showGlobalPopup(t('project_updated_success') || 'Projet mis à jour avec succès', 'success');
       setIsEditMode(false);
       setBannerColor('auto');
 
       clearCache('project');
+      clearCache('clients'); // Rafraîchir les clients si le pipeline a été mis à jour
       
       // Rediriger vers le nouveau slug si le titre a changé
       const newSlug = generateSlug(newTitle, project.documentId);
@@ -898,17 +923,20 @@ const PROJECT_TYPES = [
                         );
                       }}
                       onAllTasksCompleted={async () => {
-                        // Mettre le projet en statut "completed" automatiquement
+                        // Mettre le projet en statut "completed" automatiquement et synchroniser le pipeline
                         if (project.project_status !== 'completed') {
                           try {
-                            await updateProject(project.documentId, {
-                              project_status: 'completed',
-                            });
+                            await updateProjectStatusWithSync(
+                              project.documentId,
+                              'completed',
+                              project.client?.documentId
+                            );
                             setSelectedStatus('completed');
                             showGlobalPopup(
                               t('project_auto_completed') || 'Toutes les tâches terminées ! Projet marqué comme terminé.',
                               'success'
                             );
+                            clearCache('clients'); // Rafraîchir les clients (pipeline mis à jour)
                             await refetchProject();
                           } catch (error) {
                             console.error('Error auto-completing project:', error);

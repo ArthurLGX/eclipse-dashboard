@@ -16,6 +16,7 @@ import {
   createFacture,
   fetchFactureFromDocumentId,
   convertQuoteToInvoice,
+  updateQuoteStatusWithSync,
 } from '@/lib/api';
 import { clearCache } from '@/hooks/useApi';
 import { extractIdFromSlug } from '@/utils/slug';
@@ -384,6 +385,8 @@ export default function FacturePage() {
       const idLower = id.toLowerCase();
       if (idLower === 'add' || idLower === 'ajouter' || idLower === 'new' || idLower === t('add').toLowerCase()) {
         // Création d'une nouvelle facture - Strapi v5: utiliser documentId pour les relations
+        const newQuoteStatus = formData?.quote_status ?? 'draft';
+        
         await createFacture({
           document_type: documentType,
           reference: formData?.reference ?? '',
@@ -394,7 +397,7 @@ export default function FacturePage() {
           facture_status: isQuote ? 'draft' : (formData?.facture_status ?? 'draft'),
           // Ajouter quote_status et valid_until si c'est un devis
           ...(isQuote && { 
-            quote_status: formData?.quote_status ?? 'draft',
+            quote_status: newQuoteStatus,
             valid_until: formData?.valid_until ?? '',
           }),
           currency: formData?.currency ?? '',
@@ -407,7 +410,20 @@ export default function FacturePage() {
           invoice_lines: cleanLines,
           pdf: facture?.pdf?.[0]?.url ?? '',
         });
+        
+        // Synchroniser le pipeline du client si c'est un devis
+        if (isQuote && formData?.client_id?.documentId) {
+          try {
+            // Importer dynamiquement pour éviter les appels API inutiles
+            const { syncClientPipelineStatus } = await import('@/lib/api');
+            await syncClientPipelineStatus(formData.client_id.documentId);
+          } catch (syncError) {
+            console.error('Error syncing pipeline:', syncError);
+          }
+        }
+        
         showGlobalPopup(documentType === 'quote' ? t('quote_created') : t('invoice_created'), 'success');
+        clearCache('clients'); // Rafraîchir le cache clients
         setEditing(false);
         // Rediriger vers la liste ou la nouvelle facture si besoin
         return;
@@ -424,32 +440,63 @@ export default function FacturePage() {
         return;
       }
 
-      await updateFactureById(facture.documentId, {
-        reference: formData.reference || facture.reference,
-        number: total, // Montant total calculé automatiquement (avec ou sans TVA)
-        date: formData.date || facture.date,
-        due_date: formData.due_date || facture.due_date,
-        // Utiliser le bon champ de statut selon le type de document
-        ...(isQuote 
-          ? { 
-              quote_status: formData.quote_status || facture.quote_status,
-              valid_until: formData.valid_until || facture.valid_until,
-            }
-          : { facture_status: formData.facture_status || facture.facture_status }
-        ),
-        currency: formData.currency || facture.currency,
-        description: formData.description ?? '',
-        notes: formData.notes ?? '',
-        // Strapi v5: utiliser documentId pour les relations
-        client_id: formData.client_id?.documentId || '',
-        project: formData.project?.documentId || '',
-        user: user?.id ?? 0,
-        tva_applicable: tvaApplicable,
-        invoice_lines: cleanLines,
-      });
+      // Déterminer si le statut du devis a changé
+      const quoteStatusChanged = isQuote && 
+        formData.quote_status && 
+        formData.quote_status !== facture.quote_status;
+      
+      // Pour les devis avec changement de statut, utiliser la synchronisation
+      if (quoteStatusChanged) {
+        await updateQuoteStatusWithSync(
+          facture.documentId,
+          formData.quote_status as 'draft' | 'sent' | 'negotiation' | 'accepted' | 'rejected',
+          formData.client_id?.documentId
+        );
+        
+        // Mettre à jour les autres champs séparément
+        await updateFactureById(facture.documentId, {
+          reference: formData.reference || facture.reference,
+          number: total,
+          date: formData.date || facture.date,
+          due_date: formData.due_date || facture.due_date,
+          valid_until: formData.valid_until || facture.valid_until,
+          currency: formData.currency || facture.currency,
+          description: formData.description ?? '',
+          notes: formData.notes ?? '',
+          client_id: formData.client_id?.documentId || '',
+          project: formData.project?.documentId || '',
+          user: user?.id ?? 0,
+          tva_applicable: tvaApplicable,
+          invoice_lines: cleanLines,
+        });
+      } else {
+        // Mise à jour normale sans synchronisation pipeline
+        await updateFactureById(facture.documentId, {
+          reference: formData.reference || facture.reference,
+          number: total,
+          date: formData.date || facture.date,
+          due_date: formData.due_date || facture.due_date,
+          ...(isQuote 
+            ? { 
+                quote_status: formData.quote_status || facture.quote_status,
+                valid_until: formData.valid_until || facture.valid_until,
+              }
+            : { facture_status: formData.facture_status || facture.facture_status }
+          ),
+          currency: formData.currency || facture.currency,
+          description: formData.description ?? '',
+          notes: formData.notes ?? '',
+          client_id: formData.client_id?.documentId || '',
+          project: formData.project?.documentId || '',
+          user: user?.id ?? 0,
+          tva_applicable: tvaApplicable,
+          invoice_lines: cleanLines,
+        });
+      }
 
       // Invalider le cache et recharger la facture
       clearCache('factures');
+      clearCache('clients'); // Rafraîchir aussi les clients (pipeline mis à jour)
       
       const refreshed = await fetchFacturesUserById(
         user?.id ?? 0,

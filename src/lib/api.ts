@@ -869,6 +869,7 @@ export const deleteFacture = (documentId: string) =>
 
 /**
  * Met à jour le statut d'un devis et synchronise automatiquement le statut pipeline du client
+ * La mise à jour du pipeline respecte une logique de progression (pas de régression sauf rejet)
  */
 export async function updateQuoteStatusWithSync(
   quoteDocumentId: string,
@@ -880,9 +881,32 @@ export async function updateQuoteStatusWithSync(
   
   // Si on a le client, mettre à jour son statut pipeline
   if (clientDocumentId) {
+    // Récupérer le statut actuel du client
+    const clientResponse = await get<{ data?: { pipeline_status?: string } }>(`clients/${clientDocumentId}`);
+    const currentStatus = clientResponse?.data?.pipeline_status || 'new';
+    
+    // Ordre de priorité des statuts (index plus élevé = plus avancé)
+    const statusPriority: Record<string, number> = {
+      'new': 0,
+      'contacted': 1,
+      'qualified': 2,
+      'quote_sent': 3,
+      'negotiation': 4,
+      'quote_accepted': 5,
+      'in_progress': 6,
+      'delivered': 7,
+      'won': 8,
+      // Statuts manuels (ne pas écraser)
+      'lost': -1,
+      'maintenance': -1,
+    };
+    
     let newPipelineStatus: string | null = null;
     
     switch (newQuoteStatus) {
+      case 'draft':
+        newPipelineStatus = 'qualified';
+        break;
       case 'sent':
         newPipelineStatus = 'quote_sent';
         break;
@@ -895,11 +919,22 @@ export async function updateQuoteStatusWithSync(
       case 'rejected':
         newPipelineStatus = 'lost';
         break;
-      // draft ne change pas le statut pipeline
     }
     
     if (newPipelineStatus) {
-      await put(`clients/${clientDocumentId}`, { pipeline_status: newPipelineStatus });
+      const currentPriority = statusPriority[currentStatus] ?? 0;
+      const newPriority = statusPriority[newPipelineStatus] ?? 0;
+      
+      // Ne pas régresser le statut (sauf si passage à "lost" = rejet)
+      // Ne pas écraser les statuts manuels (lost, maintenance) sauf si on repasse à un autre statut explicitement
+      if (currentPriority === -1 && newPipelineStatus !== 'lost') {
+        // Statut manuel, ne pas écraser sauf si rejet
+        return;
+      }
+      
+      if (newPriority >= currentPriority || newPipelineStatus === 'lost') {
+        await put(`clients/${clientDocumentId}`, { pipeline_status: newPipelineStatus });
+      }
     }
   }
 }
@@ -1266,17 +1301,21 @@ interface UserMedia {
   type: 'image' | 'video' | 'document';
   folder: string;
   file: MediaFile;
+  user?: { id: number; documentId: string };
   createdAt: string;
   updatedAt: string;
 }
 
 // Récupérer tous les fichiers uploadés par l'utilisateur (via user-media - privé)
+// Le backend filtre automatiquement par user.id via le controller (défense en profondeur)
 export async function fetchUserMedia(): Promise<MediaFile[]> {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');
 
+  // Le filtrage par utilisateur est fait côté backend dans le controller user-media
+  // Le populate=file,user permet de vérifier la propriété côté frontend si besoin
   const response = await fetch(
-    `${API_URL}/api/user-medias?sort=createdAt:desc&populate=file`,
+    `${API_URL}/api/user-medias?sort=createdAt:desc&populate=file,user`,
     {
       headers: { Authorization: `Bearer ${token}` },
     }
@@ -1305,6 +1344,7 @@ export async function fetchUserMedia(): Promise<MediaFile[]> {
 }
 
 // Créer un enregistrement user-media après upload
+// Le backend associe automatiquement le user.id via le controller (défense en profondeur)
 export async function createUserMedia(
   fileId: number, 
   name: string, 
@@ -1314,6 +1354,7 @@ export async function createUserMedia(
   const token = getToken();
   if (!token) throw new Error('Non authentifié');
 
+  // Note: Le backend ajoute automatiquement la relation user dans le controller
   const response = await fetch(
     `${API_URL}/api/user-medias`,
     {
@@ -1343,10 +1384,12 @@ export async function createUserMedia(
 }
 
 // Supprimer un fichier média (via user-media)
+// Le backend vérifie automatiquement que le média appartient au user (défense en profondeur)
 export async function deleteMedia(documentId: string): Promise<void> {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');
 
+  // Note: Le backend vérifie la propriété du média dans le controller
   const response = await fetch(
     `${API_URL}/api/user-medias/${documentId}`,
     {

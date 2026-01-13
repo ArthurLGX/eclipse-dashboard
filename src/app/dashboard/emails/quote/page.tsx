@@ -28,7 +28,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
-import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser } from '@/lib/api';
+import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser, updateQuoteStatusWithSync } from '@/lib/api';
 import { generatePdfBase64 } from '@/lib/generatePdfBase64';
 import EmailSentSuccessModal from '@/app/components/EmailSentSuccessModal';
 import type { CreateEmailSignatureData, Facture, Company } from '@/types';
@@ -402,6 +402,18 @@ Cordialement`;
         status_mail: 'sent',
         tracking_id: result.trackingId,
       });
+      
+      // Mettre à jour le statut du devis en "envoyé" et synchroniser le pipeline du client
+      try {
+        await updateQuoteStatusWithSync(
+          selectedQuote.documentId,
+          'sent',
+          selectedQuote.client_id?.documentId
+        );
+      } catch (syncError) {
+        console.error('Error syncing quote/pipeline status:', syncError);
+        // Ne pas bloquer le succès de l'envoi, juste logger l'erreur
+      }
       
       // Afficher la modale de succès
       setShowSuccessModal(true);

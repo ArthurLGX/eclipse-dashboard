@@ -26,7 +26,7 @@ import type { Project, Client } from '@/types';
 import { useQuota } from '@/app/context/QuotaContext';
 import QuotaExceededModal from '@/app/components/QuotaExceededModal';
 import { useQuotaExceeded } from '@/hooks/useQuotaExceeded';
-import { updateProject } from '@/lib/api';
+import { updateProjectStatusWithSync } from '@/lib/api';
 
 export default function ProjectsPage() {
   const { t } = useLanguage();
@@ -96,12 +96,16 @@ export default function ProjectsPage() {
 
   // Handle quota exceeded selection
   const handleQuotaSelection = async (itemsToKeep: Project[], itemsToRemove: Project[]) => {
-    // Archive les projets non sélectionnés
+    // Archive les projets non sélectionnés et synchronise le pipeline des clients
     let archivedCount = 0;
     for (const project of itemsToRemove) {
       if (!project.documentId) continue;
       try {
-        await updateProject(project.documentId, { project_status: 'archived' });
+        await updateProjectStatusWithSync(
+          project.documentId,
+          'archived',
+          project.client?.documentId
+        );
         archivedCount++;
       } catch (error) {
         console.error(`Error archiving project ${project.title}:`, error);

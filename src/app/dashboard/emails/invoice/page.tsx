@@ -28,7 +28,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
-import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser } from '@/lib/api';
+import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser, updateFactureById } from '@/lib/api';
 import { generatePdfBase64 } from '@/lib/generatePdfBase64';
 import EmailSentSuccessModal from '@/app/components/EmailSentSuccessModal';
 import type { CreateEmailSignatureData, Facture, Company } from '@/types';
@@ -406,6 +406,16 @@ Cordialement`;
         status_mail: 'sent',
         tracking_id: result.trackingId,
       });
+      
+      // Mettre à jour le statut de la facture en "envoyée"
+      try {
+        await updateFactureById(selectedInvoice.documentId, {
+          facture_status: 'sent',
+        });
+      } catch (syncError) {
+        console.error('Error updating invoice status:', syncError);
+        // Ne pas bloquer le succès de l'envoi, juste logger l'erreur
+      }
       
       // Afficher la modale de succès
       setShowSuccessModal(true);
