@@ -24,6 +24,7 @@ import {
   IconSubtask,
   IconUser,
   IconPalette,
+  IconCopy,
 } from '@tabler/icons-react';
 import ExcelImportModal, { type ImportedTask, type ImportProgressCallback } from './ExcelImportModal';
 import type { User } from '@/types';
@@ -351,6 +352,61 @@ export default function ProjectTasks({
     } catch (error) {
       console.error('Error deleting task:', error);
       showGlobalPopup(t('error_generic') || 'Erreur', 'error');
+    }
+  };
+
+  // Dupliquer une tâche (avec option de copier les sous-tâches)
+  const handleDuplicateTask = async (task: ProjectTask, includeSubtasks: boolean = true) => {
+    try {
+      // Créer la tâche principale dupliquée
+      const newTaskData = {
+        title: `${task.title} (copie)`,
+        description: task.description || '',
+        task_status: task.task_status,
+        priority: task.priority,
+        start_date: task.start_date || undefined,
+        due_date: task.due_date || undefined,
+        estimated_hours: task.estimated_hours || undefined,
+        color: task.color || TASK_COLORS[0],
+        project: projectDocumentId,
+        created_user: userId,
+        assigned_to: task.assigned_to?.id || undefined,
+        order: tasks.length,
+        parent_task: task.parent_task?.documentId || undefined, // Pour dupliquer une sous-tâche
+      };
+
+      const createdTask = await createProjectTask(newTaskData) as { data?: { documentId?: string } };
+      const newTaskDocId = createdTask?.data?.documentId;
+
+      // Si la tâche a des sous-tâches et qu'on veut les copier
+      if (includeSubtasks && task.subtasks && task.subtasks.length > 0 && newTaskDocId) {
+        for (const subtask of task.subtasks) {
+          await createProjectTask({
+            title: subtask.title,
+            description: subtask.description || '',
+            task_status: subtask.task_status,
+            priority: subtask.priority,
+            start_date: subtask.start_date || undefined,
+            due_date: subtask.due_date || undefined,
+            estimated_hours: subtask.estimated_hours || undefined,
+            color: task.color || TASK_COLORS[0], // Hérite de la couleur parente
+            project: projectDocumentId,
+            created_user: userId,
+            assigned_to: subtask.assigned_to?.id || undefined,
+            parent_task: newTaskDocId,
+          });
+        }
+      }
+
+      const subtasksCount = task.subtasks?.length || 0;
+      const message = includeSubtasks && subtasksCount > 0
+        ? `${t('task_duplicated') || 'Tâche dupliquée'} (${subtasksCount} ${t('subtasks') || 'sous-tâches'})`
+        : (t('task_duplicated') || 'Tâche dupliquée avec succès');
+      showGlobalPopup(message, 'success');
+      loadTasks();
+    } catch (error) {
+      console.error('Error duplicating task:', error);
+      showGlobalPopup(t('error_generic') || 'Erreur lors de la duplication', 'error');
     }
   };
 
@@ -824,21 +880,54 @@ export default function ProjectTasks({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             onSubmit={handleCreateTask}
-            className="bg-card border border-default rounded-xl p-4 space-y-4"
-            style={parentTaskForSubtask ? { borderLeftWidth: '4px', borderLeftColor: parentTaskForSubtask.color || TASK_COLORS[0] } : undefined}
+            className={`bg-card border border-default rounded-xl p-4 space-y-4 ${parentTaskForSubtask ? 'ml-8' : ''}`}
+            style={parentTaskForSubtask ? { 
+              borderLeftWidth: '4px', 
+              borderLeftColor: parentTaskForSubtask.color || TASK_COLORS[0],
+              background: `linear-gradient(90deg, ${(parentTaskForSubtask.color || TASK_COLORS[0])}08 0%, transparent 100%)`
+            } : undefined}
           >
+            {/* Header avec info tâche parente pour les sous-tâches */}
+            {parentTaskForSubtask && (
+              <div 
+                className="flex items-center gap-3 p-3 rounded-lg mb-2"
+                style={{ backgroundColor: (parentTaskForSubtask.color || TASK_COLORS[0]) + '15' }}
+              >
+                <div 
+                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  style={{ backgroundColor: parentTaskForSubtask.color || TASK_COLORS[0] }}
+                >
+                  <IconSubtask className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted">{t('subtask_of') || 'Sous-tâche de'}</p>
+                  <p className="text-sm font-medium text-primary truncate">{parentTaskForSubtask.title}</p>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted">
+                  {parentTaskForSubtask.assigned_to && (
+                    <span className="flex items-center gap-1">
+                      <UserAvatar user={parentTaskForSubtask.assigned_to} size="sm" />
+                    </span>
+                  )}
+                  <span className={`px-2 py-0.5 rounded-full ${TASK_STATUS_OPTIONS.find(s => s.value === parentTaskForSubtask.task_status)?.color || 'bg-muted'}`}>
+                    {TASK_STATUS_OPTIONS.find(s => s.value === parentTaskForSubtask.task_status)?.label || parentTaskForSubtask.task_status}
+                  </span>
+                </div>
+              </div>
+            )}
+            
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-primary">
+                <h4 className="font-medium text-primary flex items-center gap-2">
+                  {parentTaskForSubtask && <IconSubtask className="w-4 h-4 text-accent" />}
                   {parentTaskForSubtask 
                     ? `${t('new_subtask') || 'Nouvelle sous-tâche'}`
                     : (t('new_task') || 'Nouvelle tâche')
                   }
                 </h4>
                 {parentTaskForSubtask && (
-                  <p className="text-sm text-muted flex items-center gap-1 mt-1">
-                    <IconSubtask className="w-4 h-4" />
-                    {t('subtask_of') || 'Sous-tâche de'} <strong>{parentTaskForSubtask.title}</strong>
+                  <p className="text-xs text-muted mt-1">
+                    {t('subtask_inherits_parent') || 'Hérite des paramètres de la tâche parente'}
                   </p>
                 )}
               </div>
@@ -1037,6 +1126,9 @@ export default function ProjectTasks({
                     setParentTaskForSubtask(task);
                     setShowNewTaskForm(true);
                   }}
+                  onDuplicate={(includeSubtasks) => handleDuplicateTask(task, includeSubtasks)}
+                  onEditSubtask={(subtask) => setEditingTask(subtask)}
+                  onDuplicateSubtask={(subtask) => handleDuplicateTask(subtask, false)}
                   getStatusStyle={getStatusStyle}
                   getPriorityStyle={getPriorityStyle}
                   taskStatusOptions={TASK_STATUS_OPTIONS}
@@ -1122,15 +1214,18 @@ interface TaskCardProps {
   onToggleExpand: () => void;
   onStatusChange: (status: TaskStatus) => void;
   onProgressChange: (progress: number) => void;
-  onClick: () => void; // Nouveau: clic pour ouvrir la modale
+  onClick: () => void;
   onDelete: () => void;
-  onAddSubtask: () => void; // Nouveau: ajouter sous-tâche
+  onAddSubtask: () => void;
+  onDuplicate: (includeSubtasks?: boolean) => void;
+  onEditSubtask: (subtask: ProjectTask) => void;
+  onDuplicateSubtask: (subtask: ProjectTask) => void;
   getStatusStyle: (status: TaskStatus) => string;
   getPriorityStyle: (priority: TaskPriority) => string;
   taskStatusOptions: TaskStatusOption[];
   localProgress?: number;
-  isSubtask?: boolean; // Nouveau: indique si c'est une sous-tâche
-  parentColor?: string; // Nouveau: couleur héritée du parent
+  isSubtask?: boolean;
+  parentColor?: string;
   t: (key: string) => string;
 }
 
@@ -1144,6 +1239,9 @@ function TaskCard({
   onClick,
   onDelete,
   onAddSubtask,
+  onDuplicate,
+  onEditSubtask,
+  onDuplicateSubtask,
   getStatusStyle,
   getPriorityStyle,
   taskStatusOptions,
@@ -1316,6 +1414,18 @@ function TaskCard({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  onDuplicate(!isSubtask && hasSubtasks);
+                }}
+                className="p-1.5 text-muted hover:text-accent transition-colors"
+                title={hasSubtasks ? (t('duplicate_with_subtasks') || 'Dupliquer avec sous-tâches') : (t('duplicate') || 'Dupliquer')}
+              >
+                <IconCopy className="w-4 h-4" />
+              </button>
+            )}
+            {canEdit && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
                   onDelete();
                 }}
                 className="p-1.5 text-muted hover:text-red-400 transition-colors"
@@ -1355,14 +1465,14 @@ function TaskCard({
               {/* Liste des sous-tâches */}
               {hasSubtasks && (
                 <div className="space-y-2 !pl-4 border-l-2" style={{ borderColor: taskColor + '40' }}>
-                  <p className="text-xs font-medium text-muted mb-2">{t('subtasks') || 'Sous-tâches'}</p>
+                  <p className="text-xs font-medium text-muted mb-2">{t('subtasks') || 'Sous-tâches'} ({task.subtasks?.length})</p>
                   {task.subtasks?.map(subtask => (
                     <div 
                       key={subtask.documentId}
-                      className="flex items-center gap-2 p-2 rounded-lg bg-hover/50 hover:bg-hover transition-colors cursor-pointer"
+                      className="group flex items-center gap-2 p-2 rounded-lg bg-hover/50 hover:bg-hover transition-colors cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onClick(); // Ouvre la modale de la tâche parente pour l'instant
+                        onEditSubtask(subtask); // Ouvre l'édition de la sous-tâche
                       }}
                     >
                       <div 
@@ -1376,9 +1486,41 @@ function TaskCard({
                       <span className={`flex-1 text-sm ${subtask.task_status === 'completed' ? 'line-through text-muted' : 'text-primary'}`}>
                         {subtask.title}
                       </span>
-                      {subtask.assigned_to && (
-                        <UserAvatar user={subtask.assigned_to} size="sm" />
-                      )}
+                      <div className="flex items-center gap-1">
+                        {subtask.priority === 'high' && (
+                          <span className="text-xs px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                            {t('high') || 'Haute'}
+                          </span>
+                        )}
+                        {subtask.assigned_to && (
+                          <UserAvatar user={subtask.assigned_to} size="sm" />
+                        )}
+                        {/* Actions sur les sous-tâches */}
+                        {canEdit && (
+                          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onDuplicateSubtask(subtask);
+                              }}
+                              className="p-1 text-muted hover:text-accent transition-colors"
+                              title={t('duplicate') || 'Dupliquer'}
+                            >
+                              <IconCopy className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onEditSubtask(subtask);
+                              }}
+                              className="p-1 text-muted hover:text-accent transition-colors"
+                              title={t('edit') || 'Modifier'}
+                            >
+                              <IconEdit className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
