@@ -145,18 +145,29 @@ function generateAlertEmailTemplate(site: MonitoredSite, result: CheckResult): s
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light only">
   <title>Alerte Monitoring</title>
+  <style>
+    :root { color-scheme: light only; }
+    @media (prefers-color-scheme: dark) {
+      body, table, td, div, p, a, span, h1 {
+        background-color: #F3F4F6 !important;
+        color: #111827 !important;
+      }
+    }
+  </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #F3F4F6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F3F4F6;">
+<body style="margin: 0; padding: 0; background-color: #F3F4F6 !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F3F4F6 !important;">
     <tr>
-      <td align="center" style="padding: 40px 20px;">
-        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+      <td align="center" style="padding: 40px 20px; background-color: #F3F4F6 !important;">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF !important; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
           <!-- Header -->
           <tr>
-            <td align="center" style="padding: 32px 40px 24px;">
+            <td align="center" style="padding: 32px 40px 24px; background-color: #FFFFFF !important;">
               <div style="font-size: 48px; margin-bottom: 16px;">${statusIcon}</div>
-              <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #111827;">Alerte Monitoring</h1>
+              <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #111827 !important;">Alerte Monitoring</h1>
             </td>
           </tr>
           
@@ -173,34 +184,34 @@ function generateAlertEmailTemplate(site: MonitoredSite, result: CheckResult): s
           
           <!-- Details -->
           <tr>
-            <td style="padding: 24px 40px;">
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <td style="padding: 24px 40px; background-color: #FFFFFF !important;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF !important;">
                 <tr>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB;">
-                    <span style="color: #6B7280; font-size: 14px;">URL</span><br>
-                    <a href="${site.url}" style="color: #7C3AED; text-decoration: none; font-size: 14px; word-break: break-all;">${site.url}</a>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB; background-color: #FFFFFF !important;">
+                    <span style="color: #6B7280 !important; font-size: 14px;">URL</span><br>
+                    <a href="${site.url}" style="color: #7C3AED !important; text-decoration: none; font-size: 14px; word-break: break-all;">${site.url}</a>
                   </td>
                 </tr>
                 ${result.responseTime ? `
                 <tr>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB;">
-                    <span style="color: #6B7280; font-size: 14px;">Temps de réponse</span><br>
-                    <span style="color: #111827; font-size: 16px; font-weight: 600;">${result.responseTime}ms</span>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB; background-color: #FFFFFF !important;">
+                    <span style="color: #6B7280 !important; font-size: 14px;">Temps de réponse</span><br>
+                    <span style="color: #111827 !important; font-size: 16px; font-weight: 600;">${result.responseTime}ms</span>
                   </td>
                 </tr>
                 ` : ''}
                 ${result.error ? `
                 <tr>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB;">
-                    <span style="color: #6B7280; font-size: 14px;">Erreur</span><br>
-                    <span style="color: #DC2626; font-size: 14px;">${result.error}</span>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB; background-color: #FFFFFF !important;">
+                    <span style="color: #6B7280 !important; font-size: 14px;">Erreur</span><br>
+                    <span style="color: #DC2626 !important; font-size: 14px;">${result.error}</span>
                   </td>
                 </tr>
                 ` : ''}
                 <tr>
-                  <td style="padding: 12px 0;">
-                    <span style="color: #6B7280; font-size: 14px;">Vérifié le</span><br>
-                    <span style="color: #111827; font-size: 14px;">${dateStr}</span>
+                  <td style="padding: 12px 0; background-color: #FFFFFF !important;">
+                    <span style="color: #6B7280 !important; font-size: 14px;">Vérifié le</span><br>
+                    <span style="color: #111827 !important; font-size: 14px;">${dateStr}</span>
                   </td>
                 </tr>
               </table>
@@ -209,8 +220,8 @@ function generateAlertEmailTemplate(site: MonitoredSite, result: CheckResult): s
           
           <!-- Footer -->
           <tr>
-            <td align="center" style="padding: 24px 40px 32px; border-top: 1px solid #E5E7EB;">
-              <p style="margin: 0; font-size: 12px; color: #9CA3AF;">Eclipse Dashboard - Monitoring</p>
+            <td align="center" style="padding: 24px 40px 32px; border-top: 1px solid #E5E7EB; background-color: #FFFFFF !important;">
+              <p style="margin: 0; font-size: 12px; color: #9CA3AF !important;">Eclipse Dashboard - Monitoring</p>
             </td>
           </tr>
         </table>
