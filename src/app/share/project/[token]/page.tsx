@@ -146,6 +146,7 @@ export default function SharedProjectPage() {
     in_progress: parentTasksForDisplay.filter(t => t.task_status === 'in_progress').length,
     completed: parentTasksForDisplay.filter(t => t.task_status === 'completed').length,
     cancelled: parentTasksForDisplay.filter(t => t.task_status === 'cancelled').length,
+    archived: parentTasksForDisplay.filter(t => t.task_status === 'archived').length,
   }), [parentTasksForDisplay]);
 
   // Tâches filtrées selon le statut sélectionné (uniquement les tâches parentes)
