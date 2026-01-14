@@ -185,14 +185,26 @@ export default function AIInvoiceGenerator({
       matchedClientDocumentId: matchedClient?.documentId,
       projectTitle: generatedData.project?.title,
       projectDescription: generatedData.project?.description,
-      lines: editedLines.map((line, index) => ({
-        id: Date.now() + index,
-        description: line.description,
-        quantity: line.quantity,
-        unit_price: line.unit_price,
-        total: line.quantity * line.unit_price,
-        unit: line.unit || 'unité',
-      })),
+      lines: editedLines.map((line, index) => {
+        // Mapper l'unité libre vers BillingUnit
+        const mapUnit = (unit?: string): 'hour' | 'day' | 'fixed' | 'unit' | 'project' => {
+          if (!unit) return 'unit';
+          const lower = unit.toLowerCase();
+          if (lower.includes('heure') || lower.includes('hour') || lower === 'h') return 'hour';
+          if (lower.includes('jour') || lower.includes('day') || lower === 'j') return 'day';
+          if (lower.includes('forfait') || lower.includes('fixed')) return 'fixed';
+          if (lower.includes('projet') || lower.includes('project')) return 'project';
+          return 'unit';
+        };
+        return {
+          id: Date.now() + index,
+          description: line.description,
+          quantity: line.quantity,
+          unit_price: line.unit_price,
+          total: line.quantity * line.unit_price,
+          unit: mapUnit(line.unit),
+        };
+      }),
       notes: generatedData.notes,
       totalEstimate: total,
       suggestedDueDate: dueDate.toISOString().split('T')[0],
