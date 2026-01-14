@@ -68,12 +68,6 @@ export default function ContractsPage() {
             {t('add_contract') || 'Nouveau contrat'}
           </button>
           
-          {/* Badge "Bientôt disponible" */}
-          <div className="mt-8 px-4 py-2 bg-warning-light border border-warning rounded-lg">
-            <p className="text-warning text-sm font-medium">
-              🚧 Module en cours de développement
-            </p>
-          </div>
         </div>
       )}
     </div>

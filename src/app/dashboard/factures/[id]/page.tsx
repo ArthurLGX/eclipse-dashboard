@@ -39,7 +39,6 @@ import {
   IconMail,
   IconDownload,
   IconCalculator,
-  IconSparkles,
   IconSettings,
   IconRefresh,
   IconFileInvoice,
@@ -731,10 +730,16 @@ export default function FacturePage() {
               {isCreationMode && (
                 <button
                   onClick={() => setShowAIGenerator(true)}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-500 border border-purple-500/20 px-4 py-2 rounded-lg hover:from-purple-500/20 hover:to-pink-500/20 transition-all"
+                  className="flex items-center justify-center gap-2 bg-accent-light text-accent border border-accent px-4 py-2 rounded-lg hover:bg-accent hover:text-white transition-all"
                 >
-                  <IconSparkles className="w-4 h-4" />
-                  {t('ai_invoice_button')}
+                  <Image 
+                    src="/images/logo/eclipse-logo.png" 
+                    alt="Eclipse Assistant" 
+                    width={16} 
+                    height={16}
+                    className="w-4 h-4"
+                  />
+                  Eclipse Assistant
                 </button>
               )}
               <button
