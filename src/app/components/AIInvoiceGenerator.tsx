@@ -445,14 +445,14 @@ export default function AIInvoiceGenerator({
                             value={line.description}
                             onChange={e => updateLine(index, 'description', e.target.value)}
                             placeholder={t('description') || 'Description'}
-                            className="flex-1 px-3 py-2 bg-page border border-default rounded-lg text-sm"
+                            className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-sm"
                           />
                           <button
                             onClick={() => removeLine(index)}
                             className="p-2 text-danger hover:bg-danger-light rounded-lg transition-colors"
                           >
                             <IconTrash className="w-4 h-4" />
-                          </button>
+                          </button> 
                         </div>
                         <div className="grid grid-cols-4 gap-3">
                           <div>
@@ -461,7 +461,7 @@ export default function AIInvoiceGenerator({
                               type="number"
                               value={line.quantity}
                               onChange={e => updateLine(index, 'quantity', parseFloat(e.target.value) || 0)}
-                              className="w-full px-3 py-2 bg-page border border-default rounded-lg text-sm"
+                              className="w-full px-3 py-2 bg-input border border-input rounded-lg text-sm"
                               min="0"
                               step="0.5"
                             />
@@ -472,7 +472,7 @@ export default function AIInvoiceGenerator({
                               type="text"
                               value={line.unit || 'unité'}
                               onChange={e => updateLine(index, 'unit', e.target.value)}
-                              className="w-full px-3 py-2 bg-page border border-default rounded-lg text-sm"
+                              className="w-full px-3 py-2 bg-input border border-input rounded-lg text-sm"
                             />
                           </div>
                           <div>
@@ -481,14 +481,14 @@ export default function AIInvoiceGenerator({
                               type="number"
                               value={line.unit_price}
                               onChange={e => updateLine(index, 'unit_price', parseFloat(e.target.value) || 0)}
-                              className="w-full px-3 py-2 bg-page border border-default rounded-lg text-sm"
+                                    className="w-full px-3 py-2 bg-input border border-input rounded-lg text-sm"
                               min="0"
                               step="10"
                             />
                           </div>
                           <div>
                             <label className="text-xs text-muted">{t('total') || 'Total HT'}</label>
-                            <p className="px-3 py-2 bg-muted rounded-lg text-sm font-medium text-primary">
+                            <p className="px-3 py-2 bg-input rounded-lg text-sm font-medium text-primary">
                               {(line.quantity * line.unit_price).toLocaleString('fr-FR')} €
                             </p>
                           </div>

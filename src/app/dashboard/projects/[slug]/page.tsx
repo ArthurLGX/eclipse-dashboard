@@ -44,6 +44,7 @@ import ProjectTasks from '@/app/components/ProjectTasks';
 import RichTextEditor from '@/app/components/RichTextEditor';
 import ProjectProfitabilityCard from '@/app/components/ProjectProfitabilityCard';
 import ProjectProfitabilityAI from '@/app/components/ProjectProfitabilityAI';
+import ProjectInsightCard from '@/app/components/ProjectInsightCard';
 import ProjectGuidedTour, { useProjectGuidedTour } from '@/app/components/ProjectGuidedTour';
 import QuickProjectModal from '@/app/components/QuickProjectModal';
 import { ProfitabilityBadge, getProfitabilityStatus } from '@/app/components/StatusBadge';
@@ -1206,6 +1207,13 @@ const PROJECT_TYPES = [
           <div className="space-y-4">
             {/* Profitability Card - Bloc rentabilité de base */}
             <ProjectProfitabilityCard tasks={tasks} hourlyRate={project.hourly_rate} />
+
+            {/* Eclipse Insight - Analyse silencieuse du projet */}
+            <ProjectInsightCard
+              project={project}
+              tasks={tasks}
+              invoices={factures}
+            />
 
             {/* Bilan IA - Analyse approfondie avec insights */}
             <ProjectProfitabilityAI
