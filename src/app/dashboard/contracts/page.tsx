@@ -17,7 +17,6 @@ import {
   IconRefresh,
   IconPlus,
   IconChevronDown,
-  IconSparkles,
   IconPencil,
 } from '@tabler/icons-react';
 import { useState, useEffect, useCallback, useRef } from 'react';
