@@ -29,6 +29,7 @@ import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
+import { useUserPreferences } from '@/app/context/UserPreferencesContext';
 import { fetchClientsUser, fetchAllUserProjects, createContract, sendContractToClient, type Contract } from '@/lib/api';
 import { pdf } from '@react-pdf/renderer';
 import ContractPDF from './ContractPDF';
@@ -90,6 +91,7 @@ export default function AIContractGenerator({
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const { businessType, businessConfig } = useUserPreferences();
 
   // Data states
   const [clients, setClients] = useState<Client[]>([]);
@@ -332,7 +334,8 @@ export default function AIContractGenerator({
         siret: company?.siret,
         address: company?.location ? `${company.location}` : undefined,
         email: user?.email,
-        activity: 'Développement web et applications',
+        activity: businessConfig?.label || 'Freelance',
+        businessType: businessType,
       };
 
       const response = await fetch('/api/ai/contract-generator', {

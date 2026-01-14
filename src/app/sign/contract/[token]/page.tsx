@@ -231,11 +231,11 @@ export default function PublicContractSignPage() {
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           {/* Check if there's edited HTML content */}
-          {content.editedHtml ? (
+          {(content as { editedHtml?: string }).editedHtml ? (
             /* Display edited HTML content */
             <div 
               className="prose prose-slate max-w-none prose-headings:text-slate-900 prose-p:text-slate-600 prose-strong:text-slate-900"
-              dangerouslySetInnerHTML={{ __html: content.editedHtml }}
+              dangerouslySetInnerHTML={{ __html: (content as { editedHtml?: string }).editedHtml! }}
             />
           ) : (
             /* Display structured content */

@@ -6,6 +6,8 @@ const openai = new OpenAI({
   apiKey: process.env.OPEN_API_KEY,
 });
 
+type BusinessType = 'web_developer' | 'agency' | 'designer' | 'consultant' | 'photographer' | 'coach' | 'artisan' | 'other';
+
 interface UserProfile {
   name: string;
   company?: string;
@@ -14,6 +16,7 @@ interface UserProfile {
   email?: string;
   phone?: string;
   activity?: string; // Ex: "Développeur web freelance"
+  businessType?: BusinessType;
 }
 
 interface ClientInfo {
@@ -64,26 +67,51 @@ export async function POST(req: Request) {
     // Utiliser le modèle deep pour les contrats (documents importants)
     const model = selectModel('contract-generator', { isCritical: true });
 
+    // Adapter le contexte métier selon le business type
+    const getBusinessContext = (businessType?: BusinessType): string => {
+      switch (businessType) {
+        case 'web_developer':
+          return 'développeur web freelance (sites web, applications, développement logiciel)';
+        case 'agency':
+          return 'agence web/communication/marketing (projets digitaux, campagnes, stratégie)';
+        case 'designer':
+          return 'designer/graphiste (design UI/UX, identité visuelle, créations graphiques)';
+        case 'consultant':
+          return 'consultant indépendant (conseil, accompagnement, expertise métier)';
+        case 'photographer':
+          return 'photographe/vidéaste professionnel (shootings, reportages, productions visuelles)';
+        case 'coach':
+          return 'coach/formateur (coaching personnel, formations, programmes d\'accompagnement)';
+        case 'artisan':
+          return 'artisan/entrepreneur du bâtiment (travaux, chantiers, constructions)';
+        default:
+          return 'prestataire de services indépendant';
+      }
+    };
+
+    const businessContext = getBusinessContext(userProfile.businessType);
+
     const getContractTypeInstruction = () => {
       switch (contractType) {
         case 'service':
-          return `Génère un CONTRAT DE PRESTATION DE SERVICES pour développeur web freelance.
-Inclure: objet de la mission, livrables, délais, tarification, conditions de paiement, propriété intellectuelle, confidentialité, résiliation, responsabilité.`;
+          return `Génère un CONTRAT DE PRESTATION DE SERVICES adapté pour un ${businessContext}.
+Inclure: objet de la mission, livrables, délais, tarification, conditions de paiement, propriété intellectuelle, confidentialité, résiliation, responsabilité.
+Adapter le vocabulaire et les clauses au métier spécifique.`;
         
         case 'nda':
-          return `Génère un ACCORD DE CONFIDENTIALITÉ (NDA) bilatéral.
+          return `Génère un ACCORD DE CONFIDENTIALITÉ (NDA) bilatéral adapté pour un ${businessContext}.
 Inclure: définition des informations confidentielles, obligations des parties, durée, exceptions, conséquences en cas de violation.`;
         
         case 'maintenance':
-          return `Génère un CONTRAT DE MAINTENANCE pour site/application web.
-Inclure: périmètre de la maintenance, SLA, temps de réponse, exclusions, tarification (forfait/temps passé), durée, renouvellement.`;
+          return `Génère un CONTRAT DE MAINTENANCE adapté pour un ${businessContext}.
+Inclure: périmètre de la maintenance/suivi, SLA, temps de réponse, exclusions, tarification (forfait/temps passé), durée, renouvellement.`;
         
         case 'cgv':
-          return `Génère des CONDITIONS GÉNÉRALES DE VENTE pour prestations de développement web.
+          return `Génère des CONDITIONS GÉNÉRALES DE VENTE adaptées pour un ${businessContext}.
 Inclure: champ d'application, commandes, tarifs, paiement, livraison, propriété intellectuelle, responsabilité, RGPD, litiges.`;
         
         default:
-          return `Génère un contrat personnalisé selon le contexte fourni.`;
+          return `Génère un contrat personnalisé selon le contexte fourni pour un ${businessContext}.`;
       }
     };
 
