@@ -63,6 +63,12 @@ interface AITaskResponse {
 
 type InputMode = 'prompt' | 'meeting' | 'fathom';
 
+// Helper to strip HTML tags from text
+const stripHtml = (html: string): string => {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+};
+
 export default function AITaskGenerator({
   isOpen,
   onClose,
@@ -127,7 +133,7 @@ export default function AITaskGenerator({
           inputMode,
           content,
           projectTitle,
-          projectDescription,
+          projectDescription: stripHtml(projectDescription || ''),
           existingTasks: existingTasks?.map(t => ({
             title: t.title,
             task_status: t.task_status,
@@ -375,7 +381,10 @@ export default function AITaskGenerator({
                   </p>
                   <p className="text-sm font-medium text-primary">{projectTitle}</p>
                   {projectDescription && (
-                    <p className="text-sm text-secondary mt-1 line-clamp-2">{projectDescription}</p>
+                    <div 
+                      className="text-sm text-secondary mt-1 line-clamp-2 prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ __html: projectDescription }}
+                    />
                   )}
                   {existingTasks && existingTasks.length > 0 && (
                     <p className="text-xs text-muted mt-2">

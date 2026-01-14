@@ -2365,6 +2365,8 @@ const translations = {
     // IA - Génération de contrats
     ai_generate_contract: 'Générer un contrat avec l\'IA',
     ai_contract_description: 'Documents juridiques personnalisés',
+    review: 'Révision',
+    signature: 'Signature',
     
     // Contrats - Gestion
     contract_save_error: 'Erreur lors de la sauvegarde du contrat',
@@ -5233,6 +5235,8 @@ const translations = {
     error_loading_contracts: 'Error loading contracts',
     confirm_delete_contract: 'Are you sure you want to delete this contract?',
     contract_deleted: 'Contract deleted',
+    signature: 'Signature',
+    review: 'Review',
     error_deleting_contract: 'Error deleting contract',
     pending_client: 'Pending client',
     pending_provider: 'Pending provider',

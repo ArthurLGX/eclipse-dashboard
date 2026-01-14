@@ -70,6 +70,12 @@ interface SignatureData {
   client: string | null;
 }
 
+// Helper to strip HTML tags from text
+const stripHtml = (html: string): string => {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+};
+
 export default function AIContractGenerator({
   isOpen,
   onClose,
@@ -297,7 +303,7 @@ export default function AIContractGenerator({
           } : undefined,
           project: selectedProject ? {
             title: selectedProject.title,
-            description: selectedProject.description,
+            description: stripHtml(selectedProject.description || ''),
             budget: selectedProject.budget,
             start_date: selectedProject.start_date,
             end_date: selectedProject.end_date,
@@ -700,7 +706,10 @@ ${user?.username || 'L\'équipe'}`;
                     <div className="text-sm text-on-info-light space-y-1">
                       <p><strong>Projet:</strong> {selectedProject.title}</p>
                       {selectedProject.description && (
-                        <p className="text-xs line-clamp-2">{selectedProject.description}</p>
+                        <div 
+                          className="text-xs line-clamp-2 prose prose-sm prose-slate max-w-none"
+                          dangerouslySetInnerHTML={{ __html: selectedProject.description }}
+                        />
                       )}
                       {selectedProject.budget && (
                         <p><strong>Budget:</strong> {selectedProject.budget.toLocaleString()}€</p>
