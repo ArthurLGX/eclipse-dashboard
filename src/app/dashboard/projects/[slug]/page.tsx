@@ -43,6 +43,7 @@ import ShareProjectModal from '@/app/components/ShareProjectModal';
 import ProjectTasks from '@/app/components/ProjectTasks';
 import RichTextEditor from '@/app/components/RichTextEditor';
 import ProjectProfitabilityCard from '@/app/components/ProjectProfitabilityCard';
+import ProjectProfitabilityAI from '@/app/components/ProjectProfitabilityAI';
 import ProjectGuidedTour, { useProjectGuidedTour } from '@/app/components/ProjectGuidedTour';
 import QuickProjectModal from '@/app/components/QuickProjectModal';
 import { ProfitabilityBadge, getProfitabilityStatus } from '@/app/components/StatusBadge';
@@ -1203,8 +1204,15 @@ const PROJECT_TYPES = [
 
           {/* Sidebar */}
           <div className="space-y-4">
-            {/* Profitability Card - Nouveau bloc rentabilité */}
-            <ProjectProfitabilityCard tasks={tasks} />
+            {/* Profitability Card - Bloc rentabilité de base */}
+            <ProjectProfitabilityCard tasks={tasks} hourlyRate={project.hourly_rate} />
+
+            {/* Bilan IA - Analyse approfondie avec insights */}
+            <ProjectProfitabilityAI
+              project={project}
+              tasks={tasks}
+              invoicedAmount={linkedInvoices.reduce((sum, inv) => sum + (inv.total_ht || 0), 0)}
+            />
 
             {/* Dates Card */}
             <div className="card p-5">

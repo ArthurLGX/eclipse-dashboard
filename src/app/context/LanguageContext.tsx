@@ -2317,6 +2317,15 @@ const translations = {
     actual_cost: 'Coût réel',
     no_time_estimates: 'Aucune estimation de temps',
     add_estimates_to_tasks: 'Ajoutez des estimations aux tâches pour suivre la rentabilité',
+    
+    // Analyse IA de rentabilité
+    profitability_analysis: 'Analyse de rentabilité',
+    main_causes: 'Causes principales',
+    planned_rate: 'Taux prévu',
+    effective_rate: 'Taux effectif',
+    refresh_analysis: 'Actualiser l\'analyse',
+    estimated: 'Estimé',
+    actual: 'Réel',
 
     // Time Tracking Analytics
     time_analytics: 'Analyse du temps',
@@ -5020,6 +5029,15 @@ const translations = {
     actual_cost: 'Actual cost',
     no_time_estimates: 'No time estimates',
     add_estimates_to_tasks: 'Add estimates to tasks to track profitability',
+    
+    // AI Profitability Analysis
+    profitability_analysis: 'Profitability Analysis',
+    main_causes: 'Main causes',
+    planned_rate: 'Planned rate',
+    effective_rate: 'Effective rate',
+    refresh_analysis: 'Refresh analysis',
+    estimated: 'Estimated',
+    actual: 'Actual',
 
     // Time Tracking Analytics
     time_analytics: 'Time Analytics',
