@@ -7,11 +7,9 @@ import {
   IconLoader2,
   IconX,
   IconSparkles,
-  IconFileText,
   IconAlertCircle,
   IconCheck,
   IconCopy,
-  IconDownload,
   IconAlertTriangle,
   IconBulb,
 } from '@tabler/icons-react';
