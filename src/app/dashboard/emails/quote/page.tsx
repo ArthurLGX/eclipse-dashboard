@@ -21,8 +21,8 @@ import {
   IconCalendar,
   IconPencil,
   IconDeviceFloppy,
-  IconBrain,
 } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -860,8 +860,14 @@ Cordialement`;
                       </>
                     ) : (
                       <>
-                        <IconBrain className="w-3.5 h-3.5" />
-                        {t('ai_suggest_email') || 'Suggérer avec IA'}
+                        <Image 
+                          src="/images/logo/eclipse-logo.png" 
+                          alt="Eclipse Assistant" 
+                          width={14} 
+                          height={14}
+                          className="w-3.5 h-3.5"
+                        />
+                        Eclipse Assistant
                       </>
                     )}
                   </button>

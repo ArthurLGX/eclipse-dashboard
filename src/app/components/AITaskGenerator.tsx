@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  IconBrain,
   IconLoader2,
   IconX,
   IconSparkles,
@@ -19,6 +18,7 @@ import {
   IconMicrophone,
   IconClipboard,
 } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import type { ProjectTask, TaskPriority } from '@/types';
 
@@ -267,14 +267,20 @@ export default function AITaskGenerator({
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light rounded-xl">
-                <IconBrain className="w-6 h-6 text-accent" />
+                <Image 
+                  src="/images/logo/eclipse-logo.png" 
+                  alt="Eclipse Assistant" 
+                  width={24} 
+                  height={24}
+                  className="w-6 h-6"
+                />
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-primary">
-                  {t('ai_generate_tasks') || 'Générer des tâches avec l\'IA'}
+                  Eclipse Assistant
                 </h2>
                 <p className="text-sm text-muted">
-                  {projectTitle}
+                  {t('ai_tasks_description') || 'Génération de tâches intelligente'} • {projectTitle}
                 </p>
               </div>
             </div>

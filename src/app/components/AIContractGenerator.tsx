@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  IconBrain,
   IconLoader2,
   IconX,
   IconSparkles,
@@ -13,6 +12,7 @@ import {
   IconAlertTriangle,
   IconBulb,
 } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -229,14 +229,20 @@ export default function AIContractGenerator({
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light rounded-xl">
-                <IconBrain className="w-6 h-6 text-accent" />
+                <Image 
+                  src="/images/logo/eclipse-logo.png" 
+                  alt="Eclipse Assistant" 
+                  width={24} 
+                  height={24}
+                  className="w-6 h-6"
+                />
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-primary">
-                  {t('ai_generate_contract') || 'Générer un contrat avec l\'IA'}
+                  Eclipse Assistant
                 </h2>
                 <p className="text-sm text-muted">
-                  {t('ai_contract_description') || 'Documents juridiques personnalisés'}
+                  {t('ai_contract_description') || 'Génération de contrats personnalisés'}
                 </p>
               </div>
             </div>

@@ -30,7 +30,6 @@ import {
   IconSquare,
   IconSquareCheck,
   IconSelectAll,
-  IconBrain,
 } from '@tabler/icons-react';
 import ExcelImportModal, { type ImportedTask, type ImportProgressCallback } from './ExcelImportModal';
 import AITaskGenerator, { type GeneratedTask } from './AITaskGenerator';
@@ -1203,11 +1202,17 @@ export default function ProjectTasks({
             {/* Bouton IA */}
             <button
               onClick={() => setShowAIGenerator(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-accent/10 hover:bg-accent/20 text-accent rounded-lg transition-colors"
-              title={t('ai_generate_tasks') || 'Générer des tâches avec l\'IA'}
+              className="flex items-center gap-2 px-4 py-2 bg-accent-light hover:bg-accent hover:text-white text-accent rounded-lg transition-colors"
+              title="Eclipse Assistant"
             >
-              <IconBrain className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('ai') || 'IA'}</span>
+              <Image 
+                src="/images/logo/eclipse-logo.png" 
+                alt="Eclipse Assistant" 
+                width={16} 
+                height={16}
+                className="w-4 h-4"
+              />
+              <span className="hidden sm:inline">Assistant</span>
             </button>
             
             {/* Bouton Nouvelle tâche */}

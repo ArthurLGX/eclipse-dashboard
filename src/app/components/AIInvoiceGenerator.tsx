@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  IconBrain,
   IconLoader2,
   IconX,
   IconSparkles,
@@ -14,6 +13,7 @@ import {
   IconPlus,
   IconTrash,
 } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import type { Client, InvoiceLine } from '@/types';
@@ -256,24 +256,30 @@ export default function AIInvoiceGenerator({
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-background rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-page rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light rounded-xl">
-                <IconBrain className="w-6 h-6 text-accent" />
+                <Image 
+                  src="/images/logo/eclipse-logo.png" 
+                  alt="Eclipse Assistant" 
+                  width={24} 
+                  height={24}
+                  className="w-6 h-6"
+                />
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-primary">
-                  {documentType === 'quote' 
-                    ? (t('ai_generate_quote') || 'Générer un devis avec l\'IA')
-                    : (t('ai_generate_invoice') || 'Générer une facture avec l\'IA')
-                  }
+                  Eclipse Assistant
                 </h2>
                 <p className="text-sm text-muted">
-                  {t('ai_quote_description') || 'Décrivez le projet et l\'IA proposera une structure'}
+                  {documentType === 'quote' 
+                    ? (t('ai_quote_description') || 'Génération de devis intelligente')
+                    : (t('ai_invoice_description') || 'Génération de facture intelligente')
+                  }
                 </p>
               </div>
             </div>
@@ -370,10 +376,13 @@ export default function AIInvoiceGenerator({
                     generatedData.confidence >= 0.8 ? 'bg-success-light' :
                     generatedData.confidence >= 0.5 ? 'bg-warning-light' : 'bg-danger-light'
                   }`}>
-                    <IconBrain className={`w-5 h-5 ${
-                      generatedData.confidence >= 0.8 ? 'text-success' :
-                      generatedData.confidence >= 0.5 ? 'text-warning' : 'text-danger'
-                    }`} />
+                    <Image 
+                      src="/images/logo/eclipse-logo.png" 
+                      alt="Eclipse Assistant" 
+                      width={20} 
+                      height={20}
+                      className="w-5 h-5"
+                    />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-primary">
@@ -436,7 +445,7 @@ export default function AIInvoiceGenerator({
                             value={line.description}
                             onChange={e => updateLine(index, 'description', e.target.value)}
                             placeholder={t('description') || 'Description'}
-                            className="flex-1 px-3 py-2 bg-background border border-default rounded-lg text-sm"
+                            className="flex-1 px-3 py-2 bg-page border border-default rounded-lg text-sm"
                           />
                           <button
                             onClick={() => removeLine(index)}
@@ -452,7 +461,7 @@ export default function AIInvoiceGenerator({
                               type="number"
                               value={line.quantity}
                               onChange={e => updateLine(index, 'quantity', parseFloat(e.target.value) || 0)}
-                              className="w-full px-3 py-2 bg-background border border-default rounded-lg text-sm"
+                              className="w-full px-3 py-2 bg-page border border-default rounded-lg text-sm"
                               min="0"
                               step="0.5"
                             />
@@ -463,7 +472,7 @@ export default function AIInvoiceGenerator({
                               type="text"
                               value={line.unit || 'unité'}
                               onChange={e => updateLine(index, 'unit', e.target.value)}
-                              className="w-full px-3 py-2 bg-background border border-default rounded-lg text-sm"
+                              className="w-full px-3 py-2 bg-page border border-default rounded-lg text-sm"
                             />
                           </div>
                           <div>
@@ -472,7 +481,7 @@ export default function AIInvoiceGenerator({
                               type="number"
                               value={line.unit_price}
                               onChange={e => updateLine(index, 'unit_price', parseFloat(e.target.value) || 0)}
-                              className="w-full px-3 py-2 bg-background border border-default rounded-lg text-sm"
+                              className="w-full px-3 py-2 bg-page border border-default rounded-lg text-sm"
                               min="0"
                               step="10"
                             />
