@@ -1,33 +1,37 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
+  IconBrain,
+  IconLoader2,
   IconX,
   IconSparkles,
-  IconLoader2,
+  IconFileInvoice,
+  IconCurrencyEuro,
+  IconCalendar,
+  IconUser,
+  IconBuilding,
   IconAlertCircle,
   IconCheck,
-  IconCurrencyEuro,
-  IconClock,
-  IconCalendar,
-  IconReceipt,
-  IconInfoCircle,
+  IconPlus,
+  IconTrash,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { usePreferences } from '@/app/context/PreferencesContext';
 import { useAuth } from '@/app/context/AuthContext';
-import { fetchClientsUser, fetchCompanyUser } from '@/lib/api';
-import { Client, Company, InvoiceLine } from '@/types';
+import type { Client, InvoiceLine } from '@/types';
+import { useClients } from '@/hooks/useApi';
 
 interface AIInvoiceGeneratorProps {
   isOpen: boolean;
   onClose: () => void;
   documentType: 'invoice' | 'quote';
-  onGenerated: (data: GeneratedInvoiceResult) => void;
+  onGenerated: (data: GeneratedInvoiceData) => void;
+  existingClient?: Client;
+  existingProjectTitle?: string;
 }
 
-interface GeneratedInvoiceResult {
+interface GeneratedInvoiceData {
   clientName?: string;
   clientEnterprise?: string;
   clientEmail?: string;
@@ -43,17 +47,31 @@ interface GeneratedInvoiceResult {
   tvaRate: number;
   currency: string;
   confidence: number;
-  reasoning?: string;
 }
 
-interface UserBillingSettings {
-  hourlyRate: number;
-  dailyRate: number;
-  defaultBillingType: 'hour' | 'day' | 'fixed' | 'unit';
-  tvaApplicable: boolean;
-  tvaRate: number;
+interface AIResponse {
+  client?: {
+    name: string;
+    enterprise?: string;
+    email?: string;
+  };
+  project?: {
+    title: string;
+    description?: string;
+  };
+  lines: {
+    description: string;
+    quantity: number;
+    unit_price: number;
+    unit?: string;
+  }[];
+  notes?: string;
+  tva_applicable: boolean;
+  tva_rate: number;
   currency: string;
-  defaultPaymentDays: number;
+  due_days: number;
+  confidence: number;
+  reasoning?: string;
 }
 
 export default function AIInvoiceGenerator({
@@ -61,500 +79,486 @@ export default function AIInvoiceGenerator({
   onClose,
   documentType,
   onGenerated,
+  existingClient,
+  existingProjectTitle,
 }: AIInvoiceGeneratorProps) {
   const { t } = useLanguage();
-  const { preferences } = usePreferences();
   const { user } = useAuth();
+  const { data: clientsData } = useClients(user?.id);
+  const clients = (clientsData as Client[]) || [];
 
-  // State
-  const [inputText, setInputText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [prompt, setPrompt] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<GeneratedInvoiceResult | null>(null);
-  const [step, setStep] = useState<'input' | 'settings' | 'result'>('input');
+  const [generatedData, setGeneratedData] = useState<AIResponse | null>(null);
+  const [editedLines, setEditedLines] = useState<AIResponse['lines']>([]);
+  const [step, setStep] = useState<'input' | 'review'>('input');
 
-  // User settings
-  const [billingSettings, setBillingSettings] = useState<UserBillingSettings>({
-    hourlyRate: 0,
-    dailyRate: 0,
-    defaultBillingType: 'hour',
-    tvaApplicable: preferences.invoice.defaultTaxRate > 0,
-    tvaRate: preferences.invoice.defaultTaxRate,
-    currency: preferences.format.currency,
-    defaultPaymentDays: preferences.invoice.defaultPaymentDays,
-  });
-
-  // Clients list for matching
-  const [clients, setClients] = useState<Client[]>([]);
-  const [company, setCompany] = useState<Company | null>(null);
-  const [settingsLoaded, setSettingsLoaded] = useState(false);
-
-  // Load clients and company settings
+  // Reset state when modal opens
   useEffect(() => {
-    if (!isOpen || !user?.id) return;
-
-    const loadData = async () => {
-      try {
-        const [clientsRes, companyRes] = await Promise.all([
-          fetchClientsUser(user.id),
-          fetchCompanyUser(user.id),
-        ]);
-
-        if (clientsRes?.data) {
-          setClients(clientsRes.data as Client[]);
-        }
-
-        if (companyRes?.data && companyRes.data.length > 0) {
-          setCompany(companyRes.data[0] as Company);
-        }
-
-        setSettingsLoaded(true);
-      } catch (err) {
-        console.error('Error loading data:', err);
-        setSettingsLoaded(true);
-      }
-    };
-
-    loadData();
-  }, [isOpen, user?.id]);
-
-  // Check if settings are complete
-  const hasCompleteSettings = billingSettings.hourlyRate > 0 || billingSettings.dailyRate > 0;
-
-  // Reset on close
-  useEffect(() => {
-    if (!isOpen) {
-      setInputText('');
+    if (isOpen) {
+      setPrompt('');
       setError(null);
-      setResult(null);
+      setGeneratedData(null);
+      setEditedLines([]);
       setStep('input');
     }
   }, [isOpen]);
 
-  const handleAnalyze = async () => {
-    if (!inputText.trim()) {
-      setError(t('ai_invoice_error_empty_text'));
+  const handleGenerate = async () => {
+    if (!prompt.trim()) {
+      setError(t('ai_quote_prompt_required') || 'Veuillez décrire le projet ou la prestation');
       return;
     }
 
-    // Check if we have minimum settings
-    if (!hasCompleteSettings) {
-      setStep('settings');
-      return;
-    }
-
-    await generateInvoice();
-  };
-
-  const generateInvoice = async () => {
-    setIsLoading(true);
+    setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch('/api/generate-invoice', {
+      const response = await fetch('/api/ai/quote-generator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: inputText,
+          prompt,
           documentType,
-          userSettings: {
-            hourlyRate: billingSettings.hourlyRate,
-            dailyRate: billingSettings.dailyRate,
-            defaultBillingType: billingSettings.defaultBillingType,
-            tvaApplicable: billingSettings.tvaApplicable,
-            tvaRate: billingSettings.tvaRate,
-            currency: billingSettings.currency,
-            companyName: company?.name,
-            defaultPaymentDays: billingSettings.defaultPaymentDays,
-          },
-          existingClients: clients.map(c => ({
+          existingClient: existingClient ? {
+            name: existingClient.name,
+            enterprise: existingClient.enterprise,
+            email: existingClient.email,
+          } : undefined,
+          existingProjectTitle,
+          clients: clients.map(c => ({
             id: c.id,
             documentId: c.documentId,
             name: c.name,
             enterprise: c.enterprise,
+            email: c.email,
           })),
+          userContext: {
+            defaultTvaRate: 20, // TODO: get from user preferences
+            defaultCurrency: 'EUR',
+            defaultPaymentDays: 30,
+          },
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors de la génération');
+        const errorData = await response.json();
+        throw new Error(errorData.error || t('ai_generation_error'));
       }
 
-      // Transform lines to match InvoiceLine type
-      const transformedData: GeneratedInvoiceResult = {
-        ...data.data,
-        lines: data.data.lines.map((line: { description: string; quantity: number; unit_price: number; unit: string }, idx: number) => ({
-          id: Date.now() + idx,
-          description: line.description,
-          quantity: line.quantity,
-          unit_price: line.unit_price,
-          total: line.quantity * line.unit_price,
-          unit: line.unit,
-        })),
-      };
-
-      setResult(transformedData);
-      setStep('result');
+      const data: AIResponse = await response.json();
+      setGeneratedData(data);
+      setEditedLines(data.lines);
+      setStep('review');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inconnue');
+      console.error('AI generation error:', err);
+      setError(err instanceof Error ? err.message : t('ai_generation_error'));
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const handleConfirm = () => {
-    if (result) {
-      onGenerated(result);
-      onClose();
+    if (!generatedData) return;
+
+    // Try to match client from the list
+    let matchedClient: Client | undefined;
+    if (generatedData.client?.name) {
+      matchedClient = clients.find(c => 
+        c.name.toLowerCase().includes(generatedData.client!.name.toLowerCase()) ||
+        c.enterprise?.toLowerCase().includes(generatedData.client!.enterprise?.toLowerCase() || '')
+      );
     }
+
+    // Calculate total
+    const total = editedLines.reduce((sum, line) => 
+      sum + (line.quantity * line.unit_price), 0
+    );
+
+    // Calculate due date
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + (generatedData.due_days || 30));
+
+    const result: GeneratedInvoiceData = {
+      clientName: generatedData.client?.name,
+      clientEnterprise: generatedData.client?.enterprise,
+      clientEmail: generatedData.client?.email,
+      matchedClientId: matchedClient?.id,
+      matchedClientDocumentId: matchedClient?.documentId,
+      projectTitle: generatedData.project?.title,
+      projectDescription: generatedData.project?.description,
+      lines: editedLines.map((line, index) => ({
+        id: Date.now() + index,
+        description: line.description,
+        quantity: line.quantity,
+        unit_price: line.unit_price,
+        total: line.quantity * line.unit_price,
+        unit: line.unit || 'unité',
+      })),
+      notes: generatedData.notes,
+      totalEstimate: total,
+      suggestedDueDate: dueDate.toISOString().split('T')[0],
+      tvaApplicable: generatedData.tva_applicable,
+      tvaRate: generatedData.tva_rate,
+      currency: generatedData.currency,
+      confidence: generatedData.confidence,
+    };
+
+    onGenerated(result);
+    onClose();
   };
 
-  const documentLabel = documentType === 'quote' ? t('quote') : t('invoice');
+  const updateLine = (index: number, field: keyof AIResponse['lines'][0], value: string | number) => {
+    setEditedLines(prev => prev.map((line, i) => 
+      i === index ? { ...line, [field]: value } : line
+    ));
+  };
+
+  const addLine = () => {
+    setEditedLines(prev => [...prev, {
+      description: '',
+      quantity: 1,
+      unit_price: 0,
+      unit: 'unité',
+    }]);
+  };
+
+  const removeLine = (index: number) => {
+    setEditedLines(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const totalHT = editedLines.reduce((sum, line) => sum + (line.quantity * line.unit_price), 0);
+  const totalTVA = generatedData?.tva_applicable ? totalHT * (generatedData.tva_rate / 100) : 0;
+  const totalTTC = totalHT + totalTVA;
+
+  if (!isOpen) return null;
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+        onClick={onClose}
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          onClick={onClose}
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="bg-background rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+          onClick={e => e.stopPropagation()}
         >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-default">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                  <IconSparkles size={20} className="text-white" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-primary">
-                    {t('ai_invoice_title')} {documentLabel}
-                  </h2>
-                  <p className="text-sm text-muted">
-                    {t('ai_invoice_subtitle')}
-                  </p>
-                </div>
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-default">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-accent/10 rounded-xl">
+                <IconBrain className="w-6 h-6 text-accent" />
               </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-lg hover:bg-hover transition-colors"
-              >
-                <IconX size={20} className="text-muted" />
-              </button>
+              <div>
+                <h2 className="text-lg font-semibold text-primary">
+                  {documentType === 'quote' 
+                    ? (t('ai_generate_quote') || 'Générer un devis avec l\'IA')
+                    : (t('ai_generate_invoice') || 'Générer une facture avec l\'IA')
+                  }
+                </h2>
+                <p className="text-sm text-muted">
+                  {t('ai_quote_description') || 'Décrivez le projet et l\'IA proposera une structure'}
+                </p>
+              </div>
             </div>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-hover rounded-lg transition-colors"
+            >
+              <IconX className="w-5 h-5 text-muted" />
+            </button>
+          </div>
 
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6">
-              {step === 'input' && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">
-                      {t('ai_invoice_paste_text')}
-                    </label>
-                    <textarea
-                      value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      placeholder={t('ai_invoice_placeholder')}
-                      className="w-full h-64 px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder:text-muted resize-none focus:outline-none focus:border-accent"
-                    />
-                    <p className="text-xs text-muted mt-2">
-                      {t('ai_invoice_hint')}
-                    </p>
-                  </div>
-
-                  {error && (
-                    <div className="flex items-center gap-2 p-3 bg-danger-light border border-danger rounded-lg text-danger text-sm">
-                      <IconAlertCircle size={18} />
-                      {error}
-                    </div>
-                  )}
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {step === 'input' && (
+              <div className="space-y-4">
+                {/* Prompt input */}
+                <div>
+                  <label className="block text-sm font-medium text-primary mb-2">
+                    {t('ai_describe_project') || 'Décrivez le projet ou la prestation'}
+                  </label>
+                  <textarea
+                    value={prompt}
+                    onChange={e => setPrompt(e.target.value)}
+                    placeholder={
+                      documentType === 'quote'
+                        ? (t('ai_quote_placeholder') || 'Ex: Site vitrine pour un restaurant avec 5 pages, formulaire de réservation, intégration Google Maps...')
+                        : (t('ai_invoice_placeholder') || 'Ex: Développement d\'une application mobile de livraison avec backend API...')
+                    }
+                    className="w-full h-40 p-4 bg-muted/30 border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                  />
                 </div>
-              )}
 
-              {step === 'settings' && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2 p-4 bg-warning-light border border-warning rounded-lg">
-                    <IconInfoCircle size={20} className="text-warning flex-shrink-0" />
-                    <p className="text-sm text-secondary">
-                      {t('ai_invoice_settings_required')}
+                {/* Context info */}
+                {(existingClient || existingProjectTitle) && (
+                  <div className="p-4 bg-info-light rounded-xl space-y-2">
+                    <p className="text-sm font-medium text-info flex items-center gap-2">
+                      <IconSparkles className="w-4 h-4" />
+                      {t('ai_context_info') || 'Contexte détecté'}
                     </p>
+                    {existingClient && (
+                      <p className="text-sm text-info/80 flex items-center gap-2">
+                        <IconUser className="w-4 h-4" />
+                        {existingClient.name} {existingClient.enterprise && `(${existingClient.enterprise})`}
+                      </p>
+                    )}
+                    {existingProjectTitle && (
+                      <p className="text-sm text-info/80 flex items-center gap-2">
+                        <IconFileInvoice className="w-4 h-4" />
+                        {existingProjectTitle}
+                      </p>
+                    )}
                   </div>
+                )}
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-secondary mb-2">
-                        <IconClock size={16} className="inline mr-1" />
-                        {t('ai_invoice_hourly_rate')}
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          value={billingSettings.hourlyRate || ''}
-                          onChange={(e) => setBillingSettings(s => ({
-                            ...s,
-                            hourlyRate: parseFloat(e.target.value) || 0,
-                          }))}
-                          placeholder="0"
-                          className="w-full px-4 py-2 !pr-8 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted">€/h</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-secondary mb-2">
-                        <IconCalendar size={16} className="inline mr-1" />
-                        {t('ai_invoice_daily_rate')}
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          value={billingSettings.dailyRate || ''}
-                          onChange={(e) => setBillingSettings(s => ({
-                            ...s,
-                            dailyRate: parseFloat(e.target.value) || 0,
-                          }))}
-                          placeholder="0"
-                          className="w-full px-4 py-2 !pr-10 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted">€/j</span>
-                      </div>
-                    </div>
+                {/* Examples */}
+                <div className="space-y-2">
+                  <p className="text-xs text-muted font-medium uppercase tracking-wider">
+                    {t('ai_examples') || 'Exemples de prompts'}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      'Site e-commerce Shopify avec 50 produits',
+                      'Application mobile React Native',
+                      'Refonte complète d\'un site WordPress',
+                      'Audit SEO et optimisation performance',
+                      'Maintenance mensuelle (10h)',
+                    ].map((example, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setPrompt(example)}
+                        className="px-3 py-1.5 text-xs bg-hover text-secondary rounded-lg hover:bg-accent/10 hover:text-accent transition-colors"
+                      >
+                        {example}
+                      </button>
+                    ))}
                   </div>
+                </div>
 
+                {/* Error */}
+                {error && (
+                  <div className="p-4 bg-danger-light rounded-xl flex items-center gap-3">
+                    <IconAlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
+                    <p className="text-sm text-danger">{error}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {step === 'review' && generatedData && (
+              <div className="space-y-6">
+                {/* Confidence indicator */}
+                <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-xl">
+                  <div className={`p-2 rounded-lg ${
+                    generatedData.confidence >= 0.8 ? 'bg-success-light' :
+                    generatedData.confidence >= 0.5 ? 'bg-warning-light' : 'bg-danger-light'
+                  }`}>
+                    <IconBrain className={`w-5 h-5 ${
+                      generatedData.confidence >= 0.8 ? 'text-success' :
+                      generatedData.confidence >= 0.5 ? 'text-warning' : 'text-danger'
+                    }`} />
+                  </div>
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">
-                      {t('ai_invoice_billing_type')}
-                    </label>
-                    <select
-                      value={billingSettings.defaultBillingType}
-                      onChange={(e) => setBillingSettings(s => ({
-                        ...s,
-                        defaultBillingType: e.target.value as 'hour' | 'day' | 'fixed' | 'unit',
-                      }))}
-                      className="w-full px-4 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
-                    >
-                      <option value="hour">{t('billing_hour')}</option>
-                      <option value="day">{t('billing_day')}</option>
-                      <option value="fixed">{t('billing_fixed')}</option>
-                      <option value="unit">{t('billing_unit')}</option>
-                    </select>
+                    <p className="text-sm font-medium text-primary">
+                      {t('ai_confidence') || 'Confiance IA'}: {Math.round(generatedData.confidence * 100)}%
+                    </p>
+                    {generatedData.reasoning && (
+                      <p className="text-xs text-muted">{generatedData.reasoning}</p>
+                    )}
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={billingSettings.tvaApplicable}
-                        onChange={(e) => setBillingSettings(s => ({
-                          ...s,
-                          tvaApplicable: e.target.checked,
-                        }))}
-                        className="w-4 h-4 rounded border-input bg-input text-accent focus:ring-accent"
-                      />
-                      <span className="text-sm text-secondary">{t('vat_applicable')}</span>
-                    </label>
-
-                    {billingSettings.tvaApplicable && (
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          value={billingSettings.tvaRate}
-                          onChange={(e) => setBillingSettings(s => ({
-                            ...s,
-                            tvaRate: parseFloat(e.target.value) || 0,
-                          }))}
-                          className="w-20 px-3 py-1 bg-input border border-input rounded-lg text-primary text-center focus:outline-none focus:border-accent"
-                        />
-                        <span className="text-sm text-muted">%</span>
+                {/* Client & Project info */}
+                {(generatedData.client || generatedData.project) && (
+                  <div className="grid grid-cols-2 gap-4">
+                    {generatedData.client && (
+                      <div className="p-4 bg-hover rounded-xl">
+                        <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
+                          <IconUser className="w-3.5 h-3.5" />
+                          {t('client') || 'Client'}
+                        </p>
+                        <p className="text-sm font-medium text-primary">{generatedData.client.name}</p>
+                        {generatedData.client.enterprise && (
+                          <p className="text-xs text-secondary">{generatedData.client.enterprise}</p>
+                        )}
+                      </div>
+                    )}
+                    {generatedData.project && (
+                      <div className="p-4 bg-hover rounded-xl">
+                        <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
+                          <IconFileInvoice className="w-3.5 h-3.5" />
+                          {t('project') || 'Projet'}
+                        </p>
+                        <p className="text-sm font-medium text-primary">{generatedData.project.title}</p>
                       </div>
                     )}
                   </div>
+                )}
 
-                  {error && (
-                    <div className="flex items-center gap-2 p-3 bg-danger-light border border-danger rounded-lg text-danger text-sm">
-                      <IconAlertCircle size={18} />
-                      {error}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {step === 'result' && result && (
-                <div className="space-y-6">
-                  {/* Confidence indicator */}
-                  <div className={`flex items-center gap-2 p-3 rounded-lg ${
-                    result.confidence >= 70 
-                      ? 'bg-success-light border border-success' 
-                      : result.confidence >= 40 
-                        ? 'bg-warning-light border border-warning'
-                        : 'bg-danger-light border border-danger'
-                  }`}>
-                    <IconCheck size={18} className={
-                      result.confidence >= 70 ? 'text-success' : 
-                      result.confidence >= 40 ? 'text-warning' : 'text-danger'
-                    } />
-                    <span className="text-sm text-secondary">
-                      {t('ai_invoice_confidence')}: {result.confidence}%
-                    </span>
-                  </div>
-
-                  {result.reasoning && (
-                    <p className="text-sm text-muted italic">
-                      {result.reasoning}
+                {/* Invoice lines */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-medium text-primary">
+                      {t('invoice_lines') || 'Lignes de facturation'}
                     </p>
-                  )}
-
-                  {/* Client info */}
-                  {(result.clientName || result.clientEnterprise) && (
-                    <div className="p-4 bg-muted rounded-lg">
-                      <h4 className="text-sm font-medium text-secondary mb-2">{t('client')}</h4>
-                      <p className="text-primary font-medium">
-                        {result.clientName}
-                        {result.clientEnterprise && (
-                          <span className="text-muted font-normal"> - {result.clientEnterprise}</span>
-                        )}
-                      </p>
-                      {result.matchedClientId && (
-                        <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-success-light text-success text-xs rounded-full">
-                          <IconCheck size={12} />
-                          {t('ai_invoice_client_matched')}
-                        </span>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Project info */}
-                  {result.projectTitle && (
-                    <div className="p-4 bg-muted rounded-lg">
-                      <h4 className="text-sm font-medium text-secondary mb-2">{t('project')}</h4>
-                      <p className="text-primary font-medium">{result.projectTitle}</p>
-                      {result.projectDescription && (
-                        <p className="text-sm text-muted mt-1">{result.projectDescription}</p>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Lines preview */}
-                  <div>
-                    <h4 className="text-sm font-medium text-secondary mb-3">
-                      {t('services')} ({result.lines.length})
-                    </h4>
-                    <div className="space-y-2">
-                      {result.lines.map((line, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between p-3 bg-input rounded-lg"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm text-primary truncate">{line.description}</p>
-                            <p className="text-xs text-muted">
-                              {line.quantity} × {line.unit_price}€
+                    <button
+                      onClick={addLine}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent/10 text-accent rounded-lg hover:bg-accent/20 transition-colors"
+                    >
+                      <IconPlus className="w-3.5 h-3.5" />
+                      {t('add_line') || 'Ajouter'}
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {editedLines.map((line, index) => (
+                      <div key={index} className="p-4 bg-muted/30 rounded-xl space-y-3">
+                        <div className="flex items-start gap-3">
+                          <input
+                            type="text"
+                            value={line.description}
+                            onChange={e => updateLine(index, 'description', e.target.value)}
+                            placeholder={t('description') || 'Description'}
+                            className="flex-1 px-3 py-2 bg-background border border-default rounded-lg text-sm"
+                          />
+                          <button
+                            onClick={() => removeLine(index)}
+                            className="p-2 text-danger hover:bg-danger-light rounded-lg transition-colors"
+                          >
+                            <IconTrash className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-4 gap-3">
+                          <div>
+                            <label className="text-xs text-muted">{t('quantity') || 'Qté'}</label>
+                            <input
+                              type="number"
+                              value={line.quantity}
+                              onChange={e => updateLine(index, 'quantity', parseFloat(e.target.value) || 0)}
+                              className="w-full px-3 py-2 bg-background border border-default rounded-lg text-sm"
+                              min="0"
+                              step="0.5"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-muted">{t('unit') || 'Unité'}</label>
+                            <input
+                              type="text"
+                              value={line.unit || 'unité'}
+                              onChange={e => updateLine(index, 'unit', e.target.value)}
+                              className="w-full px-3 py-2 bg-background border border-default rounded-lg text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-muted">{t('unit_price') || 'P.U. HT'}</label>
+                            <input
+                              type="number"
+                              value={line.unit_price}
+                              onChange={e => updateLine(index, 'unit_price', parseFloat(e.target.value) || 0)}
+                              className="w-full px-3 py-2 bg-background border border-default rounded-lg text-sm"
+                              min="0"
+                              step="10"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-muted">{t('total') || 'Total HT'}</label>
+                            <p className="px-3 py-2 bg-muted/50 rounded-lg text-sm font-medium">
+                              {(line.quantity * line.unit_price).toLocaleString('fr-FR')} €
                             </p>
                           </div>
-                          <span className="font-medium text-primary ml-4">
-                            {line.total.toFixed(2)}€
-                          </span>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
+                </div>
 
-                  {/* Total */}
-                  <div className="flex items-center justify-between p-4 bg-accent-light rounded-lg">
-                    <span className="font-medium text-secondary">{t('total')} HT</span>
-                    <span className="text-xl font-bold text-accent">
-                      <IconCurrencyEuro size={20} className="inline" />
-                      {result.totalEstimate.toFixed(2)}
-                    </span>
+                {/* Totals */}
+                <div className="p-4 bg-accent/5 rounded-xl space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-secondary">{t('total_ht') || 'Total HT'}</span>
+                    <span className="font-medium text-primary">{totalHT.toLocaleString('fr-FR')} €</span>
                   </div>
-
-                  {/* Notes */}
-                  {result.notes && (
-                    <div className="p-4 bg-muted rounded-lg">
-                      <h4 className="text-sm font-medium text-secondary mb-2">{t('notes')}</h4>
-                      <p className="text-sm text-muted">{result.notes}</p>
+                  {generatedData.tva_applicable && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-secondary">TVA ({generatedData.tva_rate}%)</span>
+                      <span className="font-medium text-primary">{totalTVA.toLocaleString('fr-FR')} €</span>
                     </div>
                   )}
+                  <div className="flex justify-between text-base pt-2 border-t border-default">
+                    <span className="font-medium text-primary">{t('total_ttc') || 'Total TTC'}</span>
+                    <span className="font-bold text-accent">{totalTTC.toLocaleString('fr-FR')} €</span>
+                  </div>
                 </div>
-              )}
-            </div>
 
-            {/* Footer */}
-              <div className="flex items-center justify-between p-6 border-t border-default bg-muted">
-              {step !== 'input' && (
-                <button
-                  onClick={() => setStep(step === 'result' ? 'input' : 'input')}
-                  className="px-4 py-2 text-secondary hover:text-primary transition-colors"
-                  disabled={isLoading}
-                >
-                  {t('back')}
-                </button>
-              )}
-              <div className="flex items-center gap-3 ml-auto">
-                <button
-                  onClick={onClose}
-                  className="px-4 py-2 text-secondary hover:text-primary transition-colors"
-                  disabled={isLoading}
-                >
-                  {t('cancel')}
-                </button>
-
-                {step === 'input' && (
-                  <button
-                    onClick={handleAnalyze}
-                    disabled={isLoading || !inputText.trim() || !settingsLoaded}
-                    className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
-                  >
-                    {isLoading ? (
-                      <IconLoader2 size={18} className="animate-spin" />
-                    ) : (
-                      <IconSparkles size={18} />
-                    )}
-                    {t('ai_invoice_analyze')}
-                  </button>
-                )}
-
-                {step === 'settings' && (
-                  <button
-                    onClick={generateInvoice}
-                    disabled={isLoading || !hasCompleteSettings}
-                    className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
-                  >
-                    {isLoading ? (
-                      <IconLoader2 size={18} className="animate-spin" />
-                    ) : (
-                      <IconSparkles size={18} />
-                    )}
-                    {t('ai_invoice_generate')}
-                  </button>
-                )}
-
-                {step === 'result' && (
-                  <button
-                    onClick={handleConfirm}
-                    className="flex items-center gap-2 px-6 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors"
-                  >
-                    <IconReceipt size={18} />
-                    {t('ai_invoice_use_this')}
-                  </button>
+                {/* Notes */}
+                {generatedData.notes && (
+                  <div className="p-4 bg-muted/30 rounded-xl">
+                    <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2">
+                      {t('notes') || 'Notes'}
+                    </p>
+                    <p className="text-sm text-secondary">{generatedData.notes}</p>
+                  </div>
                 )}
               </div>
-            </div>
-          </motion.div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between p-6 border-t border-default bg-muted/30">
+            {step === 'input' ? (
+              <>
+                <button
+                  onClick={onClose}
+                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                >
+                  {t('cancel') || 'Annuler'}
+                </button>
+                <button
+                  onClick={handleGenerate}
+                  disabled={loading || !prompt.trim()}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {loading ? (
+                    <>
+                      <IconLoader2 className="w-4 h-4 animate-spin" />
+                      {t('generating') || 'Génération...'}
+                    </>
+                  ) : (
+                    <>
+                      <IconSparkles className="w-4 h-4" />
+                      {t('generate') || 'Générer'}
+                    </>
+                  )}
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => setStep('input')}
+                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                >
+                  {t('back') || 'Retour'}
+                </button>
+                <button
+                  onClick={handleConfirm}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:bg-success/90 transition-colors"
+                >
+                  <IconCheck className="w-4 h-4" />
+                  {t('apply_to_document') || 'Appliquer au document'}
+                </button>
+              </>
+            )}
+          </div>
         </motion.div>
-      )}
+      </motion.div>
     </AnimatePresence>
   );
 }
-

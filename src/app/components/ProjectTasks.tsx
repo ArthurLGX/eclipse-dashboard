@@ -30,8 +30,10 @@ import {
   IconSquare,
   IconSquareCheck,
   IconSelectAll,
+  IconBrain,
 } from '@tabler/icons-react';
 import ExcelImportModal, { type ImportedTask, type ImportProgressCallback } from './ExcelImportModal';
+import AITaskGenerator, { type GeneratedTask } from './AITaskGenerator';
 import type { User } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -244,6 +246,7 @@ export default function ProjectTasks({
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [parentTaskForSubtask, setParentTaskForSubtask] = useState<ProjectTask | null>(null);
   const [showExcelImport, setShowExcelImport] = useState(false);
+  const [showAIGenerator, setShowAIGenerator] = useState(false);
   
   // Sélection multiple
   const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
@@ -902,6 +905,64 @@ export default function ProjectTasks({
       throw error; // Propager l'erreur pour que le modal la gère
     }
   };
+
+  // Handler pour les tâches générées par l'IA
+  const handleAITasksGenerated = async (generatedTasks: GeneratedTask[]) => {
+    try {
+      let createdCount = 0;
+      
+      for (const task of generatedTasks) {
+        // Créer la tâche principale
+        const createdTask = await createProjectTask({
+          title: task.title,
+          description: task.description || '',
+          task_status: 'todo',
+          priority: task.priority,
+          start_date: null,
+          due_date: null,
+          estimated_hours: task.estimated_hours || null,
+          project: projectDocumentId,
+          created_user: userId,
+          color: TASK_COLORS[createdCount % TASK_COLORS.length],
+        }) as { data?: { documentId?: string } };
+        createdCount++;
+        
+        const newTaskDocId = createdTask?.data?.documentId;
+        
+        // Créer les sous-tâches si présentes
+        if (task.subtasks && task.subtasks.length > 0 && newTaskDocId) {
+          for (const subtask of task.subtasks) {
+            await createProjectTask({
+              title: subtask.title,
+              description: subtask.description || '',
+              task_status: 'todo',
+              priority: subtask.priority,
+              start_date: null,
+              due_date: null,
+              estimated_hours: subtask.estimated_hours || null,
+              project: projectDocumentId,
+              created_user: userId,
+              parent_task: newTaskDocId,
+            });
+            createdCount++;
+          }
+        }
+      }
+      
+      showGlobalPopup(
+        `${createdCount} ${t('tasks_created') || 'tâches créées avec succès'}`,
+        'success'
+      );
+      
+      loadTasks();
+    } catch (error) {
+      console.error('Error creating AI-generated tasks:', error);
+      showGlobalPopup(
+        t('error_creating_tasks') || 'Erreur lors de la création des tâches',
+        'error'
+      );
+    }
+  };
   
   // Générer le HTML de l'email de notification de tâches
   const generateTaskNotificationEmail = ({
@@ -1137,6 +1198,16 @@ export default function ProjectTasks({
                 />
               </div>
               <span className="hidden sm:inline text-primary text-sm">{t('import') || 'Importer'}</span>
+            </button>
+            
+            {/* Bouton IA */}
+            <button
+              onClick={() => setShowAIGenerator(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-accent/10 hover:bg-accent/20 text-accent rounded-lg transition-colors"
+              title={t('ai_generate_tasks') || 'Générer des tâches avec l\'IA'}
+            >
+              <IconBrain className="w-4 h-4" />
+              <span className="hidden sm:inline">{t('ai') || 'IA'}</span>
             </button>
             
             {/* Bouton Nouvelle tâche */}
@@ -1677,6 +1748,15 @@ export default function ProjectTasks({
         projectName={projectName}
         projectUrl={typeof window !== 'undefined' ? `${window.location.origin}/dashboard/projects/${projectDocumentId}` : ''}
         collaborators={allMembers}
+      />
+
+      {/* Modal IA de génération de tâches */}
+      <AITaskGenerator
+        isOpen={showAIGenerator}
+        onClose={() => setShowAIGenerator(false)}
+        projectTitle={projectName}
+        existingTasks={tasks}
+        onTasksGenerated={handleAITasksGenerated}
       />
     </div>
   );

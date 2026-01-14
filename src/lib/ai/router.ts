@@ -45,8 +45,15 @@ export function selectModel(
     isCritical || 
     (projectBudget && projectBudget >= CRITICAL_BUDGET_THRESHOLD);
 
-  // Pour les bilans finaux de projets importants, utiliser le modèle deep
-  if (useCase === 'project-summary' && shouldUseDeep) {
+  // Use-cases qui utilisent le modèle deep quand conditions remplies
+  const deepUseCases: AIUseCase[] = ['project-summary', 'contract-generator'];
+  
+  if (deepUseCases.includes(useCase) && shouldUseDeep) {
+    return AI_MODELS.deep;
+  }
+
+  // Les contrats utilisent toujours le modèle deep (document important)
+  if (useCase === 'contract-generator') {
     return AI_MODELS.deep;
   }
 
