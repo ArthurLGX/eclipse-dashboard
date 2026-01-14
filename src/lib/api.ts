@@ -3578,8 +3578,8 @@ export const sendContractToClient = async (documentId: string): Promise<{
 /** Récupère un contrat par son token de signature (endpoint public) */
 export const fetchContractByToken = async (token: string): Promise<Contract | null> => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1337/api';
-    const response = await fetch(`${baseUrl}/contracts/token/${token}`);
+    const baseUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+    const response = await fetch(`${baseUrl}/api/contracts/token/${token}`);
     if (!response.ok) return null;
     const data = await response.json();
     return data.data || null;
@@ -3594,8 +3594,8 @@ export const signContractAsClient = async (
   signature: string
 ): Promise<{ success: boolean; message: string }> => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1337/api';
-    const response = await fetch(`${baseUrl}/contracts/sign/${token}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+    const response = await fetch(`${baseUrl}/api/contracts/sign/${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ signature }),
