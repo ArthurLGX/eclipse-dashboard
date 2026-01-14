@@ -1355,6 +1355,9 @@ const translations = {
     invitation_accepted: 'Invitation acceptée ! Le projet a été ajouté à votre liste.',
     invitation_rejected: 'Invitation refusée',
     view_all_notifications: 'Voir toutes les notifications',
+    view_contract: 'Voir le contrat',
+    contract_signed_notification: 'Contrat signé !',
+    contract_pending_notification: 'Signature en attente',
     
     // Invitation de projet
     project_invitation: 'Invitation à collaborer',
@@ -4199,6 +4202,9 @@ const translations = {
     invitation_accepted: 'Invitation accepted! The project has been added to your list.',
     invitation_rejected: 'Invitation rejected',
     view_all_notifications: 'View all notifications',
+    view_contract: 'View contract',
+    contract_signed_notification: 'Contract signed!',
+    contract_pending_notification: 'Signature pending',
     project_invoicing: 'Project invoicing',
     no_invoices_for_this_project: 'No invoices for this project',
     new_invoice: 'New invoice',

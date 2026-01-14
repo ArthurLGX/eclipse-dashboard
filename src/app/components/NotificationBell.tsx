@@ -11,6 +11,8 @@ import {
   IconAlertTriangle,
   IconClock,
   IconArrowRight,
+  IconFileCheck,
+  IconFilePencil,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -231,8 +233,23 @@ export default function NotificationBell() {
         </span>
       );
     }
+
+    // Notifications de contrats
+    if (notification.type === 'contract_signed') {
+      return <IconFileCheck className="w-5 h-5 text-success" />;
+    }
+    
+    if (notification.type === 'contract_pending') {
+      return <IconFilePencil className="w-5 h-5 text-warning" />;
+    }
     
     return <IconBell className="w-5 h-5 text-info" />;
+  };
+
+  const handleContractAction = (notification: Notification) => {
+    handleMarkAsRead(notification);
+    setIsOpen(false);
+    router.push('/dashboard/contracts');
   };
 
   const formatTimeAgo = (dateString: string) => {
@@ -403,6 +420,19 @@ export default function NotificationBell() {
                               >
                                 <IconX className="w-4 h-4" />
                                 {t('reject') || 'Refuser'}
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Actions pour les contrats */}
+                          {(notification.type === 'contract_signed' || notification.type === 'contract_pending') && !notification.read && (
+                            <div className="flex gap-2 mt-3">
+                              <button
+                                onClick={() => handleContractAction(notification)}
+                                className="btn-primary flex-1 py-2 px-3 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                              >
+                                <IconFileCheck className="w-4 h-4" />
+                                {t('view_contract') || 'Voir le contrat'}
                               </button>
                             </div>
                           )}

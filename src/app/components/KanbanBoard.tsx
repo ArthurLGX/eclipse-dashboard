@@ -150,7 +150,7 @@ function ContactCard({
           <div className="min-w-0">
             <h4 className="font-medium text-sm text-foreground truncate">{contact.name}</h4>
             {contact.processStatus === 'client' && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-success-light text-success-text">
                 Client
               </span>
             )}
@@ -265,7 +265,7 @@ function ContactCard({
 
       {/* Next action reminder */}
       {contact.next_action && (
-        <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-950/30 rounded text-xs text-amber-700 dark:text-amber-400 truncate">
+        <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-light text-warning-text rounded text-xs truncate">
           📌 {contact.next_action}
         </div>
       )}
@@ -561,8 +561,8 @@ export default function KanbanBoard({
                 className={`
                   flex items-center gap-3 px-6 py-4 rounded-xl border-2 border-dashed transition-all duration-200
                   ${isOverRemoveZone 
-                    ? 'bg-warning/20 border-warning scale-105 shadow-lg' 
-                    : 'bg-card/95 border-warning/50 backdrop-blur-sm shadow-md'
+                    ? 'bg-warning-light border-warning-light scale-105 shadow-lg' 
+                    : 'bg-card-hover border-warning-light backdrop-blur-sm shadow-md'
                   }
                 `}
               >
