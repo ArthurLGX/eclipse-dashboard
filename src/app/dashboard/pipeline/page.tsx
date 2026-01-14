@@ -115,7 +115,7 @@ function SelectContactModal({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={t('search_contacts') || 'Rechercher...'}
-              className="w-full !pl-9 pr-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+              className="w-full !pl-9 !pr-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
               autoFocus
             />
           </div>
