@@ -24,6 +24,7 @@ import {
   IconSend,
   IconEdit,
   IconEye,
+  IconLanguage,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -106,6 +107,7 @@ export default function AIContractGenerator({
   const [contractType, setContractType] = useState<ContractType>('service');
   const [customClauses, setCustomClauses] = useState<string[]>([]);
   const [newClause, setNewClause] = useState('');
+  const [contractLanguage, setContractLanguage] = useState<'fr' | 'en'>('fr');
   
   // Signature fields
   const [signatureLocation, setSignatureLocation] = useState(company?.location || '');
@@ -390,7 +392,7 @@ export default function AIContractGenerator({
           customClauses: customClauses.length > 0 ? customClauses : undefined,
           signatureLocation,
           signatureDate,
-          language: 'fr',
+          language: contractLanguage,
         }),
       });
 
@@ -770,8 +772,8 @@ ${user?.username || 'L\'équipe'}`;
                   </div>
                 </div>
 
-                {/* Signature Location & Date */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Signature Location, Date & Language */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
                       <IconMapPin className="w-4 h-4 text-muted" />
@@ -804,6 +806,36 @@ ${user?.username || 'L\'équipe'}`;
                         !signatureDate ? 'border-warning' : 'border-muted'
                       }`}
                     />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
+                      <IconLanguage className="w-4 h-4 text-muted" />
+                      {t('contract_language') || 'Langue du contrat'}
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setContractLanguage('fr')}
+                        className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
+                          contractLanguage === 'fr'
+                            ? 'border-accent bg-accent-light text-accent'
+                            : 'border-muted bg-hover text-secondary hover:text-primary'
+                        }`}
+                      >
+                        🇫🇷 Français
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setContractLanguage('en')}
+                        className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
+                          contractLanguage === 'en'
+                            ? 'border-accent bg-accent-light text-accent'
+                            : 'border-muted bg-hover text-secondary hover:text-primary'
+                        }`}
+                      >
+                        🇬🇧 English
+                      </button>
+                    </div>
                   </div>
                 </div>
 

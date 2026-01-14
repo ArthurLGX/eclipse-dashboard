@@ -12,7 +12,6 @@ import {
   IconMenu2,
   IconX,
   IconLayoutGrid,
-  IconInfoSquareRounded,
   IconReceipt2,
 } from '@tabler/icons-react';
 import LanguageToggle from './LanguageToggle';
@@ -47,11 +46,6 @@ export const Header = () => {
       name: t('dashboard'),
       path: '/dashboard',
       icon: <IconLayoutGrid size={16} stroke={1} />,
-    },
-    {
-      name: t('about'),
-      path: '/about',
-      icon: <IconInfoSquareRounded size={16} stroke={1} />,
     },
     {
       name: t('pricing'),
