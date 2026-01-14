@@ -17,8 +17,29 @@ interface PriceEstimationPayload {
   language: 'fr' | 'en';
 }
 
+interface StrapiFacture {
+  total_ttc?: number;
+  type?: string;
+  client?: { name?: string };
+  project?: { title?: string };
+  createdAt?: string;
+}
+
+interface StrapiTimeEntry {
+  duration?: number;
+}
+
+interface RecentProject {
+  amount?: number;
+  clientName?: string;
+  projectTitle?: string;
+  type?: string;
+  date?: string;
+}
+
 // Fetch historical data for comparison
-async function fetchHistoricalData(userId: number, projectId?: string, clientId?: string) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function fetchHistoricalData(userId: number, _projectId?: string, _clientId?: string) {
   const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1337/api';
   const token = process.env.STRAPI_API_TOKEN;
   
@@ -66,27 +87,27 @@ function calculateStats(data: Awaited<ReturnType<typeof fetchHistoricalData>>) {
   const { factures, timeEntries } = data;
   
   // Filter invoices with valid amounts
-  const validInvoices = factures.filter((f: any) => f.total_ttc && f.total_ttc > 0);
+  const validInvoices = factures.filter((f: StrapiFacture) => f.total_ttc && f.total_ttc > 0);
   
   // Calculate average invoice amount
   const avgAmount = validInvoices.length > 0
-    ? validInvoices.reduce((sum: number, f: any) => sum + f.total_ttc, 0) / validInvoices.length
+    ? validInvoices.reduce((sum: number, f: StrapiFacture) => sum + (f.total_ttc || 0), 0) / validInvoices.length
     : 0;
   
   // Calculate min/max
-  const amounts = validInvoices.map((f: any) => f.total_ttc);
+  const amounts = validInvoices.map((f: StrapiFacture) => f.total_ttc || 0);
   const minAmount = amounts.length > 0 ? Math.min(...amounts) : 0;
   const maxAmount = amounts.length > 0 ? Math.max(...amounts) : 0;
   
   // Calculate average hourly rate from time entries
-  const totalHours = timeEntries.reduce((sum: number, e: any) => sum + ((e.duration || 0) / 60), 0);
+  const totalHours = timeEntries.reduce((sum: number, e: StrapiTimeEntry) => sum + ((e.duration || 0) / 60), 0);
   const totalBilled = validInvoices
-    .filter((f: any) => f.type === 'facture')
-    .reduce((sum: number, f: any) => sum + f.total_ttc, 0);
+    .filter((f: StrapiFacture) => f.type === 'facture')
+    .reduce((sum: number, f: StrapiFacture) => sum + (f.total_ttc || 0), 0);
   const avgHourlyRate = totalHours > 0 ? Math.round(totalBilled / totalHours) : 0;
   
   // Recent projects breakdown
-  const recentProjects = validInvoices.slice(0, 10).map((f: any) => ({
+  const recentProjects = validInvoices.slice(0, 10).map((f: StrapiFacture) => ({
     amount: f.total_ttc,
     clientName: f.client?.name,
     projectTitle: f.project?.title,
@@ -186,7 +207,7 @@ Respond in JSON with this exact format:
 - Taux horaire moyen: ${stats.avgHourlyRate}€/h
 
 Projets récents:
-${stats.recentProjects.map((p: any) => `- ${p.projectTitle || 'Sans titre'} (${p.clientName || 'Client inconnu'}): ${p.amount}€`).join('\n')}
+${stats.recentProjects.map((p: RecentProject) => `- ${p.projectTitle || 'Sans titre'} (${p.clientName || 'Client inconnu'}): ${p.amount}€`).join('\n')}
 
 Prix actuel du devis: ${currentTotal}€
 ${description ? `Description: ${description}` : ''}

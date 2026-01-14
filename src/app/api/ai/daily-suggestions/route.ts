@@ -13,15 +13,34 @@ interface DailySuggestionsPayload {
   language: 'fr' | 'en';
 }
 
-// Helper to get base URL for internal API calls
-function getBaseUrl() {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return 'http://localhost:3000';
+interface StrapiTask {
+  due_date?: string;
+  task_status: string;
+  title?: string;
+  project?: { title?: string };
+}
+
+interface StrapiFacture {
+  type?: string;
+  invoice_status?: string;
+  quote_status?: string;
+  total_ttc?: number;
+  due_date?: string;
+  createdAt?: string;
+  invoice_number?: string;
+  client?: { name?: string };
+}
+
+interface StrapiProject {
+  project_status?: string;
+  has_contract?: boolean;
+  end_date?: string;
+  title?: string;
+  client?: { name?: string };
+}
+
+interface StrapiTimeEntry {
+  duration?: number;
 }
 
 // Fetch user data from Strapi
@@ -75,14 +94,14 @@ function analyzeData(data: Awaited<ReturnType<typeof fetchUserData>>) {
   const today = new Date();
   const analysis = {
     // Urgent tasks (due today or overdue)
-    urgentTasks: data.tasks.filter((t: any) => {
+    urgentTasks: data.tasks.filter((t: StrapiTask) => {
       if (!t.due_date) return false;
       const dueDate = new Date(t.due_date);
       return dueDate <= today && t.task_status !== 'completed';
     }),
     
     // Tasks due this week
-    weekTasks: data.tasks.filter((t: any) => {
+    weekTasks: data.tasks.filter((t: StrapiTask) => {
       if (!t.due_date) return false;
       const dueDate = new Date(t.due_date);
       const weekFromNow = new Date(today);
@@ -91,34 +110,34 @@ function analyzeData(data: Awaited<ReturnType<typeof fetchUserData>>) {
     }),
     
     // Pending quotes (devis)
-    pendingQuotes: data.factures.filter((f: any) => 
+    pendingQuotes: data.factures.filter((f: StrapiFacture) => 
       f.type === 'devis' && f.invoice_status === 'pending'
     ),
     
     // Unpaid invoices
-    unpaidInvoices: data.factures.filter((f: any) => 
+    unpaidInvoices: data.factures.filter((f: StrapiFacture) => 
       f.type === 'facture' && (f.invoice_status === 'pending' || f.invoice_status === 'sent')
     ),
     
     // Overdue invoices
-    overdueInvoices: data.factures.filter((f: any) => {
+    overdueInvoices: data.factures.filter((f: StrapiFacture) => {
       if (f.type !== 'facture' || f.invoice_status === 'paid') return false;
       if (!f.due_date) return false;
       return new Date(f.due_date) < today;
     }),
     
     // Projects without contract (active projects)
-    projectsWithoutContract: data.projects.filter((p: any) => 
+    projectsWithoutContract: data.projects.filter((p: StrapiProject) => 
       p.project_status === 'in_progress' && !p.has_contract
     ),
     
     // Uninvoiced time entries
-    uninvoicedTime: data.timeEntries.reduce((total: number, entry: any) => {
+    uninvoicedTime: data.timeEntries.reduce((total: number, entry: StrapiTimeEntry) => {
       return total + (entry.duration || 0);
     }, 0),
     
     // Projects near deadline (within 7 days)
-    projectsNearDeadline: data.projects.filter((p: any) => {
+    projectsNearDeadline: data.projects.filter((p: StrapiProject) => {
       if (!p.end_date || p.project_status === 'completed') return false;
       const endDate = new Date(p.end_date);
       const weekFromNow = new Date(today);
@@ -127,7 +146,7 @@ function analyzeData(data: Awaited<ReturnType<typeof fetchUserData>>) {
     }),
     
     // In-progress tasks count
-    inProgressTasks: data.tasks.filter((t: any) => t.task_status === 'in_progress'),
+    inProgressTasks: data.tasks.filter((t: StrapiTask) => t.task_status === 'in_progress'),
     
     // Total uninvoiced amount estimate
     uninvoicedTimeEntries: data.timeEntries,
@@ -166,24 +185,24 @@ export async function POST(req: Request) {
       inProgressTasksCount: analysis.inProgressTasks.length,
       
       // Sample data for AI context
-      urgentTasks: analysis.urgentTasks.slice(0, 3).map((t: any) => ({
+      urgentTasks: analysis.urgentTasks.slice(0, 3).map((t: StrapiTask) => ({
         title: t.title,
         project: t.project?.title,
         dueDate: t.due_date,
       })),
-      pendingQuotes: analysis.pendingQuotes.slice(0, 3).map((q: any) => ({
+      pendingQuotes: analysis.pendingQuotes.slice(0, 3).map((q: StrapiFacture) => ({
         number: q.invoice_number,
         client: q.client?.name,
         amount: q.total_ttc,
         createdAt: q.createdAt,
       })),
-      unpaidInvoices: analysis.unpaidInvoices.slice(0, 3).map((i: any) => ({
+      unpaidInvoices: analysis.unpaidInvoices.slice(0, 3).map((i: StrapiFacture) => ({
         number: i.invoice_number,
         client: i.client?.name,
         amount: i.total_ttc,
         dueDate: i.due_date,
       })),
-      projectsNearDeadline: analysis.projectsNearDeadline.slice(0, 3).map((p: any) => ({
+      projectsNearDeadline: analysis.projectsNearDeadline.slice(0, 3).map((p: StrapiProject) => ({
         title: p.title,
         client: p.client?.name,
         endDate: p.end_date,

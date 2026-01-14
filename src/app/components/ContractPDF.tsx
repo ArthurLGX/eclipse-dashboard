@@ -290,6 +290,7 @@ export default function ContractPDF({ contract, companyName }: ContractPDFProps)
               <Text style={styles.signatureLabel}>Le Prestataire</Text>
               {provider_signature ? (
                 <>
+                  {/* eslint-disable-next-line jsx-a11y/alt-text */}
                   <Image src={provider_signature} style={styles.signatureImage} />
                   <Text style={styles.signatureDate}>
                     Signé le {formatDate(provider_signed_at)}
@@ -307,6 +308,7 @@ export default function ContractPDF({ contract, companyName }: ContractPDFProps)
               <Text style={styles.signatureLabel}>Le Client</Text>
               {client_signature ? (
                 <>
+                  {/* eslint-disable-next-line jsx-a11y/alt-text */}
                   <Image src={client_signature} style={styles.signatureImage} />
                   <Text style={styles.signatureDate}>
                     Signé le {formatDate(client_signed_at)}

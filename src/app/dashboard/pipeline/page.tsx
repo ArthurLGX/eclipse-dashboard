@@ -298,7 +298,7 @@ function ContactModal({
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
                 required
               />
             </div>
@@ -311,7 +311,7 @@ function ContactModal({
                 type="text"
                 value={formData.enterprise}
                 onChange={(e) => setFormData({ ...formData, enterprise: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border bord    er-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
           </div>
@@ -327,7 +327,7 @@ function ContactModal({
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
             <div>
@@ -339,7 +339,7 @@ function ContactModal({
                 type="tel"
                 value={formData.phone || ''}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                  className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
             <div>
@@ -351,7 +351,7 @@ function ContactModal({
                 type="url"
                 value={formData.website || ''}
                 onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
           </div>
@@ -365,7 +365,7 @@ function ContactModal({
               <select
                 value={formData.pipeline_status ?? 'new'}
                 onChange={(e) => setFormData({ ...formData, pipeline_status: e.target.value as PipelineStatus })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
               >
                 {PIPELINE_COLUMNS.map((col) => (
                   <option key={col.id} value={col.id}>
@@ -381,7 +381,7 @@ function ContactModal({
               <select
                 value={formData.source}
                 onChange={(e) => setFormData({ ...formData, source: e.target.value as ContactSource })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
               >
                 {sourceOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -396,7 +396,7 @@ function ContactModal({
               <select
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: e.target.value as ContactPriority })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
               >
                 {priorityOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -416,7 +416,7 @@ function ContactModal({
                 type="number"
                 value={formData.estimated_value || ''}
                 onChange={(e) => setFormData({ ...formData, estimated_value: e.target.value ? parseFloat(e.target.value) : undefined })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
                 placeholder="0"
               />
             </div>
@@ -428,7 +428,7 @@ function ContactModal({
                 type="number"
                 value={formData.budget || ''}
                 onChange={(e) => setFormData({ ...formData, budget: e.target.value ? parseFloat(e.target.value) : undefined })}
-                  className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                  className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
                 placeholder="0"
               />
             </div>
@@ -444,7 +444,7 @@ function ContactModal({
                 type="text"
                 value={formData.next_action}
                 onChange={(e) => setFormData({ ...formData, next_action: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
                 placeholder="Ex: Appeler pour relance"
               />
             </div>
@@ -457,7 +457,7 @@ function ContactModal({
                 type="date"
                 value={formData.next_action_date || ''}
                 onChange={(e) => setFormData({ ...formData, next_action_date: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
           </div>
@@ -471,7 +471,7 @@ function ContactModal({
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent resize-none"
               rows={2}
               placeholder="Notes privées..."
             />
@@ -992,7 +992,7 @@ export default function PipelinePage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t('search_contacts') || 'Rechercher...'}
-            className="w-full !pl-9 !pr-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+            className="w-full !pl-9 !pr-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
           />
         </div>
 
@@ -1000,7 +1000,7 @@ export default function PipelinePage() {
         <select
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value as ContactPriority | '')}
-          className="px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+          className="px-3 py-2 bg-input border     border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
         >
           <option value="">{t('all_priorities') || 'Toutes priorités'}</option>
           <option value="low">{t('priority_low') || 'Basse'}</option>
@@ -1012,7 +1012,7 @@ export default function PipelinePage() {
         <select
           value={sourceFilter}
           onChange={(e) => setSourceFilter(e.target.value as ContactSource | '')}
-          className="px-3 py-2 bg-background border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+          className="px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
         >
           <option value="">{t('all_sources') || 'Toutes sources'}</option>
           <option value="cold_outreach">{t('source_cold_outreach') || 'Prospection'}</option>

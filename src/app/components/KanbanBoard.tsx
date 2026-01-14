@@ -142,7 +142,7 @@ function ContactCard({
               className="w-8 h-8 rounded-full object-cover flex-shrink-0 border border-muted"
             />
           ) : (
-            <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
               <span className="text-xs font-medium text-accent">{getInitials(contact.name)}</span>
             </div>
           )}
@@ -585,8 +585,8 @@ export default function KanbanBoard({
                 className={`
                   flex items-center gap-3 px-6 py-4 rounded-xl border-2 border-dashed transition-all duration-200
                   ${isOverDeleteZone 
-                    ? 'bg-danger/20 border-danger scale-105 shadow-lg' 
-                    : 'bg-card/95 border-danger/50 backdrop-blur-sm shadow-md'
+                    ? 'bg-danger-light border-danger scale-105 shadow-lg' 
+                    : 'bg-card-hover border-danger backdrop-blur-sm shadow-md'
                   }
                 `}
               >

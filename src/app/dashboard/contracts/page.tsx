@@ -5,14 +5,11 @@ import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { 
   IconFileText, 
-  IconPlus, 
   IconSearch,
   IconCheck,
   IconClock,
-  IconAlertTriangle,
   IconX,
   IconDownload,
-  IconMail,
   IconEye,
   IconTrash,
   IconFilter,

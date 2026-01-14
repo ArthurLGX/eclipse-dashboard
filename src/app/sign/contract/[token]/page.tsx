@@ -10,7 +10,6 @@ import {
   IconCheck,
   IconSignature,
   IconTrash,
-  IconDownload,
   IconFileText,
 } from '@tabler/icons-react';
 import { fetchContractByToken, signContractAsClient, type Contract } from '@/lib/api';
