@@ -252,7 +252,7 @@ export default function TaskNotificationEmailModal({
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-4 py-2 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-4 py-2 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                   placeholder="Objet..."
                 />
               </div>
@@ -266,7 +266,7 @@ export default function TaskNotificationEmailModal({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                   placeholder="Votre message..."
                 />
                 <p className="text-xs text-muted mt-1">

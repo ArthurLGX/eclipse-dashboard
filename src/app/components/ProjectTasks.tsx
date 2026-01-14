@@ -159,11 +159,11 @@ function AvatarStack({
           key={user.id || i} 
           user={user} 
           size={size}
-          className="ring-2 ring-card"
+          className="ring-1 ring-card"
         />
       ))}
       {remaining > 0 && (
-        <div className={`${size === 'sm' ? 'w-5 h-5 text-[10px]' : 'w-7 h-7 text-xs'} rounded-full bg-hover flex items-center justify-center ring-2 ring-card text-muted font-medium`}>
+        <div className={`${size === 'sm' ? 'w-5 h-5 text-[10px]' : 'w-7 h-7 text-xs'} rounded-full bg-hover flex items-center justify-center ring-1 ring-card text-muted font-medium`}>
           +{remaining}
         </div>
       )}
@@ -1542,7 +1542,7 @@ export default function ProjectTasks({
                         type="button"
                         onClick={() => setNewTask({ ...newTask, color })}
                         className={`w-8 h-8 rounded-full transition-all ${
-                          newTask.color === color ? 'ring-2 ring-offset-2 ring-offset-card scale-110' : 'hover:scale-105'
+                          newTask.color === color ? 'ring-1 ring-offset-2 ring-offset-card scale-110' : 'hover:scale-105'
                         }`}
                         style={{ backgroundColor: color, ['--tw-ring-color' as string]: color }}
                       />
@@ -1905,7 +1905,7 @@ function TaskCard({
         } ${isSubtask ? 'ml-8' : ''} ${
           isDragging ? 'opacity-50 scale-95' : ''
         } ${
-          isDraggedOver ? 'ring-2 ring-accent ring-offset-2 ring-offset-card border-accent scale-[1.02]' : ''
+          isDraggedOver ? 'ring-1 ring-accent ring-offset-2 ring-offset-card border-accent scale-[1.02]' : ''
         } ${
           canBeDropTarget && !isDraggedOver ? 'border-dashed border-accent/50' : ''
         }`}
@@ -2465,7 +2465,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                       type="button"
                       onClick={() => setFormData({ ...formData, color })}
                       className={`w-8 h-8 rounded-full transition-all ${
-                        formData.color === color ? 'ring-2 ring-offset-2 ring-offset-card scale-110' : 'hover:scale-105'
+                        formData.color === color ? 'ring-1 ring-offset-2 ring-offset-card scale-110' : 'hover:scale-105'
                       }`}
                       style={{ backgroundColor: color, ['--tw-ring-color' as string]: color }}
                     />
@@ -3246,7 +3246,7 @@ function TaskGanttView({
                       type="text"
                       value={exportFileName}
                       onChange={(e) => setExportFileName(e.target.value)}
-                      className="flex-1 px-3 py-2 text-sm bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+                      className="flex-1 px-3 py-2 text-sm bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                     />
                     <span className="text-secondary text-sm">.pdf</span>
                   </div>

@@ -588,7 +588,7 @@ export default function CalendarPage() {
                     className={`
                       min-h-[80px] p-1 rounded-lg border cursor-pointer transition-all
                       ${isToday(date) ? 'border-accent bg-accent/5' : 'border-transparent hover:border-default'}
-                      ${isSelected ? 'ring-2 ring-accent' : ''}
+                      ${isSelected ? 'ring-1 ring-accent' : ''}
                       ${!isCurrentMonth(date) ? 'opacity-40' : ''}
                     `}
                   >

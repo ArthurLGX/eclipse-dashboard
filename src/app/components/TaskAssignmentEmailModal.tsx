@@ -249,7 +249,7 @@ export default function TaskAssignmentEmailModal({
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder={defaultSubject}
-                  className="w-full px-4 py-2.5 bg-muted border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-4 py-2.5 bg-muted border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent"
                 />
               </div>
 
@@ -263,7 +263,7 @@ export default function TaskAssignmentEmailModal({
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={defaultMessage}
                   rows={5}
-                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                 />
               </div>
 

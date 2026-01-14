@@ -98,7 +98,7 @@ export default function ToggleButton({
         ${checked ? currentVariant.active : currentVariant.inactive}
         ${checked ? currentVariant.border : 'border-default'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md'}
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent
+        focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-accent
         focus:ring-offset-card
       `}
     >

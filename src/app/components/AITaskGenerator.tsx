@@ -227,11 +227,11 @@ export default function AITaskGenerator({
 
   const getPriorityColor = (priority: TaskPriority) => {
     switch (priority) {
-      case 'urgent': return 'text-red-500 bg-red-500/10';
-      case 'high': return 'text-orange-500 bg-orange-500/10';
-      case 'medium': return 'text-yellow-500 bg-yellow-500/10';
-      case 'low': return 'text-green-500 bg-green-500/10';
-      default: return 'text-muted bg-muted/10';
+      case 'urgent': return 'text-danger bg-danger-light';
+      case 'high': return 'text-warning bg-warning-light';
+      case 'medium': return 'text-info bg-info-light';
+      case 'low': return 'text-success bg-success-light';
+      default: return 'text-muted bg-hover';
     }
   };
 
@@ -266,7 +266,7 @@ export default function AITaskGenerator({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent/10 rounded-xl">
+              <div className="p-2 bg-accent-light rounded-xl">
                 <IconBrain className="w-6 h-6 text-accent" />
               </div>
               <div>
@@ -291,7 +291,7 @@ export default function AITaskGenerator({
             {step === 'input' && (
               <div className="space-y-6">
                 {/* Input mode selector */}
-                <div className="flex gap-2 p-1 bg-muted/30 rounded-xl">
+                <div className="flex gap-2 p-1 bg-hover rounded-xl">
                   {[
                     { id: 'prompt' as InputMode, label: t('from_description') || 'Description', icon: IconListCheck },
                     { id: 'meeting' as InputMode, label: t('from_meeting') || 'Notes de réunion', icon: IconMicrophone },
@@ -322,7 +322,7 @@ export default function AITaskGenerator({
                       value={prompt}
                       onChange={e => setPrompt(e.target.value)}
                       placeholder={t('ai_tasks_prompt_placeholder') || 'Ex: Développer un système d\'authentification avec login, register, reset password, et 2FA...'}
-                      className="w-full h-40 p-4 bg-muted/30 border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                      className="w-full h-40 p-4 bg-hover border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
                     />
                   </div>
                 )}
@@ -336,7 +336,7 @@ export default function AITaskGenerator({
                       value={meetingNotes}
                       onChange={e => setMeetingNotes(e.target.value)}
                       placeholder={t('ai_meeting_placeholder') || 'Collez le transcript ou les notes de votre réunion client...'}
-                      className="w-full h-48 p-4 bg-muted/30 border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent font-mono text-sm"
+                      className="w-full h-48 p-4 bg-hover border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent font-mono text-sm"
                     />
                   </div>
                 )}
@@ -351,7 +351,7 @@ export default function AITaskGenerator({
                         value={fathomUrl}
                         onChange={e => setFathomUrl(e.target.value)}
                         placeholder={t('ai_fathom_placeholder') || 'Collez l\'URL de votre réunion Fathom ou le contenu exporté (résumé, action items, transcript)...'}
-                        className="w-full h-48 p-4 bg-muted/30 border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                        className="w-full h-48 p-4 bg-hover border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
                       />
                     </div>
                     <div className="p-4 bg-info-light rounded-xl">
@@ -363,7 +363,7 @@ export default function AITaskGenerator({
                 )}
 
                 {/* Project context */}
-                <div className="p-4 bg-muted/30 rounded-xl">
+                <div className="p-4 bg-hover rounded-xl">
                   <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2">
                     {t('project_context') || 'Contexte du projet'}
                   </p>
@@ -391,7 +391,7 @@ export default function AITaskGenerator({
             {step === 'review' && (
               <div className="space-y-4">
                 {/* Stats */}
-                <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-xl">
+                <div className="flex items-center gap-4 p-4 bg-hover rounded-xl">
                   <div className="flex items-center gap-2">
                     <IconListCheck className="w-5 h-5 text-accent" />
                     <span className="text-sm font-medium text-primary">
@@ -406,7 +406,7 @@ export default function AITaskGenerator({
                   </div>
                   <button
                     onClick={addTask}
-                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent/10 text-accent rounded-lg hover:bg-accent/20 transition-colors"
+                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent-light text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
                   >
                     <IconPlus className="w-3.5 h-3.5" />
                     {t('add_task') || 'Ajouter'}
@@ -419,7 +419,7 @@ export default function AITaskGenerator({
                     <div
                       key={taskIndex}
                       className={`border rounded-xl transition-colors ${
-                        task.selected ? 'border-accent/50 bg-accent/5' : 'border-default bg-muted/30 opacity-60'
+                        task.selected ? 'border-accent bg-accent-light' : 'border-default bg-hover opacity-60'
                       }`}
                     >
                       {/* Task header */}
@@ -479,7 +479,7 @@ export default function AITaskGenerator({
                             </select>
                             
                             {task.phase && (
-                              <span className="px-2 py-1 bg-muted/50 rounded text-xs text-secondary">
+                              <span className="px-2 py-1 bg-muted rounded text-xs text-secondary">
                                 {task.phase}
                               </span>
                             )}
@@ -501,7 +501,7 @@ export default function AITaskGenerator({
                             <div
                               key={subtaskIndex}
                               className={`flex items-center gap-3 p-3 rounded-lg ${
-                                subtask.selected ? 'bg-background' : 'bg-muted/30 opacity-60'
+                                subtask.selected ? 'bg-background' : 'bg-hover opacity-60'
                               }`}
                             >
                               <input
@@ -530,7 +530,7 @@ export default function AITaskGenerator({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between p-6 border-t border-default bg-muted/30">
+          <div className="flex items-center justify-between p-6 border-t border-default bg-muted">
             {step === 'input' ? (
               <>
                 <button
@@ -542,7 +542,7 @@ export default function AITaskGenerator({
                 <button
                   onClick={handleGenerate}
                   disabled={loading || !getInputContent().trim()}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
                     <>
@@ -568,7 +568,7 @@ export default function AITaskGenerator({
                 <button
                   onClick={handleConfirm}
                   disabled={totalSelectedTasks === 0}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:bg-success/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <IconCheck className="w-4 h-4" />
                   {t('add_selected_tasks') || `Ajouter ${totalSelectedTasks} tâche${totalSelectedTasks > 1 ? 's' : ''}`}

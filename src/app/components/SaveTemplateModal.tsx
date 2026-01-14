@@ -197,7 +197,7 @@ export default function SaveTemplateModal({
                   setError('');
                 }}
                 placeholder={t('template_name_placeholder') || 'Ex: Mon thème corporate'}
-                className="w-full px-4 py-3 bg-input border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
                 disabled={saving}
               />
             </div>
@@ -212,7 +212,7 @@ export default function SaveTemplateModal({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={t('template_description_placeholder') || 'Décrivez l\'utilisation de ce thème...'}
                 rows={2}
-                className="w-full px-4 py-3 bg-input border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent resize-none"
+                className="w-full px-4 py-3 bg-input border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent resize-none"
                 disabled={saving}
               />
             </div>

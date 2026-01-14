@@ -326,7 +326,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                         onClick={() => setCurrentMockupIndex(idx)}
                         className={`flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${
                           idx === currentMockupIndex 
-                            ? 'border-violet-500 ring-2 ring-violet-200' 
+                            ? 'border-violet-500 ring-1 ring-violet-200' 
                             : 'border-transparent opacity-60 hover:opacity-100'
                         }`}
                       >
@@ -402,7 +402,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                   type="text"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-violet-500"
                   required
                 />
               </div>
@@ -412,7 +412,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                   type="email"
                   value={clientEmail}
                   onChange={(e) => setClientEmail(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-violet-500"
                   required
                 />
               </div>
@@ -423,7 +423,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                   <textarea
                     value={comments}
                     onChange={(e) => setComments(e.target.value)}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-violet-500"
                     rows={4}
                     placeholder="Décrivez les modifications souhaitées..."
                   />

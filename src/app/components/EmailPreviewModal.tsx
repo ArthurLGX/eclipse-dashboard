@@ -207,7 +207,7 @@ export default function EmailPreviewModal({
                     <input 
                       type="text" 
                       placeholder={t.search_placeholder}
-                      className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 !border-zinc-400"
+                      className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
                       readOnly
                     />
                   </div>

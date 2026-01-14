@@ -302,7 +302,7 @@ export default function AIInvoiceGenerator({
                         ? (t('ai_quote_placeholder') || 'Ex: Site vitrine pour un restaurant avec 5 pages, formulaire de réservation, intégration Google Maps...')
                         : (t('ai_invoice_placeholder') || 'Ex: Développement d\'une application mobile de livraison avec backend API...')
                     }
-                    className="w-full h-40 p-4 bg-muted/30 border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                    className="w-full h-40 p-4 bg-hover border border-default rounded-xl resize-none focus:ring-1 focus:ring-accent focus:border-transparent"
                   />
                 </div>
 
@@ -314,13 +314,13 @@ export default function AIInvoiceGenerator({
                       {t('ai_context_info') || 'Contexte détecté'}
                     </p>
                     {existingClient && (
-                      <p className="text-sm text-info/80 flex items-center gap-2">
+                      <p className="text-sm text-on-info-light flex items-center gap-2">
                         <IconUser className="w-4 h-4" />
                         {existingClient.name} {existingClient.enterprise && `(${existingClient.enterprise})`}
                       </p>
                     )}
                     {existingProjectTitle && (
-                      <p className="text-sm text-info/80 flex items-center gap-2">
+                      <p className="text-sm text-on-info-light flex items-center gap-2">
                         <IconFileInvoice className="w-4 h-4" />
                         {existingProjectTitle}
                       </p>
@@ -344,7 +344,7 @@ export default function AIInvoiceGenerator({
                       <button
                         key={i}
                         onClick={() => setPrompt(example)}
-                        className="px-3 py-1.5 text-xs bg-hover text-secondary rounded-lg hover:bg-accent/10 hover:text-accent transition-colors"
+                        className="px-3 py-1.5 text-xs bg-hover text-secondary rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
                       >
                         {example}
                       </button>
@@ -365,7 +365,7 @@ export default function AIInvoiceGenerator({
             {step === 'review' && generatedData && (
               <div className="space-y-6">
                 {/* Confidence indicator */}
-                <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-xl">
+                <div className="flex items-center gap-3 p-4 bg-hover rounded-xl">
                   <div className={`p-2 rounded-lg ${
                     generatedData.confidence >= 0.8 ? 'bg-success-light' :
                     generatedData.confidence >= 0.5 ? 'bg-warning-light' : 'bg-danger-light'
@@ -420,7 +420,7 @@ export default function AIInvoiceGenerator({
                     </p>
                     <button
                       onClick={addLine}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent/10 text-accent rounded-lg hover:bg-accent/20 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent-light text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
                     >
                       <IconPlus className="w-3.5 h-3.5" />
                       {t('add_line') || 'Ajouter'}
@@ -429,7 +429,7 @@ export default function AIInvoiceGenerator({
                   
                   <div className="space-y-3">
                     {editedLines.map((line, index) => (
-                      <div key={index} className="p-4 bg-muted/30 rounded-xl space-y-3">
+                      <div key={index} className="p-4 bg-hover rounded-xl space-y-3">
                         <div className="flex items-start gap-3">
                           <input
                             type="text"
@@ -479,7 +479,7 @@ export default function AIInvoiceGenerator({
                           </div>
                           <div>
                             <label className="text-xs text-muted">{t('total') || 'Total HT'}</label>
-                            <p className="px-3 py-2 bg-muted/50 rounded-lg text-sm font-medium">
+                            <p className="px-3 py-2 bg-muted rounded-lg text-sm font-medium text-primary">
                               {(line.quantity * line.unit_price).toLocaleString('fr-FR')} €
                             </p>
                           </div>
@@ -490,7 +490,7 @@ export default function AIInvoiceGenerator({
                 </div>
 
                 {/* Totals */}
-                <div className="p-4 bg-accent/5 rounded-xl space-y-2">
+                <div className="p-4 bg-accent-light rounded-xl space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-secondary">{t('total_ht') || 'Total HT'}</span>
                     <span className="font-medium text-primary">{totalHT.toLocaleString('fr-FR')} €</span>
@@ -509,7 +509,7 @@ export default function AIInvoiceGenerator({
 
                 {/* Notes */}
                 {generatedData.notes && (
-                  <div className="p-4 bg-muted/30 rounded-xl">
+                  <div className="p-4 bg-hover rounded-xl">
                     <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2">
                       {t('notes') || 'Notes'}
                     </p>
@@ -521,7 +521,7 @@ export default function AIInvoiceGenerator({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between p-6 border-t border-default bg-muted/30">
+          <div className="flex items-center justify-between p-6 border-t border-default bg-muted">
             {step === 'input' ? (
               <>
                 <button
@@ -533,7 +533,7 @@ export default function AIInvoiceGenerator({
                 <button
                   onClick={handleGenerate}
                   disabled={loading || !prompt.trim()}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:bg-accent-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
                     <>
@@ -558,7 +558,7 @@ export default function AIInvoiceGenerator({
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:bg-success/90 transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:bg-success-light transition-colors"
                 >
                   <IconCheck className="w-4 h-4" />
                   {t('apply_to_document') || 'Appliquer au document'}

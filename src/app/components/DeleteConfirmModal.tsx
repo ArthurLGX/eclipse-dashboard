@@ -155,7 +155,7 @@ export default function DeleteConfirmModal({
                 disabled={isDeleting}
                 className={`
                   input w-full px-3 py-2.5
-                  focus:outline-none focus:ring-2
+                  focus:outline-none focus:ring-1
                   transition-colors disabled:opacity-50
                   ${isConfirmValid 
                     ? 'border-success focus:ring-success' 

@@ -963,7 +963,7 @@ export default function RichTextEditor({
             [&_img]:rounded-lg [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
             [&_.editor-block]:relative [&_.editor-block]:transition-all
             [&_.editor-image-block]:my-2 [&_.editor-image-block]:rounded-lg
-            [&_.editor-image-block:hover]:ring-2 [&_.editor-image-block:hover]:ring-accent/30
+            [&_.editor-image-block:hover]:ring-1 [&_.editor-image-block:hover]:ring-accent/30
             empty:before:content-[attr(data-placeholder)] empty:before:text-muted empty:before:pointer-events-none"
           style={{ 
             minHeight,

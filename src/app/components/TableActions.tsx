@@ -52,7 +52,7 @@ export default function TableActions({
           e.stopPropagation();
           setOpen(o => !o);
         }}
-        className="p-2 rounded hover:bg-hover focus:outline-none focus:ring-2 focus:ring-accent"
+        className="p-2 rounded hover:bg-hover focus:outline-none focus:ring-1 focus:ring-accent"
         title="Actions"
         type="button"
       >

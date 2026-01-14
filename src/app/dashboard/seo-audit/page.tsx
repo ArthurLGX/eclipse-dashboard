@@ -239,7 +239,7 @@ export default function SEOAuditPage() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full !pl-10 !pr-4 py-3 bg-background border border-border rounded-lg focus:ring-2 focus:ring-accent"
+                className="w-full !pl-10 !pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-accent"
                 onKeyDown={(e) => e.key === 'Enter' && runAudit()}
               />
             </div>

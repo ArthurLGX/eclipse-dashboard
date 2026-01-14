@@ -1039,7 +1039,7 @@ export default function UnifiedOnboardingModal() {
                           value={clientName}
                           onChange={(e) => setClientName(e.target.value)}
                           placeholder={t('client_name_placeholder') || 'Ex: Entreprise ABC'}
-                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-2 focus:ring-accent-light transition-all"
+                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
                         />
                       </div>
 
@@ -1053,7 +1053,7 @@ export default function UnifiedOnboardingModal() {
                           value={projectName}
                           onChange={(e) => setProjectName(e.target.value)}
                           placeholder={language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
-                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-2 focus:ring-accent-light transition-all"
+                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
                         />
                       </div>
 
@@ -1067,7 +1067,7 @@ export default function UnifiedOnboardingModal() {
                           value={hourlyRate}
                           onChange={(e) => setHourlyRate(Number(e.target.value))}
                           min={0}
-                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-2 focus:ring-accent-light transition-all"
+                          className="w-full px-4 py-3 bg-background border border-default rounded-xl focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
                         />
                       </div>
                     </div>

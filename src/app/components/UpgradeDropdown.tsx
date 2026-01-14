@@ -162,7 +162,7 @@ export default function UpgradeDropdown({
 
                 <button
                   onClick={onTogglePlanAction}
-                  className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-card ${
+                  className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-1 focus:ring-accent focus:ring-offset-2 focus:ring-offset-card ${
                     togglePlan ? 'bg-accent' : 'bg-hover'
                   }`}
                 >

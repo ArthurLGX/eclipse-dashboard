@@ -422,7 +422,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
                   type="text"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-violet-500 focus:border-transparent"
                   placeholder="Jean Dupont"
                   required
                 />
@@ -433,7 +433,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
                   type="email"
                   value={clientEmail}
                   onChange={(e) => setClientEmail(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-violet-500 focus:border-transparent"
                   placeholder="jean@example.com"
                   required
                 />
@@ -445,7 +445,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
                   <textarea
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-violet-500 focus:border-transparent"
                     rows={3}
                     placeholder="Dites-nous pourquoi..."
                   />

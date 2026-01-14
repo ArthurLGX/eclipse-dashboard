@@ -910,7 +910,7 @@ export default function ImageUpload({
                     }}
                     onKeyDown={(e) => e.key === 'Enter' && handleSubmitUrl()}
                     placeholder="https://example.com/image.jpg"
-                    className="w-full px-4 py-3 bg-hover border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-info/50 focus:border-info"
+                    className="w-full px-4 py-3 bg-hover border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-info/50 focus:border-info"
                   />
                   {urlError && (
                     <p className="mt-2 text-sm text-danger flex items-center gap-1">

@@ -2835,7 +2835,7 @@ export default function ComposeNewsletterPage() {
                                 whileHover={{ scale: 1.02 }}
                                 className={`relative p-4 rounded-xl border transition-all text-left bg-card group ${
                                   isActive 
-                                    ? 'border-accent ring-2 ring-accent/30' 
+                                    ? 'border-accent ring-1 ring-accent/30' 
                                     : 'border-default hover:border-accent/50'
                                 }`}
                               >
@@ -3973,7 +3973,7 @@ export default function ComposeNewsletterPage() {
                         <input 
                           type="text" 
                           placeholder={t('search_placeholder')}
-                          className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 !border-zinc-400"
+                          className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
                         />
                       </div>
                     </div>

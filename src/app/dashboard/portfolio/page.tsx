@@ -1324,7 +1324,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                     onClick={() => toggleProject(project.id)}
                     className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
                       project.selected 
-                        ? 'border-accent ring-2 ring-accent/20' 
+                        ? 'border-accent ring-1 ring-accent/20' 
                         : 'border-transparent hover:border-default'
                     }`}
                   >

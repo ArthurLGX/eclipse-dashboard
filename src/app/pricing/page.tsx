@@ -218,7 +218,7 @@ export default function Plans() {
 
         <button
           onClick={() => setTogglePlan(!togglePlan)}
-          className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-page ${
+          className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-1 focus:ring-accent focus:ring-offset-2 focus:ring-offset-page ${
             togglePlan ? 'bg-accent' : 'bg-muted'
           }`}
         >

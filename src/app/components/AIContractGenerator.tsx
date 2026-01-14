@@ -228,7 +228,7 @@ export default function AIContractGenerator({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent/10 rounded-xl">
+              <div className="p-2 bg-accent-light rounded-xl">
                 <IconBrain className="w-6 h-6 text-accent" />
               </div>
               <div>
@@ -264,8 +264,8 @@ export default function AIContractGenerator({
                         onClick={() => setContractType(type.id)}
                         className={`p-4 text-left rounded-xl border-2 transition-colors ${
                           contractType === type.id
-                            ? 'border-accent bg-accent/5'
-                            : 'border-default hover:border-accent/50'
+                            ? 'border-accent bg-accent-light'
+                            : 'border-default hover:border-accent'
                         }`}
                       >
                         <p className="font-medium text-primary">{type.label}</p>
@@ -283,12 +283,12 @@ export default function AIContractGenerator({
                       {t('context_detected') || 'Contexte détecté'}
                     </p>
                     {client && (
-                      <p className="text-sm text-info/80">
+                      <p className="text-sm text-on-info-light">
                         Client: {client.name} {client.enterprise && `(${client.enterprise})`}
                       </p>
                     )}
                     {project && (
-                      <p className="text-sm text-info/80">
+                      <p className="text-sm text-on-info-light">
                         Projet: {project.title}
                       </p>
                     )}
@@ -307,12 +307,12 @@ export default function AIContractGenerator({
                       onChange={e => setNewClause(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && handleAddClause()}
                       placeholder={t('add_clause_placeholder') || 'Ex: Clause de non-concurrence sur 6 mois...'}
-                      className="flex-1 px-4 py-2 bg-muted/30 border border-default rounded-lg focus:ring-2 focus:ring-accent"
+                      className="flex-1 px-4 py-2 bg-hover border border-default rounded-lg focus:ring-1 focus:ring-accent"
                     />
                     <button
                       onClick={handleAddClause}
                       disabled={!newClause.trim()}
-                      className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50 transition-colors"
+                      className="px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-colors"
                     >
                       {t('add') || 'Ajouter'}
                     </button>
@@ -322,12 +322,12 @@ export default function AIContractGenerator({
                       {customClauses.map((clause, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-2 p-3 bg-muted/30 rounded-lg"
+                          className="flex items-center gap-2 p-3 bg-hover rounded-lg"
                         >
                           <span className="flex-1 text-sm text-secondary">{clause}</span>
                           <button
                             onClick={() => handleRemoveClause(index)}
-                            className="text-danger hover:text-danger/80"
+                            className="text-danger hover:opacity-80"
                           >
                             <IconX className="w-4 h-4" />
                           </button>
@@ -344,7 +344,7 @@ export default function AIContractGenerator({
                     <p className="text-sm font-medium text-warning">
                       {t('contract_warning_title') || 'Important'}
                     </p>
-                    <p className="text-xs text-warning/80 mt-1">
+                    <p className="text-xs text-on-warning-light mt-1">
                       {t('contract_warning_text') || 'Ce contrat est généré à titre indicatif. Faites-le relire par un professionnel du droit avant utilisation.'}
                     </p>
                   </div>
@@ -363,7 +363,7 @@ export default function AIContractGenerator({
             {step === 'review' && generatedContract && (
               <div className="space-y-6">
                 {/* Contract preview */}
-                <div className="p-6 bg-white dark:bg-muted/20 rounded-xl border border-default">
+                <div className="p-6 bg-card rounded-xl border border-default">
                   {/* Title */}
                   <h3 className="text-xl font-bold text-center text-primary mb-6 uppercase">
                     {generatedContract.title}
@@ -372,12 +372,12 @@ export default function AIContractGenerator({
                   {/* Parties */}
                   <div className="mb-6 text-sm">
                     <p className="font-semibold text-primary">ENTRE LES SOUSSIGNÉS :</p>
-                    <div className="mt-2 p-3 bg-muted/30 rounded-lg">
+                    <div className="mt-2 p-3 bg-hover rounded-lg">
                       <p className="font-medium text-primary">{generatedContract.parties.provider.name}</p>
                       <p className="text-secondary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
                     </div>
                     <p className="text-center my-2 text-muted">ET</p>
-                    <div className="p-3 bg-muted/30 rounded-lg">
+                    <div className="p-3 bg-hover rounded-lg">
                       <p className="font-medium text-primary">{generatedContract.parties.client.name}</p>
                       <p className="text-secondary whitespace-pre-line">{generatedContract.parties.client.details}</p>
                     </div>
@@ -427,7 +427,7 @@ export default function AIContractGenerator({
                       <IconBulb className="w-4 h-4" />
                       {t('tips') || 'Conseils'}
                     </p>
-                    <ul className="text-xs text-info/80 space-y-1">
+                    <ul className="text-xs text-on-info-light space-y-1">
                       {generatedContract.tips.map((tip, i) => (
                         <li key={i}>• {tip}</li>
                       ))}
@@ -441,7 +441,7 @@ export default function AIContractGenerator({
                       <IconAlertTriangle className="w-4 h-4" />
                       {t('warnings') || 'Points d\'attention'}
                     </p>
-                    <ul className="text-xs text-warning/80 space-y-1">
+                    <ul className="text-xs text-on-warning-light space-y-1">
                       {generatedContract.warnings.map((warning, i) => (
                         <li key={i}>• {warning}</li>
                       ))}
@@ -453,7 +453,7 @@ export default function AIContractGenerator({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between p-6 border-t border-default bg-muted/30">
+          <div className="flex items-center justify-between p-6 border-t border-default bg-muted">
             {step === 'config' ? (
               <>
                 <button
@@ -465,7 +465,7 @@ export default function AIContractGenerator({
                 <button
                   onClick={handleGenerate}
                   disabled={loading}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
                     <>
@@ -498,7 +498,7 @@ export default function AIContractGenerator({
                   </button>
                   <button
                     onClick={handleConfirm}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:bg-success/90 transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:opacity-90 transition-colors"
                   >
                     <IconCheck className="w-4 h-4" />
                     {t('use_contract') || 'Utiliser ce contrat'}

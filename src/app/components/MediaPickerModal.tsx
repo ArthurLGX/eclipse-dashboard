@@ -407,7 +407,7 @@ export default function MediaPickerModal({
                           }}
                           className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
                             selectedLibraryItem?.id === media.id
-                              ? 'border-accent ring-2 ring-accent/30'
+                              ? 'border-accent ring-1 ring-accent/30'
                               : 'border-transparent hover:border-accent/50'
                           }`}
                         >
@@ -478,7 +478,7 @@ export default function MediaPickerModal({
                           ? 'https://example.com/video.mp4'
                           : 'https://example.com/media.jpg'
                       }
-                      className="w-full px-4 py-3 bg-input border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
+                      className="w-full px-4 py-3 bg-input border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
                     />
                     {urlError && (
                       <p className="mt-2 text-sm text-red-400 flex items-center gap-1">

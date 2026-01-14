@@ -1148,7 +1148,7 @@ export default function ExcelImportModal({
                         value={googleSheetUrl}
                         onChange={(e) => setGoogleSheetUrl(e.target.value)}
                         placeholder="https://docs.google.com/spreadsheets/d/..."
-                        className="w-full !pl-10 !pr-4 py-2.5 bg-muted border border-default rounded-lg text-primary text-sm placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                        className="w-full !pl-10 !pr-4 py-2.5 bg-muted border border-default rounded-lg text-primary text-sm placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent"
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>
@@ -1300,7 +1300,7 @@ export default function ExcelImportModal({
                             [field.key]: value === '' ? null : parseInt(value),
                           }));
                         }}
-                        className="w-full px-3 py-2 bg-card border border-default rounded-lg text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+                        className="w-full px-3 py-2 bg-card border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                       >
                         <option value="">{t('excel_not_mapped') || '-- Non mappé --'}</option>
                         {headers.map((header, index) => (
@@ -1459,7 +1459,7 @@ export default function ExcelImportModal({
                           type="text"
                           value={emailSubject}
                           onChange={(e) => setEmailSubject(e.target.value)}
-                          className="w-full px-4 py-2 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+                          className="w-full px-4 py-2 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                           placeholder="Nouvelles tâches assignées..."
                         />
                       </div>
@@ -1473,7 +1473,7 @@ export default function ExcelImportModal({
                           value={emailMessage}
                           onChange={(e) => setEmailMessage(e.target.value)}
                           rows={3}
-                          className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                          className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                           placeholder="Votre message..."
                         />
                         <p className="text-xs text-muted mt-1">
