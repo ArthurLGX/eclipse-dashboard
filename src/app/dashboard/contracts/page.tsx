@@ -15,8 +15,12 @@ import {
   IconFilter,
   IconSignature,
   IconRefresh,
+  IconPlus,
+  IconChevronDown,
+  IconSparkles,
+  IconPencil,
 } from '@tabler/icons-react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import AIContractGenerator from '@/app/components/AIContractGenerator';
 import ContractPDF from '@/app/components/ContractPDF';
@@ -42,10 +46,24 @@ export default function ContractsPage() {
   const { showGlobalPopup } = usePopup();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAIGenerator, setShowAIGenerator] = useState(false);
+  const [showManualCreator, setShowManualCreator] = useState(false);
+  const [showCreateDropdown, setShowCreateDropdown] = useState(false);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowCreateDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Récupérer les données de l'entreprise
   const { data: companyData } = useCompany(user?.id);
@@ -179,19 +197,67 @@ export default function ContractsPage() {
           >
             <IconRefresh size={20} />
           </button>
-          <button 
-            className="flex items-center gap-2 px-4 py-2 bg-accent-light text-accent border border-accent rounded-lg hover:bg-accent hover:text-white transition-all"
-            onClick={() => setShowAIGenerator(true)}
-          >
-            <Image 
-              src="/images/logo/eclipse-logo.png" 
-              alt="Eclipse Assistant" 
-              width={18} 
-              height={18}
-              className="w-4.5 h-4.5"
-            />
-            Eclipse Assistant
-          </button>
+          
+          {/* Dropdown for creating contracts */}
+          <div className="relative" ref={dropdownRef}>
+            <button 
+              className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-all"
+              onClick={() => setShowCreateDropdown(!showCreateDropdown)}
+            >
+              <IconPlus size={18} />
+              {t('new_contract') || 'Nouveau contrat'}
+              <IconChevronDown size={16} className={`transition-transform ${showCreateDropdown ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {/* Dropdown menu */}
+            <AnimatePresence>
+              {showCreateDropdown && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute right-0 mt-2 w-64 bg-card rounded-xl border border-muted shadow-lg z-50 overflow-hidden"
+                >
+                  <button
+                    onClick={() => {
+                      setShowManualCreator(true);
+                      setShowCreateDropdown(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-hover transition-colors"
+                  >
+                    <div className="p-2 bg-info-light rounded-lg">
+                      <IconPencil size={18} className="text-info" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-primary">{t('create_manually') || 'Créer manuellement'}</p>
+                      <p className="text-xs text-muted">{t('create_manually_desc') || 'Partir de zéro'}</p>
+                    </div>
+                  </button>
+                  <div className="border-t border-muted" />
+                  <button
+                    onClick={() => {
+                      setShowAIGenerator(true);
+                      setShowCreateDropdown(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-hover transition-colors"
+                  >
+                    <div className="p-2 bg-accent-light rounded-lg">
+                      <Image 
+                        src="/images/logo/eclipse-logo.png" 
+                        alt="Eclipse Assistant" 
+                        width={18} 
+                        height={18}
+                      />
+                    </div>
+                    <div>
+                      <p className="font-medium text-primary">{t('generate_with_ai') || 'Générer avec IA'}</p>
+                      <p className="text-xs text-muted">{t('generate_with_ai_desc') || 'Eclipse Assistant'}</p>
+                    </div>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
@@ -263,22 +329,33 @@ export default function ContractsPage() {
           <h3 className="text-xl font-semibold text-primary mb-2">
             {t('no_contracts') || 'Aucun contrat'}
           </h3>
-          <p className="text-secondary text-center max-w-md mb-6">
-            {t('no_contracts_description') || 'Générez votre premier contrat avec Eclipse Assistant'}
+          <p className="text-secondary text-center max-w-md mb-8">
+            {t('no_contracts_description') || 'Créez votre premier contrat manuellement ou avec l\'aide de l\'IA'}
           </p>
-          <button 
-            className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl hover:opacity-90 transition-all"
-            onClick={() => setShowAIGenerator(true)}
-          >
-            <Image 
-              src="/images/logo/eclipse-logo.png" 
-              alt="Eclipse Assistant" 
-              width={20} 
-              height={20}
-              className="w-5 h-5"
-            />
-            {t('generate_with_ai') || 'Générer avec Eclipse Assistant'}
-          </button>
+          
+          {/* Two options */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button 
+              className="flex items-center gap-2 px-6 py-3 bg-card border border-muted text-primary rounded-xl hover:bg-hover transition-all"
+              onClick={() => setShowManualCreator(true)}
+            >
+              <IconPencil size={20} />
+              {t('create_manually') || 'Créer manuellement'}
+            </button>
+            <button 
+              className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl hover:opacity-90 transition-all"
+              onClick={() => setShowAIGenerator(true)}
+            >
+              <Image 
+                src="/images/logo/eclipse-logo.png" 
+                alt="Eclipse Assistant" 
+                width={20} 
+                height={20}
+                className="w-5 h-5"
+              />
+              {t('generate_with_ai') || 'Générer avec IA'}
+            </button>
+          </div>
         </div>
       )}
 
@@ -396,6 +473,15 @@ export default function ContractsPage() {
         onClose={() => setShowAIGenerator(false)}
         company={company}
         onContractGenerated={handleContractGenerated}
+      />
+
+      {/* Modal Manual Contract Creator */}
+      <AIContractGenerator
+        isOpen={showManualCreator}
+        onClose={() => setShowManualCreator(false)}
+        company={company}
+        onContractGenerated={handleContractGenerated}
+        manualMode={true}
       />
     </div>
   );

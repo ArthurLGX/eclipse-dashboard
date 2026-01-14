@@ -44,6 +44,7 @@ interface AIContractGeneratorProps {
   project?: Project;
   company?: Company | null;
   onContractGenerated?: (contract: GeneratedContract) => void;
+  manualMode?: boolean; // Skip AI generation and go directly to editing
 }
 
 type ContractType = 'service' | 'nda' | 'maintenance' | 'cgv' | 'custom';
@@ -88,6 +89,7 @@ export default function AIContractGenerator({
   project: initialProject,
   company,
   onContractGenerated,
+  manualMode = false,
 }: AIContractGeneratorProps) {
   const { t } = useLanguage();
   const { user } = useAuth();
@@ -393,11 +395,110 @@ export default function AIContractGenerator({
     }
   };
 
+  // Create a blank template for manual mode
+  const createManualTemplate = (): GeneratedContract => {
+    const contractTypeLabels: Record<ContractType, { fr: string; en: string }> = {
+      service: { fr: 'CONTRAT DE PRESTATION DE SERVICES', en: 'SERVICE AGREEMENT' },
+      nda: { fr: 'ACCORD DE CONFIDENTIALITÉ', en: 'NON-DISCLOSURE AGREEMENT' },
+      maintenance: { fr: 'CONTRAT DE MAINTENANCE', en: 'MAINTENANCE CONTRACT' },
+      cgv: { fr: 'CONDITIONS GÉNÉRALES DE VENTE', en: 'GENERAL TERMS AND CONDITIONS' },
+      custom: { fr: 'CONTRAT', en: 'CONTRACT' },
+    };
+
+    const formattedDate = signatureDate 
+      ? new Date(signatureDate).toLocaleDateString(contractLanguage === 'fr' ? 'fr-FR' : 'en-US', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        })
+      : new Date().toLocaleDateString(contractLanguage === 'fr' ? 'fr-FR' : 'en-US', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+
+    return {
+      title: contractTypeLabels[contractType][contractLanguage],
+      parties: {
+        provider: {
+          name: company?.name || user?.username || (contractLanguage === 'fr' ? 'Le Prestataire' : 'The Provider'),
+          details: [
+            company?.siret ? `SIRET: ${company.siret}` : '',
+            company?.location || '',
+            user?.email || '',
+          ].filter(Boolean).join('\n') || (contractLanguage === 'fr' ? 'Adresse et informations à compléter' : 'Address and information to complete'),
+        },
+        client: {
+          name: selectedClient?.name || selectedClient?.enterprise || (contractLanguage === 'fr' ? 'Le Client' : 'The Client'),
+          details: selectedClient ? [
+            selectedClient.enterprise || '',
+            selectedClient.adress || '',
+            selectedClient.email || '',
+          ].filter(Boolean).join('\n') : (contractLanguage === 'fr' ? 'Informations du client à compléter' : 'Client information to complete'),
+        },
+      },
+      preamble: contractLanguage === 'fr' 
+        ? 'Le présent contrat définit les termes et conditions de la prestation de services entre les parties ci-dessus désignées.'
+        : 'This contract defines the terms and conditions of the service provision between the parties designated above.',
+      articles: [
+        {
+          number: 1,
+          title: contractLanguage === 'fr' ? 'Objet du contrat' : 'Purpose of the contract',
+          content: contractLanguage === 'fr' 
+            ? 'Le présent contrat a pour objet de définir les conditions dans lesquelles le Prestataire s\'engage à fournir ses services au Client.\n\n[Décrivez ici l\'objet précis de la prestation]'
+            : 'This contract aims to define the conditions under which the Provider commits to provide services to the Client.\n\n[Describe here the precise purpose of the service]',
+        },
+        {
+          number: 2,
+          title: contractLanguage === 'fr' ? 'Durée' : 'Duration',
+          content: contractLanguage === 'fr'
+            ? 'Le présent contrat prend effet à compter du [DATE DE DÉBUT] et se terminera le [DATE DE FIN].\n\n[Précisez les modalités de renouvellement si applicable]'
+            : 'This contract takes effect from [START DATE] and will end on [END DATE].\n\n[Specify renewal terms if applicable]',
+        },
+        {
+          number: 3,
+          title: contractLanguage === 'fr' ? 'Conditions financières' : 'Financial terms',
+          content: contractLanguage === 'fr'
+            ? 'En contrepartie des services fournis, le Client s\'engage à verser au Prestataire la somme de [MONTANT] €.\n\nModalités de paiement : [À COMPLÉTER]'
+            : 'In exchange for the services provided, the Client agrees to pay the Provider the sum of [AMOUNT] €.\n\nPayment terms: [TO COMPLETE]',
+        },
+        {
+          number: 4,
+          title: contractLanguage === 'fr' ? 'Obligations des parties' : 'Obligations of the parties',
+          content: contractLanguage === 'fr'
+            ? 'Le Prestataire s\'engage à :\n- [Obligation 1]\n- [Obligation 2]\n\nLe Client s\'engage à :\n- [Obligation 1]\n- [Obligation 2]'
+            : 'The Provider agrees to:\n- [Obligation 1]\n- [Obligation 2]\n\nThe Client agrees to:\n- [Obligation 1]\n- [Obligation 2]',
+        },
+      ],
+      signatures: {
+        location: signatureLocation || (contractLanguage === 'fr' ? 'Paris' : 'Paris'),
+        date: formattedDate,
+      },
+    };
+  };
+
   const handleGenerate = async () => {
     setLoading(true);
     setError(null);
     setDateWarnings([]);
 
+    // Manual mode: create a blank template
+    if (manualMode) {
+      try {
+        const template = createManualTemplate();
+        setGeneratedContract(template);
+        setStep('review');
+        setIsEditMode(true); // Enable edit mode by default for manual creation
+      } catch (err) {
+        console.error('Manual template creation error:', err);
+        setError(err instanceof Error ? err.message : t('error'));
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // AI mode: call the API
     try {
       const userProfile = {
         name: user?.username || 'Freelance',
@@ -658,21 +759,31 @@ ${user?.username || 'L\'équipe'}`;
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-muted">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent-light rounded-xl">
-                <Image 
-                  src="/images/logo/eclipse-logo.png" 
-                  alt="Eclipse Assistant" 
-                  width={24} 
-                  height={24}
-                  className="w-6 h-6"
-                />
+              <div className={`p-2 rounded-xl ${manualMode ? 'bg-info-light' : 'bg-accent-light'}`}>
+                {manualMode ? (
+                  <IconEdit className="w-6 h-6 text-info" />
+                ) : (
+                  <Image 
+                    src="/images/logo/eclipse-logo.png" 
+                    alt="Eclipse Assistant" 
+                    width={24} 
+                    height={24}
+                    className="w-6 h-6"
+                  />
+                )}
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-primary">
-                  Eclipse Assistant
+                  {manualMode 
+                    ? (t('manual_contract_creation') || 'Création manuelle')
+                    : 'Eclipse Assistant'
+                  }
                 </h2>
                 <p className="text-sm text-muted">
-                  {t('ai_contract_description') || 'Documents juridiques personnalisés'}
+                  {manualMode
+                    ? (t('manual_contract_description') || 'Créez votre contrat de A à Z')
+                    : (t('ai_contract_description') || 'Documents juridiques personnalisés')
+                  }
                 </p>
               </div>
             </div>
@@ -1447,17 +1558,29 @@ ${user?.username || 'L\'équipe'}`;
                 <button
                   onClick={handleGenerate}
                   disabled={loading || !selectedClientId || !signatureLocation || !signatureDate}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className={`flex items-center gap-2 px-6 py-2.5 text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
+                    manualMode ? 'bg-info' : 'bg-accent'
+                  }`}
                 >
                   {loading ? (
                     <>
                       <IconLoader2 className="w-4 h-4 animate-spin" />
-                      {t('generating') || 'Génération...'}
+                      {manualMode 
+                        ? (t('creating') || 'Création...')
+                        : (t('generating') || 'Génération...')
+                      }
                     </>
                   ) : (
                     <>
-                      <IconSparkles className="w-4 h-4" />
-                      {t('generate_contract') || 'Générer le contrat'}
+                      {manualMode ? (
+                        <IconEdit className="w-4 h-4" />
+                      ) : (
+                        <IconSparkles className="w-4 h-4" />
+                      )}
+                      {manualMode
+                        ? (t('create_contract') || 'Créer le contrat')
+                        : (t('generate_contract') || 'Générer le contrat')
+                      }
                     </>
                   )}
                 </button>
