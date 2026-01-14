@@ -3530,7 +3530,7 @@ export const fetchContractByDocumentId = async (documentId: string): Promise<Con
 };
 
 /** Crée un nouveau contrat */
-export const createContract = async (data: {
+export const createContract = async (contractData: {
   title: string;
   contract_type: ContractType;
   status?: ContractStatus;
@@ -3542,16 +3542,18 @@ export const createContract = async (data: {
   project?: string; // documentId
   user: number;
 }): Promise<Contract> => {
-  const response = await post<{ data: Contract }>('contracts', { data });
+  // Note: post() already wraps in { data }, so we pass contractData directly
+  const response = await post<{ data: Contract }>('contracts', contractData);
   return response.data;
 };
 
 /** Met à jour un contrat */
 export const updateContract = async (
   documentId: string,
-  data: Partial<Contract>
+  contractData: Partial<Contract>
 ): Promise<Contract> => {
-  const response = await put<{ data: Contract }>(`contracts/${documentId}`, { data });
+  // Note: put() already wraps in { data }, so we pass contractData directly
+  const response = await put<{ data: Contract }>(`contracts/${documentId}`, contractData);
   return response.data;
 };
 

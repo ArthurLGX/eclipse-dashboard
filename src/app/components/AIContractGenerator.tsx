@@ -725,25 +725,33 @@ ${user?.username || 'L\'équipe'}`;
                     <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
                       <IconMapPin className="w-4 h-4 text-muted" />
                       {t('signature_location') || 'Lieu de signature'}
+                      <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
                       value={signatureLocation}
                       onChange={(e) => setSignatureLocation(e.target.value)}
                       placeholder="Paris, France"
-                      className="w-full px-4 py-2.5 bg-hover border border-muted rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                      required
+                      className={`w-full px-4 py-2.5 bg-hover border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary ${
+                        !signatureLocation ? 'border-warning' : 'border-muted'
+                      }`}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
                       <IconCalendar className="w-4 h-4 text-muted" />
                       {t('signature_date') || 'Date de signature'}
+                      <span className="text-danger">*</span>
                     </label>
                     <input
                       type="date"
                       value={signatureDate}
                       onChange={(e) => setSignatureDate(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-hover border border-muted rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                      required
+                      className={`w-full px-4 py-2.5 bg-hover border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary ${
+                        !signatureDate ? 'border-warning' : 'border-muted'
+                      }`}
                     />
                   </div>
                 </div>
@@ -1304,7 +1312,16 @@ ${user?.username || 'L\'équipe'}`;
                     {t('copy') || 'Copier'}
                   </button>
                   <button
-                    onClick={() => setStep('sign')}
+                    onClick={() => {
+                      if (!signatureLocation || !signatureDate) {
+                        showGlobalPopup(
+                          t('missing_signature_fields') || 'Veuillez renseigner le lieu et la date de signature.',
+                          'error'
+                        );
+                        return;
+                      }
+                      setStep('sign');
+                    }}
                     className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 transition-colors"
                   >
                     <IconSignature className="w-4 h-4" />
