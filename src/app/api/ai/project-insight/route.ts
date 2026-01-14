@@ -30,7 +30,66 @@ interface ProjectInsightPayload {
   invoiced_amount: number;
   tasks: TaskData[];
   progress: number;
+  language?: 'fr' | 'en';
 }
+
+// Prompts multilingues
+const getPromptTexts = (lang: 'fr' | 'en') => ({
+  fr: {
+    role: 'Tu es un assistant de gestion de projet pour freelances et agences.',
+    instruction: 'Analyse les données du projet suivant et donne un insight court et actionnable.',
+    billingType: 'Type de facturation',
+    budget: 'Budget',
+    hourlyRate: 'TJM',
+    estimatedHours: 'Heures estimées totales',
+    actualHours: 'Heures réelles passées',
+    invoicedAmount: 'Montant facturé',
+    progress: 'Progression globale',
+    taskCount: 'Nombre de tâches',
+    tasksWithDrift: 'Tâches avec dérive',
+    noDrift: 'Aucune dérive significative détectée',
+    estimated: 'estimé',
+    actual: 'réel',
+    summaryDesc: 'Une phrase courte résumant la situation du projet (max 100 caractères)',
+    tipDesc: 'Un conseil actionnable pour améliorer la rentabilité future (max 150 caractères)',
+    metricLabel: 'Nom de la métrique clé',
+    metricValue: 'Valeur formatée',
+    rules: `Règles:
+- status "success" si le projet est rentable ou dans les temps
+- status "warning" si dépassement < 30% ou problème mineur
+- status "danger" si dépassement > 30% ou problème majeur
+- Le summary doit être factuel, pas émotionnel
+- L'actionable_tip doit être applicable au prochain projet similaire
+- Réponds UNIQUEMENT en français`,
+  },
+  en: {
+    role: 'You are a project management assistant for freelancers and agencies.',
+    instruction: 'Analyze the following project data and provide a short, actionable insight.',
+    billingType: 'Billing type',
+    budget: 'Budget',
+    hourlyRate: 'Hourly rate',
+    estimatedHours: 'Total estimated hours',
+    actualHours: 'Actual hours spent',
+    invoicedAmount: 'Invoiced amount',
+    progress: 'Overall progress',
+    taskCount: 'Number of tasks',
+    tasksWithDrift: 'Tasks with drift',
+    noDrift: 'No significant drift detected',
+    estimated: 'estimated',
+    actual: 'actual',
+    summaryDesc: 'A short sentence summarizing the project status (max 100 characters)',
+    tipDesc: 'An actionable tip to improve future profitability (max 150 characters)',
+    metricLabel: 'Key metric name',
+    metricValue: 'Formatted value',
+    rules: `Rules:
+- status "success" if project is profitable or on track
+- status "warning" if overrun < 30% or minor issue
+- status "danger" if overrun > 30% or major issue
+- Summary must be factual, not emotional
+- actionable_tip must be applicable to similar future projects
+- Respond ONLY in English`,
+  },
+})[lang];
 
 export async function POST(req: Request) {
   try {
@@ -41,6 +100,8 @@ export async function POST(req: Request) {
     }
 
     const openai = getOpenAIClient();
+    const lang = payload.language || 'fr';
+    const texts = getPromptTexts(lang);
 
     // Construire le contexte pour l'IA
     const tasksSummary = payload.tasks.map(t => ({
@@ -53,46 +114,40 @@ export async function POST(req: Request) {
         : null,
     }));
 
-    const prompt = `Tu es un assistant de gestion de projet pour freelances et agences. 
-Analyse les données du projet suivant et donne un insight court et actionnable.
+    const prompt = `${texts.role}
+${texts.instruction}
 
-Projet: ${payload.project.title}
+Project: ${payload.project.title}
 ${payload.project.description ? `Description: ${payload.project.description}` : ''}
-Type de facturation: ${payload.project.billing_type || 'non défini'}
-${payload.project.budget ? `Budget: ${payload.project.budget}€` : ''}
-${payload.project.hourly_rate ? `TJM: ${payload.project.hourly_rate}€/h` : ''}
+${texts.billingType}: ${payload.project.billing_type || 'N/A'}
+${payload.project.budget ? `${texts.budget}: ${payload.project.budget}€` : ''}
+${payload.project.hourly_rate ? `${texts.hourlyRate}: ${payload.project.hourly_rate}€/h` : ''}
 
-Données:
-- Heures estimées totales: ${payload.estimated_hours}h
-- Heures réelles passées: ${payload.actual_hours}h
-- Montant facturé: ${payload.invoiced_amount}€
-- Progression globale: ${payload.progress}%
-- Nombre de tâches: ${payload.tasks.length}
+Data:
+- ${texts.estimatedHours}: ${payload.estimated_hours}h
+- ${texts.actualHours}: ${payload.actual_hours}h
+- ${texts.invoicedAmount}: ${payload.invoiced_amount}€
+- ${texts.progress}: ${payload.progress}%
+- ${texts.taskCount}: ${payload.tasks.length}
 
-Tâches avec dérive:
+${texts.tasksWithDrift}:
 ${tasksSummary.filter(t => t.drift !== null && Math.abs(t.drift!) > 20).map(t => 
-  `- ${t.name}: ${t.drift! > 0 ? '+' : ''}${t.drift}% (estimé: ${t.estimated}h, réel: ${t.actual}h)`
-).join('\n') || 'Aucune dérive significative détectée'}
+  `- ${t.name}: ${t.drift! > 0 ? '+' : ''}${t.drift}% (${texts.estimated}: ${t.estimated}h, ${texts.actual}: ${t.actual}h)`
+).join('\n') || texts.noDrift}
 
-Réponds en JSON avec ce format exact:
+Respond in JSON with this exact format:
 {
   "status": "success" | "warning" | "danger",
-  "summary": "Une phrase courte résumant la situation du projet (max 100 caractères)",
-  "actionable_tip": "Un conseil actionnable pour améliorer la rentabilité future (max 150 caractères)",
+  "summary": "${texts.summaryDesc}",
+  "actionable_tip": "${texts.tipDesc}",
   "key_metric": {
-    "label": "Nom de la métrique clé",
-    "value": "Valeur formatée",
+    "label": "${texts.metricLabel}",
+    "value": "${texts.metricValue}",
     "trend": "up" | "down" | "stable"
   }
 }
 
-Règles:
-- status "success" si le projet est rentable ou dans les temps
-- status "warning" si dépassement < 30% ou problème mineur
-- status "danger" si dépassement > 30% ou problème majeur
-- Le summary doit être factuel, pas émotionnel
-- L'actionable_tip doit être applicable au prochain projet similaire
-- Réponds UNIQUEMENT en français`;
+${texts.rules}`;
 
     const completion = await openai.chat.completions.create({
       model: AI_MODELS.fast.id,

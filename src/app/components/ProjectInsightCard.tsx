@@ -39,7 +39,7 @@ export default function ProjectInsightCard({
   timeEntries = [],
   invoices = [],
 }: ProjectInsightCardProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [insight, setInsight] = useState<InsightData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,17 +54,17 @@ export default function ProjectInsightCard({
       return sum + taskHours + subtaskHours;
     }, 0);
 
-    // Heures réelles (depuis time entries ou actual_time des tâches)
+    // Heures réelles (depuis time entries ou actual_hours des tâches)
     const actualHours = timeEntries.length > 0
       ? timeEntries.reduce((sum, entry) => {
           const duration = entry.duration || 0;
           return sum + (duration / 3600); // Convertir secondes en heures
         }, 0)
-      : tasks.reduce((sum, task) => sum + (task.actual_time || 0), 0);
+      : tasks.reduce((sum, task) => sum + (task.actual_hours || 0), 0);
 
     // Montant facturé
     const invoicedAmount = invoices
-      .filter(inv => inv.type === 'invoice' && inv.invoice_status !== 'cancelled')
+      .filter(inv => inv.document_type === 'invoice' && inv.facture_status !== 'cancelled')
       .reduce((sum, inv) => sum + (inv.total_ht || 0), 0);
 
     // Progression globale
@@ -76,14 +76,14 @@ export default function ProjectInsightCard({
       name: task.title,
       status: task.task_status,
       estimated_hours: task.estimated_hours,
-      actual_hours: task.actual_time,
+      actual_hours: task.actual_hours,
     }));
 
     return {
       project: {
         title: project.title,
         description: project.description,
-        billing_type: project.billing_type,
+        billing_type: project.type, // development, design, maintenance
         budget: project.budget,
         hourly_rate: project.hourly_rate,
         start_date: project.start_date,
@@ -94,8 +94,9 @@ export default function ProjectInsightCard({
       invoiced_amount: invoicedAmount,
       progress,
       tasks: formattedTasks,
+      language: language as 'fr' | 'en',
     };
-  }, [project, tasks, timeEntries, invoices]);
+  }, [project, tasks, timeEntries, invoices, language]);
 
   // Charger l'insight automatiquement
   const fetchInsight = useCallback(async () => {
