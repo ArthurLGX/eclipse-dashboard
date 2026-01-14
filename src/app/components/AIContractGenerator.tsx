@@ -222,11 +222,11 @@ export default function AIContractGenerator({
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-background rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-page rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-default">
+          <div className="flex items-center justify-between p-6 border-b border-muted">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light rounded-xl">
                 <Image 
@@ -268,10 +268,10 @@ export default function AIContractGenerator({
                       <button
                         key={type.id}
                         onClick={() => setContractType(type.id)}
-                        className={`p-4 text-left rounded-xl border-2 transition-colors ${
+                        className={`p-4 text-left rounded-xl border-1 transition-colors ${
                           contractType === type.id
                             ? 'border-accent bg-accent-light'
-                            : 'border-default hover:border-accent'
+                            : 'border-muted hover:border-accent'
                         }`}
                       >
                         <p className="font-medium text-primary">{type.label}</p>
@@ -313,7 +313,7 @@ export default function AIContractGenerator({
                       onChange={e => setNewClause(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && handleAddClause()}
                       placeholder={t('add_clause_placeholder') || 'Ex: Clause de non-concurrence sur 6 mois...'}
-                      className="flex-1 px-4 py-2 bg-hover border border-default rounded-lg focus:ring-1 focus:ring-accent"
+                      className="flex-1 px-4 py-2 bg-hover border border-muted rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none"
                     />
                     <button
                       onClick={handleAddClause}
@@ -369,7 +369,7 @@ export default function AIContractGenerator({
             {step === 'review' && generatedContract && (
               <div className="space-y-6">
                 {/* Contract preview */}
-                <div className="p-6 bg-card rounded-xl border border-default">
+                <div className="p-6 bg-card rounded-xl border border-muted">
                   {/* Title */}
                   <h3 className="text-xl font-bold text-center text-primary mb-6 uppercase">
                     {generatedContract.title}
@@ -409,18 +409,18 @@ export default function AIContractGenerator({
                   </div>
 
                   {/* Signatures */}
-                  <div className="mt-8 pt-4 border-t border-default text-sm">
+                  <div className="mt-8 pt-4 border-t border-muted text-sm">
                     <p className="text-center text-muted mb-4">
                       Fait à {generatedContract.signatures.location}, le {generatedContract.signatures.date}
                     </p>
                     <div className="grid grid-cols-2 gap-8">
                       <div className="text-center">
                         <p className="font-medium text-primary">Le Prestataire</p>
-                        <div className="mt-8 border-b border-default" />
+                        <div className="mt-8 border-b border-muted" />
                       </div>
                       <div className="text-center">
                         <p className="font-medium text-primary">Le Client</p>
-                        <div className="mt-8 border-b border-default" />
+                        <div className="mt-8 border-b border-muted" />
                       </div>
                     </div>
                   </div>
@@ -459,7 +459,7 @@ export default function AIContractGenerator({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between p-6 border-t border-default bg-muted">
+          <div className="flex items-center justify-between p-6 border-t border-muted bg-muted">
             {step === 'config' ? (
               <>
                 <button
