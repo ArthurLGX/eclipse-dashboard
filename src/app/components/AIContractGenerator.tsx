@@ -130,6 +130,10 @@ export default function AIContractGenerator({
   const [saving, setSaving] = useState(false);
   const [signatureLink, setSignatureLink] = useState<string | null>(null);
   const [emailContent, setEmailContent] = useState<string>('');
+  
+  // Date validation warnings
+  const [dateWarnings, setDateWarnings] = useState<string[]>([]);
+  const [validatingDates, setValidatingDates] = useState(false);
 
   // Signature canvas ref
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -354,9 +358,45 @@ export default function AIContractGenerator({
     },
   ];
 
+  // Validate contract dates using AI
+  const validateContractDates = async (contract: GeneratedContract) => {
+    setValidatingDates(true);
+    setDateWarnings([]);
+    
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const contractText = contract.articles.map(a => `${a.title}: ${a.content}`).join('\n');
+      
+      const response = await fetch('/api/ai/validate-contract-dates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contractContent: contractText,
+          contractType,
+          today,
+          signatureDate,
+          language: contractLanguage,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.warnings && data.warnings.length > 0) {
+          setDateWarnings(data.warnings);
+        }
+      }
+    } catch (err) {
+      console.error('Date validation error:', err);
+      // Don't block the flow if validation fails
+    } finally {
+      setValidatingDates(false);
+    }
+  };
+
   const handleGenerate = async () => {
     setLoading(true);
     setError(null);
+    setDateWarnings([]);
 
     try {
       const userProfile = {
@@ -405,7 +445,7 @@ export default function AIContractGenerator({
       // Override signatures with user-provided values
       data.signatures = {
         location: signatureLocation || data.signatures.location,
-        date: signatureDate ? new Date(signatureDate).toLocaleDateString('fr-FR', {
+        date: signatureDate ? new Date(signatureDate).toLocaleDateString(contractLanguage === 'fr' ? 'fr-FR' : 'en-US', {
           day: 'numeric',
           month: 'long',
           year: 'numeric'
@@ -413,6 +453,9 @@ export default function AIContractGenerator({
       };
       setGeneratedContract(data);
       setStep('review');
+      
+      // Validate dates in background
+      validateContractDates(data);
     } catch (err) {
       console.error('AI contract generation error:', err);
       setError(err instanceof Error ? err.message : t('ai_generation_error'));
@@ -924,6 +967,46 @@ ${user?.username || 'L\'équipe'}`;
 
             {step === 'review' && generatedContract && (
               <div className="space-y-6">
+                {/* Date validation warnings */}
+                {validatingDates && (
+                  <div className="p-4 bg-info-light rounded-xl flex items-center gap-3">
+                    <IconLoader2 className="w-5 h-5 text-info animate-spin" />
+                    <p className="text-sm text-info">
+                      {contractLanguage === 'fr' 
+                        ? 'Vérification des dates du contrat...' 
+                        : 'Validating contract dates...'}
+                    </p>
+                  </div>
+                )}
+                
+                {dateWarnings.length > 0 && (
+                  <div className="p-4 bg-warning-light rounded-xl border border-warning">
+                    <div className="flex items-start gap-3">
+                      <IconAlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-warning mb-2">
+                          {contractLanguage === 'fr' 
+                            ? '⚠️ Attention aux dates du contrat' 
+                            : '⚠️ Contract date warnings'}
+                        </p>
+                        <ul className="space-y-1">
+                          {dateWarnings.map((warning, index) => (
+                            <li key={index} className="text-sm text-on-warning-light flex items-start gap-2">
+                              <span className="text-warning">•</span>
+                              {warning}
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="text-xs text-muted mt-3">
+                          {contractLanguage === 'fr' 
+                            ? 'Vous pouvez modifier les dates en passant en mode Édition.' 
+                            : 'You can modify dates by switching to Edit mode.'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Toggle Edit/Preview mode */}
                 <div className="flex items-center justify-end">
                   <div className="flex items-center gap-1 p-1 bg-hover rounded-lg">
