@@ -267,6 +267,7 @@ function DashboardLayoutContent({
           icon: <IconBuilding size={20} stroke={1} />,
           path: '/dashboard/projects',
           moduleId: 'projects',
+          status: getModuleStatus('projects', moduleStatuses) || undefined,
         },
         {
           id: 'calendar',
@@ -274,6 +275,7 @@ function DashboardLayoutContent({
           icon: <IconCalendar size={20} stroke={1} />,
           path: '/dashboard/calendar',
           moduleId: 'calendar',
+          status: getModuleStatus('calendar', moduleStatuses) || undefined,
         },
         {
           id: 'time_tracking',
@@ -281,6 +283,7 @@ function DashboardLayoutContent({
           icon: <IconClock size={20} stroke={1} />,
           path: '/dashboard/time-tracking',
           moduleId: 'time_tracking',
+          status: getModuleStatus('time_tracking', moduleStatuses) || undefined,
         },
         // Contrats
         {
@@ -289,6 +292,7 @@ function DashboardLayoutContent({
           icon: <IconFileText size={20} stroke={1} />,
           path: '/dashboard/contracts',
           moduleId: 'contracts',
+          status: getModuleStatus('contracts', moduleStatuses) || undefined,
         },
         // Communication
         {
@@ -297,6 +301,7 @@ function DashboardLayoutContent({
           icon: <IconMail size={20} stroke={1} />,
           path: '/dashboard/newsletters',
           moduleId: 'newsletters',
+          status: getModuleStatus('newsletters', moduleStatuses) || undefined,
         },
         {
           id: 'emails',
@@ -304,6 +309,7 @@ function DashboardLayoutContent({
           icon: <IconSend size={20} stroke={1} />,
           path: '/dashboard/emails',
           moduleId: 'emails',
+          status: getModuleStatus('emails', moduleStatuses) || undefined,
         },
         // Technique
         {
@@ -312,6 +318,7 @@ function DashboardLayoutContent({
           icon: <IconServer size={20} stroke={1} />,
           path: '/dashboard/monitoring',
           moduleId: 'monitoring',
+          status: getModuleStatus('monitoring', moduleStatuses) || undefined,
         },
         // Audit & Analyse (modules optionnels - OFF par défaut)
         {
