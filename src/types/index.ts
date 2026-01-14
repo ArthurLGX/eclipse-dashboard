@@ -167,6 +167,7 @@ export interface Project {
   sort_order?: number;
   budget?: number;
   hourly_rate?: number;
+  billing_type?: 'fixed' | 'hourly';
 }
 
 export interface ProjectTask {

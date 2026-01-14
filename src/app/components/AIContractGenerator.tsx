@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconLoader2,
@@ -11,11 +11,20 @@ import {
   IconCopy,
   IconAlertTriangle,
   IconBulb,
+  IconUser,
+  IconFolder,
+  IconMapPin,
+  IconCalendar,
+  IconSignature,
+  IconTrash,
+  IconDownload,
+  IconChevronDown,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
+import { fetchClientsUser, fetchAllUserProjects } from '@/lib/api';
 import type { Client, Project, Company } from '@/types';
 
 interface AIContractGeneratorProps {
@@ -51,11 +60,16 @@ interface GeneratedContract {
   warnings?: string[];
 }
 
+interface SignatureData {
+  provider: string | null;
+  client: string | null;
+}
+
 export default function AIContractGenerator({
   isOpen,
   onClose,
-  client,
-  project,
+  client: initialClient,
+  project: initialProject,
   company,
   onContractGenerated,
 }: AIContractGeneratorProps) {
@@ -63,13 +77,53 @@ export default function AIContractGenerator({
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
 
+  // Data states
+  const [clients, setClients] = useState<Client[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loadingData, setLoadingData] = useState(false);
+
+  // Selection states
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(initialClient?.documentId || null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProject?.documentId || null);
+
+  // Contract config states
   const [contractType, setContractType] = useState<ContractType>('service');
   const [customClauses, setCustomClauses] = useState<string[]>([]);
   const [newClause, setNewClause] = useState('');
+  
+  // Signature fields
+  const [signatureLocation, setSignatureLocation] = useState(company?.location || '');
+  const [signatureDate, setSignatureDate] = useState(new Date().toISOString().split('T')[0]);
+  const [signatures, setSignatures] = useState<SignatureData>({ provider: null, client: null });
+  const [activeSignature, setActiveSignature] = useState<'provider' | 'client' | null>(null);
+
+  // UI states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatedContract, setGeneratedContract] = useState<GeneratedContract | null>(null);
-  const [step, setStep] = useState<'config' | 'review'>('config');
+  const [step, setStep] = useState<'config' | 'review' | 'sign'>('config');
+
+  // Signature canvas ref
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
+
+  // Get selected client and project objects
+  const selectedClient = clients.find(c => c.documentId === selectedClientId) || initialClient;
+  const selectedProject = projects.find(p => p.documentId === selectedProjectId) || initialProject;
+
+  // Filter projects by selected client
+  const filteredProjects = selectedClientId 
+    ? projects.filter(p => p.client?.documentId === selectedClientId)
+    : projects;
+
+  // Load clients and projects when modal opens
+  useEffect(() => {
+    if (isOpen && user?.id) {
+      loadData();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, user?.id]);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -80,8 +134,103 @@ export default function AIContractGenerator({
       setError(null);
       setGeneratedContract(null);
       setStep('config');
+      setSignatureLocation(company?.location || '');
+      setSignatureDate(new Date().toISOString().split('T')[0]);
+      setSignatures({ provider: null, client: null });
+      setSelectedClientId(initialClient?.documentId || null);
+      setSelectedProjectId(initialProject?.documentId || null);
     }
-  }, [isOpen]);
+  }, [isOpen, company?.location, initialClient?.documentId, initialProject?.documentId]);
+
+  const loadData = async () => {
+    if (!user?.id) return;
+    setLoadingData(true);
+    try {
+      const [clientsResponse, projectsResponse] = await Promise.all([
+        fetchClientsUser(user.id),
+        fetchAllUserProjects(user.id),
+      ]);
+      setClients((clientsResponse?.data as Client[]) || []);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const projectsData = (projectsResponse as any)?.data || projectsResponse || [];
+      setProjects(projectsData as Project[]);
+    } catch (err) {
+      console.error('Error loading data:', err);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  // Canvas drawing functions
+  const getCanvasCoords = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    if ('touches' in e) {
+      return {
+        x: (e.touches[0].clientX - rect.left) * scaleX,
+        y: (e.touches[0].clientY - rect.top) * scaleY,
+      };
+    }
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
+  }, []);
+
+  const startDrawing = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const coords = getCanvasCoords(e);
+    setIsDrawing(true);
+    setLastPos(coords);
+  }, [getCanvasCoords]);
+
+  const draw = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    e.preventDefault();
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
+    
+    const coords = getCanvasCoords(e);
+    
+    ctx.beginPath();
+    ctx.strokeStyle = '#1a1428';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.moveTo(lastPos.x, lastPos.y);
+    ctx.lineTo(coords.x, coords.y);
+    ctx.stroke();
+    
+    setLastPos(coords);
+  }, [isDrawing, lastPos, getCanvasCoords]);
+
+  const stopDrawing = useCallback(() => {
+    setIsDrawing(false);
+  }, []);
+
+  const clearCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }, []);
+
+  const saveSignature = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !activeSignature) return;
+    
+    const dataUrl = canvas.toDataURL('image/png');
+    setSignatures(prev => ({ ...prev, [activeSignature]: dataUrl }));
+    setActiveSignature(null);
+    clearCanvas();
+  }, [activeSignature, clearCanvas]);
 
   const contractTypes: { id: ContractType; label: string; description: string }[] = [
     { 
@@ -126,20 +275,23 @@ export default function AIContractGenerator({
         body: JSON.stringify({
           contractType,
           userProfile,
-          client: client ? {
-            name: client.name,
-            enterprise: client.enterprise,
-            email: client.email,
-            address: client.adress ? `${client.adress}` : undefined,
+          client: selectedClient ? {
+            name: selectedClient.name,
+            enterprise: selectedClient.enterprise,
+            email: selectedClient.email,
+            address: selectedClient.adress ? `${selectedClient.adress}` : undefined,
           } : undefined,
-          project: project ? {
-            title: project.title,
-            description: project.description,
-            budget: project.budget,
-            start_date: project.start_date,
-            end_date: project.end_date,
+          project: selectedProject ? {
+            title: selectedProject.title,
+            description: selectedProject.description,
+            budget: selectedProject.budget,
+            start_date: selectedProject.start_date,
+            end_date: selectedProject.end_date,
+            billing_type: selectedProject.billing_type,
           } : undefined,
           customClauses: customClauses.length > 0 ? customClauses : undefined,
+          signatureLocation,
+          signatureDate,
           language: 'fr',
         }),
       });
@@ -150,6 +302,15 @@ export default function AIContractGenerator({
       }
 
       const data: GeneratedContract = await response.json();
+      // Override signatures with user-provided values
+      data.signatures = {
+        location: signatureLocation || data.signatures.location,
+        date: signatureDate ? new Date(signatureDate).toLocaleDateString('fr-FR', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }) : data.signatures.date,
+      };
       setGeneratedContract(data);
       setStep('review');
     } catch (err) {
@@ -207,6 +368,12 @@ export default function AIContractGenerator({
     onClose();
   };
 
+  const handleDownloadPDF = () => {
+    // For now, just copy - PDF generation would require a library like jsPDF
+    handleCopyContract();
+    showGlobalPopup(t('contract_copied_for_pdf') || 'Contrat copié - Collez dans un document Word/Google Docs pour générer un PDF', 'info');
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -222,7 +389,7 @@ export default function AIContractGenerator({
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-page rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-page rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
@@ -242,7 +409,7 @@ export default function AIContractGenerator({
                   Eclipse Assistant
                 </h2>
                 <p className="text-sm text-muted">
-                  {t('ai_contract_description') || 'Génération de contrats personnalisés'}
+                  {t('ai_contract_description') || 'Documents juridiques personnalisés'}
                 </p>
               </div>
             </div>
@@ -254,10 +421,96 @@ export default function AIContractGenerator({
             </button>
           </div>
 
+          {/* Progress Steps */}
+          <div className="px-6 pt-4">
+            <div className="flex items-center gap-2">
+              {['config', 'review', 'sign'].map((s, i) => (
+                <React.Fragment key={s}>
+                  <div className={`flex items-center gap-2 ${
+                    step === s ? 'text-accent' : 
+                    ['config', 'review', 'sign'].indexOf(step) > i ? 'text-success' : 'text-muted'
+                  }`}>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium ${
+                      step === s ? 'bg-accent text-white' : 
+                      ['config', 'review', 'sign'].indexOf(step) > i ? 'bg-success text-white' : 'bg-hover'
+                    }`}>
+                      {['config', 'review', 'sign'].indexOf(step) > i ? <IconCheck className="w-4 h-4" /> : i + 1}
+                    </div>
+                    <span className="text-sm font-medium hidden sm:inline">
+                      {s === 'config' ? (t('configuration') || 'Configuration') :
+                       s === 'review' ? (t('review') || 'Révision') :
+                       (t('signature') || 'Signature')}
+                    </span>
+                  </div>
+                  {i < 2 && <div className={`flex-1 h-0.5 ${
+                    ['config', 'review', 'sign'].indexOf(step) > i ? 'bg-success' : 'bg-hover'
+                  }`} />}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+
           {/* Content */}
           <div className="flex-1 overflow-y-auto p-6">
             {step === 'config' && (
               <div className="space-y-6">
+                {/* Client & Project Selection */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Client Select */}
+                  <div>
+                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
+                      <IconUser className="w-4 h-4 text-muted" />
+                      {t('client') || 'Client'}
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={selectedClientId || ''}
+                        onChange={(e) => {
+                          setSelectedClientId(e.target.value || null);
+                          setSelectedProjectId(null); // Reset project when client changes
+                        }}
+                        className="w-full px-4 py-2.5 bg-hover border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                        disabled={loadingData}
+                      >
+                        <option value="">{t('select_client') || 'Sélectionner un client'}</option>
+                        {clients.map(c => (
+                          <option key={c.documentId} value={c.documentId}>
+                            {c.name} {c.enterprise && `(${c.enterprise})`}
+                          </option>
+                        ))}
+                      </select>
+                      <IconChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Project Select */}
+                  <div>
+                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
+                      <IconFolder className="w-4 h-4 text-muted" />
+                      {t('project') || 'Projet'}
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={selectedProjectId || ''}
+                        onChange={(e) => setSelectedProjectId(e.target.value || null)}
+                        className="w-full px-4 py-2.5 bg-hover border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                        disabled={loadingData || !selectedClientId}
+                      >
+                        <option value="">{t('select_project') || 'Sélectionner un projet'}</option>
+                        {filteredProjects.map(p => (
+                          <option key={p.documentId} value={p.documentId}>
+                            {p.title}
+                          </option>
+                        ))}
+                      </select>
+                      <IconChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+                    </div>
+                    {!selectedClientId && (
+                      <p className="text-xs text-muted mt-1">{t('select_client_first') || 'Sélectionnez d\'abord un client'}</p>
+                    )}
+                  </div>
+                </div>
+
                 {/* Contract type selection */}
                 <div>
                   <label className="block text-sm font-medium text-primary mb-3">
@@ -268,7 +521,7 @@ export default function AIContractGenerator({
                       <button
                         key={type.id}
                         onClick={() => setContractType(type.id)}
-                        className={`p-4 text-left rounded-xl border-1 transition-colors ${
+                        className={`p-4 text-left rounded-xl border transition-colors ${
                           contractType === type.id
                             ? 'border-accent bg-accent-light'
                             : 'border-muted hover:border-accent'
@@ -281,23 +534,54 @@ export default function AIContractGenerator({
                   </div>
                 </div>
 
-                {/* Context info */}
-                {(client || project) && (
+                {/* Signature Location & Date */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
+                      <IconMapPin className="w-4 h-4 text-muted" />
+                      {t('signature_location') || 'Lieu de signature'}
+                    </label>
+                    <input
+                      type="text"
+                      value={signatureLocation}
+                      onChange={(e) => setSignatureLocation(e.target.value)}
+                      placeholder="Paris, France"
+                      className="w-full px-4 py-2.5 bg-hover border border-muted rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
+                      <IconCalendar className="w-4 h-4 text-muted" />
+                      {t('signature_date') || 'Date de signature'}
+                    </label>
+                    <input
+                      type="date"
+                      value={signatureDate}
+                      onChange={(e) => setSignatureDate(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-hover border border-muted rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                    />
+                  </div>
+                </div>
+
+                {/* Context info when project selected */}
+                {selectedProject && (
                   <div className="p-4 bg-info-light rounded-xl space-y-2">
                     <p className="text-sm font-medium text-info flex items-center gap-2">
                       <IconSparkles className="w-4 h-4" />
-                      {t('context_detected') || 'Contexte détecté'}
+                      {t('project_context') || 'L\'IA adaptera le contrat selon ce projet'}
                     </p>
-                    {client && (
-                      <p className="text-sm text-on-info-light">
-                        Client: {client.name} {client.enterprise && `(${client.enterprise})`}
-                      </p>
-                    )}
-                    {project && (
-                      <p className="text-sm text-on-info-light">
-                        Projet: {project.title}
-                      </p>
-                    )}
+                    <div className="text-sm text-on-info-light space-y-1">
+                      <p><strong>Projet:</strong> {selectedProject.title}</p>
+                      {selectedProject.description && (
+                        <p className="text-xs line-clamp-2">{selectedProject.description}</p>
+                      )}
+                      {selectedProject.budget && (
+                        <p><strong>Budget:</strong> {selectedProject.budget.toLocaleString()}€</p>
+                      )}
+                      {selectedProject.billing_type && (
+                        <p><strong>Type:</strong> {selectedProject.billing_type === 'fixed' ? 'Forfait' : 'Régie'}</p>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -408,7 +692,7 @@ export default function AIContractGenerator({
                     ))}
                   </div>
 
-                  {/* Signatures */}
+                  {/* Signatures preview */}
                   <div className="mt-8 pt-4 border-t border-muted text-sm">
                     <p className="text-center text-muted mb-4">
                       Fait à {generatedContract.signatures.location}, le {generatedContract.signatures.date}
@@ -416,11 +700,23 @@ export default function AIContractGenerator({
                     <div className="grid grid-cols-2 gap-8">
                       <div className="text-center">
                         <p className="font-medium text-primary">Le Prestataire</p>
-                        <div className="mt-8 border-b border-muted" />
+                        <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
+                          {signatures.provider ? (
+                            <Image src={signatures.provider} alt="Signature prestataire" width={150} height={60} className="max-h-16 object-contain" />
+                          ) : (
+                            <span className="text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
+                          )}
+                        </div>
                       </div>
                       <div className="text-center">
                         <p className="font-medium text-primary">Le Client</p>
-                        <div className="mt-8 border-b border-muted" />
+                        <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
+                          {signatures.client ? (
+                            <Image src={signatures.client} alt="Signature client" width={150} height={60} className="max-h-16 object-contain" />
+                          ) : (
+                            <span className="text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -456,11 +752,142 @@ export default function AIContractGenerator({
                 )}
               </div>
             )}
+
+            {step === 'sign' && generatedContract && (
+              <div className="space-y-6">
+                {/* Signature areas */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Provider Signature */}
+                  <div className="p-4 bg-card rounded-xl border border-muted">
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="font-medium text-primary flex items-center gap-2">
+                        <IconSignature className="w-4 h-4" />
+                        {t('provider_signature') || 'Signature Prestataire'}
+                      </p>
+                      {signatures.provider && (
+                        <button
+                          onClick={() => setSignatures(prev => ({ ...prev, provider: null }))}
+                          className="text-danger hover:opacity-80 text-xs flex items-center gap-1"
+                        >
+                          <IconTrash className="w-3 h-3" />
+                          {t('delete') || 'Supprimer'}
+                        </button>
+                      )}
+                    </div>
+                    {signatures.provider ? (
+                      <div className="h-32 border border-muted rounded-lg bg-white flex items-center justify-center">
+                        <Image src={signatures.provider} alt="Signature" width={200} height={100} className="max-h-28 object-contain" />
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setActiveSignature('provider')}
+                        className="w-full h-32 border-2 border-dashed border-muted rounded-lg hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 text-muted hover:text-accent"
+                      >
+                        <IconSignature className="w-8 h-8" />
+                        <span className="text-sm">{t('click_to_sign') || 'Cliquer pour signer'}</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Client Signature */}
+                  <div className="p-4 bg-card rounded-xl border border-muted">
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="font-medium text-primary flex items-center gap-2">
+                        <IconSignature className="w-4 h-4" />
+                        {t('client_signature') || 'Signature Client'}
+                      </p>
+                      {signatures.client && (
+                        <button
+                          onClick={() => setSignatures(prev => ({ ...prev, client: null }))}
+                          className="text-danger hover:opacity-80 text-xs flex items-center gap-1"
+                        >
+                          <IconTrash className="w-3 h-3" />
+                          {t('delete') || 'Supprimer'}
+                        </button>
+                      )}
+                    </div>
+                    {signatures.client ? (
+                      <div className="h-32 border border-muted rounded-lg bg-white flex items-center justify-center">
+                        <Image src={signatures.client} alt="Signature" width={200} height={100} className="max-h-28 object-contain" />
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setActiveSignature('client')}
+                        className="w-full h-32 border-2 border-dashed border-muted rounded-lg hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 text-muted hover:text-accent"
+                      >
+                        <IconSignature className="w-8 h-8" />
+                        <span className="text-sm">{t('click_to_sign') || 'Cliquer pour signer'}</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Signature Pad Modal */}
+                {activeSignature && (
+                  <div className="p-6 bg-card rounded-xl border border-accent">
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="font-medium text-primary">
+                        {activeSignature === 'provider' 
+                          ? (t('sign_as_provider') || 'Signer en tant que Prestataire')
+                          : (t('sign_as_client') || 'Signer en tant que Client')}
+                      </p>
+                      <button
+                        onClick={() => { setActiveSignature(null); clearCanvas(); }}
+                        className="text-muted hover:text-primary"
+                      >
+                        <IconX className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <div className="bg-white rounded-lg border border-muted overflow-hidden">
+                      <canvas
+                        ref={canvasRef}
+                        width={500}
+                        height={200}
+                        className="w-full cursor-crosshair touch-none"
+                        onMouseDown={startDrawing}
+                        onMouseMove={draw}
+                        onMouseUp={stopDrawing}
+                        onMouseLeave={stopDrawing}
+                        onTouchStart={startDrawing}
+                        onTouchMove={draw}
+                        onTouchEnd={stopDrawing}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between mt-4">
+                      <button
+                        onClick={clearCanvas}
+                        className="px-4 py-2 text-sm text-muted hover:text-primary flex items-center gap-2"
+                      >
+                        <IconTrash className="w-4 h-4" />
+                        {t('clear') || 'Effacer'}
+                      </button>
+                      <button
+                        onClick={saveSignature}
+                        className="px-6 py-2 bg-accent text-white rounded-lg hover:opacity-90 flex items-center gap-2"
+                      >
+                        <IconCheck className="w-4 h-4" />
+                        {t('validate_signature') || 'Valider la signature'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Contract Summary */}
+                <div className="p-4 bg-hover rounded-xl text-sm">
+                  <p className="text-muted mb-2">{t('contract_summary') || 'Récapitulatif'}</p>
+                  <div className="space-y-1 text-secondary">
+                    <p><strong className="text-primary">Contrat:</strong> {generatedContract.title}</p>
+                    <p><strong className="text-primary">Lieu:</strong> {generatedContract.signatures.location}</p>
+                    <p><strong className="text-primary">Date:</strong> {generatedContract.signatures.date}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer */}
           <div className="flex items-center justify-between p-6 border-t border-muted bg-muted">
-            {step === 'config' ? (
+            {step === 'config' && (
               <>
                 <button
                   onClick={onClose}
@@ -470,7 +897,7 @@ export default function AIContractGenerator({
                 </button>
                 <button
                   onClick={handleGenerate}
-                  disabled={loading}
+                  disabled={loading || !selectedClientId}
                   className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
@@ -486,7 +913,9 @@ export default function AIContractGenerator({
                   )}
                 </button>
               </>
-            ) : (
+            )}
+
+            {step === 'review' && (
               <>
                 <button
                   onClick={() => setStep('config')}
@@ -497,17 +926,45 @@ export default function AIContractGenerator({
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleCopyContract}
-                    className="flex items-center gap-2 px-4 py-2 bg-muted text-primary rounded-lg hover:bg-hover transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-hover text-primary rounded-lg hover:bg-card transition-colors"
                   >
                     <IconCopy className="w-4 h-4" />
                     {t('copy') || 'Copier'}
                   </button>
                   <button
+                    onClick={() => setStep('sign')}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 transition-colors"
+                  >
+                    <IconSignature className="w-4 h-4" />
+                    {t('proceed_to_sign') || 'Passer à la signature'}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {step === 'sign' && (
+              <>
+                <button
+                  onClick={() => setStep('review')}
+                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                >
+                  {t('back') || 'Retour'}
+                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleDownloadPDF}
+                    className="flex items-center gap-2 px-4 py-2 bg-hover text-primary rounded-lg hover:bg-card transition-colors"
+                  >
+                    <IconDownload className="w-4 h-4" />
+                    {t('download') || 'Télécharger'}
+                  </button>
+                  <button
                     onClick={handleConfirm}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:opacity-90 transition-colors"
+                    disabled={!signatures.provider}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <IconCheck className="w-4 h-4" />
-                    {t('use_contract') || 'Utiliser ce contrat'}
+                    {t('finalize_contract') || 'Finaliser le contrat'}
                   </button>
                 </div>
               </>
@@ -518,4 +975,3 @@ export default function AIContractGenerator({
     </AnimatePresence>
   );
 }
-
