@@ -3472,3 +3472,135 @@ export const createApiToken = async (data: {
 export const deleteApiToken = async (tokenId: number): Promise<void> => {
   await del(`api-tokens/${tokenId}`);
 };
+
+// ============================================================================
+// CONTRACTS
+// ============================================================================
+
+export type ContractType = 'service' | 'nda' | 'maintenance' | 'cgv' | 'custom';
+export type ContractStatus = 'draft' | 'pending_client' | 'pending_provider' | 'signed' | 'cancelled';
+
+export interface Contract {
+  id: number;
+  documentId: string;
+  title: string;
+  contract_type: ContractType;
+  status: ContractStatus;
+  content: {
+    title: string;
+    parties: {
+      provider: { name: string; details: string };
+      client: { name: string; details: string };
+    };
+    preamble: string;
+    articles: { number: number; title: string; content: string }[];
+    signatures: { date: string; location: string };
+    tips?: string[];
+    warnings?: string[];
+  };
+  signature_location?: string;
+  signature_date?: string;
+  provider_signature?: string;
+  provider_signed_at?: string;
+  client_signature?: string;
+  client_signed_at?: string;
+  signature_token?: string;
+  token_expires_at?: string;
+  pdf_url?: string;
+  client?: { id: number; documentId: string; name: string; email: string };
+  project?: { id: number; documentId: string; title: string };
+  user?: { id: number; documentId: string; username: string; email: string };
+  client_email_sent?: boolean;
+  client_notified_at?: string;
+  provider_notified_at?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Récupère tous les contrats de l'utilisateur */
+export const fetchUserContracts = async (userId: number): Promise<Contract[]> => {
+  const response = await get<{ data: Contract[] }>(`contracts/user/${userId}`);
+  return response.data || [];
+};
+
+/** Récupère un contrat par son documentId */
+export const fetchContractByDocumentId = async (documentId: string): Promise<Contract | null> => {
+  const response = await get<{ data: Contract }>(`contracts/${documentId}?populate=*`);
+  return response.data || null;
+};
+
+/** Crée un nouveau contrat */
+export const createContract = async (data: {
+  title: string;
+  contract_type: ContractType;
+  status?: ContractStatus;
+  content: Contract['content'];
+  signature_location?: string;
+  signature_date?: string;
+  provider_signature?: string;
+  client?: string; // documentId
+  project?: string; // documentId
+  user: number;
+}): Promise<Contract> => {
+  const response = await post<{ data: Contract }>('contracts', { data });
+  return response.data;
+};
+
+/** Met à jour un contrat */
+export const updateContract = async (
+  documentId: string,
+  data: Partial<Contract>
+): Promise<Contract> => {
+  const response = await put<{ data: Contract }>(`contracts/${documentId}`, { data });
+  return response.data;
+};
+
+/** Supprime un contrat */
+export const deleteContract = async (documentId: string): Promise<void> => {
+  await del(`contracts/${documentId}`);
+};
+
+/** Envoie le contrat au client pour signature */
+export const sendContractToClient = async (documentId: string): Promise<{
+  signatureToken: string;
+  clientEmail: string;
+  contractTitle: string;
+}> => {
+  const response = await post<{ data: { signatureToken: string; clientEmail: string; contractTitle: string } }>(
+    `contracts/${documentId}/send-to-client`,
+    {}
+  );
+  return response.data;
+};
+
+/** Récupère un contrat par son token de signature (endpoint public) */
+export const fetchContractByToken = async (token: string): Promise<Contract | null> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1337/api';
+    const response = await fetch(`${baseUrl}/contracts/token/${token}`);
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.data || null;
+  } catch {
+    return null;
+  }
+};
+
+/** Signe un contrat en tant que client (endpoint public) */
+export const signContractAsClient = async (
+  token: string,
+  signature: string
+): Promise<{ success: boolean; message: string }> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1337/api';
+    const response = await fetch(`${baseUrl}/contracts/sign/${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ signature }),
+    });
+    const data = await response.json();
+    return { success: response.ok, message: data.message || (response.ok ? 'Success' : 'Error') };
+  } catch {
+    return { success: false, message: 'Network error' };
+  }
+};

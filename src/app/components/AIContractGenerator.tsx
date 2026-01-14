@@ -19,12 +19,17 @@ import {
   IconTrash,
   IconDownload,
   IconChevronDown,
+  IconMail,
+  IconLink,
+  IconSend,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
-import { fetchClientsUser, fetchAllUserProjects } from '@/lib/api';
+import { fetchClientsUser, fetchAllUserProjects, createContract, sendContractToClient, type Contract } from '@/lib/api';
+import { pdf } from '@react-pdf/renderer';
+import ContractPDF from './ContractPDF';
 import type { Client, Project, Company } from '@/types';
 
 interface AIContractGeneratorProps {
@@ -101,7 +106,13 @@ export default function AIContractGenerator({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatedContract, setGeneratedContract] = useState<GeneratedContract | null>(null);
-  const [step, setStep] = useState<'config' | 'review' | 'sign'>('config');
+  const [step, setStep] = useState<'config' | 'review' | 'sign' | 'send'>('config');
+  
+  // Saved contract state
+  const [savedContract, setSavedContract] = useState<Contract | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [signatureLink, setSignatureLink] = useState<string | null>(null);
+  const [emailContent, setEmailContent] = useState<string>('');
 
   // Signature canvas ref
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -139,6 +150,9 @@ export default function AIContractGenerator({
       setSignatures({ provider: null, client: null });
       setSelectedClientId(initialClient?.documentId || null);
       setSelectedProjectId(initialProject?.documentId || null);
+      setSavedContract(null);
+      setSignatureLink(null);
+      setEmailContent('');
     }
   }, [isOpen, company?.location, initialClient?.documentId, initialProject?.documentId]);
 
@@ -361,17 +375,129 @@ export default function AIContractGenerator({
     return text;
   };
 
-  const handleConfirm = () => {
+  // Save contract to database
+  const handleSaveContract = async (): Promise<Contract | null> => {
+    if (!generatedContract || !user?.id) return null;
+    
+    setSaving(true);
+    setError(null);
+    
+    try {
+      const contract = await createContract({
+        title: generatedContract.title,
+        contract_type: contractType,
+        status: signatures.provider ? 'pending_client' : 'draft',
+        content: generatedContract,
+        signature_location: signatureLocation,
+        signature_date: signatureDate,
+        provider_signature: signatures.provider || undefined,
+        client: selectedClient?.documentId,
+        project: selectedProject?.documentId,
+        user: user.id,
+      });
+      
+      setSavedContract(contract);
+      return contract;
+    } catch (err) {
+      console.error('Error saving contract:', err);
+      setError(t('contract_save_error') || 'Erreur lors de la sauvegarde du contrat');
+      return null;
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Save and proceed to send step
+  const handleProceedToSend = async () => {
+    const contract = await handleSaveContract();
+    if (contract) {
+      // Generate signature link
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+      const link = `${baseUrl}/sign/contract/${contract.signature_token}`;
+      setSignatureLink(link);
+      
+      // Generate default email content
+      const defaultEmail = `Bonjour,
+
+Veuillez trouver ci-joint le contrat "${generatedContract?.title}" pour votre signature.
+
+Cliquez sur le lien ci-dessous pour consulter et signer le contrat :
+${link}
+
+Ce lien est valide pendant 30 jours.
+
+Cordialement,
+${user?.username || 'L\'équipe'}`;
+      
+      setEmailContent(defaultEmail);
+      setStep('send');
+    }
+  };
+
+  // Send contract to client
+  const handleSendToClient = async () => {
+    if (!savedContract?.documentId || !selectedClient?.email) return;
+    
+    setSaving(true);
+    try {
+      // Update contract status to pending_client
+      await sendContractToClient(savedContract.documentId);
+      
+      showGlobalPopup(
+        t('contract_sent') || 'Contrat envoyé au client avec succès !',
+        'success'
+      );
+      
+      if (onContractGenerated && generatedContract) {
+        onContractGenerated(generatedContract);
+      }
+      onClose();
+    } catch (err) {
+      console.error('Error sending contract:', err);
+      setError(t('contract_send_error') || 'Erreur lors de l\'envoi du contrat');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleConfirm = async () => {
+    // Save contract first if not already saved
+    if (!savedContract) {
+      const contract = await handleSaveContract();
+      if (!contract) return;
+    }
+    
     if (generatedContract && onContractGenerated) {
       onContractGenerated(generatedContract);
     }
     onClose();
   };
 
-  const handleDownloadPDF = () => {
-    // For now, just copy - PDF generation would require a library like jsPDF
-    handleCopyContract();
-    showGlobalPopup(t('contract_copied_for_pdf') || 'Contrat copié - Collez dans un document Word/Google Docs pour générer un PDF', 'info');
+  const handleDownloadPDF = async () => {
+    if (!generatedContract || !savedContract) return;
+    
+    try {
+      const blob = await pdf(
+        <ContractPDF 
+          contract={savedContract} 
+          companyName={company?.name}
+        />
+      ).toBlob();
+      
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${generatedContract.title.replace(/[^a-z0-9]/gi, '_')}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      showGlobalPopup(t('pdf_downloaded') || 'PDF téléchargé', 'success');
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      showGlobalPopup(t('pdf_error') || 'Erreur lors de la génération du PDF', 'error');
+    }
   };
 
   if (!isOpen) return null;
@@ -424,26 +550,27 @@ export default function AIContractGenerator({
           {/* Progress Steps */}
           <div className="px-6 pt-4">
             <div className="flex items-center gap-2">
-              {['config', 'review', 'sign'].map((s, i) => (
+              {['config', 'review', 'sign', 'send'].map((s, i) => (
                 <React.Fragment key={s}>
                   <div className={`flex items-center gap-2 ${
                     step === s ? 'text-accent' : 
-                    ['config', 'review', 'sign'].indexOf(step) > i ? 'text-success' : 'text-muted'
+                    ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'text-success' : 'text-muted'
                   }`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium ${
                       step === s ? 'bg-accent text-white' : 
-                      ['config', 'review', 'sign'].indexOf(step) > i ? 'bg-success text-white' : 'bg-hover'
+                      ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'bg-success text-white' : 'bg-hover'
                     }`}>
-                      {['config', 'review', 'sign'].indexOf(step) > i ? <IconCheck className="w-4 h-4" /> : i + 1}
+                      {['config', 'review', 'sign', 'send'].indexOf(step) > i ? <IconCheck className="w-4 h-4" /> : i + 1}
                     </div>
                     <span className="text-sm font-medium hidden sm:inline">
                       {s === 'config' ? (t('configuration') || 'Configuration') :
                        s === 'review' ? (t('review') || 'Révision') :
-                       (t('signature') || 'Signature')}
+                       s === 'sign' ? (t('signature') || 'Signature') :
+                       (t('send') || 'Envoi')}
                     </span>
                   </div>
-                  {i < 2 && <div className={`flex-1 h-0.5 ${
-                    ['config', 'review', 'sign'].indexOf(step) > i ? 'bg-success' : 'bg-hover'
+                  {i < 3 && <div className={`flex-1 h-0.5 ${
+                    ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'bg-success' : 'bg-hover'
                   }`} />}
                 </React.Fragment>
               ))}
@@ -883,6 +1010,108 @@ export default function AIContractGenerator({
                 </div>
               </div>
             )}
+
+            {/* Step 4: Send to Client */}
+            {step === 'send' && generatedContract && savedContract && (
+              <div className="space-y-6">
+                {/* Success message */}
+                <div className="p-4 bg-success-light rounded-xl border border-success">
+                  <div className="flex items-start gap-3">
+                    <IconCheck className="w-6 h-6 text-success flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-success">
+                        {t('contract_saved') || 'Contrat sauvegardé avec succès !'}
+                      </p>
+                      <p className="text-sm text-success mt-1">
+                        {t('contract_ready_to_send') || 'Le contrat est prêt à être envoyé au client pour signature.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Client info */}
+                <div className="p-4 bg-card rounded-xl border border-muted">
+                  <p className="font-medium text-primary mb-3 flex items-center gap-2">
+                    <IconUser className="w-4 h-4" />
+                    {t('recipient') || 'Destinataire'}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-accent-light rounded-full flex items-center justify-center">
+                      <span className="text-accent font-medium">
+                        {selectedClient?.name?.charAt(0) || 'C'}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-primary">{selectedClient?.name}</p>
+                      <p className="text-sm text-muted">{selectedClient?.email || t('no_email') || 'Pas d\'email'}</p>
+                    </div>
+                  </div>
+                  {!selectedClient?.email && (
+                    <div className="mt-3 p-3 bg-warning-light rounded-lg">
+                      <p className="text-sm text-warning flex items-center gap-2">
+                        <IconAlertTriangle className="w-4 h-4" />
+                        {t('client_no_email_warning') || 'Ce client n\'a pas d\'email. Ajoutez-en un pour pouvoir envoyer le contrat.'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Signature link */}
+                {signatureLink && (
+                  <div className="p-4 bg-card rounded-xl border border-muted">
+                    <p className="font-medium text-primary mb-3 flex items-center gap-2">
+                      <IconLink className="w-4 h-4" />
+                      {t('signature_link') || 'Lien de signature'}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={signatureLink}
+                        readOnly
+                        className="flex-1 p-3 bg-hover rounded-lg text-sm text-secondary border border-muted"
+                      />
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(signatureLink);
+                          showGlobalPopup(t('link_copied') || 'Lien copié', 'success');
+                        }}
+                        className="p-3 bg-accent text-white rounded-lg hover:opacity-90"
+                      >
+                        <IconCopy className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <p className="text-xs text-muted mt-2">
+                      {t('link_valid_30_days') || 'Ce lien est valide pendant 30 jours.'}
+                    </p>
+                  </div>
+                )}
+
+                {/* Email preview */}
+                <div className="p-4 bg-card rounded-xl border border-muted">
+                  <p className="font-medium text-primary mb-3 flex items-center gap-2">
+                    <IconMail className="w-4 h-4" />
+                    {t('email_content') || 'Contenu de l\'email'}
+                  </p>
+                  <textarea
+                    value={emailContent}
+                    onChange={(e) => setEmailContent(e.target.value)}
+                    className="w-full p-3 bg-hover rounded-lg text-sm text-secondary border border-muted focus:border-accent focus:outline-none resize-none"
+                    rows={8}
+                    placeholder={t('email_placeholder') || 'Rédigez votre message...'}
+                  />
+                </div>
+
+                {/* Info */}
+                <div className="p-4 bg-info-light rounded-xl">
+                  <p className="text-sm text-info flex items-start gap-2">
+                    <IconBulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <span>
+                      {t('send_contract_info') || 'Une fois l\'email envoyé, le client pourra signer le contrat en ligne. Vous serez notifié dès qu\'il aura signé.'}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer */}
@@ -952,19 +1181,67 @@ export default function AIContractGenerator({
                 </button>
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={handleDownloadPDF}
-                    className="flex items-center gap-2 px-4 py-2 bg-hover text-primary rounded-lg hover:bg-card transition-colors"
-                  >
-                    <IconDownload className="w-4 h-4" />
-                    {t('download') || 'Télécharger'}
-                  </button>
-                  <button
                     onClick={handleConfirm}
-                    disabled={!signatures.provider}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    disabled={!signatures.provider || saving}
+                    className="flex items-center gap-2 px-4 py-2 bg-hover text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
                   >
                     <IconCheck className="w-4 h-4" />
-                    {t('finalize_contract') || 'Finaliser le contrat'}
+                    {t('save_only') || 'Sauvegarder'}
+                  </button>
+                  <button
+                    onClick={handleProceedToSend}
+                    disabled={!signatures.provider || saving}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {saving ? (
+                      <>
+                        <IconLoader2 className="w-4 h-4 animate-spin" />
+                        {t('saving') || 'Sauvegarde...'}
+                      </>
+                    ) : (
+                      <>
+                        <IconMail className="w-4 h-4" />
+                        {t('send_to_client') || 'Envoyer au client'}
+                      </>
+                    )}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {step === 'send' && (
+              <>
+                <button
+                  onClick={() => setStep('sign')}
+                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                >
+                  {t('back') || 'Retour'}
+                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleDownloadPDF}
+                    disabled={!savedContract}
+                    className="flex items-center gap-2 px-4 py-2 bg-hover text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                  >
+                    <IconDownload className="w-4 h-4" />
+                    {t('download_pdf') || 'PDF'}
+                  </button>
+                  <button
+                    onClick={handleSendToClient}
+                    disabled={saving || !selectedClient?.email}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {saving ? (
+                      <>
+                        <IconLoader2 className="w-4 h-4 animate-spin" />
+                        {t('sending') || 'Envoi...'}
+                      </>
+                    ) : (
+                      <>
+                        <IconSend className="w-4 h-4" />
+                        {t('send_email') || 'Envoyer l\'email'}
+                      </>
+                    )}
                   </button>
                 </div>
               </>
