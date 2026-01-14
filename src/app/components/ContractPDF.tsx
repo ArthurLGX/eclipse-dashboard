@@ -14,7 +14,7 @@ import type { Contract } from '@/lib/api';
 const styles = StyleSheet.create({
   page: {
     padding: 50,
-    paddingBottom: 80,
+    paddingBottom: 100,
     fontSize: 10,
     fontFamily: 'Helvetica',
     backgroundColor: '#ffffff',
@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     borderTopWidth: 1,
     borderTopColor: '#dddddd',
+    minPresenceAhead: 150, // Ensure enough space before page break
   },
   signatureLocation: {
     textAlign: 'center',
@@ -149,7 +150,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   signatureImage: {
-    height: 50,
+    height: 60,
+    maxHeight: 60,
     marginBottom: 10,
     objectFit: 'contain',
   },
@@ -279,7 +281,7 @@ export default function ContractPDF({ contract, companyName }: ContractPDFProps)
         </View>
 
         {/* Signatures */}
-        <View style={styles.signaturesSection}>
+        <View style={styles.signaturesSection} wrap={false}>
           <Text style={styles.signatureLocation}>
             Fait à {content.signatures.location}, le {content.signatures.date}
           </Text>
@@ -293,7 +295,7 @@ export default function ContractPDF({ contract, companyName }: ContractPDFProps)
                   {/* eslint-disable-next-line jsx-a11y/alt-text */}
                   <Image src={provider_signature} style={styles.signatureImage} />
                   <Text style={styles.signatureDate}>
-                    Signé le {formatDate(provider_signed_at)}
+                    Signé le {formatDate(provider_signed_at) || content.signatures.date}
                   </Text>
                 </>
               ) : (
@@ -311,7 +313,7 @@ export default function ContractPDF({ contract, companyName }: ContractPDFProps)
                   {/* eslint-disable-next-line jsx-a11y/alt-text */}
                   <Image src={client_signature} style={styles.signatureImage} />
                   <Text style={styles.signatureDate}>
-                    Signé le {formatDate(client_signed_at)}
+                    Signé le {formatDate(client_signed_at) || content.signatures.date}
                   </Text>
                 </>
               ) : (

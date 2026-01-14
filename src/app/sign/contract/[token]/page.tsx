@@ -314,7 +314,20 @@ export default function PublicContractSignPage() {
                       height={80}
                       className="max-h-20 mx-auto object-contain"
                     />
-                    <p className="text-xs text-slate-500 mt-2">✓ Signé</p>
+                    <p className="text-xs text-slate-500 mt-2">
+                      ✓ Signé le {contract.provider_signed_at 
+                        ? new Date(contract.provider_signed_at).toLocaleDateString('fr-FR', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })
+                        : new Date().toLocaleDateString('fr-FR', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })
+                      }
+                    </p>
                   </div>
                 ) : (
                   <div className="border border-dashed border-slate-300 rounded-xl p-8 text-slate-400">
