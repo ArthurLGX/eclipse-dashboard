@@ -563,7 +563,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`flex-1 py-3 px-4 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === tab.id
-                  ? 'text-accent border-b-2 border-accent bg-accent/5'
+                  ? 'text-accent border-b-2 border-accent bg-accent-light'
                   : 'text-muted hover:text-primary hover:bg-hover'
               }`}
             >
@@ -955,7 +955,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                       readOnly
                       className="flex-1 px-3 py-2 bg-muted border border-input rounded-lg text-primary text-sm"
                     />
-                    <button className="px-3 py-2 bg-accent text-accent-text rounded-lg hover:bg-accent/90 transition-colors">
+                    <button className="px-3 py-2 bg-accent text-accent-text rounded-lg hover:bg-accent transition-colors">
                       <IconCopy size={18} />
                     </button>
                   </div>
@@ -1195,7 +1195,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-default">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-accent/10">
+            <div className="p-2 rounded-lg bg-accent-light">
               <IconDownload size={20} className="text-accent" />
             </div>
             <div>
@@ -1970,7 +1970,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accent text-accent-text rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accent text-accent-text rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
                       >
                         {uploading ? (
                           <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -2022,7 +2022,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                               sizes="120px"
                               className="object-cover"
                             />
-                            <div className="absolute inset-0 bg-accent/0 group-hover:bg-accent/20 transition-colors flex items-center justify-center">
+                            <div className="absolute inset-0 bg-accent-light group-hover:bg-accent-light transition-colors flex items-center justify-center">
                               <IconCheck className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
                             </div>
                           </button>
@@ -2152,7 +2152,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-accent text-accent-text font-medium hover:bg-accent/90 transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-accent text-accent-text font-medium hover:bg-accent transition-colors"
             >
               {project ? t('save') : t('portfolio_create')}
             </button>
@@ -2183,7 +2183,7 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
       </p>
       <button
         onClick={onAddProject}
-        className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-text font-medium rounded-xl hover:bg-accent/90 transition-colors"
+        className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-text font-medium rounded-xl hover:bg-accent transition-colors"
       >
         <IconPlus size={20} />
         {t('portfolio_add_first')}

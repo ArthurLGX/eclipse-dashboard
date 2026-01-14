@@ -334,7 +334,7 @@ function KanbanColumn({
     <div 
       className={`
         flex flex-col min-w-[280px] max-w-[320px] rounded-xl border-2 transition-all duration-200
-        ${isDragOver ? 'border-accent bg-accent/5 scale-[1.02]' : 'border-transparent'}
+        ${isDragOver ? 'border-accent bg-accent-light scale-[1.02]' : 'border-transparent'}
       `}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}

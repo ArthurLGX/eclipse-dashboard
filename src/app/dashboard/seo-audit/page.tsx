@@ -277,7 +277,7 @@ export default function SEOAuditPage() {
             <button
               onClick={runAudit}
               disabled={!url || loading}
-              className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50 transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-lg hover:bg-accent disabled:opacity-50 transition-colors"
             >
               {loading ? (
                 <>

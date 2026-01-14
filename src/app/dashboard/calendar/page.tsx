@@ -587,7 +587,7 @@ export default function CalendarPage() {
                     onClick={() => setSelectedDate(date)}
                     className={`
                       min-h-[80px] p-1 rounded-lg border cursor-pointer transition-all
-                      ${isToday(date) ? 'border-accent bg-accent/5' : 'border-transparent hover:border-default'}
+                      ${isToday(date) ? 'border-accent bg-accent-light' : 'border-transparent hover:border-default'}
                       ${isSelected ? 'ring-1 ring-accent' : ''}
                       ${!isCurrentMonth(date) ? 'opacity-40' : ''}
                     `}
@@ -699,7 +699,7 @@ export default function CalendarPage() {
                           )}
                           {/* Recurring indicator */}
                           {(event.recurrence && event.recurrence !== 'none' || event.recurrence_parent_id) && (
-                            <div className="flex items-center gap-1 mt-1.5 px-1.5 py-0.5 bg-accent/10 rounded text-accent w-fit">
+                            <div className="flex items-center gap-1 mt-1.5 px-1.5 py-0.5 bg-accent-light rounded text-accent w-fit">
                               <IconCalendarEvent className="w-3 h-3" />
                               <span className="text-[10px] font-medium">
                                 {(() => {

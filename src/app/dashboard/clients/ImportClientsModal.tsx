@@ -501,7 +501,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                 className={`
                   border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all
                   ${isDragging 
-                    ? 'border-accent bg-accent/5 scale-[1.02]' 
+                    ? 'border-accent bg-accent-light scale-[1.02]' 
                     : 'border-default hover:border-accent/50 hover:bg-card-hover'
                   }
                 `}

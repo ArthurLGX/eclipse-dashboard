@@ -1194,7 +1194,7 @@ export default function UnifiedOnboardingModal() {
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                     <button
                       onClick={handleGoToProject}
-                      className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl font-medium hover:bg-accent/90 transition-colors"
+                      className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl font-medium hover:bg-accent transition-colors"
                     >
                       <IconRocket className="w-5 h-5" />
                       {t('go_to_project') || 'Voir mon projet'}
@@ -1249,7 +1249,7 @@ export default function UnifiedOnboardingModal() {
                   ${(step === 'business' && selectedBusinessType) ||
                     (step === 'objective' && selectedObjective) ||
                     step === 'project'
-                    ? 'bg-accent text-white hover:bg-accent/90'
+                    ? 'bg-accent text-white hover:bg-accent'
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                   }
                 `}

@@ -353,7 +353,7 @@ const PROJECT_TYPES = [
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-2 border-success/30 border-t-success rounded-full animate-spin" />
+          <div className="w-12 h-12 border-2 border success border-t-success rounded-full animate-spin" />
           <p className="text-muted">Chargement du projet...</p>
         </div>
       </div>
@@ -1134,7 +1134,7 @@ const PROJECT_TYPES = [
 
                     {loadingFactures ? (
                       <div className="flex items-center justify-center py-12">
-                        <div className="w-8 h-8 border-2 border-success/30 border-t-success rounded-full animate-spin" />
+                        <div className="w-8 h-8 border-2 border success border-t-success rounded-full animate-spin" />
                       </div>
                     ) : factures.length > 0 ? (
                       <div className="space-y-3">

@@ -295,7 +295,7 @@ export default function MediaPickerModal({
               onClick={() => setActiveTab('computer')}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'computer'
-                  ? 'text-accent border-b-2 border-accent bg-accent/5'
+                  ? 'text-accent border-b-2 border-accent bg-accent-light'
                   : 'text-secondary hover:text-primary hover:bg-hover'
               }`}
             >
@@ -306,7 +306,7 @@ export default function MediaPickerModal({
               onClick={() => setActiveTab('library')}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'library'
-                  ? 'text-accent border-b-2 border-accent bg-accent/5'
+                  ? 'text-accent border-b-2 border-accent bg-accent-light'
                   : 'text-secondary hover:text-primary hover:bg-hover'
               }`}
             >
@@ -317,7 +317,7 @@ export default function MediaPickerModal({
               onClick={() => setActiveTab('url')}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'url'
-                  ? 'text-accent border-b-2 border-accent bg-accent/5'
+                  ? 'text-accent border-b-2 border-accent bg-accent-light'
                   : 'text-secondary hover:text-primary hover:bg-hover'
               }`}
             >
@@ -437,7 +437,7 @@ export default function MediaPickerModal({
                           )}
                           
                           {selectedLibraryItem?.id === media.id && (
-                            <div className="absolute inset-0 bg-accent/20 flex items-center justify-center">
+                            <div className="absolute inset-0 bg-accent-light flex items-center justify-center">
                               <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
                                 <IconCheck className="w-5 h-5 text-white" />
                               </div>

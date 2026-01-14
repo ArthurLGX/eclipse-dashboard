@@ -315,7 +315,7 @@ export default function Plans() {
                 >
                   {plan.name === 'pro' && (
                     <div className="absolute top-4 right-1/2 translate-x-1/2 flex mb-4 mx-auto">
-                      <span className="text-xs font-medium text-accent bg-accent/20 rounded-full px-3 py-1">
+                      <span className="text-xs font-medium text-accent bg-accent-light rounded-full px-3 py-1">
                         {t('most_popular')}
                       </span>
                     </div>
@@ -421,7 +421,7 @@ export default function Plans() {
                           key={plan.id}
                           className={`p-4 text-center text-primary font-semibold transition-all duration-500 w-1/6 ${
                             highlightedPlan === plan.name
-                              ? 'bg-accent/20'
+                              ? 'bg-accent-light'
                               : ''
                           }`}
                         >
@@ -549,7 +549,7 @@ export default function Plans() {
                                     key={plan.id}
                                     className={`p-4 text-center transition-all duration-500 ${
                                       highlightedPlan === plan.name
-                                        ? 'bg-accent/20'
+                                        ? 'bg-accent-light'
                                         : ''
                                     }`}
                                   >

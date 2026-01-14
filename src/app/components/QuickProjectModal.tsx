@@ -325,7 +325,7 @@ export default function QuickProjectModal({
                 {/* Option 1: Dupliquer (mise en avant) */}
                 <button
                   onClick={() => setStep('duplicate')}
-                  className="w-full p-4 rounded-xl border-2 border-accent bg-accent/5 hover:bg-accent/10 text-left transition-all group"
+                  className="w-full p-4 rounded-xl border-2 border-accent bg-accent-light hover:bg-accent-light text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-3 rounded-xl bg-accent text-white">
@@ -360,7 +360,7 @@ export default function QuickProjectModal({
                   className="w-full p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-muted text-secondary group-hover:bg-accent/10 group-hover:text-accent transition-colors">
+                    <div className="p-3 rounded-xl bg-muted text-secondary group-hover:bg-accent-light group-hover:text-accent transition-colors">
                       <IconTemplate className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
@@ -381,7 +381,7 @@ export default function QuickProjectModal({
                   className="w-full p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-muted text-secondary group-hover:bg-accent/10 group-hover:text-accent transition-colors">
+                    <div className="p-3 rounded-xl bg-muted text-secondary group-hover:bg-accent-light group-hover:text-accent transition-colors">
                       <IconFolderPlus className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
@@ -427,7 +427,7 @@ export default function QuickProjectModal({
                         onClick={() => handleSelectSourceProject(project)}
                         className={`w-full p-3 rounded-lg border text-left transition-all ${
                           isLast 
-                            ? 'border-accent bg-accent/5 hover:bg-accent/10' 
+                            ? 'border-accent bg-accent-light hover:bg-accent-light' 
                             : 'border-default hover:border-accent bg-card hover:bg-hover'
                         }`}
                       >
@@ -524,7 +524,7 @@ export default function QuickProjectModal({
 
                 {/* Résumé de la source */}
                 {selectedSourceProject && (
-                  <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
+                  <div className="p-3 rounded-lg bg-accent-light border border-accent/20">
                     <div className="flex items-center gap-2 text-sm">
                       <IconCopy className="w-4 h-4 text-accent" />
                       <span className="text-accent font-medium">
@@ -545,7 +545,7 @@ export default function QuickProjectModal({
                 )}
 
                 {selectedTemplate && (
-                  <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
+                  <div className="p-3 rounded-lg bg-accent-light border border-accent/20">
                     <div className="flex items-center gap-2 text-sm">
                       <IconTemplate className="w-4 h-4 text-accent" />
                       <span className="text-accent font-medium">

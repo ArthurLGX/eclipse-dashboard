@@ -418,7 +418,7 @@ export default function RevenuePage() {
         const statusConfig: Record<string, { label: string; className: string }> = {
           // Statuts facture
           paid: { label: t('paid') || 'Payée', className: 'bg-success-light text-success' },
-          sent: { label: t('sent') || 'Envoyée', className: 'bg-accent/10 text-accent' },
+          sent: { label: t('sent') || 'Envoyée', className: 'bg-accent-light text-accent' },
           draft: { label: t('draft') || 'Brouillon', className: 'bg-warning-light text-warning' },
           overdue: { label: t('overdue') || 'En retard', className: 'bg-danger/10 text-danger' },
           cancelled: { label: t('cancelled') || 'Annulée', className: 'bg-muted/20 text-muted' },

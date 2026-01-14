@@ -997,7 +997,7 @@ export default function RichTextEditor({
                   onMouseEnter={() => setSelectedEmojiIndex(index)}
                   className={`w-full flex items-center gap-3 px-2 py-1.5 rounded-md transition-colors ${
                     index === selectedEmojiIndex
-                      ? 'bg-accent/10 text-accent'
+                      ? 'bg-accent-light text-accent'
                       : 'hover:bg-hover text-primary'
                   }`}
                 >
@@ -1050,7 +1050,7 @@ export default function RichTextEditor({
             
             {/* Edge resize handles */}
             <div
-              className="absolute w-8 h-3 bg-accent/50 rounded-sm cursor-n-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="absolute w-8 h-3 bg-accent-light0 rounded-sm cursor-n-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop - 4,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth / 2 - 16,
@@ -1058,7 +1058,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 'n')}
             />
             <div
-              className="absolute w-3 h-8 bg-accent/50 rounded-sm cursor-e-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="absolute w-3 h-8 bg-accent-light0 rounded-sm cursor-e-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight / 2 - 16,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth - 8,
@@ -1066,7 +1066,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 'e')}
             />
             <div
-              className="absolute w-8 h-3 bg-accent/50 rounded-sm cursor-s-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="absolute w-8 h-3 bg-accent-light0 rounded-sm cursor-s-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight - 8,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth / 2 - 16,
@@ -1074,7 +1074,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 's')}
             />
             <div
-              className="absolute w-3 h-8 bg-accent/50 rounded-sm cursor-w-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="absolute w-3 h-8 bg-accent-light0 rounded-sm cursor-w-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight / 2 - 16,
                 left: selectedMedia.offsetLeft - 4,

@@ -279,7 +279,7 @@ function SubscriptionModal({
             <button
               type="submit"
               disabled={loading || !formData.name}
-              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50"
+              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent disabled:opacity-50"
             >
               {loading ? '...' : (subscription ? 'Enregistrer' : 'Créer')}
             </button>
@@ -436,7 +436,7 @@ export default function SubscriptionsPage() {
 
         <button
           onClick={() => { setEditingSubscription(null); setModalOpen(true); }}
-          className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90"
+          className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent"
         >
           <IconPlus size={18} />
           Nouvel abonnement

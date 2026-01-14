@@ -184,7 +184,7 @@ export default function UpgradeDropdown({
                 <span
                   className={`px-2 py-1 ${
                     togglePlan
-                      ? 'bg-accent/20 text-accent'
+                      ? 'bg-accent-light text-accent'
                       : 'bg-page text-muted'
                   } !text-xs font-medium rounded-full`}
                 >

@@ -334,7 +334,7 @@ export default function CreateProjectModal({
                       className="p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover text-left transition-all group"
                     >
                       <div className="flex items-start justify-between mb-3">
-                        <div className="p-2 rounded-lg bg-accent/10 text-accent">
+                        <div className="p-2 rounded-lg bg-accent-light text-accent">
                           <IconBriefcase className="w-5 h-5" />
                         </div>
                         <IconChevronRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
@@ -394,7 +394,7 @@ export default function CreateProjectModal({
               >
                 {/* Template summary */}
                 {selectedTemplate && selectedTemplate.id !== 'custom' && (
-                  <div className="p-4 rounded-xl bg-accent/5 border border-accent-light">
+                  <div className="p-4 rounded-xl bg-accent-light border border-accent-light">
                     <div className="flex items-center gap-3 mb-2">
                       <IconCheck className="w-5 h-5 text-accent" />
                       <span className="font-medium text-primary">
@@ -533,7 +533,7 @@ export default function CreateProjectModal({
 
                 {/* Estimated value */}
                 {selectedTemplate && selectedTemplate.tasks.length > 0 && (
-                  <div className="p-4 rounded-xl bg-success/10 border border-success/30">
+                  <div className="p-4 rounded-xl bg-success-light border border success">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-secondary">
                         {t('estimated_value') || 'Valeur estimée'}

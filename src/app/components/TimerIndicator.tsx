@@ -422,7 +422,7 @@ export default function TimerIndicator() {
 
             {/* Progress Bar */}
             {(runningEntry.estimated_duration || (isPaused && !isIndefinitePause)) && (
-              <div className={`h-2 rounded-full overflow-hidden mb-3 ${isPaused ? 'bg-accent/30' : 'bg-white/30'}`}>
+              <div className={`h-2 rounded-full overflow-hidden mb-3 ${isPaused ? 'bg-accent-light' : 'bg-white/30'}`}>
                 <motion.div 
                   className={`h-full rounded-full ${isPaused ? 'bg-accent' : 'bg-white'}`}
                   initial={{ width: 0 }}
@@ -437,7 +437,7 @@ export default function TimerIndicator() {
             
             {/* Animation pour pause indéterminée */}
             {isPaused && isIndefinitePause && (
-              <div className="h-2 rounded-full overflow-hidden mb-3 bg-accent/30 relative">
+              <div className="h-2 rounded-full overflow-hidden mb-3 bg-accent-light relative">
                 <motion.div 
                   className="absolute inset-y-0 w-1/3 rounded-full bg-accent"
                   animate={{ x: ['-100%', '400%'] }}
@@ -620,7 +620,7 @@ export default function TimerIndicator() {
               {/* Header */}
               <div className="p-5 bg-accent-light border-b border-accent/30">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
                     <IconCoffee className="w-5 h-5 text-accent" />
                   </div>
                   <div>

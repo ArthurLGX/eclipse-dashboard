@@ -408,7 +408,7 @@ export default function AdminUsersPage() {
                 <tr
                   key={user.id}
                   className={`hover:bg-hover transition-colors ${
-                    selectedUsers.includes(user.id) ? 'bg-accent/5' : ''
+                    selectedUsers.includes(user.id) ? 'bg-accent-light' : ''
                   } ${index !== filteredUsers.length - 1 ? 'border-b border-muted' : ''}`}
                 >
                   <td className="px-4 py-3">

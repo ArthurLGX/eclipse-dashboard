@@ -290,7 +290,7 @@ export default function TimeTrackingPage() {
         </div>
 
         {/* Active Timer */}
-        <div className={`card p-6 ${runningEntry ? 'border-2 border-accent bg-accent/5' : ''}`}>
+        <div className={`card p-6 ${runningEntry ? 'border-2 border-accent bg-accent-light' : ''}`}>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className={`p-3 rounded-xl ${runningEntry ? 'bg-accent text-white animate-pulse' : 'bg-muted'}`}>

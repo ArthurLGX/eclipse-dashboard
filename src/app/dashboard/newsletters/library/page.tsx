@@ -366,7 +366,7 @@ export default function MediaLibraryPage() {
                 {/* Type Badge */}
                 <div className="absolute top-2 left-2">
                   <div className={`p-1.5 rounded-lg ${
-                    file.mime.startsWith('image/') ? 'bg-accent/90' : 'bg-warning/90'
+                    file.mime.startsWith('image/') ? 'bg-accent' : 'bg-warning'
                   }`}>
                     {file.mime.startsWith('image/') ? (
                       <IconPhoto className="w-4 h-4 text-white" />

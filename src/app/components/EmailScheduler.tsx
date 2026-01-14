@@ -189,7 +189,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
               <motion.div 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 bg-success-light border border-success/30 rounded-lg"
+                className="flex items-center gap-2 p-3 bg-success-light border border success rounded-lg"
               >
                 <IconCheck className="w-5 h-5 text-success" />
                 <span className="text-success text-sm">

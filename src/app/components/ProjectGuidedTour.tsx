@@ -277,7 +277,7 @@ export default function ProjectGuidedTour({
                     >
                       {/* Animated rings */}
                       <motion.div
-                        className="absolute inset-0 rounded-full bg-accent/20"
+                        className="absolute inset-0 rounded-full bg-accent-light"
                         animate={{
                           scale: [1, 1.5, 1.5],
                           opacity: [0.5, 0, 0],
@@ -303,7 +303,7 @@ export default function ProjectGuidedTour({
                   {/* Project title badge (first step only) */}
                   {currentStep === 0 && projectTitle && (
                     <div className="flex justify-center">
-                      <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium">
+                      <span className="px-3 py-1 bg-accent-light text-accent rounded-full text-sm font-medium">
                         {projectTitle}
                       </span>
                     </div>
@@ -357,8 +357,8 @@ export default function ProjectGuidedTour({
                 onClick={handleNext}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                   isLastStep
-                    ? 'bg-success text-white hover:bg-success/90'
-                    : 'bg-accent text-white hover:bg-accent/90'
+                    ? 'bg-success text-white hover:bg-success'
+                    : 'bg-accent text-white hover:bg-accent'
                 }`}
               >
                 {isLastStep ? (

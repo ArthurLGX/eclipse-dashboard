@@ -148,7 +148,7 @@ function SelectContactModal({
                       className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
                       <span className="text-sm font-medium text-accent">{getInitials(contact.name)}</span>
                     </div>
                   )}
@@ -489,7 +489,7 @@ function ContactModal({
             <button
               type="submit"
               disabled={loading || !formData.name}
-              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
             >
               {loading ? '...' : (contact ? t('save') || 'Enregistrer' : t('create') || 'Créer')}
             </button>
@@ -862,7 +862,7 @@ export default function PipelinePage() {
             onClick={() => setShowKPIs(!showKPIs)}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
               showKPIs 
-                ? 'bg-accent/10 text-accent border-accent/30' 
+                ? 'bg-accent-light text-accent border-accent/30' 
                 : 'bg-card text-muted border-default hover:bg-hover'
             }`}
           >
@@ -871,7 +871,7 @@ export default function PipelinePage() {
           </button>
           <button
             onClick={() => setContactModal({ isOpen: true, contact: null })}
-            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent transition-colors"
           >
             <IconPlus size={18} />
             {t('new_contact') || 'Nouveau contact'}
