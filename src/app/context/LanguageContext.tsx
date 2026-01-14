@@ -1351,7 +1351,8 @@ const translations = {
     error_generic: 'Une erreur est survenue',
 
     // Revenue
-    global_revenue_stats: 'Vue globale',  
+    global_revenue_stats: 'Vue globale', 
+    total_contacts: 'Total de contacts',
 
     // Notifications
     mark_all_read: 'Tout marquer comme lu',
@@ -1946,6 +1947,7 @@ const translations = {
     recent_emails: 'Emails récents',
     top_clinked_links: 'Liens cliqués',
     all_categories: 'Toutes catégories',
+    won: 'Gagné',
     
     // Scheduled Emails
     scheduled_emails: 'Emails planifiés',
@@ -4702,6 +4704,8 @@ const translations = {
     search_placeholder: 'Search...',
     now: 'Now',
     to_me: 'to me',
+        total_contacts: 'Total contacts',
+won: 'Won',
     select_template_preview: 'Select a template to see preview',
     write_message_placeholder: 'Write your message here...',
     your_title_here: 'Your title here',
