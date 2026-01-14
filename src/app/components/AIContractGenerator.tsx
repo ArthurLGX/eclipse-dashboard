@@ -173,6 +173,35 @@ export default function AIContractGenerator({
     }
   }, [isOpen, company?.location, initialClient?.documentId, initialProject?.documentId]);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
+
+  // Scroll isolation handler - prevents scroll from propagating to body
+  const handleScrollIsolation = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = target;
+    const isScrollable = scrollHeight > clientHeight;
+    
+    if (!isScrollable) return;
+    
+    // Check if we're at the boundaries
+    const isAtTop = scrollTop === 0 && e.deltaY < 0;
+    const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1 && e.deltaY > 0;
+    
+    // Only prevent default if not at boundaries or if scrollable
+    if (!isAtTop && !isAtBottom) {
+      e.stopPropagation();
+    }
+  }, []);
+
   // Convert contract structure to HTML for editing
   const contractToHtml = useCallback((contract: GeneratedContract): string => {
     let html = `<h1 style="text-align: center; text-transform: uppercase;">${contract.title}</h1>\n\n`;
@@ -569,15 +598,17 @@ ${user?.username || 'L\'équipe'}`;
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overscroll-contain"
         onClick={onClose}
+        onWheel={(e) => e.stopPropagation()}
       >
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-page rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-page rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col overscroll-contain"
           onClick={e => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-muted">
@@ -650,7 +681,13 @@ ${user?.username || 'L\'équipe'}`;
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div 
+            className="flex-1 overflow-y-auto p-6"
+            onWheel={handleScrollIsolation}
+            onMouseEnter={(e) => e.currentTarget.focus()}
+            tabIndex={-1}
+            style={{ outline: 'none' }}
+          >
             {step === 'config' && (
               <div className="space-y-6">
                 {/* Client & Project Selection */}
@@ -885,7 +922,12 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Contract preview OR edit mode */}
                 {!isEditMode ? (
-                  <div className="p-6 bg-card rounded-xl border border-muted">
+                  <div 
+                    className="p-6 bg-card rounded-xl border border-muted max-h-[60vh] overflow-y-auto"
+                    onWheel={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
                     {/* Title */}
                     <h3 className="text-xl font-bold text-center text-primary mb-6 uppercase">
                       {generatedContract.title}
@@ -962,7 +1004,12 @@ ${user?.username || 'L\'équipe'}`;
                         {t('edit_contract_info') || 'Vous pouvez modifier librement le contenu du contrat ci-dessous.'}
                       </p>
                     </div>
-                    <div className="bg-card rounded-xl border border-muted overflow-hidden">
+                    <div 
+                      className="bg-card rounded-xl border border-muted overflow-hidden"
+                      onWheel={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
                       <RichTextEditor
                         value={editedContractHtml}
                         onChange={setEditedContractHtml}
