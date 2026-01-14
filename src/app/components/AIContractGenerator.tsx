@@ -605,6 +605,17 @@ ${user?.username || 'L\'équipe'}`;
             </button>
           </div>
 
+          {/* Error display in header */}
+          {error && (
+            <div className="mx-6 mt-4 p-3 bg-danger-light rounded-xl flex items-center gap-3 border border-danger">
+              <IconAlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
+              <p className="text-sm text-danger flex-1">{error}</p>
+              <button onClick={() => setError(null)} className="text-danger hover:opacity-70">
+                <IconX className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           {/* Progress Steps */}
           <div className="px-6 pt-4">
             <div className="flex items-center gap-2">
@@ -836,13 +847,6 @@ ${user?.username || 'L\'équipe'}`;
                   </div>
                 </div>
 
-                {/* Error */}
-                {error && (
-                  <div className="p-4 bg-danger-light rounded-xl flex items-center gap-3">
-                    <IconAlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
-                    <p className="text-sm text-danger">{error}</p>
-                  </div>
-                )}
               </div>
             )}
 
@@ -1277,7 +1281,7 @@ ${user?.username || 'L\'équipe'}`;
                 </button>
                 <button
                   onClick={handleGenerate}
-                  disabled={loading || !selectedClientId}
+                  disabled={loading || !selectedClientId || !signatureLocation || !signatureDate}
                   className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
