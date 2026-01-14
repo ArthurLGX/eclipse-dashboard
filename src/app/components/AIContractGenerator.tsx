@@ -22,6 +22,8 @@ import {
   IconMail,
   IconLink,
   IconSend,
+  IconEdit,
+  IconEye,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -30,6 +32,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import { fetchClientsUser, fetchAllUserProjects, createContract, sendContractToClient, type Contract } from '@/lib/api';
 import { pdf } from '@react-pdf/renderer';
 import ContractPDF from './ContractPDF';
+import RichTextEditor from './RichTextEditor';
 import type { Client, Project, Company } from '@/types';
 
 interface AIContractGeneratorProps {
@@ -114,6 +117,10 @@ export default function AIContractGenerator({
   const [generatedContract, setGeneratedContract] = useState<GeneratedContract | null>(null);
   const [step, setStep] = useState<'config' | 'review' | 'sign' | 'send'>('config');
   
+  // Edit mode for contract
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedContractHtml, setEditedContractHtml] = useState<string>('');
+  
   // Saved contract state
   const [savedContract, setSavedContract] = useState<Contract | null>(null);
   const [saving, setSaving] = useState(false);
@@ -159,8 +166,47 @@ export default function AIContractGenerator({
       setSavedContract(null);
       setSignatureLink(null);
       setEmailContent('');
+      setIsEditMode(false);
+      setEditedContractHtml('');
     }
   }, [isOpen, company?.location, initialClient?.documentId, initialProject?.documentId]);
+
+  // Convert contract structure to HTML for editing
+  const contractToHtml = useCallback((contract: GeneratedContract): string => {
+    let html = `<h1 style="text-align: center; text-transform: uppercase;">${contract.title}</h1>\n\n`;
+    
+    html += `<h2>ENTRE LES SOUSSIGNÉS :</h2>\n`;
+    html += `<p><strong>${contract.parties.provider.name}</strong></p>\n`;
+    html += `<p>${contract.parties.provider.details.replace(/\n/g, '<br>')}</p>\n`;
+    html += `<p style="text-align: center;"><em>ET</em></p>\n`;
+    html += `<p><strong>${contract.parties.client.name}</strong></p>\n`;
+    html += `<p>${contract.parties.client.details.replace(/\n/g, '<br>')}</p>\n\n`;
+    
+    html += `<h2>PRÉAMBULE</h2>\n`;
+    html += `<p>${contract.preamble.replace(/\n/g, '<br>')}</p>\n\n`;
+    
+    html += `<h2>IL A ÉTÉ CONVENU CE QUI SUIT :</h2>\n`;
+    contract.articles.forEach(article => {
+      html += `<h3>Article ${article.number} - ${article.title}</h3>\n`;
+      html += `<p>${article.content.replace(/\n/g, '<br>')}</p>\n`;
+    });
+    
+    html += `\n<hr>\n`;
+    html += `<p style="text-align: center;">Fait à ${contract.signatures.location}, le ${contract.signatures.date}</p>\n`;
+    html += `<div style="display: flex; justify-content: space-between; margin-top: 20px;">\n`;
+    html += `  <div style="text-align: center;"><strong>Le Prestataire</strong><br><br><br>____________________</div>\n`;
+    html += `  <div style="text-align: center;"><strong>Le Client</strong><br><br><br>____________________</div>\n`;
+    html += `</div>`;
+    
+    return html;
+  }, []);
+
+  // Initialize edit HTML when contract is generated
+  useEffect(() => {
+    if (generatedContract && !editedContractHtml) {
+      setEditedContractHtml(contractToHtml(generatedContract));
+    }
+  }, [generatedContract, editedContractHtml, contractToHtml]);
 
   const loadData = async () => {
     if (!user?.id) return;
@@ -389,11 +435,17 @@ export default function AIContractGenerator({
     setError(null);
     
     try {
+      // Include edited HTML content if in edit mode
+      const contentToSave = {
+        ...generatedContract,
+        editedHtml: isEditMode && editedContractHtml ? editedContractHtml : undefined,
+      };
+      
       const contract = await createContract({
         title: generatedContract.title,
         contract_type: contractType,
         status: signatures.provider ? 'pending_client' : 'draft',
-        content: generatedContract,
+        content: contentToSave,
         signature_location: signatureLocation,
         signature_date: signatureDate,
         provider_signature: signatures.provider || undefined,
@@ -788,75 +840,125 @@ ${user?.username || 'L\'équipe'}`;
 
             {step === 'review' && generatedContract && (
               <div className="space-y-6">
-                {/* Contract preview */}
-                <div className="p-6 bg-card rounded-xl border border-muted">
-                  {/* Title */}
-                  <h3 className="text-xl font-bold text-center text-primary mb-6 uppercase">
-                    {generatedContract.title}
-                  </h3>
-
-                  {/* Parties */}
-                  <div className="mb-6 text-sm">
-                    <p className="font-semibold text-primary">ENTRE LES SOUSSIGNÉS :</p>
-                    <div className="mt-2 p-3 bg-hover rounded-lg">
-                      <p className="font-medium text-primary">{generatedContract.parties.provider.name}</p>
-                      <p className="text-secondary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
-                    </div>
-                    <p className="text-center my-2 text-muted">ET</p>
-                    <div className="p-3 bg-hover rounded-lg">
-                      <p className="font-medium text-primary">{generatedContract.parties.client.name}</p>
-                      <p className="text-secondary whitespace-pre-line">{generatedContract.parties.client.details}</p>
-                    </div>
-                  </div>
-
-                  {/* Preamble */}
-                  <div className="mb-6 text-sm">
-                    <p className="font-semibold text-primary mb-2">PRÉAMBULE</p>
-                    <p className="text-secondary whitespace-pre-line">{generatedContract.preamble}</p>
-                  </div>
-
-                  {/* Articles */}
-                  <div className="space-y-4">
-                    <p className="font-semibold text-primary text-sm">IL A ÉTÉ CONVENU CE QUI SUIT :</p>
-                    {generatedContract.articles.map(article => (
-                      <div key={article.number} className="text-sm">
-                        <p className="font-semibold text-primary">
-                          Article {article.number} - {article.title}
-                        </p>
-                        <p className="text-secondary whitespace-pre-line mt-1">{article.content}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Signatures preview */}
-                  <div className="mt-8 pt-4 border-t border-muted text-sm">
-                    <p className="text-center text-muted mb-4">
-                      Fait à {generatedContract.signatures.location}, le {generatedContract.signatures.date}
-                    </p>
-                    <div className="grid grid-cols-2 gap-8">
-                      <div className="text-center">
-                        <p className="font-medium text-primary">Le Prestataire</p>
-                        <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
-                          {signatures.provider ? (
-                            <Image src={signatures.provider} alt="Signature prestataire" width={150} height={60} className="max-h-16 object-contain" />
-                          ) : (
-                            <span className="text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-medium text-primary">Le Client</p>
-                        <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
-                          {signatures.client ? (
-                            <Image src={signatures.client} alt="Signature client" width={150} height={60} className="max-h-16 object-contain" />
-                          ) : (
-                            <span className="text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                {/* Toggle Edit/Preview mode */}
+                <div className="flex items-center justify-end">
+                  <div className="flex items-center gap-1 p-1 bg-hover rounded-lg">
+                    <button
+                      onClick={() => setIsEditMode(false)}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                        !isEditMode 
+                          ? 'bg-card text-primary shadow-sm' 
+                          : 'text-muted hover:text-primary'
+                      }`}
+                    >
+                      <IconEye className="w-4 h-4" />
+                      {t('preview') || 'Aperçu'}
+                    </button>
+                    <button
+                      onClick={() => setIsEditMode(true)}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                        isEditMode 
+                          ? 'bg-card text-primary shadow-sm' 
+                          : 'text-muted hover:text-primary'
+                      }`}
+                    >
+                      <IconEdit className="w-4 h-4" />
+                      {t('edit') || 'Éditer'}
+                    </button>
                   </div>
                 </div>
+
+                {/* Contract preview OR edit mode */}
+                {!isEditMode ? (
+                  <div className="p-6 bg-card rounded-xl border border-muted">
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-center text-primary mb-6 uppercase">
+                      {generatedContract.title}
+                    </h3>
+
+                    {/* Parties */}
+                    <div className="mb-6 text-sm">
+                      <p className="font-semibold text-primary">ENTRE LES SOUSSIGNÉS :</p>
+                      <div className="mt-2 p-3 bg-hover rounded-lg">
+                        <p className="font-medium text-primary">{generatedContract.parties.provider.name}</p>
+                        <p className="text-secondary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
+                      </div>
+                      <p className="text-center my-2 text-muted">ET</p>
+                      <div className="p-3 bg-hover rounded-lg">
+                        <p className="font-medium text-primary">{generatedContract.parties.client.name}</p>
+                        <p className="text-secondary whitespace-pre-line">{generatedContract.parties.client.details}</p>
+                      </div>
+                    </div>
+
+                    {/* Preamble */}
+                    <div className="mb-6 text-sm">
+                      <p className="font-semibold text-primary mb-2">PRÉAMBULE</p>
+                      <p className="text-secondary whitespace-pre-line">{generatedContract.preamble}</p>
+                    </div>
+
+                    {/* Articles */}
+                    <div className="space-y-4">
+                      <p className="font-semibold text-primary text-sm">IL A ÉTÉ CONVENU CE QUI SUIT :</p>
+                      {generatedContract.articles.map(article => (
+                        <div key={article.number} className="text-sm">
+                          <p className="font-semibold text-primary">
+                            Article {article.number} - {article.title}
+                          </p>
+                          <p className="text-secondary whitespace-pre-line mt-1">{article.content}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Signatures preview */}
+                    <div className="mt-8 pt-4 border-t border-muted text-sm">
+                      <p className="text-center text-muted mb-4">
+                        Fait à {generatedContract.signatures.location}, le {generatedContract.signatures.date}
+                      </p>
+                      <div className="grid grid-cols-2 gap-8">
+                        <div className="text-center">
+                          <p className="font-medium text-primary">Le Prestataire</p>
+                          <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
+                            {signatures.provider ? (
+                              <Image src={signatures.provider} alt="Signature prestataire" width={150} height={60} className="max-h-16 object-contain" />
+                            ) : (
+                              <span className="text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <p className="font-medium text-primary">Le Client</p>
+                          <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
+                            {signatures.client ? (
+                              <Image src={signatures.client} alt="Signature client" width={150} height={60} className="max-h-16 object-contain" />
+                            ) : (
+                              <span className="text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* Edit Mode - Rich Text Editor */
+                  <div className="space-y-4">
+                    <div className="p-4 bg-info-light rounded-xl">
+                      <p className="text-sm text-info flex items-center gap-2">
+                        <IconEdit className="w-4 h-4" />
+                        {t('edit_contract_info') || 'Vous pouvez modifier librement le contenu du contrat ci-dessous.'}
+                      </p>
+                    </div>
+                    <div className="bg-card rounded-xl border border-muted overflow-hidden">
+                      <RichTextEditor
+                        value={editedContractHtml}
+                        onChange={setEditedContractHtml}
+                        placeholder={t('contract_content_placeholder') || 'Contenu du contrat...'}
+                        minHeight="400px"
+                        maxHeight="600px"
+                        showMediaOptions={false}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 {/* Tips & Warnings */}
                 {generatedContract.tips && generatedContract.tips.length > 0 && (

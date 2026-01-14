@@ -3866,7 +3866,7 @@ export default function ComposeNewsletterPage() {
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-xl bg-warning-light border border-warning/20 mb-6">
+                <div className="p-4 rounded-xl bg-warning-light border border-warning mb-6">
                   <p className="text-sm text-secondary">
                     {smtpConfig ? (
                       t('smtp_not_verified_warning') || 'Votre configuration SMTP n\'a pas été vérifiée. Testez la connexion et enregistrez pour continuer.'

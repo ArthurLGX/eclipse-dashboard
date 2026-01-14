@@ -230,63 +230,75 @@ export default function PublicContractSignPage() {
       {/* Contract Content */}
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          {/* Title */}
-          <h2 className="text-2xl font-bold text-center text-slate-900 mb-8 pb-4 border-b-2 border-violet-200">
-            {content.title}
-          </h2>
+          {/* Check if there's edited HTML content */}
+          {content.editedHtml ? (
+            /* Display edited HTML content */
+            <div 
+              className="prose prose-slate max-w-none prose-headings:text-slate-900 prose-p:text-slate-600 prose-strong:text-slate-900"
+              dangerouslySetInnerHTML={{ __html: content.editedHtml }}
+            />
+          ) : (
+            /* Display structured content */
+            <>
+              {/* Title */}
+              <h2 className="text-2xl font-bold text-center text-slate-900 mb-8 pb-4 border-b-2 border-violet-200">
+                {content.title}
+              </h2>
 
-          {/* Parties */}
-          <div className="mb-8">
-            <h3 className="font-bold text-slate-900 mb-4">ENTRE LES SOUSSIGNÉS :</h3>
-            
-            <div className="p-4 bg-slate-50 rounded-xl mb-4">
-              <p className="font-semibold text-slate-900">{content.parties.provider.name}</p>
-              <p className="text-sm text-slate-600 whitespace-pre-line mt-2">
-                {content.parties.provider.details}
-              </p>
-            </div>
-            
-            <p className="text-center text-slate-500 my-4">ET</p>
-            
-            <div className="p-4 bg-violet-50 rounded-xl border-2 border-violet-200">
-              <p className="font-semibold text-slate-900">{content.parties.client.name}</p>
-              <p className="text-sm text-slate-600 whitespace-pre-line mt-2">
-                {content.parties.client.details}
-              </p>
-              <p className="text-xs text-violet-600 mt-2 font-medium">← C&apos;est vous</p>
-            </div>
-          </div>
-
-          {/* Preamble */}
-          <div className="mb-8">
-            <h3 className="font-bold text-slate-900 mb-3">PRÉAMBULE</h3>
-            <p className="text-slate-600 whitespace-pre-line leading-relaxed">
-              {content.preamble}
-            </p>
-          </div>
-
-          {/* Articles */}
-          <div className="mb-8">
-            <h3 className="font-bold text-slate-900 mb-4">IL A ÉTÉ CONVENU CE QUI SUIT :</h3>
-            
-            <div className="space-y-6">
-              {content.articles.map((article) => (
-                <div key={article.number} className="border-l-4 border-violet-200 pl-4">
-                  <h4 className="font-semibold text-slate-900 mb-2">
-                    Article {article.number} - {article.title}
-                  </h4>
-                  <p className="text-slate-600 whitespace-pre-line leading-relaxed">
-                    {article.content}
+              {/* Parties */}
+              <div className="mb-8">
+                <h3 className="font-bold text-slate-900 mb-4">ENTRE LES SOUSSIGNÉS :</h3>
+                
+                <div className="p-4 bg-slate-50 rounded-xl mb-4">
+                  <p className="font-semibold text-slate-900">{content.parties.provider.name}</p>
+                  <p className="text-sm text-slate-600 whitespace-pre-line mt-2">
+                    {content.parties.provider.details}
                   </p>
                 </div>
-              ))}
-            </div>
-          </div>
+                
+                <p className="text-center text-slate-500 my-4">ET</p>
+                
+                <div className="p-4 bg-violet-50 rounded-xl border-2 border-violet-200">
+                  <p className="font-semibold text-slate-900">{content.parties.client.name}</p>
+                  <p className="text-sm text-slate-600 whitespace-pre-line mt-2">
+                    {content.parties.client.details}
+                  </p>
+                  <p className="text-xs text-violet-600 mt-2 font-medium">← C&apos;est vous</p>
+                </div>
+              </div>
 
-          {/* Signatures Section */}
+              {/* Preamble */}
+              <div className="mb-8">
+                <h3 className="font-bold text-slate-900 mb-3">PRÉAMBULE</h3>
+                <p className="text-slate-600 whitespace-pre-line leading-relaxed">
+                  {content.preamble}
+                </p>
+              </div>
+
+              {/* Articles */}
+              <div className="mb-8">
+                <h3 className="font-bold text-slate-900 mb-4">IL A ÉTÉ CONVENU CE QUI SUIT :</h3>
+                
+                <div className="space-y-6">
+                  {content.articles.map((article: { number: number; title: string; content: string }) => (
+                    <div key={article.number} className="border-l-4 border-violet-200 pl-4">
+                      <h4 className="font-semibold text-slate-900 mb-2">
+                        Article {article.number} - {article.title}
+                      </h4>
+                      <p className="text-slate-600 whitespace-pre-line leading-relaxed">
+                        {article.content}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Signatures Section - Always shown */}
           <div className="mt-12 pt-8 border-t-2 border-slate-200">
             <p className="text-center text-slate-600 mb-8">
-              Fait à {content.signatures.location}, le {content.signatures.date}
+              Fait à {content.signatures?.location || contract.signature_location}, le {content.signatures?.date || contract.signature_date}
             </p>
             
             <div className="grid grid-cols-2 gap-8">
