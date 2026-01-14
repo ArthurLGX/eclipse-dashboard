@@ -304,12 +304,16 @@ export default function ContractsPage() {
                     {/* Main info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className={`p-2 rounded-lg ${statusConfig.bgColor}`}>
-                          <StatusIcon className={`w-5 h-5 ${statusConfig.color}`} />
+                        <div className={`p-2 rounded-lg ${statusConfig?.bgColor || 'bg-hover'}`}>
+                          {StatusIcon ? (
+                            <StatusIcon className={`w-5 h-5 ${statusConfig?.color || 'text-muted'}`} />
+                          ) : (
+                            <IconFileText className="w-5 h-5 text-muted" />
+                          )}
                         </div>
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                           <h3 className="font-medium text-primary truncate">
-                            {contract.title}
+                            {contract.title || contract.content?.title || t('untitled_contract') || 'Contrat sans titre'}
                           </h3>
                           <p className="text-sm text-muted">
                             {contract.client?.name || t('no_client') || 'Sans client'}
@@ -320,8 +324,8 @@ export default function ContractsPage() {
                       
                       {/* Meta info */}
                       <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
-                        <span className={`px-2 py-1 rounded-full ${statusConfig.bgColor} ${statusConfig.color}`}>
-                          {statusConfig.label}
+                        <span className={`px-2 py-1 rounded-full ${statusConfig?.bgColor || 'bg-hover'} ${statusConfig?.color || 'text-muted'}`}>
+                          {statusConfig?.label || contract.status || 'Inconnu'}
                         </span>
                         <span className="flex items-center gap-1">
                           <IconSignature className="w-3 h-3" />
@@ -333,13 +337,13 @@ export default function ContractsPage() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                      {/* View signature page (if pending) */}
-                      {contract.status === 'pending_client' && contract.signature_token && (
+                      {/* View contract page - always visible for any contract with token */}
+                      {contract.signature_token && (
                         <Link
                           href={`/sign/contract/${contract.signature_token}`}
                           target="_blank"
                           className="p-2 text-info hover:bg-info-light rounded-lg transition-colors"
-                          title={t('view_signature_page') || 'Voir page de signature'}
+                          title={t('view_contract') || 'Voir le contrat'}
                         >
                           <IconEye className="w-5 h-5" />
                         </Link>

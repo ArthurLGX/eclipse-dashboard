@@ -3497,6 +3497,7 @@ export interface Contract {
     signatures: { date: string; location: string };
     tips?: string[];
     warnings?: string[];
+    editedHtml?: string; // HTML édité par l'utilisateur
   };
   signature_location?: string;
   signature_date?: string;
