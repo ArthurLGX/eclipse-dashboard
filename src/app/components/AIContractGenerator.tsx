@@ -925,36 +925,20 @@ ${user?.username || 'L\'équipe'}`;
                     )}
                   </div>
 
-                  {/* Client Signature */}
-                  <div className="p-4 bg-card rounded-xl border border-muted">
+                  {/* Client Signature - Read only for provider */}
+                  <div className="p-4 bg-card rounded-xl border border-muted opacity-60">
                     <div className="flex items-center justify-between mb-3">
                       <p className="font-medium text-primary flex items-center gap-2">
                         <IconSignature className="w-4 h-4" />
                         {t('client_signature') || 'Signature Client'}
                       </p>
-                      {signatures.client && (
-                        <button
-                          onClick={() => setSignatures(prev => ({ ...prev, client: null }))}
-                          className="text-danger hover:opacity-80 text-xs flex items-center gap-1"
-                        >
-                          <IconTrash className="w-3 h-3" />
-                          {t('delete') || 'Supprimer'}
-                        </button>
-                      )}
                     </div>
-                    {signatures.client ? (
-                      <div className="h-32 border border-muted rounded-lg bg-white flex items-center justify-center">
-                        <Image src={signatures.client} alt="Signature" width={200} height={100} className="max-h-28 object-contain" />
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setActiveSignature('client')}
-                        className="w-full h-32 border-2 border-dashed border-muted rounded-lg hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 text-muted hover:text-accent"
-                      >
-                        <IconSignature className="w-8 h-8" />
-                        <span className="text-sm">{t('click_to_sign') || 'Cliquer pour signer'}</span>
-                      </button>
-                    )}
+                    <div className="w-full h-32 border-2 border-dashed border-muted rounded-lg bg-hover flex flex-col items-center justify-center gap-2 text-muted">
+                      <IconSignature className="w-8 h-8" />
+                      <span className="text-sm text-center px-4">
+                        {t('client_will_sign_here') || 'Le client signera ici après réception du contrat'}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -1008,13 +992,35 @@ ${user?.username || 'L\'équipe'}`;
                   </div>
                 )}
 
+                {/* Alert for missing date/location */}
+                {(!signatureLocation || !signatureDate) && (
+                  <div className="p-4 bg-warning-light rounded-xl border border-warning">
+                    <p className="text-sm text-warning flex items-center gap-2">
+                      <IconAlertTriangle className="w-4 h-4 flex-shrink-0" />
+                      <span>
+                        {t('missing_signature_info') || 'Veuillez renseigner le lieu et la date de signature dans l\'étape de configuration.'}
+                      </span>
+                    </p>
+                  </div>
+                )}
+
                 {/* Contract Summary */}
                 <div className="p-4 bg-hover rounded-xl text-sm">
                   <p className="text-muted mb-2">{t('contract_summary') || 'Récapitulatif'}</p>
                   <div className="space-y-1 text-secondary">
                     <p><strong className="text-primary">Contrat:</strong> {generatedContract.title}</p>
-                    <p><strong className="text-primary">Lieu:</strong> {generatedContract.signatures.location}</p>
-                    <p><strong className="text-primary">Date:</strong> {generatedContract.signatures.date}</p>
+                    <p>
+                      <strong className="text-primary">Lieu:</strong>{' '}
+                      <span className={!signatureLocation ? 'text-warning' : ''}>
+                        {generatedContract.signatures.location || t('not_specified') || '[Non renseigné]'}
+                      </span>
+                    </p>
+                    <p>
+                      <strong className="text-primary">Date:</strong>{' '}
+                      <span className={!signatureDate ? 'text-warning' : ''}>
+                        {generatedContract.signatures.date || t('not_specified') || '[Non renseigné]'}
+                      </span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1099,15 +1105,41 @@ ${user?.username || 'L\'équipe'}`;
                 <div className="p-4 bg-card rounded-xl border border-muted">
                   <p className="font-medium text-primary mb-3 flex items-center gap-2">
                     <IconMail className="w-4 h-4" />
-                    {t('email_content') || 'Contenu de l\'email'}
+                    {t('email_preview') || 'Aperçu de l\'email'}
                   </p>
-                  <textarea
-                    value={emailContent}
-                    onChange={(e) => setEmailContent(e.target.value)}
-                    className="w-full p-3 bg-hover rounded-lg text-sm text-secondary border border-muted focus:border-accent focus:outline-none resize-none"
-                    rows={8}
-                    placeholder={t('email_placeholder') || 'Rédigez votre message...'}
-                  />
+                  
+                  {/* Email preview box */}
+                  <div className="border border-muted rounded-lg overflow-hidden bg-white">
+                    {/* Email header */}
+                    <div className="p-3 bg-slate-50 border-b border-slate-200">
+                      <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                        <span className="font-medium">À:</span>
+                        <span className="text-slate-700">{selectedClient?.email || 'client@email.com'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <span className="font-medium">Objet:</span>
+                        <span className="text-slate-700">Contrat à signer - {generatedContract?.title}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Email body */}
+                    <div className="p-4">
+                      <textarea
+                        value={emailContent}
+                        onChange={(e) => setEmailContent(e.target.value)}
+                        className="w-full p-0 text-sm text-slate-700 border-0 focus:outline-none focus:ring-0 resize-none bg-transparent"
+                        rows={6}
+                        placeholder={t('email_placeholder') || 'Rédigez votre message...'}
+                      />
+                      
+                      {/* Automatic signature link info */}
+                      <div className="mt-4 pt-4 border-t border-slate-200">
+                        <p className="text-xs text-slate-500 italic">
+                          {t('email_auto_link_info') || '↳ Un bouton "Signer le contrat" sera automatiquement ajouté à l\'email.'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Info */}

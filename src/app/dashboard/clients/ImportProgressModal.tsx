@@ -175,11 +175,11 @@ export default function ImportProgressModal({
                 className={`
                   flex items-center gap-4 p-3 rounded-xl border transition-all
                   ${item.status === 'success' 
-                    ? 'bg-success-light border-success/20' 
+                    ? 'bg-success-light border-success' 
                     : item.status === 'error'
-                      ? 'bg-danger-light border-danger/20'
+                      ? 'bg-danger-light border-danger'
                       : item.status === 'skipped'
-                        ? 'bg-warning-light border-warning/20'
+                        ? 'bg-warning-light border-warning'
                         : 'bg-card-hover border-default'
                   }
                 `}
@@ -221,7 +221,7 @@ export default function ImportProgressModal({
                     {getStatusText(item.status)}
                   </p>
                   {item.error && (
-                    <p className="text-xs text-danger/80 max-w-[200px] truncate" title={item.error}>
+                      <p className="text-xs text-danger max-w-[200px] truncate" title={item.error}>
                       {item.error}
                     </p>
                   )}

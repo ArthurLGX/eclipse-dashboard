@@ -449,7 +449,7 @@ const PROJECT_TYPES = [
           </div>
 
           {/* Message d'accès limité */}
-          <div className="card p-8 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent border-warning/20">
+          <div className="card p-8 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent border-warning">
             {collaborationRequestStatus === 'pending' ? (
               <div className="text-center">
                 <div className="w-16 h-16 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-4">
@@ -967,7 +967,7 @@ const PROJECT_TYPES = [
 
                     {loadingMeetingNotes ? (
                       <div className="flex items-center justify-center py-12">
-                        <div className="w-8 h-8 border-2 border-info/30 border-t-info rounded-full animate-spin" />
+                        <div className="w-8 h-8 border-2 border-info border-t-info rounded-full animate-spin" />
                       </div>
                     ) : meetingNotes.length > 0 ? (
                       <div className="space-y-4">

@@ -250,7 +250,7 @@ export default function UpgradeDropdown({
                 }}
                 className="flex items-center justify-center w-full"
               >
-                <p className="text-danger cursor-pointer bg-danger-light px-4 py-2 text-center rounded-lg !text-sm w-full hover:bg-danger-light transition-colors border border-danger/20 hover:border-danger">
+                <p className="text-danger cursor-pointer bg-danger-light px-4 py-2 text-center rounded-lg !text-sm w-full hover:bg-danger-light transition-colors border border-danger hover:border-danger">
                   {t('cancel_subscription')}
                 </p>
               </div>

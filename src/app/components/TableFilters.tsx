@@ -213,7 +213,7 @@ export default function TableFilters({
         {hasActiveFilters && (
           <button
             onClick={clearAllFilters}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-danger/30 text-danger hover:bg-danger-light transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-danger text-danger hover:bg-danger-light transition-colors"
           >
             <IconX className="w-4 h-4" />
             <span className="hidden sm:inline">{t('clear_filters') || 'Effacer'}</span>

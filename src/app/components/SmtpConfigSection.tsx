@@ -562,7 +562,7 @@ export default function SmtpConfigSection() {
         <div className={`p-4 rounded-xl flex items-center gap-3 ${
           testResult.success 
             ? 'bg-emerald-300/80 !text-white border border-success' 
-            : 'bg-danger-light border border-danger/20'
+            : 'bg-danger-light border border-danger'
         }`}>
           {testResult.success ? (
             <IconCheck className="w-5 h-5 !text-emerald-900" />
@@ -663,7 +663,7 @@ export default function SmtpConfigSection() {
                     className="space-y-4"
                   >
                     {/* Use same credentials option */}
-                    <div className="p-3 bg-info-light rounded-lg border border-info/20 text-sm text-secondary">
+                    <div className="p-3 bg-info-light rounded-lg border border-info text-sm text-secondary">
                       <p>{existingConfig 
                         ? (t('imap_existing_config_hint') || 'Pour tester la connexion, vous devez re-saisir le mot de passe (SMTP ou IMAP). À l\'enregistrement, les mots de passe vides seront conservés.')
                         : (t('imap_same_credentials_hint') || 'Astuce: Si vous utilisez le même compte email, vous pouvez laisser les champs email et mot de passe vides pour utiliser ceux du SMTP.')
@@ -781,7 +781,7 @@ export default function SmtpConfigSection() {
                       <div className={`p-4 rounded-xl flex items-center gap-3 ${
                         imapTestResult.success 
                           ? 'bg-purple-300/80 !text-white border border-purple-500' 
-                          : 'bg-danger-light border border-danger/20'
+                          : 'bg-danger-light border border-danger'
                       }`}>
                         {imapTestResult.success ? (
                           <IconCheck className="w-5 h-5 !text-purple-900" />

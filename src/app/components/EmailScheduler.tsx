@@ -213,7 +213,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
               <motion.div 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 bg-danger-light border border-danger/30 rounded-lg"
+                className="flex items-center gap-2 p-3 bg-danger-light border border-danger rounded-lg"
               >
                 <IconAlertTriangle className="w-5 h-5 text-danger" />
                 <span className="text-danger text-sm">

@@ -457,7 +457,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {/* Error message */}
             {error && (
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-danger-light border border-danger/20">
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-danger-light border border-danger">
                 <IconAlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
                 <p className="text-danger text-sm">{error}</p>
               </div>
@@ -561,7 +561,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
 
             {/* Format hints */}
             {importedClients.length === 0 && importMode === 'json' && (
-              <div className="p-4 rounded-xl bg-info-light border border-info/20">
+              <div className="p-4 rounded-xl bg-info-light border border-info">
                 <p className="text-sm text-secondary mb-2">
                   {t('import_list') || 'Format JSON attendu :'}
                 </p>
@@ -579,7 +579,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
             )}
 
             {importedClients.length === 0 && importMode === 'csv' && (
-              <div className="p-4 rounded-xl bg-info-light border border-info/20">
+              <div className="p-4 rounded-xl bg-info-light border border-info">
                 <p className="text-sm text-secondary mb-2">
                   {t('import_csv_format') || 'Format CSV attendu :'}
                 </p>
@@ -721,7 +721,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
 
                 {/* Error list */}
                 {invalidCount > 0 && (
-                  <div className="p-4 rounded-xl bg-warning-light border border-warning/20">
+                  <div className="p-4 rounded-xl bg-warning-light border border-warning">
                     <p className="text-sm text-warning font-medium mb-2">
                       {t('import_errors_found') || 'Erreurs détectées :'}
                     </p>
@@ -756,7 +756,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all border
                           ${duplicateAction === option.value 
                             ? 'bg-warning-light border-warning' 
-                            : 'bg-card border-default hover:border-warning/50'
+                            : 'bg-card border-default hover:border-warning'
                           }
                         `}
                       >

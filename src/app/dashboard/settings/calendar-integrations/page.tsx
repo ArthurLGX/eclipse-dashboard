@@ -182,7 +182,7 @@ export default function CalendarIntegrationsPage() {
         </div>
 
         {/* Setup Instructions */}
-        <div className="card p-4 bg-info-light border-info/20">
+        <div className="card p-4 bg-info-light border-info">
           <div className="flex items-start gap-3">
             <IconAlertCircle className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
             <div className="text-sm">

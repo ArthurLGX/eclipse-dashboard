@@ -163,7 +163,7 @@ const CheckoutForm: React.FC<{
         </div>
 
         {error && (
-          <div className="bg-danger-light border border-danger/30 rounded-lg p-3">
+          <div className="bg-danger-light border border-danger rounded-lg p-3">
             <p className="text-danger !text-sm">{error}</p>
           </div>
         )}
