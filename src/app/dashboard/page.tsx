@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import UsageProgressBar from '@/app/components/UsageProgressBar';
 import PendingQuotesWidget from '@/app/components/PendingQuotesWidget';
 import ActiveIdeSessionWidget from '@/app/components/ActiveIdeSessionWidget';
+import DailySuggestionsModal from '@/app/components/DailySuggestionsModal';
 import { useClients, useProjects, useProspects, useFactures, clearCache } from '@/hooks/useApi';
 import type { Client, Project, Prospect, Facture } from '@/types';
 import {
@@ -225,6 +226,9 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute>
+      {/* Daily AI Suggestions Modal */}
+      <DailySuggestionsModal />
+      
       <motion.div
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}

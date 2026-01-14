@@ -2394,6 +2394,36 @@ const translations = {
     contract_summary: 'Récapitulatif',
     contract_copied_for_pdf: 'Contrat copié - Collez dans un document Word/Google Docs pour générer un PDF',
  
+    // IA - Estimation de prix
+    ai_price_estimation: 'Estimation IA du prix',
+    ai_price_estimation_desc: 'Basée sur vos projets similaires',
+    estimation_error: 'Impossible d\'obtenir une estimation',
+    analyzing_prices: 'Analyse des prix en cours...',
+    suggested_price: 'Prix suggéré',
+    confidence_high: 'Confiance élevée',
+    confidence_medium: 'Confiance moyenne',
+    confidence_low: 'Confiance faible',
+    based_on: 'Basé sur',
+    similar_projects: 'projets similaires',
+    price_similar: 'Prix similaire aux projets précédents',
+    price_could_increase: 'Vous pourriez facturer',
+    more: 'de plus',
+    price_above_average: 'Prix supérieur de',
+    to_similar_projects: 'aux projets similaires',
+    avg_hourly_rate: 'Taux horaire moyen',
+    apply_suggested_price: 'Appliquer ce prix',
+
+    // IA - Suggestions quotidiennes
+    ai_suggestions_error: 'Impossible de charger les suggestions',
+    analyzing_data: 'Analyse de vos données en cours...',
+    ai_analyzing: 'Eclipse Assistant analyse vos projets...',
+    all_caught_up: 'Tout est à jour !',
+    no_urgent_tasks: 'Aucune tâche urgente pour le moment.',
+    suggested_actions: 'Actions suggérées pour aujourd\'hui',
+    tip_of_the_day: 'Conseil du jour',
+    powered_by_eclipse: 'Propulsé par Eclipse Assistant',
+    start_day: 'Commencer ma journée',
+
     // IA - Suggestion d\'emails
     ai_suggest_email: 'Suggérer un contenu',
     ai_email_generating: 'L\'IA rédige votre email...',
@@ -5184,6 +5214,36 @@ const translations = {
     context_detected: 'Context detected',
     tips: 'Tips',
  
+    // AI - Price Estimation
+    ai_price_estimation: 'AI Price Estimation',
+    ai_price_estimation_desc: 'Based on your similar projects',
+    estimation_error: 'Unable to get estimation',
+    analyzing_prices: 'Analyzing prices...',
+    suggested_price: 'Suggested price',
+    confidence_high: 'High confidence',
+    confidence_medium: 'Medium confidence',
+    confidence_low: 'Low confidence',
+    based_on: 'Based on',
+    similar_projects: 'similar projects',
+    price_similar: 'Price similar to previous projects',
+    price_could_increase: 'You could charge',
+    more: 'more',
+    price_above_average: 'Price above average by',
+    to_similar_projects: 'compared to similar projects',
+    avg_hourly_rate: 'Average hourly rate',
+    apply_suggested_price: 'Apply this price',
+
+    // AI - Daily Suggestions
+    ai_suggestions_error: 'Unable to load suggestions',
+    analyzing_data: 'Analyzing your data...',
+    ai_analyzing: 'Eclipse Assistant is analyzing your projects...',
+    all_caught_up: 'All caught up!',
+    no_urgent_tasks: 'No urgent tasks for now.',
+    suggested_actions: 'Suggested actions for today',
+    tip_of_the_day: 'Tip of the day',
+    powered_by_eclipse: 'Powered by Eclipse Assistant',
+    start_day: 'Start my day',
+
     // AI - Email Suggestions
     ai_suggest_email: 'Suggest content',
     ai_email_generating: 'AI is writing your email...',

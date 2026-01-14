@@ -80,7 +80,7 @@ export default function ContractsPage() {
           placeholder={t('search') || 'Rechercher...'}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+          className="w-full !pl-10 pr-4 py-2.5 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
         />
       </div>
 

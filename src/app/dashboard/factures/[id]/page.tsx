@@ -45,6 +45,7 @@ import {
   IconCheck,
 } from '@tabler/icons-react';
 import AIInvoiceGenerator from '@/app/components/AIInvoiceGenerator';
+import AIPriceEstimation from '@/app/components/AIPriceEstimation';
 import { useRef } from 'react';
 import { pdf } from '@react-pdf/renderer';
 import FacturePDF from '@/app/components/FacturePDF';
@@ -1253,6 +1254,21 @@ export default function FacturePage() {
                 </div>
               </div>
             </div>
+
+            {/* AI Price Estimation - Only for quotes in editing mode */}
+            {editing && documentType === 'quote' && (
+              <AIPriceEstimation
+                projectId={formData?.project && typeof formData.project === 'object' 
+                  ? (formData.project as Project).documentId 
+                  : undefined}
+                clientId={formData?.client_id && typeof formData.client_id === 'object'
+                  ? (formData.client_id as Client).documentId
+                  : undefined}
+                description={invoiceLines.map(l => l.description).join(', ')}
+                currentTotal={total}
+                isQuote={documentType === 'quote'}
+              />
+            )}
 
             {/* Notes et conditions */}
             {facture?.notes && (
