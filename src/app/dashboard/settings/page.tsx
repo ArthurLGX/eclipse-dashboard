@@ -905,6 +905,27 @@ export default function SettingsPage() {
               {t('integrations_desc') || 'Connectez des services externes pour automatiser votre workflow.'}
             </div>
             
+            {/* VS Code / Cursor - API Tokens */}
+            <Link
+              href="/dashboard/settings/integrations"
+              className="block p-4 rounded-xl border border-default hover:border-accent/50 hover:bg-accent-light/50 transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-accent-hover flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <IconPlugConnected className="w-6 h-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-primary group-hover:text-accent transition-colors">
+                    {t('api_tokens') || 'API Tokens & Webhooks'}
+                  </h3>
+                  <p className="text-sm text-muted">
+                    {t('api_tokens_integration_desc') || 'Connectez VS Code, Cursor et Typeform à Eclipse'}
+                  </p>
+                </div>
+                <IconChevronRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
+              </div>
+            </Link>
+            
             {/* Fathom AI */}
             <Link
               href="/dashboard/settings/meeting-integrations"

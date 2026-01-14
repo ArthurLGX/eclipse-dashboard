@@ -133,7 +133,7 @@ export default function MobileDrawer({
                               transition={{ duration: 0.2 }}
                               className="overflow-hidden"
                             >
-                              <div className="ml-4 mt-1 space-y-1 border-l-2 border-default pl-3">
+                              <div className="ml-4 mt-1 space-y-1 border-l-2 border-default !pl-3">
                                 {item.menuItems.map(subItem => (
                                   <button
                                     key={subItem.id}

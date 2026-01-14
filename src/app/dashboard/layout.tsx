@@ -260,14 +260,6 @@ function DashboardLayoutContent({
           icon: <IconFileInvoice size={20} stroke={1} />,
           path: '/dashboard/factures',
         },
-        // Contrats
-        {
-          id: 'contracts',
-          label: t('contracts') || 'Contrats',
-          icon: <IconFileText size={20} stroke={1} />,
-          path: '/dashboard/contracts',
-          moduleId: 'contracts',
-        },
         // Projets & Organisation
         {
           id: 'projects',
@@ -289,6 +281,14 @@ function DashboardLayoutContent({
           icon: <IconClock size={20} stroke={1} />,
           path: '/dashboard/time-tracking',
           moduleId: 'time_tracking',
+        },
+        // Contrats
+        {
+          id: 'contracts',
+          label: t('contracts') || 'Contrats',
+          icon: <IconFileText size={20} stroke={1} />,
+          path: '/dashboard/contracts',
+          moduleId: 'contracts',
         },
         // Communication
         {

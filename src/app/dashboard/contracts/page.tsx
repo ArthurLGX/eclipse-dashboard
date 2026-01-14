@@ -24,7 +24,7 @@ export default function ContractsPage() {
           </p>
         </div>
         <button 
-          className="btn-primary flex items-center gap-2"
+          className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2"
           onClick={() => {
             // TODO: Ouvrir modal de création
           }}
@@ -42,7 +42,7 @@ export default function ContractsPage() {
           placeholder={t('search') || 'Rechercher...'}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+          className="w-full !pl-10 pr-4 py-2.5 bg-background border border-default rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
         />
       </div>
 
@@ -59,7 +59,7 @@ export default function ContractsPage() {
             {t('no_contracts_description') || 'Créez votre premier contrat pour commencer'}
           </p>
           <button 
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2"
             onClick={() => {
               // TODO: Ouvrir modal de création
             }}

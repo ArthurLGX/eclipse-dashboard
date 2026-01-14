@@ -25,6 +25,11 @@ import {
   IconUser,
   IconPalette,
   IconCopy,
+  IconArchive,
+  IconArchiveOff,
+  IconSquare,
+  IconSquareCheck,
+  IconSelectAll,
 } from '@tabler/icons-react';
 import ExcelImportModal, { type ImportedTask, type ImportProgressCallback } from './ExcelImportModal';
 import type { User } from '@/types';
@@ -220,6 +225,7 @@ export default function ProjectTasks({
     { value: 'in_progress', label: t('in_progress') || 'En cours', color: 'blue', icon: <IconProgress className="w-4 h-4" /> },
     { value: 'completed', label: t('completed') || 'Terminé', color: 'emerald', icon: <IconCheck className="w-4 h-4" /> },
     { value: 'cancelled', label: t('cancelled') || 'Annulé', color: 'red', icon: <IconX className="w-4 h-4" /> },
+    { value: 'archived', label: t('task_archived') || 'Archivée', color: 'gray', icon: <IconArchive className="w-4 h-4" /> },
   ];
 
   const PRIORITY_OPTIONS: { value: TaskPriority; label: string; color: string }[] = [
@@ -238,6 +244,11 @@ export default function ProjectTasks({
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [parentTaskForSubtask, setParentTaskForSubtask] = useState<ProjectTask | null>(null);
   const [showExcelImport, setShowExcelImport] = useState(false);
+  
+  // Sélection multiple
+  const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
+  const [showArchived, setShowArchived] = useState(false);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
 
 
   // Formulaire nouvelle tâche
@@ -516,6 +527,225 @@ export default function ProjectTasks({
     } catch (error) {
       console.error('Error duplicating task:', error);
       showGlobalPopup(t('error_generic') || 'Erreur lors de la duplication', 'error');
+    }
+  };
+
+  // Convertir une tâche en sous-tâche d'une autre tâche (drag & drop)
+  // Version optimiste : mise à jour immédiate du state, API en background
+  const handleConvertToSubtask = (taskDocumentId: string, parentTaskDocumentId: string) => {
+    // Trouver la tâche et la tâche parente
+    const task = tasks.find(t => t.documentId === taskDocumentId);
+    const parentTask = tasks.find(t => t.documentId === parentTaskDocumentId);
+    
+    // Validations silencieuses
+    if (!task || !parentTask) return;
+    if (task.subtasks && task.subtasks.length > 0) return;
+    if (task.parent_task) return;
+    if (parentTask.parent_task?.documentId === taskDocumentId) return;
+
+    // Sauvegarder l'état précédent pour rollback si erreur
+    const previousTasks = [...tasks];
+
+    // Créer la tâche modifiée (devient sous-tâche)
+    const updatedTask: ProjectTask = {
+      ...task,
+      parent_task: { ...parentTask, subtasks: undefined }, // Éviter la référence circulaire
+      color: parentTask.color || TASK_COLORS[0],
+    };
+
+    // Calculer les nouvelles dates pour la tâche parente
+    const existingSubtasks = parentTask.subtasks || [];
+    const allSubtasks = [...existingSubtasks, updatedTask];
+    
+    // Calculer les dates min/max
+    const allStartDates = allSubtasks
+      .map(st => st.start_date)
+      .filter((d): d is string => !!d)
+      .map(d => new Date(d));
+    
+    const allEndDates = allSubtasks
+      .map(st => st.due_date)
+      .filter((d): d is string => !!d)
+      .map(d => new Date(d));
+
+    // Calculer la somme des heures estimées
+    const totalEstimatedHours = allSubtasks.reduce((sum, st) => sum + (st.estimated_hours || 0), 0);
+
+    // Déterminer les nouvelles dates du parent
+    let newStartDate = parentTask.start_date;
+    let newDueDate = parentTask.due_date;
+    
+    if (allStartDates.length > 0) {
+      const minStartDate = new Date(Math.min(...allStartDates.map(d => d.getTime())));
+      if (!parentTask.start_date || new Date(parentTask.start_date) > minStartDate) {
+        newStartDate = minStartDate.toISOString().split('T')[0];
+      }
+    }
+    
+    if (allEndDates.length > 0) {
+      const maxEndDate = new Date(Math.max(...allEndDates.map(d => d.getTime())));
+      if (!parentTask.due_date || new Date(parentTask.due_date) < maxEndDate) {
+        newDueDate = maxEndDate.toISOString().split('T')[0];
+      }
+    }
+
+    // Créer la tâche parente mise à jour
+    const updatedParentTask: ProjectTask = {
+      ...parentTask,
+      subtasks: allSubtasks,
+      start_date: newStartDate,
+      due_date: newDueDate,
+      estimated_hours: totalEstimatedHours > 0 ? totalEstimatedHours : parentTask.estimated_hours,
+    };
+
+    // Mise à jour optimiste du state (immédiate, pas de refresh)
+    setTasks(prevTasks => {
+      return prevTasks
+        // Retirer la tâche qui devient sous-tâche
+        .filter(t => t.documentId !== taskDocumentId)
+        // Mettre à jour la tâche parente
+        .map(t => t.documentId === parentTaskDocumentId ? updatedParentTask : t);
+    });
+
+    // API calls en background (non-bloquant)
+    const syncToApi = async () => {
+      try {
+        // 1. Mettre à jour la tâche pour définir son parent
+        await updateProjectTask(taskDocumentId, {
+          parent_task: parentTaskDocumentId,
+          color: parentTask.color || TASK_COLORS[0],
+        });
+
+        // 2. Mettre à jour les dates/heures de la tâche parente si nécessaire
+        const parentUpdates: Parameters<typeof updateProjectTask>[1] = {};
+        if (newStartDate !== parentTask.start_date) {
+          parentUpdates.start_date = newStartDate;
+        }
+        if (newDueDate !== parentTask.due_date) {
+          parentUpdates.due_date = newDueDate;
+        }
+        if (totalEstimatedHours > 0 && totalEstimatedHours !== parentTask.estimated_hours) {
+          parentUpdates.estimated_hours = totalEstimatedHours;
+        }
+        
+        if (Object.keys(parentUpdates).length > 0) {
+          await updateProjectTask(parentTaskDocumentId, parentUpdates);
+        }
+      } catch (error) {
+        console.error('Error syncing task to subtask:', error);
+        // Rollback silencieux en cas d'erreur
+        setTasks(previousTasks);
+      }
+    };
+
+    // Lancer la sync API sans bloquer
+    syncToApi();
+  };
+
+  // État pour le drag & drop des tâches
+  const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
+  const [dropTargetTaskId, setDropTargetTaskId] = useState<string | null>(null);
+
+  // Fonctions de sélection multiple
+  const toggleTaskSelection = (taskId: string) => {
+    setSelectedTasks(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(taskId)) {
+        newSet.delete(taskId);
+      } else {
+        newSet.add(taskId);
+      }
+      return newSet;
+    });
+  };
+
+  const selectAllVisibleTasks = () => {
+    const allTaskIds = filteredTasks.map(t => t.documentId);
+    setSelectedTasks(new Set(allTaskIds));
+  };
+
+  const deselectAllTasks = () => {
+    setSelectedTasks(new Set());
+    setIsSelectionMode(false);
+  };
+
+  // Actions de masse
+  const handleBulkArchive = async () => {
+    if (selectedTasks.size === 0) return;
+    
+    const taskIds = Array.from(selectedTasks);
+    const previousTasks = [...tasks];
+    
+    // Optimistic update
+    setTasks(prev => prev.map(t => 
+      taskIds.includes(t.documentId) 
+        ? { ...t, task_status: 'archived' as TaskStatus } 
+        : t
+    ));
+    setSelectedTasks(new Set());
+    setIsSelectionMode(false);
+    
+    // API calls en background
+    try {
+      await Promise.all(taskIds.map(id => 
+        updateProjectTask(id, { task_status: 'archived' })
+      ));
+      showGlobalPopup(t('tasks_archived') || 'Tâches archivées', 'success');
+    } catch (error) {
+      console.error('Error archiving tasks:', error);
+      setTasks(previousTasks);
+      showGlobalPopup(t('error_generic') || 'Erreur', 'error');
+    }
+  };
+
+  const handleBulkUnarchive = async () => {
+    if (selectedTasks.size === 0) return;
+    
+    const taskIds = Array.from(selectedTasks);
+    const previousTasks = [...tasks];
+    
+    // Optimistic update
+    setTasks(prev => prev.map(t => 
+      taskIds.includes(t.documentId) 
+        ? { ...t, task_status: 'todo' as TaskStatus } 
+        : t
+    ));
+    setSelectedTasks(new Set());
+    setIsSelectionMode(false);
+    
+    // API calls en background
+    try {
+      await Promise.all(taskIds.map(id => 
+        updateProjectTask(id, { task_status: 'todo' })
+      ));
+      showGlobalPopup(t('tasks_unarchived') || 'Tâches restaurées', 'success');
+    } catch (error) {
+      console.error('Error unarchiving tasks:', error);
+      setTasks(previousTasks);
+      showGlobalPopup(t('error_generic') || 'Erreur', 'error');
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedTasks.size === 0) return;
+    if (!confirm(t('confirm_delete_tasks') || 'Supprimer les tâches sélectionnées ?')) return;
+    
+    const taskIds = Array.from(selectedTasks);
+    const previousTasks = [...tasks];
+    
+    // Optimistic update
+    setTasks(prev => prev.filter(t => !taskIds.includes(t.documentId)));
+    setSelectedTasks(new Set());
+    setIsSelectionMode(false);
+    
+    // API calls en background
+    try {
+      await Promise.all(taskIds.map(id => deleteProjectTask(id)));
+      showGlobalPopup(t('tasks_deleted') || 'Tâches supprimées', 'success');
+    } catch (error) {
+      console.error('Error deleting tasks:', error);
+      setTasks(previousTasks);
+      showGlobalPopup(t('error_generic') || 'Erreur', 'error');
     }
   };
 
@@ -832,11 +1062,21 @@ export default function ProjectTasks({
   };
 
   // Filtrer les tâches : exclure les sous-tâches (elles sont affichées dans leurs parents)
+  // Et filtrer les archivées selon le toggle
   const parentTasks = tasks.filter(task => !task.parent_task);
   
-  const filteredTasks = parentTasks.filter(task => 
-    filter === 'all' || task.task_status === filter
-  );
+  const filteredTasks = parentTasks.filter(task => {
+    // Filtre par statut
+    const matchesStatus = filter === 'all' || task.task_status === filter;
+    
+    // Filtre des archivées (sauf si on veut les voir ou si le filtre est 'archived')
+    const matchesArchived = showArchived || filter === 'archived' || task.task_status !== 'archived';
+    
+    return matchesStatus && matchesArchived;
+  });
+
+  // Compter les tâches archivées (pour le badge)
+  const archivedCount = parentTasks.filter(t => t.task_status === 'archived').length;
 
   // Stats basées sur toutes les tâches (y compris sous-tâches)
   const taskStats = {
@@ -960,26 +1200,126 @@ export default function ProjectTasks({
             ))}
           </div>
 
-          {/* Sélecteur de vue */}
-          <div className="flex items-center gap-1 bg-muted p-1 rounded-lg border border-default">
-            {VIEW_OPTIONS.map(option => (
+          <div className="flex items-center gap-2">
+            {/* Toggle archivées */}
+            {archivedCount > 0 && (
               <button
-                key={option.value}
-                onClick={() => setViewMode(option.value)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors ${
-                  viewMode === option.value
-                    ? 'bg-accent text-white'
-                    : 'text-secondary hover:text-primary'
+                onClick={() => setShowArchived(!showArchived)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  showArchived
+                    ? 'bg-warning-light text-warning'
+                    : 'bg-muted text-secondary hover:bg-hover'
                 }`}
-                title={option.label}
+                title={showArchived 
+                  ? (t('hide_archived_tasks') || 'Masquer les archivées') 
+                  : (t('show_archived_tasks') || 'Voir les archivées')}
               >
-                {option.icon}
-                <span className="hidden md:inline">{option.label}</span>
+                <IconArchive className="w-4 h-4" />
+                <span className="hidden sm:inline">{archivedCount}</span>
               </button>
-            ))}
+            )}
+
+            {/* Mode sélection */}
+            {canEdit && (
+              <button
+                onClick={() => {
+                  setIsSelectionMode(!isSelectionMode);
+                  if (isSelectionMode) deselectAllTasks();
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  isSelectionMode
+                    ? 'bg-accent text-white'
+                    : 'bg-muted text-secondary hover:bg-hover'
+                }`}
+                title={isSelectionMode 
+                  ? (t('deselect_all') || 'Désélectionner') 
+                  : (t('select_all') || 'Sélectionner')}
+              >
+                {isSelectionMode ? <IconSquareCheck className="w-4 h-4" /> : <IconSquare className="w-4 h-4" />}
+              </button>
+            )}
+
+            {/* Sélecteur de vue */}
+            <div className="flex items-center gap-1 bg-muted p-1 rounded-lg border border-default">
+              {VIEW_OPTIONS.map(option => (
+                <button
+                  key={option.value}
+                  onClick={() => setViewMode(option.value)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                    viewMode === option.value
+                      ? 'bg-accent text-white'
+                      : 'text-secondary hover:text-primary'
+                  }`}
+                  title={option.label}
+                >
+                  {option.icon}
+                  <span className="hidden md:inline">{option.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
+
+      {/* Barre d'actions en mode sélection */}
+      <AnimatePresence>
+        {isSelectionMode && selectedTasks.size > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="flex flex-wrap items-center justify-between gap-3 p-3 bg-accent-light border border-accent rounded-xl"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-accent">
+                {selectedTasks.size} {t('selected_tasks') || 'tâche(s) sélectionnée(s)'}
+              </span>
+              <button
+                onClick={selectAllVisibleTasks}
+                className="text-sm text-accent hover:underline flex items-center gap-1"
+              >
+                <IconSelectAll className="w-4 h-4" />
+                {t('select_all') || 'Tout sélectionner'}
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              {/* Archiver / Restaurer */}
+              {showArchived || filter === 'archived' ? (
+                <button
+                  onClick={handleBulkUnarchive}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-success text-white hover:bg-[var(--color-success)] transition-colors"
+                >
+                  <IconArchiveOff className="w-4 h-4" />
+                  {t('unarchive_tasks') || 'Restaurer'}
+                </button>
+              ) : (
+                <button
+                  onClick={handleBulkArchive}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-warning text-white hover:bg-[var(--color-warning)] transition-colors"
+                >
+                  <IconArchive className="w-4 h-4" />
+                  {t('archive_tasks') || 'Archiver'}
+                </button>
+              )}
+              {/* Supprimer */}
+              <button
+                onClick={handleBulkDelete}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-danger text-white hover:bg-[var(--color-danger)] transition-colors"
+              >
+                <IconTrash className="w-4 h-4" />
+                {t('delete_tasks') || 'Supprimer'}
+              </button>
+              {/* Annuler */}
+              <button
+                onClick={deselectAllTasks}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-muted text-secondary hover:bg-hover transition-colors"
+              >
+                <IconX className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Formulaire nouvelle tâche / sous-tâche */}
       <AnimatePresence>
@@ -1244,6 +1584,32 @@ export default function ProjectTasks({
                   taskStatusOptions={TASK_STATUS_OPTIONS}
                   localProgress={localProgress[task.documentId]}
                   t={t}
+                  // Drag & drop pour convertir en sous-tâche
+                  isDraggedOver={dropTargetTaskId === task.documentId}
+                  onDragStart={() => setDraggedTaskId(task.documentId)}
+                  onDragEnd={() => {
+                    setDraggedTaskId(null);
+                    setDropTargetTaskId(null);
+                  }}
+                  onDragOver={() => {
+                    if (draggedTaskId && draggedTaskId !== task.documentId && !task.parent_task) {
+                      setDropTargetTaskId(task.documentId);
+                    }
+                  }}
+                  onDragLeave={() => setDropTargetTaskId(null)}
+                  onDrop={() => {
+                    if (draggedTaskId && draggedTaskId !== task.documentId && !task.parent_task) {
+                      handleConvertToSubtask(draggedTaskId, task.documentId);
+                    }
+                    setDraggedTaskId(null);
+                    setDropTargetTaskId(null);
+                  }}
+                  isDragging={draggedTaskId === task.documentId}
+                  canBeDropTarget={!!draggedTaskId && draggedTaskId !== task.documentId && !task.parent_task}
+                  // Sélection
+                  isSelectionMode={isSelectionMode}
+                  isSelected={selectedTasks.has(task.documentId)}
+                  onToggleSelection={() => toggleTaskSelection(task.documentId)}
                 />
               ))}
             </div>
@@ -1338,6 +1704,19 @@ interface TaskCardProps {
   isSubtask?: boolean;
   parentColor?: string;
   t: (key: string) => string;
+  // Drag & drop props
+  isDraggedOver?: boolean;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
+  onDragOver?: () => void;
+  onDragLeave?: () => void;
+  onDrop?: () => void;
+  isDragging?: boolean;
+  canBeDropTarget?: boolean;
+  // Sélection props
+  isSelectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelection?: () => void;
 }
 
 function TaskCard({
@@ -1361,6 +1740,19 @@ function TaskCard({
   isSubtask = false,
   parentColor,
   t,
+  // Drag & drop props
+  isDraggedOver = false,
+  onDragStart,
+  onDragEnd,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+  isDragging = false,
+  canBeDropTarget = false,
+  // Sélection props
+  isSelectionMode = false,
+  isSelected = false,
+  onToggleSelection,
 }: TaskCardProps) {
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed';
   const displayProgress = localProgress !== undefined ? localProgress : task.progress;
@@ -1384,23 +1776,86 @@ function TaskCard({
   const completedSubtasks = task.subtasks?.filter(s => s.task_status === 'completed').length || 0;
   const totalSubtasks = task.subtasks?.length || 0;
 
+  // Drag & drop handlers
+  const handleDragStart = (e: React.DragEvent) => {
+    if (isSubtask) {
+      e.preventDefault();
+      return;
+    }
+    e.dataTransfer.setData('taskId', task.documentId);
+    e.dataTransfer.effectAllowed = 'move';
+    onDragStart?.();
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    onDragOver?.();
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    onDragLeave?.();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    onDrop?.();
+  };
+
+  const handleDragEnd = () => {
+    onDragEnd?.();
+  };
+
   return (
     <motion.div
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`bg-card border rounded-xl overflow-hidden transition-colors cursor-pointer hover:border-accent ${
-        isOverdue ? 'border-red-500/50' : 'border-default'
-      } ${isSubtask ? 'ml-8' : ''}`}
-      style={!isSubtask ? { borderLeftWidth: '4px', borderLeftColor: taskColor } : undefined}
-      onClick={(e) => {
-        // Ne pas ouvrir si on clique sur un bouton
-        if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('input')) return;
-        onClick();
-      }}
     >
+      <div
+        draggable={!isSubtask && canEdit}
+        onDragStart={handleDragStart}
+        onDragOver={canBeDropTarget ? handleDragOver : undefined}
+        onDragLeave={canBeDropTarget ? handleDragLeave : undefined}
+        onDrop={canBeDropTarget ? handleDrop : undefined}
+        onDragEnd={handleDragEnd}
+        className={`border rounded-xl overflow-hidden transition-all cursor-pointer hover:border-accent ${
+          isOverdue ? 'border-danger !bg-danger' : 'border-default bg-card'
+        } ${isSubtask ? 'ml-8' : ''} ${
+          isDragging ? 'opacity-50 scale-95' : ''
+        } ${
+          isDraggedOver ? 'ring-2 ring-accent ring-offset-2 ring-offset-card border-accent scale-[1.02]' : ''
+        } ${
+          canBeDropTarget && !isDraggedOver ? 'border-dashed border-accent/50' : ''
+        }`}
+        style={!isSubtask ? { borderLeftWidth: '4px', borderLeftColor: taskColor } : undefined}
+        onClick={(e) => {
+          // Ne pas ouvrir si on clique sur un bouton ou si on drag
+          if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('input')) return;
+          if (isDragging) return;
+          onClick();
+        }}
+      >
       <div className="p-4">
         <div className="flex items-start gap-3">
+          {/* Checkbox de sélection (en mode sélection) */}
+          {isSelectionMode && !isSubtask && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSelection?.();
+              }}
+              className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all ${
+                isSelected
+                  ? 'bg-accent border-accent text-white'
+                  : 'border-default hover:border-accent bg-card'
+              }`}
+            >
+              {isSelected && <IconCheck className="w-4 h-4" />}
+            </button>
+          )}
+
           {/* Indicateur sous-tâche */}
           {isSubtask && (
             <div 
@@ -1410,20 +1865,22 @@ function TaskCard({
           )}
           
           {/* Checkbox statut */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onStatusChange(task.task_status === 'completed' ? 'todo' : 'completed');
-            }}
-            disabled={!canEdit}
-            className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-              task.task_status === 'completed'
-                ? 'bg-accent border-accent text-white'
-                : 'border-default hover:border-accent'
-            } ${!canEdit ? 'cursor-not-allowed opacity-50' : ''}`}
-          >
-            {task.task_status === 'completed' && <IconCheck className="w-4 h-4" />}
-          </button>
+          {!isSelectionMode && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onStatusChange(task.task_status === 'completed' ? 'todo' : 'completed');
+              }}
+              disabled={!canEdit}
+              className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                task.task_status === 'completed'
+                  ? 'bg-accent border-accent text-white'
+                  : 'border-default hover:border-accent'
+              } ${!canEdit ? 'cursor-not-allowed opacity-50' : ''}`}
+            >
+              {task.task_status === 'completed' && <IconCheck className="w-4 h-4" />}
+            </button>
+          )}
 
           {/* Contenu */}
           <div className="flex-1 min-w-0">
@@ -1665,6 +2122,7 @@ function TaskCard({
           />
         </div>
       )}
+      </div>
     </motion.div>
   );
 }
@@ -2336,17 +2794,50 @@ function TaskGanttView({
   }, [tasksWithDates, today, normalizeDate]);
 
   // Calculer la position d'une tâche (en nombre de jours depuis minDate)
-  const getTaskPosition = useCallback((task: ProjectTask) => {
+  // Pour les tâches parentes, utilise les dates min/max des sous-tâches
+  const getTaskPosition = useCallback((task: ProjectTask, useSubtasksDates: boolean = true) => {
     if (!ganttData) return { startOffset: 0, duration: 1 };
     const { minDate } = ganttData;
-    const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
-    const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
+    
+    // Pour les tâches avec sous-tâches, calculer les dates englobantes
+    let effectiveStartDate = task.start_date;
+    let effectiveEndDate = task.due_date;
+    
+    if (useSubtasksDates && task.subtasks && task.subtasks.length > 0) {
+      // Collecter toutes les dates (tâche + sous-tâches)
+      const allStartDates = [task.start_date, ...task.subtasks.map(s => s.start_date)]
+        .filter((d): d is string => !!d)
+        .map(d => new Date(d));
+      const allEndDates = [task.due_date, ...task.subtasks.map(s => s.due_date)]
+        .filter((d): d is string => !!d)
+        .map(d => new Date(d));
+      
+      if (allStartDates.length > 0) {
+        effectiveStartDate = new Date(Math.min(...allStartDates.map(d => d.getTime()))).toISOString().split('T')[0];
+      }
+      if (allEndDates.length > 0) {
+        effectiveEndDate = new Date(Math.max(...allEndDates.map(d => d.getTime()))).toISOString().split('T')[0];
+      }
+    }
+    
+    const start = normalizeDate(effectiveStartDate ? new Date(effectiveStartDate) : new Date(effectiveEndDate || today));
+    const end = normalizeDate(effectiveEndDate ? new Date(effectiveEndDate) : start);
     
     const startOffset = Math.round((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
     const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
     
     return { startOffset: Math.max(0, startOffset), duration };
   }, [ganttData, normalizeDate, today]);
+
+  // Calculer le pourcentage effectif d'une tâche (moyenne des sous-tâches si présentes)
+  const getEffectiveProgress = useCallback((task: ProjectTask): number => {
+    if (task.subtasks && task.subtasks.length > 0) {
+      // Moyenne des progrès des sous-tâches
+      const totalProgress = task.subtasks.reduce((sum, s) => sum + (s.progress || 0), 0);
+      return Math.round(totalProgress / task.subtasks.length);
+    }
+    return task.progress || 0;
+  }, []);
 
   const isToday = useCallback((date: Date) => {
     return date.getTime() === today.getTime();
@@ -2462,8 +2953,30 @@ function TaskGanttView({
 
     let tasksHTML = '';
     tasks.forEach((task) => {
-      const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
-      const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
+      // Pour les tâches avec sous-tâches, calculer les dates effectives
+      let effectiveStartDate = task.start_date;
+      let effectiveEndDate = task.due_date;
+      let effectiveProgress = task.progress || 0;
+      
+      if (task.subtasks && task.subtasks.length > 0) {
+        // Dates englobantes
+        const allStartDates = [task.start_date, ...task.subtasks.map(s => s.start_date)]
+          .filter((d): d is string => !!d).map(d => new Date(d));
+        const allEndDates = [task.due_date, ...task.subtasks.map(s => s.due_date)]
+          .filter((d): d is string => !!d).map(d => new Date(d));
+        if (allStartDates.length > 0) {
+          effectiveStartDate = new Date(Math.min(...allStartDates.map(d => d.getTime()))).toISOString().split('T')[0];
+        }
+        if (allEndDates.length > 0) {
+          effectiveEndDate = new Date(Math.max(...allEndDates.map(d => d.getTime()))).toISOString().split('T')[0];
+        }
+        // Moyenne des progrès des sous-tâches
+        const totalProgress = task.subtasks.reduce((sum, s) => sum + (s.progress || 0), 0);
+        effectiveProgress = Math.round(totalProgress / task.subtasks.length);
+      }
+      
+      const start = normalizeDate(effectiveStartDate ? new Date(effectiveStartDate) : new Date(effectiveEndDate || today));
+      const end = normalizeDate(effectiveEndDate ? new Date(effectiveEndDate) : start);
       const startOffset = Math.round((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
       const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
       const leftPercent = Math.max(0, (startOffset / totalDays) * 100);
@@ -2485,7 +2998,7 @@ function TaskGanttView({
           <td style="padding: 8px 0; position: relative; background: ${colors.bg};">
             <div style="position: relative; height: 24px;">
               <div style="position: absolute; left: ${leftPercent}%; width: ${widthPercent}%; min-width: 40px; height: 24px; background: ${statusColor}; border-radius: 4px; display: table; table-layout: fixed;">
-                <span style="display: table-cell; vertical-align: middle; text-align: center; color: #ffffff; font-size: 11px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.3); white-space: nowrap; padding: 0 4px;">${task.progress || 0}%</span>
+                <span style="display: table-cell; vertical-align: middle; text-align: center; color: #ffffff; font-size: 11px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.3); white-space: nowrap; padding: 0 4px;">${effectiveProgress}%</span>
               </div>
             </div>
           </td>
@@ -2781,23 +3294,23 @@ function TaskGanttView({
                   <th 
                     key={i}
                     colSpan={month.days}
-                    className="text-center py-2 text-xs font-semibold text-primary bg-muted/10 border-b border-muted/30"
+                    className="text-center py-2 text-xs font-semibold text-primary bg-muted border-b border-muted"
                   >
                     {month.label}
                   </th>
                 ))}
               </tr>
               <tr>
-                <th className="sticky left-0 z-30 bg-[var(--color-card)] h-7 border-b border-muted/20" />
-                <th className="sticky left-[260px] z-30 bg-[var(--color-card)] border-b border-muted/20" />
-                <th className="sticky left-[350px] z-30 bg-[var(--color-card)] border-b border-muted/20 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" />
+                <th className="sticky left-0 z-30 bg-[var(--color-card)] h-7 border-b border-muted" />
+                <th className="sticky left-[260px] z-30 bg-[var(--color-card)] border-b border-muted" />
+                <th className="sticky left-[350px] z-30 bg-[var(--color-card)] border-b border-muted shadow-[2px_0_4px_rgba(0,0,0,0.1)]" />
                 {/* Timeline header - Jours */}
                 {dayHeaders.map((day, j) => (
                   <th 
                     key={j}
                     data-day-index={j}
                     data-is-today={isToday(day) ? 'true' : 'false'}
-                    className={`text-center py-1.5 text-[10px] font-medium w-8 min-w-[32px] border-b border-muted/20 ${
+                    className={`text-center py-1.5 text-[10px] font-medium w-8 min-w-[32px] border-b border-muted ${
                       isToday(day) 
                         ? 'bg-red-500/15 text-red-500 font-bold' 
                         : day.getDay() === 0 || day.getDay() === 6
@@ -2854,12 +3367,29 @@ function TaskGanttView({
 
                     {/* Tâches du groupe */}
                     {isExpanded && group.tasks.map((task, taskIndex) => {
-                      const { startOffset, duration } = getTaskPosition(task);
+                      const { startOffset, duration } = getTaskPosition(task, true); // true = utiliser dates des sous-tâches
                       const hasSubtasks = task.subtasks && task.subtasks.length > 0;
                       const subtaskCount = task.subtasks?.length || 0;
                       const completedSubtasks = task.subtasks?.filter(s => s.task_status === 'completed').length || 0;
                       const allAssignedUsers = [task.assigned_to, ...(task.subtasks?.map(s => s.assigned_to) || [])].filter((u): u is NonNullable<typeof u> => !!u);
                       const uniqueUsers = allAssignedUsers.filter((u, i, arr) => arr.findIndex(x => x.id === u.id) === i);
+                      const effectiveProgress = getEffectiveProgress(task);
+                      
+                      // Calculer les dates effectives pour l'affichage (englobe sous-tâches)
+                      let effectiveStartDate = task.start_date;
+                      let effectiveEndDate = task.due_date;
+                      if (hasSubtasks && task.subtasks) {
+                        const allStartDates = [task.start_date, ...task.subtasks.map(s => s.start_date)]
+                          .filter((d): d is string => !!d).map(d => new Date(d));
+                        const allEndDates = [task.due_date, ...task.subtasks.map(s => s.due_date)]
+                          .filter((d): d is string => !!d).map(d => new Date(d));
+                        if (allStartDates.length > 0) {
+                          effectiveStartDate = new Date(Math.min(...allStartDates.map(d => d.getTime()))).toISOString().split('T')[0];
+                        }
+                        if (allEndDates.length > 0) {
+                          effectiveEndDate = new Date(Math.max(...allEndDates.map(d => d.getTime()))).toISOString().split('T')[0];
+                        }
+                      }
 
                       return (
                         <React.Fragment key={task.documentId}>
@@ -2894,19 +3424,19 @@ function TaskGanttView({
                                 {uniqueUsers.length > 0 && <AvatarStack users={uniqueUsers} max={2} size="sm" />}
                               </div>
                             </td>
-                            {/* Due Range */}
+                            {/* Due Range - utilise les dates effectives */}
                             <td className="py-2 px-1 text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                               <span 
                                 className="text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
                                 style={{ backgroundColor: group.color + '20', color: group.color }}
                               >
-                                {formatDateRange(task.start_date, task.due_date)}
+                                {formatDateRange(effectiveStartDate, effectiveEndDate)}
                               </span>
                             </td>
-                            {/* Duration */}
+                            {/* Duration - utilise les dates effectives */}
                             <td className="py-2 px-1 text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
                               <span className="text-xs text-muted whitespace-nowrap">
-                                {getDurationDays(task.start_date, task.due_date)} {t('days_short') || 'd'}
+                                {getDurationDays(effectiveStartDate, effectiveEndDate)} {t('days_short') || 'd'}
                               </span>
                             </td>
                             {/* Timeline - Barre de Gantt */}
@@ -2928,7 +3458,7 @@ function TaskGanttView({
                                     style={{ left: `${(todayIndex * 32) + 16}px` }}
                                   />
                                 )}
-                                {/* Barre de la tâche */}
+                                {/* Barre de la tâche - utilise le pourcentage effectif */}
                                 <div
                                   className="absolute top-1/2 -translate-y-1/2 h-7 rounded-md shadow-sm hover:shadow-md transition-shadow"
                                   style={{
@@ -2937,11 +3467,17 @@ function TaskGanttView({
                                     backgroundColor: task.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
                                   }}
                                 >
-                                  <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${task.progress || 0}%` }} />
-                                  <div className="relative h-full flex items-center px-2 overflow-hidden">
+                                  <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${effectiveProgress}%` }} />
+                                  <div className="relative h-full flex items-center justify-between px-2 overflow-hidden">
                                     <span className="text-[11px] text-white font-medium truncate">
                                       {duration > 3 ? task.title : ''}
                                     </span>
+                                    {/* Afficher le pourcentage effectif (moyenne des sous-tâches si présentes) */}
+                                    {duration > 2 && (
+                                      <span className="text-[10px] text-white/90 font-semibold ml-1 flex-shrink-0">
+                                        {effectiveProgress}%
+                                      </span>
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -2950,7 +3486,7 @@ function TaskGanttView({
 
                           {/* Sous-tâches */}
                           {hasSubtasks && task.subtasks?.map(subtask => {
-                            const subPos = getTaskPosition(subtask);
+                            const subPos = getTaskPosition(subtask, false); // false = pas de sous-sous-tâches
                             return (
                               <tr 
                                 key={subtask.documentId}

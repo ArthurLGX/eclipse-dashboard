@@ -805,7 +805,7 @@ export default function SmtpConfigSection() {
                         {testingImap ? (
                           <IconLoader2 className="w-4 h-4 animate-spin" />
                         ) : (
-                          <IconPlugConnected className="w-4 h-4" />
+                          <IconPlugConnected className="w-4 h-4 text-primary" />
                         )}
                         {t('imap_test') || 'Tester la connexion IMAP'}
                       </button>

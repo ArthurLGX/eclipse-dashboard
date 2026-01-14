@@ -2084,8 +2084,10 @@ export async function fetchProjectTasks(projectDocumentId: string): Promise<ApiR
   let hasMore = true;
 
   while (hasMore) {
+    // Populate complet des subtasks avec tous leurs attributs (progress, dates, etc.)
+    // Note: on ne peut pas utiliser populate=* car ça inclut le rôle qui n'est pas autorisé
     const response = await get<ApiResponse<ProjectTask[]>>(
-      `project-tasks?populate[0]=assigned_to&populate[1]=subtasks&populate[2]=subtasks.assigned_to&populate[3]=parent_task&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc&pagination[pageSize]=${pageSize}&pagination[page]=${page}`
+      `project-tasks?populate[0]=assigned_to&populate[1]=parent_task&populate[2]=subtasks&populate[3]=subtasks.assigned_to&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc&pagination[pageSize]=${pageSize}&pagination[page]=${page}`
     );
 
     if (response.data && response.data.length > 0) {
@@ -2169,6 +2171,7 @@ export async function updateProjectTask(
     order: number;
     tags: string[];
     color: string;
+    parent_task: string | null; // documentId de la tâche parente (pour transformer en sous-tâche)
   }>
 ) {
   // Si la tâche est marquée comme complétée, ajouter la date de complétion
@@ -3158,6 +3161,28 @@ export const fetchRunningTimeEntry = async (userId: number): Promise<TimeEntry |
   return response.data?.[0] || null;
 };
 
+/** Récupère les sessions IDE récentes (VS Code/Cursor) - dernières 24h */
+export const fetchRecentIdeSessions = async (userId: number): Promise<TimeEntry[]> => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  const response = await get<ApiResponse<TimeEntry[]>>(
+    `time-entries?filters[users][id][$eq]=${userId}&filters[source][$eq]=ide&filters[start_time][$gte]=${yesterday.toISOString()}&populate[0]=project&populate[1]=client&sort=start_time:desc&pagination[limit]=10`
+  );
+  return response.data || [];
+};
+
+/** Récupère la dernière session IDE active (session la plus récente dans les 15 dernières minutes) */
+export const fetchActiveIdeSession = async (userId: number): Promise<TimeEntry | null> => {
+  const fifteenMinutesAgo = new Date();
+  fifteenMinutesAgo.setMinutes(fifteenMinutesAgo.getMinutes() - 15);
+  
+  const response = await get<ApiResponse<TimeEntry[]>>(
+    `time-entries?filters[users][id][$eq]=${userId}&filters[source][$eq]=ide&filters[end_time][$gte]=${fifteenMinutesAgo.toISOString()}&populate[0]=project&populate[1]=client&sort=end_time:desc&pagination[limit]=1`
+  );
+  return response.data?.[0] || null;
+};
+
 /** Crée une nouvelle entrée de temps */
 export const createTimeEntry = async (
   userId: number,
@@ -3439,7 +3464,7 @@ export const createApiToken = async (data: {
   expires_at?: string;
   scopes?: string[];
 }): Promise<ApiToken> => {
-  const response = await post<{ data: ApiToken }>('api-tokens', { data });
+  const response = await post<{ data: ApiToken }>('api-tokens', data);
   return response.data;
 };
 

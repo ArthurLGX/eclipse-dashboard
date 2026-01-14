@@ -136,20 +136,23 @@ export default function SharedProjectPage() {
   // Les tâches du projet (mémorisées pour éviter les re-calculs)
   const tasks = useMemo(() => project?.tasks || [], [project?.tasks]);
 
-  // Statistiques par statut pour les filtres
-  const taskStats = useMemo(() => ({
-    all: tasks.length,
-    todo: tasks.filter(t => t.task_status === 'todo').length,
-    in_progress: tasks.filter(t => t.task_status === 'in_progress').length,
-    completed: tasks.filter(t => t.task_status === 'completed').length,
-    cancelled: tasks.filter(t => t.task_status === 'cancelled').length,
-  }), [tasks]);
+  // Séparer les tâches parentes des sous-tâches pour l'affichage
+  const parentTasksForDisplay = useMemo(() => tasks.filter(t => !t.parent_task), [tasks]);
 
-  // Tâches filtrées selon le statut sélectionné
+  // Statistiques par statut pour les filtres (basées sur les tâches parentes)
+  const taskStats = useMemo(() => ({
+    all: parentTasksForDisplay.length,
+    todo: parentTasksForDisplay.filter(t => t.task_status === 'todo').length,
+    in_progress: parentTasksForDisplay.filter(t => t.task_status === 'in_progress').length,
+    completed: parentTasksForDisplay.filter(t => t.task_status === 'completed').length,
+    cancelled: parentTasksForDisplay.filter(t => t.task_status === 'cancelled').length,
+  }), [parentTasksForDisplay]);
+
+  // Tâches filtrées selon le statut sélectionné (uniquement les tâches parentes)
   const filteredTasks = useMemo(() => {
-    if (statusFilter === 'all') return tasks;
-    return tasks.filter(task => task.task_status === statusFilter);
-  }, [tasks, statusFilter]);
+    if (statusFilter === 'all') return parentTasksForDisplay;
+    return parentTasksForDisplay.filter(task => task.task_status === statusFilter);
+  }, [parentTasksForDisplay, statusFilter]);
 
   // Options de filtres avec icônes
   const FILTER_OPTIONS: { value: TaskStatus | 'all'; label: string; icon: React.ReactNode; color: string }[] = useMemo(() => [
@@ -217,9 +220,22 @@ export default function SharedProjectPage() {
     );
   }
 
-  const completedTasks = tasks.filter(task => task.task_status === 'completed').length;
-  const overallProgress = tasks.length > 0
-    ? Math.round(tasks.reduce((sum, task) => sum + (task.progress || 0), 0) / tasks.length)
+  // Calculer les stats en tenant compte des sous-tâches
+  // On ne compte que les tâches parentes (les sous-tâches sont comptées via leurs parents)
+  const parentTasks = tasks.filter(task => !task.parent_task);
+  const completedTasks = parentTasks.filter(task => task.task_status === 'completed').length;
+  
+  // Calculer la progression effective (moyenne des sous-tâches si présentes)
+  const getTaskEffectiveProgress = (task: ProjectTask): number => {
+    if (task.subtasks && task.subtasks.length > 0) {
+      const totalProgress = task.subtasks.reduce((sum, s) => sum + (s.progress || 0), 0);
+      return Math.round(totalProgress / task.subtasks.length);
+    }
+    return task.progress || 0;
+  };
+  
+  const overallProgress = parentTasks.length > 0
+    ? Math.round(parentTasks.reduce((sum, task) => sum + getTaskEffectiveProgress(task), 0) / parentTasks.length)
     : 0;
 
   const daysRemaining = project.end_date 
@@ -326,7 +342,7 @@ export default function SharedProjectPage() {
                 {t('tasks_completed')}
               </div>
               <div className="text-3xl font-bold text-success">{completedTasks}</div>
-              <div className="text-sm text-muted">{t('on_tasks')} {tasks.length} {t('tasks_label')}</div>
+              <div className="text-sm text-muted">{t('on_tasks')} {parentTasks.length} {t('tasks_label')}</div>
             </div>
 
             <div className="card p-5">
@@ -335,7 +351,7 @@ export default function SharedProjectPage() {
                 {t('in_progress')}
               </div>
               <div className="text-3xl font-bold text-info">
-                {tasks.filter(task => task.task_status === 'in_progress').length}
+                {parentTasks.filter(task => task.task_status === 'in_progress').length}
               </div>
               <div className="text-sm text-muted">{t('active_tasks')}</div>
             </div>
@@ -416,7 +432,7 @@ export default function SharedProjectPage() {
                     {t('showing') || 'Affichage de'}{' '}
                     <span className="font-semibold text-primary">{filteredTasks.length}</span>{' '}
                     {t('tasks_on') || 'tâche(s) sur'}{' '}
-                    <span className="font-semibold text-primary">{tasks.length}</span>
+                    <span className="font-semibold text-primary">{parentTasksForDisplay.length}</span>
                     {' • '}
                     <button 
                       onClick={() => setStatusFilter('all')}
@@ -863,17 +879,50 @@ function PublicGanttView({ tasks, projectName }: {
     requestAnimationFrame(animateScroll);
   }, [ganttData]);
 
-  const getTaskPosition = useCallback((task: ProjectTask) => {
+  // Calculer la position d'une tâche (pour les tâches parentes, utilise les dates englobantes des sous-tâches)
+  const getTaskPosition = useCallback((task: ProjectTask, useSubtasksDates: boolean = true) => {
     if (!ganttData) return { startOffset: 0, duration: 1 };
     const { minDate } = ganttData;
-    const start = normalizeDate(task.start_date ? new Date(task.start_date) : new Date(task.due_date || today));
-    const end = normalizeDate(task.due_date ? new Date(task.due_date) : start);
+    
+    // Pour les tâches avec sous-tâches, calculer les dates englobantes
+    let effectiveStartDate = task.start_date;
+    let effectiveEndDate = task.due_date;
+    
+    if (useSubtasksDates && task.subtasks && task.subtasks.length > 0) {
+      // Collecter toutes les dates (tâche + sous-tâches)
+      const allStartDates = [task.start_date, ...task.subtasks.map(s => s.start_date)]
+        .filter((d): d is string => !!d)
+        .map(d => new Date(d));
+      const allEndDates = [task.due_date, ...task.subtasks.map(s => s.due_date)]
+        .filter((d): d is string => !!d)
+        .map(d => new Date(d));
+      
+      if (allStartDates.length > 0) {
+        effectiveStartDate = new Date(Math.min(...allStartDates.map(d => d.getTime()))).toISOString().split('T')[0];
+      }
+      if (allEndDates.length > 0) {
+        effectiveEndDate = new Date(Math.max(...allEndDates.map(d => d.getTime()))).toISOString().split('T')[0];
+      }
+    }
+    
+    const start = normalizeDate(effectiveStartDate ? new Date(effectiveStartDate) : new Date(effectiveEndDate || today));
+    const end = normalizeDate(effectiveEndDate ? new Date(effectiveEndDate) : start);
     
     const startOffset = Math.round((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
     const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
     
     return { startOffset: Math.max(0, startOffset), duration };
   }, [ganttData, normalizeDate, today]);
+
+  // Calculer le pourcentage effectif d'une tâche (moyenne des sous-tâches si présentes)
+  const getEffectiveProgress = useCallback((task: ProjectTask): number => {
+    if (task.subtasks && task.subtasks.length > 0) {
+      // Moyenne des progrès des sous-tâches
+      const totalProgress = task.subtasks.reduce((sum, s) => sum + (s.progress || 0), 0);
+      return Math.round(totalProgress / task.subtasks.length);
+    }
+    return task.progress || 0;
+  }, []);
 
   const isToday = useCallback((date: Date) => {
     return date.getTime() === today.getTime();
@@ -1296,10 +1345,27 @@ function PublicGanttView({ tasks, projectName }: {
 
                     {/* Tâches du groupe */}
                     {isExpanded && group.tasks.map((task) => {
-                      const { startOffset, duration } = getTaskPosition(task);
+                      const { startOffset, duration } = getTaskPosition(task, true); // true = utiliser dates des sous-tâches
                       const hasSubtasks = task.subtasks && task.subtasks.length > 0;
                       const subtaskCount = task.subtasks?.length || 0;
                       const completedSubtasks = task.subtasks?.filter(s => s.task_status === 'completed').length || 0;
+                      const effectiveProgress = getEffectiveProgress(task);
+                      
+                      // Calculer les dates effectives pour l'affichage (englobe sous-tâches)
+                      let effectiveStartDate = task.start_date;
+                      let effectiveEndDate = task.due_date;
+                      if (hasSubtasks && task.subtasks) {
+                        const allStartDates = [task.start_date, ...task.subtasks.map(s => s.start_date)]
+                          .filter((d): d is string => !!d).map(d => new Date(d));
+                        const allEndDates = [task.due_date, ...task.subtasks.map(s => s.due_date)]
+                          .filter((d): d is string => !!d).map(d => new Date(d));
+                        if (allStartDates.length > 0) {
+                          effectiveStartDate = new Date(Math.min(...allStartDates.map(d => d.getTime()))).toISOString().split('T')[0];
+                        }
+                        if (allEndDates.length > 0) {
+                          effectiveEndDate = new Date(Math.max(...allEndDates.map(d => d.getTime()))).toISOString().split('T')[0];
+                        }
+                      }
 
                       return (
                         <React.Fragment key={task.documentId}>
@@ -1329,22 +1395,22 @@ function PublicGanttView({ tasks, projectName }: {
                                 )}
                               </div>
                             </td>
-                            {/* Due Range */}
+                            {/* Due Range - utilise les dates effectives */}
                             <td className="py-2 px-1 text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                               <span 
                                 className="text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
                                 style={{ backgroundColor: group.color + '20', color: group.color }}
                               >
-                                {formatDateRange(task.start_date, task.due_date)}
+                                {formatDateRange(effectiveStartDate, effectiveEndDate)}
                               </span>
                             </td>
-                            {/* Duration */}
+                            {/* Duration - utilise les dates effectives */}
                             <td className="py-2 px-1 text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted/5 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
                               <span className="text-xs text-muted whitespace-nowrap">
-                                {getDurationDays(task.start_date, task.due_date)} {t('days_short') || 'j'}
+                                {getDurationDays(effectiveStartDate, effectiveEndDate)} {t('days_short') || 'j'}
                               </span>
                             </td>
-                            {/* Timeline - Barre de Gantt */}
+                            {/* Timeline - Barre de Gantt avec pourcentage effectif */}
                             <td colSpan={dayHeaders.length} className="h-[44px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                               <div className="relative w-full h-full">
                                 <div className="absolute inset-0 flex">
@@ -1369,11 +1435,17 @@ function PublicGanttView({ tasks, projectName }: {
                                     backgroundColor: task.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
                                   }}
                                 >
-                                  <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${task.progress || 0}%` }} />
-                                  <div className="relative h-full flex items-center px-2 overflow-hidden">
+                                  <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${effectiveProgress}%` }} />
+                                  <div className="relative h-full flex items-center justify-between px-2 overflow-hidden">
                                     <span className="text-[11px] text-white font-medium truncate">
                                       {duration > 3 ? task.title : ''}
                                     </span>
+                                    {/* Afficher le pourcentage effectif */}
+                                    {duration > 2 && (
+                                      <span className="text-[10px] text-white/90 font-semibold ml-1 flex-shrink-0">
+                                        {effectiveProgress}%
+                                      </span>
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -1382,7 +1454,7 @@ function PublicGanttView({ tasks, projectName }: {
 
                           {/* Sous-tâches */}
                           {hasSubtasks && task.subtasks?.map(subtask => {
-                            const subPos = getTaskPosition(subtask);
+                            const subPos = getTaskPosition(subtask, false); // false = pas de sous-sous-tâches
                             return (
                               <tr 
                                 key={subtask.documentId}

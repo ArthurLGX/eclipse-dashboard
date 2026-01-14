@@ -16,6 +16,8 @@ import {
   IconCheck,
   IconProgressCheck,
   IconCalendarEvent,
+  IconArchive,
+  IconArchiveOff,
 } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import QuickProjectModal from '@/app/components/QuickProjectModal';
@@ -39,6 +41,7 @@ export default function ProjectsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'active' | 'archived'>('active');
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; project: Project | null }>({
     isOpen: false,
     project: null,
@@ -57,21 +60,35 @@ export default function ProjectsPage() {
 
   const allProjects = useMemo(() => (projectsData as Project[]) || [], [projectsData]);
   
+  // Séparer les projets archivés des projets actifs
+  const { activeProjects, archivedProjects } = useMemo(() => {
+    const active = allProjects.filter(p => p.project_status !== 'archived');
+    const archived = allProjects.filter(p => p.project_status === 'archived');
+    return { activeProjects: active, archivedProjects: archived };
+  }, [allProjects]);
+
   // Séparer les projets possédés et les projets collaborés
   // Les projets collaborés ne comptent PAS dans le quota
   const projects = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const ownedProjects = allProjects.filter((p: any) => !p._isCollaborator);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const collaboratedProjects = allProjects.filter((p: any) => p._isCollaborator);
+    // Utiliser les projets de l'onglet actif
+    const currentProjects = activeTab === 'active' ? activeProjects : archivedProjects;
     
-    // Appliquer le quota uniquement aux projets possédés
-    const visibleCount = getVisibleCount('projects');
-    const visibleOwnedProjects = ownedProjects.slice(0, visibleCount);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ownedProjects = currentProjects.filter((p: any) => !p._isCollaborator);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const collaboratedProjects = currentProjects.filter((p: any) => p._isCollaborator);
     
-    // Toujours afficher tous les projets collaborés (pas de quota pour eux)
-    return [...visibleOwnedProjects, ...collaboratedProjects];
-  }, [allProjects, getVisibleCount]);
+    // Appliquer le quota uniquement aux projets possédés actifs
+    if (activeTab === 'active') {
+      const visibleCount = getVisibleCount('projects');
+      const visibleOwnedProjects = ownedProjects.slice(0, visibleCount);
+      // Toujours afficher tous les projets collaborés (pas de quota pour eux)
+      return [...visibleOwnedProjects, ...collaboratedProjects];
+    }
+    
+    // Pas de quota pour les archives
+    return [...ownedProjects, ...collaboratedProjects];
+  }, [activeProjects, archivedProjects, activeTab, getVisibleCount]);
 
   // Liste des clients pour le modal de création de projet
   const _clients = useMemo(() => 
@@ -80,11 +97,11 @@ export default function ProjectsPage() {
   );
   void _clients; // Utilisé par QuickProjectModal via useClients
 
-  // Quota exceeded detection (only for owned projects)
-  const ownedProjects = useMemo(() => 
+  // Quota exceeded detection (only for owned ACTIVE projects)
+  const ownedActiveProjects = useMemo(() => 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    allProjects.filter((p: any) => !p._isCollaborator),
-    [allProjects]
+    activeProjects.filter((p: any) => !p._isCollaborator),
+    [activeProjects]
   );
   
   const { 
@@ -92,7 +109,7 @@ export default function ProjectsPage() {
     setShowModal: setShowQuotaModal, 
     quota: projectsQuota,
     markAsHandled: markQuotaHandled 
-  } = useQuotaExceeded('projects', ownedProjects, !loadingProjects && ownedProjects.length > 0);
+  } = useQuotaExceeded('projects', ownedActiveProjects, !loadingProjects && ownedActiveProjects.length > 0);
 
   // Handle quota exceeded selection
   const handleQuotaSelection = async (itemsToKeep: Project[], itemsToRemove: Project[]) => {
@@ -347,6 +364,7 @@ export default function ProjectsPage() {
           status === 'completed' ? { label: t('completed') || 'Terminé', className: 'badge-success' } :
           status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'badge-warning' } :
           status === 'planning' ? { label: t('planning') || 'Planification', className: 'badge-info' } :
+          status === 'archived' ? { label: t('archived') || 'Archivé', className: 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300' } :
           { label: status, className: 'badge-primary' };
 
         return (
@@ -379,15 +397,35 @@ export default function ProjectsPage() {
       label: t('actions'),
       render: (_, row) => (
         <div className="flex items-center gap-1">
+          {activeTab === 'active' && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleScheduleMeeting(row);
+              }}
+              title={t('schedule_meeting') || 'Planifier une réunion'}
+              className="p-1.5 lg:w-fit w-full rounded-lg cursor-pointer hover:bg-accent-light text-muted hover:text-accent transition-colors"
+            >
+              <IconCalendarEvent className="w-4 h-4" />
+            </button>
+          )}
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleScheduleMeeting(row);
+              handleArchiveProject(row, activeTab === 'active');
             }}
-            title={t('schedule_meeting') || 'Planifier une réunion'}
-            className="p-1.5 lg:w-fit w-full rounded-lg cursor-pointer hover:bg-accent-light text-muted hover:text-accent transition-colors"
+            title={activeTab === 'active' 
+              ? (t('archive_project') || 'Archiver') 
+              : (t('unarchive_project') || 'Restaurer')}
+            className={`p-1.5 lg:w-fit w-full rounded-lg cursor-pointer transition-colors ${
+              activeTab === 'active' 
+                ? 'hover:bg-warning-light text-muted hover:text-warning' 
+                : 'hover:bg-success-light text-muted hover:text-success'
+            }`}
           >
-            <IconCalendarEvent className="w-4 h-4" />
+            {activeTab === 'active' 
+              ? <IconArchive className="w-4 h-4" /> 
+              : <IconArchiveOff className="w-4 h-4" />}
           </button>
           <TableActions
             onEdit={() => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}?edit=1`)}
@@ -405,6 +443,29 @@ export default function ProjectsPage() {
     showGlobalPopup(t('project_deleted_success') || 'Projet supprimé avec succès', 'success');
     clearCache('projects');
     await refetchProjects();
+  };
+
+  // Archiver/Désarchiver un projet
+  const handleArchiveProject = async (project: Project, archive: boolean) => {
+    try {
+      const newStatus = archive ? 'archived' : 'planning';
+      await updateProjectStatusWithSync(
+        project.documentId,
+        newStatus,
+        project.client?.documentId
+      );
+      showGlobalPopup(
+        archive 
+          ? (t('project_archived') || 'Projet archivé') 
+          : (t('project_unarchived') || 'Projet restauré'),
+        'success'
+      );
+      clearCache('projects');
+      await refetchProjects();
+    } catch (error) {
+      console.error('Error archiving project:', error);
+      showGlobalPopup(t('error') || 'Erreur', 'error');
+    }
   };
 
   // Planifier une réunion pour un projet
@@ -506,6 +567,44 @@ export default function ProjectsPage() {
 
   return (
     <ProtectedRoute>
+      {/* Onglets Actifs / Archives */}
+      <div className="mb-6 flex items-center gap-2">
+        <button
+          onClick={() => setActiveTab('active')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+            activeTab === 'active'
+              ? 'bg-accent text-white shadow-md'
+              : 'bg-card text-secondary hover:bg-hover border border-default'
+          }`}
+        >
+          <IconBuilding className="w-4 h-4" />
+          {t('active_projects') || 'Projets actifs'}
+          <span className={`ml-1 px-2 py-0.5 text-xs rounded-full ${
+            activeTab === 'active' ? 'bg-white/20' : 'bg-muted'
+          }`}>
+            {activeProjects.length}
+          </span>
+        </button>
+        <button
+          onClick={() => setActiveTab('archived')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+            activeTab === 'archived'
+              ? 'bg-warning text-white shadow-md'
+              : 'bg-card text-secondary hover:bg-hover border border-default'
+          }`}
+        >
+          <IconArchive className="w-4 h-4" />
+          {t('archived_projects') || 'Archives'}
+          {archivedProjects.length > 0 && (
+            <span className={`ml-1 px-2 py-0.5 text-xs rounded-full ${
+              activeTab === 'archived' ? 'bg-white/20' : 'bg-warning-light text-warning'
+            }`}>
+              {archivedProjects.length}
+            </span>
+          )}
+        </button>
+      </div>
+
       <DashboardPageTemplate<Project>
         title={t('projects')}
         onRowClick={row => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}`)}
@@ -550,7 +649,9 @@ export default function ProjectsPage() {
         onAdvancedFilterChange={handleAdvancedFilterChange}
         columns={columns}
         data={filteredProjects}
-        emptyMessage={t('no_project_found')}
+        emptyMessage={activeTab === 'archived' 
+          ? (t('no_archived_projects') || 'Aucun projet archivé') 
+          : t('no_project_found')}
         selectable={true}
         onDeleteSelected={handleDeleteMultipleProjects}
         getItemId={(project) => project.documentId || ''}
@@ -584,7 +685,7 @@ export default function ProjectsPage() {
       <QuotaExceededModal<Project>
         isOpen={showQuotaModal}
         onClose={() => setShowQuotaModal(false)}
-        items={ownedProjects}
+        items={ownedActiveProjects}
         quota={projectsQuota}
         entityName={t('projects') || 'projets'}
         getItemId={(project) => project.documentId || ''}

@@ -97,7 +97,7 @@ export default function RichTextEditor({
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
   const [showMediaPicker, setShowMediaPicker] = useState(false);
-  const [mediaPickerType, setMediaPickerType] = useState<'image' | 'pdf'>('image');
+  const [mediaPickerType, setMediaPickerType] = useState<'image' | 'document'>('image');
   
   // Emoji picker state
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -635,9 +635,11 @@ export default function RichTextEditor({
       const imgHtml = `<div class="editor-block editor-image-block" data-type="image" contenteditable="false"><img src="${url}" alt="Image" style="max-width: 100%; height: auto; border-radius: 8px; cursor: pointer; display: block;" /></div><p class="editor-block" data-type="text"><br></p>`;
       execCommand('insertHTML', imgHtml);
     } else {
-      // PDF as link in its own paragraph
-      const fileName = url.split('/').pop() || 'Document.pdf';
-      const linkHtml = `<p class="editor-block" data-type="text"><a href="${url}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; color: #7c3aed; text-decoration: underline;">📄 ${fileName}</a></p>`;
+      // Document (PDF, Word, etc.) as styled link in its own paragraph
+      const fileName = url.split('/').pop() || 'Document';
+      const isPdf = url.toLowerCase().includes('.pdf');
+      const icon = isPdf ? '📄' : '📎';
+      const linkHtml = `<p class="editor-block" data-type="text"><a href="${url}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; color: #7c3aed; text-decoration: none; padding: 8px 12px; background: rgba(124, 58, 237, 0.1); border-radius: 8px; font-weight: 500;">${icon} ${fileName}</a></p>`;
       execCommand('insertHTML', linkHtml);
     }
     setShowMediaPicker(false);
@@ -854,7 +856,7 @@ export default function RichTextEditor({
             </button>
             <button
               type="button"
-              onClick={() => { setMediaPickerType('pdf'); setShowMediaPicker(true); }}
+              onClick={() => { setMediaPickerType('document'); setShowMediaPicker(true); }}
               className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
               title={t('toolbar_insert_document') || 'Insérer un document'}
             >
@@ -1101,7 +1103,7 @@ export default function RichTextEditor({
         isOpen={showMediaPicker}
         onClose={() => setShowMediaPicker(false)}
         onSelect={handleMediaSelect}
-        mediaType={mediaPickerType === 'image' ? 'image' : 'all'}
+        mediaType={mediaPickerType}
         title={mediaPickerType === 'image' 
           ? (t('toolbar_insert_image') || 'Sélectionner une image')
           : (t('select_document') || 'Sélectionner un document')

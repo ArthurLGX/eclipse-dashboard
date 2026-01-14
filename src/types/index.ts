@@ -41,7 +41,7 @@ export interface ImageFile {
 // ENUMS / TYPES LITTÉRAUX
 // ============================================================================
 
-export type ProjectStatus = 'planning' | 'in_progress' | 'completed';
+export type ProjectStatus = 'planning' | 'in_progress' | 'completed' | 'archived';
 export type ProjectType = 'development' | 'design' | 'maintenance';
 export type FactureStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 export type DocumentType = 'invoice' | 'quote';
@@ -58,7 +58,7 @@ export type SubscriptionStatus = 'active' | 'canceled' | 'expired' | 'trial';
 export type BillingType = 'monthly' | 'yearly';
 
 // Types pour les tâches de projet
-export type TaskStatus = 'todo' | 'in_progress' | 'completed' | 'cancelled';
+export type TaskStatus = 'todo' | 'in_progress' | 'completed' | 'cancelled' | 'archived';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 // ============================================================================

@@ -8,6 +8,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import UsageProgressBar from '@/app/components/UsageProgressBar';
 import PendingQuotesWidget from '@/app/components/PendingQuotesWidget';
+import ActiveIdeSessionWidget from '@/app/components/ActiveIdeSessionWidget';
 import { useClients, useProjects, useProspects, useFactures, clearCache } from '@/hooks/useApi';
 import type { Client, Project, Prospect, Facture } from '@/types';
 import {
@@ -479,6 +480,9 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
+          
+          {/* Widget IDE Tracker */}
+          <ActiveIdeSessionWidget />
         </div>
       </motion.div>
     </ProtectedRoute>

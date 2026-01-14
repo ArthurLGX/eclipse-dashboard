@@ -13,6 +13,8 @@ import {
   IconCheck,
   IconAlertCircle,
   IconVideo,
+  IconFileTypePdf,
+  IconFileText,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 
@@ -25,7 +27,7 @@ interface MediaItem {
   height?: number;
 }
 
-export type MediaType = 'image' | 'video' | 'all';
+export type MediaType = 'image' | 'video' | 'document' | 'all';
 
 interface MediaPickerModalProps {
   isOpen: boolean;
@@ -73,7 +75,11 @@ export default function MediaPickerModal({
         mimeFilter = '&filters[mime][$contains]=image';
       } else if (mediaType === 'video') {
         mimeFilter = '&filters[mime][$contains]=video';
+      } else if (mediaType === 'document') {
+        // Filtrer pour les documents (PDF, Word, etc.)
+        mimeFilter = '&filters[$or][0][mime][$contains]=pdf&filters[$or][1][mime][$contains]=document&filters[$or][2][mime][$contains]=word&filters[$or][3][mime][$contains]=text';
       }
+      // Pour 'all', pas de filtre = tous les fichiers
       
       const res = await fetch(
         `${API_URL}/api/upload/files?sort=createdAt:desc&pagination[pageSize]=50${mimeFilter}`,
@@ -120,6 +126,10 @@ export default function MediaPickerModal({
     // Validation du type
     const isImage = file.type.startsWith('image/');
     const isVideo = file.type.startsWith('video/');
+    const isDocument = file.type === 'application/pdf' || 
+                       file.type.includes('word') || 
+                       file.type.includes('document') ||
+                       file.type === 'text/plain';
     
     if (mediaType === 'image' && !isImage) {
       alert(t('please_select_image') || 'Veuillez sélectionner une image');
@@ -129,8 +139,12 @@ export default function MediaPickerModal({
       alert(t('please_select_video') || 'Veuillez sélectionner une vidéo');
       return;
     }
-    if (mediaType === 'all' && !isImage && !isVideo) {
-      alert(t('please_select_media') || 'Veuillez sélectionner une image ou vidéo');
+    if (mediaType === 'document' && !isDocument) {
+      alert(t('please_select_document') || 'Veuillez sélectionner un document (PDF, Word, etc.)');
+      return;
+    }
+    if (mediaType === 'all' && !isImage && !isVideo && !isDocument) {
+      alert(t('please_select_media') || 'Veuillez sélectionner un fichier valide');
       return;
     }
 
@@ -224,13 +238,15 @@ export default function MediaPickerModal({
   const getAcceptType = () => {
     if (mediaType === 'image') return 'image/*';
     if (mediaType === 'video') return 'video/*';
-    return 'image/*,video/*';
+    if (mediaType === 'document') return '.pdf,.doc,.docx,.txt,.rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    return 'image/*,video/*,.pdf,.doc,.docx,application/pdf';
   };
 
   const getTitle = () => {
     if (title) return title;
     if (mediaType === 'image') return t('select_image') || 'Sélectionner une image';
     if (mediaType === 'video') return t('select_video') || 'Sélectionner une vidéo';
+    if (mediaType === 'document') return t('select_document') || 'Sélectionner un document';
     return t('select_media') || 'Sélectionner un média';
   };
 
@@ -258,6 +274,8 @@ export default function MediaPickerModal({
             <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
               {mediaType === 'video' ? (
                 <IconVideo className="w-5 h-5 text-accent" />
+              ) : mediaType === 'document' ? (
+                <IconFileTypePdf className="w-5 h-5 text-accent" />
               ) : (
                 <IconPhoto className="w-5 h-5 text-accent" />
               )}
@@ -343,7 +361,8 @@ export default function MediaPickerModal({
                       <p className="text-secondary text-sm text-center">
                         {mediaType === 'image' && (t('supported_image_formats') || 'JPG, PNG, GIF, WebP, AVIF (max 5MB)')}
                         {mediaType === 'video' && (t('supported_video_formats') || 'MP4, WebM, OGG (max 50MB)')}
-                        {mediaType === 'all' && (t('supported_media_formats') || 'Images et vidéos supportées')}
+                        {mediaType === 'document' && (t('supported_document_formats') || 'PDF, Word, TXT (max 10MB)')}
+                        {mediaType === 'all' && (t('supported_all_formats') || 'Images, vidéos et documents supportés')}
                       </p>
                     </>
                   )}
@@ -367,6 +386,9 @@ export default function MediaPickerModal({
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                     {libraryMedia.map((media) => {
                       const isVideo = media.mime?.startsWith('video/');
+                      const isImage = media.mime?.startsWith('image/');
+                      const isPdf = media.mime === 'application/pdf';
+                      const isDocument = !isImage && !isVideo;
                       const fullUrl = media.url.startsWith('http')
                         ? media.url
                         : `${API_URL}${media.url}`;
@@ -392,6 +414,17 @@ export default function MediaPickerModal({
                           {isVideo ? (
                             <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
                               <IconVideo className="w-8 h-8 text-zinc-400" />
+                            </div>
+                          ) : isDocument ? (
+                            <div className="w-full h-full bg-zinc-800 flex flex-col items-center justify-center gap-2 p-2">
+                              {isPdf ? (
+                                <IconFileTypePdf className="w-8 h-8 text-red-400" />
+                              ) : (
+                                <IconFileText className="w-8 h-8 text-blue-400" />
+                              )}
+                              <span className="text-xs text-zinc-400 text-center truncate w-full px-1">
+                                {media.name || 'Document'}
+                              </span>
                             </div>
                           ) : (
                             <Image
