@@ -262,7 +262,7 @@ export default function AIInvoiceGenerator({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent/10 rounded-xl">
+              <div className="p-2 bg-accent-light rounded-xl">
                 <IconBrain className="w-6 h-6 text-accent" />
               </div>
               <div>

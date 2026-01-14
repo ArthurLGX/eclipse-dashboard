@@ -21,6 +21,7 @@ import {
   IconCalendar,
   IconPencil,
   IconDeviceFloppy,
+  IconBrain,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -74,6 +75,7 @@ function QuoteEmail() {
   const [showPreview, setShowPreview] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [generatingAI, setGeneratingAI] = useState(false);
   
   // Draft state
   const [currentDraftId, setCurrentDraftId] = useState<string | null>(null);
@@ -268,6 +270,66 @@ ${quote.valid_until ? `Ce devis est valable jusqu'au ${formatDate(quote.valid_un
 N'hésitez pas à nous contacter pour toute question ou pour valider ce devis.
 
 Cordialement`;
+  };
+
+  // Générer le contenu email avec l'IA
+  const handleGenerateAIContent = async () => {
+    if (!selectedQuote) {
+      showGlobalPopup(t('select_quote_first') || 'Sélectionnez d\'abord un devis', 'warning');
+      return;
+    }
+
+    setGeneratingAI(true);
+    try {
+      const response = await fetch('/api/ai/email-suggestion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emailType: 'quote_send',
+          quote: {
+            reference: selectedQuote.reference,
+            total: calculateTotal(selectedQuote),
+            validUntil: selectedQuote.valid_until,
+            lines: selectedQuote.invoice_lines?.map(line => ({
+              description: line.description,
+              quantity: line.quantity,
+              unit_price: line.unit_price,
+            })) || [],
+          },
+          client: selectedQuote.client_id ? {
+            name: selectedQuote.client_id.name,
+            enterprise: selectedQuote.client_id.enterprise,
+            email: selectedQuote.client_id.email,
+          } : undefined,
+          tone: 'friendly',
+          language: 'fr',
+          senderName: user?.username,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la génération');
+      }
+
+      const data = await response.json();
+      
+      if (data.subject) setSubject(data.subject);
+      
+      // Construire le message complet
+      let fullMessage = '';
+      if (data.greeting) fullMessage += data.greeting + '\n\n';
+      if (data.body) fullMessage += data.body;
+      if (data.cta) fullMessage += '\n\n' + data.cta;
+      if (data.closing) fullMessage += '\n\n' + data.closing;
+      
+      setMessage(fullMessage);
+      showGlobalPopup(t('ai_content_generated') || 'Contenu généré avec succès !', 'success');
+    } catch (error) {
+      console.error('AI generation error:', error);
+      showGlobalPopup(t('ai_generation_error') || 'Erreur lors de la génération', 'error');
+    } finally {
+      setGeneratingAI(false);
+    }
   };
   
   // Select quote (ne pas écraser les champs si on restaure un brouillon)
@@ -781,9 +843,29 @@ Cordialement`;
               
               {/* Message */}
               <div className="bg-card border border-default rounded-xl p-6">
-                <label className="block text-sm font-medium text-secondary mb-3">
-                  {t('message') || 'Message'}
-                </label>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-sm font-medium text-secondary">
+                    {t('message') || 'Message'}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleGenerateAIContent}
+                    disabled={generatingAI || !selectedQuote}
+                    className="flex items-center gap-2 px-3 py-1.5 text-xs bg-accent/10 text-accent rounded-lg hover:bg-accent/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {generatingAI ? (
+                      <>
+                        <IconLoader2 className="w-3.5 h-3.5 animate-spin" />
+                        {t('generating') || 'Génération...'}
+                      </>
+                    ) : (
+                      <>
+                        <IconBrain className="w-3.5 h-3.5" />
+                        {t('ai_suggest_email') || 'Suggérer avec IA'}
+                      </>
+                    )}
+                  </button>
+                </div>
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}

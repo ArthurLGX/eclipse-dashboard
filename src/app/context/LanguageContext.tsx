@@ -2382,6 +2382,9 @@ const translations = {
     // IA - Suggestion d\'emails
     ai_suggest_email: 'Suggérer un contenu',
     ai_email_generating: 'L\'IA rédige votre email...',
+    ai_content_generated: 'Contenu généré avec succès !',
+    select_invoice_first: 'Sélectionnez d\'abord une facture',
+    select_quote_first: 'Sélectionnez d\'abord un devis',
     email_tone_formal: 'Formel',
     email_tone_friendly: 'Amical',
     email_tone_casual: 'Décontracté',
@@ -5154,6 +5157,9 @@ const translations = {
     // AI - Email Suggestions
     ai_suggest_email: 'Suggest content',
     ai_email_generating: 'AI is writing your email...',
+    ai_content_generated: 'Content generated successfully!',
+    select_invoice_first: 'Please select an invoice first',
+    select_quote_first: 'Please select a quote first',
     email_tone_formal: 'Formal',
     email_tone_friendly: 'Friendly',
     email_tone_casual: 'Casual',
