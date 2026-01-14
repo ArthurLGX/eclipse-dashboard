@@ -1211,7 +1211,7 @@ const PROJECT_TYPES = [
             <ProjectProfitabilityAI
               project={project}
               tasks={tasks}
-              invoicedAmount={linkedInvoices.reduce((sum, inv) => sum + (inv.total_ht || 0), 0)}
+              invoicedAmount={factures.reduce((sum, inv) => sum + (inv.total_ht || 0), 0)}
             />
 
             {/* Dates Card */}

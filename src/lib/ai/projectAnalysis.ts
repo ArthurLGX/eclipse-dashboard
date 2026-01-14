@@ -5,7 +5,7 @@
  * et retourne des insights actionnables.
  */
 
-import { selectModel, AIUseCase } from './router';
+import { selectModel } from './router';
 import { AIModelConfig } from './models';
 
 // ════════════════════════════════════════════════════════════════

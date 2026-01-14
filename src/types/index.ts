@@ -165,6 +165,8 @@ export interface Project {
   tasks?: ProjectTask[];
   is_favorite?: boolean;
   sort_order?: number;
+  budget?: number;
+  hourly_rate?: number;
 }
 
 export interface ProjectTask {

@@ -5,14 +5,22 @@
  * - project-alerts : détection de dérive (fast)
  * - project-summary : bilan de rentabilité (fast, deep si premium)
  * - project-estimation : suggestion d'estimation (fast)
+ * - quote-generator : génération de devis/factures (fast)
+ * - tasks-generator : génération de tâches depuis prompt/réunion (fast)
+ * - contract-generator : génération de contrats (deep)
+ * - email-suggestion : proposition de contenu email (fast)
  */
 
-import { AI_MODELS, AIModelConfig, AIModelType, DEFAULT_MODEL } from './models';
+import { AI_MODELS, AIModelConfig, DEFAULT_MODEL } from './models';
 
 export type AIUseCase = 
   | 'project-alerts'      // Détection de dérive en cours
   | 'project-summary'     // Bilan de rentabilité final
-  | 'project-estimation'; // Suggestion d'estimation
+  | 'project-estimation'  // Suggestion d'estimation
+  | 'quote-generator'     // Génération de devis/factures
+  | 'tasks-generator'     // Génération de tâches
+  | 'contract-generator'  // Génération de contrats
+  | 'email-suggestion';   // Proposition de contenu email
 
 interface RouterOptions {
   isPremium?: boolean;      // Utilisateur premium → modèle deep
