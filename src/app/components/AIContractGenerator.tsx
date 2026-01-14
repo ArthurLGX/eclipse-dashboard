@@ -1000,7 +1000,7 @@ ${user?.username || 'L\'équipe'}`;
                       <IconSparkles className="w-4 h-4" />
                       {t('project_context') || 'L\'IA adaptera le contrat selon ce projet'}
                     </p>
-                    <div className="text-sm text-on-info-light space-y-1">
+                    <div className="text-smtext-info-light space-y-1">
                       <p><strong>Projet:</strong> {selectedProject.title}</p>
                       {selectedProject.description && (
                         <div 
@@ -1067,7 +1067,7 @@ ${user?.username || 'L\'équipe'}`;
                     <p className="text-sm font-medium text-warning">
                       {t('contract_warning_title') || 'Important'}
                     </p>
-                    <p className="text-xs text-on-warning-light mt-1">
+                    <p className="text-xstext-warning-light mt-1">
                       {t('contract_warning_text') || 'Ce contrat est généré à titre indicatif. Faites-le relire par un professionnel du droit avant utilisation.'}
                     </p>
                   </div>
@@ -1102,7 +1102,7 @@ ${user?.username || 'L\'équipe'}`;
                         </p>
                         <ul className="space-y-1">
                           {dateWarnings.map((warning, index) => (
-                            <li key={index} className="text-sm text-on-warning-light flex items-start gap-2">
+                            <li key={index} className="text-smtext-warning-light flex items-start gap-2">
                               <span className="text-warning">•</span>
                               {warning}
                             </li>
@@ -1255,7 +1255,7 @@ ${user?.username || 'L\'équipe'}`;
                       <IconBulb className="w-4 h-4" />
                       {t('tips') || 'Conseils'}
                     </p>
-                    <ul className="text-xs text-on-info-light space-y-1">
+                    <ul className="text-xstext-info-light space-y-1">
                       {generatedContract.tips.map((tip, i) => (
                         <li key={i}>• {tip}</li>
                       ))}
@@ -1269,7 +1269,7 @@ ${user?.username || 'L\'équipe'}`;
                       <IconAlertTriangle className="w-4 h-4" />
                       {t('warnings') || 'Points d\'attention'}
                     </p>
-                    <ul className="text-xs text-on-warning-light space-y-1">
+                    <ul className="text-xstext-warning-light space-y-1">
                       {generatedContract.warnings.map((warning, i) => (
                         <li key={i}>• {warning}</li>
                       ))}

@@ -40,9 +40,9 @@ function IntegrationCard({ title, description, icon, status, children }: Integra
   const { t } = useLanguage();
   
   const statusColors = {
-    active: 'bg-success-light text-on-success-light',
+    active: 'bg-success-lighttext-success-light',
     inactive: 'bg-muted text-secondary',
-    pending: 'bg-warning-light text-on-warning-light',
+    pending: 'bg-warning-lighttext-warning-light',
   };
 
   const statusLabels = {
@@ -206,7 +206,7 @@ function ApiTokensSection() {
               className="bg-success-light border border-success rounded-lg p-4 space-y-2"
             >
               <div className="flex items-center justify-between">
-                <h4 className="font-medium text-on-success-light">
+                <h4 className="font-mediumtext-success-light">
                   {t('token_created_title') || '✅ Token créé avec succès'}
                 </h4>
                 <button
@@ -216,7 +216,7 @@ function ApiTokensSection() {
                   ×
                 </button>
               </div>
-              <p className="text-sm text-on-success-light">
+              <p className="text-smtext-success-light">
                 {t('token_created_warning') || 'Copiez ce token maintenant. Il ne sera plus affiché !'}
               </p>
               <div className="flex items-center gap-2">

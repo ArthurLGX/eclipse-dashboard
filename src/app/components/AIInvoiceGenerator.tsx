@@ -320,13 +320,13 @@ export default function AIInvoiceGenerator({
                       {t('ai_context_info') || 'Contexte détecté'}
                     </p>
                     {existingClient && (
-                      <p className="text-sm text-on-info-light flex items-center gap-2">
+                      <p className="text-smtext-info-light flex items-center gap-2">
                         <IconUser className="w-4 h-4" />
                         {existingClient.name} {existingClient.enterprise && `(${existingClient.enterprise})`}
                       </p>
                     )}
                     {existingProjectTitle && (
-                      <p className="text-sm text-on-info-light flex items-center gap-2">
+                      <p className="text-smtext-info-light flex items-center gap-2">
                         <IconFileInvoice className="w-4 h-4" />
                         {existingProjectTitle}
                       </p>
