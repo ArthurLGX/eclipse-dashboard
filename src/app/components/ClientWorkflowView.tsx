@@ -2,8 +2,7 @@ import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   IconCheck,
-  IconClock,
-  IconAlertTriangle,
+   IconAlertTriangle,
   IconExternalLink,
   IconZoomIn,
   IconZoomOut,

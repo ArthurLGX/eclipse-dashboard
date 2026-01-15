@@ -2,7 +2,7 @@
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { updateClientById, assignProjectToClient, updateClientImage } from '@/lib/api';
-import { useState, useRef, useMemo, useEffect } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import DataTable, { Column } from '@/app/components/DataTable';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
 import {
