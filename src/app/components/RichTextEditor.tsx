@@ -300,35 +300,6 @@ export default function RichTextEditor({
     }
   }, []);
 
-  // Execute formatting command
-  const execCommand = useCallback((command: string, val?: string) => {
-    document.execCommand(command, false, val);
-    editorRef.current?.focus();
-    notifyChange();
-    setTimeout(setupDraggableElements, 10);
-    setTimeout(decorateColorCodes, 20);
-    setTimeout(normalizeFontTags, 20);
-  }, [notifyChange, setupDraggableElements, decorateColorCodes, normalizeFontTags]);
-
-  // Handle input
-  const handleInput = () => {
-    notifyChange();
-    setTimeout(setupDraggableElements, 10);
-    setTimeout(decorateColorCodes, 20);
-    setTimeout(normalizeFontTags, 20);
-    // Check for emoji trigger after a small delay to let the DOM update
-    setTimeout(checkForEmojiTrigger, 0);
-  };
-
-  // Insert link
-  const insertLink = () => {
-    if (linkUrl) {
-      execCommand('createLink', linkUrl);
-      setLinkUrl('');
-      setShowLinkInput(false);
-    }
-  };
-
   // Normalize <font> tags produced by execCommand into spans with inline styles
   const normalizeFontTags = useCallback(() => {
     if (!editorRef.current) return;
@@ -360,6 +331,35 @@ export default function RichTextEditor({
       fontEl.replaceWith(span);
     });
   }, []);
+
+  // Execute formatting command
+  const execCommand = useCallback((command: string, val?: string) => {
+    document.execCommand(command, false, val);
+    editorRef.current?.focus();
+    notifyChange();
+    setTimeout(setupDraggableElements, 10);
+    setTimeout(decorateColorCodes, 20);
+    setTimeout(normalizeFontTags, 20);
+  }, [notifyChange, setupDraggableElements, decorateColorCodes, normalizeFontTags]);
+
+  // Handle input
+  const handleInput = () => {
+    notifyChange();
+    setTimeout(setupDraggableElements, 10);
+    setTimeout(decorateColorCodes, 20);
+    setTimeout(normalizeFontTags, 20);
+    // Check for emoji trigger after a small delay to let the DOM update
+    setTimeout(checkForEmojiTrigger, 0);
+  };
+
+  // Insert link
+  const insertLink = () => {
+    if (linkUrl) {
+      execCommand('createLink', linkUrl);
+      setLinkUrl('');
+      setShowLinkInput(false);
+    }
+  };
 
   const getVideoEmbedUrl = (url: string) => {
     try {
