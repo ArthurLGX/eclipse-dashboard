@@ -171,7 +171,7 @@ function DraftsContent() {
         </Link>
         
         <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
-          <IconDeviceFloppy className="w-8 h-8 text-accent" />
+          <IconDeviceFloppy className="w-8 h-8 !text-accent" />
           {t('drafts') || 'Brouillons'}
         </h1>
         <p className="text-muted mt-2">
@@ -222,7 +222,7 @@ function DraftsContent() {
       >
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+            <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
           </div>
         ) : filteredDrafts.length === 0 ? (
           <div className="text-center py-16 text-muted">

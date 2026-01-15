@@ -535,7 +535,7 @@ export default function AITaskGenerator({
                 {/* Stats */}
                 <div className="flex items-center gap-4 p-4 bg-hover rounded-xl">
                   <div className="flex items-center gap-2">
-                    <IconListCheck className="w-5 h-5 text-accent" />
+                    <IconListCheck className="w-5 h-5 !text-accent" />
                     <span className="text-sm font-medium text-primary">
                       {totalSelectedTasks} {t('tasks') || 'tâches'}
                     </span>
@@ -548,7 +548,7 @@ export default function AITaskGenerator({
                   </div>
                   <button
                     onClick={addTask}
-                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent-light text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
+                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent-light !text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
                   >
                     <IconPlus className="w-3.5 h-3.5" />
                     {t('add_task') || 'Ajouter'}
@@ -570,7 +570,7 @@ export default function AITaskGenerator({
                           type="checkbox"
                           checked={task.selected}
                           onChange={() => toggleTaskSelection(taskIndex)}
-                          className="mt-1 w-4 h-4 rounded border-default text-accent focus:ring-accent"
+                          className="mt-1 w-4 h-4 rounded border-default !text-accent focus:ring-accent"
                         />
                         
                         {task.subtasks && task.subtasks.length > 0 && (
@@ -655,7 +655,7 @@ export default function AITaskGenerator({
                                 type="checkbox"
                                 checked={subtask.selected}
                                 onChange={() => toggleSubtaskSelection(taskIndex, subtaskIndex)}
-                                className="w-4 h-4 rounded border-default text-accent focus:ring-accent"
+                                className="w-4 h-4 rounded border-default !text-accent focus:ring-accent"
                               />
                               <IconSubtask className="w-4 h-4 text-muted" />
                               <span className="flex-1 text-sm text-secondary">{subtask.title}</span>

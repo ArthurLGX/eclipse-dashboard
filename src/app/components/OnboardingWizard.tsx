@@ -134,7 +134,7 @@ export default function OnboardingWizard() {
               
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 bg-accent-light rounded-xl">
-                  <IconSparkles className="w-8 h-8 text-accent" />
+                  <IconSparkles className="w-8 h-8 !text-accent" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-primary">

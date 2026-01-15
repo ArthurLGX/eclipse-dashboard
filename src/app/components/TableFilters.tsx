@@ -9,7 +9,8 @@ import {
   IconChevronDown,
   IconAdjustments,
   IconTable,
-  IconLayoutGrid
+  IconLayoutGrid,
+  IconLayoutGridAdd
 } from '@tabler/icons-react';
 import ToggleButton from './ToggleButton';
 import type { ViewMode } from './DataTable';
@@ -166,7 +167,7 @@ export default function TableFilters({
             onClick={() => setShowAdvanced(!showAdvanced)}
             className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
               showAdvanced || activeFiltersCount > 0
-                ? 'bg-accent-light border-accent text-accent'
+                ? 'bg-accent-light border-accent !text-accent'
                 : 'bg-card border-default text-secondary hover:border-accent/50'
             }`}
           >
@@ -206,6 +207,17 @@ export default function TableFilters({
             >
               <IconLayoutGrid className="w-5 h-5" />
             </button>
+            <button
+              onClick={() => onViewModeChange('map')}
+              className={`flex items-center justify-center p-2.5 transition-all ${
+                viewMode === 'map'
+                  ? 'bg-accent text-white'
+                  : 'text-secondary hover:text-primary hover:bg-muted'
+              }`}
+              title={t('map_view') || 'Vue map'}
+            >
+              <IconLayoutGridAdd className="w-5 h-5" />
+            </button>
           </div>
         )}
 
@@ -234,13 +246,13 @@ export default function TableFilters({
               {/* Header */}
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-default">
                 <div className="p-1.5 rounded-lg bg-accent-light">
-                  <IconFilter className="w-4 h-4 text-accent" />
+                  <IconFilter className="w-4 h-4 !text-accent" />
                 </div>
                 <span className="text-sm font-semibold text-primary">
                   {t('filter_by') || 'Filtrer par'}
                 </span>
                 {activeFiltersCount > 0 && (
-                  <span className="ml-auto px-2 py-0.5 rounded-full bg-accent-light text-accent text-xs font-medium">
+                  <span className="ml-auto px-2 py-0.5 rounded-full bg-accent-light !text-accent text-xs font-medium">
                     {activeFiltersCount} actif{activeFiltersCount > 1 ? 's' : ''}
                   </span>
                 )}
@@ -305,7 +317,7 @@ export default function TableFilters({
                                     key={opt.value}
                                     onClick={() => handleMultiSelectToggle(filter.id, opt.value)}
                                     className={`w-full px-3 py-2 text-left flex items-center gap-2 hover:bg-muted transition-colors text-sm ${
-                                      isSelected ? 'bg-accent-light text-accent' : 'text-primary'
+                                      isSelected ? 'bg-accent-light !text-accent' : 'text-primary'
                                     }`}
                                   >
                                     <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${

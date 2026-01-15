@@ -657,7 +657,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   type="checkbox"
                   checked={settings.enableAnimations}
                   onChange={(e) => updateSetting('enableAnimations', e.target.checked)}
-                  className="w-5 h-5 rounded border-input bg-input text-accent focus:ring-accent"
+                  className="w-5 h-5 rounded border-input bg-input !text-accent focus:ring-accent"
                 />
                 <span className="text-sm text-secondary flex items-center gap-2">
                   <IconSparkles size={16} />
@@ -862,7 +862,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     onClick={() => updateSetting('columns', num as 2 | 3 | 4)}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       settings.columns === num
-                        ? 'bg-accent text-accent-text'
+                        ? 'bg-accenttext-accent'
                         : 'bg-muted text-secondary hover:bg-hover'
                     }`}
                   >
@@ -888,7 +888,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     onClick={() => updateSetting('gap', gap.id as PortfolioSettings['gap'])}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       settings.gap === gap.id
-                        ? 'bg-accent text-accent-text'
+                        ? 'bg-accenttext-accent'
                         : 'bg-muted text-secondary hover:bg-hover'
                     }`}
                   >
@@ -927,7 +927,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   type="checkbox"
                   checked={settings.isPublic}
                   onChange={(e) => updateSetting('isPublic', e.target.checked)}
-                  className="w-5 h-5 rounded border-input bg-input text-accent focus:ring-accent"
+                  className="w-5 h-5 rounded border-input bg-input !text-accent focus:ring-accent"
                 />
                 <span className="text-sm text-secondary flex items-center gap-2">
                   {settings.isPublic ? <IconWorld size={16} /> : <IconLock size={16} />}
@@ -955,7 +955,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                       readOnly
                       className="flex-1 px-3 py-2 bg-muted border border-input rounded-lg text-primary text-sm"
                     />
-                    <button className="px-3 py-2 bg-accent text-accent-text rounded-lg hover:bg-accent transition-colors">
+                    <button className="px-3 py-2 bg-accenttext-accent rounded-lg hover:bg-accent transition-colors">
                       <IconCopy size={18} />
                     </button>
                   </div>
@@ -985,7 +985,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                       type="checkbox"
                       checked={settings.showSocialLinks}
                       onChange={(e) => updateSetting('showSocialLinks', e.target.checked)}
-                      className="w-5 h-5 rounded border-input bg-input text-accent focus:ring-accent"
+                      className="w-5 h-5 rounded border-input bg-input !text-accent focus:ring-accent"
                     />
                     <span className="text-sm text-secondary">
                       {t('portfolio_show_social')}
@@ -1196,7 +1196,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-default">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-accent-light">
-              <IconDownload size={20} className="text-accent" />
+              <IconDownload size={20} className="!text-accent" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-primary">
@@ -1235,7 +1235,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                   <button
                     onClick={handleScrape}
                     disabled={loading || !url.trim()}
-                    className="px-6 py-3 bg-accent text-accent-text rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                    className="px-6 py-3 bg-accenttext-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                   >
                     {loading ? (
                       <>
@@ -1267,7 +1267,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                     <div className="mt-2">
                       <button
                         onClick={() => setShowDebug(!showDebug)}
-                        className="text-xs text-accent hover:underline"
+                        className="text-xs !text-accent hover:underline"
                       >
                         {showDebug ? t('portfolio_hide_debug') : t('portfolio_show_debug')}
                       </button>
@@ -1307,7 +1307,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               <div className="flex items-center justify-between">
                 <button
                   onClick={toggleAll}
-                  className="text-sm text-accent hover:underline"
+                  className="text-sm !text-accent hover:underline"
                 >
                   {scrapedProjects.every(p => p.selected) ? t('portfolio_import_deselect_all') : t('portfolio_import_select_all')}
                 </button>
@@ -1350,7 +1350,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                     <div className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
                       project.selected ? 'bg-accent' : 'bg-card/80'
                     }`}>
-                      {project.selected && <IconCheck size={14} className="text-accent-text" />}
+                      {project.selected && <IconCheck size={14} className="!text-accent" />}
                     </div>
 
                     {/* Title */}
@@ -1388,7 +1388,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
             <button
               onClick={handleImport}
               disabled={selectedCount === 0}
-              className="px-6 py-2 bg-accent text-accent-text rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-accenttext-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
             >
               <IconDownload size={18} />
               {t('portfolio_import_btn')} {selectedCount} {t('portfolio_import_projects')}
@@ -1567,7 +1567,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 z-10 p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent-text transition-colors"
+        className="absolute top-6 right-6 z-10 p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent transition-colors"
       >
         <IconX size={24} />
       </button>
@@ -1581,13 +1581,13 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
             <>
               <button
                 onClick={() => setCurrentMediaIndex((i) => (i > 0 ? i - 1 : project.media.length - 1))}
-                className="absolute left-4 p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent-text transition-colors"
+                className="absolute left-4 p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent transition-colors"
               >
                 <IconChevronLeft size={24} />
               </button>
               <button
                 onClick={() => setCurrentMediaIndex((i) => (i < project.media.length - 1 ? i + 1 : 0))}
-                className="absolute right-4 lg:right-auto lg:left-[calc(100%-4rem)] p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent-text transition-colors"
+                className="absolute right-4 lg:right-auto lg:left-[calc(100%-4rem)] p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent transition-colors"
               >
                 <IconChevronRight size={24} />
               </button>
@@ -1662,7 +1662,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
               {project.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 text-xs font-medium rounded-full bg-accent-light text-accent"
+                  className="px-3 py-1 text-xs font-medium rounded-full bg-accent-light !text-accent"
                 >
                   {tag}
                 </span>
@@ -1691,7 +1691,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
               href={project.projectUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-lg bg-accent text-accent-text font-medium transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-lg bg-accenttext-accent font-medium transition-opacity hover:opacity-90"
             >
               <IconExternalLink size={18} />
               Voir le projet
@@ -1905,7 +1905,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                   <button
                     type="button"
                     onClick={() => removeMedia(item.id)}
-                    className="absolute top-1 right-1 p-1 rounded-full bg-danger text-accent-text opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1 right-1 p-1 rounded-full bg-dangertext-accent opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <IconX size={14} />
                   </button>
@@ -1944,7 +1944,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                   {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b border-default">
                     <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
-                      <IconPhoto className="w-5 h-5 text-accent" />
+                      <IconPhoto className="w-5 h-5 !text-accent" />
                       Ajouter un média
                     </h3>
                     <button
@@ -1970,7 +1970,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accent text-accent-text rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accenttext-accent rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
                       >
                         {uploading ? (
                           <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -1998,7 +1998,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                     <h4 className="text-sm font-medium text-secondary mb-3">Ma bibliothèque</h4>
                     {loadingLibrary ? (
                       <div className="flex items-center justify-center h-48">
-                        <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+                        <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
                       </div>
                     ) : libraryImages.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-48 text-muted">
@@ -2152,7 +2152,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-accent text-accent-text font-medium hover:bg-accent transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-accenttext-accent font-medium hover:bg-accent transition-colors"
             >
               {project ? t('save') : t('portfolio_create')}
             </button>
@@ -2173,7 +2173,7 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-32 text-center">
       <div className="w-24 h-24 rounded-full bg-accent-light flex items-center justify-center mb-6">
-        <IconPhoto size={48} className="text-accent" />
+        <IconPhoto size={48} className="!text-accent" />
       </div>
       <h2 className="text-2xl font-bold text-primary mb-2">
         {t('portfolio_empty')}
@@ -2183,7 +2183,7 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
       </p>
       <button
         onClick={onAddProject}
-        className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-text font-medium rounded-xl hover:bg-accent transition-colors"
+        className="flex items-center gap-2 px-6 py-3 bg-accenttext-accent font-medium rounded-xl hover:bg-accent transition-colors"
       >
         <IconPlus size={20} />
         {t('portfolio_add_first')}
@@ -2481,7 +2481,7 @@ export default function PortfolioPage() {
     return (
       <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <IconLoader2 size={32} className="animate-spin text-accent" />
+          <IconLoader2 size={32} className="animate-spin !text-accent" />
           <p className="text-secondary">{t('portfolio_loading')}</p>
         </div>
       </div>
@@ -2496,7 +2496,7 @@ export default function PortfolioPage() {
       {/* Saving indicator */}
       {isSaving && (
         <div className="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 bg-card rounded-lg shadow-lg border border-default">
-          <IconLoader2 size={16} className="animate-spin text-accent" />
+          <IconLoader2 size={16} className="animate-spin !text-accent" />
           <span className="text-sm text-secondary">{t('portfolio_saving')}</span>
         </div>
       )}
@@ -2557,7 +2557,7 @@ export default function PortfolioPage() {
                   title={t('portfolio_copy_link')}
                 >
                   {linkCopied ? (
-                    <IconCheck size={18} className="text-accent" />
+                    <IconCheck size={18} className="!text-accent" />
                   ) : (
                     <IconShare size={18} className="text-secondary" />
                   )}
@@ -2592,7 +2592,7 @@ export default function PortfolioPage() {
                 className="p-3 rounded-full bg-accent shadow-lg hover:opacity-90 transition-opacity"
                 title={t('portfolio_add_project')}
               >
-                <IconPlus size={18} className="text-accent-text" />
+                <IconPlus size={18} className="!text-accent" />
               </button>
             </div>
           </div>

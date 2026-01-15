@@ -158,7 +158,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
       {/* Header */}
       <div className="px-4 py-3 border-b border-default flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <IconCode size={18} className="text-accent" />
+          <IconCode size={18} className="!text-accent" />
           <h3 className="font-medium text-primary text-sm">
             {t('ide_tracker') || 'Tracker IDE'}
           </h3>
@@ -260,7 +260,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-hover transition-colors"
               >
                 <div className="w-8 h-8 rounded-lg bg-accent-light flex items-center justify-center flex-shrink-0">
-                  <IconCode size={16} className="text-accent" />
+                  <IconCode size={16} className="!text-accent" />
                 </div>
                 
                 <div className="flex-1 min-w-0">
@@ -286,7 +286,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
         {/* Link to time tracking page */}
         <Link
           href="/dashboard/time-tracking"
-          className="block mt-3 text-center text-xs text-accent hover:underline"
+          className="block mt-3 text-center text-xs !text-accent hover:underline"
         >
           {t('view_all_time_entries') || 'Voir toutes les entrées →'}
         </Link>

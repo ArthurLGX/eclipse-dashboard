@@ -140,7 +140,7 @@ const CheckoutForm: React.FC<{
           </h3>
           <p className="text-secondary !text-sm mb-3">{plan.description}</p>
           <div className="flex items-center justify-between">
-            <span className="!text-2xl font-bold text-accent">
+            <span className="!text-2xl font-bold !text-accent">
               {language === 'fr' ? '' : '€'}
               {billingType === 'yearly'
                 ? (plan.price_yearly * 12).toFixed(2)

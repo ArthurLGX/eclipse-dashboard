@@ -306,7 +306,7 @@ export default function ProjectTemplatesPage() {
             <IconArrowLeft size={20} />
           </Link>
           <div className="flex items-center gap-3">
-            <IconTemplate size={28} className="text-accent" />
+            <IconTemplate size={28} className="!text-accent" />
             <div>
               <h1 className="text-2xl font-bold">{t('project_templates') || 'Templates de projet'}</h1>
               <p className="text-sm text-muted-foreground">
@@ -371,7 +371,7 @@ export default function ProjectTemplatesPage() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h3 className="font-semibold">{template.name}</h3>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-accent-light text-accent">
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-accent-light !text-accent">
                       {PROJECT_TYPE_LABELS[template.project_type] || template.project_type}
                     </span>
                   </div>
@@ -424,7 +424,7 @@ export default function ProjectTemplatesPage() {
                 <div className="space-y-1">
                   {(template.tasks || []).slice(0, 5).map((task, idx) => (
                     <div key={idx} className="flex items-center gap-2 text-xs">
-                      <div className="w-4 h-4 rounded bg-accent-light flex items-center justify-center text-accent font-medium">
+                      <div className="w-4 h-4 rounded bg-accent-light flex items-center justify-center !text-accent font-medium">
                         {idx + 1}
                       </div>
                       <span className="truncate text-foreground">{task.title}</span>

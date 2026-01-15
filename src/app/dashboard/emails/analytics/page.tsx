@@ -137,7 +137,7 @@ function EmailAnalytics() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+        <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
       </div>
     );
   }
@@ -148,7 +148,7 @@ function EmailAnalytics() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-primary flex items-center gap-3">
-            <IconChartBar className="w-7 h-7 text-accent" />
+            <IconChartBar className="w-7 h-7 !text-accent" />
             {t('email_analytics') || 'Analytics Email'}
           </h1>
           <p className="text-muted mt-1">
@@ -232,7 +232,7 @@ function EmailAnalytics() {
         {/* Liste des emails récents */}
         <div className="bg-card border border-default rounded-xl p-6">
           <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-            <IconMail className="w-5 h-5 text-accent" />
+            <IconMail className="w-5 h-5 !text-accent" />
             {t('recent_emails') || 'Emails récents'}
           </h2>
 
@@ -256,7 +256,7 @@ function EmailAnalytics() {
         {/* Top liens cliqués */}
         <div className="bg-card border border-default rounded-xl p-6">
           <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-            <IconClick className="w-5 h-5 text-accent" />
+            <IconClick className="w-5 h-5 !text-accent" />
             {t('top_clicked_links') || 'Liens les plus cliqués'}
           </h2>
 
@@ -266,7 +266,7 @@ function EmailAnalytics() {
                 key={link.url}
                 className="flex items-center gap-3 p-3 bg-secondary/5 rounded-lg"
               >
-                <div className="w-8 h-8 rounded-full bg-accent-light text-accent flex items-center justify-center text-sm font-bold">
+                <div className="w-8 h-8 rounded-full bg-accent-light !text-accent flex items-center justify-center text-sm font-bold">
                   {index + 1}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -551,7 +551,7 @@ function EmailDetailModal({
               onClick={() => setActiveTab('recipients')}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'recipients'
-                  ? 'border-accent text-accent'
+                  ? 'border-accent !text-accent'
                   : 'border-transparent text-muted hover:text-primary'
               }`}
             >
@@ -564,7 +564,7 @@ function EmailDetailModal({
               onClick={() => setActiveTab('clicks')}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'clicks'
-                  ? 'border-accent text-accent'
+                  ? 'border-accent !text-accent'
                   : 'border-transparent text-muted hover:text-primary'
               }`}
             >
@@ -577,7 +577,7 @@ function EmailDetailModal({
               onClick={() => setActiveTab('replies')}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'replies'
-                  ? 'border-accent text-accent'
+                  ? 'border-accent !text-accent'
                   : 'border-transparent text-muted hover:text-primary'
               }`}
             >
@@ -599,7 +599,7 @@ function EmailDetailModal({
                     className="flex items-center gap-4 p-3 bg-background rounded-lg"
                   >
                     <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center">
-                      <IconUser className="w-4 h-4 text-accent" />
+                      <IconUser className="w-4 h-4 !text-accent" />
                     </div>
                     
                     <div className="flex-1 min-w-0">

@@ -139,7 +139,7 @@ function ResetPasswordContent() {
                 className="!text-center mb-8"
               >
                 <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <IconLock size={32} className="text-accent" />
+                  <IconLock size={32} className="!text-accent" />
                 </div>
                 <h1 className="!text-4xl font-bold auth-title mb-2">
                   Nouveau mot de passe

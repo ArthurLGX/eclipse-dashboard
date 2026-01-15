@@ -6,6 +6,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   fetchClientsUser,
+  fetchAllUserClients,
   fetchProjectsUser,
   fetchAllUserProjects,
   fetchProspectsUser,
@@ -162,10 +163,20 @@ function useApiQuery<T>(
 // HOOKS SPÉCIFIQUES
 // ============================================================================
 
-// Clients
+// Clients (inclut les clients propres + collaboratifs)
 export function useClients(userId: number | undefined) {
   return useApiQuery(
     `clients-${userId}`,
+    () => fetchAllUserClients(userId!),
+    [userId],
+    { enabled: !!userId }
+  );
+}
+
+// Clients propres uniquement (sans les collaboratifs)
+export function useOwnedClients(userId: number | undefined) {
+  return useApiQuery(
+    `owned-clients-${userId}`,
     () => fetchClientsUser(userId!),
     [userId],
     { enabled: !!userId }

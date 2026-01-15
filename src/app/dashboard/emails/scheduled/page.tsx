@@ -148,7 +148,7 @@ function ScheduledEmails() {
       <div className="max-w-7xl mx-auto p-6">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <IconLoader2 className="w-8 h-8 animate-spin text-accent" />
+            <IconLoader2 className="w-8 h-8 animate-spin !text-accent" />
           </div>
         ) : scheduledEmails.length === 0 ? (
           <motion.div

@@ -240,7 +240,7 @@ export default function Plans() {
         <span
           className={`ml-2 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
             togglePlan
-              ? 'bg-accent-light text-accent'
+              ? 'bg-accent-light !text-accent'
               : 'bg-muted text-secondary'
           }`}
         >
@@ -315,7 +315,7 @@ export default function Plans() {
                 >
                   {plan.name === 'pro' && (
                     <div className="absolute top-4 right-1/2 translate-x-1/2 flex mb-4 mx-auto">
-                      <span className="text-xs font-medium text-accent bg-accent-light rounded-full px-3 py-1">
+                      <span className="text-xs font-medium !text-accent bg-accent-light rounded-full px-3 py-1">
                         {t('most_popular')}
                       </span>
                     </div>
@@ -435,7 +435,7 @@ export default function Plans() {
                             >
                               {plan.name}
                             </span>
-                            <span className="text-sm text-accent font-bold">
+                            <span className="text-sm !text-accent font-bold">
                               {language === 'en' ? '€' : ''}
                               {togglePlan
                                 ? plan.price_yearly

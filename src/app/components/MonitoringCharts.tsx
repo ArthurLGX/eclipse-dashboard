@@ -351,7 +351,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           className="card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconChartLine className="w-4 h-4 text-accent" />
+            <IconChartLine className="w-4 h-4 !text-accent" />
             <span className="text-sm font-medium text-primary">{t('response_time_chart') || 'Temps de réponse'}</span>
           </div>
           <div className="h-40">

@@ -386,7 +386,7 @@
 
 .text-accent { color: var(--color-accent); }
 .text-accent-light { color: var(--color-accent-light); }
-.text-accent-text { color: var(--color-accent-text); }
+.text-accent { color: var(--color-accent-text); }
 .text-color-primary { color: var(--color-primary); }
 .text-success { color: var(--color-success); }
 .text-info { color: var(--color-info); }
@@ -463,6 +463,10 @@
 
 button {
   cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+.sidebar button {
+  box-shadow: none;
 }
 .btn {
   display: inline-flex;

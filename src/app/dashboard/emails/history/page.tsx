@@ -210,7 +210,7 @@ function EmailHistory() {
             </button>
             
             <h1 className="text-xl font-semibold text-primary flex items-center gap-2">
-              <IconMail className="w-6 h-6 text-accent" />
+              <IconMail className="w-6 h-6 !text-accent" />
               {t('email_history') || 'Historique des emails'}
             </h1>
           </div>
@@ -256,7 +256,7 @@ function EmailHistory() {
                       onClick={() => setSelectedCategory(cat.id)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
                         selectedCategory === cat.id
-                          ? 'bg-accent-light text-accent'
+                          ? 'bg-accent-light !text-accent'
                           : 'text-secondary hover:bg-hover hover:text-primary'
                       }`}
                     >
@@ -266,7 +266,7 @@ function EmailHistory() {
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         selectedCategory === cat.id
-                          ? 'bg-accent-light text-accent'
+                          ? 'bg-accent-light !text-accent'
                           : 'bg-background text-muted'
                       }`}>
                         {count}
@@ -282,7 +282,7 @@ function EmailHistory() {
           <div className="flex-1 min-w-0">
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+                <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
               </div>
             ) : filteredEmails.length === 0 ? (
               <div className="text-center py-20">
@@ -445,7 +445,7 @@ function EmailHistory() {
                           href={att.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2 py-0.5 bg-accent-light text-accent rounded-full text-xs hover:bg-accent-light transition-colors"
+                          className="px-2 py-0.5 bg-accent-light !text-accent rounded-full text-xs hover:bg-accent-light transition-colors"
                         >
                           {att.name}
                         </a>

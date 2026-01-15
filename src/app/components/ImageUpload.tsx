@@ -582,7 +582,7 @@ export default function ImageUpload({
                 }`}
               >
                 <div className="w-8 h-8 rounded-lg bg-accent-light border border-accent-light flex items-center justify-center">
-                  <IconUpload size={18} className="text-accent" />
+                  <IconUpload size={18} className="!text-accent" />
                 </div>
                 <div>
                   <p className="text-primary font-medium text-sm">Depuis l&apos;ordinateur</p>
@@ -663,7 +663,7 @@ export default function ImageUpload({
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
                 <div className="flex items-center gap-2">
-                  <IconCrop className="w-5 h-5 text-accent" />
+                  <IconCrop className="w-5 h-5 !text-accent" />
                   <h3 className="text-lg font-semibold text-primary">Éditer l&apos;image</h3>
                 </div>
                 <button

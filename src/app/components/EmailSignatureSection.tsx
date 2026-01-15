@@ -351,7 +351,7 @@ export default function EmailSignatureSection() {
     return (
       <div className="bg-card border border-default rounded-xl p-6">
         <div className="flex items-center justify-center py-12">
-          <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+          <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
         </div>
       </div>
     );
@@ -364,7 +364,7 @@ export default function EmailSignatureSection() {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
-              <IconSignature className="w-5 h-5 text-accent" />
+              <IconSignature className="w-5 h-5 !text-accent" />
               {t('email_signature') || 'Signature email'}
             </h3>
             <p className="text-sm text-muted mt-1">
@@ -400,7 +400,7 @@ export default function EmailSignatureSection() {
             
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-3 py-2 text-sm bg-accent-light text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-sm bg-accent-light !text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
             >
               <IconEye className="w-4 h-4" />
               {t('preview') || 'Aperçu'}
@@ -457,7 +457,7 @@ export default function EmailSignatureSection() {
           {/* Colonne gauche - Identité */}
           <div className="space-y-4">
             <h4 className="font-medium text-primary flex items-center gap-2">
-              <IconUser className="w-4 h-4 text-accent" />
+              <IconUser className="w-4 h-4 !text-accent" />
               {t('identity') || 'Identité'}
             </h4>
             
@@ -493,7 +493,7 @@ export default function EmailSignatureSection() {
                 {!formData.logo_url && (
                   <button
                     onClick={() => setShowMediaPicker(true)}
-                    className="text-sm text-accent hover:underline"
+                    className="text-sm !text-accent hover:underline"
                   >
                     {t('add_logo') || 'Ajouter un logo'}
                   </button>
@@ -548,7 +548,7 @@ export default function EmailSignatureSection() {
           {/* Colonne droite - Contact */}
           <div className="space-y-4">
             <h4 className="font-medium text-primary flex items-center gap-2">
-              <IconPhone className="w-4 h-4 text-accent" />
+              <IconPhone className="w-4 h-4 !text-accent" />
               {t('contact_info') || 'Coordonnées'}
             </h4>
             
@@ -602,12 +602,12 @@ export default function EmailSignatureSection() {
         <div className="pt-4 border-t border-default">
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-medium text-primary flex items-center gap-2">
-              <IconLink className="w-4 h-4 text-accent" />
+              <IconLink className="w-4 h-4 !text-accent" />
               {t('social_links') || 'Réseaux sociaux'}
             </h4>
             <button
               onClick={addSocialLink}
-              className="flex items-center gap-1 px-3 py-1.5 text-sm bg-accent-light text-accent hover:bg-accent-light rounded-lg transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 text-sm bg-accent-light !text-accent hover:bg-accent-light rounded-lg transition-colors"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_social') || 'Ajouter'}
@@ -728,7 +728,7 @@ export default function EmailSignatureSection() {
               className="flex items-center justify-between w-full p-3 bg-accent-light hover:bg-accent rounded-lg transition-colors"
           >
             <div className="flex items-center gap-2">
-              <IconPalette className="w-5 h-5 text-accent" />
+              <IconPalette className="w-5 h-5 !text-accent" />
               <span className="font-medium text-primary">
                 {t('customization') || 'Personnalisation avancée'}
               </span>
@@ -890,7 +890,7 @@ export default function EmailSignatureSection() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h4 className="font-medium text-primary flex items-center gap-2">
-                <IconPhoto className="w-4 h-4 text-accent" />
+                <IconPhoto className="w-4 h-4 !text-accent" />
                 {t('promotional_banner') || 'Bannière promotionnelle'}
               </h4>
               <p className="text-xs text-muted mt-1">
@@ -941,7 +941,7 @@ export default function EmailSignatureSection() {
               {formData.banner_url && (
                 <button
                   onClick={() => setShowBannerPicker(true)}
-                  className="mt-2 text-sm text-accent hover:underline"
+                  className="mt-2 text-sm !text-accent hover:underline"
                 >
                   {t('change_banner') || 'Changer la bannière'}
                 </button>

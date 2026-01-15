@@ -289,7 +289,7 @@ export default function ProjectGuidedTour({
                         }}
                         style={{ width: 80, height: 80, margin: -12 }}
                       />
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center text-accent">
+                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center !text-accent">
                         {step.icon}
                       </div>
                     </motion.div>
@@ -303,7 +303,7 @@ export default function ProjectGuidedTour({
                   {/* Project title badge (first step only) */}
                   {currentStep === 0 && projectTitle && (
                     <div className="flex justify-center">
-                      <span className="px-3 py-1 bg-accent-light text-accent rounded-full text-sm font-medium">
+                      <span className="px-3 py-1 bg-accent-light !text-accent rounded-full text-sm font-medium">
                         {projectTitle}
                       </span>
                     </div>
@@ -325,7 +325,7 @@ export default function ProjectGuidedTour({
                         repeat: Infinity,
                         ease: 'easeInOut',
                       }}
-                      className="text-accent"
+                      className="!text-accent"
                     >
                       <IconArrowRight className="w-6 h-6" />
                     </motion.div>

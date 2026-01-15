@@ -400,7 +400,7 @@ function ComposeEmail() {
             </button>
             
             <h1 className="text-xl font-semibold text-primary flex items-center gap-2">
-              <IconMail className="w-6 h-6 text-accent" />
+              <IconMail className="w-6 h-6 !text-accent" />
               {t('compose_email') || 'Nouvel email'}
             </h1>
           </div>
@@ -408,7 +408,7 @@ function ComposeEmail() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(true)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
             >
               <IconEye className="w-4 h-4" />
               {t('preview') || 'Aperçu'}
@@ -457,7 +457,7 @@ function ComposeEmail() {
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.8, opacity: 0 }}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-accent-light text-accent rounded-full text-sm"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-accent-light !text-accent rounded-full text-sm"
                   >
                     <span>{recipient.email}</span>
                     <button
@@ -495,7 +495,7 @@ function ComposeEmail() {
             {/* Title (optional) */}
             <div>
               <label className="block text-sm font-medium text-secondary mb-2">
-                <IconHeading className="w-4 h-4 inline mr-1.5 text-accent" />
+                <IconHeading className="w-4 h-4 inline mr-1.5 !text-accent" />
                 {t('email_title') || 'Titre de l\'email'}
                 <span className="text-muted font-normal ml-2">({t('optional') || 'optionnel'})</span>
               </label>
@@ -514,7 +514,7 @@ function ComposeEmail() {
             {/* Subject */}
             <div>
               <label className="block text-sm font-medium text-secondary mb-2">
-                <IconMail className="w-4 h-4 inline mr-1.5 text-accent" />
+                <IconMail className="w-4 h-4 inline mr-1.5 !text-accent" />
                 {t('subject') || 'Objet de l\'email'} *
                 <span className="text-muted font-normal ml-2">({t('visible_in_inbox') || 'visible dans la boîte de réception'})</span>
               </label>
@@ -611,7 +611,7 @@ function ComposeEmail() {
               <div className="bg-card border border-default rounded-xl p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <IconSignature className="w-5 h-5 text-accent" />
+                    <IconSignature className="w-5 h-5 !text-accent" />
                     <div>
                       <div className="font-medium text-primary">
                         {t('include_signature') || 'Inclure la signature'}
@@ -640,7 +640,7 @@ function ComposeEmail() {
                 {signatureData && (
                   <Link
                     href="/dashboard/settings?tab=email"
-                    className="mt-3 inline-flex items-center gap-1.5 text-sm text-accent hover:text-accent/80 transition-colors"
+                    className="mt-3 inline-flex items-center gap-1.5 text-sm !text-accent hover:text-accent/80 transition-colors"
                   >
                     <IconPencil className="w-3.5 h-3.5" />
                     {t('edit_signature') || 'Modifier la signature'}

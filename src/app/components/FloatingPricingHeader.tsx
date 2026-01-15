@@ -112,7 +112,7 @@ export default function FloatingPricingHeader({
                             >
                               {plan.name}
                             </span>
-                            <span className="text-sm text-accent font-bold">
+                            <span className="text-sm !text-accent font-bold">
                               {language === 'en' ? '€' : ''}
                               {togglePlan
                                 ? plan.price_yearly

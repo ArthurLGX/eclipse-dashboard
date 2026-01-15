@@ -239,7 +239,7 @@ export default function DailySuggestionsModal() {
               <div className="flex flex-col items-center justify-center py-12">
                 <div className="relative">
                   <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center">
-                    <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+                    <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
                   </div>
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-accent"
@@ -343,7 +343,7 @@ export default function DailySuggestionsModal() {
                             </div>
                             
                             {/* Action */}
-                            <div className="flex items-center gap-2 text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-center gap-2 !text-accent opacity-0 group-hover:opacity-100 transition-opacity">
                               <span className="text-sm font-medium hidden sm:inline">
                                 {suggestion.action.label}
                               </span>

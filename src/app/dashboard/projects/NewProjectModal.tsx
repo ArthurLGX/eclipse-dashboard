@@ -145,7 +145,7 @@ export default function NewProjectModal({
       {/* Header compact */}
       <div className="flex items-center gap-3 mb-5">
         <div className="p-2 bg-accent-light rounded-lg border border-accent">
-          <IconFolderPlus size={22} className="text-accent" />
+          <IconFolderPlus size={22} className="!text-accent" />
         </div>
         <h2 className="text-xl font-bold text-primary">
           {t('new_project') || 'Nouveau projet'}
@@ -165,7 +165,7 @@ export default function NewProjectModal({
           <div>
             <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
               <IconFolder size={14} className="text-muted" />
-              {t('title') || 'Titre'} <span className="text-accent">*</span>
+              {t('title') || 'Titre'} <span className="!text-accent">*</span>
             </label>
             <input
               ref={titleInputRef}
@@ -181,7 +181,7 @@ export default function NewProjectModal({
           <div>
             <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
               <IconCode size={14} className="text-muted" />
-              {t('type') || 'Type'} <span className="text-accent">*</span>
+              {t('type') || 'Type'} <span className="!text-accent">*</span>
             </label>
             <select
               required
@@ -217,7 +217,7 @@ export default function NewProjectModal({
         <div>
           <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
             <IconFileDescription size={14} className="text-muted" />
-            {t('description') || 'Description'} <span className="text-accent">*</span>
+            {t('description') || 'Description'} <span className="!text-accent">*</span>
           </label>
           <textarea
             placeholder="Objectifs, périmètre du projet..."
@@ -233,7 +233,7 @@ export default function NewProjectModal({
         <div className="grid grid-cols-3 gap-3">
           <div>
             <label className="text-secondary text-xs mb-1.5 font-medium block">
-              {t('status') || 'Statut'} <span className="text-accent">*</span>
+              {t('status') || 'Statut'} <span className="!text-accent">*</span>
             </label>
             <select
               required
@@ -250,7 +250,7 @@ export default function NewProjectModal({
           <div>
             <label className="flex items-center gap-1 text-secondary text-xs mb-1.5 font-medium">
               <IconCalendar size={12} className="text-muted" />
-              Début <span className="text-accent">*</span>
+              Début <span className="!text-accent">*</span>
             </label>
             <input
               type="date"
@@ -264,7 +264,7 @@ export default function NewProjectModal({
           <div>
             <label className="flex items-center gap-1 text-secondary text-xs mb-1.5 font-medium">
               <IconCalendar size={12} className="text-muted" />
-              Fin <span className="text-accent">*</span>
+              Fin <span className="!text-accent">*</span>
             </label>
             <input
               type="date"
@@ -292,7 +292,7 @@ export default function NewProjectModal({
                 onClick={() => toggleTechnology(tech)}
                 className={`px-2 py-1 rounded text-xs font-medium transition-colors
                   ${technologies.includes(tech)
-                    ? 'bg-accent text-accent-text'
+                    ? 'bg-accenttext-accent'
                     : 'bg-hover text-secondary hover:bg-card hover:text-primary'
                   }`}
               >

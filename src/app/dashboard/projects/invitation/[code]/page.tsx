@@ -75,7 +75,7 @@ function ProjectsBackground({ userProjects }: { userProjects: Project[] }) {
             className="bg-card border border-default rounded-xl p-4 h-32"
           >
             <div className="flex items-center gap-2 mb-3">
-              <IconFolder className="w-4 h-4 text-accent" />
+              <IconFolder className="w-4 h-4 !text-accent" />
               <span className="text-sm font-medium text-primary truncate">{project.title}</span>
             </div>
             <div className="h-1.5 bg-hover rounded-full overflow-hidden mb-2">
@@ -235,7 +235,7 @@ export default function InvitationPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-page">
         <div className="text-center">
-          <IconLoader2 className="w-12 h-12 text-accent animate-spin mx-auto mb-4" />
+          <IconLoader2 className="w-12 h-12 !text-accent animate-spin mx-auto mb-4" />
           <p className="text-secondary">{t('loading') || 'Chargement...'}</p>
         </div>
       </div>
@@ -307,7 +307,7 @@ export default function InvitationPage() {
         </div>
 
         {/* Titre */}
-        <h1 className="text-2xl font-bold text-accent text-center mb-2">
+        <h1 className="text-2xl font-bold !text-accent text-center mb-2">
           {t('project_invitation') || 'Invitation À Collaborer'}
         </h1>
 
@@ -321,7 +321,7 @@ export default function InvitationPage() {
 
         {/* Projet */}
         <div className="bg-muted rounded-xl p-5 mb-6 border border-default">
-          <h2 className="text-lg font-semibold text-accent mb-1">
+          <h2 className="text-lg font-semibold !text-accent mb-1">
             {invitation.project?.title || 'Projet'}
           </h2>
           <p className="text-xl font-bold text-primary mb-3 uppercase tracking-wide">

@@ -218,7 +218,7 @@ export default function SEOAuditPage() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <IconRocket size={28} className="text-accent" />
+        <IconRocket size={28} className="!text-accent" />
         <div>
           <h1 className="text-2xl font-bold">{t('seo_audit') || 'Audit SEO & Performance'}</h1>
           <p className="text-sm text-muted-foreground">
@@ -320,7 +320,7 @@ export default function SEOAuditPage() {
                 href={`https://pagespeed.web.dev/report?url=${encodeURIComponent(result.url)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm text-accent hover:underline"
+                className="flex items-center gap-1 text-sm !text-accent hover:underline"
               >
                 Voir sur PageSpeed <IconExternalLink size={14} />
               </a>

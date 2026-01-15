@@ -105,7 +105,7 @@ export default function LoadTemplateModal({
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
             <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
-              <IconPalette className="w-5 h-5 text-accent" />
+              <IconPalette className="w-5 h-5 !text-accent" />
               {t('load_template') || 'Charger un thème'}
             </h3>
             <button
@@ -120,7 +120,7 @@ export default function LoadTemplateModal({
           <div className="flex-1 overflow-auto p-4">
             {loading ? (
               <div className="flex items-center justify-center h-48">
-                <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+                <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
               </div>
             ) : templates.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-48 text-secondary">

@@ -12,9 +12,9 @@ import ProtectedRoute from '@/app/components/ProtectedRoute';
 import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
 import { Column } from '@/app/components/DataTable';
 import { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
-import { IconUsers, IconUserCheck, IconUserPlus, IconFileImport, IconArrowRight } from '@tabler/icons-react';
+import { IconUsers, IconUserCheck, IconUserPlus, IconFileImport, IconArrowRight, IconUsersGroup } from '@tabler/icons-react';
 import { CustomAction } from '@/app/components/DataTable';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import AddClientModal from './AddClientModal';
 import ImportClientsModal from './ImportClientsModal';
 import ImportProgressModal, { ImportProgressItem } from './ImportProgressModal';
@@ -25,12 +25,14 @@ import { useQuota } from '@/app/context/QuotaContext';
 import { uploadImage } from '@/lib/api';
 import QuotaExceededModal from '@/app/components/QuotaExceededModal';
 import { useQuotaExceeded } from '@/hooks/useQuotaExceeded';
+import ClientWorkflowMapView from '@/app/components/ClientWorkflowMapView';
 
 export default function ClientsPage() {
   const { showGlobalPopup } = usePopup();
   const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { canAdd, getVisibleCount, limits, refreshQuotas } = useQuota();
 
   // Rafraîchir les quotas au chargement pour avoir les dernières valeurs
@@ -40,6 +42,29 @@ export default function ClientsPage() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  
+  // Lire le filtre ownership depuis l'URL
+  const ownershipFromUrl = searchParams.get('ownership') as 'all' | 'mine' | 'collaborative' | null;
+  const [ownershipFilter, setOwnershipFilterState] = useState<'all' | 'mine' | 'collaborative'>(
+    ownershipFromUrl && ['all', 'mine', 'collaborative'].includes(ownershipFromUrl) 
+      ? ownershipFromUrl 
+      : 'all'
+  );
+  
+  // Fonction pour mettre à jour le filtre et l'URL
+  const setOwnershipFilter = useCallback((value: 'all' | 'mine' | 'collaborative') => {
+    setOwnershipFilterState(value);
+    // Mettre à jour l'URL sans recharger la page
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === 'all') {
+      params.delete('ownership');
+    } else {
+      params.set('ownership', value);
+    }
+    const newUrl = params.toString() ? `?${params.toString()}` : '/dashboard/clients';
+    router.replace(newUrl, { scroll: false });
+  }, [searchParams, router]);
+  
   const [showAddModal, setShowAddModal] = useState(false);
   
   // Advanced filters state
@@ -552,6 +577,12 @@ export default function ClientsPage() {
       const matchesStatus =
         statusFilter === '' || client.processStatus === statusFilter;
 
+      // Ownership filter (mine / collaborative / all)
+      const matchesOwnership =
+        ownershipFilter === 'all' ||
+        (ownershipFilter === 'mine' && !client._isCollaborative) ||
+        (ownershipFilter === 'collaborative' && client._isCollaborative);
+
       // Enterprise filter
       const matchesEnterprise =
         enterpriseFilter === '' || client.enterprise === enterpriseFilter;
@@ -576,17 +607,21 @@ export default function ClientsPage() {
         }
       }
 
-      return matchesSearch && matchesStatus && matchesEnterprise && matchesActive && matchesWebsite && matchesDateRange;
+      return matchesSearch && matchesStatus && matchesOwnership && matchesEnterprise && matchesActive && matchesWebsite && matchesDateRange;
     });
-  }, [visibleClients, searchTerm, statusFilter, enterpriseFilter, isActiveFilter, hasWebsiteFilter, dateRangeFilter]);
+  }, [visibleClients, searchTerm, statusFilter, ownershipFilter, enterpriseFilter, isActiveFilter, hasWebsiteFilter, dateRangeFilter]);
 
   const stats = useMemo(() => {
     const now = new Date();
     const visibleCount = getVisibleCount('clients');
+    const collaborativeCount = visibleClients.filter(c => c._isCollaborative).length;
+    const ownedCount = visibleClients.filter(c => !c._isCollaborative).length;
     return {
       total: visibleCount,
       limit: limits.clients,
       active: visibleClients.filter(c => c.processStatus === 'client').length,
+      collaborative: collaborativeCount,
+      owned: ownedCount,
       newThisMonth: visibleClients.filter(client => {
         const created = new Date(client.createdAt);
         return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
@@ -611,7 +646,18 @@ export default function ClientsPage() {
             website={row.website}
             size="sm"
           />
-          <p className="text-primary font-medium">{value as string}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-primary font-medium">{value as string}</p>
+            {row._isCollaborative && row._collaborativeProjects && (
+              <span 
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-accent-light !text-accent border border-accent"
+                title={`Via projet${row._collaborativeProjects.length > 1 ? 's' : ''}: ${row._collaborativeProjects.map(p => p.title).join(', ')}`}
+              >
+                <IconUsersGroup className="w-3 h-3 !text-accent" />
+                Collab
+              </span>
+            )}
+          </div>
         </div>
       ),
     },
@@ -662,6 +708,24 @@ export default function ClientsPage() {
       label: t('actions'),
       render: (_, row) => {
         const clientSlug = generateClientSlug(row.name, row.documentId);
+        const isCollaborative = row._isCollaborative;
+        
+        // Pour les clients collaboratifs, afficher un lien vers le projet
+        if (isCollaborative && row._collaborativeProjects && row._collaborativeProjects.length > 0) {
+          const firstProject = row._collaborativeProjects[0];
+          return (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => router.push(`/dashboard/projects/${firstProject.slug}`)}
+                className="text-xs !text-accent hover:underline"
+                title={`${t('collaborative_via_project') || 'Via projet'}: ${row._collaborativeProjects.map(p => p.title).join(', ')}`}
+              >
+                {t('view_project') || 'Voir projet'}
+              </button>
+            </div>
+          );
+        }
+        
         return (
           <div className="flex items-center gap-2">
             <TableActions
@@ -688,7 +752,20 @@ export default function ClientsPage() {
     <ProtectedRoute>
       <DashboardPageTemplate<Client>
         title={t('contacts') || 'Contacts'}
-        onRowClick={row => router.push(`/dashboard/clients/${generateClientSlug(row.name, row.documentId)}`)}
+        onRowClick={row => {
+          // Si client collaboratif, rediriger vers le premier projet associé
+          if (row._isCollaborative && row._collaborativeProjects && row._collaborativeProjects.length > 0) {
+            const firstProject = row._collaborativeProjects[0];
+            // Afficher un popup informatif et rediriger vers le projet
+            showGlobalPopup(
+              `${t('collaborative_client_info') || 'Client partagé via'}: ${firstProject.title}`,
+              'info'
+            );
+            router.push(`/dashboard/projects/${firstProject.slug}`);
+          } else {
+            router.push(`/dashboard/clients/${generateClientSlug(row.name, row.documentId)}`);
+          }
+        }}
         actionButtonLabel={canAdd('clients') ? t('add_client') : `${t('add_client')} (${t('quota_reached') || 'Quota atteint'})`}
         onActionButtonClick={canAdd('clients') ? () => setShowAddModal(true) : () => showGlobalPopup(t('quota_reached_message') || 'Quota atteint. Passez à un plan supérieur.', 'warning')}
         additionalActions={[
@@ -703,8 +780,9 @@ export default function ClientsPage() {
           {
             label: t('all_contacts') || 'Tous les contacts',
             value: stats.limit > 0 ? `${stats.total}/${stats.limit}` : stats.total,
-            colorClass: 'text-success',
+            colorClass: ownershipFilter === 'all' ? 'text-success border-2 border-success' : 'text-success',
             icon: <IconUsers className="w-6 h-6 text-success" />,
+            onClick: () => setOwnershipFilter('all'),
           },
           {
             label: t('clients') || 'Clients',
@@ -718,6 +796,13 @@ export default function ClientsPage() {
             colorClass: 'text-warning',
             icon: <IconUserPlus className="w-6 h-6 text-warning" />,
           },
+          ...(stats.collaborative > 0 ? [{
+            label: t('collaborative_clients') || 'Collaboratifs',
+            value: stats.collaborative,
+            colorClass: ownershipFilter === 'collaborative' ? 'text-accent border-2 border-accent' : 'text-accent',
+            icon: <IconUsersGroup className="w-6 h-6 !text-accent" />,
+            onClick: () => setOwnershipFilter(ownershipFilter === 'collaborative' ? 'all' : 'collaborative'),
+          }] : []),
         ]}
         loading={loading}
         filterOptions={statusOptions}
@@ -742,6 +827,7 @@ export default function ClientsPage() {
         onToggleFavorite={handleToggleFavorite}
         draggable={true}
         onReorder={handleReorder}
+        mapView={<ClientWorkflowMapView clients={filteredClients} clientId="all" />}
       />
 
       <AddClientModal

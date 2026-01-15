@@ -790,7 +790,7 @@ export default function ShareProjectModal({
                 {/* Description */}
                 <div className="bg-primary-light border border-primary rounded-xl p-4">
                   <div className="flex items-start gap-3">
-                    <IconTimeline className="w-5 h-5 text-accent-light mt-0.5" />
+                    <IconTimeline className="w-5 h-5 !text-accent-light mt-0.5" />
                     <div>
                       <h4 className="text-sm font-medium text-primary mb-1">
                         {t('public_share_title') || 'Partage public avec vos clients'}
@@ -819,7 +819,7 @@ export default function ShareProjectModal({
                           className="w-4 h-4 rounded border-input bg-input text-success focus:ring-success/50"
                         />
                         <div className="flex items-center gap-2">
-                          <IconTimeline className="w-4 h-4 text-accent-light" />
+                          <IconTimeline className="w-4 h-4 !text-accent-light" />
                           <span className="text-sm text-secondary group-hover:text-primary">
                             {t('show_gantt') || 'Afficher le diagramme de Gantt'}
                           </span>
@@ -925,14 +925,14 @@ export default function ShareProjectModal({
                         >
                           <div className="flex items-center gap-3 flex-1 min-w-0">
                             <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center flex-shrink-0">
-                              <IconLink className="w-5 h-5 text-accent-light" />
+                              <IconLink className="w-5 h-5 !text-accent-light" />
                             </div>
                             <div className="min-w-0">
                               <p className="text-sm text-primary truncate">
                                 /share/project/{link.share_token.substring(0, 8)}...
                               </p>
                               <div className="flex items-center gap-2 text-xs text-muted">
-                                {link.show_gantt && <span className="px-1.5 py-0.5 bg-primary-light text-accent-light rounded">Gantt</span>}
+                                {link.show_gantt && <span className="px-1.5 py-0.5 bg-primary-light !text-accent-light rounded">Gantt</span>}
                                 {link.show_progress && <span className="px-1.5 py-0.5 bg-success-light text-success rounded">Stats</span>}
                                 {link.show_tasks && <span className="px-1.5 py-0.5 bg-info-light text-info rounded">Tâches</span>}
                                 {link.expires_at && (
@@ -1013,7 +1013,7 @@ export default function ShareProjectModal({
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
                 <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
-                  <IconMail className="w-5 h-5 text-accent-light" />
+                  <IconMail className="w-5 h-5 !text-accent-light" />
                   {t('send_link_by_email') || 'Envoyer le lien par email'}
                 </h3>
                 <button
@@ -1032,7 +1032,7 @@ export default function ShareProjectModal({
                     {t('recipient_email') || 'Email du destinataire'}
                   </label>
                   <div className="relative">
-                    <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-accent" />
+                    <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-accent" />
                     <input
                       type="email"
                       value={emailRecipient}
@@ -1087,7 +1087,7 @@ export default function ShareProjectModal({
                             onClick={() => setBannerType('color')}
                             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
                               bannerType === 'color' 
-                                ? 'border-accent bg-accent-light text-accent' 
+                                ? 'border-accent bg-accent-light !text-accent' 
                                 : 'border-default bg-muted text-secondary hover:border-accent/50'
                             }`}
                           >
@@ -1099,7 +1099,7 @@ export default function ShareProjectModal({
                             onClick={() => setBannerType('image')}
                             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
                               bannerType === 'image' 
-                                ? 'border-accent bg-accent-light text-accent' 
+                                ? 'border-accent bg-accent-light !text-accent' 
                                 : 'border-default bg-muted text-secondary hover:border-accent/50'
                             }`}
                           >
@@ -1226,7 +1226,7 @@ export default function ShareProjectModal({
                               id="showBannerTitle"
                               checked={showBannerTitle}
                               onChange={(e) => setShowBannerTitle(e.target.checked)}
-                              className="w-4 h-4 text-accent border-default rounded focus:ring-accent"
+                              className="w-4 h-4 !text-accent border-default rounded focus:ring-accent"
                             />
                             <label htmlFor="showBannerTitle" className="text-sm text-secondary">
                               {t('show_banner_title') || 'Afficher un titre'}
@@ -1336,7 +1336,7 @@ export default function ShareProjectModal({
                 {/* Aperçu du lien */}
                 <div className="bg-primary-light border border-primary rounded-lg p-3">
                   <p className="text-xs text-secondary mb-1">{t('link_included') || 'Le lien suivant sera inclus :'}</p>
-                  <p className="text-sm text-accent-light truncate">
+                  <p className="text-sm !text-accent-light truncate">
                     {typeof window !== 'undefined' ? window.location.origin : ''}/share/project/{currentShareToken?.substring(0, 12)}...
                   </p>
                 </div>

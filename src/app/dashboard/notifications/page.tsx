@@ -321,7 +321,7 @@ export default function NotificationsPage() {
         .slice(0, 2);
       return (
         <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-          <span className="text-sm font-bold text-accent-text">{initials}</span>
+          <span className="text-sm font-boldtext-accent">{initials}</span>
         </div>
       );
     }
@@ -329,7 +329,7 @@ export default function NotificationsPage() {
     if (notification.type === 'project_invitation') {
       return (
         <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-          <IconUsers className="w-5 h-5 text-accent" />
+          <IconUsers className="w-5 h-5 !text-accent" />
         </div>
       );
     }
@@ -560,7 +560,7 @@ export default function NotificationsPage() {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
               showFilters 
-                ? 'bg-accent-light border-accent text-accent' 
+                ? 'bg-accent-light border-accent !text-accent' 
                 : 'btn-ghost border-default'
             }`}
           >
@@ -751,9 +751,9 @@ export default function NotificationsPage() {
                       <div className="flex items-center gap-2">
                         <span className={`text-xs px-2 py-0.5 rounded-full ${
                           notification.type === 'project_invitation' 
-                            ? 'bg-accent text-accent-text'
+                            ? 'bg-accenttext-accent'
                             : notification.type === 'project_update'
-                            ? 'bg-info text-accent-text'
+                            ? 'bg-infotext-accent'
                             : 'bg-muted text-secondary'
                         }`}>
                           {getTypeLabel(notification.type)}

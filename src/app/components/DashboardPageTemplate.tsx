@@ -9,6 +9,7 @@ interface StatCard {
   value: React.ReactNode;
   colorClass?: string;
   icon?: React.ReactNode;
+  onClick?: () => void;
 }
 
 interface ActionButton {
@@ -65,6 +66,7 @@ interface DashboardPageTemplateProps<T> {
   cardTimeKey?: string;
   cardImageKey?: string;
   cardAvatarKey?: string;
+  mapView?: React.ReactNode;
 }
 
 export default function DashboardPageTemplate<T>({
@@ -108,6 +110,7 @@ export default function DashboardPageTemplate<T>({
   cardTimeKey,
   cardImageKey,
   cardAvatarKey,
+  mapView,
 }: DashboardPageTemplateProps<T>) {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   
@@ -160,11 +163,15 @@ export default function DashboardPageTemplate<T>({
         <>
           {/* Statistiques */}
           {stats.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {stats.map((stat, i) => (
                 <div
                   key={i}
-                  className="card p-6"
+                  className={`card p-6 ${stat.onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''} ${stat.colorClass?.includes('ring-') ? 'ring-2 ring-offset-2 ring-offset-page ' + stat.colorClass.split(' ').find(c => c.startsWith('ring-')) : ''}`}
+                  onClick={stat.onClick}
+                  role={stat.onClick ? 'button' : undefined}
+                  tabIndex={stat.onClick ? 0 : undefined}
+                  onKeyDown={stat.onClick ? (e) => e.key === 'Enter' && stat.onClick?.() : undefined}
                 >
                   <h3 className="text-lg font-semibold text-primary mb-2 flex items-center gap-2">
                     {stat.icon && (
@@ -176,7 +183,7 @@ export default function DashboardPageTemplate<T>({
                   </h3>
                   <p
                     className={`text-3xl font-bold ${
-                      stat.colorClass || 'text-accent'
+                      (stat.colorClass || 'text-accent').split(' ').find(c => c.startsWith('text-')) || 'text-accent'
                     }`}
                   >
                     {stat.value}
@@ -210,33 +217,37 @@ export default function DashboardPageTemplate<T>({
                 onViewModeChange={setViewMode}
                 showViewToggle={showViewToggle}
               />
-              <DataTable<T>
-                columns={columns}
-                data={data}
-                loading={loading}
-                emptyMessage={emptyMessage}
-                onRowClick={onRowClick}
-                selectable={selectable}
-                onDeleteSelected={onDeleteSelected}
-                customActions={customActions}
-                getItemId={getItemId}
-                getItemName={getItemName}
-                sortable={sortable}
-                draggable={draggable}
-                showFavorites={showFavorites}
-                favoritesFirst={favoritesFirst}
-                isFavorite={isFavorite}
-                onToggleFavorite={onToggleFavorite}
-                onReorder={onReorder}
-                viewMode={viewMode}
-                onViewModeChange={setViewMode}
-                cardTitleKey={cardTitleKey}
-                cardSubtitleKey={cardSubtitleKey}
-                cardStatusKey={cardStatusKey}
-                cardTimeKey={cardTimeKey}
-                cardImageKey={cardImageKey}
-                cardAvatarKey={cardAvatarKey}
-              />
+              {viewMode === 'map' && mapView ? (
+                mapView
+              ) : (
+                <DataTable<T>
+                  columns={columns}
+                  data={data}
+                  loading={loading}
+                  emptyMessage={emptyMessage}
+                  onRowClick={onRowClick}
+                  selectable={selectable}
+                  onDeleteSelected={onDeleteSelected}
+                  customActions={customActions}
+                  getItemId={getItemId}
+                  getItemName={getItemName}
+                  sortable={sortable}
+                  draggable={draggable}
+                  showFavorites={showFavorites}
+                  favoritesFirst={favoritesFirst}
+                  isFavorite={isFavorite}
+                  onToggleFavorite={onToggleFavorite}
+                  onReorder={onReorder}
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                  cardTitleKey={cardTitleKey}
+                  cardSubtitleKey={cardSubtitleKey}
+                  cardStatusKey={cardStatusKey}
+                  cardTimeKey={cardTimeKey}
+                  cardImageKey={cardImageKey}
+                  cardAvatarKey={cardAvatarKey}
+                />
+              )}
             </div>
           </div>
         </>

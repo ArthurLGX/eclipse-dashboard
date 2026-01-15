@@ -107,7 +107,7 @@ export default function MobileDrawer({
                           onClick={() => toggleCategory(item.id)}
                           className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
                             activeCategory === item.id
-                              ? 'bg-accent-muted text-accent'
+                              ? 'bg-accent-muted !text-accent'
                               : 'text-secondary hover:bg-hover'
                           }`}
                         >
@@ -140,7 +140,7 @@ export default function MobileDrawer({
                                     onClick={() => handleItemClick(subItem)}
                                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-all active:scale-98 ${
                                       activeItem === subItem.id || pathname === subItem.path
-                                        ? 'bg-accent-muted text-accent font-medium'
+                                        ? 'bg-accent-muted !text-accent font-medium'
                                         : 'text-secondary hover:bg-hover hover:text-primary'
                                     }`}
                                   >
@@ -168,7 +168,7 @@ export default function MobileDrawer({
                         onClick={() => handleItemClick(item)}
                         className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all active:scale-98 ${
                           activeItem === item.id
-                            ? 'bg-accent-muted text-accent font-medium'
+                            ? 'bg-accent-muted !text-accent font-medium'
                             : 'text-secondary hover:bg-hover hover:text-primary'
                         }`}
                       >

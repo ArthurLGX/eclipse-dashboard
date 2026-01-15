@@ -480,7 +480,7 @@ export default function TimeTrackingAnalyticsPage() {
             </Link>
             <div>
               <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-                <IconChartBar className="w-7 h-7 text-accent" />
+                <IconChartBar className="w-7 h-7 !text-accent" />
                 {t('time_analytics') || 'Analyse du temps'}
               </h1>
               <p className="text-muted text-sm mt-1">
@@ -521,7 +521,7 @@ export default function TimeTrackingAnalyticsPage() {
               <div className="card p-5">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-accent-light rounded-xl">
-                    <IconClock className="w-6 h-6 text-accent" />
+                    <IconClock className="w-6 h-6 !text-accent" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-primary">{formatDuration(analytics.totalTime)}</p>
@@ -691,7 +691,7 @@ export default function TimeTrackingAnalyticsPage() {
             {/* Insights */}
             <div className="card p-6 bg-gradient-to-r from-accent/5 to-transparent border-accent-light">
               <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-                <IconTarget className="w-5 h-5 text-accent" />
+                <IconTarget className="w-5 h-5 !text-accent" />
                 {t('insights') || 'Conseils'}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

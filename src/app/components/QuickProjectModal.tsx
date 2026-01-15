@@ -387,10 +387,10 @@ export default function QuickProjectModal({
                         {t('duplicate_desc') || 'Dupliquer phases, tâches et estimations'}
                       </p>
                     </div>
-                    <IconChevronRight className="w-5 h-5 text-accent" />
+                    <IconChevronRight className="w-5 h-5 !text-accent" />
                   </div>
                   {lastProject && (
-                    <div className="mt-3 pt-3 border-t border-accent/20 flex items-center gap-2 text-sm text-accent">
+                    <div className="mt-3 pt-3 border-t border-accent/20 flex items-center gap-2 text-sm !text-accent">
                       <IconBriefcase className="w-4 h-4" />
                       <span>{t('last_used') || 'Dernier utilisé'} : <strong>{lastProject.title}</strong></span>
                     </div>
@@ -569,7 +569,7 @@ export default function QuickProjectModal({
                 {selectedSourceProject && (
                   <div className="p-3 rounded-lg bg-accent-light border border-accent/20">
                     <div className="flex items-center gap-2 text-sm">
-                      <IconCopy className="w-4 h-4 text-accent" />
+                      <IconCopy className="w-4 h-4 !text-accent" />
                       <span className="text-accent font-medium">
                         {t('duplicating_from') || 'Duplication de'} : {selectedSourceProject.title}
                       </span>
@@ -590,7 +590,7 @@ export default function QuickProjectModal({
                 {selectedTemplate && (
                   <div className="p-3 rounded-lg bg-accent-light border border-accent/20">
                     <div className="flex items-center gap-2 text-sm">
-                      <IconTemplate className="w-4 h-4 text-accent" />
+                      <IconTemplate className="w-4 h-4 !text-accent" />
                       <span className="text-accent font-medium">
                         {t('template') || 'Template'} : {language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
                       </span>
@@ -659,7 +659,7 @@ export default function QuickProjectModal({
                       {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
-                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light text-accent' : 'border-default text-secondary'}`}>
+                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default text-secondary'}`}>
                         <input
                           type="radio"
                           name="timing_mode_quick"
@@ -669,7 +669,7 @@ export default function QuickProjectModal({
                         />
                         {t('timing_scope_duration') || 'Durée'}
                       </label>
-                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light text-accent' : 'border-default text-secondary'}`}>
+                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default text-secondary'}`}>
                         <input
                           type="radio"
                           name="timing_mode_quick"

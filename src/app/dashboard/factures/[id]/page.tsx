@@ -720,7 +720,7 @@ export default function FacturePage() {
           {!editing ? (
             <button
               onClick={handleEdit}
-              className="flex items-center justify-center gap-2 bg-accent-light text-accent border border-accent px-4 py-2 rounded-lg hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="flex items-center justify-center gap-2 bg-accent-light !text-accent border border-accent px-4 py-2 rounded-lg hover:bg-[var(--color-accent)] hover:text-white transition-colors"
             >
               <IconEdit className="w-4 h-4" />
               {t('edit')}
@@ -731,7 +731,7 @@ export default function FacturePage() {
               {isCreationMode && (
                 <button
                   onClick={() => setShowAIGenerator(true)}
-                  className="flex items-center justify-center gap-2 bg-accent-light text-accent border border-accent px-4 py-2 rounded-lg hover:bg-accent hover:text-white transition-all"
+                  className="flex items-center justify-center gap-2 bg-accent-light !text-accent border border-accent px-4 py-2 rounded-lg hover:bg-accent hover:text-white transition-all"
                 >
                   <Image 
                     src="/images/logo/eclipse-logo.png" 
@@ -1429,7 +1429,7 @@ export default function FacturePage() {
               id="updateClientStatus"
               checked={updateClientOnConvert}
               onChange={(e) => setUpdateClientOnConvert(e.target.checked)}
-              className="mt-1 w-4 h-4 rounded border-default text-accent focus:ring-accent"
+              className="mt-1 w-4 h-4 rounded border-default !text-accent focus:ring-accent"
             />
             <div>
               <label htmlFor="updateClientStatus" className="text-sm font-medium text-primary cursor-pointer">

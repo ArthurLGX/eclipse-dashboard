@@ -228,7 +228,7 @@ export default function NotificationBell() {
         .toUpperCase()
         .slice(0, 2);
       return (
-        <span className="text-xs font-bold text-accent">
+        <span className="text-xs font-bold !text-accent">
           {initials}
         </span>
       );
@@ -307,7 +307,7 @@ export default function NotificationBell() {
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="text-xs text-accent hover:text-accent-light flex items-center gap-1"
+                  className="text-xs !text-accent hover:text-accent-light flex items-center gap-1"
                 >
                   <IconCheckbox className="w-3 h-3" />
                   {t('mark_all_read') || 'Tout marquer comme lu'}

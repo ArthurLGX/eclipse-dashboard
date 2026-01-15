@@ -1168,7 +1168,7 @@ export default function ProjectTasks({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
-            <IconProgress className="w-5 h-5 text-accent" />
+            <IconProgress className="w-5 h-5 !text-accent" />
             {t('project_tasks')}
           </h3>
           <p className="text-sm text-muted mt-1">
@@ -1206,7 +1206,7 @@ export default function ProjectTasks({
             {/* Bouton IA */}
             <button
               onClick={() => setShowAIGenerator(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-accent-light hover:bg-accent hover:text-white text-accent rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-accent-light hover:bg-accent hover:text-white !text-accent rounded-lg transition-colors"
               title="Eclipse Assistant"
             >
               <Image 
@@ -1236,7 +1236,7 @@ export default function ProjectTasks({
         <div className="bg-muted rounded-lg p-4 border border-default">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-secondary">{t('overall_progress') || 'Progression globale'}</span>
-            <span className="text-sm font-medium text-accent">{overallProgress}%</span>
+            <span className="text-sm font-medium !text-accent">{overallProgress}%</span>
           </div>
           <div className="h-2 bg-hover rounded-full overflow-hidden">
             <motion.div
@@ -1351,12 +1351,12 @@ export default function ProjectTasks({
             className="flex flex-wrap items-center justify-between gap-3 p-3 bg-accent-light border border-accent rounded-xl"
           >
             <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-accent">
+              <span className="text-sm font-medium !text-accent">
                 {selectedTasks.size} {t('selected_tasks') || 'tâche(s) sélectionnée(s)'}
               </span>
               <button
                 onClick={selectAllVisibleTasks}
-                className="text-sm text-accent hover:underline flex items-center gap-1"
+                className="text-sm !text-accent hover:underline flex items-center gap-1"
               >
                 <IconSelectAll className="w-4 h-4" />
                 {t('select_all') || 'Tout sélectionner'}
@@ -1448,7 +1448,7 @@ export default function ProjectTasks({
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium text-primary flex items-center gap-2">
-                  {parentTaskForSubtask && <IconSubtask className="w-4 h-4 text-accent" />}
+                  {parentTaskForSubtask && <IconSubtask className="w-4 h-4 !text-accent" />}
                   {parentTaskForSubtask 
                     ? `${t('new_subtask') || 'Nouvelle sous-tâche'}`
                     : (t('new_task') || 'Nouvelle tâche')
@@ -2500,7 +2500,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                       onClose();
                       onAddSubtask();
                     }}
-                    className="text-xs px-2 py-1 rounded-lg border-accent-light text-accent hover:bg-accent-light hover:border-accent transition-colors flex items-center gap-1"
+                    className="text-xs px-2 py-1 rounded-lg border-accent-light !text-accent hover:bg-accent-light hover:border-accent transition-colors flex items-center gap-1"
                   >
                     <IconPlus className="w-3 h-3" />
                     {t('add_subtask') || 'Ajouter'}

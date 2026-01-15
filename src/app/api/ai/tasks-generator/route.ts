@@ -187,9 +187,6 @@ RETOURNE UN JSON VALIDE avec cette structure:
 
     const projectStart = parseDate(projectStartDate || undefined) || new Date();
     const projectEnd = parseDate(projectEndDate || undefined);
-    const totalDays = projectEnd && projectEnd > projectStart
-      ? Math.max(1, Math.ceil((projectEnd.getTime() - projectStart.getTime()) / (1000 * 60 * 60 * 24)))
-      : null;
 
     const distributeRange = (
       items: Array<{ estimated_hours?: number | null; start_date?: string | null; due_date?: string | null }>,

@@ -1269,7 +1269,7 @@ export default function RichTextEditor({
                   onMouseEnter={() => setSelectedEmojiIndex(index)}
                   className={`w-full flex items-center gap-3 px-2 py-1.5 rounded-md transition-colors ${
                     index === selectedEmojiIndex
-                      ? 'bg-accent-light text-accent'
+                      ? 'bg-accent-light !text-accent'
                       : 'hover:bg-hover text-primary'
                   }`}
                 >

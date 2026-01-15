@@ -24,11 +24,12 @@ export default function ClientFacturesPage() {
   // Le slug est directement le nom du client slugifié
   const slug = params.slug as string;
 
-  // Récupérer le client pour avoir son id numérique (pour filtrer les factures)
-  const { data: clientData } = useClientBySlug(slug);
+  // Récupérer le client pour avoir son documentId (pour filtrer les factures)
+  const { data: clientData } = useClientBySlug(slug, user?.id);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const client = clientData as any;
-  const clientId = client?.id;
+  const client = (clientData as any)?.data || clientData;
+  const clientDocumentId = client?.documentId;
+  const clientId = client?.id; // Gardé pour le lien d'ajout de facture
   const clientName = client?.name || clientNameFromUrl;
 
   const [showPdfModal, setShowPdfModal] = useState(false);
@@ -37,16 +38,19 @@ export default function ClientFacturesPage() {
   // Hook avec cache
   const { data: allFacturesData, loading } = useFactures(user?.id);
 
-  // Filtrer les factures côté client
+  // Filtrer les factures côté client par documentId ou id (fallback)
   const factures = useMemo(() => {
     const allFactures = (allFacturesData as Facture[]) || [];
-    if (!clientId) return [];
+    if (!client) return [];
     // Strapi peut retourner "client" ou "client_id" selon la config
+    // On filtre par documentId OU par id numérique (fallback si documentId non populé)
     return allFactures.filter(f => {
       const clientData = f.client || f.client_id;
-      return clientData?.id === clientId;
+      if (!clientData) return false;
+      return clientData.documentId === client.documentId || 
+             clientData.id === client.id;
     });
-  }, [allFacturesData, clientId]);
+  }, [allFacturesData, client]);
 
   // Générer le slug pour une facture
   const getFactureSlug = (facture: Facture) => {
@@ -181,7 +185,7 @@ export default function ClientFacturesPage() {
         <button
           className="flex items-center gap-2 btn-primary px-4 py-2.5 rounded-lg font-semibold"
           onClick={handleAddInvoice}
-          disabled={!clientId}
+          disabled={!clientDocumentId}
         >
           <IconPlus className="w-5 h-5" />
           {t('add_invoice')}

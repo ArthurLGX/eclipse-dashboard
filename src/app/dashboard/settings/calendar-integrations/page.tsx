@@ -173,7 +173,7 @@ export default function CalendarIntegrationsPage() {
         {/* Header */}
         <div className="pb-4">
           <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-            <IconCalendar className="w-7 h-7 text-accent" />
+            <IconCalendar className="w-7 h-7 !text-accent" />
             {t('calendar_integrations') || 'Intégrations calendrier'}
           </h1>
           <p className="text-muted text-sm mt-1">

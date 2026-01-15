@@ -2716,7 +2716,7 @@ export default function ComposeNewsletterPage() {
                     ) : (
                       step.icon
                     )}
-                    <span className="hidden sm:inline font-medium !text-accent-text">{step.label}</span>
+                    <span className="hidden sm:inline font-medium !text-accent">{step.label}</span>
                   </button>
                   {index < steps.length - 1 && (
                     <div className={`flex-1 h-0.5 mx-2 rounded ${
@@ -2815,7 +2815,7 @@ export default function ComposeNewsletterPage() {
                       <div className="mt-8">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
-                            <IconPalette className="w-5 h-5 text-accent" />
+                            <IconPalette className="w-5 h-5 !text-accent" />
                             {t('my_saved_themes') || 'Mes thèmes'}
                           </h3>
                           <span className="text-sm text-muted">
@@ -2835,7 +2835,7 @@ export default function ComposeNewsletterPage() {
                                 whileHover={{ scale: 1.02 }}
                                 className={`relative p-4 rounded-xl border transition-all text-left bg-card group ${
                                   isActive 
-                                    ? 'border-accent ring-1 ring-accent/30' 
+                                    ? 'border-accent border-2 border-accent' 
                                     : 'border-default hover:border-accent/50'
                                 }`}
                               >
@@ -2915,7 +2915,7 @@ export default function ComposeNewsletterPage() {
                                       handleUpdateTemplate(template.documentId);
                                     }}
                                     disabled={isUpdating || isDeleting}
-                                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg bg-accent-light text-accent hover:border-accent-light transition-colors disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg bg-accent-light !text-accent hover:border-accent-light transition-colors disabled:opacity-50"
                                     title={t('update_theme') || 'Mettre à jour avec les paramètres actuels'}
                                   >
                                     {isUpdating ? (
@@ -3388,7 +3388,7 @@ export default function ComposeNewsletterPage() {
                         {signatureData?.banner_url && !bannerImageUrl && (
                           <button
                             onClick={() => setBannerImageUrl(signatureData.banner_url || '')}
-                            className="text-sm text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+                            className="text-sm !text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
                           >
                             <IconPhoto className="w-4 h-4" />
                             {t('use_signature_banner') || 'Utiliser la bannière de ma signature'}
@@ -3425,7 +3425,7 @@ export default function ComposeNewsletterPage() {
                           {/* Indicator if using signature banner */}
                           {signatureData?.banner_url === bannerImageUrl && (
                             <div className="mt-2 text-xs text-muted flex items-center gap-1">
-                              <IconCheck className="w-3 h-3 text-accent" />
+                              <IconCheck className="w-3 h-3 !text-accent" />
                               {t('using_signature_banner') || 'Utilise la bannière de votre signature email'}
                             </div>
                           )}
@@ -3446,7 +3446,7 @@ export default function ComposeNewsletterPage() {
                       <div className="pt-2 border-t border-default">
                         <Link
                           href="/dashboard/settings?tab=email"
-                          className="text-sm text-accent hover:text-accent/80 transition-colors inline-flex items-center gap-1"
+                          className="text-sm !text-accent hover:text-accent/80 transition-colors inline-flex items-center gap-1"
                         >
                           <IconSettings className="w-3.5 h-3.5" />
                           {t('edit_signature_banner') || 'Modifier la bannière dans ma signature email'}
@@ -3470,7 +3470,7 @@ export default function ComposeNewsletterPage() {
                     {/* Manual email input with suggestions */}
                     <div className="bg-card rounded-xl border border-default p-4 mb-4">
                       <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
-                        <IconMail className="w-5 h-5 text-accent" />
+                        <IconMail className="w-5 h-5 !text-accent" />
                         {t('add_recipient_manually') || 'Ajouter un destinataire'}
                       </h3>
                       
@@ -3523,7 +3523,7 @@ export default function ComposeNewsletterPage() {
                                               className="w-10 h-10 rounded-full object-cover"
                                             />
                                           ) : (
-                                            <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center text-accent font-semibold">
+                                            <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center !text-accent font-semibold">
                                               {client.name[0]?.toUpperCase()}
                                             </div>
                                           )}
@@ -3531,7 +3531,7 @@ export default function ComposeNewsletterPage() {
                                             <p className="font-medium text-primary truncate">{client.name}</p>
                                             <p className="text-sm text-muted truncate">{client.email}</p>
                                           </div>
-                                          <IconCheck className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100" />
+                                          <IconCheck className="w-5 h-5 !text-accent opacity-0 group-hover:opacity-100" />
                                         </button>
                                       ))}
                                     </div>
@@ -3585,7 +3585,7 @@ export default function ComposeNewsletterPage() {
                                 key={manual.email}
                                 className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full group"
                               >
-                                <div className="w-6 h-6 rounded-full border-accent-light flex items-center justify-center text-accent text-xs font-semibold">
+                                <div className="w-6 h-6 rounded-full border-accent-light flex items-center justify-center !text-accent text-xs font-semibold">
                                   {getEmailInitials(manual.email)}
                                 </div>
                                 <span className="text-sm text-primary">{manual.email}</span>
@@ -3611,7 +3611,7 @@ export default function ComposeNewsletterPage() {
                             type="checkbox"
                             checked={selectAll}
                             onChange={handleSelectAllRecipients}
-                            className="w-5 h-5 rounded border-default text-accent focus:ring-accent"
+                            className="w-5 h-5 rounded border-default !text-accent focus:ring-accent"
                           />
                           <span className="font-medium text-primary">
                             {t('select_all_clients')} ({clients.length})
@@ -3638,7 +3638,7 @@ export default function ComposeNewsletterPage() {
                                 type="checkbox"
                                 checked={selectedRecipients.includes(client.id)}
                                 onChange={() => handleToggleRecipient(client.id)}
-                                className="w-5 h-5 rounded border-default text-accent focus:ring-accent"
+                                className="w-5 h-5 rounded border-default !text-accent focus:ring-accent"
                               />
                               {client.image?.url ? (
                                 // eslint-disable-next-line @next/next/no-img-element
@@ -3648,7 +3648,7 @@ export default function ComposeNewsletterPage() {
                                   className="w-10 h-10 rounded-full object-cover"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center text-accent font-semibold">
+                                <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center !text-accent font-semibold">
                                   {client.name[0]?.toUpperCase()}
                                 </div>
                               )}
@@ -3685,7 +3685,7 @@ export default function ComposeNewsletterPage() {
                         <div className="bg-card rounded-xl p-5 border border-default">
                           <div className="flex items-center gap-3 mb-3">
                             <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
-                              <IconTemplate className="w-5 h-5 text-accent" />
+                              <IconTemplate className="w-5 h-5 !text-accent" />
                             </div>
                             <span className="text-sm text-secondary">{t('step_template')}</span>
                           </div>
@@ -3738,7 +3738,7 @@ export default function ComposeNewsletterPage() {
                           {manualEmails.slice(0, 3).map(manual => (
                             <span
                               key={manual.email}
-                              className="px-3 py-1 bg-accent-light rounded-full text-sm text-accent flex items-center gap-1"
+                              className="px-3 py-1 bg-accent-light rounded-full text-sm !text-accent flex items-center gap-1"
                             >
                               <span className="w-4 h-4 rounded-full border-accent-light flex items-center justify-center text-[10px] font-bold">
                                 {getEmailInitials(manual.email)}
@@ -3747,7 +3747,7 @@ export default function ComposeNewsletterPage() {
                             </span>
                           ))}
                           {totalRecipients > 11 && (
-                            <span className="px-3 py-1 bg-accent-light rounded-full text-sm text-accent">
+                            <span className="px-3 py-1 bg-accent-light rounded-full text-sm !text-accent">
                               +{totalRecipients - 11} {t('others')}
                             </span>
                           )}
@@ -3822,7 +3822,7 @@ export default function ComposeNewsletterPage() {
                   <button
                     onClick={handleNextStep}
                     disabled={!canProceed()}
-                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accent text-accent-text font-medium
+                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accenttext-accent font-medium
                       hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     <span>{t('next')}</span>
@@ -4155,7 +4155,7 @@ export default function ComposeNewsletterPage() {
                 <div className="p-6 overflow-y-auto max-h-[60vh]">
                   {loadingLibrary ? (
                     <div className="flex items-center justify-center py-16">
-                      <IconLoader2 className="w-8 h-8 animate-spin text-accent" />
+                      <IconLoader2 className="w-8 h-8 animate-spin !text-accent" />
                     </div>
                   ) : showLibraryModal.type === 'image' ? (
                     libraryMedia.images.length > 0 ? (

@@ -154,7 +154,7 @@ export async function fetchUserEntities<T>(
 
   while (hasMore) {
     const response = await get<ApiResponse<T[]> & { meta?: { pagination?: { pageCount?: number; page?: number } } }>(
-      `${entity}?populate=*&pagination[pageSize]=${pageSize}&pagination[page]=${page}&filters[${filterField}][$eq]=${userId}${additionalFilters}`
+      `${entity}?populate=*&pagination[pageSize]=${pageSize}&pagination[page]=${page}&filters[${filterField}][id][$in]=${userId}${additionalFilters}`
     );
 
     if (response.data && response.data.length > 0) {
@@ -339,6 +339,119 @@ export async function addClientUser(
 
 export const fetchClientsUser = (userId: number) =>
   fetchUserEntities('clients', userId);
+
+/** Récupère tous les clients de l'utilisateur (propres + collaboratifs via projets) */
+export async function fetchAllUserClients(userId: number) {
+  // 1. Récupérer les clients propres de l'utilisateur
+  const ownedClients = await fetchUserEntities('clients', userId);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ownedClientsData = (ownedClients as any).data || [];
+  
+  // Marquer les clients propres
+  const markedOwnedClients = ownedClientsData.map((client: Record<string, unknown>) => ({
+    ...client,
+    _isCollaborative: false,
+    _collaborativeProjects: [] as Array<{ title: string; documentId: string; slug: string }>,
+  }));
+  
+  // 2. Récupérer les projets collaboratifs pour extraire leurs clients
+  try {
+    const collaborationsResponse = await get<ApiResponse<{
+      project: {
+        id: number;
+        documentId: string;
+        title: string;
+        client?: { 
+          id: number; 
+          documentId: string; 
+          name: string;
+          email?: string;
+          phone?: string;
+          company?: string;
+          website?: string;
+          processStatus?: string;
+          pipeline_status?: string;
+          image?: { url: string };
+        };
+      };
+      permission: string;
+      is_owner: boolean;
+    }[]>>(`project-collaborators?populate[project][populate][client][populate]=*&filters[user][id][$eq]=${userId}&filters[is_owner][$eq]=false`);
+    
+    const collaborations = collaborationsResponse.data || [];
+    
+    // Helper pour générer le slug du projet
+    const generateProjectSlug = (title: string, documentId: string) => {
+      const slugifiedTitle = title
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      return `${slugifiedTitle}--${documentId}`;
+    };
+    
+    // Extraire les clients uniques des projets collaboratifs
+    const collaborativeClientsMap = new Map<string, {
+      client: Record<string, unknown>;
+      projects: Array<{ title: string; documentId: string; slug: string }>;
+    }>();
+    
+    for (const collab of collaborations) {
+      if (collab.project?.client?.documentId) {
+        const clientDocId = collab.project.client.documentId;
+        const projectInfo = {
+          title: collab.project.title,
+          documentId: collab.project.documentId,
+          slug: generateProjectSlug(collab.project.title, collab.project.documentId),
+        };
+        const existing = collaborativeClientsMap.get(clientDocId);
+        
+        if (existing) {
+          // Éviter les doublons de projets
+          if (!existing.projects.some(p => p.documentId === projectInfo.documentId)) {
+            existing.projects.push(projectInfo);
+          }
+        } else {
+          collaborativeClientsMap.set(clientDocId, {
+            client: collab.project.client as Record<string, unknown>,
+            projects: [projectInfo],
+          });
+        }
+      }
+    }
+    
+    // Identifier les documentIds des clients propres
+    const ownedClientDocIds = new Set(
+      markedOwnedClients.map((c: { documentId?: string }) => c.documentId)
+    );
+    
+    // Créer la liste des clients collaboratifs (qui ne sont pas déjà dans les clients propres)
+    const collaborativeClients: Record<string, unknown>[] = [];
+    
+    collaborativeClientsMap.forEach(({ client, projects }, docId) => {
+      if (!ownedClientDocIds.has(docId)) {
+        collaborativeClients.push({
+          ...client,
+          _isCollaborative: true,
+          _collaborativeProjects: projects,
+        });
+      }
+    });
+    
+    return {
+      data: [...markedOwnedClients, ...collaborativeClients],
+      meta: {},
+    };
+  } catch (error) {
+    console.error('[fetchAllUserClients] Error fetching collaborative clients:', error);
+    // En cas d'erreur, retourner uniquement les clients propres
+    return {
+      data: markedOwnedClients,
+      meta: {},
+    };
+  }
+}
 
 // ============================================================================
 // CONTACTS UNIFIÉS (Prospects + Clients dans le même modèle)

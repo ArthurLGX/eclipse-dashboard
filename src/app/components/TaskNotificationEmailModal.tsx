@@ -221,7 +221,7 @@ export default function TaskNotificationEmailModal({
             <div className="flex items-center justify-between p-6 border-b border-default">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
-                  <IconMail className="w-5 h-5 text-accent" />
+                  <IconMail className="w-5 h-5 !text-accent" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-primary">
@@ -283,7 +283,7 @@ export default function TaskNotificationEmailModal({
                   {recipients.map((recipient, idx) => (
                     <div key={idx} className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center text-accent font-medium">
+                        <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center !text-accent font-medium">
                           {recipient.username?.charAt(0).toUpperCase() || recipient.email?.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -292,7 +292,7 @@ export default function TaskNotificationEmailModal({
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs bg-accent-light text-accent px-2 py-1 rounded-full flex items-center gap-1">
+                        <span className="text-xs bg-accent-light !text-accent px-2 py-1 rounded-full flex items-center gap-1">
                           <IconClipboardList className="w-3 h-3" />
                           {recipient.tasks.length}
                         </span>

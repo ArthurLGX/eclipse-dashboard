@@ -432,7 +432,7 @@ const PROJECT_TYPES = [
           {/* En-tête du projet (infos basiques) */}
           <div className="card p-8 text-center mb-6">
             <div className="w-20 h-20 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
-              <IconFileText className="w-10 h-10 text-accent" />
+              <IconFileText className="w-10 h-10 !text-accent" />
             </div>
             <h1 className="text-2xl font-bold text-primary mb-2">{project.title}</h1>
             {project.user?.username && (
@@ -469,7 +469,7 @@ const PROJECT_TYPES = [
             ) : (
               <div className="text-center">
                 <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <IconUserPlus className="w-8 h-8 text-accent" />
+                  <IconUserPlus className="w-8 h-8 !text-accent" />
                 </div>
                 <h2 className="text-xl font-bold text-primary mb-2">{t('request_collaboration')}</h2>
                 <p className="text-secondary mb-6">{t('collaboration_request_description')}</p>
@@ -781,7 +781,7 @@ const PROJECT_TYPES = [
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-t-lg transition-colors ${
                   activeTab === tab.id
-                    ? 'bg-page text-accent border-t border-x border-default'
+                    ? 'bg-page !text-accent border-t border-x border-default'
                     : 'text-secondary hover:text-primary hover:bg-hover'
                 }`}
               >
@@ -790,9 +790,9 @@ const PROJECT_TYPES = [
                 {tab.count !== undefined && tab.count > 0 && (
                   <span className={`px-1.5 py-0.5 text-xs rounded-full font-bold ${
                     tab.isOrange 
-                      ? 'bg-warning text-accent-text' 
+                      ? 'bg-warning-light text-warning' 
                       : activeTab === tab.id 
-                        ? 'bg-accent-light text-accent' 
+                        ? 'bg-accent-light !text-accent' 
                         : 'bg-muted text-secondary'
                   }`}>
                     {tab.count}
@@ -985,7 +985,7 @@ const PROJECT_TYPES = [
                                     {note.title}
                                   </h3>
                                   {note.source === 'phantom_ai' && (
-                                    <span className="px-2 py-0.5 text-xs rounded-full bg-accent-light text-accent font-medium">
+                                    <span className="px-2 py-0.5 text-xs rounded-full bg-accent-light !text-accent font-medium">
                                       Fathom AI
                                     </span>
                                   )}
@@ -1037,7 +1037,7 @@ const PROJECT_TYPES = [
                                     href={note.recording_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 rounded-lg bg-accent-light text-accent hover:opacity-80 transition-colors"
+                                    className="p-2 rounded-lg bg-accent-light !text-accent hover:opacity-80 transition-colors"
                                     title="Voir l'enregistrement"
                                   >
                                     <IconPlayerPlay className="w-4 h-4" />
@@ -1049,7 +1049,7 @@ const PROJECT_TYPES = [
                             {/* Expandable transcription */}
                             {note.transcription && (
                               <details className="mt-4 group">
-                                <summary className="cursor-pointer text-sm text-accent hover:underline list-none flex items-center gap-1">
+                                <summary className="cursor-pointer text-sm !text-accent hover:underline list-none flex items-center gap-1">
                                   <IconFileText className="w-4 h-4" />
                                   Voir la transcription
                                 </summary>
@@ -1064,7 +1064,7 @@ const PROJECT_TYPES = [
                             {/* Action items list */}
                             {note.action_items && note.action_items.length > 0 && (
                               <details className="mt-3 group">
-                                <summary className="cursor-pointer text-sm text-accent hover:underline list-none flex items-center gap-1">
+                                <summary className="cursor-pointer text-sm !text-accent hover:underline list-none flex items-center gap-1">
                                   <IconListCheck className="w-4 h-4" />
                                   Voir les actions ({note.action_items.length})
                                 </summary>
@@ -1192,7 +1192,7 @@ const PROJECT_TYPES = [
                         <p className="text-muted mb-4">{t('no_invoices_for_this_project')}</p>
                         <Link
                           href={`/dashboard/factures/ajouter?projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}`}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-accent-light text-accent rounded-lg hover:opacity-80 transition-colors"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-accent-light !text-accent rounded-lg hover:opacity-80 transition-colors"
                         >
                           <IconPlus className="w-4 h-4" />
                           {t('create_invoice')}
@@ -1328,7 +1328,7 @@ const PROJECT_TYPES = [
                 </h3>
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="text-xs text-accent hover:opacity-80 transition-colors"
+                  className="text-xs !text-accent hover:opacity-80 transition-colors"
                 >
                   {t('manage')}
                 </button>
@@ -1337,7 +1337,7 @@ const PROJECT_TYPES = [
                 {/* Owner */}
                 <div className="flex items-center gap-3 p-2 bg-warning-light rounded-lg border border-warning">
                   <div className="w-8 h-8 bg-warning rounded-full flex items-center justify-center">
-                    <span className="text-accent-text text-sm font-medium">
+                    <span className="text-accent text-sm font-medium">
                       {project.user?.username?.[0]?.toUpperCase() || '?'}
                     </span>
                   </div>
@@ -1351,7 +1351,7 @@ const PROJECT_TYPES = [
                 {collaborators.filter(c => !c.is_owner).map(collab => (
                   <div key={collab.documentId} className="flex items-center gap-3 p-2 bg-hover rounded-lg">
                     <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
-                      <span className="text-accent-text text-sm font-medium">
+                      <span className="text-accent text-sm font-medium">
                         {collab.user?.username?.[0]?.toUpperCase() || '?'}
                       </span>
                     </div>

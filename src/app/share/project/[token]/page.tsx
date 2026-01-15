@@ -191,7 +191,7 @@ export default function SharedProjectPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-page">
         <div className="text-center">
-          <IconLoader2 className="w-12 h-12 text-accent-light animate-spin mx-auto mb-4" />
+          <IconLoader2 className="w-12 h-12 !text-accent-light animate-spin mx-auto mb-4" />
           <p className="text-secondary">{t('loading_project')}</p>
         </div>
       </div>
@@ -457,7 +457,7 @@ export default function SharedProjectPage() {
             className="mb-8"
           >
             <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
-              <IconTimeline className="w-5 h-5 text-accent-light" />
+              <IconTimeline className="w-5 h-5 !text-accent-light" />
               {t('gantt_diagram')}
               {statusFilter !== 'all' && (
                 <span className="text-sm font-normal text-muted">
@@ -491,7 +491,7 @@ export default function SharedProjectPage() {
             transition={{ delay: 0.3 }}
           >
             <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
-              <IconProgress className="w-5 h-5 text-accent-light" />
+              <IconProgress className="w-5 h-5 !text-accent-light" />
               {t('tasks_list')}
               {statusFilter !== 'all' && (
                 <span className="text-sm font-normal text-muted">
@@ -532,7 +532,7 @@ export default function SharedProjectPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex-1">
               <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-2">
-                <IconUserPlus className="w-6 h-6 text-accent" />
+                <IconUserPlus className="w-6 h-6 !text-accent" />
                 {t('want_to_collaborate')}
               </h3>
               <p className="text-secondary">
@@ -662,7 +662,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
               />
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1 text-xs text-accent hover:text-accent/80 mt-1 transition-colors"
+                className="flex items-center gap-1 text-xs !text-accent hover:text-accent/80 mt-1 transition-colors"
               >
                 {isExpanded ? (
                   <>

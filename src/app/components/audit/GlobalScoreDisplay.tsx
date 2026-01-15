@@ -183,7 +183,7 @@ export default function GlobalScoreDisplay({
               {new Date(analyzedAt).toLocaleString()}
             </span>
             {fromCache && (
-              <span className="px-2 py-1 bg-accent-light text-accent rounded-full">
+              <span className="px-2 py-1 bg-accent-light !text-accent rounded-full">
                 {t('cached_result')}
               </span>
             )}

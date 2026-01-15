@@ -517,7 +517,7 @@ export default function EmailTemplatesPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <IconTemplate size={28} className="text-accent" />
+          <IconTemplate size={28} className="!text-accent" />
           <div>
             <h1 className="text-2xl font-bold">{t('email_templates') || 'Templates d\'emails'}</h1>
             <p className="text-sm text-muted-foreground">
@@ -590,7 +590,7 @@ export default function EmailTemplatesPage() {
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h3 className="font-semibold">{template.name}</h3>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-accent-light text-accent">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-accent-light !text-accent">
                     {PIPELINE_LABELS[template.pipeline_stage] || template.pipeline_stage}
                   </span>
                 </div>

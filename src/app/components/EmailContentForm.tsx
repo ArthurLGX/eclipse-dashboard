@@ -64,7 +64,7 @@ export default function EmailContentForm({
         {showTitle && (
           <div>
             <label className="block text-sm font-medium text-secondary mb-2">
-              <IconHeading className="w-4 h-4 inline mr-1.5 text-accent" />
+              <IconHeading className="w-4 h-4 inline mr-1.5 !text-accent" />
               {l.title} *
             </label>
             <input
@@ -83,7 +83,7 @@ export default function EmailContentForm({
         {/* Subject field */}
         <div>
           <label className="block text-sm font-medium text-secondary mb-2">
-            <IconMail className="w-4 h-4 inline mr-1.5 text-accent" />
+            <IconMail className="w-4 h-4 inline mr-1.5 !text-accent" />
             {l.subject} *
             {l.subjectHint && (
               <span className="text-muted font-normal ml-2">({l.subjectHint})</span>

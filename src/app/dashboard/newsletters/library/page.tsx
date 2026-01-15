@@ -176,7 +176,7 @@ export default function MediaLibraryPage() {
           <div className="bg-card rounded-xl p-4 border border-default">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light rounded-lg">
-                <IconPhoto className="w-5 h-5 text-accent" />
+                <IconPhoto className="w-5 h-5 !text-accent" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.images}</p>
@@ -262,7 +262,7 @@ export default function MediaLibraryPage() {
         {/* Media Grid */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+            <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
           </div>
         ) : filteredMedia.length === 0 ? (
           <div className="text-center py-20 bg-card rounded-xl border border-default">

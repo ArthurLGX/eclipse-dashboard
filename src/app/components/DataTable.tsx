@@ -23,7 +23,7 @@ export interface CustomAction<T = unknown> {
 
 export type SortDirection = 'asc' | 'desc' | null;
 
-export type ViewMode = 'table' | 'cards';
+export type ViewMode = 'table' | 'cards' | 'map';
 
 export interface DataTableProps<T = unknown> {
   columns: Column<T>[];
@@ -433,7 +433,7 @@ export default function DataTable<T = unknown>({
                   className="flex-shrink-0"
                 >
                   {isSelected ? (
-                    <IconSquareCheck stroke={1} className="w-5 h-5 text-accent" />
+                    <IconSquareCheck stroke={1} className="w-5 h-5 !text-accent" />
                   ) : (
                     <IconSquare className="w-5 h-5 text-muted" />
                   )}
@@ -645,7 +645,7 @@ export default function DataTable<T = unknown>({
               {!allSelected && (
                 <button
                   onClick={selectAll}
-                  className="text-sm text-accent hover:underline"
+                  className="text-sm !text-accent hover:underline"
                 >
                   {t('select_all') || 'Tout sélectionner'} ({allIds.length})
                 </button>
@@ -723,9 +723,9 @@ export default function DataTable<T = unknown>({
                   className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
                 >
                   {allCurrentPageSelected ? (
-                    <IconSquareCheck stroke={1} className="w-5 h-5 text-accent" />
+                    <IconSquareCheck stroke={1} className="w-5 h-5 !text-accent" />
                   ) : someCurrentPageSelected ? (
-                    <IconSquareMinus stroke={1} className="w-5 h-5 text-accent" />
+                    <IconSquareMinus stroke={1} className="w-5 h-5 !text-accent" />
                   ) : (
                     <IconSquare className="w-5 h-5" />
                   )}
@@ -811,7 +811,7 @@ export default function DataTable<T = unknown>({
                             className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
                           >
                             {isSelected ? (
-                              <IconSquareCheck className="w-5 h-5 text-accent" />
+                              <IconSquareCheck className="w-5 h-5 !text-accent" />
                             ) : (
                               <IconSquare className="w-5 h-5" />
                             )}
@@ -877,7 +877,7 @@ export default function DataTable<T = unknown>({
                           className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
                         >
                           {isSelected ? (
-                            <IconSquareCheck className="w-5 h-5 text-accent" />
+                            <IconSquareCheck className="w-5 h-5 !text-accent" />
                           ) : (
                             <IconSquare className="w-5 h-5" />
                           )}

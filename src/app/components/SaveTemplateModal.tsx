@@ -108,7 +108,7 @@ export default function SaveTemplateModal({
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
             <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
-              <IconDeviceFloppy className="w-5 h-5 text-accent" />
+              <IconDeviceFloppy className="w-5 h-5 !text-accent" />
               {t('save_template') || 'Sauvegarder le thème'}
             </h3>
             <button
@@ -171,12 +171,12 @@ export default function SaveTemplateModal({
               {(templateData.headerBackgroundUrl || templateData.bannerUrl) && (
                 <div className="flex gap-2 mt-3 text-xs text-muted">
                   {templateData.headerBackgroundUrl && (
-                    <span className="px-2 py-1 bg-accent-light text-accent rounded">
+                    <span className="px-2 py-1 bg-accent-light !text-accent rounded">
                       {t('header_image_included') || '+ Image en-tête'}
                     </span>
                   )}
                   {templateData.bannerUrl && (
-                    <span className="px-2 py-1 bg-accent-light text-accent rounded">
+                    <span className="px-2 py-1 bg-accent-light !text-accent rounded">
                       {t('banner_included') || '+ Bannière'}
                     </span>
                   )}

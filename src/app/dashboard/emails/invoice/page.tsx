@@ -539,7 +539,7 @@ Cordialement`;
             </button>
             
             <h1 className="text-xl font-semibold text-primary flex items-center gap-2">
-              <IconFileInvoice className="w-6 h-6 text-accent" />
+              <IconFileInvoice className="w-6 h-6 !text-accent" />
               {t('send_invoice') || 'Envoyer une facture'}
             </h1>
             
@@ -549,7 +549,7 @@ Cordialement`;
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
             >
               {showPreview ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
               {showPreview ? (t('edit') || 'Éditer') : (t('preview') || 'Aperçu')}
@@ -737,7 +737,7 @@ Cordialement`;
                         <div className="max-h-[50vh] overflow-y-auto p-2">
                           {loadingInvoices ? (
                             <div className="flex items-center justify-center py-12">
-                              <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+                              <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
                             </div>
                           ) : filteredInvoices.length === 0 ? (
                             <div className="text-center py-12 text-muted">
@@ -797,7 +797,7 @@ Cordialement`;
                       key={recipient.id}
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-accent-light text-accent rounded-full text-sm"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-accent-light !text-accent rounded-full text-sm"
                     >
                       <span>{recipient.name ? `${recipient.name} <${recipient.email}>` : recipient.email}</span>
                       <button
@@ -853,7 +853,7 @@ Cordialement`;
                     type="button"
                     onClick={handleGenerateAIContent}
                     disabled={generatingAI || !selectedInvoice}
-                    className="flex items-center gap-2 px-3 py-1.5 text-xs bg-accent-light text-accent rounded-lg hover:bg-accent-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-2 px-3 py-1.5 text-xs bg-accent-light !text-accent rounded-lg hover:bg-accent-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {generatingAI ? (
                       <>
@@ -887,7 +887,7 @@ Cordialement`;
               <div className="bg-card border border-default rounded-xl p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <IconSignature className="w-5 h-5 text-accent" />
+                    <IconSignature className="w-5 h-5 !text-accent" />
                     <div>
                       <div className="font-medium text-primary">
                         {t('include_signature') || 'Inclure la signature'}
@@ -916,7 +916,7 @@ Cordialement`;
                 {signatureData && (
                   <Link
                     href="/dashboard/settings?tab=email"
-                    className="mt-3 inline-flex items-center gap-1.5 text-sm text-accent hover:text-accent/80 transition-colors"
+                    className="mt-3 inline-flex items-center gap-1.5 text-sm !text-accent hover:text-accent/80 transition-colors"
                   >
                     <IconPencil className="w-3.5 h-3.5" />
                     {t('edit_signature') || 'Modifier la signature'}

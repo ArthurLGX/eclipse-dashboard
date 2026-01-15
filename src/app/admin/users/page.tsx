@@ -282,7 +282,7 @@ export default function AdminUsersPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-            <IconUsers className="w-7 h-7 text-accent" />
+            <IconUsers className="w-7 h-7 !text-accent" />
             {t('users_management') || 'Gestion des utilisateurs'}
           </h1>
           <p className="text-sm text-muted">{totalUsers} {t('users_total') || 'utilisateurs au total'}</p>
@@ -349,7 +349,7 @@ export default function AdminUsersPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-accent-light border border-accent-light rounded-xl p-4 flex items-center justify-between"
         >
-          <span className="text-sm text-accent font-medium">
+          <span className="text-sm !text-accent font-medium">
             {selectedUsers.length} {t('users_selected') || 'utilisateur(s) sélectionné(s)'}
           </span>
           <div className="flex items-center gap-2">
@@ -446,7 +446,7 @@ export default function AdminUsersPage() {
                       onClick={() => openRoleModal(user)}
                       className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity ${
                         user.role?.name === 'Admin' 
-                          ? 'bg-accent-light text-accent' 
+                          ? 'bg-accent-light !text-accent' 
                           : 'bg-info-light text-info'
                       }`}
                       title={t('click_to_change_role') || 'Cliquer pour changer le rôle'}
@@ -584,7 +584,7 @@ export default function AdminUsersPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center">
-                        <span className="text-2xl text-accent font-bold">
+                        <span className="text-2xl !text-accent font-bold">
                           {modalData.user.username?.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -646,7 +646,7 @@ export default function AdminUsersPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-12 h-12 rounded-full bg-accent-light flex items-center justify-center">
-                        <span className="text-lg text-accent font-bold">
+                        <span className="text-lg !text-accent font-bold">
                           {modalData.user.username?.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -675,7 +675,7 @@ export default function AdminUsersPage() {
                               role.name === 'Admin' ? 'bg-accent-light' : 'bg-info-light'
                             }`}>
                               {role.name === 'Admin' ? (
-                                <IconCrown className="w-4 h-4 text-accent" />
+                                <IconCrown className="w-4 h-4 !text-accent" />
                               ) : (
                                 <IconShield className="w-4 h-4 text-info" />
                               )}
@@ -685,7 +685,7 @@ export default function AdminUsersPage() {
                               <p className="text-xs text-muted">{role.type}</p>
                             </div>
                             {selectedRole === role.id && (
-                              <IconCheck className="w-5 h-5 text-accent ml-auto" />
+                              <IconCheck className="w-5 h-5 !text-accent ml-auto" />
                             )}
                           </button>
                         ))}

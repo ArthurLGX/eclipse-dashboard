@@ -167,7 +167,7 @@ export default function GrowthAuditPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className='relative'>
           <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-            <IconSearch className="w-7 h-7 text-accent" />
+            <IconSearch className="w-7 h-7 !text-accent" />
             {t('growth_audit')}
           </h1>
           <p className="text-muted text-sm mt-1">
@@ -217,7 +217,7 @@ export default function GrowthAuditPage() {
                   disabled={isAnalyzing}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
                     pageType === type.value
-                      ? 'border-accent bg-accent-light text-accent'
+                      ? 'border-accent bg-accent-light !text-accent'
                       : 'border-default bg-hover text-muted hover:text-primary hover:border-accent'
                   }`}
                 >
@@ -371,7 +371,7 @@ export default function GrowthAuditPage() {
 
               {/* Overall progress percentage */}
               <div className="mt-6 text-center">
-                <span className="text-3xl font-bold text-accent">
+                <span className="text-3xl font-bold !text-accent">
                   {Math.round(((currentStep + (stepProgress / 100)) / ANALYSIS_STEPS.length) * 100)}%
                 </span>
               </div>
@@ -671,7 +671,7 @@ export default function GrowthAuditPage() {
           className="card p-12 flex flex-col items-center justify-center text-center"
         >
           <div className="w-20 h-20 rounded-full bg-accent-light flex items-center justify-center mb-4">
-            <IconTarget className="w-10 h-10 text-accent" />
+            <IconTarget className="w-10 h-10 !text-accent" />
           </div>
           <h3 className="text-lg font-semibold text-primary mb-2">
             {t('analyze_page')}

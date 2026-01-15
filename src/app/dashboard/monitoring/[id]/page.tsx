@@ -232,7 +232,7 @@ export default function MonitoringDetailPage() {
             className="card p-4"
           >
             <div className="flex items-center gap-2 mb-3">
-              <IconServer className="w-4 h-4 text-accent" />
+              <IconServer className="w-4 h-4 !text-accent" />
               <span className="text-sm font-medium text-primary">{t('hosting_info') || 'Hébergement'}</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

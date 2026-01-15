@@ -166,9 +166,9 @@ export default function AIPriceEstimation({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {loading && <IconLoader2 className="w-4 h-4 text-accent animate-spin" />}
+          {loading && <IconLoader2 className="w-4 h-4 !text-accent animate-spin" />}
           {estimation && !loading && (
-            <span className="text-sm font-bold text-accent">
+            <span className="text-sm font-bold !text-accent">
               {estimation.suggested_price.toLocaleString()}€
             </span>
           )}
@@ -194,7 +194,7 @@ export default function AIPriceEstimation({
               {loading && (
                 <div className="flex items-center justify-center py-6">
                   <div className="text-center">
-                    <IconLoader2 className="w-8 h-8 text-accent animate-spin mx-auto mb-2" />
+                    <IconLoader2 className="w-8 h-8 !text-accent animate-spin mx-auto mb-2" />
                     <p className="text-sm text-muted">
                       {t('analyzing_prices') || 'Analyse des prix en cours...'}
                     </p>
@@ -207,7 +207,7 @@ export default function AIPriceEstimation({
                   <p className="text-sm text-danger">{error}</p>
                   <button
                     onClick={() => { setHasFetched(false); fetchEstimation(); }}
-                    className="mt-2 text-sm text-accent hover:underline"
+                    className="mt-2 text-sm !text-accent hover:underline"
                   >
                     {t('retry') || 'Réessayer'}
                   </button>
@@ -219,7 +219,7 @@ export default function AIPriceEstimation({
                   {/* Main suggestion */}
                   <div className="flex items-center justify-between p-3 bg-hover rounded-lg">
                     <div className="flex items-center gap-3">
-                      <IconSparkles className="w-5 h-5 text-accent" />
+                      <IconSparkles className="w-5 h-5 !text-accent" />
                       <div>
                         <p className="text-sm text-muted">
                           {t('suggested_price') || 'Prix suggéré'}
@@ -281,7 +281,7 @@ export default function AIPriceEstimation({
                   {/* Recommendations */}
                   {estimation.recommendations && estimation.recommendations.length > 0 && (
                     <div className="p-3 bg-accent-light rounded-lg">
-                      <p className="text-sm font-medium text-accent flex items-center gap-2 mb-2">
+                      <p className="text-sm font-medium !text-accent flex items-center gap-2 mb-2">
                         <IconBulb className="w-4 h-4" />
                         {t('recommendations') || 'Recommandations'}
                       </p>

@@ -81,7 +81,7 @@ export default function SidebarLogo() {
   if (companyInitials) {
     return (
       <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-        <span className="text-accent-text text-sm font-bold">
+        <span className="text-accent text-sm font-bold">
           {companyInitials}
         </span>
       </div>

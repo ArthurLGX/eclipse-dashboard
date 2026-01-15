@@ -477,7 +477,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                       className={`
                         flex flex-col items-center gap-2 p-4 rounded-xl border transition-all text-center
                         ${importMode === option.value 
-                          ? 'bg-accent-light border-accent text-accent' 
+                          ? 'bg-accent-light border-accent !text-accent' 
                           : 'bg-card border-default hover:border-accent/50 text-secondary hover:text-primary'
                         }
                       `}
@@ -789,7 +789,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 {/* Duplicate check mode selector */}
                 <div className="p-4 rounded-xl bg-card-hover border border-default">
                   <div className="flex items-center gap-2 mb-3">
-                    <IconInfoCircle className="w-5 h-5 text-accent" />
+                    <IconInfoCircle className="w-5 h-5 !text-accent" />
                     <p className="text-sm font-medium text-primary">
                       {t('duplicate_check_mode') || 'Vérification des doublons'}
                     </p>

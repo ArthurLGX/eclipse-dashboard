@@ -149,7 +149,7 @@ function SelectContactModal({
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
-                      <span className="text-sm font-medium text-accent">{getInitials(contact.name)}</span>
+                      <span className="text-sm font-medium !text-accent">{getInitials(contact.name)}</span>
                     </div>
                   )}
                   
@@ -846,7 +846,7 @@ export default function PipelinePage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <IconChartBar size={28} className="text-accent" />
+          <IconChartBar size={28} className="!text-accent" />
           <div>
             <h1 className="text-2xl font-bold text-primary">
               {t('pipeline') || 'Pipeline CRM'}
@@ -862,7 +862,7 @@ export default function PipelinePage() {
             onClick={() => setShowKPIs(!showKPIs)}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
               showKPIs 
-                ? 'bg-accent-light text-accent border-accent/30' 
+                ? 'bg-accent-light !text-accent border-accent/30' 
                 : 'bg-card text-muted border-default hover:bg-hover'
             }`}
           >
@@ -918,7 +918,7 @@ export default function PipelinePage() {
                 <IconTrendingUp size={16} />
                 <span className="text-xs font-medium">{t('conversion_rate') || 'Conversion'}</span>
               </div>
-              <p className="text-xl font-bold text-accent">
+              <p className="text-xl font-bold !text-accent">
                 {kpis.conversionRate.toFixed(1)}%
               </p>
               <p className="text-xs text-muted mt-1">

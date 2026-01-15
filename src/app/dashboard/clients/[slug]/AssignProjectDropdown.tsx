@@ -183,7 +183,7 @@ export default function AssignProjectDropdown({
               >
                 <div className="w-8 h-8 rounded-lg bg-accent-light border border-accent 
                   flex items-center justify-center group-hover:opacity-80 transition-colors">
-                  <IconPlus size={18} className="text-accent" />
+                  <IconPlus size={18} className="!text-accent" />
                 </div>
                 <div>
                   <p className="text-accent font-medium text-sm">

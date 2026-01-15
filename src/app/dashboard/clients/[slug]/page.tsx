@@ -2,7 +2,7 @@
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { updateClientById, assignProjectToClient, updateClientImage } from '@/lib/api';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import DataTable, { Column } from '@/app/components/DataTable';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
 import {
@@ -20,10 +20,11 @@ import { usePopup } from '@/app/context/PopupContext';
 import TableFilters from '@/app/components/TableFilters';
 import AssignProjectDropdown from './AssignProjectDropdown';
 import { useAuth } from '@/app/context/AuthContext';
-import { useClientBySlug, useUnassignedProjects, clearCache } from '@/hooks/useApi';
+import { useClientBySlug, useUnassignedProjects, useFactures, useProjects, clearCache } from '@/hooks/useApi';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ImageUpload from '@/app/components/ImageUpload';
-import type { Client, Project } from '@/types';
+import ClientWorkflowMapView from '@/app/components/ClientWorkflowMapView';
+import type { Client, Project, Facture } from '@/types';
 
 interface ProjectTableRow {
   id: string;
@@ -49,6 +50,7 @@ export default function ClientDetailsPage() {
   
   const [searchValue, setSearchValue] = useState('');
   const [isEditMode, setIsEditMode] = useState(searchParams.get('edit') === '1');
+  const [activeTab, setActiveTab] = useState<'projects' | 'workflow'>('projects');
 
   const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -58,6 +60,7 @@ export default function ClientDetailsPage() {
   // Hook avec slug (basé sur le nom) - filtré par utilisateur
   const { data: clientData, loading: clientLoading, refetch: refetchClient } = useClientBySlug(slug, user?.id);
   const client = clientData as Client | null;
+
   
   // Mettre à jour le titre de l'onglet avec le nom du client
   useDocumentTitle(client?.name, { prefix: 'Client' });
@@ -73,6 +76,29 @@ export default function ClientDetailsPage() {
     })),
     [unassignedProjectsData]
   );
+
+  // Factures liées au client (filtrées par documentId ou id en fallback)
+  const { data: allFactures } = useFactures(user?.id);
+  const clientFactures = useMemo(() => {
+    if (!client || !allFactures) return [];
+    return (allFactures as Facture[]).filter(f => {
+      const clientData = f.client || f.client_id;
+      if (!clientData) return false;
+      return clientData.documentId === client.documentId || 
+             clientData.id === client.id;
+    });
+  }, [allFactures, client]);
+
+  // Projets liés au client (filtrés par documentId ou id en fallback)
+  const { data: allProjects } = useProjects(user?.id);
+  const clientProjects = useMemo(() => {
+    if (!client || !allProjects) return [];
+    return ((allProjects as Project[]) || []).filter(p => {
+      if (!p.client) return false;
+      return p.client.documentId === client.documentId || 
+             p.client.id === client.id;
+    });
+  }, [allProjects, client]);
 
   // Colonnes du tableau de projets
   const projectColumns: Column<ProjectTableRow>[] = [
@@ -246,7 +272,7 @@ export default function ClientDetailsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 flex flex-col">
+    <div className="w-full mx-auto p-6 flex flex-col">
       {/* Header */}
       <div className="bg-card border border-default rounded-xl shadow-lg p-12 flex flex-col md:flex-row gap-16 items-center mb-8">
         <ImageUpload
@@ -293,7 +319,7 @@ export default function ClientDetailsPage() {
             )}
           </div>
           <div className="flex gap-4 mt-2">
-            <span className="bg-accent-light flex items-center gap-2 text-accent-text px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+            <span className="bg-accent-light flex items-center gap-2 !text-accent px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
               {client.processStatus}
             </span>
             <span className="bg-muted px-3 flex items-center gap-2 py-1 rounded-full text-xs text-secondary">
@@ -337,7 +363,7 @@ export default function ClientDetailsPage() {
             <IconFileInvoice className="w-4 h-4" />
             {t('invoices')}
             {(client.factures?.length || 0) > 0 && (
-              <span className="absolute -top-2 -right-2 bg-success text-accent-text text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-success-light text-success text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                 {client.factures?.length}
               </span>
             )}
@@ -392,32 +418,67 @@ export default function ClientDetailsPage() {
         </div>
       )}
 
-      {/* Projects Table */}
-      <div className="bg-card border border-default p-6 rounded-xl">
-        <h2 className="text-2xl font-bold text-primary mb-4">{t('projects')}</h2>
-        <TableFilters
-          searchPlaceholder={t('search_project') || 'Rechercher un projet'}
-          statusOptions={[]}
-          onSearchChangeAction={setSearchValue}
-          onStatusChangeAction={() => {}}
-          searchValue={searchValue}
-          statusValue={''}
-        />
-        <div className="mb-4">
-          <AssignProjectDropdown
-            unassignedProjects={unassignedProjects}
-            onAssign={handleAssignExistingProject}
-            loading={loadingProjects}
-            t={t}
+      {/* Tabs */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <button
+          type="button"
+          onClick={() => setActiveTab('projects')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            activeTab === 'projects' ? 'bg-accent text-white' : 'bg-hover text-secondary hover:text-primary'
+          }`}
+        >
+          {t('projects') || 'Projets'}
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('workflow')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            activeTab === 'workflow' ? 'bg-accent text-white' : 'bg-hover text-secondary hover:text-primary'
+          }`}
+        >
+          {t('workflow_tab') || 'Workflow'}
+        </button>
+      </div>
+
+      {activeTab === 'projects' && (
+        <div className="bg-card border border-default p-6 rounded-xl">
+          <h2 className="text-2xl font-bold text-primary mb-4">{t('projects')}</h2>
+          <TableFilters
+            searchPlaceholder={t('search_project') || 'Rechercher un projet'}
+            statusOptions={[]}
+            onSearchChangeAction={setSearchValue}
+            onStatusChangeAction={() => {}}
+            searchValue={searchValue}
+            statusValue={''}
+          />
+          <div className="mb-4">
+            <AssignProjectDropdown
+              unassignedProjects={unassignedProjects}
+              onAssign={handleAssignExistingProject}
+              loading={loadingProjects}
+              t={t}
+            />
+          </div>
+          <DataTable
+            columns={projectColumns}
+            data={filteredProjects}
+            emptyMessage="Aucun projet pour ce client."
+            onRowClick={(row) => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}`)}
           />
         </div>
-        <DataTable
-          columns={projectColumns}
-          data={filteredProjects}
-          emptyMessage="Aucun projet pour ce client."
-          onRowClick={(row) => router.push(`/dashboard/projects/${generateSlug(row.title, row.documentId)}`)}
-        />
-      </div>
+      )}
+
+      {activeTab === 'workflow' && client && (
+        <div className="bg-card border border-default p-6 rounded-xl">
+          <ClientWorkflowMapView 
+            clients={[client]} 
+            clientId={client.documentId}
+            clientFactures={clientFactures}
+            clientProjects={clientProjects}
+            clientContracts={[]}
+          />
+        </div>
+      )}
     </div>
   );
 }

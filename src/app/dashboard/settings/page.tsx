@@ -238,7 +238,7 @@ export default function SettingsPage() {
             className={`
               flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all
               ${activeTab === tab.id
-                ? 'bg-accent text-accent-text'
+                ? 'bg-accenttext-accent'
                 : 'bg-muted text-secondary hover:text-primary hover:bg-hover'
               }
             `}
@@ -843,7 +843,7 @@ export default function SettingsPage() {
                     }}
                     className="btn-ghost px-4 py-2.5 flex items-center gap-2 rounded-lg border border-default hover:border-accent hover:bg-accent-light transition-all"
                   >
-                    <IconRocket className="w-5 h-5 text-accent" />
+                    <IconRocket className="w-5 h-5 !text-accent" />
                     <span>{t('launch_onboarding') || 'Lancer l\'assistant de configuration'}</span>
                   </button>
                 </div>
@@ -994,7 +994,7 @@ function OptionButton({ children, selected, onClick }: { children: React.ReactNo
       className={`
         flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all
         ${selected
-          ? 'border-accent bg-accent text-accent-text'
+          ? 'border-accent bg-accenttext-accent'
           : 'border-default text-secondary hover:border-muted hover:text-primary'
         }
       `}

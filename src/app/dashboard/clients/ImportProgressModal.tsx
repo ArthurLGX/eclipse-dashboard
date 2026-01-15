@@ -64,7 +64,7 @@ export default function ImportProgressModal({
       case 'uploading_image':
         return <IconLoader2 className="w-5 h-5 text-blue-400 animate-spin" />;
       case 'creating':
-        return <IconLoader2 className="w-5 h-5 text-accent animate-spin" />;
+        return <IconLoader2 className="w-5 h-5 !text-accent animate-spin" />;
       case 'success':
         return <IconCheck className="w-5 h-5 text-success" />;
       case 'error':

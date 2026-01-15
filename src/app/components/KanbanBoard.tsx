@@ -143,14 +143,14 @@ function ContactCard({
             />
           ) : (
             <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-medium text-accent">{getInitials(contact.name)}</span>
+              <span className="text-xs font-medium !text-accent">{getInitials(contact.name)}</span>
             </div>
           )}
           
           <div className="min-w-0">
             <h4 className="font-medium text-sm text-foreground truncate">{contact.name}</h4>
             {contact.processStatus === 'client' && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-success-light text-success-text">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-success-lighttext-success">
                 Client
               </span>
             )}
@@ -265,7 +265,7 @@ function ContactCard({
 
       {/* Next action reminder */}
       {contact.next_action && (
-        <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-light text-warning-text rounded text-xs truncate">
+        <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-lighttext-warning rounded text-xs truncate">
           📌 {contact.next_action}
         </div>
       )}

@@ -431,7 +431,7 @@ export default function AIInvoiceGenerator({
                     </p>
                     <button
                       onClick={addLine}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent-light text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent-light !text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
                     >
                       <IconPlus className="w-3.5 h-3.5" />
                       {t('add_line') || 'Ajouter'}
@@ -514,7 +514,7 @@ export default function AIInvoiceGenerator({
                   )}
                   <div className="flex justify-between text-base pt-2 border-t border-default">
                     <span className="font-medium text-primary">{t('total_ttc') || 'Total TTC'}</span>
-                    <span className="font-bold text-accent">{totalTTC.toLocaleString('fr-FR')} €</span>
+                    <span className="font-bold !text-accent">{totalTTC.toLocaleString('fr-FR')} €</span>
                   </div>
                 </div>
 

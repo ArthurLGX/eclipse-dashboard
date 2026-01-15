@@ -387,7 +387,7 @@ export default function TimerIndicator() {
                 <IconGripVertical className={`w-4 h-4 ${isPaused ? '!text-accent' : '!text-white'}`} />
               </div>
               {isPaused ? (
-                <IconCoffee className="w-4 h-4 text-accent animate-pulse" />
+                <IconCoffee className="w-4 h-4 !text-accent animate-pulse" />
               ) : (
                 <IconClock className="w-4 h-4 text-warning animate-pulse" />
               )}
@@ -411,7 +411,7 @@ export default function TimerIndicator() {
                 </span>
               )}
               {isPaused && (
-                <span className="text-xs text-accent/80 font-medium">
+                <span className="text-xs !text-accent/80 font-medium">
                   {isIndefinitePause 
                     ? (t('elapsed') || 'écoulé')
                     : (t('remaining') || 'restant')
@@ -452,7 +452,7 @@ export default function TimerIndicator() {
                 // Bouton reprendre pendant la pause
                 <button
                   onClick={handleResume}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-accent-light hover:bg-[var(--color-accent-bg)] text-accent text-sm font-semibold rounded-lg transition-colors shadow-sm"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-accent-light hover:bg-[var(--color-accent-bg)] !text-accent text-sm font-semibold rounded-lg transition-colors shadow-sm"
                 >
                   <IconPlayerPlay className="w-4 h-4" />
                   {t('resume') || 'Reprendre'}
@@ -503,7 +503,7 @@ export default function TimerIndicator() {
                 onClick={() => router.push('/dashboard/time-tracking')}
                 className={`p-2 rounded-lg transition-colors shadow-sm ${
                   isPaused 
-                    ? 'bg-accent-light hover:bg-[var(--color-accent-bg)] text-accent' 
+                    ? 'bg-accent-light hover:bg-[var(--color-accent-bg)] !text-accent' 
                     : 'bg-white/25 hover:bg-white/35 text-warning'
                 }`}
                 title={t('view_details') || 'Voir détails'}
@@ -621,7 +621,7 @@ export default function TimerIndicator() {
               <div className="p-5 bg-accent-light border-b border-accent/30">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-                    <IconCoffee className="w-5 h-5 text-accent" />
+                    <IconCoffee className="w-5 h-5 !text-accent" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-primary">
@@ -644,7 +644,7 @@ export default function TimerIndicator() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => startPause(option.minutes)}
-                      className="flex items-center justify-center gap-2 py-3 px-4 bg-accent-light/50 hover:bg-accent-light text-accent font-semibold rounded-xl transition-colors border border-accent/20"
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-accent-light/50 hover:bg-accent-light !text-accent font-semibold rounded-xl transition-colors border border-accent/20"
                     >
                       <IconClock className="w-4 h-4" />
                       {option.label}

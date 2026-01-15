@@ -209,7 +209,7 @@ export default function MeetingNotePanel({
   if (isLoading) {
     return (
       <div className="p-4 flex items-center justify-center">
-        <IconLoader2 className="w-5 h-5 animate-spin text-accent" />
+        <IconLoader2 className="w-5 h-5 animate-spin !text-accent" />
       </div>
     );
   }
@@ -224,7 +224,7 @@ export default function MeetingNotePanel({
         className="w-full flex items-center justify-between p-2 hover:bg-hover rounded-lg transition-colors"
       >
         <div className="flex items-center gap-2">
-          <IconNotes className="w-5 h-5 text-accent" />
+          <IconNotes className="w-5 h-5 !text-accent" />
           <span className="font-medium text-primary">
             {t('meeting_notes') || 'Notes de réunion'}
           </span>
@@ -288,8 +288,8 @@ export default function MeetingNotePanel({
                   {summary && (
                     <div className="p-3 bg-accent-light rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <IconSparkles className="w-4 h-4 text-accent" />
-                        <span className="text-sm font-medium text-accent">
+                        <IconSparkles className="w-4 h-4 !text-accent" />
+                        <span className="text-sm font-medium !text-accent">
                           {t('summary') || 'Résumé'}
                         </span>
                       </div>
@@ -378,7 +378,7 @@ export default function MeetingNotePanel({
                         href={recordingUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-accent hover:underline"
+                        className="flex items-center gap-1 !text-accent hover:underline"
                       >
                         <IconLink className="w-3 h-3" />
                         {t('recording') || 'Enregistrement'}

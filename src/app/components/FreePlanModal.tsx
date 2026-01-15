@@ -140,7 +140,7 @@ export default function FreePlanModal({
                 <span className="!text-sm text-secondary">
                   {t('trial_period')}
                 </span>
-                <span className="!text-sm text-accent font-medium">
+                <span className="!text-sm !text-accent font-medium">
                   30 jours
                 </span>
               </div>

@@ -972,7 +972,7 @@ ${user?.username || 'L\'équipe'}`;
                         onClick={() => setContractLanguage('fr')}
                         className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
                           contractLanguage === 'fr'
-                            ? 'border-accent bg-accent-light text-accent'
+                            ? 'border-accent bg-accent-light !text-accent'
                             : 'border-muted bg-hover text-secondary hover:text-primary'
                         }`}
                       >
@@ -983,7 +983,7 @@ ${user?.username || 'L\'équipe'}`;
                         onClick={() => setContractLanguage('en')}
                         className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
                           contractLanguage === 'en'
-                            ? 'border-accent bg-accent-light text-accent'
+                            ? 'border-accent bg-accent-light !text-accent'
                             : 'border-muted bg-hover text-secondary hover:text-primary'
                         }`}
                       >

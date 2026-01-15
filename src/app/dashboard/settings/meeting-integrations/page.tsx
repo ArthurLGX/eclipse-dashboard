@@ -239,7 +239,7 @@ export default function MeetingIntegrationsPage() {
     return (
       <ProtectedRoute>
         <div className="flex items-center justify-center min-h-[400px]">
-          <IconLoader2 className="w-8 h-8 animate-spin text-accent" />
+          <IconLoader2 className="w-8 h-8 animate-spin !text-accent" />
         </div>
       </ProtectedRoute>
     );
@@ -295,7 +295,7 @@ export default function MeetingIntegrationsPage() {
         {showTutorial && (
           <div className="card p-6">
             <h2 className="text-lg font-semibold text-primary mb-6 flex items-center gap-2">
-              <IconSettings className="w-5 h-5 text-accent" />
+              <IconSettings className="w-5 h-5 !text-accent" />
               {t('setup_guide') || 'Guide de configuration'}
             </h2>
 
@@ -367,12 +367,12 @@ export default function MeetingIntegrationsPage() {
                               URL du Webhook (à copier dans Fathom)
                             </label>
                             <div className="flex items-center gap-2">
-                              <code className="flex-1 px-3 py-2 bg-card rounded-lg text-sm font-mono text-accent overflow-x-auto">
+                              <code className="flex-1 px-3 py-2 bg-card rounded-lg text-sm font-mono !text-accent overflow-x-auto">
                                 {webhookUrl}
                               </code>
                               <button
                                 onClick={() => copyToClipboard(webhookUrl, 'URL')}
-                                className="p-2 rounded-lg bg-accent-light text-accent hover:opacity-80 transition-colors"
+                                className="p-2 rounded-lg bg-accent-light !text-accent hover:opacity-80 transition-colors"
                               >
                                 <IconCopy className="w-4 h-4" />
                               </button>
@@ -440,7 +440,7 @@ export default function MeetingIntegrationsPage() {
 
                     {/* Arrow */}
                     {!step.completed && currentStep === step.id && (
-                      <IconChevronRight className="w-5 h-5 text-accent animate-pulse" />
+                      <IconChevronRight className="w-5 h-5 !text-accent animate-pulse" />
                     )}
                   </div>
                 </motion.div>
@@ -468,7 +468,7 @@ export default function MeetingIntegrationsPage() {
         {/* How it works */}
         <div className="card p-6">
           <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-            <IconNotes className="w-5 h-5 text-accent" />
+            <IconNotes className="w-5 h-5 !text-accent" />
             Comment ça marche ?
           </h2>
 
@@ -497,7 +497,7 @@ export default function MeetingIntegrationsPage() {
             ].map((item, i) => (
               <div key={i} className="text-center p-4">
                 <div className="w-12 h-12 rounded-full bg-accent-light flex items-center justify-center mx-auto mb-3">
-                  <item.icon className="w-6 h-6 text-accent" />
+                  <item.icon className="w-6 h-6 !text-accent" />
                 </div>
                 <h3 className="font-medium text-primary text-sm mb-1">{item.title}</h3>
                 <p className="text-xs text-muted">{item.desc}</p>

@@ -267,7 +267,7 @@ function SubscriptionModal({
               type="checkbox"
               checked={formData.auto_invoice}
               onChange={(e) => setFormData({ ...formData, auto_invoice: e.target.checked })}
-              className="w-4 h-4 text-accent rounded"
+              className="w-4 h-4 !text-accent rounded"
             />
             <span className="text-sm">Générer automatiquement les factures</span>
           </label>
@@ -425,7 +425,7 @@ export default function SubscriptionsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <IconCreditCard size={28} className="text-accent" />
+          <IconCreditCard size={28} className="!text-accent" />
           <div>
             <h1 className="text-2xl font-bold">{t('subscriptions') || 'Abonnements clients'}</h1>
             <p className="text-sm text-muted-foreground">
@@ -455,7 +455,7 @@ export default function SubscriptionsPage() {
         </div>
         <div className="bg-card border border-muted rounded-xl p-4">
           <p className="text-sm text-muted-foreground">Revenu mensuel</p>
-          <p className="text-2xl font-bold text-accent">{formatCurrency(stats.monthlyRevenue)}</p>
+          <p className="text-2xl font-bold !text-accent">{formatCurrency(stats.monthlyRevenue)}</p>
         </div>
         <div className="bg-card border border-muted rounded-xl p-4">
           <p className="text-sm text-muted-foreground">Revenu annuel</p>
@@ -524,7 +524,7 @@ export default function SubscriptionsPage() {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-accent">
+                    <span className="text-2xl font-bold !text-accent">
                       {formatCurrency(sub.monthly_amount)}<span className="text-sm font-normal text-muted-foreground">/mois</span>
                     </span>
                     <div className="flex gap-1">

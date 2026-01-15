@@ -248,7 +248,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   </span>
                 </div>
               ) : (
-                <IconShield size={28} className="text-accent" />
+                <IconShield size={28} className="!text-accent" />
               )}
             </div>
 
@@ -271,7 +271,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     {resolvedMode === 'dark' ? (
                       <IconSun size={16} className="text-warning" />
                     ) : (
-                      <IconMoon size={16} className="text-accent" />
+                      <IconMoon size={16} className="!text-accent" />
                     )}
                   </button>
                   {/* Pin Button */}
@@ -280,7 +280,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     className="btn-ghost p-1.5"
                   >
                     {isPinned ? (
-                      <IconPinFilled size={16} className="text-accent" />
+                      <IconPinFilled size={16} className="!text-accent" />
                     ) : (
                       <IconPin size={16} className="text-secondary" />
                     )}

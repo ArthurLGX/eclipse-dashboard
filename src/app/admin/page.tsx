@@ -232,7 +232,7 @@ export default function AdminOverviewPage() {
     switch (type) {
       case 'user_registered': return <IconUserPlus className="w-4 h-4 text-success" />;
       case 'subscription_changed': return <IconCreditCard className="w-4 h-4 text-info" />;
-      case 'email_sent': return <IconMail className="w-4 h-4 text-accent" />;
+      case 'email_sent': return <IconMail className="w-4 h-4 !text-accent" />;
       case 'error': return <IconAlertTriangle className="w-4 h-4 text-danger" />;
       default: return <IconActivity className="w-4 h-4 text-muted" />;
     }
@@ -277,7 +277,7 @@ export default function AdminOverviewPage() {
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
-            <IconServer className="w-5 h-5 text-accent" />
+            <IconServer className="w-5 h-5 !text-accent" />
             {t('server_health') || 'Santé du Serveur'}
           </h2>
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
@@ -425,7 +425,7 @@ export default function AdminOverviewPage() {
           className="card p-6"
         >
           <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-            <IconActivity className="w-5 h-5 text-accent" />
+            <IconActivity className="w-5 h-5 !text-accent" />
             {t('recent_activity') || 'Activité récente'}
           </h2>
           <div className="space-y-3">

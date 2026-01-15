@@ -103,7 +103,7 @@ export default function UpgradeDropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggleAction}
-        className="w-full cursor-pointer bg-accent-light text-accent px-4 py-3 rounded-lg border border-accent-light hover:bg-[var(--color-accent)] hover:text-white transition-colors hover:border-accent font-semibold flex items-center justify-between"
+        className="w-full cursor-pointer bg-accent-light !text-accent px-4 py-3 rounded-lg border border-accent-light hover:bg-[var(--color-accent)] hover:text-white transition-colors hover:border-accent font-semibold flex items-center justify-between"
       >
         <span>{t('upgrade_plan')}</span>
         <motion.span
@@ -184,7 +184,7 @@ export default function UpgradeDropdown({
                 <span
                   className={`px-2 py-1 ${
                     togglePlan
-                      ? 'bg-accent-light text-accent'
+                      ? 'bg-accent-light !text-accent'
                       : 'bg-page text-muted'
                   } !text-xs font-medium rounded-full`}
                 >

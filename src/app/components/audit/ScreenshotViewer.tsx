@@ -126,7 +126,7 @@ export default function ScreenshotViewer({
         <div className="px-4 py-3 bg-hover flex items-center justify-between border-b border-default">
           <div className="flex items-center gap-3">
             <div className="p-1.5 bg-accent-light rounded-lg">
-              <IconPhoto className="w-4 h-4 text-accent" />
+              <IconPhoto className="w-4 h-4 !text-accent" />
             </div>
             <div>
               <h4 className="font-semibold text-primary text-sm">

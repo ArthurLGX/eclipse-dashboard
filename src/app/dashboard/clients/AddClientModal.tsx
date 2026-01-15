@@ -116,7 +116,7 @@ export default function AddClientModal({
           <div>
             <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
               <IconUser size={14} className="text-muted" />
-              {t('name')} <span className="text-accent">*</span>
+              {t('name')} <span className="!text-accent">*</span>
             </label>
             <input
               ref={nameInputRef}
@@ -131,7 +131,7 @@ export default function AddClientModal({
           <div>
             <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
               <IconMail size={14} className="text-muted" />
-              {t('email')} <span className="text-accent">*</span>
+              {t('email')} <span className="!text-accent">*</span>
             </label>
             <input
               type="email"
@@ -217,7 +217,7 @@ export default function AddClientModal({
                 onClick={() => setProcessStatus('client')}
                 className={`flex-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   processStatus === 'client'
-                    ? 'bg-success text-accent-text'
+                    ? 'bg-success-light text-success'
                     : 'bg-hover text-secondary hover:bg-card'
                 }`}
               >
@@ -228,7 +228,7 @@ export default function AddClientModal({
                 onClick={() => setProcessStatus('prospect')}
                 className={`flex-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   processStatus === 'prospect'
-                    ? 'bg-info text-accent-text'
+                    ? 'bg-info-light text-info'
                     : 'bg-hover text-secondary hover:bg-card'
                 }`}
               >

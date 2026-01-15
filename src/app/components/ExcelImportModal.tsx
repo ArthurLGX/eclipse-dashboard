@@ -1173,7 +1173,7 @@ export default function ExcelImportModal({
                   {detectingTabs && (
                     <div className="mt-4 p-4 bg-muted rounded-lg">
                       <div className="flex items-center gap-3">
-                        <IconLoader2 className="w-5 h-5 text-accent animate-spin" />
+                        <IconLoader2 className="w-5 h-5 !text-accent animate-spin" />
                         <div>
                           <p className="text-sm font-medium text-primary">
                             {t('detecting_tabs') || 'Détection des onglets...'}
@@ -1190,7 +1190,7 @@ export default function ExcelImportModal({
                   {availableTabs.length > 1 && (
                     <div className="mt-4 p-4 bg-accent-light border border-accent rounded-lg">
                       <div className="flex items-center gap-2 mb-3">
-                        <IconTable className="w-5 h-5 text-accent" />
+                        <IconTable className="w-5 h-5 !text-accent" />
                         <h4 className="text-sm font-medium text-primary">
                           {t('select_tab') || 'Sélectionnez un onglet'}
                         </h4>
@@ -1421,7 +1421,7 @@ export default function ExcelImportModal({
                 <div className="p-4 bg-card border border-default rounded-lg">
                   <label className="flex items-center justify-between cursor-pointer">
                     <div className="flex items-center gap-3">
-                      <IconMail className="w-5 h-5 text-accent" />
+                      <IconMail className="w-5 h-5 !text-accent" />
                       <div>
                         <p className="text-sm font-medium text-primary">
                           {t('send_notification_emails') || 'Envoyer des notifications par email'}
@@ -1499,7 +1499,7 @@ export default function ExcelImportModal({
                           return (
                             <div key={idx} className="p-3 flex items-center justify-between hover:bg-hover transition-colors">
                               <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center text-accent font-medium text-sm">
+                                <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center !text-accent font-medium text-sm">
                                   {collaborator?.username?.charAt(0).toUpperCase() || email?.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
@@ -1508,7 +1508,7 @@ export default function ExcelImportModal({
                                 </div>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs bg-accent-light text-accent px-2 py-1 rounded-full flex items-center gap-1">
+                                <span className="text-xs bg-accent-light !text-accent px-2 py-1 rounded-full flex items-center gap-1">
                                   <IconClipboardList className="w-3 h-3" />
                                   {tasks.length}
                                 </span>
@@ -1557,8 +1557,8 @@ export default function ExcelImportModal({
                 {/* Animation et compteur */}
                 <div className="text-center">
                   <div className="relative inline-flex items-center justify-center mb-4">
-                    <IconLoader2 className="w-12 h-12 text-accent animate-spin" />
-                    <span className="absolute text-xs font-bold text-accent">
+                    <IconLoader2 className="w-12 h-12 !text-accent animate-spin" />
+                    <span className="absolute text-xs font-bold !text-accent">
                       {importProgress.current}/{importProgress.total}
                     </span>
                   </div>
@@ -1586,7 +1586,7 @@ export default function ExcelImportModal({
                   </div>
                   <div className="flex justify-between mt-1 text-xs text-muted">
                     <span>0%</span>
-                    <span className="font-medium text-accent">
+                    <span className="font-medium !text-accent">
                       {importProgress.total > 0 
                         ? Math.round((importProgress.current / importProgress.total) * 100) 
                         : 0}%
@@ -1605,7 +1605,7 @@ export default function ExcelImportModal({
                     <div className="p-4 bg-muted rounded-xl border border-default">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-accent-light flex items-center justify-center flex-shrink-0">
-                          <IconCheck className="w-4 h-4 text-accent" />
+                          <IconCheck className="w-4 h-4 !text-accent" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs text-muted mb-0.5">

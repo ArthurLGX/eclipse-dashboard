@@ -190,7 +190,7 @@ export default function TaskAssignmentEmailModal({
             <div className="flex items-center justify-between p-6 border-b border-default">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
-                  <IconMail className="w-5 h-5 text-accent" />
+                  <IconMail className="w-5 h-5 !text-accent" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-primary">
@@ -222,7 +222,7 @@ export default function TaskAssignmentEmailModal({
                       key={idx}
                       className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full"
                     >
-                      <div className="w-6 h-6 rounded-full bg-accent-light flex items-center justify-center text-accent text-xs font-medium">
+                      <div className="w-6 h-6 rounded-full bg-accent-light flex items-center justify-center !text-accent text-xs font-medium">
                         {user.username.charAt(0).toUpperCase()}
                       </div>
                       <span className="text-sm text-primary">{user.username}</span>
@@ -271,7 +271,7 @@ export default function TaskAssignmentEmailModal({
               <div className="p-4 bg-muted rounded-lg">
                 <label className="flex items-center justify-between cursor-pointer">
                   <div className="flex items-center gap-3">
-                    <IconListCheck className="w-5 h-5 text-accent" />
+                    <IconListCheck className="w-5 h-5 !text-accent" />
                     <div>
                       <p className="text-sm font-medium text-primary">
                         {t('include_task_list') || 'Inclure la liste des tâches'}

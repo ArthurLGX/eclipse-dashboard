@@ -264,7 +264,7 @@ export default function TimeTrackingPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
             <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-              <IconClock className="w-7 h-7 text-accent" />
+              <IconClock className="w-7 h-7 !text-accent" />
               {t('time_tracking') || 'Suivi du temps'}
             </h1>
             <p className="text-muted text-sm mt-1">
@@ -300,7 +300,7 @@ export default function TimeTrackingPage() {
                 {runningEntry ? (
                   <>
                     <p className="text-sm text-muted">{t('timer_running') || 'Timer en cours'}</p>
-                    <p className="text-3xl font-mono font-bold text-accent">
+                    <p className="text-3xl font-mono font-bold !text-accent">
                       {formatSeconds(runningTime)}
                     </p>
                     <p className="text-sm text-secondary">
@@ -338,7 +338,7 @@ export default function TimeTrackingPage() {
           <div className="card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light rounded-lg">
-                <IconClock className="w-5 h-5 text-accent" />
+                <IconClock className="w-5 h-5 !text-accent" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{formatDuration(stats.totalTime)}</p>
@@ -421,7 +421,7 @@ export default function TimeTrackingPage() {
               <div key={date} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-muted capitalize">{date}</h3>
-                  <span className="text-sm text-accent font-mono">
+                  <span className="text-sm !text-accent font-mono">
                     {formatDuration(dateEntries.reduce((acc, e) => acc + (e.duration || 0), 0))}
                   </span>
                 </div>

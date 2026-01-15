@@ -257,7 +257,7 @@ export default function ThemeCustomizer({
             {onSaveTemplate && (
               <button
                 onClick={onSaveTemplate}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-accent-light text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
                 title={t('save_template') || 'Sauvegarder le thème'}
               >
                 <IconDeviceFloppy className="w-4 h-4" />

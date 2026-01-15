@@ -141,6 +141,9 @@ export interface Client {
   factures?: Facture[];
   is_favorite?: boolean;
   sort_order?: number;
+  // Champs pour les clients collaboratifs (via projets partagés)
+  _isCollaborative?: boolean;
+  _collaborativeProjects?: Array<{ title: string; documentId: string; slug: string }>;
 }
 
 // Alias Contact = Client pour le modèle unifié

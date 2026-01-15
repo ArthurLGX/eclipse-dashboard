@@ -156,7 +156,7 @@ export default function MonitoringPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
             <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-              <IconServer className="w-7 h-7 text-accent" />
+              <IconServer className="w-7 h-7 !text-accent" />
               {t('monitoring') || 'Monitoring'}
             </h1>
             <p className="text-muted text-sm mt-1">
@@ -187,7 +187,7 @@ export default function MonitoringPage() {
           <div className="card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light rounded-lg">
-                <IconWorld className="w-5 h-5 text-accent" />
+                <IconWorld className="w-5 h-5 !text-accent" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.total}</p>
@@ -330,7 +330,7 @@ export default function MonitoringPage() {
                                 href={site.url} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-xs text-accent hover:underline flex items-center gap-1"
+                                className="text-xs !text-accent hover:underline flex items-center gap-1"
                               >
                                 {site.url}
                                 <IconExternalLink className="w-3 h-3" />
@@ -344,7 +344,7 @@ export default function MonitoringPage() {
                             return (
                               <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
                                 type === 'frontend' ? 'bg-info-light text-info' :
-                                type === 'backend' ? 'bg-accent-light text-accent' :
+                                type === 'backend' ? 'bg-accent-light !text-accent' :
                                 type === 'api' ? 'bg-warning-light text-warning' :
                                 'bg-muted-light text-muted'
                               }`}>
@@ -623,7 +623,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
                   onClick={() => setSiteType(type)}
                   className={`p-2 rounded-lg border text-sm font-medium transition-colors flex flex-col items-center gap-1 ${
                     siteType === type
-                      ? 'border-accent bg-accent-light text-accent'
+                      ? 'border-accent bg-accent-light !text-accent'
                       : 'border-default bg-hover text-muted hover:text-primary'
                   }`}
                 >

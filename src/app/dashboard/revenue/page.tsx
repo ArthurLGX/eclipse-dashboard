@@ -418,7 +418,7 @@ export default function RevenuePage() {
         const statusConfig: Record<string, { label: string; className: string }> = {
           // Statuts facture
           paid: { label: t('paid') || 'Payée', className: 'bg-success-light text-success' },
-          sent: { label: t('sent') || 'Envoyée', className: 'bg-accent-light text-accent' },
+          sent: { label: t('sent') || 'Envoyée', className: 'bg-accent-light !text-accent' },
           draft: { label: t('draft') || 'Brouillon', className: 'bg-warning-light text-warning' },
           overdue: { label: t('overdue') || 'En retard', className: 'bg-danger/10 text-danger' },
           cancelled: { label: t('cancelled') || 'Annulée', className: 'bg-muted/20 text-muted' },
@@ -567,7 +567,7 @@ export default function RevenuePage() {
           className="card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconChartLine className="w-4 h-4 text-accent" />
+            <IconChartLine className="w-4 h-4 !text-accent" />
             <span className="text-sm font-medium text-primary">{t('revenue_evolution') || 'Évolution CA'}</span>
           </div>
           <div className="h-40">
@@ -583,7 +583,7 @@ export default function RevenuePage() {
           className="card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconChartBar className="w-4 h-4 text-accent" />
+            <IconChartBar className="w-4 h-4 !text-accent" />
             <span className="text-sm font-medium text-primary">{t('invoices_by_month') || 'Factures/mois'}</span>
           </div>
           <div className="h-40">
@@ -599,7 +599,7 @@ export default function RevenuePage() {
           className="card p-4 md:col-span-2 lg:col-span-1"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconChartPie className="w-4 h-4 text-accent" />
+            <IconChartPie className="w-4 h-4 !text-accent" />
             <span className="text-sm font-medium text-primary">{t('revenue_by_client') || 'CA/client'}</span>
           </div>
           <div className="h-40">

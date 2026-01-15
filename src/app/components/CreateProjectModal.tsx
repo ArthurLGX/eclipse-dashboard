@@ -376,7 +376,7 @@ export default function CreateProjectModal({
                       className="p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover text-left transition-all group"
                     >
                       <div className="flex items-start justify-between mb-3">
-                        <div className="p-2 rounded-lg bg-accent-light text-accent">
+                        <div className="p-2 rounded-lg bg-accent-light !text-accent">
                           <IconBriefcase className="w-5 h-5" />
                         </div>
                         <IconChevronRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
@@ -438,7 +438,7 @@ export default function CreateProjectModal({
                 {selectedTemplate && selectedTemplate.id !== 'custom' && (
                   <div className="p-4 rounded-xl bg-accent-light border border-accent-light">
                     <div className="flex items-center gap-3 mb-2">
-                      <IconCheck className="w-5 h-5 text-accent" />
+                      <IconCheck className="w-5 h-5 !text-accent" />
                       <span className="font-medium text-primary">
                         {language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
                       </span>
@@ -490,7 +490,7 @@ export default function CreateProjectModal({
                       <button
                         type="button"
                         onClick={() => setShowNewClientForm(true)}
-                        className="flex items-center gap-2 text-sm text-accent hover:underline"
+                        className="flex items-center gap-2 text-sm !text-accent hover:underline"
                       >
                         <IconPlus className="w-4 h-4" />
                         {t('create_new_client') || 'Créer un nouveau client'}
@@ -583,7 +583,7 @@ export default function CreateProjectModal({
                     {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                   </p>
                   <div className="grid grid-cols-2 gap-3">
-                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light text-accent' : 'border-default text-secondary'}`}>
+                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default text-secondary'}`}>
                       <input
                         type="radio"
                         name="timing_mode"
@@ -593,7 +593,7 @@ export default function CreateProjectModal({
                       />
                       {t('timing_scope_duration') || 'Durée'}
                     </label>
-                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light text-accent' : 'border-default text-secondary'}`}>
+                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default text-secondary'}`}>
                       <input
                         type="radio"
                         name="timing_mode"

@@ -140,7 +140,7 @@ export default function QuotaExceededModal<T>({
                 {t('quota_exceeded_description') || 'Votre plan a changé. Vous avez'}{' '}
                 <span className="font-bold text-danger">{items.length}</span>{' '}
                 {entityName} {t('but_your_limit_is') || 'mais votre limite est de'}{' '}
-                <span className="font-bold text-accent">{quota}</span>.
+                <span className="font-bold !text-accent">{quota}</span>.
               </p>
               <p className="text-sm text-muted mt-2">
                 {t('select_items_to_keep') || 'Sélectionnez les éléments à conserver. Les autres seront désactivés.'}
@@ -170,7 +170,7 @@ export default function QuotaExceededModal<T>({
             <div className="flex items-center gap-2">
               <button
                 onClick={selectAll}
-                className="text-xs px-2 py-1 rounded bg-accent-light text-accent hover:bg-accent-light transition-colors"
+                className="text-xs px-2 py-1 rounded bg-accent-light !text-accent hover:bg-accent-light transition-colors"
               >
                 {t('select_first') || `Sélectionner les ${quota} premiers`}
               </button>

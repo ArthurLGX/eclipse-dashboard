@@ -172,7 +172,7 @@ function EmailsDashboard() {
         className="mb-8"
       >
         <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
-          <IconMail className="w-8 h-8 text-accent" />
+          <IconMail className="w-8 h-8 !text-accent" />
           {t('emails') || 'Emails'}
         </h1>
         <p className="text-muted mt-2">
@@ -206,7 +206,7 @@ function EmailsDashboard() {
               {type.description}
             </p>
             
-            <div className="flex items-center gap-2 text-sm text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-2 text-sm !text-accent opacity-0 group-hover:opacity-100 transition-opacity">
               <span>{t('create') || 'Créer'}</span>
               <IconArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
             </div>
@@ -226,7 +226,7 @@ function EmailsDashboard() {
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl border-accent-light flex items-center justify-center">
-              <IconChartBar className="w-7 h-7 text-accent" />
+              <IconChartBar className="w-7 h-7 !text-accent" />
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-primary group-hover:text-accent transition-colors">
@@ -236,7 +236,7 @@ function EmailsDashboard() {
                 {t('email_analytics_desc') || 'Suivez les ouvertures et clics de vos emails'}
               </p>
             </div>
-            <IconArrowRight className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
+            <IconArrowRight className="w-5 h-5 !text-accent opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
           </div>
         </motion.div>
 
@@ -260,7 +260,7 @@ function EmailsDashboard() {
                 {t('email_history_desc') || 'Consultez tous vos emails envoyés'}
               </p>
             </div>
-            <IconArrowRight className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
+            <IconArrowRight className="w-5 h-5 !text-accent opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
           </div>
         </motion.div>
       </div>
@@ -285,7 +285,7 @@ function EmailsDashboard() {
               {t('scheduled_emails_desc') || 'Gérez vos emails programmés pour plus tard'}
             </p>
           </div>
-          <IconArrowRight className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
+          <IconArrowRight className="w-5 h-5 !text-accent opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
         </div>
       </motion.div>
       
@@ -317,7 +317,7 @@ function EmailsDashboard() {
         
         {loadingDrafts ? (
           <div className="flex items-center justify-center py-8">
-            <IconLoader2 className="w-6 h-6 text-accent animate-spin" />
+            <IconLoader2 className="w-6 h-6 !text-accent animate-spin" />
           </div>
         ) : drafts.length === 0 ? (
           <div className="text-center py-8 text-muted">
@@ -377,7 +377,7 @@ function EmailsDashboard() {
             {drafts.length > 5 && (
               <button
                 onClick={() => router.push('/dashboard/emails/drafts')}
-                className="w-full py-3 text-sm text-accent hover:underline"
+                className="w-full py-3 text-sm !text-accent hover:underline"
               >
                 {t('view_all_drafts') || `Voir tous les brouillons (${drafts.length})`}
               </button>
