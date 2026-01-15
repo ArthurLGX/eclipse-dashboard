@@ -1877,6 +1877,8 @@ const translations = {
     toolbar_align_center: 'Centrer',
     toolbar_align_right: 'Aligner à droite',
     toolbar_text_color: 'Couleur du texte',
+    toolbar_font: 'Police',
+    toolbar_font_size: 'Taille',
     toolbar_insert_link: 'Insérer un lien',
     toolbar_insert_image: 'Insérer une image',
     toolbar_insert_video: 'Insérer une vidéo',
@@ -2385,6 +2387,7 @@ const translations = {
     existing_tasks: 'tâches existantes',
     generate_tasks: 'Générer les tâches',
     add_selected_tasks: 'Ajouter les tâches sélectionnées',
+    reschedule_dates: 'Ré-étaler les dates',
 
     // IA - Génération de contrats
     ai_generate_contract: 'Générer un contrat avec l\'IA',
@@ -4773,6 +4776,8 @@ won: 'Won',
     toolbar_align_center: 'Center',
     toolbar_align_right: 'Align right',
     toolbar_text_color: 'Text color',
+    toolbar_font: 'Font',
+    toolbar_font_size: 'Size',
     toolbar_insert_link: 'Insert link',
     toolbar_insert_image: 'Insert image',
     toolbar_insert_video: 'Insert video',
@@ -5266,6 +5271,7 @@ won: 'Won',
     existing_tasks: 'existing tasks',
     generate_tasks: 'Generate tasks',
     add_selected_tasks: 'Add selected tasks',
+    reschedule_dates: 'Reschedule dates',
 
     // AI - Contract Generation
     ai_generate_contract: 'Generate contract with AI',

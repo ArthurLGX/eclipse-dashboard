@@ -910,6 +910,8 @@ const PROJECT_TYPES = [
                       projectDocumentId={project.documentId}
                       userId={user?.id || 0}
                       canEdit={canEdit}
+                      projectStartDate={project.start_date || null}
+                      projectEndDate={project.end_date || null}
                       collaborators={collaborators}
                       ownerInfo={project.user ? {
                         id: project.user.id,

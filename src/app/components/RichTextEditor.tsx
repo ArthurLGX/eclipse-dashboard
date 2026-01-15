@@ -135,6 +135,29 @@ export default function RichTextEditor({
   const [dropIndicatorPosition, setDropIndicatorPosition] = useState<{ top: number; visible: boolean }>({ top: 0, visible: false });
   const dragGhostRef = useRef<HTMLDivElement | null>(null);
 
+  const fontOptions = [
+    { label: 'Inter', value: 'Inter' },
+    { label: 'Roboto', value: 'Roboto' },
+    { label: 'Poppins', value: 'Poppins' },
+    { label: 'Montserrat', value: 'Montserrat' },
+    { label: 'Lora', value: 'Lora' },
+    { label: 'Merriweather', value: 'Merriweather' },
+    { label: 'Playfair Display', value: 'Playfair Display' },
+    { label: 'Raleway', value: 'Raleway' },
+    { label: 'Nunito', value: 'Nunito' },
+  ];
+
+  const fontSizeOptions = [
+    { label: '12px', value: '12' },
+    { label: '14px', value: '14' },
+    { label: '16px', value: '16' },
+    { label: '18px', value: '18' },
+    { label: '20px', value: '20' },
+    { label: '24px', value: '24' },
+    { label: '28px', value: '28' },
+    { label: '32px', value: '32' },
+  ];
+
   // Internal onChange wrapper
   const notifyChange = useCallback(() => {
     if (editorRef.current) {
@@ -153,12 +176,14 @@ export default function RichTextEditor({
         isInitialized.current = true;
         setupDraggableElements();
         decorateColorCodes();
+        normalizeFontTags();
       } else if (!isInternalChange.current && value !== lastExternalValue.current) {
         editorRef.current.innerHTML = value || '';
         lastExternalValue.current = value || '';
         setSelectedMedia(null);
         setupDraggableElements();
         decorateColorCodes();
+        normalizeFontTags();
       }
       isInternalChange.current = false;
     }
@@ -282,13 +307,15 @@ export default function RichTextEditor({
     notifyChange();
     setTimeout(setupDraggableElements, 10);
     setTimeout(decorateColorCodes, 20);
-  }, [notifyChange, setupDraggableElements, decorateColorCodes]);
+    setTimeout(normalizeFontTags, 20);
+  }, [notifyChange, setupDraggableElements, decorateColorCodes, normalizeFontTags]);
 
   // Handle input
   const handleInput = () => {
     notifyChange();
     setTimeout(setupDraggableElements, 10);
     setTimeout(decorateColorCodes, 20);
+    setTimeout(normalizeFontTags, 20);
     // Check for emoji trigger after a small delay to let the DOM update
     setTimeout(checkForEmojiTrigger, 0);
   };
@@ -301,6 +328,38 @@ export default function RichTextEditor({
       setShowLinkInput(false);
     }
   };
+
+  // Normalize <font> tags produced by execCommand into spans with inline styles
+  const normalizeFontTags = useCallback(() => {
+    if (!editorRef.current) return;
+    const fontTags = editorRef.current.querySelectorAll('font');
+    fontTags.forEach((fontEl) => {
+      const span = document.createElement('span');
+      const sizeAttr = fontEl.getAttribute('size');
+      if (sizeAttr) {
+        const sizeMap: Record<string, string> = {
+          '1': '12px',
+          '2': '14px',
+          '3': '16px',
+          '4': '18px',
+          '5': '20px',
+          '6': '24px',
+          '7': '32px',
+        };
+        span.style.fontSize = sizeMap[sizeAttr] || '16px';
+      }
+      const face = fontEl.getAttribute('face');
+      if (face) {
+        span.style.fontFamily = face;
+      }
+      const color = fontEl.getAttribute('color');
+      if (color) {
+        span.style.color = color;
+      }
+      span.innerHTML = fontEl.innerHTML;
+      fontEl.replaceWith(span);
+    });
+  }, []);
 
   const getVideoEmbedUrl = (url: string) => {
     try {
@@ -325,13 +384,26 @@ export default function RichTextEditor({
 
   const insertVideo = () => {
     if (!videoUrl) return;
-    const embedUrl = getVideoEmbedUrl(videoUrl);
-    const videoHtml = `
-      <div class="editor-block editor-video-block" data-type="video" contenteditable="false">
-        <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width: 100%; height: 360px; border-radius: 8px;"></iframe>
-      </div>
-      <p class="editor-block" data-type="text"><br></p>
-    `;
+    const isMp4 = videoUrl.toLowerCase().endsWith('.mp4') || videoUrl.toLowerCase().includes('.mp4?');
+    const isWebm = videoUrl.toLowerCase().endsWith('.webm') || videoUrl.toLowerCase().includes('.webm?');
+    const isDirectVideo = isMp4 || isWebm;
+
+    const videoHtml = isDirectVideo
+      ? `
+        <div class="editor-block editor-video-block" data-type="video" contenteditable="false">
+          <video controls style="width: 100%; border-radius: 8px;">
+            <source src="${videoUrl}" type="${isWebm ? 'video/webm' : 'video/mp4'}" />
+          </video>
+        </div>
+        <p class="editor-block" data-type="text"><br></p>
+      `
+      : `
+        <div class="editor-block editor-video-block" data-type="video" contenteditable="false">
+          <iframe src="${getVideoEmbedUrl(videoUrl)}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width: 100%; height: 360px; border-radius: 8px;"></iframe>
+        </div>
+        <p class="editor-block" data-type="text"><br></p>
+      `;
+
     execCommand('insertHTML', videoHtml);
     setVideoUrl('');
     setShowVideoInput(false);
@@ -834,6 +906,9 @@ export default function RichTextEditor({
 
   return (
     <div className={`border border-default rounded-xl overflow-visible bg-card ${className}`}>
+      <style>
+        {`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Playfair+Display:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap');`}
+      </style>
       {/* Toolbar */}
         <div className="flex flex-wrap items-center gap-1 p-2 border-b border-default bg-hover">
         {/* Text format */}
@@ -986,12 +1061,20 @@ export default function RichTextEditor({
             title={t('toolbar_font') || 'Police'}
           >
             <option value="" disabled>{t('toolbar_font') || 'Police'}</option>
-            <option value="Arial">Arial</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Roboto">Roboto</option>
-            <option value="Poppins">Poppins</option>
-            <option value="Montserrat">Montserrat</option>
+            {fontOptions.map((font) => (
+              <option key={font.value} value={font.value}>{font.label}</option>
+            ))}
+          </select>
+          <select
+            onChange={(e) => execCommand('fontSize', e.target.value)}
+            className="px-2 py-1 text-xs bg-input border border-input rounded text-muted"
+            defaultValue=""
+            title={t('toolbar_font_size') || 'Taille'}
+          >
+            <option value="" disabled>{t('toolbar_font_size') || 'Taille'}</option>
+            {fontSizeOptions.map((size) => (
+              <option key={size.value} value={size.value}>{size.label}</option>
+            ))}
           </select>
         </div>
 

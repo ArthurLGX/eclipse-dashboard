@@ -17,13 +17,15 @@ interface RequestBody {
   content: string;
   projectTitle: string;
   projectDescription?: string;
+  projectStartDate?: string | null;
+  projectEndDate?: string | null;
   existingTasks?: ExistingTask[];
 }
 
 export async function POST(req: Request) {
   try {
     const body: RequestBody = await req.json();
-    const { inputMode, content, projectTitle, projectDescription, existingTasks } = body;
+    const { inputMode, content, projectTitle, projectDescription, projectStartDate, projectEndDate, existingTasks } = body;
 
     if (!content || content.trim().length === 0) {
       return NextResponse.json(
@@ -59,6 +61,8 @@ ${getInputTypeInstruction()}
 
 PROJET: ${projectTitle}
 ${projectDescription ? `DESCRIPTION: ${projectDescription}` : ''}
+${projectStartDate ? `DATE DE DÉBUT PROJET: ${projectStartDate}` : ''}
+${projectEndDate ? `DATE DE FIN PROJET: ${projectEndDate}` : ''}
 ${existingTasks && existingTasks.length > 0 ? `TÂCHES EXISTANTES: ${existingTasks.map(t => t.title).join(', ')}` : ''}
 
 RÈGLES IMPORTANTES:
@@ -69,6 +73,9 @@ RÈGLES IMPORTANTES:
 - Ajoute des sous-tâches pour les tâches complexes
 - Les priorités sont: low, medium, high, urgent
 - Évite les doublons avec les tâches existantes
+- Estime des dates pour CHAQUE tâche et sous-tâche: start_date et due_date (format YYYY-MM-DD)
+- Si les dates de projet sont fournies, répartis les tâches dans cette plage
+- Les sous-tâches doivent être comprises entre les dates de la tâche parente
 
 RETOURNE UN JSON VALIDE avec cette structure:
 {
@@ -79,12 +86,16 @@ RETOURNE UN JSON VALIDE avec cette structure:
       "estimated_hours": 4,
       "priority": "high",
       "phase": "Développement",
+      "start_date": "2026-01-20",
+      "due_date": "2026-01-25",
       "subtasks": [
         {
           "title": "Sous-tâche",
           "description": "Description",
           "estimated_hours": 1,
-          "priority": "medium"
+          "priority": "medium",
+          "start_date": "2026-01-20",
+          "due_date": "2026-01-21"
         }
       ]
     }
@@ -125,11 +136,15 @@ RETOURNE UN JSON VALIDE avec cette structure:
       estimated_hours?: number;
       priority?: string;
       phase?: string;
+      start_date?: string | null;
+      due_date?: string | null;
       subtasks?: Array<{
         title?: string;
         description?: string;
         estimated_hours?: number;
         priority?: string;
+        start_date?: string | null;
+        due_date?: string | null;
       }>;
     }) => ({
       title: task.title || 'Nouvelle tâche',
@@ -139,6 +154,8 @@ RETOURNE UN JSON VALIDE avec cette structure:
         ? task.priority 
         : 'medium',
       phase: task.phase,
+      start_date: task.start_date || null,
+      due_date: task.due_date || null,
       subtasks: task.subtasks?.map(sub => ({
         title: sub.title || 'Sous-tâche',
         description: sub.description,
@@ -146,8 +163,77 @@ RETOURNE UN JSON VALIDE avec cette structure:
         priority: ['low', 'medium', 'high', 'urgent'].includes(sub.priority || '') 
           ? sub.priority 
           : 'medium',
+        start_date: sub.start_date || null,
+        due_date: sub.due_date || null,
       })),
     }));
+
+    // Normalize dates if missing or invalid
+    const parseDate = (value?: string | null) => {
+      if (!value) return null;
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? null : date;
+    };
+
+    const formatDate = (date: Date) => date.toISOString().split('T')[0];
+    const normalizeRange = (item: { start_date?: string | null; due_date?: string | null }) => {
+      const start = parseDate(item.start_date);
+      const end = parseDate(item.due_date);
+      if (start && end && end < start) {
+        item.start_date = formatDate(end);
+        item.due_date = formatDate(start);
+      }
+    };
+
+    const projectStart = parseDate(projectStartDate || undefined) || new Date();
+    const projectEnd = parseDate(projectEndDate || undefined);
+    const totalDays = projectEnd && projectEnd > projectStart
+      ? Math.max(1, Math.ceil((projectEnd.getTime() - projectStart.getTime()) / (1000 * 60 * 60 * 24)))
+      : null;
+
+    const distributeRange = (
+      items: Array<{ estimated_hours?: number | null; start_date?: string | null; due_date?: string | null }>,
+      rangeStart: Date,
+      rangeEnd: Date
+    ) => {
+      const days = Math.max(1, Math.ceil((rangeEnd.getTime() - rangeStart.getTime()) / (1000 * 60 * 60 * 24)));
+      const weights = items.map(item => Math.max(1, Math.round(item.estimated_hours || 4)));
+      const totalWeight = weights.reduce((sum, w) => sum + w, 0) || items.length;
+      let cursor = new Date(rangeStart);
+
+      items.forEach((item, idx) => {
+        const isLast = idx === items.length - 1;
+        const sliceDays = isLast ? days - Math.ceil((cursor.getTime() - rangeStart.getTime()) / (1000 * 60 * 60 * 24)) : Math.max(1, Math.round(days * (weights[idx] / totalWeight)));
+        const start = item.start_date ? parseDate(item.start_date) : cursor;
+        const end = item.due_date ? parseDate(item.due_date) : new Date((start || cursor).getTime());
+
+        if (!item.start_date) {
+          item.start_date = formatDate(start || cursor);
+        }
+        if (!item.due_date) {
+          end.setDate((start || cursor).getDate() + Math.max(1, sliceDays));
+          item.due_date = formatDate(end);
+        }
+        cursor = new Date(end.getTime());
+      });
+    };
+
+    const fallbackEnd = projectEnd || new Date(projectStart.getTime() + (result.tasks.length || 1) * 3 * 24 * 60 * 60 * 1000);
+
+    if (result.tasks.length > 0) {
+      result.tasks.forEach(task => {
+        normalizeRange(task);
+        task.subtasks?.forEach(sub => normalizeRange(sub));
+      });
+      distributeRange(result.tasks, projectStart, fallbackEnd);
+      result.tasks.forEach(task => {
+        if (task.subtasks && task.subtasks.length > 0) {
+          const taskStart = parseDate(task.start_date || undefined) || projectStart;
+          const taskEnd = parseDate(task.due_date || undefined) || new Date(taskStart.getTime() + 2 * 24 * 60 * 60 * 1000);
+          distributeRange(task.subtasks, taskStart, taskEnd);
+        }
+      });
+    }
 
     // Calculate total estimated hours if not provided
     if (!result.total_estimated_hours) {

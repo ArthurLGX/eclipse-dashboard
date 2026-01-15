@@ -17,6 +17,7 @@ import {
   IconSubtask,
   IconMicrophone,
   IconClipboard,
+  IconCalendarEvent,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -27,6 +28,8 @@ interface AITaskGeneratorProps {
   onClose: () => void;
   projectTitle: string;
   projectDescription?: string;
+  projectStartDate?: string | null;
+  projectEndDate?: string | null;
   existingTasks?: ProjectTask[];
   onTasksGenerated: (tasks: GeneratedTask[]) => void;
 }
@@ -37,6 +40,8 @@ export interface GeneratedTask {
   estimated_hours?: number;
   priority: TaskPriority;
   phase?: string;
+  start_date?: string | null;
+  due_date?: string | null;
   subtasks?: GeneratedTask[];
   selected: boolean;
 }
@@ -48,11 +53,15 @@ interface AITaskResponse {
     estimated_hours?: number;
     priority: TaskPriority;
     phase?: string;
+    start_date?: string | null;
+    due_date?: string | null;
     subtasks?: {
       title: string;
       description?: string;
       estimated_hours?: number;
       priority: TaskPriority;
+      start_date?: string | null;
+      due_date?: string | null;
     }[];
   }[];
   total_estimated_hours: number;
@@ -74,6 +83,8 @@ export default function AITaskGenerator({
   onClose,
   projectTitle,
   projectDescription,
+  projectStartDate,
+  projectEndDate,
   existingTasks,
   onTasksGenerated,
 }: AITaskGeneratorProps) {
@@ -115,6 +126,120 @@ export default function AITaskGenerator({
     }
   };
 
+  const formatDateRange = (start?: string | null, end?: string | null) => {
+    if (!start && !end) return null;
+    const format = (d?: string | null) => {
+      if (!d) return '—';
+      const date = new Date(d);
+      if (Number.isNaN(date.getTime())) return '—';
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+    };
+    return `${format(start)} → ${format(end)}`;
+  };
+
+  const parseDate = (value?: string | null) => {
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  };
+
+  const formatDate = (date: Date) => date.toISOString().split('T')[0];
+
+  const distributeRange = (items: GeneratedTask[], rangeStart: Date, rangeEnd: Date) => {
+    const totalDays = Math.max(1, Math.ceil((rangeEnd.getTime() - rangeStart.getTime()) / (1000 * 60 * 60 * 24)));
+    const weights = items.map(item => Math.max(1, Math.round(item.estimated_hours || 4)));
+    const totalWeight = weights.reduce((sum, w) => sum + w, 0) || items.length;
+    let usedDays = 0;
+    let cursor = new Date(rangeStart);
+
+    return items.map((item, index) => {
+      const isLast = index === items.length - 1;
+      const sliceDays = isLast
+        ? Math.max(1, totalDays - usedDays)
+        : Math.max(1, Math.round(totalDays * (weights[index] / totalWeight)));
+      usedDays += sliceDays;
+
+      const start = new Date(cursor);
+      const end = new Date(start);
+      end.setDate(start.getDate() + sliceDays);
+      cursor = new Date(end);
+
+      return {
+        ...item,
+        start_date: formatDate(start),
+        due_date: formatDate(end),
+      };
+    });
+  };
+
+  const handleRescheduleDates = () => {
+    if (generatedTasks.length === 0) return;
+    const selectedTasks = generatedTasks.filter(task => task.selected);
+    if (selectedTasks.length === 0) return;
+
+    const today = new Date();
+    const projectStart = parseDate(projectStartDate || undefined);
+    const projectEnd = parseDate(projectEndDate || undefined);
+
+    let minDate: Date | null = null;
+    let maxDate: Date | null = null;
+
+    selectedTasks.forEach(task => {
+      const taskStart = parseDate(task.start_date || undefined);
+      const taskEnd = parseDate(task.due_date || undefined);
+      const candidates = [taskStart, taskEnd].filter((d): d is Date => !!d);
+      task.subtasks?.forEach(sub => {
+        const subStart = parseDate(sub.start_date || undefined);
+        const subEnd = parseDate(sub.due_date || undefined);
+        if (subStart) candidates.push(subStart);
+        if (subEnd) candidates.push(subEnd);
+      });
+      candidates.forEach(date => {
+        if (!minDate || date < minDate) minDate = date;
+        if (!maxDate || date > maxDate) maxDate = date;
+      });
+    });
+
+    const rangeStart = projectStart || minDate || today;
+    const fallbackEnd = new Date(rangeStart.getTime() + Math.max(7, selectedTasks.length * 2) * 24 * 60 * 60 * 1000);
+    const rangeEnd = projectEnd || maxDate || fallbackEnd;
+
+    const rescheduledTasks = distributeRange(selectedTasks, rangeStart, rangeEnd);
+    let taskIndex = 0;
+
+    setGeneratedTasks(prev => prev.map(task => {
+      if (!task.selected) return task;
+      const nextTask = rescheduledTasks[taskIndex++];
+      const taskStart = parseDate(nextTask.start_date || undefined) || rangeStart;
+      const taskEnd = parseDate(nextTask.due_date || undefined) || rangeEnd;
+
+      let updatedSubtasks = task.subtasks;
+      if (task.subtasks && task.subtasks.length > 0) {
+        const selectedSubtasks = task.subtasks.filter(sub => sub.selected);
+        if (selectedSubtasks.length > 0) {
+          const rescheduledSubs = distributeRange(selectedSubtasks, taskStart, taskEnd);
+          let subIndex = 0;
+          updatedSubtasks = task.subtasks.map(sub => {
+            if (!sub.selected) return sub;
+            const nextSub = rescheduledSubs[subIndex++];
+            return {
+              ...sub,
+              start_date: nextSub.start_date,
+              due_date: nextSub.due_date,
+            };
+          });
+        }
+      }
+
+      return {
+        ...task,
+        start_date: nextTask.start_date,
+        due_date: nextTask.due_date,
+        subtasks: updatedSubtasks,
+      };
+    }));
+  };
+
   const handleGenerate = async () => {
     const content = getInputContent();
     if (!content.trim()) {
@@ -134,6 +259,8 @@ export default function AITaskGenerator({
           content,
           projectTitle,
           projectDescription: stripHtml(projectDescription || ''),
+          projectStartDate,
+          projectEndDate,
           existingTasks: existingTasks?.map(t => ({
             title: t.title,
             task_status: t.task_status,
@@ -498,6 +625,11 @@ export default function AITaskGenerator({
                                 {task.phase}
                               </span>
                             )}
+                            {formatDateRange(task.start_date, task.due_date) && (
+                              <span className="px-2 py-1 bg-info-light text-info rounded text-xs">
+                                {formatDateRange(task.start_date, task.due_date)}
+                              </span>
+                            )}
                           </div>
                         </div>
                         
@@ -529,6 +661,11 @@ export default function AITaskGenerator({
                               <span className="flex-1 text-sm text-secondary">{subtask.title}</span>
                               {subtask.estimated_hours && (
                                 <span className="text-xs text-muted">{subtask.estimated_hours}h</span>
+                              )}
+                              {formatDateRange(subtask.start_date, subtask.due_date) && (
+                                <span className="text-xs text-muted">
+                                  {formatDateRange(subtask.start_date, subtask.due_date)}
+                                </span>
                               )}
                               <span className={`px-2 py-0.5 rounded text-xs ${getPriorityColor(subtask.priority)}`}>
                                 {subtask.priority}
@@ -579,6 +716,14 @@ export default function AITaskGenerator({
                   className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
+                </button>
+                <button
+                  onClick={handleRescheduleDates}
+                  disabled={totalSelectedTasks === 0}
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-secondary hover:text-primary border border-default rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <IconCalendarEvent className="w-4 h-4" />
+                  {t('reschedule_dates') || 'Ré-étaler les dates'}
                 </button>
                 <button
                   onClick={handleConfirm}

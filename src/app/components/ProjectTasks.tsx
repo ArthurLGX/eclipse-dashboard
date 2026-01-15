@@ -62,6 +62,8 @@ interface Collaborator {
 interface ProjectTasksProps {
   projectDocumentId: string;
   projectName?: string;
+  projectStartDate?: string | null;
+  projectEndDate?: string | null;
   userId: number;
   canEdit: boolean;
   collaborators?: Collaborator[];
@@ -173,6 +175,8 @@ function AvatarStack({
 export default function ProjectTasks({ 
   projectDocumentId,
   projectName = 'Projet',
+  projectStartDate,
+  projectEndDate,
   userId, 
   canEdit, 
   collaborators = [],
@@ -917,8 +921,8 @@ export default function ProjectTasks({
           description: task.description || '',
           task_status: 'todo',
           priority: task.priority,
-          start_date: null,
-          due_date: null,
+          start_date: task.start_date || null,
+          due_date: task.due_date || null,
           estimated_hours: task.estimated_hours || null,
           project: projectDocumentId,
           created_user: userId,
@@ -936,8 +940,8 @@ export default function ProjectTasks({
               description: subtask.description || '',
               task_status: 'todo',
               priority: subtask.priority,
-              start_date: null,
-              due_date: null,
+              start_date: subtask.start_date || task.start_date || null,
+              due_date: subtask.due_date || task.due_date || null,
               estimated_hours: subtask.estimated_hours || null,
               project: projectDocumentId,
               created_user: userId,
@@ -1760,6 +1764,8 @@ export default function ProjectTasks({
         isOpen={showAIGenerator}
         onClose={() => setShowAIGenerator(false)}
         projectTitle={projectName}
+        projectStartDate={projectStartDate}
+        projectEndDate={projectEndDate}
         existingTasks={tasks}
         onTasksGenerated={handleAITasksGenerated}
       />
