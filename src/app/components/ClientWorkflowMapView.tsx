@@ -380,13 +380,22 @@ export default function ClientWorkflowMapView({
     return 'partial';
   }, [radialClient, satellites]);
 
-  // Compute completeness (0-1)
-  const completeness = useMemo(() => {
-    if (satellites.length === 0) return 0;
+  // Compute completeness (0-1) with details
+  const completenessData = useMemo(() => {
+    if (satellites.length === 0) return { value: 0, linkedCount: 0, doneCount: 0, missing: [], notDone: [] };
     const linkedCount = satellites.filter(s => s.linked).length;
     const doneCount = satellites.filter(s => s.status === 'done').length;
-    return (linkedCount + doneCount) / (satellites.length * 2);
+    const missing = satellites.filter(s => !s.linked).map(s => s.label);
+    const notDone = satellites.filter(s => s.linked && s.status !== 'done').map(s => s.label);
+    return {
+      value: (linkedCount + doneCount) / (satellites.length * 2),
+      linkedCount,
+      doneCount,
+      missing,
+      notDone,
+    };
   }, [satellites]);
+  const completeness = completenessData.value;
 
   // Layout
   const timelineLayout = useMemo(() => {
@@ -1063,16 +1072,28 @@ export default function ClientWorkflowMapView({
                   </span>
 
                   {/* Global state badge */}
-                  <div className={`mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 ${
-                    globalState === 'ok' ? 'bg-success-light text-success' :
-                    globalState === 'blocked' ? 'bg-danger-light text-danger' :
-                    'bg-warning-light text-warning'
-                  }`}>
+                  <div 
+                    className={`mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 cursor-help ${
+                      globalState === 'ok' ? 'bg-success-light text-success' :
+                      globalState === 'blocked' ? 'bg-danger-light text-danger' :
+                      'bg-warning-light text-warning'
+                    }`}
+                    title={completeness < 1 ? `${Math.round(completeness * 100)}% complet${completenessData.missing.length > 0 ? `\n⚠ Manquant: ${completenessData.missing.join(', ')}` : ''}${completenessData.notDone.length > 0 ? `\n⏳ En cours: ${completenessData.notDone.join(', ')}` : ''}` : '100% complet'}
+                  >
                     {globalState === 'ok' ? <IconCheck className="w-3 h-3" /> :
                      globalState === 'blocked' ? <IconAlertTriangle className="w-3 h-3" /> :
                      <IconClock className="w-3 h-3" />}
                     {t(`workflow_state_${globalState}`) || GLOBAL_STATE_STYLES[globalState].label}
                   </div>
+                  
+                  {/* Completeness percentage */}
+                  {completeness < 1 && (
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] text-muted whitespace-nowrap">
+                      {Math.round(completeness * 100)}% • {completenessData.missing.length > 0 && <span className="text-warning">{completenessData.missing.length} {t(completenessData.missing.length > 1 ? 'workflow_missing_plural' : 'workflow_missing') || 'manquant'}</span>}
+                      {completenessData.missing.length > 0 && completenessData.notDone.length > 0 && ' • '}
+                      {completenessData.notDone.length > 0 && <span className="text-accent">{completenessData.notDone.length} {t('workflow_in_progress') || 'en cours'}</span>}
+                    </div>
+                  )}
 
                   {/* Anchor points */}
                   {[0, 1, 2, 3].map(i => {
