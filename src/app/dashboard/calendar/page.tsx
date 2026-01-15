@@ -1079,13 +1079,17 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden overscroll-contain"
+      onWheel={(e) => e.stopPropagation()}
+    >
       <motion.div
         ref={modalRef}
         tabIndex={-1}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] flex flex-col outline-none"
+        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] flex flex-col outline-none overscroll-contain"
+        onWheel={(e) => e.stopPropagation()}
       >
         {/* Header fixe */}
         <div className="flex items-center justify-between p-4 border-b border-default bg-card rounded-t-xl sticky top-0 z-10">

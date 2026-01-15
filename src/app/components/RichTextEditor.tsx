@@ -9,6 +9,7 @@ import {
   IconLink,
   IconPhoto,
   IconFileText,
+  IconPlayerPlay,
   IconAlignLeft,
   IconAlignCenter,
   IconAlignRight,
@@ -38,7 +39,7 @@ export function cleanRichTextForEmail(html: string): string {
   const allElements = doc.body.querySelectorAll('*');
   allElements.forEach((el) => {
     // Remove editor classes
-    el.classList.remove('editor-block', 'editor-image-block');
+    el.classList.remove('editor-block', 'editor-image-block', 'editor-video-block', 'color-code', 'color-swatch');
     
     // Remove contenteditable
     el.removeAttribute('contenteditable');
@@ -64,6 +65,17 @@ export function cleanRichTextForEmail(html: string): string {
       container.replaceWith(img);
     }
   });
+
+  // Unwrap color code helpers
+  const colorWrappers = doc.body.querySelectorAll('.color-code');
+  colorWrappers.forEach((wrapper) => {
+    const text = wrapper.textContent || '';
+    wrapper.replaceWith(document.createTextNode(text));
+  });
+
+  // Remove color swatches (visual only)
+  const swatches = doc.body.querySelectorAll('.color-swatch');
+  swatches.forEach((swatch) => swatch.remove());
   
   return doc.body.innerHTML;
 }
@@ -96,6 +108,8 @@ export default function RichTextEditor({
   // UI state
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
+  const [showVideoInput, setShowVideoInput] = useState(false);
+  const [videoUrl, setVideoUrl] = useState('');
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [mediaPickerType, setMediaPickerType] = useState<'image' | 'document'>('image');
   
@@ -138,11 +152,13 @@ export default function RichTextEditor({
         lastExternalValue.current = value || '';
         isInitialized.current = true;
         setupDraggableElements();
+        decorateColorCodes();
       } else if (!isInternalChange.current && value !== lastExternalValue.current) {
         editorRef.current.innerHTML = value || '';
         lastExternalValue.current = value || '';
         setSelectedMedia(null);
         setupDraggableElements();
+        decorateColorCodes();
       }
       isInternalChange.current = false;
     }
@@ -168,6 +184,19 @@ export default function RichTextEditor({
         img.setAttribute('data-type', 'image');
       }
     });
+
+    // Ensure videos are wrapped in their own blocks
+    const iframes = editorRef.current.querySelectorAll('iframe');
+    iframes.forEach((iframe) => {
+      const parent = iframe.parentElement;
+      if (!parent || !parent.classList.contains('editor-video-block')) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'editor-block editor-video-block';
+        wrapper.setAttribute('data-type', 'video');
+        iframe.parentNode?.insertBefore(wrapper, iframe);
+        wrapper.appendChild(iframe);
+      }
+    });
     
     // Then mark other block elements
     const blockElements = editorRef.current.querySelectorAll('p, h1, h2, h3, ul, ol, blockquote');
@@ -184,18 +213,82 @@ export default function RichTextEditor({
     });
   }, []);
 
+  // Detect color codes and render swatches next to them
+  const decorateColorCodes = useCallback(() => {
+    if (!editorRef.current) return;
+
+    const selection = window.getSelection();
+    const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0).cloneRange() : null;
+
+    const colorRegex = /#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/g;
+    const walker = document.createTreeWalker(editorRef.current, NodeFilter.SHOW_TEXT, {
+      acceptNode: (node) => {
+        const parent = (node as Text).parentElement;
+        if (!node.textContent || !node.textContent.match(colorRegex)) return NodeFilter.FILTER_REJECT;
+        if (parent?.closest('.color-code')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+
+    const nodes: Text[] = [];
+    while (walker.nextNode()) {
+      nodes.push(walker.currentNode as Text);
+    }
+
+    nodes.forEach((textNode) => {
+      const text = textNode.textContent || '';
+      if (!colorRegex.test(text)) return;
+
+      const fragment = document.createDocumentFragment();
+      let lastIndex = 0;
+      text.replace(colorRegex, (match, index) => {
+        const before = text.slice(lastIndex, index);
+        if (before) fragment.appendChild(document.createTextNode(before));
+
+        const wrapper = document.createElement('span');
+        wrapper.className = 'color-code';
+
+        const swatch = document.createElement('span');
+        swatch.className = 'color-swatch';
+        swatch.style.backgroundColor = match;
+
+        const label = document.createElement('span');
+        label.textContent = match;
+
+        wrapper.appendChild(swatch);
+        wrapper.appendChild(label);
+        fragment.appendChild(wrapper);
+
+        lastIndex = index + match.length;
+        return match;
+      });
+
+      const after = text.slice(lastIndex);
+      if (after) fragment.appendChild(document.createTextNode(after));
+
+      textNode.replaceWith(fragment);
+    });
+
+    if (range && selection) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }, []);
+
   // Execute formatting command
   const execCommand = useCallback((command: string, val?: string) => {
     document.execCommand(command, false, val);
     editorRef.current?.focus();
     notifyChange();
     setTimeout(setupDraggableElements, 10);
-  }, [notifyChange, setupDraggableElements]);
+    setTimeout(decorateColorCodes, 20);
+  }, [notifyChange, setupDraggableElements, decorateColorCodes]);
 
   // Handle input
   const handleInput = () => {
     notifyChange();
     setTimeout(setupDraggableElements, 10);
+    setTimeout(decorateColorCodes, 20);
     // Check for emoji trigger after a small delay to let the DOM update
     setTimeout(checkForEmojiTrigger, 0);
   };
@@ -207,6 +300,41 @@ export default function RichTextEditor({
       setLinkUrl('');
       setShowLinkInput(false);
     }
+  };
+
+  const getVideoEmbedUrl = (url: string) => {
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname.includes('youtube.com')) {
+        const id = parsed.searchParams.get('v');
+        if (id) return `https://www.youtube.com/embed/${id}`;
+      }
+      if (parsed.hostname.includes('youtu.be')) {
+        const id = parsed.pathname.replace('/', '');
+        if (id) return `https://www.youtube.com/embed/${id}`;
+      }
+      if (parsed.hostname.includes('vimeo.com')) {
+        const id = parsed.pathname.split('/').filter(Boolean)[0];
+        if (id) return `https://player.vimeo.com/video/${id}`;
+      }
+      return url;
+    } catch {
+      return url;
+    }
+  };
+
+  const insertVideo = () => {
+    if (!videoUrl) return;
+    const embedUrl = getVideoEmbedUrl(videoUrl);
+    const videoHtml = `
+      <div class="editor-block editor-video-block" data-type="video" contenteditable="false">
+        <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width: 100%; height: 360px; border-radius: 8px;"></iframe>
+      </div>
+      <p class="editor-block" data-type="text"><br></p>
+    `;
+    execCommand('insertHTML', videoHtml);
+    setVideoUrl('');
+    setShowVideoInput(false);
   };
 
   // Emoji picker functions
@@ -705,9 +833,9 @@ export default function RichTextEditor({
   }, []);
 
   return (
-    <div className={`border border-default rounded-xl overflow-hidden bg-card ${className}`}>
+    <div className={`border border-default rounded-xl overflow-visible bg-card ${className}`}>
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-default bg-hover">
+        <div className="flex flex-wrap items-center gap-1 p-2 border-b border-default bg-hover">
         {/* Text format */}
         <div className="flex items-center gap-0.5 border-r border-default !pr-2 mr-1">
           <button
@@ -822,7 +950,7 @@ export default function RichTextEditor({
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 placeholder="https://..."
-                className="px-2 py-1 text-sm bg-input border border-input rounded text-primary w-48"
+                className="px-2 py-1 text-sm bg-input border border-input rounded text-muted w-48"
                 onKeyDown={(e) => e.key === 'Enter' && insertLink()}
               />
               <button
@@ -843,9 +971,33 @@ export default function RichTextEditor({
           )}
         </div>
 
+        {/* Text color */}
+        <div className="flex items-center gap-1 border-r border-default !pr-2 mr-1">
+          <input
+            type="color"
+            onChange={(e) => execCommand('foreColor', e.target.value)}
+            className="w-8 h-8 p-0 bg-transparent border-0 cursor-pointer"
+            title={t('toolbar_text_color') || 'Couleur du texte'}
+          />
+          <select
+            onChange={(e) => execCommand('fontName', e.target.value)}
+            className="px-2 py-1 text-xs bg-input border border-input rounded text-muted"
+            defaultValue=""
+            title={t('toolbar_font') || 'Police'}
+          >
+            <option value="" disabled>{t('toolbar_font') || 'Police'}</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Poppins">Poppins</option>
+            <option value="Montserrat">Montserrat</option>
+          </select>
+        </div>
+
         {/* Media */}
         {showMediaOptions && (
-          <div className="flex items-center gap-0.5">
+          <div className="relative flex items-center gap-0.5">
             <button
               type="button"
               onClick={() => { setMediaPickerType('image'); setShowMediaPicker(true); }}
@@ -862,6 +1014,41 @@ export default function RichTextEditor({
             >
               <IconFileText className="w-4 h-4" />
             </button>
+            <button
+              type="button"
+              onClick={() => setShowVideoInput(!showVideoInput)}
+              className={`p-1.5 rounded transition-colors ${showVideoInput ? 'bg-accent text-white' : 'hover:bg-muted text-secondary hover:text-primary'}`}
+              title={t('toolbar_insert_video') || 'Insérer une vidéo'}
+            >
+              <IconPlayerPlay className="w-4 h-4" />
+            </button>
+
+            {showVideoInput && (
+              <div className="absolute top-full right-0 mt-1 p-2 bg-card border border-default rounded-lg shadow-lg z-20 flex gap-2">
+                <input
+                  type="url"
+                  value={videoUrl}
+                  onChange={(e) => setVideoUrl(e.target.value)}
+                  placeholder="https://..."
+                  className="px-2 py-1 text-sm bg-input border border-input rounded text-muted w-56"
+                  onKeyDown={(e) => e.key === 'Enter' && insertVideo()}
+                />
+                <button
+                  type="button"
+                  onClick={insertVideo}
+                  className="px-3 py-1 bg-accent text-white rounded text-sm"
+                >
+                  OK
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowVideoInput(false)}
+                  className="p-1 text-secondary hover:text-primary"
+                >
+                  <IconX className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -961,6 +1148,8 @@ export default function RichTextEditor({
             [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-secondary
             [&_a]:text-accent [&_a]:underline
             [&_img]:rounded-lg [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
+            [&_.color-code]:inline-flex [&_.color-code]:items-center [&_.color-code]:gap-1 [&_.color-code]:px-1 [&_.color-code]:rounded [&_.color-code]:bg-muted/40
+            [&_.color-swatch]:inline-block [&_.color-swatch]:w-3 [&_.color-swatch]:h-3 [&_.color-swatch]:rounded-sm [&_.color-swatch]:border [&_.color-swatch]:border-default
             [&_.editor-block]:relative [&_.editor-block]:transition-all
             [&_.editor-image-block]:my-2 [&_.editor-image-block]:rounded-lg
             [&_.editor-image-block:hover]:ring-1 [&_.editor-image-block:hover]:ring-accent/30

@@ -101,6 +101,32 @@ export default function QuickProjectModal({
   const [projectName, setProjectName] = useState('');
   const [selectedClientId, setSelectedClientId] = useState('');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [timingMode, setTimingMode] = useState<'duration' | 'endDate'>('duration');
+  const [durationOption, setDurationOption] = useState('1m');
+  const [endDate, setEndDate] = useState('');
+
+  const durationOptions = useMemo(() => ([
+    { value: '1w', days: 7, label: t('duration_1w') || '1 semaine' },
+    { value: '1m', days: 30, label: t('duration_1m') || '1 mois' },
+    { value: '2m', days: 60, label: t('duration_2m') || '2 mois' },
+    { value: '3m', days: 90, label: t('duration_3m') || '3 mois' },
+    { value: '6m', days: 180, label: t('duration_6m') || '6 mois' },
+    { value: '1y', days: 365, label: t('duration_1y') || '1 an' },
+  ]), [t]);
+
+  const getDurationDays = (option: string) => durationOptions.find(o => o.value === option)?.days || 30;
+
+  const computedEndDate = useMemo(() => {
+    if (!startDate || timingMode !== 'duration') return '';
+    const start = new Date(startDate);
+    const end = new Date(start);
+    end.setDate(start.getDate() + getDurationDays(durationOption));
+    return end.toISOString().split('T')[0];
+  }, [startDate, durationOption, timingMode, durationOptions]);
+
+  const isTimingValid = timingMode === 'duration'
+    ? Boolean(durationOption && computedEndDate)
+    : Boolean(endDate);
   
   // Dernier projet utilisé (le plus récent)
   const lastProject = useMemo(() => {
@@ -118,6 +144,9 @@ export default function QuickProjectModal({
       setProjectName(defaultSourceProject ? `${defaultSourceProject.title} (copie)` : '');
       setSelectedClientId(defaultSourceProject?.client?.documentId || '');
       setStartDate(new Date().toISOString().split('T')[0]);
+      setTimingMode('duration');
+      setDurationOption('1m');
+      setEndDate('');
       setSourceTasks([]);
       
       // Charger les tâches si projet source par défaut
@@ -157,6 +186,14 @@ export default function QuickProjectModal({
     if (project.client?.documentId) {
       setSelectedClientId(project.client.documentId);
     }
+    if (project.end_date) {
+      setTimingMode('endDate');
+      setEndDate(project.end_date.split('T')[0]);
+    } else {
+      setTimingMode('duration');
+      setDurationOption('1m');
+      setEndDate('');
+    }
     await loadProjectTasks(project.documentId);
     setStep('confirm');
   };
@@ -165,6 +202,14 @@ export default function QuickProjectModal({
   const handleSelectTemplate = (template: typeof QUICK_TEMPLATES[0]) => {
     setSelectedTemplate(template);
     setProjectName('');
+    setTimingMode('duration');
+    setEndDate('');
+    const closest = durationOptions.reduce((prev, curr) => {
+      return Math.abs(curr.days - template.duration) < Math.abs(prev.days - template.duration)
+        ? curr
+        : prev;
+    }, durationOptions[0]);
+    setDurationOption(closest?.value || '1m');
     setStep('confirm');
   };
 
@@ -173,6 +218,9 @@ export default function QuickProjectModal({
     setSelectedSourceProject(null);
     setSelectedTemplate(null);
     setProjectName('');
+    setTimingMode('duration');
+    setDurationOption('1m');
+    setEndDate('');
     setStep('confirm');
   };
 
@@ -182,19 +230,12 @@ export default function QuickProjectModal({
     
     setIsSaving(true);
     try {
-      // Calculer la date de fin
-      let durationDays = 14;
-      if (selectedSourceProject?.start_date && selectedSourceProject?.end_date) {
-        const start = new Date(selectedSourceProject.start_date);
-        const end = new Date(selectedSourceProject.end_date);
-        durationDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-      } else if (selectedTemplate) {
-        durationDays = selectedTemplate.duration;
+      const endDateValue = timingMode === 'duration' ? computedEndDate : endDate;
+      if (!endDateValue) {
+        showGlobalPopup(t('timing_scope_required') || 'Merci de définir la durée ou la date de fin du projet', 'error');
+        setIsSaving(false);
+        return;
       }
-      
-      const start = new Date(startDate);
-      const end = new Date(start);
-      end.setDate(start.getDate() + durationDays);
       
       // Trouver l'ID numérique du client
       let clientId: number | undefined;
@@ -210,7 +251,7 @@ export default function QuickProjectModal({
         project_status: 'planning',
         type: selectedSourceProject?.type || 'development',
         start_date: startDate,
-        end_date: end.toISOString().split('T')[0],
+        end_date: endDateValue,
         user: user.id,
         client: clientId,
       });
@@ -276,8 +317,9 @@ export default function QuickProjectModal({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden overscroll-contain"
       onClick={onClose}
+      onWheel={(e) => e.stopPropagation()}
     >
       <motion.div
         ref={modalRef}
@@ -285,8 +327,9 @@ export default function QuickProjectModal({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col outline-none"
+        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col outline-none overscroll-contain"
         onClick={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-default flex-shrink-0">
@@ -605,6 +648,78 @@ export default function QuickProjectModal({
                       />
                     </div>
                   </div>
+
+                  {/* Timing scope */}
+                  <div className="p-3 rounded-lg border border-default bg-hover space-y-3">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary">
+                      <IconClock className="w-4 h-4" />
+                      {t('timing_scope') || 'Périmètre temporel'} *
+                    </div>
+                    <p className="text-xs text-muted">
+                      {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light text-accent' : 'border-default text-secondary'}`}>
+                        <input
+                          type="radio"
+                          name="timing_mode_quick"
+                          checked={timingMode === 'duration'}
+                          onChange={() => setTimingMode('duration')}
+                          className="accent-[var(--color-accent)]"
+                        />
+                        {t('timing_scope_duration') || 'Durée'}
+                      </label>
+                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light text-accent' : 'border-default text-secondary'}`}>
+                        <input
+                          type="radio"
+                          name="timing_mode_quick"
+                          checked={timingMode === 'endDate'}
+                          onChange={() => setTimingMode('endDate')}
+                          className="accent-[var(--color-accent)]"
+                        />
+                        {t('timing_scope_end_date') || 'Date de fin'}
+                      </label>
+                    </div>
+
+                    {timingMode === 'duration' ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs text-muted mb-1">
+                            {t('duration') || 'Durée'}
+                          </label>
+                          <select
+                            value={durationOption}
+                            onChange={(e) => setDurationOption(e.target.value)}
+                            className="input w-full"
+                          >
+                            {durationOptions.map(option => (
+                              <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs text-muted mb-1">
+                            {t('end_date_preview') || 'Date de fin estimée'}
+                          </label>
+                          <div className="input w-full bg-muted/50 text-secondary">
+                            {computedEndDate || '—'}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-xs text-muted mb-1">
+                          {t('end_date') || 'Date de fin'}
+                        </label>
+                        <input
+                          type="date"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="input w-full"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -622,7 +737,7 @@ export default function QuickProjectModal({
             </button>
             <button
               onClick={handleCreateProject}
-              disabled={isSaving || !projectName.trim()}
+              disabled={isSaving || !projectName.trim() || !startDate || !isTimingValid}
               className="btn-primary px-5 py-2 flex items-center gap-2"
             >
               {isSaving ? (

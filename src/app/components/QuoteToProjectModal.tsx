@@ -53,8 +53,34 @@ export default function QuoteToProjectModal({
   const [projectStartDate, setProjectStartDate] = useState(
     new Date().toISOString().split('T')[0]
   );
+  const [timingMode, setTimingMode] = useState<'duration' | 'endDate'>('duration');
+  const [durationOption, setDurationOption] = useState('1m');
+  const [projectEndDate, setProjectEndDate] = useState('');
   const [projectTitle, setProjectTitle] = useState('');
   const [createdProjectId, setCreatedProjectId] = useState<string | null>(null);
+
+  const durationOptions = useMemo(() => ([
+    { value: '1w', days: 7, label: t('duration_1w') || '1 semaine' },
+    { value: '1m', days: 30, label: t('duration_1m') || '1 mois' },
+    { value: '2m', days: 60, label: t('duration_2m') || '2 mois' },
+    { value: '3m', days: 90, label: t('duration_3m') || '3 mois' },
+    { value: '6m', days: 180, label: t('duration_6m') || '6 mois' },
+    { value: '1y', days: 365, label: t('duration_1y') || '1 an' },
+  ]), [t]);
+
+  const getDurationDays = (option: string) => durationOptions.find(o => o.value === option)?.days || 30;
+
+  const computedEndDate = useMemo(() => {
+    if (!projectStartDate || timingMode !== 'duration') return '';
+    const start = new Date(projectStartDate);
+    const end = new Date(start);
+    end.setDate(start.getDate() + getDurationDays(durationOption));
+    return end.toISOString().split('T')[0];
+  }, [projectStartDate, durationOption, timingMode, durationOptions]);
+
+  const isTimingValid = timingMode === 'duration'
+    ? Boolean(durationOption && computedEndDate)
+    : Boolean(projectEndDate);
   
   // Extraire les lignes de prestation du devis
   const invoiceLines = useMemo<InvoiceLine[]>(() => {
@@ -115,12 +141,18 @@ export default function QuoteToProjectModal({
           ? (clientData as Client).id 
           : undefined;
 
+        const endDateValue = timingMode === 'duration' ? computedEndDate : projectEndDate;
+        if (!endDateValue) {
+          setStep('configure');
+          return;
+        }
+
         const projectData = {
           title: projectTitle || defaultProjectTitle,
           description: quote.description || `Projet créé depuis le devis ${quote.reference}`,
           project_status: 'planned',
           start_date: projectStartDate,
-          end_date: '', // Requis par l'API, vide par défaut
+          end_date: endDateValue,
           type: 'client',
           client: clientId,
           user: user.id,
@@ -179,15 +211,17 @@ export default function QuoteToProjectModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overscroll-contain"
           onClick={onClose}
+          onWheel={(e) => e.stopPropagation()}
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
+            className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden overscroll-contain"
             onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-6 relative">
@@ -407,6 +441,78 @@ export default function QuoteToProjectModal({
                     />
                   </div>
 
+                  {/* Timing scope */}
+                  <div className="p-3 rounded-lg border border-default bg-hover space-y-3">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary">
+                      <IconClock className="w-4 h-4" />
+                      {t('timing_scope') || 'Périmètre temporel'} *
+                    </div>
+                    <p className="text-xs text-muted">
+                      {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 text-violet-600' : 'border-default text-secondary'}`}>
+                        <input
+                          type="radio"
+                          name="timing_mode_quote"
+                          checked={timingMode === 'duration'}
+                          onChange={() => setTimingMode('duration')}
+                          className="accent-[var(--color-accent)]"
+                        />
+                        {t('timing_scope_duration') || 'Durée'}
+                      </label>
+                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 text-violet-600' : 'border-default text-secondary'}`}>
+                        <input
+                          type="radio"
+                          name="timing_mode_quote"
+                          checked={timingMode === 'endDate'}
+                          onChange={() => setTimingMode('endDate')}
+                          className="accent-[var(--color-accent)]"
+                        />
+                        {t('timing_scope_end_date') || 'Date de fin'}
+                      </label>
+                    </div>
+
+                    {timingMode === 'duration' ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs text-muted mb-1">
+                            {t('duration') || 'Durée'}
+                          </label>
+                          <select
+                            value={durationOption}
+                            onChange={(e) => setDurationOption(e.target.value)}
+                            className="input w-full"
+                          >
+                            {durationOptions.map(option => (
+                              <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs text-muted mb-1">
+                            {t('end_date_preview') || 'Date de fin estimée'}
+                          </label>
+                          <div className="input w-full bg-muted/50 text-secondary">
+                            {computedEndDate || '—'}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-xs text-muted mb-1">
+                          {t('end_date') || 'Date de fin'}
+                        </label>
+                        <input
+                          type="date"
+                          value={projectEndDate}
+                          onChange={(e) => setProjectEndDate(e.target.value)}
+                          className="input w-full"
+                        />
+                      </div>
+                    )}
+                  </div>
+
                   {/* Aperçu des tâches */}
                   {importTasksOption && invoiceLines.length > 0 && (
                     <div>
@@ -443,7 +549,8 @@ export default function QuoteToProjectModal({
                     </button>
                     <button
                       onClick={handleCreate}
-                      className="flex-1 py-3 bg-violet-500 text-white rounded-xl hover:bg-violet-600 transition-colors flex items-center justify-center gap-2"
+                      disabled={!projectStartDate || !isTimingValid}
+                      className="flex-1 py-3 bg-violet-500 text-white rounded-xl hover:bg-violet-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <IconCheck className="w-4 h-4" />
                       {t('create') || 'Créer'}

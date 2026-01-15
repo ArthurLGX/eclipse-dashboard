@@ -135,8 +135,9 @@ export default function EmailPreviewModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm overscroll-contain"
           onClick={onClose}
+          onWheel={(e) => e.stopPropagation()}
         >
           <motion.div
             ref={modalRef}
@@ -144,8 +145,9 @@ export default function EmailPreviewModal({
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
+            className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none overscroll-contain"
             onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
           >
             {/* Mailbox Header */}
             <div className="bg-gray-100 border-b border-gray-200 px-4 py-3 flex items-center justify-between flex-shrink-0">

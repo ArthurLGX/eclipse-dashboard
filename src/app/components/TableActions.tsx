@@ -1,7 +1,7 @@
 'use client';
 
 import { IconBuilding, IconFileInvoice, IconTransform } from '@tabler/icons-react';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface TableActionsProps {
@@ -26,12 +26,26 @@ export default function TableActions({
   className = '',
 }: TableActionsProps) {
   const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [menuPosition, setMenuPosition] = useState({
+    top: 0,
+    left: 0,
+    maxHeight: 320,
+    placeAbove: false,
+  });
   const { t } = useLanguage();
   // Fermer le menu au clic en dehors
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const targetNode = event.target as Node;
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(targetNode) &&
+        menuRef.current &&
+        !menuRef.current.contains(targetNode)
+      ) {
         setOpen(false);
       }
     }
@@ -45,8 +59,54 @@ export default function TableActions({
     };
   }, [open]);
 
+  const updateMenuPosition = useCallback(() => {
+    const button = buttonRef.current;
+    const menu = menuRef.current;
+    if (!button || !menu) return;
+
+    const buttonRect = button.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+
+    const spaceBelow = viewportHeight - buttonRect.bottom;
+    const spaceAbove = buttonRect.top;
+    const placeAbove = spaceBelow < menuRect.height + 12 && spaceAbove > spaceBelow;
+
+    let top = placeAbove ? buttonRect.top - menuRect.height - 8 : buttonRect.bottom + 8;
+    let left = buttonRect.left - menuRect.width - 8; // left of the button
+
+    // Clamp within viewport
+    left = Math.max(8, Math.min(left, viewportWidth - menuRect.width - 8));
+    top = Math.max(8, Math.min(top, viewportHeight - menuRect.height - 8));
+
+    const maxHeight = placeAbove ? Math.min(spaceAbove - 12, 360) : Math.min(spaceBelow - 12, 360);
+
+    setMenuPosition({
+      top,
+      left,
+      maxHeight: Math.max(160, maxHeight),
+      placeAbove,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleResize = () => updateMenuPosition();
+    const handleScroll = () => updateMenuPosition();
+
+    requestAnimationFrame(updateMenuPosition);
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleScroll, true);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, [open, updateMenuPosition]);
+
   return (
-    <div className={`relative flex items-center cursor-pointer ${className}`} ref={menuRef}>
+    <div className={`relative flex items-center cursor-pointer ${className}`} ref={containerRef}>
       <button
         onClick={e => {
           e.stopPropagation();
@@ -55,6 +115,7 @@ export default function TableActions({
         className="p-2 rounded hover:bg-hover focus:outline-none focus:ring-1 focus:ring-accent"
         title="Actions"
         type="button"
+        ref={buttonRef}
       >
         <svg
           className="w-5 h-5 text-muted"
@@ -68,7 +129,15 @@ export default function TableActions({
         </svg>
       </button>
       {open && (
-        <div className="absolute rounded-lg right-10 z-[1000] mt-2 p-2 w-fit bg-card border border-default shadow-lg py-1 animate-fade-in">
+        <div
+          ref={menuRef}
+          className="fixed rounded-lg z-[1000] p-2 w-fit bg-card border border-default shadow-lg py-1 animate-fade-in overflow-y-auto"
+          style={{
+            top: menuPosition.top,
+            left: menuPosition.left,
+            maxHeight: menuPosition.maxHeight,
+          }}
+        >
           {onView && (
             <button
               onClick={e => {

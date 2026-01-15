@@ -170,6 +170,32 @@ export default function CreateProjectModal({
   const [showNewClientForm, setShowNewClientForm] = useState(false);
   const [hourlyRate, setHourlyRate] = useState(50);
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [timingMode, setTimingMode] = useState<'duration' | 'endDate'>('duration');
+  const [durationOption, setDurationOption] = useState('1m');
+  const [endDate, setEndDate] = useState('');
+
+  const durationOptions = useMemo(() => ([
+    { value: '1w', days: 7, label: t('duration_1w') || '1 semaine' },
+    { value: '1m', days: 30, label: t('duration_1m') || '1 mois' },
+    { value: '2m', days: 60, label: t('duration_2m') || '2 mois' },
+    { value: '3m', days: 90, label: t('duration_3m') || '3 mois' },
+    { value: '6m', days: 180, label: t('duration_6m') || '6 mois' },
+    { value: '1y', days: 365, label: t('duration_1y') || '1 an' },
+  ]), [t]);
+
+  const getDurationDays = (option: string) => durationOptions.find(o => o.value === option)?.days || 30;
+
+  const computedEndDate = useMemo(() => {
+    if (!startDate || timingMode !== 'duration') return '';
+    const start = new Date(startDate);
+    const end = new Date(start);
+    end.setDate(start.getDate() + getDurationDays(durationOption));
+    return end.toISOString().split('T')[0];
+  }, [startDate, durationOption, timingMode, durationOptions]);
+
+  const isTimingValid = timingMode === 'duration'
+    ? Boolean(durationOption && computedEndDate)
+    : Boolean(endDate);
 
   // Reset on close
   useEffect(() => {
@@ -181,6 +207,9 @@ export default function CreateProjectModal({
       setNewClientName('');
       setNewClientEmail('');
       setShowNewClientForm(false);
+      setTimingMode('duration');
+      setDurationOption('1m');
+      setEndDate('');
     }
   }, [isOpen, defaultClientId]);
 
@@ -188,6 +217,14 @@ export default function CreateProjectModal({
   const handleSelectTemplate = (template: ProjectTemplate) => {
     setSelectedTemplate(template);
     setStep('details');
+    setTimingMode('duration');
+    setEndDate('');
+    const closest = durationOptions.reduce((prev, curr) => {
+      return Math.abs(curr.days - template.estimated_duration_days) < Math.abs(prev.days - template.estimated_duration_days)
+        ? curr
+        : prev;
+    }, durationOptions[0]);
+    setDurationOption(closest?.value || '1m');
   };
 
   // Create project
@@ -218,10 +255,13 @@ export default function CreateProjectModal({
         }
       }
       
-      // 2. Calculate end date
-      const start = new Date(startDate);
-      const end = new Date(start);
-      end.setDate(start.getDate() + selectedTemplate.estimated_duration_days);
+      // 2. Calculate end date based on timing scope
+      const endDateValue = timingMode === 'duration' ? computedEndDate : endDate;
+      if (!endDateValue) {
+        showGlobalPopup(t('timing_scope_required') || 'Merci de définir la durée ou la date de fin du projet', 'error');
+        setIsSaving(false);
+        return;
+      }
       
       // 3. Create project
       const projectResponse = await createProject({
@@ -230,7 +270,7 @@ export default function CreateProjectModal({
         project_status: 'planning',
         type: 'development',
         start_date: startDate,
-        end_date: end.toISOString().split('T')[0],
+        end_date: endDateValue,
         user: user.id,
         client: clientId,
       });
@@ -275,8 +315,9 @@ export default function CreateProjectModal({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden overscroll-contain"
       onClick={onClose}
+      onWheel={(e) => e.stopPropagation()}
     >
       <motion.div
         ref={modalRef}
@@ -284,8 +325,9 @@ export default function CreateProjectModal({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-3xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col outline-none"
+        className="w-full max-w-3xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col outline-none overscroll-contain"
         onClick={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-default flex-shrink-0">
@@ -531,6 +573,78 @@ export default function CreateProjectModal({
                   </div>
                 </div>
 
+                {/* Timing scope */}
+                <div className="p-4 rounded-xl border border-default bg-hover space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-medium text-secondary">
+                    <IconClock className="w-4 h-4" />
+                    {t('timing_scope') || 'Périmètre temporel'} *
+                  </div>
+                  <p className="text-xs text-muted">
+                    {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light text-accent' : 'border-default text-secondary'}`}>
+                      <input
+                        type="radio"
+                        name="timing_mode"
+                        checked={timingMode === 'duration'}
+                        onChange={() => setTimingMode('duration')}
+                        className="accent-[var(--color-accent)]"
+                      />
+                      {t('timing_scope_duration') || 'Durée'}
+                    </label>
+                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light text-accent' : 'border-default text-secondary'}`}>
+                      <input
+                        type="radio"
+                        name="timing_mode"
+                        checked={timingMode === 'endDate'}
+                        onChange={() => setTimingMode('endDate')}
+                        className="accent-[var(--color-accent)]"
+                      />
+                      {t('timing_scope_end_date') || 'Date de fin'}
+                    </label>
+                  </div>
+
+                  {timingMode === 'duration' ? (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-muted mb-1">
+                          {t('duration') || 'Durée'}
+                        </label>
+                        <select
+                          value={durationOption}
+                          onChange={(e) => setDurationOption(e.target.value)}
+                          className="input w-full"
+                        >
+                          {durationOptions.map(option => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-muted mb-1">
+                          {t('end_date_preview') || 'Date de fin estimée'}
+                        </label>
+                        <div className="input w-full bg-muted/50 text-secondary">
+                          {computedEndDate || '—'}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="block text-xs text-muted mb-1">
+                        {t('end_date') || 'Date de fin'}
+                      </label>
+                      <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="input w-full"
+                      />
+                    </div>
+                  )}
+                </div>
+
                 {/* Estimated value */}
                 {selectedTemplate && selectedTemplate.tasks.length > 0 && (
                   <div className="p-4 rounded-xl bg-success-light border border success">
@@ -561,7 +675,7 @@ export default function CreateProjectModal({
               </button>
               <button
                 onClick={handleCreateProject}
-                disabled={isSaving || !projectName}
+                disabled={isSaving || !projectName || !startDate || !isTimingValid}
                 className="flex items-center gap-2 px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
               >
                 {isSaving ? (
