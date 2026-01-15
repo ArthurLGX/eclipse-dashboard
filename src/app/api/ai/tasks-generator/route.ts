@@ -208,22 +208,22 @@ RETOURNE UN JSON VALIDE avec cette structure:
           item.start_date = formatDate(start || cursor);
         }
         if (!item.due_date) {
-          end.setDate((start || cursor).getDate() + Math.max(1, sliceDays));
-          item.due_date = formatDate(end);
+          end?.setDate((start || cursor).getDate() + Math.max(1, sliceDays));
+          item.due_date = formatDate(end || new Date());
         }
-        cursor = new Date(end.getTime());
+        cursor = new Date(end?.getTime() || 0); 
       });
     };
 
     const fallbackEnd = projectEnd || new Date(projectStart.getTime() + (result.tasks.length || 1) * 3 * 24 * 60 * 60 * 1000);
 
     if (result.tasks.length > 0) {
-      result.tasks.forEach(task => {
+      result.tasks.forEach((task: { start_date?: string | null; due_date?: string | null; subtasks?: Array<{ start_date?: string | null; due_date?: string | null }> }) => {
         normalizeRange(task);
         task.subtasks?.forEach(sub => normalizeRange(sub));
       });
       distributeRange(result.tasks, projectStart, fallbackEnd);
-      result.tasks.forEach(task => {
+      result.tasks.forEach((task: { start_date?: string | null; due_date?: string | null; subtasks?: Array<{ estimated_hours?: number | null; start_date?: string | null; due_date?: string | null }> }) => {
         if (task.subtasks && task.subtasks.length > 0) {
           const taskStart = parseDate(task.start_date || undefined) || projectStart;
           const taskEnd = parseDate(task.due_date || undefined) || new Date(taskStart.getTime() + 2 * 24 * 60 * 60 * 1000);
