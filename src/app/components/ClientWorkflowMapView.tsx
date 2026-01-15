@@ -418,12 +418,9 @@ export default function ClientWorkflowMapView({
     };
   }, [clientId, filteredClients.length]);
 
-  const layout = viewMode === 'radial' ? radialLayout : timelineLayout;
-
   const center = { x: radialLayout.contentWidth / 2, y: radialLayout.contentHeight / 2 };
   const radialRadius = 220;
   const expandedRadius = 320;
-  const satelliteRadiusMini = 80; // For multi-client mini satellites
 
   // Fit to view with different default scales
   const fitToView = useCallback(() => {
@@ -1338,7 +1335,7 @@ export default function ClientWorkflowMapView({
                         width={(multiRadialRadius + 50) * 2}
                         height={(multiRadialRadius + 50) * 2}
                       >
-                        {clientSatellites.map((sat, i) => {
+                        {clientSatellites.map((sat) => {
                           const x = (multiRadialRadius + 50) + multiRadialRadius * Math.cos(sat.angle);
                           const y = (multiRadialRadius + 50) + multiRadialRadius * Math.sin(sat.angle);
                           const cx = multiRadialRadius + 50;
