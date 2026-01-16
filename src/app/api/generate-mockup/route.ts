@@ -1,9 +1,10 @@
 /**
  * @file route.ts
- * @description API route for generating ideal wireframe mockups using Pollinations.ai (free, no API key required)
+ * @description API route for generating ideal wireframe mockups using DALL·E 3 (or Pollinations.ai as fallback)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import OpenAI from 'openai';
 
 // ============================================================================
 // TYPES
@@ -194,58 +195,122 @@ OUTPUT: Clean, professional UI/UX wireframe like Figma or Balsamiq mockup, flat 
 }
 
 // ============================================================================
-// POLLINATIONS.AI GENERATION (WITH API KEY)
+// IMAGE GENERATION (DALL·E 3 primary, Pollinations.ai fallback)
 // ============================================================================
 
-async function generateMockupImage(prompt: string): Promise<string> {
-  const apiKey = process.env.POLLINATIONS_API_KEY;
+// Initialize OpenAI client
+const openai = process.env.OPENAI_API_KEY 
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
+
+/**
+ * Generate mockup using DALL·E 3 (primary) or Pollinations.ai (fallback)
+ */
+async function fetchUrlToBase64(url: string): Promise<string> {
+  const res = await fetch(url);
+  const buffer = await res.arrayBuffer();
+  return Buffer.from(buffer).toString('base64');
+}
+
+type DalleSize = '1024x1024' | '1792x1024';
+type DalleQuality = 'standard' | 'hd';
+
+export async function generateMockupImage(
+  prompt: string,
+  size: DalleSize = '1024x1024',
+  quality: DalleQuality = 'standard',
+  timeoutMs = 20000
+): Promise<string> { // retourne directement une string
+  if (!openai) {
+    console.warn('[Mockup] OpenAI not configured, using Pollinations');
+    return generateWithPollinations(prompt);
+  }
+
+  try {
+    console.log('[Mockup] Generating with DALL·E 3...');
+
+    const response = await Promise.race([
+      openai.images.generate({
+        model: 'dall-e-3',
+        prompt,
+        n: 1,
+        size,
+        quality,
+        response_format: 'b64_json',
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('DALL·E timeout')), timeoutMs)
+      )
+    ]);
+
+    const imageData = response.data?.[0];
+    if (!imageData) throw new Error('No image data from DALL·E');
+
+    if (imageData.b64_json) {
+      return `data:image/png;base64,${imageData.b64_json}`;
+    } else if (imageData.url) {
+      const res = await fetch(imageData.url);
+      const buffer = await res.arrayBuffer();
+      return `data:image/png;base64,${Buffer.from(buffer).toString('base64')}`;
+    } else {
+      throw new Error('Image data missing');
+    }
+
+  } catch (error) {
+    console.error('[Mockup] DALL·E error, fallback to Pollinations:', error);
+    return generateWithPollinations(prompt);
+  }
+}
+
+
+
+/**
+ * Fallback generation using Pollinations.ai
+ */
+async function generateWithPollinations(prompt: string): Promise<string> {
+  console.log('[Mockup] Generating with Pollinations.ai...');
   
   const encodedPrompt = encodeURIComponent(prompt);
   const seed = Math.floor(Math.random() * 1000000);
+  const pollinationsKey = process.env.POLLINATIONS_API_KEY;
   
   // Build the Pollinations.ai URL with optimal parameters for WIREFRAMES
-  // - model=turbo : Faster model, better for flat designs
-  // - enhance=false : Keep our precise prompt as-is (don't add artistic elements)
-  // - nologo=true : Remove watermark
   const params = new URLSearchParams({
     width: '1792',
     height: '1024',
     seed: seed.toString(),
     nologo: 'true',
-    model: 'turbo',     // Faster, better for flat wireframes
-    enhance: 'false',   // Don't modify our wireframe-specific prompt
+    model: 'turbo',
+    enhance: 'false',
   });
   
-  // Add token if API key is available
-  if (apiKey) {
-    params.append('token', apiKey);
+  if (pollinationsKey) {
+    params.append('token', pollinationsKey);
   }
   
   const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?${params.toString()}`;
   
-  // Fetch the image from Pollinations and convert to base64
-  // This keeps the API key server-side and ensures the image is ready
   try {
     const response = await fetch(imageUrl, {
-      headers: apiKey ? {
-        'Authorization': `Bearer ${apiKey}`,
+      headers: pollinationsKey ? {
+        'Authorization': `Bearer ${pollinationsKey}`,
       } : {},
+      signal: AbortSignal.timeout(60000), // 60s timeout for generation
     });
     
     if (!response.ok) {
       throw new Error(`Pollinations API returned status ${response.status}`);
     }
     
-    // Get the image as buffer and convert to base64
     const arrayBuffer = await response.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString('base64');
     const contentType = response.headers.get('content-type') || 'image/png';
     
-    // Return as data URL
+    console.log('[Mockup] Pollinations generation successful');
     return `data:${contentType};base64,${base64}`;
   } catch (error) {
-    console.error('Pollinations fetch error:', error);
-    throw new Error('Failed to generate image from Pollinations.ai');
+    console.error('[Mockup] Pollinations fetch error:', error);
+    throw new Error('Failed to generate mockup image');
   }
 }
 
@@ -256,55 +321,35 @@ async function generateMockupImage(prompt: string): Promise<string> {
 export async function POST(request: NextRequest) {
   try {
     const body: MockupRequest = await request.json();
-    
-    // Validate input
+
     if (!body.pageType) {
-      return NextResponse.json(
-        { error: 'pageType is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'pageType is required' }, { status: 400 });
     }
-    
-    // Check cache first
+
     const cached = getCachedResult(body);
     if (cached) {
-      return NextResponse.json({
-        ...cached,
-        fromCache: true,
-      });
+      return NextResponse.json({ ...cached, fromCache: true });
     }
-    
-    // Generate prompt
+
     const prompt = generatePrompt(body);
-    
-    // Generate image URL with Pollinations.ai
-    const imageUrl = await generateMockupImage(prompt);
-    
+
+    // Génère **une seule image**
+    const imageUrl = await generateMockupImage(prompt, '1792x1024', 'standard');
+
     const result: MockupResult = {
       imageUrl,
       prompt,
       generatedAt: new Date().toISOString(),
     };
-    
-    // Cache the result
+
     setCachedResult(body, result);
-    
-    return NextResponse.json({
-      ...result,
-      fromCache: false,
-    });
-    
+
+    return NextResponse.json({ ...result, fromCache: false });
+
   } catch (error) {
     console.error('Mockup generation error:', error);
-    
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    
-    return NextResponse.json(
-      { 
-        error: 'mockup_generation_error', 
-        details: errorMessage
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'mockup_generation_error', details: errorMessage }, { status: 500 });
   }
 }
+

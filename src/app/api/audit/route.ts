@@ -187,6 +187,101 @@ function setCachedResult(url: string, pageType: string, result: AuditResult): vo
 }
 
 // ============================================================================
+// JS RENDERING - Fetch HTML with JavaScript execution
+// ============================================================================
+
+interface FetchResult {
+  html: string;
+  jsRendered: boolean;
+}
+
+/**
+ * Fetches HTML with JavaScript rendering support
+ * Uses Microlink.io (free tier) for JS rendering in production
+ * Falls back to simple fetch for static sites
+ */
+async function fetchWithJsRendering(url: string): Promise<FetchResult> {
+  const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
+  
+  // Try Puppeteer locally first
+  if (!isVercel) {
+    try {
+      const result = await fetchWithPuppeteer(url);
+      if (result) return result;
+    } catch (error) {
+      console.warn('Puppeteer rendering failed, trying alternatives:', error);
+    }
+  }
+  
+  // Try Microlink.io (free, 50 requests/day, JS rendering supported)
+  try {
+    const microlinkUrl = `https://api.microlink.io?url=${encodeURIComponent(url)}&meta=false&data.html.selector=html&data.html.type=html`;
+    const response = await fetch(microlinkUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0 EclipseAuditBot/1.0' },
+      signal: AbortSignal.timeout(30000),
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.status === 'success' && data.data?.html) {
+        console.log('[Audit] Using Microlink.io for JS rendering');
+        return { html: data.data.html, jsRendered: true };
+      }
+    }
+  } catch (error) {
+    console.warn('Microlink.io failed:', error);
+  }
+  
+  // Fallback to simple fetch (no JS rendering)
+  console.log('[Audit] Falling back to simple fetch (no JS rendering)');
+  const response = await fetch(url, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (compatible; EclipseAuditBot/1.0)',
+      'Accept': 'text/html,application/xhtml+xml',
+    },
+    signal: AbortSignal.timeout(15000),
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch URL: ${response.status}`);
+  }
+  
+  return { html: await response.text(), jsRendered: false };
+}
+
+/**
+ * Fetch HTML using Puppeteer (local development only)
+ */
+async function fetchWithPuppeteer(url: string): Promise<FetchResult | null> {
+  try {
+    const puppeteer = await import('puppeteer');
+    const browser = await puppeteer.default.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+    });
+    
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1440, height: 900 });
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+      
+      await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+      
+      // Wait for dynamic content
+      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));
+      
+      const html = await page.content();
+      console.log('[Audit] Using Puppeteer for JS rendering');
+      return { html, jsRendered: true };
+    } finally {
+      await browser.close();
+    }
+  } catch {
+    return null;
+  }
+}
+
+// ============================================================================
 // ANALYSIS HELPERS
 // ============================================================================
 
@@ -560,7 +655,7 @@ function isNeutralColor(hex: string): boolean {
   return maxDiff < 20;
 }
 
-function extractSeoData(html: string): SeoAnalysis {
+function extractSeoData(html: string, baseUrl: string): SeoAnalysis {
   const issues: string[] = [];
   
   // Title
@@ -596,6 +691,129 @@ function extractSeoData(html: string): SeoAnalysis {
   // OpenGraph
   const hasOpenGraph = /<meta[^>]*property=["']og:/i.test(html);
   
+  // Twitter Cards
+  const hasTwitterCards = /<meta[^>]*name=["']twitter:/i.test(html);
+  
+  // Robots meta
+  const robotsMatch = html.match(/<meta[^>]*name=["']robots["'][^>]*content=["']([^"']*)["'][^>]*>/i) ||
+                      html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']robots["'][^>]*>/i);
+  const robotsMeta = robotsMatch ? robotsMatch[1].trim() : null;
+  
+  // Viewport
+  const viewportMatch = html.match(/<meta[^>]*name=["']viewport["'][^>]*content=["']([^"']*)["'][^>]*>/i);
+  const viewport = viewportMatch ? viewportMatch[1].trim() : null;
+  if (!viewport) {
+    issues.push('missing_viewport');
+  }
+  
+  // Charset
+  const charsetMatch = html.match(/<meta[^>]*charset=["']?([^"'\s>]+)/i);
+  const charset = charsetMatch ? charsetMatch[1].trim() : null;
+  
+  // Language
+  const langMatch = html.match(/<html[^>]*lang=["']([^"']+)["'][^>]*>/i);
+  const language = langMatch ? langMatch[1].trim() : null;
+  if (!language) {
+    issues.push('missing_lang_attribute');
+  }
+  
+  // ============================================================================
+  // IMAGES ANALYSIS
+  // ============================================================================
+  const imageMatches = html.match(/<img[^>]*>/gi) || [];
+  const imagesWithAlt: string[] = [];
+  const imagesWithoutAlt: string[] = [];
+  
+  imageMatches.forEach(imgTag => {
+    const srcMatch = imgTag.match(/src=["']([^"']+)["']/i);
+    const altMatch = imgTag.match(/alt=["']([^"']*)["']/i);
+    const src = srcMatch ? srcMatch[1] : 'unknown';
+    
+    if (altMatch && altMatch[1].trim().length > 0) {
+      imagesWithAlt.push(src);
+    } else {
+      imagesWithoutAlt.push(src);
+    }
+  });
+  
+  if (imagesWithoutAlt.length > 0) {
+    issues.push('images_missing_alt');
+  }
+  
+  // ============================================================================
+  // LINKS ANALYSIS
+  // ============================================================================
+  let baseHost = '';
+  try {
+    baseHost = new URL(baseUrl).hostname;
+  } catch {
+    // Invalid URL, skip host comparison
+  }
+  
+  const linkMatches = html.match(/<a[^>]*href=["']([^"']+)["'][^>]*>/gi) || [];
+  const internalLinks: string[] = [];
+  const externalLinks: string[] = [];
+  let nofollowCount = 0;
+  
+  linkMatches.forEach(linkTag => {
+    const hrefMatch = linkTag.match(/href=["']([^"']+)["']/i);
+    const hasNofollow = /rel=["'][^"']*nofollow[^"']*["']/i.test(linkTag);
+    
+    if (hrefMatch) {
+      const href = hrefMatch[1];
+      if (hasNofollow) nofollowCount++;
+      
+      // Skip anchors, javascript, mailto, tel
+      if (href.startsWith('#') || href.startsWith('javascript:') || 
+          href.startsWith('mailto:') || href.startsWith('tel:')) {
+        return;
+      }
+      
+      try {
+        const linkUrl = new URL(href, baseUrl);
+        if (linkUrl.hostname === baseHost || href.startsWith('/') || href.startsWith('./')) {
+          internalLinks.push(href);
+        } else {
+          externalLinks.push(href);
+        }
+      } catch {
+        // Relative links
+        if (href.startsWith('/') || href.startsWith('./') || !href.includes('://')) {
+          internalLinks.push(href);
+        }
+      }
+    }
+  });
+  
+  // ============================================================================
+  // STRUCTURED DATA
+  // ============================================================================
+  const structuredDataMatches = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
+  const structuredDataTypes: string[] = [];
+  
+  structuredDataMatches.forEach(script => {
+    const contentMatch = script.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+    if (contentMatch) {
+      try {
+        const jsonData = JSON.parse(contentMatch[1]);
+        if (jsonData['@type']) {
+          structuredDataTypes.push(jsonData['@type']);
+        } else if (Array.isArray(jsonData)) {
+          jsonData.forEach(item => {
+            if (item['@type']) structuredDataTypes.push(item['@type']);
+          });
+        }
+      } catch {
+        // Invalid JSON, skip
+      }
+    }
+  });
+  
+  const hasStructuredData = structuredDataTypes.length > 0;
+  if (!hasStructuredData) {
+    issues.push('missing_structured_data');
+  }
+  
   return {
     title,
     titleLength,
@@ -603,6 +821,27 @@ function extractSeoData(html: string): SeoAnalysis {
     metaDescriptionLength,
     hasCanonical,
     hasOpenGraph,
+    hasTwitterCards,
+    robotsMeta,
+    images: {
+      total: imageMatches.length,
+      withAlt: imagesWithAlt.length,
+      withoutAlt: imagesWithoutAlt.length,
+      missingAltList: imagesWithoutAlt.slice(0, 10), // Limit to 10
+    },
+    links: {
+      internal: internalLinks.length,
+      external: externalLinks.length,
+      broken: 0, // Would need async check
+      nofollow: nofollowCount,
+      internalList: [...new Set(internalLinks)].slice(0, 20),
+      externalList: [...new Set(externalLinks)].slice(0, 20),
+    },
+    hasStructuredData,
+    structuredDataTypes: [...new Set(structuredDataTypes)],
+    viewport,
+    charset,
+    language,
     issues,
   };
 }
@@ -614,7 +853,7 @@ function generateRecommendations(
 ): { text: string; priority: 'high' | 'medium' | 'low' }[] {
   const recommendations: { text: string; priority: 'high' | 'medium' | 'low' }[] = [];
   
-  // SEO recommendations
+  // SEO recommendations - Title & Meta
   if (!seo.title) {
     recommendations.push({ text: 'add_page_title', priority: 'high' });
   }
@@ -626,6 +865,39 @@ function generateRecommendations(
   }
   if (!seo.hasOpenGraph) {
     recommendations.push({ text: 'add_open_graph_tags', priority: 'low' });
+  }
+  if (!seo.hasTwitterCards) {
+    recommendations.push({ text: 'add_twitter_cards', priority: 'low' });
+  }
+  
+  // SEO recommendations - Images
+  if (seo.images.withoutAlt > 0) {
+    const altRatio = seo.images.total > 0 ? seo.images.withoutAlt / seo.images.total : 0;
+    if (altRatio > 0.5) {
+      recommendations.push({ text: 'add_alt_to_images_many', priority: 'high' });
+    } else if (altRatio > 0.2) {
+      recommendations.push({ text: 'add_alt_to_images_some', priority: 'medium' });
+    } else {
+      recommendations.push({ text: 'add_alt_to_images_few', priority: 'low' });
+    }
+  }
+  
+  // SEO recommendations - Structured Data
+  if (!seo.hasStructuredData) {
+    recommendations.push({ text: 'add_structured_data', priority: 'medium' });
+  }
+  
+  // SEO recommendations - Language & Accessibility
+  if (!seo.language) {
+    recommendations.push({ text: 'add_lang_attribute', priority: 'medium' });
+  }
+  if (!seo.viewport) {
+    recommendations.push({ text: 'add_viewport_meta', priority: 'high' });
+  }
+  
+  // SEO recommendations - Links
+  if (seo.links.internal === 0) {
+    recommendations.push({ text: 'add_internal_links', priority: 'medium' });
   }
   
   // Structure recommendations
@@ -663,36 +935,62 @@ function calculateScores(
   structure: StructureAnalysis,
   message: MessageAnalysis
 ): { technical: TechnicalScore; globalScore: number } {
-  // SEO Score (0-100)
+  // SEO Score (0-100) - Enhanced with new metrics
   let seoScore = 100;
-  if (!seo.title) seoScore -= 25;
-  else if (seo.titleLength < 30 || seo.titleLength > 60) seoScore -= 10;
-  if (!seo.metaDescription) seoScore -= 25;
-  else if (seo.metaDescriptionLength < 120 || seo.metaDescriptionLength > 160) seoScore -= 10;
-  if (!seo.hasCanonical) seoScore -= 10;
+  
+  // Title & Meta (40 points max)
+  if (!seo.title) seoScore -= 20;
+  else if (seo.titleLength < 30 || seo.titleLength > 60) seoScore -= 5;
+  if (!seo.metaDescription) seoScore -= 15;
+  else if (seo.metaDescriptionLength < 120 || seo.metaDescriptionLength > 160) seoScore -= 5;
+  
+  // Technical SEO (25 points max)
+  if (!seo.hasCanonical) seoScore -= 8;
   if (!seo.hasOpenGraph) seoScore -= 5;
+  if (!seo.hasTwitterCards) seoScore -= 2;
+  if (!seo.hasStructuredData) seoScore -= 5;
+  if (!seo.language) seoScore -= 3;
+  if (!seo.viewport) seoScore -= 7;
+  
+  // Images (15 points max)
+  if (seo.images.total > 0) {
+    const altRatio = seo.images.withAlt / seo.images.total;
+    seoScore -= Math.round((1 - altRatio) * 15);
+  }
+  
+  // Links (10 points max)
+  if (seo.links.internal === 0) seoScore -= 5;
+  if (seo.links.external === 0) seoScore -= 2;
   
   // Performance estimate (simplified - would need real metrics)
   const performanceScore = 70; // Default estimate
   
-  // Accessibility estimate (simplified)
-  let accessibilityScore = 80;
-  if (!structure.hasH1) accessibilityScore -= 20;
+  // Accessibility estimate (enhanced)
+  let accessibilityScore = 100;
+  if (!structure.hasH1) accessibilityScore -= 25;
   if (structure.h1Count > 1) accessibilityScore -= 10;
+  if (!seo.language) accessibilityScore -= 10;
+  if (!seo.viewport) accessibilityScore -= 15;
+  // Penalize missing alt attributes
+  if (seo.images.total > 0) {
+    const altRatio = seo.images.withAlt / seo.images.total;
+    accessibilityScore -= Math.round((1 - altRatio) * 20);
+  }
   
   // Global score (weighted average)
   const globalScore = Math.round(
-    (seoScore * 0.3) +
-    (structure.structureScore * 0.35) +
-    (message.messageScore * 0.25) +
-    (performanceScore * 0.1)
+    (seoScore * 0.30) +
+    (structure.structureScore * 0.30) +
+    (message.messageScore * 0.20) +
+    (accessibilityScore * 0.10) +
+    (performanceScore * 0.10)
   );
   
   return {
     technical: {
       performance: performanceScore,
-      seo: Math.max(0, seoScore),
-      accessibility: Math.max(0, accessibilityScore),
+      seo: Math.max(0, Math.min(100, seoScore)),
+      accessibility: Math.max(0, Math.min(100, accessibilityScore)),
     },
     globalScore: Math.max(0, Math.min(100, globalScore)),
   };
@@ -1086,22 +1384,12 @@ async function analyzeUrl(url: string, pageType: string, captureScreenshot = tru
   // Start screenshot capture in parallel with HTML fetch
   const screenshotPromise = captureScreenshot ? captureScreenshots(url) : Promise.resolve(undefined);
   
-  // Fetch the page
-  const response = await fetch(url, {
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (compatible; EclipseAuditBot/1.0)',
-    },
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch URL: ${response.status}`);
-  }
-  
-  const html = await response.text();
+  // Fetch the page with JS rendering support
+  const { html, jsRendered } = await fetchWithJsRendering(url);
   const textContent = extractTextContent(html);
   
-  // Analyze SEO
-  const seo = extractSeoData(html);
+  // Analyze SEO (pass URL for link analysis)
+  const seo = extractSeoData(html, url);
   
   // Analyze style and colors
   const styleAnalysis = analyzeStyle(html);
@@ -1177,6 +1465,7 @@ async function analyzeUrl(url: string, pageType: string, captureScreenshot = tru
     detectedSections: captureResult?.detectedSections,
     idealSections: IDEAL_SECTIONS_CONFIG,
     styleAnalysis,
+    jsRendered,
   };
 }
 

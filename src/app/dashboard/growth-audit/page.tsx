@@ -22,6 +22,13 @@ import {
   IconLayoutGrid,
   IconBulb,
   IconCircleCheck,
+  IconPhoto,
+  IconLink,
+  IconExternalLink,
+  IconBrandTwitter,
+  IconDeviceDesktopAnalytics,
+  IconLanguage,
+  IconRobot,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -39,10 +46,10 @@ import type { AuditResult } from '@/app/api/audit/route';
 
 type PageType = 'landing' | 'homepage' | 'product';
 
-const PAGE_TYPES: { value: PageType; icon: React.ReactNode; labelKey: string }[] = [
-  { value: 'landing', icon: <IconLayoutDashboard className="w-5 h-5" />, labelKey: 'landing_page' },
-  { value: 'homepage', icon: <IconHome className="w-5 h-5" />, labelKey: 'homepage' },
-  { value: 'product', icon: <IconShoppingCart className="w-5 h-5" />, labelKey: 'product_page' },
+const PAGE_TYPES: { value: PageType;  icon: React.ReactNode; labelKey: string }[] = [
+  { value: 'landing', icon: <IconLayoutDashboard className="w-5 h-5 !text-accent" />, labelKey: 'landing_page' },
+  { value: 'homepage', icon: <IconHome className="w-5 h-5 !text-accent" />, labelKey: 'homepage' },
+  { value: 'product', icon: <IconShoppingCart className="w-5 h-5 !text-accent" />, labelKey: 'product_page' },
 ];
 
 // Analysis steps configuration
@@ -222,7 +229,7 @@ export default function GrowthAuditPage() {
                   }`}
                 >
                   {type.icon}
-                  <span className="text-sm font-medium">{t(type.labelKey)}</span>
+                  <span className="text-sm font-medium !text-accent">{t(type.labelKey)}</span>
                 </button>
               ))}
             </div>
@@ -534,6 +541,134 @@ export default function GrowthAuditPage() {
                       <span className="text-sm">Open Graph</span>
                     </div>
                   </div>
+
+                  {/* Twitter Cards & Structured Data */}
+                  <div className="flex gap-3">
+                    <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.hasTwitterCards ? 'bg-success-light' : 'bg-danger-light'}`}>
+                      {result.seo.hasTwitterCards ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-danger" />}
+                      <IconBrandTwitter className="w-4 h-4" />
+                      <span className="text-sm">Twitter Cards</span>
+                    </div>
+                    <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.hasStructuredData ? 'bg-success-light' : 'bg-danger-light'}`}>
+                      {result.seo.hasStructuredData ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-danger" />}
+                      <IconDeviceDesktopAnalytics className="w-4 h-4" />
+                      <span className="text-sm">Schema.org</span>
+                    </div>
+                  </div>
+
+                  {/* Language & Viewport */}
+                  <div className="flex gap-3">
+                    <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.language ? 'bg-success-light' : 'bg-warning-light'}`}>
+                      {result.seo.language ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-warning" />}
+                      <IconLanguage className="w-4 h-4" />
+                      <span className="text-sm">{result.seo.language || t('missing_lang') || 'Lang manquant'}</span>
+                    </div>
+                    <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.viewport ? 'bg-success-light' : 'bg-danger-light'}`}>
+                      {result.seo.viewport ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-danger" />}
+                      <span className="text-sm">Viewport</span>
+                    </div>
+                  </div>
+
+                  {/* Images Analysis */}
+                  {result.seo.images && (
+                    <div className="p-3 bg-hover rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <IconPhoto className="w-4 h-4 text-muted" />
+                        <span className="text-sm font-medium text-primary">{t('images_analysis') || 'Analyse des images'}</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="p-2 bg-card rounded">
+                          <p className="text-lg font-bold text-primary">{result.seo.images.total}</p>
+                          <p className="text-xs text-muted">{t('total') || 'Total'}</p>
+                        </div>
+                        <div className="p-2 bg-success-light rounded">
+                          <p className="text-lg font-bold text-success">{result.seo.images.withAlt}</p>
+                          <p className="text-xs text-muted">{t('with_alt') || 'Avec alt'}</p>
+                        </div>
+                        <div className={`p-2 rounded ${result.seo.images.withoutAlt > 0 ? 'bg-danger-light' : 'bg-success-light'}`}>
+                          <p className={`text-lg font-bold ${result.seo.images.withoutAlt > 0 ? 'text-danger' : 'text-success'}`}>
+                            {result.seo.images.withoutAlt}
+                          </p>
+                          <p className="text-xs text-muted">{t('missing_alt') || 'Sans alt'}</p>
+                        </div>
+                      </div>
+                      {result.seo.images.withoutAlt > 0 && result.seo.images.missingAltList?.length > 0 && (
+                        <details className="mt-2">
+                          <summary className="text-xs text-muted cursor-pointer hover:text-primary">
+                            {t('show_images_without_alt') || 'Voir les images sans alt'}
+                          </summary>
+                          <div className="mt-2 max-h-32 overflow-y-auto text-xs text-muted space-y-1">
+                            {result.seo.images.missingAltList.map((src, i) => (
+                              <div key={i} className="truncate">• {src}</div>
+                            ))}
+                          </div>
+                        </details>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Links Analysis */}
+                  {result.seo.links && (
+                    <div className="p-3 bg-hover rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <IconLink className="w-4 h-4 text-muted" />
+                        <span className="text-sm font-medium text-primary">{t('links_analysis') || 'Analyse des liens'}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-center">
+                        <div className="p-2 bg-card rounded flex items-center justify-center gap-2">
+                          <IconLink className="w-4 h-4 text-accent" />
+                          <div>
+                            <p className="text-lg font-bold text-primary">{result.seo.links.internal}</p>
+                            <p className="text-xs text-muted">{t('internal_links') || 'Internes'}</p>
+                          </div>
+                        </div>
+                        <div className="p-2 bg-card rounded flex items-center justify-center gap-2">
+                          <IconExternalLink className="w-4 h-4 text-muted" />
+                          <div>
+                            <p className="text-lg font-bold text-primary">{result.seo.links.external}</p>
+                            <p className="text-xs text-muted">{t('external_links') || 'Externes'}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Structured Data Types */}
+                  {result.seo.structuredDataTypes && result.seo.structuredDataTypes.length > 0 && (
+                    <div className="p-3 bg-success-light rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <IconRobot className="w-4 h-4 text-success" />
+                        <span className="text-sm font-medium text-success">{t('structured_data_found') || 'Données structurées trouvées'}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {result.seo.structuredDataTypes.map((type, i) => (
+                          <span key={i} className="px-2 py-0.5 bg-success text-white text-xs rounded">
+                            {type}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Robots Meta */}
+                  {result.seo.robotsMeta && (
+                    <div className="p-3 bg-hover rounded-lg flex items-center justify-between">
+                      <span className="text-sm text-secondary flex items-center gap-2">
+                        <IconRobot className="w-4 h-4" /> Robots
+                      </span>
+                      <code className="text-xs bg-card px-2 py-1 rounded">{result.seo.robotsMeta}</code>
+                    </div>
+                  )}
+
+                  {/* JS Rendering Status */}
+                  {result.jsRendered !== undefined && (
+                    <div className={`p-2 rounded-lg text-xs flex items-center gap-2 ${result.jsRendered ? 'bg-success-light text-success' : 'bg-warning-light text-warning'}`}>
+                      <IconCode className="w-4 h-4" />
+                      {result.jsRendered 
+                        ? (t('js_rendered') || 'DOM rendu avec JavaScript') 
+                        : (t('js_not_rendered') || 'HTML statique (JS non exécuté)')}
+                    </div>
+                  )}
                 </div>
               </AuditCategoryBlock>
 
