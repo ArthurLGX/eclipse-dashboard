@@ -57,6 +57,7 @@ import SidebarLogo from '@/app/components/SidebarLogo';
 import { getModuleStatus, ModuleStatusConfig, DEFAULT_MODULE_STATUSES } from '@/config/business-modules';
 import { MobileDrawer, MobileHeader, MobileBottomNav } from '@/app/components/mobile';
 import type { MobileDrawerItem } from '@/app/components/mobile';
+import AIChatAssistant from '@/app/components/AIChatAssistant';
 
 interface SidebarItem {
   id: string;
@@ -528,6 +529,9 @@ function DashboardLayoutContent({
       
       {/* Notification Bell - Fixed en haut à droite */}
       <NotificationBell />
+      
+      {/* AI Chat Assistant - Fixed en bas à gauche */}
+      <AIChatAssistant />
     
       <div className="dashboard-wrapper flex min-h-screen w-full">
           {/* Sidebar Desktop - Fixed */}
