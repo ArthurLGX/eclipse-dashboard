@@ -331,9 +331,10 @@ const TaskNode: React.FC<TaskNodeProps> = ({
 interface DetailPanelProps {
   task: WorkflowTask | null;
   onClose: () => void;
+  onSubtaskToggle?: (taskId: string, subtaskId: string, completed: boolean) => void;
 }
 
-const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose }) => {
+const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggle }) => {
   const { t } = useLanguage();
   
   // Calculer la progression des sous-tâches (appelé avant le early return)
@@ -457,15 +458,29 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose }) => {
             <div className="space-y-2">
               {task.subtasks.map((subtask) => {
                 const stConfig = STATUS_CONFIG[subtask.status];
-                const StIcon = stConfig.icon;
+                const isCompleted = subtask.status === 'completed';
                 return (
                   <div
                     key={subtask.id}
                     className="p-2 rounded-lg bg-hover border border-default"
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <StIcon size={12} className={stConfig.color} />
-                      <span className="text-xs text-primary font-medium flex-1 truncate">
+                      {/* Toggle checkbox */}
+                      <button
+                        onClick={() => onSubtaskToggle?.(task.id, subtask.id, !isCompleted)}
+                        className={`
+                          w-5 h-5 rounded-full border-2 flex items-center justify-center
+                          transition-all duration-200 flex-shrink-0
+                          ${isCompleted 
+                            ? 'bg-success border-success' 
+                            : 'border-default hover:border-accent bg-transparent'
+                          }
+                        `}
+                        title={isCompleted ? t('mark_incomplete') || 'Marquer comme non terminé' : t('mark_complete') || 'Marquer comme terminé'}
+                      >
+                        {isCompleted && <IconCheck size={12} className="text-white" />}
+                      </button>
+                      <span className={`text-xs font-medium flex-1 truncate ${isCompleted ? 'text-muted line-through' : 'text-primary'}`}>
                         {subtask.title}
                       </span>
                       <span className={`text-xs font-bold ${stConfig.color}`}>
@@ -710,6 +725,43 @@ export default function TaskWorkflowView({
     return Math.round(totalProgress / localTasks.length);
   }, [localTasks]);
 
+  // Handle subtask toggle (complete/incomplete)
+  const handleSubtaskToggle = useCallback((taskId: string, subtaskId: string, completed: boolean) => {
+    setLocalTasks(prev => prev.map(task => {
+      if (task.id === taskId && task.subtasks) {
+        const updatedSubtasks = task.subtasks.map(st => {
+          if (st.id === subtaskId) {
+            return {
+              ...st,
+              status: completed ? 'completed' as TaskStatus : 'not_started' as TaskStatus,
+              progress: completed ? 100 : 0,
+            };
+          }
+          return st;
+        });
+        
+        // Recalculer la progression de la tâche parente
+        const totalProgress = updatedSubtasks.reduce((sum, st) => sum + st.progress, 0);
+        const newProgress = Math.round(totalProgress / updatedSubtasks.length);
+        const allCompleted = updatedSubtasks.every(st => st.status === 'completed');
+        const someInProgress = updatedSubtasks.some(st => st.status === 'in_progress');
+        
+        return {
+          ...task,
+          subtasks: updatedSubtasks,
+          progress: newProgress,
+          status: allCompleted ? 'completed' as TaskStatus 
+                 : someInProgress || newProgress > 0 ? 'in_progress' as TaskStatus 
+                 : 'not_started' as TaskStatus,
+        };
+      }
+      return task;
+    }));
+    
+    // Trigger refresh to sync with API
+    onRefresh?.();
+  }, [onRefresh]);
+
   return (
     <div className="h-full flex flex-col" style={{ minHeight: '80vh' }}>
       {/* Header */}
@@ -882,6 +934,7 @@ export default function TaskWorkflowView({
             <DetailPanel
               task={selectedTask}
               onClose={() => setSelectedTaskId(null)}
+              onSubtaskToggle={handleSubtaskToggle}
             />
           )}
         </AnimatePresence>
