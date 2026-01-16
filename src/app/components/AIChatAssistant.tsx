@@ -611,7 +611,7 @@ export default function AIChatAssistant() {
                         {message.parts?.map((part, i) => {
                           if (part.type === 'text') {
                             return (
-                              <p key={i} className="text-sm whitespace-pre-wrap">
+                              <p key={i} className="text-sm !text-white whitespace-pre-wrap">
                                 {part.text}
                               </p>
                             );
