@@ -440,7 +440,14 @@ export default function ProjectWorkflowView({
               project.project_status === 'archived' ? 'bg-muted text-secondary' :
               'bg-info-light text-info'
             }`}>
-              {t(`project_status_${project.project_status}`) || project.project_status}
+              {
+                project.project_status === 'planning' ? (t('project_status_planning') || 'Planification') :
+                project.project_status === 'in_progress' ? (t('project_status_in_progress') || 'En cours') :
+                project.project_status === 'completed' ? (t('project_status_completed') || 'Terminé') :
+                project.project_status === 'archived' ? (t('project_status_archived') || 'Archivé') :
+                project.project_status === 'on_hold' ? (t('project_status_on_hold') || 'En pause') :
+                project.project_status
+              }
             </span>
           </div>
           
@@ -710,6 +717,24 @@ interface ProjectSelectorProps {
 export function ProjectSelector({ client, projects, onSelectProject }: ProjectSelectorProps) {
   const { t } = useLanguage();
 
+  // Helper to strip HTML tags from description
+  const stripHtml = (html: string) => {
+    if (!html) return '';
+    return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  };
+
+  // Helper for project status label
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      planning: t('project_status_planning') || 'Planification',
+      in_progress: t('project_status_in_progress') || 'En cours',
+      completed: t('project_status_completed') || 'Terminé',
+      archived: t('project_status_archived') || 'Archivé',
+      on_hold: t('project_status_on_hold') || 'En pause',
+    };
+    return labels[status] || status;
+  };
+
   return (
     <div className="flex flex-col items-center justify-center p-8" style={{ minHeight: '500px' }}>
       <div className="max-w-2xl w-full">
@@ -725,36 +750,42 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
 
         {/* Project cards */}
         <div className="grid gap-4">
-          {projects.map((project) => (
-            <motion.button
-              key={project.documentId}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onSelectProject(project)}
-              className="w-full p-4 bg-card border border-default rounded-xl hover:border-accent hover:shadow-lg transition-all text-left"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-primary">{project.title}</h3>
-                  <p className="text-sm text-secondary mt-1">
-                    {project.description?.slice(0, 100) || t('no_description') || 'Pas de description'}
-                    {project.description && project.description.length > 100 ? '...' : ''}
-                  </p>
+          {projects.map((project) => {
+            const cleanDescription = stripHtml(project.description || '');
+            
+            return (
+              <motion.button
+                key={project.documentId}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => onSelectProject(project)}
+                className="w-full p-4 bg-card border border-default rounded-xl hover:border-accent hover:shadow-lg transition-all text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0 pr-4">
+                    <h3 className="font-semibold text-primary">{project.title}</h3>
+                    {cleanDescription && (
+                      <p className="text-sm text-secondary mt-1 truncate">
+                        {cleanDescription.slice(0, 100)}
+                        {cleanDescription.length > 100 ? '...' : ''}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                      project.project_status === 'completed' ? 'bg-success-light text-success' :
+                      project.project_status === 'in_progress' ? 'bg-warning-light text-warning' :
+                      project.project_status === 'archived' ? 'bg-muted text-secondary' :
+                      'bg-info-light text-info'
+                    }`}>
+                      {getStatusLabel(project.project_status)}
+                    </span>
+                    <IconChevronRight size={20} className="text-muted" />
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                    project.project_status === 'completed' ? 'bg-success-light text-success' :
-                    project.project_status === 'in_progress' ? 'bg-warning-light text-warning' :
-                    project.project_status === 'archived' ? 'bg-muted text-secondary' :
-                    'bg-info-light text-info'
-                  }`}>
-                    {t(`project_status_${project.project_status}`) || project.project_status}
-                  </span>
-                  <IconChevronRight size={20} className="text-muted" />
-                </div>
-              </div>
-            </motion.button>
-          ))}
+              </motion.button>
+            );
+          })}
         </div>
 
         {/* Info message */}
