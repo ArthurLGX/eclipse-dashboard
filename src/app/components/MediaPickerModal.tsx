@@ -285,7 +285,7 @@ export default function MediaPickerModal({
               onClick={onClose}
               className="p-2 rounded-lg hover:bg-hover transition-colors"
             >
-              <IconX className="w-5 h-5 text-secondary" />
+                <IconX className="w-5 h-5 text-secondary" />
             </button>
           </div>
 
@@ -295,8 +295,8 @@ export default function MediaPickerModal({
               onClick={() => setActiveTab('computer')}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'computer'
-                  ? 'text-accent border-b-2 border-accent bg-accent-light'
-                  : 'text-secondary hover:text-primary hover:bg-hover'
+                  ? '!text-accent border-b-2 border-accent bg-accent-light'
+                  : '!text-secondary hover:text-primary hover:bg-hover'
               }`}
             >
               <IconUpload className="w-4 h-4" />
@@ -306,8 +306,8 @@ export default function MediaPickerModal({
               onClick={() => setActiveTab('library')}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'library'
-                  ? 'text-accent border-b-2 border-accent bg-accent-light'
-                  : 'text-secondary hover:text-primary hover:bg-hover'
+                  ? '!text-accent border-b-2 border-accent bg-accent-light'
+                  : '!text-secondary hover:text-primary hover:bg-hover'
               }`}
             >
               <IconPhoto className="w-4 h-4" />
@@ -317,8 +317,8 @@ export default function MediaPickerModal({
               onClick={() => setActiveTab('url')}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'url'
-                  ? 'text-accent border-b-2 border-accent bg-accent-light'
-                  : 'text-secondary hover:text-primary hover:bg-hover'
+                  ? '!text-accent border-b-2 border-accent bg-accent-light'
+                  : '!text-secondary hover:text-primary hover:bg-hover'
               }`}
             >
               <IconLink className="w-4 h-4" />
