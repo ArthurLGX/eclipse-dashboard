@@ -515,7 +515,7 @@ export default function TaskWorkflowView({
     let currentX = NODE_SIZE;
     let currentY = NODE_SIZE + 40;
 
-    localTasks.forEach((task, index) => {
+    localTasks.forEach((task) => {
       // Position de la tâche principale
       positions.set(task.id, { x: currentX, y: currentY });
 
