@@ -41,6 +41,8 @@ import { useProjectByDocumentId, useClients, clearCache } from '@/hooks/useApi';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ShareProjectModal from '@/app/components/ShareProjectModal';
 import ProjectTasks from '@/app/components/ProjectTasks';
+import TaskWorkflowView, { type WorkflowTask } from '@/app/components/TaskWorkflowView';
+import { IconRoute } from '@tabler/icons-react';
 import RichTextEditor from '@/app/components/RichTextEditor';
 import ProjectProfitabilityCard from '@/app/components/ProjectProfitabilityCard';
 import ProjectProfitabilityAI from '@/app/components/ProjectProfitabilityAI';
@@ -61,7 +63,7 @@ import { IconUserPlus, IconHourglass } from '@tabler/icons-react';
 
 
 
-type TabType = 'overview' | 'tasks' | 'invoices' | 'meetings';
+type TabType = 'overview' | 'tasks' | 'workflow' | 'invoices' | 'meetings';
 
 export default function ProjectDetailsPage() {
   
@@ -773,6 +775,7 @@ const PROJECT_TYPES = [
             {[
               { id: 'overview' as TabType, label: t('overview'), icon: IconChartBar },
               { id: 'tasks' as TabType, label: t('tasks'), icon: IconListCheck, count: pendingTasks, isOrange: true },
+              { id: 'workflow' as TabType, label: t('task_workflow') || 'Workflow', icon: IconRoute },
               { id: 'meetings' as TabType, label: t('meetings') || 'Réunions', icon: IconNotes, count: meetingNotes.length },
               { id: 'invoices' as TabType, label: t('invoices'), icon: IconFileInvoice, count: factures.length },
             ].map(tab => (
@@ -946,6 +949,55 @@ const PROJECT_TYPES = [
                             console.error('Error auto-completing project:', error);
                           }
                         }
+                      }}
+                    />
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'workflow' && (
+                <motion.div
+                  key="workflow"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                >
+                  <div className="card overflow-hidden">
+                    <TaskWorkflowView
+                      tasks={tasks.filter(t => !t.parent_task).map((task): WorkflowTask => ({
+                        id: task.documentId,
+                        title: task.title,
+                        description: task.description,
+                        status: task.task_status === 'todo' ? 'not_started' 
+                              : task.task_status === 'in_progress' ? 'in_progress'
+                              : task.task_status === 'completed' ? 'completed'
+                              : task.task_status === 'cancelled' ? 'blocked'
+                              : 'on_hold',
+                        progress: task.progress,
+                        priority: task.priority as 'low' | 'medium' | 'high' | 'urgent' | undefined,
+                        assignee: task.assigned_to?.username,
+                        startDate: task.start_date || undefined,
+                        endDate: task.due_date || undefined,
+                        subtasks: task.subtasks?.map((st): WorkflowTask => ({
+                          id: st.documentId,
+                          title: st.title,
+                          description: st.description,
+                          status: st.task_status === 'todo' ? 'not_started'
+                                : st.task_status === 'in_progress' ? 'in_progress'
+                                : st.task_status === 'completed' ? 'completed'
+                                : st.task_status === 'cancelled' ? 'blocked'
+                                : 'on_hold',
+                          progress: st.progress,
+                          priority: st.priority as 'low' | 'medium' | 'high' | 'urgent' | undefined,
+                          assignee: st.assigned_to?.username,
+                          startDate: st.start_date || undefined,
+                          endDate: st.due_date || undefined,
+                        })),
+                      }))}
+                      readOnly={!canEdit}
+                      onTaskClick={(task) => {
+                        // Optionnel: ouvrir le détail de la tâche
+                        setActiveTab('tasks');
                       }}
                     />
                   </div>
