@@ -182,7 +182,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmTask', result)}
-              className="w-full text-xs text-white bg-success hover:bg-success/90 flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full text-xs !text-white bg-success hover:brightness-110 flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
             >
               <IconCheck size={14} />
               {t('confirm_create_task') || 'Confirmer la création'}
@@ -209,7 +209,7 @@ const ToolResultCard: React.FC<{
               {result.actionUrl && (
                 <button 
                   onClick={() => onAction?.('navigateToQuote', result)}
-                  className="w-full text-xs text-accent bg-accent-light hover:bg-accent hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+                  className="w-full text-xs !text-accent bg-accent-light hover:bg-accent hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
                 >
                   <IconExternalLink size={14} />
                   {t('view_quote') || 'Voir le devis'}
@@ -219,7 +219,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmQuote', result)}
-              className="w-full text-xs text-white bg-accent hover:bg-accent/90 flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full text-xs text-white bg-accent hover:bg-accent flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
             >
               <IconFileInvoice size={14} />
               {t('create_quote_now') || 'Créer le devis maintenant'}
@@ -470,9 +470,9 @@ export default function AIChatAssistant() {
                 />
                 <div>
                   <h3 className="font-semibold text-sm">Eclipse Copilot</h3>
-                  <p className="text-xs text-white/70 flex items-center gap-2">
+                  <p className="text-xs text-white opacity-70 flex items-center gap-2">
                     {t('ai_assistant_subtitle') || 'Votre assistant business'}
-                    <span className="hidden sm:flex items-center gap-1 bg-white/20 px-1.5 py-0.5 rounded text-[10px]">
+                    <span className="hidden sm:flex items-center gap-1 bg-accent-light text-accent px-1.5 py-0.5 rounded text-[10px]">
                       <IconCommand size={10} />K
                     </span>
                   </p>
@@ -482,7 +482,7 @@ export default function AIChatAssistant() {
                 {messages.length > 0 && (
                   <button
                     onClick={handleClearChat}
-                    className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
                     title={t('clear_chat') || 'Nouvelle conversation'}
                   >
                     <IconRefresh size={16} />
@@ -490,14 +490,14 @@ export default function AIChatAssistant() {
                 )}
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
                   title={isExpanded ? 'Réduire' : 'Agrandir'}
                 >
                   {isExpanded ? <IconMinimize size={16} /> : <IconMaximize size={16} />}
                 </button>
                 <button
                   onClick={closeAssistant}
-                  className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
                   title="Fermer (Échap)"
                 >
                   <IconX size={18} />
@@ -687,7 +687,7 @@ export default function AIChatAssistant() {
                   <button
                     type="button"
                     onClick={stop}
-                    className="p-2.5 rounded-xl bg-danger text-white hover:bg-danger/90 transition-colors"
+                    className="p-2.5 rounded-xl bg-danger text-white hover:brightness-110 transition-colors"
                   >
                     <IconX size={18} />
                   </button>
@@ -695,7 +695,7 @@ export default function AIChatAssistant() {
                   <button
                     type="submit"
                     disabled={!inputValue.trim()}
-                    className="p-2.5 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2.5 rounded-xl bg-accent text-white hover:brightness-110 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <IconSend size={18} />
                   </button>
