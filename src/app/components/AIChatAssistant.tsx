@@ -182,7 +182,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmTask', result)}
-              className="w-full text-xs !text-white bg-success hover:brightness-110 flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full text-xs !text-white bg-success hover:bg-success-light hover:!text-success flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
             >
               <IconCheck size={14} />
               {t('confirm_create_task') || 'Confirmer la création'}
@@ -219,7 +219,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmQuote', result)}
-              className="w-full text-xs text-white bg-accent hover:bg-accent flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full text-xs text-white bg-accent hover:bg-accent-light hover:!text-accent flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
             >
               <IconFileInvoice size={14} />
               {t('create_quote_now') || 'Créer le devis maintenant'}
@@ -687,7 +687,7 @@ export default function AIChatAssistant() {
                   <button
                     type="button"
                     onClick={stop}
-                    className="p-2.5 rounded-xl bg-danger text-white hover:brightness-110 transition-colors"
+                    className="p-2.5 rounded-xl bg-danger text-white hover:bg-danger-light hover:!text-danger transition-colors"
                   >
                     <IconX size={18} />
                   </button>
@@ -695,7 +695,7 @@ export default function AIChatAssistant() {
                   <button
                     type="submit"
                     disabled={!inputValue.trim()}
-                    className="p-2.5 rounded-xl bg-accent text-white hover:brightness-110 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2.5 rounded-xl bg-accent text-white hover:bg-accent-light hover:!text-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <IconSend size={18} />
                   </button>
