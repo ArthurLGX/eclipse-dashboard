@@ -32,6 +32,16 @@ function getScoreLevel(score: number): {
       message: 'page_well_optimized',
     };
   }
+  if (score >= 70) {
+    return {
+      label: 'score_very_good',
+      icon: <IconTrophy className="w-6 h-6" />,
+      color: 'text-success',
+      strokeColor: 'var(--color-success)',
+      bgColor: 'bg-success-light',
+      message: 'page_well_optimized',
+    };
+  }
   if (score >= 60) {
     return {
       label: 'score_good',

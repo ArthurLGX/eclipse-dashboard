@@ -1,6 +1,6 @@
 /**
  * @file route.ts
- * @description API route for SEO & structure audit analysis
+ * @description API route for SEO & structure audit analysis with JS rendering support
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -44,6 +44,7 @@ interface MessageAnalysis {
   jargonWords: string[];
 }
 
+// Extended SEO Analysis with more metrics
 interface SeoAnalysis {
   title: string | null;
   titleLength: number;
@@ -51,6 +52,31 @@ interface SeoAnalysis {
   metaDescriptionLength: number;
   hasCanonical: boolean;
   hasOpenGraph: boolean;
+  hasTwitterCards: boolean;
+  robotsMeta: string | null;
+  // Images analysis
+  images: {
+    total: number;
+    withAlt: number;
+    withoutAlt: number;
+    missingAltList: string[];
+  };
+  // Links analysis
+  links: {
+    internal: number;
+    external: number;
+    broken: number;
+    nofollow: number;
+    internalList: string[];
+    externalList: string[];
+  };
+  // Structured data
+  hasStructuredData: boolean;
+  structuredDataTypes: string[];
+  // Additional meta
+  viewport: string | null;
+  charset: string | null;
+  language: string | null;
   issues: string[];
 }
 
@@ -117,6 +143,8 @@ export interface AuditResult {
   detectedSections?: DetectedSection[];
   idealSections?: IdealSection[];
   styleAnalysis?: StyleAnalysis;
+  // JS rendering status
+  jsRendered?: boolean;
 }
 
 // ============================================================================
@@ -680,250 +708,377 @@ interface CaptureResult {
 }
 
 async function captureScreenshots(url: string): Promise<CaptureResult | undefined> {
+  const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
+  
+  // On Vercel/serverless: use external screenshot API (thum.io - free, no API key needed)
+  if (isVercel) {
+    return captureScreenshotsExternal(url);
+  }
+  
+  // Local development: try Puppeteer, fallback to external API
   try {
-    // Dynamic import to avoid loading puppeteer on every request
-    const puppeteer = await import('puppeteer');
-    
-    const browser = await puppeteer.default.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--disable-gpu',
-        '--window-size=1440,900',
-      ],
-    });
+    return await captureScreenshotsPuppeteer(url);
+  } catch (error) {
+    console.warn('Puppeteer failed, falling back to external API:', error);
+    return captureScreenshotsExternal(url);
+  }
+}
 
-    try {
-      const page = await browser.newPage();
-      
-      // Set viewport
-      await page.setViewport({ width: 1440, height: 900 });
-      
-      // Set user agent
-      await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+// External screenshot API (works on Vercel)
+async function captureScreenshotsExternal(url: string): Promise<CaptureResult | undefined> {
+  try {
+    const encodedUrl = encodeURIComponent(url);
+    
+    // Use thum.io API (free, no API key)
+    // Format: https://image.thum.io/get/width/1440/crop/900/noanimate/url
+    const viewportUrl = `https://image.thum.io/get/width/1440/crop/900/noanimate/${encodedUrl}`;
+    const fullPageUrl = `https://image.thum.io/get/width/1440/noanimate/${encodedUrl}`;
+    
+    // Fetch both screenshots in parallel
+    const [viewportResponse, fullPageResponse] = await Promise.all([
+      fetch(viewportUrl, { 
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        signal: AbortSignal.timeout(30000),
+      }),
+      fetch(fullPageUrl, { 
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        signal: AbortSignal.timeout(30000),
+      }),
+    ]);
+    
+    if (!viewportResponse.ok || !fullPageResponse.ok) {
+      console.error('Screenshot API failed:', viewportResponse.status, fullPageResponse.status);
+      return undefined;
+    }
+    
+    // Convert to base64
+    const [viewportBuffer, fullPageBuffer] = await Promise.all([
+      viewportResponse.arrayBuffer(),
+      fullPageResponse.arrayBuffer(),
+    ]);
+    
+    const viewportBase64 = Buffer.from(viewportBuffer).toString('base64');
+    const fullPageBase64 = Buffer.from(fullPageBuffer).toString('base64');
+    
+    // For external API, we can't detect sections with position, so return basic detection
+    const detectedSections = await detectSectionsFromHTML(url);
+    
+    return {
+      screenshots: {
+        viewport: viewportBase64,
+        fullPage: fullPageBase64,
+        capturedAt: new Date().toISOString(),
+      },
+      detectedSections,
+    };
+  } catch (error) {
+    console.error('External screenshot capture failed:', error);
+    return undefined;
+  }
+}
+
+// Detect sections from HTML (without browser)
+async function detectSectionsFromHTML(url: string): Promise<DetectedSection[]> {
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      },
+    });
+    const html = await response.text();
+    const htmlLower = html.toLowerCase();
+    
+    const sectionNames: Record<string, string> = {
+      navigation: 'Navigation',
+      hero: 'Hero Section',
+      problem: 'Problème',
+      solution: 'Solution',
+      proof: 'Preuve Sociale',
+      features: 'Fonctionnalités',
+      cta: 'Call-to-Action',
+      pricing: 'Tarification',
+      faq: 'FAQ',
+      footer: 'Footer',
+    };
+    
+    return Object.entries(SECTION_PATTERNS).map(([sectionType, { keywords, cssPatterns }]) => {
+      // Check CSS patterns
+      let found = cssPatterns.some(pattern => 
+        htmlLower.includes(`class="${pattern}"`) ||
+        htmlLower.includes(`class='${pattern}'`) ||
+        htmlLower.includes(`id="${pattern}"`) ||
+        htmlLower.includes(`id='${pattern}'`) ||
+        htmlLower.includes(`class="`) && htmlLower.includes(pattern)
       );
       
-      // Navigate to page
-      await page.goto(url, {
-        waitUntil: 'networkidle2',
-        timeout: 30000,
-      });
-      
-      // Initial wait for page to render
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 1000)));
-      
-      // Try to close cookie banners first
-      try {
-        await page.evaluate(() => {
-          const selectors = [
-            '[class*="cookie"] button',
-            '[class*="consent"] button',
-            '[id*="cookie"] button',
-            'button[class*="accept"]',
-            'button[class*="agree"]',
-            '.cc-dismiss',
-            '#onetrust-accept-btn-handler',
-            '[class*="gdpr"] button',
-            '[aria-label*="cookie"] button',
-            '[aria-label*="consent"] button',
-          ];
-          
-          for (const selector of selectors) {
-            const buttons = document.querySelectorAll(selector);
-            buttons.forEach((btn) => {
-              const button = btn as HTMLButtonElement;
-              if (button && button.offsetParent !== null) {
-                button.click();
-              }
-            });
-          }
-        });
-        await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
-      } catch {
-        // Ignore cookie banner errors
+      // Check keywords if not found
+      if (!found) {
+        found = keywords.some(keyword => htmlLower.includes(keyword.toLowerCase()));
       }
       
-      // Scroll down the page to trigger lazy-load and scroll-based animations
-      await page.evaluate(async () => {
-        const scrollStep = window.innerHeight;
-        const scrollDelay = 200; // ms between scrolls
-        const maxScrolls = 10;
+      const issues: string[] = [];
+      const suggestions: string[] = [];
+      
+      if (!found && ['hero', 'cta', 'solution'].includes(sectionType)) {
+        issues.push(`Section ${sectionNames[sectionType]} manquante`);
+        suggestions.push(`Ajouter une section ${sectionNames[sectionType]} claire`);
+      }
+      
+      return {
+        id: sectionType,
+        name: sectionNames[sectionType] || sectionType,
+        type: sectionType as SectionType,
+        detected: found,
+        issues,
+        suggestions,
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
+// Puppeteer-based capture (local development only)
+async function captureScreenshotsPuppeteer(url: string): Promise<CaptureResult | undefined> {
+  // Dynamic import to avoid loading puppeteer on every request
+  const puppeteer = await import('puppeteer');
+  
+  const browser = await puppeteer.default.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--disable-gpu',
+      '--window-size=1440,900',
+    ],
+  });
+
+  try {
+    const page = await browser.newPage();
+    
+    // Set viewport
+    await page.setViewport({ width: 1440, height: 900 });
+    
+    // Set user agent
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    );
+    
+    // Navigate to page
+    await page.goto(url, {
+      waitUntil: 'networkidle2',
+      timeout: 30000,
+    });
+    
+    // Initial wait for page to render
+    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 1000)));
+    
+    // Try to close cookie banners first
+    try {
+      await page.evaluate(() => {
+        const selectors = [
+          '[class*="cookie"] button',
+          '[class*="consent"] button',
+          '[id*="cookie"] button',
+          'button[class*="accept"]',
+          'button[class*="agree"]',
+          '.cc-dismiss',
+          '#onetrust-accept-btn-handler',
+          '[class*="gdpr"] button',
+          '[aria-label*="cookie"] button',
+          '[aria-label*="consent"] button',
+        ];
         
-        for (let i = 0; i < maxScrolls; i++) {
-          window.scrollBy(0, scrollStep);
-          await new Promise(resolve => setTimeout(resolve, scrollDelay));
+        for (const selector of selectors) {
+          const buttons = document.querySelectorAll(selector);
+          buttons.forEach((btn) => {
+            const button = btn as HTMLButtonElement;
+            if (button && button.offsetParent !== null) {
+              button.click();
+            }
+          });
+        }
+      });
+      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+    } catch {
+      // Ignore cookie banner errors
+    }
+    
+    // Scroll down the page to trigger lazy-load and scroll-based animations
+    await page.evaluate(async () => {
+      const scrollStep = window.innerHeight;
+      const scrollDelay = 200; // ms between scrolls
+      const maxScrolls = 10;
+      
+      for (let i = 0; i < maxScrolls; i++) {
+        window.scrollBy(0, scrollStep);
+        await new Promise(resolve => setTimeout(resolve, scrollDelay));
+        
+        // Stop if we've reached the bottom
+        if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+          break;
+        }
+      }
+      
+      // Wait for animations triggered by scroll
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Scroll back to top
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      
+      // Wait for any scroll-to-top animations
+      await new Promise(resolve => setTimeout(resolve, 300));
+    });
+    
+    // Wait for CSS animations to complete
+    await page.evaluate(() => {
+      return new Promise<void>((resolve) => {
+        // Get all animated elements
+        const animatedElements = document.querySelectorAll('*');
+        let animationsRunning = 0;
+        
+        animatedElements.forEach((el) => {
+          const style = window.getComputedStyle(el);
+          const animationDuration = parseFloat(style.animationDuration) || 0;
+          const transitionDuration = parseFloat(style.transitionDuration) || 0;
           
-          // Stop if we've reached the bottom
-          if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+          if (animationDuration > 0 || transitionDuration > 0) {
+            animationsRunning++;
+          }
+        });
+        
+        // Wait a reasonable time for animations (max 3s)
+        const waitTime = Math.min(animationsRunning > 0 ? 2000 : 500, 3000);
+        setTimeout(resolve, waitTime);
+      });
+    });
+    
+    // Final wait to ensure everything is rendered
+    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+    
+    // Capture viewport screenshot
+    const viewportScreenshot = await page.screenshot({
+      encoding: 'base64',
+      type: 'png',
+    });
+    
+    // Capture full page screenshot
+    const fullPageScreenshot = await page.screenshot({
+      encoding: 'base64',
+      type: 'png',
+      fullPage: true,
+    });
+    
+    // Detect sections with their positions using Puppeteer
+    const detectedSections = await page.evaluate((patterns: typeof SECTION_PATTERNS) => {
+      const sections: Array<{
+        id: string;
+        name: string;
+        type: string;
+        detected: boolean;
+        position?: { top: number; height: number };
+        issues: string[];
+        suggestions: string[];
+      }> = [];
+      
+      const pageHeight = document.documentElement.scrollHeight;
+      const viewportHeight = window.innerHeight;
+      
+      // Section names mapping
+      const sectionNames: Record<string, string> = {
+        navigation: 'Navigation',
+        hero: 'Hero Section',
+        problem: 'Problème',
+        solution: 'Solution',
+        proof: 'Preuve Sociale',
+        features: 'Fonctionnalités',
+        cta: 'Call-to-Action',
+        pricing: 'Tarification',
+        faq: 'FAQ',
+        footer: 'Footer',
+      };
+      
+      // Detect each section type
+      Object.entries(patterns).forEach(([sectionType, { keywords, cssPatterns }]) => {
+        let found = false;
+        let element: Element | null = null;
+        
+        // Search by CSS class/id patterns
+        for (const pattern of cssPatterns) {
+          const el = document.querySelector(
+            `[class*="${pattern}"], [id*="${pattern}"], section[data-section="${pattern}"]`
+          );
+          if (el) {
+            found = true;
+            element = el;
             break;
           }
         }
         
-        // Wait for animations triggered by scroll
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Scroll back to top
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        
-        // Wait for any scroll-to-top animations
-        await new Promise(resolve => setTimeout(resolve, 300));
-      });
-      
-      // Wait for CSS animations to complete
-      await page.evaluate(() => {
-        return new Promise<void>((resolve) => {
-          // Get all animated elements
-          const animatedElements = document.querySelectorAll('*');
-          let animationsRunning = 0;
-          
-          animatedElements.forEach((el) => {
-            const style = window.getComputedStyle(el);
-            const animationDuration = parseFloat(style.animationDuration) || 0;
-            const transitionDuration = parseFloat(style.transitionDuration) || 0;
-            
-            if (animationDuration > 0 || transitionDuration > 0) {
-              animationsRunning++;
-            }
-          });
-          
-          // Wait a reasonable time for animations (max 3s)
-          const waitTime = Math.min(animationsRunning > 0 ? 2000 : 500, 3000);
-          setTimeout(resolve, waitTime);
-        });
-      });
-      
-      // Final wait to ensure everything is rendered
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
-      
-      // Capture viewport screenshot
-      const viewportScreenshot = await page.screenshot({
-        encoding: 'base64',
-        type: 'png',
-      });
-      
-      // Capture full page screenshot
-      const fullPageScreenshot = await page.screenshot({
-        encoding: 'base64',
-        type: 'png',
-        fullPage: true,
-      });
-      
-      // Detect sections with their positions using Puppeteer
-      const detectedSections = await page.evaluate((patterns: typeof SECTION_PATTERNS) => {
-        const sections: Array<{
-          id: string;
-          name: string;
-          type: string;
-          detected: boolean;
-          position?: { top: number; height: number };
-          issues: string[];
-          suggestions: string[];
-        }> = [];
-        
-        const pageHeight = document.documentElement.scrollHeight;
-        const viewportHeight = window.innerHeight;
-        
-        // Section names mapping
-        const sectionNames: Record<string, string> = {
-          navigation: 'Navigation',
-          hero: 'Hero Section',
-          problem: 'Problème',
-          solution: 'Solution',
-          proof: 'Preuve Sociale',
-          features: 'Fonctionnalités',
-          cta: 'Call-to-Action',
-          pricing: 'Tarification',
-          faq: 'FAQ',
-          footer: 'Footer',
-        };
-        
-        // Detect each section type
-        Object.entries(patterns).forEach(([sectionType, { keywords, cssPatterns }]) => {
-          let found = false;
-          let element: Element | null = null;
-          
-          // Search by CSS class/id patterns
-          for (const pattern of cssPatterns) {
-            const el = document.querySelector(
-              `[class*="${pattern}"], [id*="${pattern}"], section[data-section="${pattern}"]`
-            );
-            if (el) {
-              found = true;
-              element = el;
-              break;
-            }
-          }
-          
-          // Search by text content if not found
-          if (!found) {
-            const allElements = document.querySelectorAll('section, div, header, footer, nav');
-            for (const el of allElements) {
-              const text = el.textContent?.toLowerCase() || '';
-              for (const keyword of keywords) {
-                if (text.includes(keyword.toLowerCase())) {
-                  found = true;
-                  element = el;
-                  break;
-                }
+        // Search by text content if not found
+        if (!found) {
+          const allElements = document.querySelectorAll('section, div, header, footer, nav');
+          for (const el of allElements) {
+            const text = el.textContent?.toLowerCase() || '';
+            for (const keyword of keywords) {
+              if (text.includes(keyword.toLowerCase())) {
+                found = true;
+                element = el;
+                break;
               }
-              if (found) break;
             }
+            if (found) break;
           }
-          
-          // Calculate position
-          let position: { top: number; height: number } | undefined;
-          if (element) {
-            const rect = element.getBoundingClientRect();
-            const scrollTop = window.scrollY;
-            position = {
-              top: Math.round(((rect.top + scrollTop) / pageHeight) * 100),
-              height: Math.round((rect.height / viewportHeight) * 100),
-            };
-          }
-          
-          // Generate issues and suggestions
-          const issues: string[] = [];
-          const suggestions: string[] = [];
-          
-          if (!found) {
-            if (['hero', 'cta', 'solution'].includes(sectionType)) {
-              issues.push(`Section ${sectionNames[sectionType]} manquante`);
-              suggestions.push(`Ajouter une section ${sectionNames[sectionType]} claire`);
-            }
-          }
-          
-          sections.push({
-            id: sectionType,
-            name: sectionNames[sectionType] || sectionType,
-            type: sectionType,
-            detected: found,
-            position,
-            issues,
-            suggestions,
-          });
-        });
+        }
         
-        return sections;
-      }, SECTION_PATTERNS);
+        // Calculate position
+        let position: { top: number; height: number } | undefined;
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const scrollTop = window.scrollY;
+          position = {
+            top: Math.round(((rect.top + scrollTop) / pageHeight) * 100),
+            height: Math.round((rect.height / viewportHeight) * 100),
+          };
+        }
+        
+        // Generate issues and suggestions
+        const issues: string[] = [];
+        const suggestions: string[] = [];
+        
+        if (!found) {
+          if (['hero', 'cta', 'solution'].includes(sectionType)) {
+            issues.push(`Section ${sectionNames[sectionType]} manquante`);
+            suggestions.push(`Ajouter une section ${sectionNames[sectionType]} claire`);
+          }
+        }
+        
+        sections.push({
+          id: sectionType,
+          name: sectionNames[sectionType] || sectionType,
+          type: sectionType,
+          detected: found,
+          position,
+          issues,
+          suggestions,
+        });
+      });
       
-      return {
-        screenshots: {
-          viewport: viewportScreenshot as string,
-          fullPage: fullPageScreenshot as string,
-          capturedAt: new Date().toISOString(),
-        },
-        detectedSections: detectedSections as DetectedSection[],
-      };
-    } finally {
-      await browser.close();
-    }
-  } catch (error) {
-    console.error('Screenshot capture failed:', error);
-    return undefined;
+      return sections;
+    }, SECTION_PATTERNS);
+    
+    return {
+      screenshots: {
+        viewport: viewportScreenshot as string,
+        fullPage: fullPageScreenshot as string,
+        capturedAt: new Date().toISOString(),
+      },
+      detectedSections: detectedSections as DetectedSection[],
+    };
+  } finally {
+    await browser.close();
   }
 }
 

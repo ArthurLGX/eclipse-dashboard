@@ -25,13 +25,13 @@ import {
   IconClock2,
   IconChevronRight,
   IconArrowRight,
+  IconHelpCircle,
 } from '@tabler/icons-react';
 import type { Client, Project, Facture } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import OnboardingTour, { useOnboardingStatus, type OnboardingStep } from './OnboardingTour';
-import { IconPlayerPlay, IconHelpCircle } from '@tabler/icons-react';
 
 // ============================================================================
 // TYPES
