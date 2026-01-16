@@ -211,6 +211,7 @@ interface TaskNodeProps {
   onSelect: () => void;
   onHover: (hovered: boolean) => void;
   onExpand?: () => void;
+  onToggle?: (completed: boolean) => void;
   isExpanded?: boolean;
   size?: number;
   isSubtask?: boolean;
@@ -225,13 +226,16 @@ const TaskNode: React.FC<TaskNodeProps> = ({
   onSelect,
   onHover,
   onExpand,
+  onToggle,
   isExpanded,
   size = NODE_SIZE,
   isSubtask = false,
 }) => {
+  const { t } = useLanguage();
   const config = STATUS_CONFIG[task.status];
   const StatusIcon = config.icon;
   const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+  const isCompleted = task.status === 'completed';
 
   return (
     <motion.div
@@ -280,6 +284,27 @@ const TaskNode: React.FC<TaskNodeProps> = ({
           {task.progress}%
         </span>
       </div>
+
+      {/* Toggle button (top-right) */}
+      {onToggle && !isSubtask && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle(!isCompleted);
+          }}
+          className={`
+            absolute -top-1 -right-1 w-6 h-6 rounded-full
+            flex items-center justify-center transition-all z-10
+            ${isCompleted 
+              ? 'bg-success border-2 border-success shadow-md' 
+              : 'bg-card border-2 border-default hover:border-success hover:bg-success-light'
+            }
+          `}
+          title={isCompleted ? t('mark_incomplete') || 'Marquer non terminé' : t('mark_complete') || 'Marquer terminé'}
+        >
+          <IconCheck size={14} className={isCompleted ? 'text-white' : 'text-muted'} />
+        </button>
+      )}
 
       {/* Expand button for tasks with subtasks */}
       {hasSubtasks && onExpand && (
@@ -725,6 +750,31 @@ export default function TaskWorkflowView({
     return Math.round(totalProgress / localTasks.length);
   }, [localTasks]);
 
+  // Handle task toggle (complete/incomplete) - also updates all subtasks
+  const handleTaskToggle = useCallback((taskId: string, completed: boolean) => {
+    setLocalTasks(prev => prev.map(task => {
+      if (task.id === taskId) {
+        // Mettre à jour toutes les sous-tâches aussi
+        const updatedSubtasks = task.subtasks?.map(st => ({
+          ...st,
+          status: completed ? 'completed' as TaskStatus : 'not_started' as TaskStatus,
+          progress: completed ? 100 : 0,
+        }));
+        
+        return {
+          ...task,
+          status: completed ? 'completed' as TaskStatus : 'not_started' as TaskStatus,
+          progress: completed ? 100 : 0,
+          subtasks: updatedSubtasks,
+        };
+      }
+      return task;
+    }));
+    
+    // Trigger refresh to sync with API
+    onRefresh?.();
+  }, [onRefresh]);
+
   // Handle subtask toggle (complete/incomplete)
   const handleSubtaskToggle = useCallback((taskId: string, subtaskId: string, completed: boolean) => {
     setLocalTasks(prev => prev.map(task => {
@@ -883,6 +933,7 @@ export default function TaskWorkflowView({
                   onSelect={() => setSelectedTaskId(task.id)}
                   onHover={(h) => setHoveredTaskId(h ? task.id : null)}
                   onExpand={() => toggleTaskExpand(task.id)}
+                  onToggle={(completed) => handleTaskToggle(task.id, completed)}
                   isExpanded={expandedTasks.has(task.id)}
                 />
 
