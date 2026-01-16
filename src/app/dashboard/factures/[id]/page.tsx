@@ -65,9 +65,11 @@ export default function FacturePage() {
   const id = extractedId || rawId;
   const edit = params.edit;
   
-  // Client prérempli depuis l'URL (quand on vient de la page client)
+  // Client prérempli depuis l'URL (quand on vient de la page client ou du workflow)
   const prefilledClientId = searchParams.get('clientId');
   const prefilledClientName = searchParams.get('clientName');
+  const prefilledClientDocumentId = searchParams.get('client'); // documentId du client (depuis workflow)
+  const prefilledProjectDocumentId = searchParams.get('project'); // documentId du projet (depuis workflow)
   // Type de document (quote ou invoice)
   const documentType = searchParams.get('type') === 'quote' ? 'quote' : 'invoice';
 
@@ -202,18 +204,10 @@ export default function FacturePage() {
       if (rawIdLower === 'add' || rawIdLower === 'ajouter' || rawIdLower === 'new' || rawIdLower === t('add').toLowerCase()) {
         setEditing(true);
         
-        // Préremplir le client si fourni dans l'URL
-        const factureWithClient = {
-          ...emptyFacture,
-          client_id: prefilledClientId ? {
-            ...emptyClient,
-            id: Number(prefilledClientId),
-            name: prefilledClientName || '',
-          } : emptyClient,
-        };
-        
-        setFacture(factureWithClient);
-        setFormData(factureWithClient);
+        // On attend que les clients et projets soient chargés pour pré-remplir
+        // La logique de pré-remplissage est gérée dans un useEffect séparé
+        setFacture(emptyFacture);
+        setFormData(emptyFacture);
         setInvoiceLines([]);
         setIsLoading(false);
         return;
@@ -273,7 +267,44 @@ export default function FacturePage() {
     fetchCompany();
     fetchClientsAndProjects();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawId, id, user?.id, prefilledClientId, prefilledClientName]);
+  }, [rawId, id, user?.id]);
+
+  // Pré-remplir client et projet quand ils sont chargés (depuis URL params)
+  useEffect(() => {
+    if (!isCreationMode || clients.length === 0) return;
+    
+    let clientToSet: Client | null = null;
+    let projectToSet: Project | null = null;
+    
+    // Chercher le client par documentId (depuis workflow)
+    if (prefilledClientDocumentId) {
+      clientToSet = clients.find(c => c.documentId === prefilledClientDocumentId) || null;
+    }
+    // Ou par id numérique (ancien format)
+    else if (prefilledClientId) {
+      clientToSet = clients.find(c => c.id === Number(prefilledClientId)) || null;
+      if (!clientToSet && prefilledClientName) {
+        // Fallback: créer un client temporaire avec les infos de l'URL
+        clientToSet = { ...emptyClient, id: Number(prefilledClientId), name: prefilledClientName };
+      }
+    }
+    
+    // Chercher le projet par documentId
+    if (prefilledProjectDocumentId && projects.length > 0) {
+      projectToSet = projects.find(p => p.documentId === prefilledProjectDocumentId) || null;
+    }
+    
+    // Mettre à jour le formulaire si on a trouvé un client
+    if (clientToSet && formData) {
+      const updatedFormData = {
+        ...formData,
+        client_id: clientToSet,
+        project: projectToSet || formData.project,
+      };
+      setFormData(updatedFormData);
+      setFacture(updatedFormData);
+    }
+  }, [clients, projects, prefilledClientDocumentId, prefilledClientId, prefilledClientName, prefilledProjectDocumentId, isCreationMode]);
 
   useEffect(() => {
     if (facture) setTvaApplicable(facture.tva_applicable ?? true);
