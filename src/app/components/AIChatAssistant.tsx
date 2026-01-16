@@ -604,14 +604,14 @@ export default function AIChatAssistant() {
                         className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
                           message.role === 'user'
                             ? 'bg-accent text-white rounded-br-md'
-                            : 'bg-hover border border-default rounded-bl-md'
+                            : 'bg-hover !text-primary border border-default rounded-bl-md'
                         }`}
                       >
                         {/* Render message parts */}
                         {message.parts?.map((part, i) => {
                           if (part.type === 'text') {
                             return (
-                              <p key={i} className="text-sm !text-white whitespace-pre-wrap">
+                              <p key={i} className="text-sm whitespace-pre-wrap">
                                 {part.text}
                               </p>
                             );
