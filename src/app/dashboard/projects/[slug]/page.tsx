@@ -216,6 +216,53 @@ const PROJECT_TYPES = [
     }
   }, [activeTab, loadTasks]);
 
+  // Synchronisation automatique du statut du projet basé sur les tâches
+  useEffect(() => {
+    const syncProjectStatusFromTasks = async () => {
+      if (!project?.documentId || !isOwner || tasks.length === 0) return;
+      
+      // Compter les tâches par statut (incluant sous-tâches)
+      const allTasks = tasks.flatMap(t => [t, ...(t.subtasks || [])]);
+      const inProgressCount = allTasks.filter(t => t.task_status === 'in_progress').length;
+      const completedCount = allTasks.filter(t => t.task_status === 'completed').length;
+      const todoCount = allTasks.filter(t => t.task_status === 'todo').length;
+      const totalTasks = allTasks.length;
+      
+      // Déterminer le nouveau statut du projet
+      let newStatus: string | null = null;
+      
+      // Si au moins une tâche est en cours → projet en cours
+      if (inProgressCount > 0 && project.project_status === 'planning') {
+        newStatus = 'in_progress';
+      }
+      // Si toutes les tâches sont terminées → projet terminé
+      else if (completedCount === totalTasks && totalTasks > 0 && project.project_status !== 'completed' && project.project_status !== 'archived') {
+        newStatus = 'completed';
+      }
+      // Si toutes les tâches sont à faire et projet était en cours → revenir en planification
+      else if (todoCount === totalTasks && totalTasks > 0 && project.project_status === 'in_progress') {
+        newStatus = 'planning';
+      }
+      
+      // Mettre à jour le statut si nécessaire
+      if (newStatus && newStatus !== project.project_status) {
+        try {
+          await updateProjectStatusWithSync(
+            project.documentId,
+            newStatus as 'planning' | 'in_progress' | 'development' | 'review' | 'completed' | 'on_hold' | 'archived',
+            project.client?.documentId
+          );
+          // Refresh le projet pour refléter le changement
+          refetchProject();
+        } catch (error) {
+          console.error('Error syncing project status:', error);
+        }
+      }
+    };
+    
+    syncProjectStatusFromTasks();
+  }, [tasks, project?.documentId, project?.project_status, project?.client?.documentId, isOwner, refetchProject]);
+
   // Charger les notes de réunion du projet
   useEffect(() => {
     const loadMeetingNotes = async () => {

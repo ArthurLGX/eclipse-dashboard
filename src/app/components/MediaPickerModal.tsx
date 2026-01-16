@@ -271,7 +271,7 @@ export default function MediaPickerModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
-            <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+            <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
               {mediaType === 'video' ? (
                 <IconVideo className="w-5 h-5 !text-accent" />
               ) : mediaType === 'document' ? (
