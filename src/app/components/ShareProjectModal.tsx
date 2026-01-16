@@ -1088,7 +1088,7 @@ export default function ShareProjectModal({
                             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
                               bannerType === 'color' 
                                 ? 'border-accent bg-accent-light !text-accent' 
-                                : 'border-default bg-muted text-secondary hover:border-accent/50'
+                                : 'border-default bg-muted text-secondary hover:border-accent'
                             }`}
                           >
                             <IconPalette className="w-4 h-4" />
@@ -1100,7 +1100,7 @@ export default function ShareProjectModal({
                             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
                               bannerType === 'image' 
                                 ? 'border-accent bg-accent-light !text-accent' 
-                                : 'border-default bg-muted text-secondary hover:border-accent/50'
+                                : 'border-default bg-muted text-secondary hover:border-accent'
                             }`}
                           >
                             <IconPhoto className="w-4 h-4" />

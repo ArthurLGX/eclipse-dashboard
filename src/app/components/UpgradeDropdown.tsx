@@ -199,7 +199,7 @@ export default function UpgradeDropdown({
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2, delay: index * 0.05 }}
                   onClick={() => onPlanSelectAction(plan)}
-                  className="w-full p-4 rounded-lg border border-default hover:border-accent/50 hover:bg-hover transition-all duration-200 !text-left group"
+                  className="w-full p-4 rounded-lg border border-default hover:border-accent hover:bg-hover transition-all duration-200 !text-left group"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="text-primary font-semibold capitalize group-hover:text-accent transition-colors">

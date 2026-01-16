@@ -160,7 +160,7 @@ export default function TrialExpiredModal({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
                       onClick={() => handleChoosePlan(plan)}
-                      className="bg-hover border border-default rounded-lg p-4 hover:border-accent/50 hover:bg-hover transition-all duration-200 text-left group"
+                      className="bg-hover border border-default rounded-lg p-4 hover:border-accent hover:bg-hover transition-all duration-200 text-left group"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="text-primary font-semibold capitalize group-hover:text-accent transition-colors">

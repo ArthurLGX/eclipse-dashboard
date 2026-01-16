@@ -1916,7 +1916,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
               <button
                 type="button"
                 onClick={() => setShowMediaPicker(true)}
-                className="aspect-square rounded-lg border-2 border-dashed border-default flex flex-col items-center justify-center text-muted hover:text-accent hover:border-accent/50 transition-colors"
+                className="aspect-square rounded-lg border-2 border-dashed border-default flex flex-col items-center justify-center text-muted hover:text-accent hover:border-accent transition-colors"
               >
                 <IconPlus size={24} />
                 <span className="text-xs mt-1">Ajouter</span>

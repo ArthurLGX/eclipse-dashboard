@@ -668,7 +668,7 @@ export default function AdminUsersPage() {
                             className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
                               selectedRole === role.id
                                 ? 'border-accent bg-accent-light'
-                                : 'border-muted hover:border-accent/50'
+                                : 'border-muted hover:border-accent'
                             }`}
                           >
                             <div className={`p-2 rounded-lg ${

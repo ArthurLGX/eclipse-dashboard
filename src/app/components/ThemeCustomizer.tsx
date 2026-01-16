@@ -290,7 +290,7 @@ export default function ThemeCustomizer({
                 className={`px-2 py-1.5 rounded-lg text-xs transition-all border ${
                   customColors.fontFamily === font.name
                     ? 'bg-accent text-white border-accent'
-                    : 'bg-card border-default hover:border-accent/50 text-primary'
+                    : 'bg-card border-default hover:border-accent text-primary'
                 }`}
                 style={{ fontFamily }}
               >
@@ -487,7 +487,7 @@ export default function ThemeCustomizer({
           <button
             onClick={handleOpenImagePicker}
             disabled={uploadingHeaderBackground}
-            className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-default rounded-lg hover:border-accent/50 transition-colors text-secondary hover:text-primary"
+            className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-default rounded-lg hover:border-accent transition-colors text-secondary hover:text-primary"
           >
             {uploadingHeaderBackground ? (
               <IconLoader2 className="w-5 h-5 animate-spin" />

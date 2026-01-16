@@ -2836,7 +2836,7 @@ export default function ComposeNewsletterPage() {
                                 className={`relative p-4 rounded-xl border transition-all text-left bg-card group ${
                                   isActive 
                                     ? 'border-accent border-2 border-accent' 
-                                    : 'border-default hover:border-accent/50'
+                                    : 'border-default hover:border-accent'
                                 }`}
                               >
                                 {/* Badge défaut */}

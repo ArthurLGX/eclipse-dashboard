@@ -478,7 +478,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                         flex flex-col items-center gap-2 p-4 rounded-xl border transition-all text-center
                         ${importMode === option.value 
                           ? 'bg-accent-light border-accent !text-accent' 
-                          : 'bg-card border-default hover:border-accent/50 text-secondary hover:text-primary'
+                          : 'bg-card border-default hover:border-accent text-secondary hover:text-primary'
                         }
                       `}
                     >
@@ -502,7 +502,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                   border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all
                   ${isDragging 
                     ? 'border-accent bg-accent-light scale-[1.02]' 
-                    : 'border-default hover:border-accent/50 hover:bg-card-hover'
+                    : 'border-default hover:border-accent hover:bg-card-hover'
                   }
                 `}
               >
@@ -802,7 +802,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all border
                           ${duplicateCheckMode === option.value 
                             ? 'bg-accent-light border-accent' 
-                            : 'bg-card border-default hover:border-accent/50'
+                            : 'bg-card border-default hover:border-accent'
                           }
                         `}
                       >

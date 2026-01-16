@@ -500,7 +500,7 @@ export default function ImageUpload({
             relative overflow-hidden
             bg-card border-2 border-default
             transition-all duration-200
-            cursor-pointer hover:border-accent/50
+            cursor-pointer hover:border-accent
           `}
           onClick={handleAvatarClick}
         >

@@ -916,7 +916,7 @@ export default function PipelinePage() {
           {onboardingCompleted && (
             <button
               onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
-              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-default text-muted hover:text-accent hover:bg-accent/5 transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-default text-muted hover:text-accent hover:bg-accent-light transition-colors"
               title={t('replay_tutorial') || 'Revoir le tutoriel'}
             >
               <IconPlayerPlay size={16} />
@@ -927,7 +927,7 @@ export default function PipelinePage() {
             onClick={() => setShowKPIs(!showKPIs)}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
               showKPIs 
-                ? 'bg-accent-light !text-accent border-accent/30' 
+                ? 'bg-accent-light !text-accent border-accent' 
                 : 'bg-card text-muted border-default hover:bg-hover'
             }`}
           >

@@ -343,7 +343,7 @@ export default function MediaPickerModal({
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="flex flex-col items-center justify-center w-full max-w-md p-8 border-2 border-dashed border-default rounded-xl hover:border-accent/50 hover:bg-hover/30 transition-all cursor-pointer group"
+                  className="flex flex-col items-center justify-center w-full max-w-md p-8 border-2 border-dashed border-default rounded-xl hover:border-accent hover:bg-hover/30 transition-all cursor-pointer group"
                 >
                   {uploading ? (
                     <>
@@ -408,7 +408,7 @@ export default function MediaPickerModal({
                           className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
                             selectedLibraryItem?.id === media.id
                               ? 'border-accent border-2 border-accent'
-                              : 'border-transparent hover:border-accent/50'
+                              : 'border-transparent hover:border-accent'
                           }`}
                         >
                           {isVideo ? (

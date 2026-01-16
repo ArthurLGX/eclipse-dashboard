@@ -908,7 +908,7 @@ export default function SettingsPage() {
             {/* VS Code / Cursor - API Tokens */}
             <Link
               href="/dashboard/settings/integrations"
-              className="block p-4 rounded-xl border border-default hover:border-accent/50 hover:bg-accent-light/50 transition-all group"
+              className="block p-4 rounded-xl border border-default hover:border-accent hover:bg-accent-light/50 transition-all group"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-accent-hover flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -929,7 +929,7 @@ export default function SettingsPage() {
             {/* Fathom AI */}
             <Link
               href="/dashboard/settings/meeting-integrations"
-              className="block p-4 rounded-xl border border-default hover:border-accent/50 hover:bg-accent-light/50 transition-all group"
+              className="block p-4 rounded-xl border border-default hover:border-accent hover:bg-accent-light/50 transition-all group"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm border border-default">

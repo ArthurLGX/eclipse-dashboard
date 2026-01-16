@@ -168,7 +168,7 @@ export default function TableFilters({
             className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
               showAdvanced || activeFiltersCount > 0
                 ? 'bg-accent-light border-accent !text-accent'
-                : 'bg-card border-default text-secondary hover:border-accent/50'
+                : 'bg-card border-default text-secondary hover:border-accent'
             }`}
           >
             <IconAdjustments className="w-5 h-5" />

@@ -1918,7 +1918,7 @@ function TaskCard({
         } ${
           isDraggedOver ? 'ring-1 ring-accent ring-offset-2 ring-offset-card border-accent scale-[1.02]' : ''
         } ${
-          canBeDropTarget && !isDraggedOver ? 'border-dashed border-accent/50' : ''
+          canBeDropTarget && !isDraggedOver ? 'border-dashed border-accent' : ''
         }`}
         style={!isSubtask ? { borderLeftWidth: '4px', borderLeftColor: taskColor } : undefined}
         onClick={(e) => {
@@ -3274,7 +3274,7 @@ function TaskGanttView({
                       className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
                         exportMode === 'light' 
                           ? 'border-accent bg-accent-light' 
-                          : 'border-default bg-muted hover:border-accent/50'
+                          : 'border-default bg-muted hover:border-accent'
                       }`}
                     >
                       <div className="flex flex-col items-center gap-1">
@@ -3289,7 +3289,7 @@ function TaskGanttView({
                       className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
                         exportMode === 'dark' 
                           ? 'border-accent bg-accent-light' 
-                          : 'border-default bg-muted hover:border-accent/50'
+                          : 'border-default bg-muted hover:border-accent'
                       }`}
                     >
                       <div className="flex flex-col items-center gap-1">

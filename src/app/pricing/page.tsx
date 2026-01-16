@@ -183,7 +183,7 @@ export default function Plans() {
       };
     }
     return {
-      card: 'bg-card border-default hover:border-accent/50',
+      card: 'bg-card border-default hover:border-accent',
       title: 'text-primary',
       description: 'text-secondary',
       price: 'text-accent',

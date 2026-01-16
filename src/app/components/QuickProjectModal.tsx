@@ -390,7 +390,7 @@ export default function QuickProjectModal({
                     <IconChevronRight className="w-5 h-5 !text-accent" />
                   </div>
                   {lastProject && (
-                    <div className="mt-3 pt-3 border-t border-accent/20 flex items-center gap-2 text-sm !text-accent">
+                    <div className="mt-3 pt-3 border-t border-accent flex items-center gap-2 text-sm !text-accent">
                       <IconBriefcase className="w-4 h-4" />
                       <span>{t('last_used') || 'Dernier utilisé'} : <strong>{lastProject.title}</strong></span>
                     </div>
@@ -567,7 +567,7 @@ export default function QuickProjectModal({
 
                 {/* Résumé de la source */}
                 {selectedSourceProject && (
-                  <div className="p-3 rounded-lg bg-accent-light border border-accent/20">
+                  <div className="p-3 rounded-lg bg-accent-light border border-accent">
                     <div className="flex items-center gap-2 text-sm">
                       <IconCopy className="w-4 h-4 !text-accent" />
                       <span className="text-accent font-medium">
@@ -588,7 +588,7 @@ export default function QuickProjectModal({
                 )}
 
                 {selectedTemplate && (
-                  <div className="p-3 rounded-lg bg-accent-light border border-accent/20">
+                  <div className="p-3 rounded-lg bg-accent-light border border-accent">
                     <div className="flex items-center gap-2 text-sm">
                       <IconTemplate className="w-4 h-4 !text-accent" />
                       <span className="text-accent font-medium">

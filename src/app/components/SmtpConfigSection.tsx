@@ -398,7 +398,7 @@ export default function SmtpConfigSection() {
               className={`px-3 py-1.5 rounded-lg text-sm border transition-all ${
                 formData.smtp_host === preset.host
                   ? 'bg-accent-light border-accent !text-accent'
-                  : 'bg-card border-default text-secondary hover:border-accent/50'
+                  : 'bg-card border-default text-secondary hover:border-accent'
               }`}
             >
               {preset.name}

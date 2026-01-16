@@ -189,7 +189,7 @@ function EmailsDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={() => router.push(type.href)}
-            className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
+            className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent hover:shadow-lg transition-all duration-300"
           >
             <div 
               className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
@@ -222,7 +222,7 @@ function EmailsDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           onClick={() => router.push('/dashboard/emails/analytics')}
-          className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
+          className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl border-accent-light flex items-center justify-center">
@@ -246,7 +246,7 @@ function EmailsDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           onClick={() => router.push('/dashboard/emails/history')}
-          className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
+          className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl bg-info-light flex items-center justify-center">
@@ -271,7 +271,7 @@ function EmailsDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
         onClick={() => router.push('/dashboard/emails/scheduled')}
-        className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300 mb-10"
+        className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent hover:shadow-lg transition-all duration-300 mb-10"
       >
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-xl bg-warning-light flex items-center justify-center">

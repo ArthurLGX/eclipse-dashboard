@@ -137,7 +137,7 @@ export default function TemplatePickerModal({
                       relative cursor-pointer rounded-xl overflow-hidden border-2 transition-all
                       ${isSelected
                         ? 'border-accent shadow-lg shadow-accent/20'
-                        : 'border-transparent hover:border-accent/50'
+                        : 'border-transparent hover:border-accent'
                       }
                     `}
                   >

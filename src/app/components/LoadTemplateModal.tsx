@@ -140,7 +140,7 @@ export default function LoadTemplateModal({
                     className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer ${
                       selectedTemplate?.documentId === template.documentId
                         ? 'border-accent bg-accent-light'
-                        : 'border-default hover:border-accent/50'
+                        : 'border-default hover:border-accent'
                     }`}
                     onClick={() => setSelectedTemplate(template)}
                   >
