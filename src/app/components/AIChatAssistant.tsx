@@ -425,7 +425,7 @@ export default function AIChatAssistant() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => openAssistant()}
-            className="fixed bottom-6 left-6 z-[9999] w-14 h-14 rounded-full bg-accent shadow-xl flex items-center justify-center hover:shadow-2xl transition-shadow group"
+            className="fixed bottom-6 left-6 z-[9999] w-14 h-14 rounded-full bg-accent-light border border-accent shadow-xl flex items-center justify-center hover:shadow-2xl transition-shadow group"
             title={`${t('ai_assistant') || 'Assistant IA Eclipse'} (⌘K)`}
           >
             <div className="relative">
@@ -434,7 +434,7 @@ export default function AIChatAssistant() {
                 alt="Eclipse AI"
                 width={32}
                 height={32}
-                className="rounded-full"
+                className="rounded-full bg-accent-light"
               />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full border-2 border-accent animate-pulse" />
             </div>
@@ -466,11 +466,11 @@ export default function AIChatAssistant() {
                   alt="Eclipse AI"
                   width={28}
                   height={28}
-                  className="rounded-full"
+                  className="rounded-full bg-accent-light"
                 />
                 <div>
-                  <h3 className="font-semibold text-sm">Eclipse Copilot</h3>
-                  <p className="text-xs text-white opacity-70 flex items-center gap-2">
+                  <h3 className="font-semibold text-sm !text-white">Eclipse Copilot</h3>
+                  <p className="text-xs !text-white opacity-70 flex items-center gap-2">
                     {t('ai_assistant_subtitle') || 'Votre assistant business'}
                     <span className="hidden sm:flex items-center gap-1 bg-accent-light text-accent px-1.5 py-0.5 rounded text-[10px]">
                       <IconCommand size={10} />K
