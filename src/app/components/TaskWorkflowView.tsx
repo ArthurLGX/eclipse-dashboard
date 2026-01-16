@@ -719,10 +719,18 @@ export default function TaskWorkflowView({
             <h3 className="font-semibold text-primary">
               {t('task_workflow') || 'Workflow des tâches'}
             </h3>
-            {/* Overall progress */}
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-hover">
+            {/* Overall progress with visual bar */}
+            <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-hover">
               <span className="text-xs text-secondary">{t('progress') || 'Progression'}:</span>
-              <span className="text-sm font-bold text-accent">{overallProgress}%</span>
+              <div className="flex items-center gap-2">
+                <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-accent rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${overallProgress}%` }}
+                  />
+                </div>
+                <span className="text-sm font-bold text-accent min-w-[3ch]">{overallProgress}%</span>
+              </div>
             </div>
             {/* Task count */}
             <span className="text-xs text-muted">
