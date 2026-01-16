@@ -290,6 +290,7 @@ const TaskNode: React.FC<TaskNodeProps> = ({
         <button
           onClick={(e) => {
             e.stopPropagation();
+            e.preventDefault();
             onToggle(!isCompleted);
           }}
           className={`
@@ -492,7 +493,11 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
                     <div className="flex items-center gap-2 mb-1">
                       {/* Toggle checkbox */}
                       <button
-                        onClick={() => onSubtaskToggle?.(task.id, subtask.id, !isCompleted)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          onSubtaskToggle?.(task.id, subtask.id, !isCompleted);
+                        }}
                         className={`
                           w-5 h-5 rounded-full border-2 flex items-center justify-center
                           transition-all duration-200 flex-shrink-0
@@ -755,43 +760,42 @@ export default function TaskWorkflowView({
   // Handle task toggle (complete/incomplete) - also updates all subtasks
   const handleTaskToggle = useCallback((taskId: string, completed: boolean) => {
     if (completed) {
-      // Sauvegarder l'état actuel avant de tout mettre à 100%
-      setLocalTasks(prev => {
-        const task = prev.find(t => t.id === taskId);
-        if (task) {
-          setPreviousTaskStates(prevStates => {
-            const newStates = new Map(prevStates);
-            newStates.set(taskId, {
-              progress: task.progress,
-              status: task.status,
-              subtasks: task.subtasks?.map(st => ({
-                id: st.id,
-                progress: st.progress,
-                status: st.status,
-              })),
-            });
-            return newStates;
+      // D'abord sauvegarder l'état actuel
+      const taskToSave = localTasks.find(t => t.id === taskId);
+      if (taskToSave) {
+        setPreviousTaskStates(prevStates => {
+          const newStates = new Map(prevStates);
+          newStates.set(taskId, {
+            progress: taskToSave.progress,
+            status: taskToSave.status,
+            subtasks: taskToSave.subtasks?.map(st => ({
+              id: st.id,
+              progress: st.progress,
+              status: st.status,
+            })),
           });
-        }
-        
-        return prev.map(task => {
-          if (task.id === taskId) {
-            const updatedSubtasks = task.subtasks?.map(st => ({
-              ...st,
-              status: 'completed' as TaskStatus,
-              progress: 100,
-            }));
-            
-            return {
-              ...task,
-              status: 'completed' as TaskStatus,
-              progress: 100,
-              subtasks: updatedSubtasks,
-            };
-          }
-          return task;
+          return newStates;
         });
-      });
+      }
+      
+      // Ensuite mettre à jour les tâches
+      setLocalTasks(prev => prev.map(task => {
+        if (task.id === taskId) {
+          const updatedSubtasks = task.subtasks?.map(st => ({
+            ...st,
+            status: 'completed' as TaskStatus,
+            progress: 100,
+          }));
+          
+          return {
+            ...task,
+            status: 'completed' as TaskStatus,
+            progress: 100,
+            subtasks: updatedSubtasks,
+          };
+        }
+        return task;
+      }));
     } else {
       // Restaurer l'état précédent
       const previousState = previousTaskStates.get(taskId);
@@ -833,7 +837,7 @@ export default function TaskWorkflowView({
     
     // Trigger refresh to sync with API
     onRefresh?.();
-  }, [onRefresh, previousTaskStates]);
+  }, [onRefresh, previousTaskStates, localTasks]);
 
   // Handle subtask toggle (complete/incomplete)
   const handleSubtaskToggle = useCallback((taskId: string, subtaskId: string, completed: boolean) => {
