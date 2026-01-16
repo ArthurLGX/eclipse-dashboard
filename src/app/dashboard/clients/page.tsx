@@ -18,7 +18,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AddClientModal from './AddClientModal';
 import ImportClientsModal from './ImportClientsModal';
 import ImportProgressModal, { ImportProgressItem } from './ImportProgressModal';
-import { useClients, clearCache } from '@/hooks/useApi';
+import { useClients, useProjects, useFactures, clearCache } from '@/hooks/useApi';
 import { generateClientSlug } from '@/utils/slug';
 import type { Client, CreateClientData } from '@/types';
 import { useQuota } from '@/app/context/QuotaContext';
@@ -26,6 +26,8 @@ import { uploadImage } from '@/lib/api';
 import QuotaExceededModal from '@/app/components/QuotaExceededModal';
 import { useQuotaExceeded } from '@/hooks/useQuotaExceeded';
 import ClientWorkflowMapView from '@/app/components/ClientWorkflowMapView';
+
+import type { Project, Facture } from '@/types';
 
 export default function ClientsPage() {
   const { showGlobalPopup } = usePopup();
@@ -85,9 +87,15 @@ export default function ClientsPage() {
   const [progressTotalCount, setProgressTotalCount] = useState(0);
   const [isImportComplete, setIsImportComplete] = useState(false);
 
-  // Hook avec cache
+  // Hooks avec cache
   const { data: clientsData, loading, refetch } = useClients(user?.id);
   const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
+  
+  // For multi-client workflow view - load all projects and factures
+  const { data: allProjectsData } = useProjects(user?.id);
+  const { data: allFacturesData } = useFactures(user?.id);
+  const allProjects = useMemo(() => allProjectsData || [], [allProjectsData]);
+  const allFactures = useMemo(() => allFacturesData || [], [allFacturesData]);
 
   // Quota exceeded detection
   const { 
@@ -827,7 +835,7 @@ export default function ClientsPage() {
         onToggleFavorite={handleToggleFavorite}
         draggable={true}
         onReorder={handleReorder}
-        mapView={<ClientWorkflowMapView clients={filteredClients} clientId="all" />}
+        mapView={<ClientWorkflowMapView clients={filteredClients} clientId="all" allProjects={allProjects as Project[]} allFactures={allFactures as Facture[]} />}
       />
 
       <AddClientModal

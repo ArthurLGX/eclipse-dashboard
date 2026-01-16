@@ -12,6 +12,7 @@ import {
   IconMapPin,
   IconFileInvoice,
   IconEdit,
+  IconRoute,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
@@ -23,7 +24,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useClientBySlug, useUnassignedProjects, useFactures, useProjects, clearCache } from '@/hooks/useApi';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ImageUpload from '@/app/components/ImageUpload';
-import ClientWorkflowMapView from '@/app/components/ClientWorkflowMapView';
+import ProjectWorkflowView, { ProjectSelector } from '@/app/components/ProjectWorkflowView';
 import type { Client, Project, Facture } from '@/types';
 
 interface ProjectTableRow {
@@ -50,7 +51,14 @@ export default function ClientDetailsPage() {
   
   const [searchValue, setSearchValue] = useState('');
   const [isEditMode, setIsEditMode] = useState(searchParams.get('edit') === '1');
-  const [activeTab, setActiveTab] = useState<'projects' | 'workflow'>('projects');
+  // Support for tab URL param (e.g., from pipeline "view journey" link)
+  const tabParam = searchParams.get('tab');
+  const projectParam = searchParams.get('project');
+  const [activeTab, setActiveTab] = useState<'projects' | 'workflow'>(
+    tabParam === 'workflow' ? 'workflow' : 'projects'
+  );
+  // Selected project for workflow view
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(projectParam || null);
 
   const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -418,7 +426,7 @@ export default function ClientDetailsPage() {
         </div>
       )}
 
-      {/* Tabs */}
+      {/* Tabs with descriptive tooltips */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <button
           type="button"
@@ -432,13 +440,22 @@ export default function ClientDetailsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('workflow')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
             activeTab === 'workflow' ? 'bg-accent text-white' : 'bg-hover text-secondary hover:text-primary'
           }`}
+          title={t('client_journey_subtitle') || 'Qu\'est-ce qui existe et qu\'est-ce qui manque ?'}
         >
-          {t('workflow_tab') || 'Workflow'}
+          <IconRoute size={14} />
+          {t('workflow_tab') || 'Parcours client'}
         </button>
       </div>
+      
+      {/* Contextual description */}
+      {activeTab === 'workflow' && (
+        <p className="text-xs text-muted mb-4 -mt-2">
+          {t('client_journey_description') || 'Vue détaillée des éléments liés à ce client'} — {t('workflow_explains_what') || 'Ce qui existe / manque'}
+        </p>
+      )}
 
       {activeTab === 'projects' && (
         <div className="bg-card border border-default p-6 rounded-xl">
@@ -469,14 +486,71 @@ export default function ClientDetailsPage() {
       )}
 
       {activeTab === 'workflow' && client && (
-        <div className="bg-card border border-default p-6 rounded-xl">
-          <ClientWorkflowMapView 
-            clients={[client]} 
-            clientId={client.documentId}
-            clientFactures={clientFactures}
-            clientProjects={clientProjects}
-            clientContracts={[]}
-          />
+        <div className="bg-card border border-default rounded-xl overflow-hidden" style={{ minHeight: '500px' }}>
+          {/* Si plusieurs projets et aucun sélectionné → sélecteur */}
+          {clientProjects.length > 1 && !selectedProjectId ? (
+            <ProjectSelector
+              client={client}
+              projects={clientProjects}
+              onSelectProject={(project) => {
+                setSelectedProjectId(project.documentId);
+                // Update URL
+                router.replace(`${window.location.pathname}?tab=workflow&project=${project.documentId}`);
+              }}
+            />
+          ) : clientProjects.length === 0 ? (
+            /* Aucun projet → message */
+            <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+              <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                <IconRoute size={32} className="text-muted" />
+              </div>
+              <h3 className="text-lg font-semibold text-primary mb-2">
+                {t('no_projects_for_workflow') || 'Aucun projet pour ce client'}
+              </h3>
+              <p className="text-secondary text-sm max-w-md">
+                {t('workflow_needs_project') || 'Le workflow représente l\'exécution concrète d\'un projet. Créez d\'abord un projet pour ce client.'}
+              </p>
+              <Link
+                href={`/dashboard/projects/new?client=${client.documentId}`}
+                className="mt-4 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-dark transition-colors"
+              >
+                {t('create_project') || 'Créer un projet'}
+              </Link>
+            </div>
+          ) : (
+            /* Projet sélectionné ou unique → workflow */
+            (() => {
+              const projectToShow = selectedProjectId 
+                ? clientProjects.find(p => p.documentId === selectedProjectId)
+                : clientProjects[0];
+              
+              if (!projectToShow) return null;
+              
+              // Filter quotes and invoices for this project
+              const projectQuotes = clientFactures.filter(f => 
+                f.document_type === 'quote' && 
+                (f.project?.documentId === projectToShow.documentId || !f.project)
+              );
+              const projectInvoices = clientFactures.filter(f => 
+                f.document_type !== 'quote' && 
+                (f.project?.documentId === projectToShow.documentId || !f.project)
+              );
+              
+              return (
+                <ProjectWorkflowView
+                  client={client}
+                  project={projectToShow}
+                  quotes={projectQuotes}
+                  invoices={projectInvoices}
+                  contracts={[]}
+                  onBack={clientProjects.length > 1 ? () => {
+                    setSelectedProjectId(null);
+                    router.replace(`${window.location.pathname}?tab=workflow`);
+                  } : undefined}
+                />
+              );
+            })()
+          )}
         </div>
       )}
     </div>

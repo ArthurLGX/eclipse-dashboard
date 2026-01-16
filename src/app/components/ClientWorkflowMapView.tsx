@@ -22,11 +22,14 @@ import {
   IconCheck,
   IconClock,
   IconTimeline,
+  IconChartLine,
+  IconPlayerPlay,
 } from '@tabler/icons-react';
 import type { Client, PipelineStatus, Facture, Project } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { generateClientSlug } from '@/utils/slug';
 import { useRouter } from 'next/navigation';
+import OnboardingTour, { useOnboardingStatus, type OnboardingStep } from './OnboardingTour';
 
 // ============================================================================
 // TYPES
@@ -105,12 +108,17 @@ export default function ClientWorkflowMapView({
   clientFactures = [],
   clientProjects = [],
   clientContracts = [],
+  allProjects = [],
+  allFactures = [],
 }: {
   clients: Client[];
   clientId?: string;
   clientFactures?: Facture[];
   clientProjects?: Project[];
   clientContracts?: Array<{ id: number; documentId: string; title?: string; status?: string }>;
+  // For multi-client mode: pass all projects and factures to filter per client
+  allProjects?: Project[];
+  allFactures?: Facture[];
 }) {
   const { t } = useLanguage();
   const router = useRouter();
@@ -145,8 +153,101 @@ export default function ClientWorkflowMapView({
   const [clientPositions, setClientPositions] = useState<Record<string, ClientPosition>>({});
   const [draggingClient, setDraggingClient] = useState<string | null>(null);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const { isCompleted: onboardingCompleted, reset: resetOnboarding } = useOnboardingStatus('workflow-tour');
 
   const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || '';
+  
+  // Onboarding steps for workflow
+  const onboardingSteps: OnboardingStep[] = useMemo(() => [
+    {
+      id: 'intro',
+      position: 'center',
+      title: t('onboarding_workflow_intro_title') || 'Voici le parcours client',
+      description: t('onboarding_workflow_intro_desc') || 'Il représente tout ce qui existe (ou manque) pour ce client.',
+      microCopy: t('onboarding_workflow_intro_micro') || 'Vous n\'êtes plus dans une vue commerciale, vous êtes dans le concret.',
+      highlightStyle: 'glow',
+    },
+    {
+      id: 'center',
+      target: '[data-onboarding="client-center"]',
+      position: 'right',
+      title: t('onboarding_workflow_center_title') || 'Le client est au centre',
+      description: t('onboarding_workflow_center_desc') || 'Tout part de ce client. Les éléments autour représentent les étapes réelles de la collaboration.',
+      microCopy: t('onboarding_workflow_center_micro') || 'Ce workflow est spécifique à ce client.',
+      highlightStyle: 'pulse',
+    },
+    {
+      id: 'nodes',
+      target: '[data-onboarding="satellite-node"]',
+      position: 'left',
+      title: t('onboarding_workflow_nodes_title') || 'Des objets réels',
+      description: t('onboarding_workflow_nodes_desc') || 'Chaque élément est quelque chose de concret : devis, contrat, projet, facture...',
+      microCopy: t('onboarding_workflow_nodes_micro') || 'Rien n\'est fictif ici.',
+      highlightStyle: 'glow',
+    },
+    {
+      id: 'states',
+      target: '[data-onboarding="satellite-node"]',
+      position: 'bottom',
+      title: t('onboarding_workflow_states_title') || 'Lecture instantanée',
+      description: t('onboarding_workflow_states_desc') || 'Les couleurs vous indiquent la situation en un coup d\'œil.',
+      microCopy: t('onboarding_workflow_states_micro') || 'Vert = terminé • Orange = en cours • Gris = manquant • Rouge = bloquant',
+    },
+    {
+      id: 'missing',
+      target: '[data-onboarding="satellite-empty"]',
+      position: 'top',
+      title: t('onboarding_workflow_missing_title') || 'Ce qui manque est visible',
+      description: t('onboarding_workflow_missing_desc') || 'Les éléments absents indiquent ce qu\'il reste à faire. L\'absence n\'est pas une erreur, c\'est une information.',
+      microCopy: t('onboarding_workflow_missing_micro') || 'Ce que vous ne voyez pas est aussi important que ce que vous voyez.',
+      highlightStyle: 'pulse',
+    },
+    {
+      id: 'action',
+      target: '[data-onboarding="anchor-point"]',
+      position: 'right',
+      title: t('onboarding_workflow_action_title') || 'Agissez directement',
+      description: t('onboarding_workflow_action_desc') || 'Vous pouvez créer un élément manquant directement depuis ici, par clic ou par glisser-déposer.',
+      microCopy: t('onboarding_workflow_action_micro') || 'Pas besoin de retourner dans le menu.',
+      ctaText: t('onboarding_workflow_action_cta') || 'Créer un élément',
+      highlightStyle: 'glow',
+    },
+    {
+      id: 'links',
+      target: '[data-onboarding="connection-line"]',
+      position: 'center',
+      title: t('onboarding_workflow_links_title') || 'Les liens racontent l\'histoire',
+      description: t('onboarding_workflow_links_desc') || 'Les connexions montrent la logique réelle du projet. Un devis accepté mène à un projet, puis à une facture.',
+      microCopy: t('onboarding_workflow_links_micro') || 'Les liens ne sont pas décoratifs.',
+    },
+    {
+      id: 'sync',
+      position: 'center',
+      title: t('onboarding_workflow_sync_title') || 'Tout est synchronisé',
+      description: t('onboarding_workflow_sync_desc') || 'Ce que vous faites ici met à jour automatiquement le pipeline. Vous n\'avez rien à gérer deux fois.',
+      microCopy: t('onboarding_workflow_sync_micro') || 'Le workflow est la source de vérité.',
+    },
+    {
+      id: 'final',
+      position: 'center',
+      title: t('onboarding_workflow_final_title') || 'Vous êtes prêt !',
+      description: t('onboarding_workflow_final_desc') || 'Le pipeline vous dit où vous en êtes. Le parcours client vous montre quoi faire ensuite.',
+      microCopy: t('onboarding_workflow_final_micro') || 'Créez votre prochain élément pour avancer.',
+      ctaText: t('onboarding_workflow_final_cta') || 'Compris ✓',
+    },
+  ], [t]);
+  
+  // Trigger onboarding on first visit
+  useEffect(() => {
+    if (viewMode === 'radial' && clientId !== 'all' && !onboardingCompleted) {
+      // Small delay to let the view render first
+      const timer = setTimeout(() => setShowOnboarding(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [viewMode, clientId, onboardingCompleted]);
   
   // Initialize client positions in a grid layout
   useEffect(() => {
@@ -630,6 +731,7 @@ export default function ClientWorkflowMapView({
       <React.Fragment key={satellite.type}>
         {/* Satellite node - Circular design */}
         <motion.div
+          data-onboarding={index === 0 ? "satellite-node" : !satellite.linked ? "satellite-empty" : undefined}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ 
             opacity: isDimmed ? 0.4 : 1, 
@@ -852,6 +954,17 @@ export default function ClientWorkflowMapView({
             >
               <IconCompass className="w-4 h-4" />
             </button>
+            {/* Replay onboarding button */}
+            {onboardingCompleted && viewMode === 'radial' && (
+              <button
+                type="button"
+                onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
+                className="p-2 rounded text-muted hover:bg-hover hover:text-accent transition-colors"
+                title={t('replay_tutorial') || 'Revoir le tutoriel'}
+              >
+                <IconPlayerPlay className="w-4 h-4" />
+              </button>
+            )}
             <div className="w-px h-6 bg-default" />
           </>
         )}
@@ -946,6 +1059,7 @@ export default function ClientWorkflowMapView({
             <>
               {/* SVG Layer for connections */}
               <svg
+                data-onboarding="connection-line"
                 className="absolute inset-0 pointer-events-none"
                 width={radialLayout.contentWidth}
                 height={radialLayout.contentHeight}
@@ -1020,6 +1134,7 @@ export default function ClientWorkflowMapView({
 
               {/* Central client node */}
               <div
+                data-onboarding="client-center"
                 className="absolute flex flex-col items-center justify-center"
                 style={{ left: center.x, top: center.y, transform: 'translate(-50%, -50%)' }}
               >
@@ -1086,12 +1201,23 @@ export default function ClientWorkflowMapView({
                     {t(`workflow_state_${globalState}`) || GLOBAL_STATE_STYLES[globalState].label}
                   </div>
                   
+                  {/* Pipeline stage indicator - shows where in sales cycle */}
+                  {radialClient.pipeline_status && (
+                    <div 
+                      className="absolute -bottom-5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-accent-light border border-accent text-[9px] !text-accent whitespace-nowrap flex items-center gap-1"
+                      title={t('current_pipeline_stage') || 'Étape pipeline actuelle'}
+                    >
+                      <IconChartLine className="w-2.5 h-2.5 !text-accent" />
+                      {getPipelineLabel(radialClient.pipeline_status)}
+                    </div>
+                  )}
+                  
                   {/* Completeness percentage */}
                   {completeness < 1 && (
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] text-muted whitespace-nowrap">
+                    <div className="absolute -bottom-11 left-1/2 -translate-x-1/2 text-[9px] text-muted whitespace-nowrap">
                       {Math.round(completeness * 100)}% • {completenessData.missing.length > 0 && <span className="text-warning">{completenessData.missing.length} {t(completenessData.missing.length > 1 ? 'workflow_missing_plural' : 'workflow_missing') || 'manquant'}</span>}
                       {completenessData.missing.length > 0 && completenessData.notDone.length > 0 && ' • '}
-                      {completenessData.notDone.length > 0 && <span className="text-accent">{completenessData.notDone.length} {t('workflow_in_progress') || 'en cours'}</span>}
+                      {completenessData.notDone.length > 0 && <span className="!text-accent">{completenessData.notDone.length} {t('workflow_in_progress') || 'en cours'}</span>}
                     </div>
                   )}
 
@@ -1104,6 +1230,7 @@ export default function ClientWorkflowMapView({
                       <button
                         key={`anchor-${i}`}
                         type="button"
+                        data-onboarding={i === 0 ? "anchor-point" : undefined}
                         className="absolute w-4 h-4 rounded-full bg-accent shadow-md hover:scale-125 transition-transform cursor-crosshair"
                         style={{
                           left: `calc(50% + ${ax}px - 8px)`,
@@ -1151,7 +1278,7 @@ export default function ClientWorkflowMapView({
                 return (
                   <div key={rowKey} className="absolute" style={{ left: 0, top: y }}>
                     <div
-                      className="absolute w-[160px] pl-6"
+                      className="absolute w-[160px] !pl-6"
                       style={{ top: 0, transform: 'translateY(-50%)' }}
                     >
                       <div className="text-xs text-muted mb-2">{client.enterprise || client.email}</div>
@@ -1281,41 +1408,97 @@ export default function ClientWorkflowMapView({
                   const isSelected = selectedClient?.documentId === client.documentId;
                   const stageStatuses = getStageStatuses(client.pipeline_status || null);
                   const currentStageIndex = stageStatuses.findIndex(s => s === 'current');
-                  const globalClientState: GlobalState = stageStatuses.some(s => s === 'blocked') 
-                    ? 'blocked' 
-                    : currentStageIndex === stages.length - 1 
-                      ? 'ok' 
-                      : 'partial';
+                  // Old pipeline-based state (kept for reference but not used)
+                  // const oldGlobalClientState: GlobalState = stageStatuses.some(s => s === 'blocked') 
+                  //   ? 'blocked' 
+                  //   : currentStageIndex === stages.length - 1 
+                  //     ? 'ok' 
+                  //     : 'partial';
 
-                  // Calculate completeness for this client
-                  const doneCount = stageStatuses.filter(s => s === 'done').length;
-                  const clientCompleteness = doneCount / stages.length;
+                  // Calculate completeness for this client - will be recalculated with real data below
 
-                  // Satellites for this client with status based on pipeline
-                  // Determine status based on pipeline stages
-                  const getClientSatelliteStatus = (satType: string): NodeStatus => {
-                    const pipelineIndex = pipelineToStageIndex[client.pipeline_status || 'new'] ?? 0;
-                    if (satType === 'quote') {
-                      return pipelineIndex >= 1 ? (pipelineIndex > 1 ? 'done' : 'current') : 'pending';
-                    }
-                    if (satType === 'contract') {
-                      return pipelineIndex >= 2 ? (pipelineIndex > 2 ? 'done' : 'current') : 'pending';
-                    }
-                    if (satType === 'project') {
-                      return pipelineIndex >= 3 ? (pipelineIndex > 3 ? 'done' : 'current') : 'pending';
-                    }
-                    if (satType === 'invoice') {
-                      return pipelineIndex >= 4 ? (pipelineIndex > 4 ? 'done' : 'current') : 'pending';
-                    }
+                  // Satellites for this client - use REAL data from allProjects/allFactures props
+                  // Filter by client.documentId or client.id to match the client
+                  const clientFacturesData = allFactures.filter(f => 
+                    f.client?.documentId === client.documentId || 
+                    f.client?.id === client.id
+                  );
+                  const clientQuotes = clientFacturesData.filter(f => f.document_type === 'quote');
+                  const clientInvoices = clientFacturesData.filter(f => f.document_type !== 'quote');
+                  const clientProjectsData = allProjects.filter(p => 
+                    p.client?.documentId === client.documentId || 
+                    p.client?.id === client.id
+                  );
+                  
+                  // Calculate real counts and statuses
+                  const quotesAccepted = clientQuotes.filter(q => q.quote_status === 'accepted').length;
+                  const invoicesPaid = clientInvoices.filter(i => i.facture_status === 'paid').length;
+                  const projectsCompleted = clientProjectsData.filter(p => p.project_status === 'completed').length;
+                  
+                  const getSatelliteStatus = (count: number, total: number, hasBlocking: boolean): NodeStatus => {
+                    if (hasBlocking) return 'blocked';
+                    if (count === 0 && total === 0) return 'pending';
+                    if (count === total && total > 0) return 'done';
+                    if (count > 0 || total > 0) return 'current';
                     return 'pending';
                   };
                   
+                  const hasOverdueInvoice = clientInvoices.some(i => i.facture_status === 'overdue');
+                  const hasRejectedQuote = clientQuotes.some(q => q.quote_status === 'rejected' || q.quote_status === 'expired');
+                  
                   const clientSatellites = [
-                    { type: 'quote', label: t('quotes') || 'Devis', icon: IconFileText, angle: -Math.PI / 2, count: getClientSatelliteStatus('quote') !== 'pending' ? 1 : 0, status: getClientSatelliteStatus('quote') },
-                    { type: 'invoice', label: t('invoices') || 'Factures', icon: IconFileInvoice, angle: 0, count: getClientSatelliteStatus('invoice') !== 'pending' ? 1 : 0, status: getClientSatelliteStatus('invoice') },
-                    { type: 'contract', label: t('contracts') || 'Contrats', icon: IconSignature, angle: Math.PI / 2, count: getClientSatelliteStatus('contract') !== 'pending' ? 1 : 0, status: getClientSatelliteStatus('contract') },
-                    { type: 'project', label: t('projects') || 'Projets', icon: IconBriefcase, angle: Math.PI, count: getClientSatelliteStatus('project') !== 'pending' ? 1 : 0, status: getClientSatelliteStatus('project') },
+                    { 
+                      type: 'quote', 
+                      label: t('quotes') || 'Devis', 
+                      icon: IconFileText, 
+                      angle: -Math.PI / 2, 
+                      count: clientQuotes.length, 
+                      status: getSatelliteStatus(quotesAccepted, clientQuotes.length, hasRejectedQuote),
+                      linked: clientQuotes.length > 0,
+                    },
+                    { 
+                      type: 'invoice', 
+                      label: t('invoices') || 'Factures', 
+                      icon: IconFileInvoice, 
+                      angle: 0, 
+                      count: clientInvoices.length, 
+                      status: getSatelliteStatus(invoicesPaid, clientInvoices.length, hasOverdueInvoice),
+                      linked: clientInvoices.length > 0,
+                    },
+                    { 
+                      type: 'contract', 
+                      label: t('contracts') || 'Contrats', 
+                      icon: IconSignature, 
+                      angle: Math.PI / 2, 
+                      count: 0, // Contracts not in client relation yet
+                      status: 'pending' as NodeStatus,
+                      linked: false,
+                    },
+                    { 
+                      type: 'project', 
+                      label: t('projects') || 'Projets', 
+                      icon: IconBriefcase, 
+                      angle: Math.PI, 
+                      count: clientProjectsData.length, 
+                      status: getSatelliteStatus(projectsCompleted, clientProjectsData.length, false),
+                      linked: clientProjectsData.length > 0,
+                    },
                   ];
+
+                  // Calculate completeness based on real data (same logic as single-client)
+                  const linkedSatCount = clientSatellites.filter(s => s.linked).length;
+                  const doneSatCount = clientSatellites.filter(s => s.status === 'done').length;
+                  const clientCompleteness = (linkedSatCount + doneSatCount) / (clientSatellites.length * 2);
+                  
+                  // Recalculate global state based on real satellite data
+                  const hasBlockedSat = clientSatellites.some(s => s.status === 'blocked');
+                  const allDone = clientSatellites.every(s => s.status === 'done' || !s.linked);
+                  const allLinkedDone = clientSatellites.filter(s => s.linked).every(s => s.status === 'done');
+                  const realGlobalState: GlobalState = hasBlockedSat 
+                    ? 'blocked' 
+                    : (allLinkedDone && linkedSatCount === clientSatellites.length)
+                      ? 'ok' 
+                      : 'partial';
 
                   const multiRadialRadius = 160; // Radius for satellites in multi-client mode
 
@@ -1467,7 +1650,7 @@ export default function ClientWorkflowMapView({
                             strokeLinecap="round"
                             transform="rotate(-90 90 90)"
                             style={{
-                              stroke: globalClientState === 'ok' ? '#10b981' : globalClientState === 'blocked' ? '#ef4444' : '#f59e0b',
+                              stroke: realGlobalState === 'ok' ? '#10b981' : realGlobalState === 'blocked' ? '#ef4444' : '#f59e0b',
                             }}
                           />
                         </svg>
@@ -1514,15 +1697,15 @@ export default function ClientWorkflowMapView({
                             animate={{ scale: 1 }}
                             transition={{ delay: 0.3, type: 'spring', stiffness: 400 }}
                             className={`mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 ${
-                              globalClientState === 'ok' ? 'bg-success-light text-success' :
-                              globalClientState === 'blocked' ? 'bg-danger-light text-danger' :
+                              realGlobalState === 'ok' ? 'bg-success-light text-success' :
+                              realGlobalState === 'blocked' ? 'bg-danger-light text-danger' :
                               'bg-warning-light text-warning'
                             }`}
                           >
-                            {globalClientState === 'ok' ? <IconCheck className="w-3 h-3" /> :
-                             globalClientState === 'blocked' ? <IconAlertTriangle className="w-3 h-3" /> :
+                            {realGlobalState === 'ok' ? <IconCheck className="w-3 h-3" /> :
+                             realGlobalState === 'blocked' ? <IconAlertTriangle className="w-3 h-3" /> :
                              <IconClock className="w-3 h-3" />}
-                            {globalClientState === 'ok' ? 'OK' : globalClientState === 'blocked' ? 'Bloqué' : 'Incomplet'}
+                            {realGlobalState === 'ok' ? 'OK' : realGlobalState === 'blocked' ? 'Bloqué' : 'Incomplet'}
                           </motion.div>
 
                           {/* Anchor points */}
@@ -1676,6 +1859,17 @@ export default function ClientWorkflowMapView({
             </div>
           </div>
         </div>
+      )}
+      
+      {/* Onboarding Tour */}
+      {showOnboarding && viewMode === 'radial' && clientId !== 'all' && (
+        <OnboardingTour
+          tourId="workflow-tour"
+          steps={onboardingSteps}
+          forceShow={showOnboarding}
+          onComplete={() => setShowOnboarding(false)}
+          onSkip={() => setShowOnboarding(false)}
+        />
       )}
     </div>
   );

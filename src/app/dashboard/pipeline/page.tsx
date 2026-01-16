@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { usePreferences } from '@/app/context/PreferencesContext';
 import { useContacts, useFactures, clearCache } from '@/hooks/useApi';
 import { updateClient, deleteClient, addClientUser } from '@/lib/api';
+import { generateClientSlug } from '@/utils/slug';
 import KanbanBoard, { PIPELINE_COLUMNS } from '@/app/components/KanbanBoard';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import type { Client, PipelineStatus, ContactSource, ContactPriority, Facture } from '@/types';
@@ -30,7 +32,9 @@ import {
   IconCheck,
   IconClock,
   IconChartLine,
+  IconPlayerPlay,
 } from '@tabler/icons-react';
+import OnboardingTour, { useOnboardingStatus, type OnboardingStep } from '@/app/components/OnboardingTour';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -505,6 +509,7 @@ export default function PipelinePage() {
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const { formatCurrency } = usePreferences();
+  const router = useRouter();
 
   // États
   const [searchTerm, setSearchTerm] = useState('');
@@ -841,6 +846,52 @@ export default function PipelinePage() {
     }
   }, [showGlobalPopup, t]);
 
+  // Navigation vers le parcours client (workflow)
+  const handleViewJourney = useCallback((contact: Client) => {
+    const slug = generateClientSlug(contact.name, contact.documentId);
+    router.push(`/dashboard/clients/${slug}?tab=workflow`);
+  }, [router]);
+
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const { isCompleted: onboardingCompleted, reset: resetOnboarding } = useOnboardingStatus('pipeline-tour');
+
+  // Onboarding steps for pipeline
+  const onboardingSteps: OnboardingStep[] = useMemo(() => [
+    {
+      id: 'intro',
+      position: 'center',
+      title: t('onboarding_pipeline_title') || 'Pipeline commercial',
+      description: t('onboarding_pipeline_desc') || 'Ici, vous voyez l\'avancement global de vos clients, comme un tableau de pilotage.',
+      highlightStyle: 'glow',
+    },
+    {
+      id: 'card',
+      target: '[data-onboarding="pipeline-card"]',
+      position: 'right',
+      title: t('onboarding_pipeline_card_title') || 'Chaque carte = un client',
+      description: t('onboarding_pipeline_card_desc') || 'Son statut est calculé automatiquement en fonction de ce que vous avez créé.',
+      ctaText: t('onboarding_pipeline_card_cta') || 'Voir le détail',
+      highlightStyle: 'pulse',
+      onAction: () => {
+        // Navigate to first client's journey if available
+        const firstContact = pipelineContacts?.[0];
+        if (firstContact) {
+          const slug = generateClientSlug(firstContact.name, firstContact.documentId);
+          router.push(`/dashboard/clients/${slug}?tab=workflow`);
+        }
+      },
+    },
+  ], [t, pipelineContacts, router]);
+
+  // Trigger onboarding on first visit
+  useEffect(() => {
+    if (!onboardingCompleted && pipelineContacts && pipelineContacts.length > 0) {
+      const timer = setTimeout(() => setShowOnboarding(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [onboardingCompleted, pipelineContacts]);
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -849,15 +900,29 @@ export default function PipelinePage() {
           <IconChartBar size={28} className="!text-accent" />
           <div>
             <h1 className="text-2xl font-bold text-primary">
-              {t('pipeline') || 'Pipeline CRM'}
+              {t('pipeline') || 'Pipeline commercial'}
             </h1>
             <p className="text-sm text-muted">
-              {t('pipeline_description') || 'Suivez vos contacts de la prise de contact à la conversion'}
+              {t('pipeline_description') || 'Vue globale de vos opportunités'}
+            </p>
+            <p className="text-xs text-muted/70 mt-0.5">
+              {t('pipeline_subtitle') || 'Priorisez, relancez et estimez votre CA'}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Replay onboarding button */}
+          {onboardingCompleted && (
+            <button
+              onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-default text-muted hover:text-accent hover:bg-accent/5 transition-colors"
+              title={t('replay_tutorial') || 'Revoir le tutoriel'}
+            >
+              <IconPlayerPlay size={16} />
+              <span className="text-xs hidden md:inline">{t('tutorial') || 'Tutoriel'}</span>
+            </button>
+          )}
           <button
             onClick={() => setShowKPIs(!showKPIs)}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
@@ -1048,6 +1113,7 @@ export default function PipelinePage() {
         onSelectExistingContact={(status) => setSelectModal({ isOpen: true, targetStatus: status })}
         onDeleteContact={(contact) => setDeleteModal({ isOpen: true, contact })}
         onRemoveFromKanban={handleRemoveFromKanban}
+        onViewJourney={handleViewJourney}
         loading={loading}
       />
 
@@ -1076,6 +1142,17 @@ export default function PipelinePage() {
         itemName={deleteModal.contact?.name || ''}
         itemType="contact"
       />
+
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <OnboardingTour
+          tourId="pipeline-tour"
+          steps={onboardingSteps}
+          forceShow={showOnboarding}
+          onComplete={() => setShowOnboarding(false)}
+          onSkip={() => setShowOnboarding(false)}
+        />
+      )}
     </div>
   );
 }

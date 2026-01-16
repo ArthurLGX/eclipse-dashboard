@@ -50,7 +50,7 @@
   --color-accent-muted: rgba(124, 58, 237, 0.25);
   --color-accent-subtle: rgba(124, 58, 237, 0.4);
   --color-accent-border: rgba(124, 58, 237, 0.3);
-  --color-accent-text: #FFFFFF;
+  --color-accent-text: #ffffff;
   
   /* Navigation active colors - Dark mode */
   --nav-active-bg: rgba(124, 58, 237, 0.15);
@@ -132,8 +132,7 @@
   --color-accent-muted: rgba(124, 58, 237, 0.15);
   --color-accent-subtle: rgba(124, 58, 237, 0.25);
   --color-accent-border: #C4B5FD;
-  --color-accent-text: #FFFFFF;
-  
+  --color-accent-text: #ffffff;
   
   /* Navigation active colors - Light mode specific */
   --nav-active-bg: #EDE9FE;
@@ -298,7 +297,7 @@
   --color-accent-muted: rgba(0, 0, 0, 0.1);
   --color-accent-subtle: rgba(0, 0, 0, 0.15);
   --color-accent-border: #000000;
-  --color-accent-text: #FFFFFF;
+  --color-accent-text: #1e418d;
   
   /* Navigation active colors */
   --nav-active-bg: rgba(0, 0, 0, 0.08);
@@ -465,8 +464,16 @@ button {
   cursor: pointer;
   box-shadow: var(--shadow-md);
 }
-.sidebar button {
-  box-shadow: none;
+.sidebar button,
+.sidebar a,
+.sidebar *,
+.mobile-bottom-nav button,
+.mobile-bottom-nav a,
+.mobile-bottom-nav *,
+.mobile-drawer-glass button,
+.mobile-drawer-glass a,
+.mobile-drawer-glass * {
+  box-shadow: none !important;
 }
 .btn {
   display: inline-flex;
@@ -1586,22 +1593,24 @@ nav button:hover svg, nav a:hover svg {
   }
 }
 
-/* Bottom Nav - Dark mode: Violet sombre effet bombé */
+/* Bottom Nav - Glass effect unifié */
 .mobile-bottom-nav {
-  background: linear-gradient(
-    180deg,
-    rgba(88, 28, 135, 0.98) 0%,
-    rgba(76, 29, 149, 1) 35%,
-    rgba(59, 7, 100, 1) 70%,
-    rgba(46, 16, 101, 1) 100%
-  );
-  box-shadow: 
-    0 -2px 20px rgba(139, 92, 246, 0.15),
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(167, 139, 250, 0.2),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(var(--color-card-rgb, 255, 255, 255), 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(var(--color-border-rgb, 200, 200, 200), 0.3);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.1);
   outline: none;
+}
+
+:root {
+  --color-card-rgb: 255, 255, 255;
+  --color-border-rgb: 229, 231, 235;
+}
+
+.dark {
+  --color-card-rgb: 30, 24, 45;
+  --color-border-rgb: 139, 92, 246;
 }
 
 /* Supprimer les outlines de focus bleus */
@@ -1624,9 +1633,9 @@ nav button:hover svg, nav a:hover svg {
   box-shadow: none !important;
 }
 
-/* Dark mode - Couleurs des nav items */
+/* Couleurs des nav items - unifié */
 .mobile-nav-icon {
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--color-text-muted);
 }
 
 .mobile-nav-icon svg {
@@ -1635,7 +1644,7 @@ nav button:hover svg, nav a:hover svg {
 }
 
 .mobile-nav-icon.active {
-  color: #ffffff;
+  color: var(--color-accent);
 }
 
 .mobile-nav-icon.active svg {
@@ -1644,15 +1653,15 @@ nav button:hover svg, nav a:hover svg {
 }
 
 .mobile-nav-label {
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--color-text-muted);
 }
 
 .mobile-nav-label.active {
-  color: #ffffff;
+  color: var(--color-accent);
 }
 
 .mobile-nav-indicator {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: var(--color-accent-light);
 }
 
 /* Mobile Header - Glass effect */

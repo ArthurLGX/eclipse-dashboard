@@ -889,7 +889,7 @@ const PROJECT_TYPES = [
                       <button
                         type="submit"
                         form="edit-form"
-                        className="px-6 py-2 btn-primary rounded-lg transition-colors font-medium"
+                        className="px-6 py-2 btn-primary !text- rounded-lg transition-colors font-medium"
                       >
                         {t('save_changes')}
                       </button>

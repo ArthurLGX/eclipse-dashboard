@@ -77,7 +77,7 @@ export function BusinessTypeSelector({ selectedType, onSelect }: BusinessTypeSel
             
             <span className={`
               font-medium text-center text-sm
-              ${isSelected ? 'text-accent' : 'text-primary'}
+              ${isSelected ? '!text-accent' : '!text-primary'}
             `}>
               {label}
             </span>

@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar, IconUserMinus } from '@tabler/icons-react';
+import { IconGripVertical, IconPlus, IconDots, IconTrash, IconEye, IconEdit, IconMail, IconPhone, IconWorld, IconBuilding, IconCurrencyEuro, IconCalendar, IconUserMinus, IconRoute } from '@tabler/icons-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Client, PipelineStatus, ContactPriority } from '@/types';
 
@@ -23,6 +23,7 @@ interface KanbanBoardProps {
   onDeleteContact?: (contact: Client) => void;
   onRemoveFromKanban?: (contact: Client) => void;
   onSelectExistingContact?: (status: PipelineStatus) => void;
+  onViewJourney?: (contact: Client) => void;
   loading?: boolean;
 }
 
@@ -52,6 +53,7 @@ function ContactCard({
   contact,
   onClick,
   onDelete,
+  onViewJourney,
   isDragging,
   onDragStart,
   onDragEnd,
@@ -59,12 +61,15 @@ function ContactCard({
   contact: Client;
   onClick: () => void;
   onDelete?: () => void;
+  onViewJourney?: () => void;
   isDragging: boolean;
   onDragStart?: (e: React.DragEvent, contactId: string) => void;
   onDragEnd?: () => void;
 }) {
   const { t } = useLanguage();
   const [showMenu, setShowMenu] = useState(false);
+  const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({});
+  const menuButtonRef = React.useRef<HTMLButtonElement>(null);
 
   const priorityStyle = contact.priority 
     ? PRIORITY_COLORS[contact.priority] 
@@ -113,9 +118,10 @@ function ContactCard({
 
   return (
     <div
+      data-onboarding="pipeline-card"
       className={`
         group relative bg-card border border-muted rounded-lg p-3 cursor-pointer
-        transition-all duration-200 hover:shadow-md hover:border-accent/50
+        transition-all duration-200 hover:shadow-md hover:border-accent
         ${isDragging ? 'opacity-50 rotate-2 scale-105 shadow-xl' : ''}
       `}
       onClick={onClick}
@@ -159,8 +165,37 @@ function ContactCard({
         
         <div className="relative flex-shrink-0">
           <button
+            ref={menuButtonRef}
             onClick={(e) => {
               e.stopPropagation();
+              // Calculer la position exacte du menu en coordonnées fixes
+              if (menuButtonRef.current) {
+                const rect = menuButtonRef.current.getBoundingClientRect();
+                const menuHeight = 180; // Hauteur estimée du menu
+                const menuWidth = 180;
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const spaceRight = window.innerWidth - rect.right;
+                
+                const style: React.CSSProperties = {
+                  position: 'fixed',
+                };
+                
+                // Positionner horizontalement
+                if (spaceRight < menuWidth) {
+                  style.right = window.innerWidth - rect.right;
+                } else {
+                  style.left = rect.right - menuWidth;
+                }
+                
+                // Positionner verticalement : en haut si pas assez de place en bas
+                if (spaceBelow < menuHeight) {
+                  style.bottom = window.innerHeight - rect.top + 4;
+                } else {
+                  style.top = rect.bottom + 4;
+                }
+                
+                setMenuStyle(style);
+              }
               setShowMenu(!showMenu);
             }}
             className="p-1 rounded hover:bg-hover opacity-0 group-hover:opacity-100 transition-opacity"
@@ -171,13 +206,25 @@ function ContactCard({
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
-              <div className="absolute right-0 top-6 z-50 bg-card border border-muted rounded-lg shadow-lg py-1 min-w-[140px]">
+              <div 
+                className="fixed z-50 bg-card border border-muted rounded-lg shadow-xl py-1 min-w-[180px]"
+                style={menuStyle}
+              >
                 <button
                   onClick={(e) => { e.stopPropagation(); onClick(); setShowMenu(false); }}
                   className="w-full px-3 py-2 text-left text-sm hover:bg-hover flex items-center gap-2"
                 >
                   <IconEye size={14} /> {t('view') || 'Voir'}
                 </button>
+                {onViewJourney && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onViewJourney(); setShowMenu(false); }}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-hover flex items-center gap-2 !text-accent"
+                    title={t('view_client_journey_tooltip') || 'Le pipeline dit où vous en êtes, le parcours explique pourquoi'}
+                  >
+                    <IconRoute size={14} className="!text-accent" /> {t('view_client_journey') || 'Voir le parcours'}
+                  </button>
+                )}
                 <button
                   onClick={(e) => { e.stopPropagation(); onClick(); setShowMenu(false); }}
                   className="w-full px-3 py-2 text-left text-sm hover:bg-hover flex items-center gap-2"
@@ -265,7 +312,7 @@ function ContactCard({
 
       {/* Next action reminder */}
       {contact.next_action && (
-        <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-lighttext-warning rounded text-xs truncate">
+        <div className="mt-2 p-2 bg-warning-light text-warning rounded text-xs truncate">
           📌 {contact.next_action}
         </div>
       )}
@@ -282,6 +329,7 @@ function KanbanColumn({
   onAddContact,
   onSelectExistingContact,
   onDeleteContact,
+  onViewJourney,
   totalValue,
   onCardDragStart,
   onCardDragEnd,
@@ -294,6 +342,7 @@ function KanbanColumn({
   onAddContact?: () => void;
   onSelectExistingContact?: () => void;
   onDeleteContact?: (contact: Client) => void;
+  onViewJourney?: (contact: Client) => void;
   totalValue: number;
   onCardDragStart?: (e: React.DragEvent, contactId: string) => void;
   onCardDragEnd?: () => void;
@@ -376,6 +425,7 @@ function KanbanColumn({
             contact={contact}
             onClick={() => onContactClick(contact)}
             onDelete={onDeleteContact ? () => onDeleteContact(contact) : undefined}
+            onViewJourney={onViewJourney ? () => onViewJourney(contact) : undefined}
             isDragging={draggingContactId === contact.documentId}
             onDragStart={onCardDragStart}
             onDragEnd={onCardDragEnd}
@@ -403,6 +453,7 @@ export default function KanbanBoard({
   onSelectExistingContact,
   onDeleteContact,
   onRemoveFromKanban,
+  onViewJourney,
   loading = false,
 }: KanbanBoardProps) {
   const { t } = useLanguage();
@@ -534,6 +585,7 @@ export default function KanbanBoard({
             onAddContact={onAddContact ? () => onAddContact(column.id) : undefined}
             onSelectExistingContact={onSelectExistingContact ? () => onSelectExistingContact(column.id) : undefined}
             onDeleteContact={onDeleteContact}
+            onViewJourney={onViewJourney}
             totalValue={valueByStatus[column.id] || 0}
             onCardDragStart={handleGlobalDragStart}
             onCardDragEnd={handleGlobalDragEnd}
@@ -568,9 +620,9 @@ export default function KanbanBoard({
               >
                 <IconUserMinus 
                   size={24} 
-                  className={`transition-colors ${isOverRemoveZone ? 'text-warning' : 'text-warning/70'}`} 
+                  className={`transition-colors ${isOverRemoveZone ? '!text-warning' : '!text-warning-light'}`} 
                 />
-                <span className={`font-medium ${isOverRemoveZone ? 'text-warning' : 'text-warning/70'}`}>
+                <span className={`font-medium ${isOverRemoveZone ? '!text-warning' : '!text-warning-light'}`}>
                   {t('remove_from_kanban') || 'Retirer du Kanban'}
                 </span>
               </motion.div>
@@ -592,9 +644,9 @@ export default function KanbanBoard({
               >
                 <IconTrash 
                   size={24} 
-                  className={`transition-colors ${isOverDeleteZone ? 'text-danger' : 'text-danger/70'}`} 
+                  className={`transition-colors ${isOverDeleteZone ? '!text-danger' : '!text-danger-light'}`} 
                 />
-                <span className={`font-medium ${isOverDeleteZone ? 'text-danger' : 'text-danger/70'}`}>
+                <span className={`font-medium ${isOverDeleteZone ? '!text-danger' : '!text-danger-light'}`}>
                   {t('delete') || 'Supprimer'}
                 </span>
               </motion.div>

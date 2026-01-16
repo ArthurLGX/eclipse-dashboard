@@ -75,7 +75,7 @@ export default function MobileBottomNav({
             <button
               key={item.id}
               onClick={() => onNavigate(item.path)}
-              className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px] rounded-xl transition-all active:scale-95"
+              className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px] rounded-xl !shadow-none transition-all active:scale-95"
             >
               {/* Background indicator pour item actif */}
               {active && (
@@ -102,7 +102,7 @@ export default function MobileBottomNav({
         {/* Bouton "Plus" pour ouvrir le drawer */}
         <button
           onClick={onMoreClick}
-          className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px] rounded-xl transition-all active:scale-95"
+          className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px] rounded-xl !shadow-none transition-all active:scale-95"
         >
           <span className="mobile-nav-icon">
             <IconLayoutGrid size={22} stroke={1.5} />

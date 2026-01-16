@@ -449,7 +449,7 @@ export default function PublicContractSignPage() {
                 
                 <div className="space-y-8">
                   {content.articles.map((article: { number: number; title: string; content: string }) => (
-                    <div key={article.number} className="border-l-4 border-violet-200 pl-4 sm:pl-6">
+                    <div key={article.number} className="border-l-4 border-violet-200 !pl-4 sm:pl-6">
                       <h4 className="font-semibold text-slate-900 mb-3 text-base">
                         {t.article} {article.number} - {article.title}
                       </h4>
