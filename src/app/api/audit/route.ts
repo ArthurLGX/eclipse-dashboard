@@ -197,42 +197,48 @@ interface FetchResult {
 
 /**
  * Fetches HTML with JavaScript rendering support
- * Uses Microlink.io (free tier) for JS rendering in production
- * Falls back to simple fetch for static sites
+ * Priority: 1) Strapi VPS scrape API, 2) Puppeteer local, 3) Simple fetch
  */
 async function fetchWithJsRendering(url: string): Promise<FetchResult> {
   const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
+  const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://api.eclipsestudiodev.fr';
   
-  // Try Puppeteer locally first
+  // 1) Try Strapi VPS scrape API (works in production and local)
+  try {
+    const scrapeUrl = `${strapiUrl}/api/growth-audits/scrape?url=${encodeURIComponent(url)}`;
+    console.log('[Audit] Trying Strapi scrape API...');
+    
+    const response = await fetch(scrapeUrl, {
+      headers: { 
+        'User-Agent': 'Mozilla/5.0 EclipseAuditBot/1.0',
+      },
+      signal: AbortSignal.timeout(35000), // 35s timeout (scrape peut prendre 30s)
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.data?.html) {
+        console.log(`[Audit] Using Strapi scrape API (${data.duration})`);
+        return { html: data.data.html, jsRendered: true };
+      }
+    } else {
+      console.warn('[Audit] Strapi scrape API returned:', response.status);
+    }
+  } catch (error) {
+    console.warn('[Audit] Strapi scrape API failed:', error);
+  }
+  
+  // 2) Try Puppeteer locally (development only)
   if (!isVercel) {
     try {
       const result = await fetchWithPuppeteer(url);
       if (result) return result;
     } catch (error) {
-      console.warn('Puppeteer rendering failed, trying alternatives:', error);
+      console.warn('[Audit] Puppeteer rendering failed:', error);
     }
   }
   
-  // Try Microlink.io (free, 50 requests/day, JS rendering supported)
-  try {
-    const microlinkUrl = `https://api.microlink.io?url=${encodeURIComponent(url)}&meta=false&data.html.selector=html&data.html.type=html`;
-    const response = await fetch(microlinkUrl, {
-      headers: { 'User-Agent': 'Mozilla/5.0 EclipseAuditBot/1.0' },
-      signal: AbortSignal.timeout(30000),
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      if (data.status === 'success' && data.data?.html) {
-        console.log('[Audit] Using Microlink.io for JS rendering');
-        return { html: data.data.html, jsRendered: true };
-      }
-    }
-  } catch (error) {
-    console.warn('Microlink.io failed:', error);
-  }
-  
-  // Fallback to simple fetch (no JS rendering)
+  // 3) Fallback to simple fetch (no JS rendering)
   console.log('[Audit] Falling back to simple fetch (no JS rendering)');
   const response = await fetch(url, {
     headers: {
@@ -1555,4 +1561,5 @@ export async function GET(request: NextRequest) {
     cachedUntil: cached?.cachedUntil || null,
   });
 }
+
 

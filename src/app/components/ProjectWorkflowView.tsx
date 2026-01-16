@@ -413,7 +413,7 @@ export default function ProjectWorkflowView({
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col" style={{ minHeight: '600px', height: '70vh' }}>
       {/* Breadcrumb contextuel */}
       <div className="flex-shrink-0 px-4 py-3 bg-card border-b border-default">
         <div className="flex items-center justify-between">
@@ -711,7 +711,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
   const { t } = useLanguage();
 
   return (
-    <div className="h-full flex flex-col items-center justify-center p-8">
+    <div className="flex flex-col items-center justify-center p-8" style={{ minHeight: '500px' }}>
       <div className="max-w-2xl w-full">
         {/* Header */}
         <div className="text-center mb-8">
