@@ -701,7 +701,7 @@ export default function TaskWorkflowView({
   }, [localTasks]);
 
   return (
-    <div className="h-full flex flex-col" style={{ minHeight: '500px' }}>
+    <div className="h-full flex flex-col" style={{ minHeight: '80vh' }}>
       {/* Header */}
       <div className="flex-shrink-0 px-4 py-3 bg-card border-b border-default">
         <div className="flex items-center justify-between">

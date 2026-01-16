@@ -736,7 +736,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-8" style={{ minHeight: '500px' }}>
+    <div className="flex flex-col items-center justify-center p-8" style={{ minHeight: '80vh' }}>
       <div className="max-w-2xl w-full">
         {/* Header */}
         <div className="text-center mb-8">

@@ -486,7 +486,7 @@ export default function ClientDetailsPage() {
       )}
 
       {activeTab === 'workflow' && client && (
-        <div className="bg-card border border-default rounded-xl overflow-hidden" style={{ minHeight: '500px' }}>
+        <div className="bg-card border border-default rounded-xl overflow-hidden" style={{ minHeight: '80vh' }}>
           {/* Si plusieurs projets et aucun sélectionné → sélecteur */}
           {clientProjects.length > 1 && !selectedProjectId ? (
             <ProjectSelector
