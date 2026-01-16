@@ -19,6 +19,7 @@ import {
   IconMaximize,
   IconMinimize,
   IconPlayerPause,
+  IconRefresh,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 
@@ -50,6 +51,7 @@ interface TaskWorkflowViewProps {
   onTaskClick?: (task: WorkflowTask) => void;
   onReorder?: (tasks: WorkflowTask[]) => void;
   readOnly?: boolean;
+  onRefresh?: () => void;
 }
 
 // ============================================================================
@@ -488,6 +490,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose }) => {
 
 export default function TaskWorkflowView({
   tasks,
+  onRefresh,
 }: TaskWorkflowViewProps) {
   const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -509,26 +512,28 @@ export default function TaskWorkflowView({
     setLocalTasks(tasks);
   }, [tasks]);
 
-  // Calculate node positions
+  // Calculate node positions - tâches principales toujours sur la même ligne horizontale
   const nodePositions = useMemo(() => {
     const positions: Map<string, { x: number; y: number }> = new Map();
+    const mainLineY = NODE_SIZE + 40; // Ligne fixe pour les tâches principales
     let currentX = NODE_SIZE;
-    let currentY = NODE_SIZE + 40;
 
     localTasks.forEach((task) => {
-      // Position de la tâche principale
-      positions.set(task.id, { x: currentX, y: currentY });
+      // Position de la tâche principale (toujours sur la même ligne Y)
+      positions.set(task.id, { x: currentX, y: mainLineY });
 
       // Si la tâche est étendue, positionner les sous-tâches en dessous
-      if (expandedTasks.has(task.id) && task.subtasks) {
-        const subtaskStartX = currentX - ((task.subtasks.length - 1) * (SUBTASK_NODE_SIZE + 30)) / 2;
+      if (expandedTasks.has(task.id) && task.subtasks && task.subtasks.length > 0) {
+        const subtaskSpacing = SUBTASK_NODE_SIZE + 40;
+        const totalSubtaskWidth = (task.subtasks.length - 1) * subtaskSpacing;
+        const subtaskStartX = currentX - totalSubtaskWidth / 2;
+        
         task.subtasks.forEach((subtask, stIndex) => {
           positions.set(subtask.id, {
-            x: subtaskStartX + stIndex * (SUBTASK_NODE_SIZE + 30),
-            y: currentY + NODE_SPACING_Y,
+            x: subtaskStartX + stIndex * subtaskSpacing,
+            y: mainLineY + NODE_SPACING_Y,
           });
         });
-        currentY += NODE_SPACING_Y;
       }
 
       currentX += NODE_SPACING_X;
@@ -563,20 +568,25 @@ export default function TaskWorkflowView({
         }
       }
 
-      // Connecteurs vers sous-tâches
+      // Connecteurs vers sous-tâches - tous partent du même point (bas du node parent)
       if (expandedTasks.has(task.id) && task.subtasks) {
         const parentPos = nodePositions.get(task.id);
-        task.subtasks.forEach((subtask) => {
-          const subtaskPos = nodePositions.get(subtask.id);
-          if (parentPos && subtaskPos) {
-            lines.push({
-              id: `${task.id}-${subtask.id}`,
-              from: { x: parentPos.x, y: parentPos.y + NODE_SIZE / 2 },
-              to: { x: subtaskPos.x, y: subtaskPos.y - SUBTASK_NODE_SIZE / 2 },
-              isActive: true,
-            });
-          }
-        });
+        if (parentPos) {
+          // Point de départ unique pour tous les connecteurs de sous-tâches
+          const startPoint = { x: parentPos.x, y: parentPos.y + NODE_SIZE / 2 };
+          
+          task.subtasks.forEach((subtask) => {
+            const subtaskPos = nodePositions.get(subtask.id);
+            if (subtaskPos) {
+              lines.push({
+                id: `${task.id}-${subtask.id}`,
+                from: startPoint,
+                to: { x: subtaskPos.x, y: subtaskPos.y - SUBTASK_NODE_SIZE / 2 },
+                isActive: subtask.status === 'completed',
+              });
+            }
+          });
+        }
       }
     });
 
@@ -722,6 +732,16 @@ export default function TaskWorkflowView({
 
           {/* Controls */}
           <div className="flex items-center gap-1">
+            {onRefresh && (
+              <button 
+                onClick={onRefresh} 
+                className="p-1.5 rounded-lg hover:bg-hover text-muted hover:text-accent transition-colors" 
+                title={t('refresh') || 'Actualiser'}
+              >
+                <IconRefresh size={18} />
+              </button>
+            )}
+            <div className="w-px h-4 bg-border mx-1" />
             <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom -">
               <IconZoomOut size={18} />
             </button>

@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { updateProject, updateProjectStatusWithSync, fetchFacturesByProject, fetchProjectTasks, fetchMeetingNotes } from '@/lib/api';
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import {
   IconCalendar,
   IconBuilding,
@@ -193,19 +193,28 @@ const PROJECT_TYPES = [
     loadFactures();
   }, [user?.id, project?.id]);
 
+  // Fonction pour charger les tâches du projet (réutilisable pour refresh)
+  const loadTasks = useCallback(async () => {
+    if (!project?.documentId) return;
+    try {
+      const response = await fetchProjectTasks(project.documentId);
+      setTasks(response.data || []);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  }, [project?.documentId]);
+
   // Charger les tâches du projet
   useEffect(() => {
-    const loadTasks = async () => {
-      if (!project?.documentId) return;
-      try {
-        const response = await fetchProjectTasks(project.documentId);
-        setTasks(response.data || []);
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      }
-    };
     loadTasks();
-  }, [project?.documentId]);
+  }, [loadTasks]);
+
+  // Refresh automatique des tâches quand l'onglet workflow devient actif
+  useEffect(() => {
+    if (activeTab === 'workflow') {
+      loadTasks();
+    }
+  }, [activeTab, loadTasks]);
 
   // Charger les notes de réunion du projet
   useEffect(() => {
@@ -964,6 +973,7 @@ const PROJECT_TYPES = [
                 >
                   <div className="card overflow-hidden">
                     <TaskWorkflowView
+                      onRefresh={loadTasks}
                       tasks={tasks.filter(t => !t.parent_task).map((task): WorkflowTask => ({
                         id: task.documentId,
                         title: task.title,
