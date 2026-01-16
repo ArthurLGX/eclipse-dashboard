@@ -729,11 +729,11 @@ export default function TaskWorkflowView({
                     style={{ width: `${overallProgress}%` }}
                   />
                 </div>
-                <span className="text-sm font-bold text-accent min-w-[3ch]">{overallProgress}%</span>
+                <span className="text-sm font-bold !text-accent min-w-[3ch]">{overallProgress}%</span>
               </div>
             </div>
             {/* Task count */}
-            <span className="text-xs text-muted">
+            <span className="text-xs text-muted ">
               {localTasks.length} {t('tasks') || 'tâches'}
             </span>
           </div>
