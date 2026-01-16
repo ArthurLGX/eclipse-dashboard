@@ -546,6 +546,8 @@ export default function TaskWorkflowView({
   const [hoveredTaskId, setHoveredTaskId] = useState<string | null>(null);
   const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set());
   const [localTasks, setLocalTasks] = useState<WorkflowTask[]>(tasks);
+  // Mémoriser l'état précédent des tâches avant validation (pour restauration)
+  const [previousTaskStates, setPreviousTaskStates] = useState<Map<string, { progress: number; status: TaskStatus; subtasks?: { id: string; progress: number; status: TaskStatus }[] }>>(new Map());
 
   // Sync tasks with props
   useEffect(() => {
@@ -752,28 +754,86 @@ export default function TaskWorkflowView({
 
   // Handle task toggle (complete/incomplete) - also updates all subtasks
   const handleTaskToggle = useCallback((taskId: string, completed: boolean) => {
-    setLocalTasks(prev => prev.map(task => {
-      if (task.id === taskId) {
-        // Mettre à jour toutes les sous-tâches aussi
-        const updatedSubtasks = task.subtasks?.map(st => ({
-          ...st,
-          status: completed ? 'completed' as TaskStatus : 'not_started' as TaskStatus,
-          progress: completed ? 100 : 0,
-        }));
+    if (completed) {
+      // Sauvegarder l'état actuel avant de tout mettre à 100%
+      setLocalTasks(prev => {
+        const task = prev.find(t => t.id === taskId);
+        if (task) {
+          setPreviousTaskStates(prevStates => {
+            const newStates = new Map(prevStates);
+            newStates.set(taskId, {
+              progress: task.progress,
+              status: task.status,
+              subtasks: task.subtasks?.map(st => ({
+                id: st.id,
+                progress: st.progress,
+                status: st.status,
+              })),
+            });
+            return newStates;
+          });
+        }
         
-        return {
-          ...task,
-          status: completed ? 'completed' as TaskStatus : 'not_started' as TaskStatus,
-          progress: completed ? 100 : 0,
-          subtasks: updatedSubtasks,
-        };
-      }
-      return task;
-    }));
+        return prev.map(task => {
+          if (task.id === taskId) {
+            const updatedSubtasks = task.subtasks?.map(st => ({
+              ...st,
+              status: 'completed' as TaskStatus,
+              progress: 100,
+            }));
+            
+            return {
+              ...task,
+              status: 'completed' as TaskStatus,
+              progress: 100,
+              subtasks: updatedSubtasks,
+            };
+          }
+          return task;
+        });
+      });
+    } else {
+      // Restaurer l'état précédent
+      const previousState = previousTaskStates.get(taskId);
+      
+      setLocalTasks(prev => prev.map(task => {
+        if (task.id === taskId) {
+          if (previousState) {
+            // Restaurer l'état sauvegardé
+            const updatedSubtasks = task.subtasks?.map(st => {
+              const prevSubtask = previousState.subtasks?.find(ps => ps.id === st.id);
+              return prevSubtask ? { ...st, progress: prevSubtask.progress, status: prevSubtask.status } : st;
+            });
+            
+            return {
+              ...task,
+              status: previousState.status,
+              progress: previousState.progress,
+              subtasks: updatedSubtasks,
+            };
+          } else {
+            // Pas d'état précédent, mettre en "in_progress" (état neutre)
+            return {
+              ...task,
+              status: 'in_progress' as TaskStatus,
+              progress: 50,
+            };
+          }
+        }
+        return task;
+      }));
+      
+      // Supprimer l'état sauvegardé
+      setPreviousTaskStates(prev => {
+        const newStates = new Map(prev);
+        newStates.delete(taskId);
+        return newStates;
+      });
+    }
     
     // Trigger refresh to sync with API
     onRefresh?.();
-  }, [onRefresh]);
+  }, [onRefresh, previousTaskStates]);
 
   // Handle subtask toggle (complete/incomplete)
   const handleSubtaskToggle = useCallback((taskId: string, subtaskId: string, completed: boolean) => {
