@@ -18,8 +18,6 @@ import {
   IconFocus2,
   IconMaximize,
   IconMinimize,
-  IconPlus,
-  IconDots,
   IconPlayerPause,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -156,13 +154,9 @@ const ProgressRing: React.FC<{
 const NodeConnector: React.FC<{
   from: { x: number; y: number };
   to: { x: number; y: number };
-  status: TaskStatus;
   isActive?: boolean;
-}> = ({ from, to, status, isActive }) => {
-  const config = STATUS_CONFIG[status];
-  
+}> = ({ from, to, isActive }) => {
   // Calcul du chemin courbe (style n8n)
-  const midX = (from.x + to.x) / 2;
   const controlOffset = Math.abs(to.x - from.x) * 0.4;
   
   const path = `
@@ -232,9 +226,7 @@ const TaskNode: React.FC<TaskNodeProps> = ({
   isExpanded,
   size = NODE_SIZE,
   isSubtask = false,
-  readOnly = false,
 }) => {
-  const { t } = useLanguage();
   const config = STATUS_CONFIG[task.status];
   const StatusIcon = config.icon;
   const hasSubtasks = task.subtasks && task.subtasks.length > 0;
@@ -337,25 +329,23 @@ const TaskNode: React.FC<TaskNodeProps> = ({
 interface DetailPanelProps {
   task: WorkflowTask | null;
   onClose: () => void;
-  onUpdate?: (updates: Partial<WorkflowTask>) => void;
-  readOnly?: boolean;
 }
 
-const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onUpdate, readOnly }) => {
+const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose }) => {
   const { t } = useLanguage();
   
+  // Calculer la progression des sous-tâches (appelé avant le early return)
+  const subtaskProgress = useMemo(() => {
+    if (!task?.subtasks || task.subtasks.length === 0) return null;
+    const totalProgress = task.subtasks.reduce((sum, st) => sum + st.progress, 0);
+    return Math.round(totalProgress / task.subtasks.length);
+  }, [task?.subtasks]);
+
   if (!task) return null;
 
   const config = STATUS_CONFIG[task.status];
   const StatusIcon = config.icon;
   const priorityConfig = task.priority ? PRIORITY_CONFIG[task.priority] : null;
-
-  // Calculer la progression des sous-tâches
-  const subtaskProgress = useMemo(() => {
-    if (!task.subtasks || task.subtasks.length === 0) return null;
-    const totalProgress = task.subtasks.reduce((sum, st) => sum + st.progress, 0);
-    return Math.round(totalProgress / task.subtasks.length);
-  }, [task.subtasks]);
 
   return (
     <motion.div
@@ -498,10 +488,6 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onUpdate, read
 
 export default function TaskWorkflowView({
   tasks,
-  onTaskUpdate,
-  onTaskClick,
-  onReorder,
-  readOnly = false,
 }: TaskWorkflowViewProps) {
   const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -557,7 +543,6 @@ export default function TaskWorkflowView({
       id: string;
       from: { x: number; y: number };
       to: { x: number; y: number };
-      status: TaskStatus;
       isActive: boolean;
     }> = [];
 
@@ -573,7 +558,6 @@ export default function TaskWorkflowView({
             id: `${prevTask.id}-${task.id}`,
             from: { x: fromPos.x + NODE_SIZE / 2, y: fromPos.y },
             to: { x: toPos.x - NODE_SIZE / 2, y: toPos.y },
-            status: prevTask.status,
             isActive: prevTask.status === 'completed',
           });
         }
@@ -589,7 +573,6 @@ export default function TaskWorkflowView({
               id: `${task.id}-${subtask.id}`,
               from: { x: parentPos.x, y: parentPos.y + NODE_SIZE / 2 },
               to: { x: subtaskPos.x, y: subtaskPos.y - SUBTASK_NODE_SIZE / 2 },
-              status: task.status,
               isActive: true,
             });
           }
@@ -610,7 +593,6 @@ export default function TaskWorkflowView({
               id: `dep-${depId}-${task.id}`,
               from: { x: fromPos.x + NODE_SIZE / 2, y: fromPos.y },
               to: { x: toPos.x - NODE_SIZE / 2, y: toPos.y },
-              status: depTask.status,
               isActive: depTask.status === 'completed',
             });
           }
@@ -801,7 +783,6 @@ export default function TaskWorkflowView({
                 key={connector.id}
                 from={connector.from}
                 to={connector.to}
-                status={connector.status}
                 isActive={connector.isActive}
               />
             ))}
@@ -823,7 +804,6 @@ export default function TaskWorkflowView({
                   onHover={(h) => setHoveredTaskId(h ? task.id : null)}
                   onExpand={() => toggleTaskExpand(task.id)}
                   isExpanded={expandedTasks.has(task.id)}
-                  readOnly={readOnly}
                 />
 
                 {/* Subtask nodes */}
@@ -843,7 +823,6 @@ export default function TaskWorkflowView({
                         onHover={(h) => setHoveredTaskId(h ? subtask.id : null)}
                         size={SUBTASK_NODE_SIZE}
                         isSubtask
-                        readOnly={readOnly}
                       />
                     );
                   })}
@@ -875,8 +854,6 @@ export default function TaskWorkflowView({
             <DetailPanel
               task={selectedTask}
               onClose={() => setSelectedTaskId(null)}
-              onUpdate={onTaskUpdate ? (updates) => onTaskUpdate(selectedTask.id, updates) : undefined}
-              readOnly={readOnly}
             />
           )}
         </AnimatePresence>

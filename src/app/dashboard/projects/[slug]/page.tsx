@@ -994,11 +994,6 @@ const PROJECT_TYPES = [
                           endDate: st.due_date || undefined,
                         })),
                       }))}
-                      readOnly={!canEdit}
-                      onTaskClick={(task) => {
-                        // Optionnel: ouvrir le détail de la tâche
-                        setActiveTab('tasks');
-                      }}
                     />
                   </div>
                 </motion.div>
