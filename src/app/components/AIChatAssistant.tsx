@@ -278,6 +278,14 @@ export default function AIChatAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Get token from localStorage for API calls
+  const getAuthToken = () => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('token');
+    }
+    return null;
+  };
+
   // AI SDK v6 useChat hook with DefaultChatTransport
   const {
     messages,
@@ -290,6 +298,13 @@ export default function AIChatAssistant() {
     id: 'eclipse-assistant',
     transport: new DefaultChatTransport({
       api: '/api/ai/assistant',
+      headers: (): Record<string, string> => {
+        const token = getAuthToken();
+        if (token) {
+          return { Authorization: `Bearer ${token}` };
+        }
+        return {};
+      },
     }),
   });
 
@@ -350,6 +365,8 @@ export default function AIChatAssistant() {
 
   // Handle tool actions (confirm task, quote, etc.)
   const handleToolAction = useCallback(async (action: string, data: ToolResult) => {
+    const token = getAuthToken();
+    
     switch (action) {
       case 'confirmTask':
         if (data.task) {
@@ -357,7 +374,10 @@ export default function AIChatAssistant() {
             // Call API to actually create the task
             const response = await fetch('/api/ai/actions/create-task', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
               body: JSON.stringify(data.task),
             });
             

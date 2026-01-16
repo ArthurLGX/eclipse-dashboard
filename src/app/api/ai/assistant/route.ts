@@ -1,7 +1,6 @@
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
-import { cookies } from 'next/headers';
 
 // ============================================================================
 // TYPES
@@ -581,12 +580,21 @@ export async function POST(req: Request) {
   try {
     const { messages }: { messages: UIMessage[] } = await req.json();
     
-    // Get auth token from cookies
-    const cookieStore = await cookies();
-    const token = cookieStore.get('strapi_jwt')?.value;
+    // Get auth token from Authorization header
+    const authHeader = req.headers.get('Authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
     
     // Fetch user context
     const context = token ? await fetchUserContext(token) : null;
+    
+    // Log context status for debugging
+    if (!token) {
+      console.log('[AI Assistant] No auth token provided');
+    } else if (!context) {
+      console.log('[AI Assistant] Failed to fetch user context');
+    } else {
+      console.log(`[AI Assistant] Context loaded: ${context.clients.length} clients, ${context.projects.length} projects, ${context.invoices.length} invoices`);
+    }
     
     // Build system prompt with context
     const systemPrompt = buildSystemPrompt(context);

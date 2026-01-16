@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 // ============================================================================
 // TYPES
@@ -19,8 +18,9 @@ interface TaskInput {
 
 export async function POST(req: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('strapi_jwt')?.value;
+    // Get auth token from Authorization header
+    const authHeader = req.headers.get('Authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
     if (!token) {
       return NextResponse.json(
