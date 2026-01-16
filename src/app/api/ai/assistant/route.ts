@@ -1,4 +1,4 @@
-import { streamText, tool, UIMessage, convertToModelMessages } from 'ai';
+import { streamText, UIMessage, convertToModelMessages } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
@@ -299,196 +299,199 @@ ${overdueTasks.length > 0 ? `\n⚠️ ALERTE: ${overdueTasks.length} tâches son
 }
 
 // ============================================================================
-// TOOLS
+// TOOL SCHEMAS
 // ============================================================================
 
-const generateRelanceEmail = tool({
-  description: 'Génère un email de relance personnalisé pour un client ou un devis en attente. Utilise ce tool quand l\'utilisateur veut relancer un client.',
-  parameters: z.object({
-    clientName: z.string().describe('Nom du client'),
-    clientEmail: z.string().optional().describe('Email du client si disponible'),
-    context: z.enum(['quote', 'invoice', 'project', 'general']).describe('Type de relance: quote (devis en attente), invoice (facture impayée), project (point projet), general (reprise de contact)'),
-    tone: z.enum(['friendly', 'professional', 'urgent']).describe('Ton de l\'email: friendly (amical), professional (professionnel), urgent (avec urgence)'),
-    additionalContext: z.string().optional().describe('Contexte supplémentaire pour personnaliser l\'email'),
-    daysSinceLastContact: z.number().optional().describe('Nombre de jours depuis le dernier contact'),
-  }),
-  execute: async ({ clientName, context, tone, additionalContext, daysSinceLastContact }) => {
-    const toneStyles = {
-      friendly: {
-        greeting: 'Bonjour',
-        closing: 'À très bientôt',
-        style: 'décontracté et chaleureux',
-      },
-      professional: {
-        greeting: 'Bonjour',
-        closing: 'Bien cordialement',
-        style: 'professionnel et courtois',
-      },
-      urgent: {
-        greeting: 'Bonjour',
-        closing: 'Dans l\'attente de votre retour',
-        style: 'professionnel avec une note d\'urgence',
-      },
-    };
+const relanceEmailSchema = z.object({
+  clientName: z.string().describe('Nom du client'),
+  clientEmail: z.string().optional().describe('Email du client si disponible'),
+  context: z.enum(['quote', 'invoice', 'project', 'general']).describe('Type de relance'),
+  tone: z.enum(['friendly', 'professional', 'urgent']).describe('Ton de l\'email'),
+  additionalContext: z.string().optional().describe('Contexte supplémentaire'),
+  daysSinceLastContact: z.number().optional().describe('Nombre de jours depuis le dernier contact'),
+});
 
-    const toneStyle = toneStyles[tone];
-    const urgencyNote = daysSinceLastContact && daysSinceLastContact > 14 
-      ? '\n\nJe me permets d\'insister car cela fait maintenant plus de deux semaines que nous attendons votre retour.'
-      : '';
+const createTaskSchema = z.object({
+  title: z.string().describe('Titre de la tâche'),
+  projectId: z.string().optional().describe('ID du projet (documentId)'),
+  projectName: z.string().optional().describe('Nom du projet pour référence'),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
+  dueDate: z.string().optional().describe('Date d\'échéance au format YYYY-MM-DD'),
+  description: z.string().optional().describe('Description de la tâche'),
+});
 
-    const emailTemplates: Record<string, { subject: string; body: string }> = {
-      quote: {
-        subject: `Suivi de notre proposition - ${clientName}`,
-        body: `${toneStyle.greeting},
+const createQuoteSchema = z.object({
+  clientId: z.string().describe('ID du client (documentId)'),
+  clientName: z.string().describe('Nom du client'),
+  projectId: z.string().optional().describe('ID du projet associé'),
+  projectName: z.string().optional().describe('Nom du projet pour référence'),
+  estimatedAmount: z.number().optional().describe('Montant estimé du devis en euros'),
+  description: z.string().optional().describe('Description ou contexte du devis'),
+});
+
+const suggestNextStepsSchema = z.object({
+  focus: z.enum(['project', 'client', 'revenue', 'general']).describe('Domaine de focus'),
+  projectId: z.string().optional().describe('ID du projet spécifique'),
+  clientId: z.string().optional().describe('ID du client spécifique'),
+});
+
+// ============================================================================
+// TOOL EXECUTE FUNCTIONS
+// ============================================================================
+
+async function executeGenerateRelanceEmail(params: z.infer<typeof relanceEmailSchema>) {
+  const { clientName, context, tone, additionalContext, daysSinceLastContact } = params;
+  
+  const toneStyles = {
+    friendly: {
+      greeting: 'Bonjour',
+      closing: 'À très bientôt',
+      style: 'décontracté et chaleureux',
+    },
+    professional: {
+      greeting: 'Bonjour',
+      closing: 'Bien cordialement',
+      style: 'professionnel et courtois',
+    },
+    urgent: {
+      greeting: 'Bonjour',
+      closing: 'Dans l\'attente de votre retour',
+      style: 'professionnel avec une note d\'urgence',
+    },
+  };
+
+  const toneStyle = toneStyles[tone];
+  const urgencyNote = daysSinceLastContact && daysSinceLastContact > 14 
+    ? '\n\nJe me permets d\'insister car cela fait maintenant plus de deux semaines que nous attendons votre retour.'
+    : '';
+
+  const emailTemplates: Record<string, { subject: string; body: string }> = {
+    quote: {
+      subject: `Suivi de notre proposition - ${clientName}`,
+      body: `${toneStyle.greeting},
 
 Je me permets de revenir vers vous concernant le devis que je vous ai transmis.
 
 Avez-vous eu l'occasion de le consulter ? Je reste entièrement disponible pour en discuter et répondre à toutes vos questions.${additionalContext ? `\n\n${additionalContext}` : ''}${urgencyNote}
 
 ${toneStyle.closing}`,
-      },
-      invoice: {
-        subject: `Rappel - Facture en attente de règlement`,
-        body: `${toneStyle.greeting},
+    },
+    invoice: {
+      subject: `Rappel - Facture en attente de règlement`,
+      body: `${toneStyle.greeting},
 
 Je me permets de vous relancer concernant la facture en attente de règlement.
 
 Pourriez-vous me confirmer le traitement de celle-ci ? Si vous rencontrez des difficultés, n'hésitez pas à m'en faire part.${additionalContext ? `\n\n${additionalContext}` : ''}
 
 ${toneStyle.closing}`,
-      },
-      project: {
-        subject: `Point d'avancement - ${clientName}`,
-        body: `${toneStyle.greeting},
+    },
+    project: {
+      subject: `Point d'avancement - ${clientName}`,
+      body: `${toneStyle.greeting},
 
 Je souhaitais faire un point sur l'avancement de notre projet.
 
 Êtes-vous disponible pour un rapide échange cette semaine ? Cela nous permettrait de valider les prochaines étapes ensemble.${additionalContext ? `\n\n${additionalContext}` : ''}
 
 ${toneStyle.closing}`,
-      },
-      general: {
-        subject: `Prenons des nouvelles - ${clientName}`,
-        body: `${toneStyle.greeting},
+    },
+    general: {
+      subject: `Prenons des nouvelles - ${clientName}`,
+      body: `${toneStyle.greeting},
 
 J'espère que vous allez bien. Je souhaitais prendre de vos nouvelles et voir si je peux vous accompagner sur de nouveaux projets.
 
 N'hésitez pas à me contacter si vous avez des besoins ou si vous souhaitez discuter de nouvelles opportunités.${additionalContext ? `\n\n${additionalContext}` : ''}
 
 ${toneStyle.closing}`,
-      },
-    };
+    },
+  };
 
-    return {
-      success: true,
-      email: emailTemplates[context],
-      metadata: {
-        clientName,
-        context,
-        tone: toneStyle.style,
-      },
-    };
-  },
-});
+  return {
+    success: true,
+    email: emailTemplates[context],
+    metadata: {
+      clientName,
+      context,
+      tone: toneStyle.style,
+    },
+  };
+}
 
-const createTask = tool({
-  description: 'Prépare une nouvelle tâche à créer dans un projet. L\'utilisateur devra confirmer la création.',
-  parameters: z.object({
-    title: z.string().describe('Titre de la tâche'),
-    projectId: z.string().optional().describe('ID du projet (documentId)'),
-    projectName: z.string().optional().describe('Nom du projet pour référence'),
-    priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium').describe('Priorité de la tâche'),
-    dueDate: z.string().optional().describe('Date d\'échéance au format YYYY-MM-DD'),
-    description: z.string().optional().describe('Description de la tâche'),
-  }),
-  execute: async ({ title, projectId, projectName, priority, dueDate, description }) => {
-    // This tool prepares the task, actual creation is done via a separate action endpoint
-    return {
-      success: true,
-      task: {
-        title,
-        projectId,
-        projectName,
-        priority,
-        dueDate,
-        description,
-        created: false, // Will be true after user confirms
-      },
-      message: `Tâche "${title}" prête à être créée${projectName ? ` dans le projet "${projectName}"` : ''}. Confirme pour la créer.`,
-    };
-  },
-});
+async function executeCreateTask(params: z.infer<typeof createTaskSchema>) {
+  const { title, projectId, projectName, priority, dueDate, description } = params;
+  
+  return {
+    success: true,
+    task: {
+      title,
+      projectId,
+      projectName,
+      priority,
+      dueDate,
+      description,
+      created: false,
+    },
+    message: `Tâche "${title}" prête à être créée${projectName ? ` dans le projet "${projectName}"` : ''}. Confirme pour la créer.`,
+  };
+}
 
-const createQuote = tool({
-  description: 'Prépare un devis pré-rempli pour un client. L\'utilisateur sera redirigé vers la page de création avec les informations pré-remplies.',
-  parameters: z.object({
-    clientId: z.string().describe('ID du client (documentId)'),
-    clientName: z.string().describe('Nom du client'),
-    projectId: z.string().optional().describe('ID du projet associé si applicable'),
-    projectName: z.string().optional().describe('Nom du projet pour référence'),
-    estimatedAmount: z.number().optional().describe('Montant estimé du devis en euros'),
-    description: z.string().optional().describe('Description ou contexte du devis'),
-  }),
-  execute: async ({ clientId, clientName, projectId, projectName, estimatedAmount, description }) => {
-    return {
-      success: true,
-      quote: {
-        clientId,
-        clientName,
-        projectId,
-        projectName,
-        amount: estimatedAmount,
-        description,
-        created: false,
-      },
-      actionUrl: `/dashboard/factures/new?type=quote&client=${clientId}${projectId ? `&project=${projectId}` : ''}`,
-      message: `Devis prêt pour ${clientName}${estimatedAmount ? ` (~${estimatedAmount.toLocaleString('fr-FR')}€)` : ''}. Clique pour ouvrir l'éditeur de devis.`,
-    };
-  },
-});
+async function executeCreateQuote(params: z.infer<typeof createQuoteSchema>) {
+  const { clientId, clientName, projectId, projectName, estimatedAmount, description } = params;
+  
+  return {
+    success: true,
+    quote: {
+      clientId,
+      clientName,
+      projectId,
+      projectName,
+      amount: estimatedAmount,
+      description,
+      created: false,
+    },
+    actionUrl: `/dashboard/factures/new?type=quote&client=${clientId}${projectId ? `&project=${projectId}` : ''}`,
+    message: `Devis prêt pour ${clientName}${estimatedAmount ? ` (~${estimatedAmount.toLocaleString('fr-FR')}€)` : ''}. Clique pour ouvrir l'éditeur de devis.`,
+  };
+}
 
-const suggestNextSteps = tool({
-  description: 'Suggère les prochaines étapes prioritaires basées sur le contexte actuel. Utilise ce tool pour aider l\'utilisateur à prioriser.',
-  parameters: z.object({
-    focus: z.enum(['project', 'client', 'revenue', 'general']).describe('Domaine de focus: project (avancement projets), client (relation client), revenue (chiffre d\'affaires), general (vue globale)'),
-    projectId: z.string().optional().describe('ID du projet spécifique si focus=project'),
-    clientId: z.string().optional().describe('ID du client spécifique si focus=client'),
-  }),
-  execute: async ({ focus }) => {
-    const suggestions: Record<string, string[]> = {
-      project: [
-        'Traiter les tâches bloquantes en priorité - elles retardent tout le reste',
-        'Envoyer un point d\'avancement au client pour maintenir la relation',
-        'Planifier la prochaine livraison et définir les milestones',
-        'Vérifier si des ressources manquent pour avancer',
-      ],
-      client: [
-        'Relancer les devis en attente depuis plus de 7 jours',
-        'Programmer des points réguliers avec les clients actifs',
-        'Qualifier les nouveaux prospects dans le pipeline',
-        'Mettre à jour les statuts clients dans le CRM',
-      ],
-      revenue: [
-        'Relancer les factures impayées en priorité',
-        'Convertir les devis en attente - chaque jour compte',
-        'Identifier les opportunités d\'upsell sur les clients existants',
-        'Préparer les factures pour les projets terminés',
-      ],
-      general: [
-        'Traiter les tâches en retard pour éviter l\'accumulation',
-        'Relancer les clients silencieux depuis plus de 2 semaines',
-        'Mettre à jour le pipeline commercial',
-        'Bloquer du temps pour le travail de fond',
-      ],
-    };
+async function executeSuggestNextSteps(params: z.infer<typeof suggestNextStepsSchema>) {
+  const { focus } = params;
+  
+  const suggestions: Record<string, string[]> = {
+    project: [
+      'Traiter les tâches bloquantes en priorité - elles retardent tout le reste',
+      'Envoyer un point d\'avancement au client pour maintenir la relation',
+      'Planifier la prochaine livraison et définir les milestones',
+      'Vérifier si des ressources manquent pour avancer',
+    ],
+    client: [
+      'Relancer les devis en attente depuis plus de 7 jours',
+      'Programmer des points réguliers avec les clients actifs',
+      'Qualifier les nouveaux prospects dans le pipeline',
+      'Mettre à jour les statuts clients dans le CRM',
+    ],
+    revenue: [
+      'Relancer les factures impayées en priorité',
+      'Convertir les devis en attente - chaque jour compte',
+      'Identifier les opportunités d\'upsell sur les clients existants',
+      'Préparer les factures pour les projets terminés',
+    ],
+    general: [
+      'Traiter les tâches en retard pour éviter l\'accumulation',
+      'Relancer les clients silencieux depuis plus de 2 semaines',
+      'Mettre à jour le pipeline commercial',
+      'Bloquer du temps pour le travail de fond',
+    ],
+  };
 
-    return {
-      success: true,
-      focus,
-      steps: suggestions[focus],
-    };
-  },
-});
+  return {
+    success: true,
+    focus,
+    steps: suggestions[focus],
+  };
+}
 
 // ============================================================================
 // ROUTE HANDLER
@@ -513,12 +516,27 @@ export async function POST(req: Request) {
       system: systemPrompt,
       messages: await convertToModelMessages(messages),
       tools: {
-        generateRelanceEmail,
-        createTask,
-        createQuote,
-        suggestNextSteps,
+        generateRelanceEmail: {
+          description: 'Génère un email de relance personnalisé pour un client ou un devis en attente.',
+          inputSchema: relanceEmailSchema,
+          execute: executeGenerateRelanceEmail,
+        },
+        createTask: {
+          description: 'Prépare une nouvelle tâche à créer dans un projet. L\'utilisateur devra confirmer.',
+          inputSchema: createTaskSchema,
+          execute: executeCreateTask,
+        },
+        createQuote: {
+          description: 'Prépare un devis pré-rempli pour un client. L\'utilisateur sera redirigé vers l\'éditeur.',
+          inputSchema: createQuoteSchema,
+          execute: executeCreateQuote,
+        },
+        suggestNextSteps: {
+          description: 'Suggère les prochaines étapes prioritaires basées sur le contexte actuel.',
+          inputSchema: suggestNextStepsSchema,
+          execute: executeSuggestNextSteps,
+        },
       },
-      maxSteps: 5,
     });
 
     return result.toUIMessageStreamResponse();
