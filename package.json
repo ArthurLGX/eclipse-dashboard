@@ -46,7 +46,8 @@
     "recharts": "^3.6.0",
     "stripe": "^18.3.0",
     "swr": "^2.3.8",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zod": "^4.3.5"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-x64-gnu": "^4.1.3",
