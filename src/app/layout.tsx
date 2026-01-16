@@ -12,7 +12,6 @@ import { PreferencesProvider } from './context/PreferencesContext';
 import { QuotaProvider } from './context/QuotaContext';
 import { FathomProvider } from './context/FathomContext';
 import TrialExpiredWrapper from './components/TrialExpiredWrapper';
-import ChatbotProvider from './components/ChatbotProvider';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://dashboard.eclipsestudiodev.fr'),
@@ -72,13 +71,11 @@ export default function RootLayout({
                   <QuotaProvider>
                     <PopupProvider>
                       <FathomProvider>
-                        <ChatbotProvider>
                           <TrialExpiredWrapper>
                             <Header />
                             {children}
                             <Footer />
                           </TrialExpiredWrapper>
-                        </ChatbotProvider>
                       </FathomProvider>
                     </PopupProvider>
                   </QuotaProvider>

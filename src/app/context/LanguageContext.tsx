@@ -1048,9 +1048,7 @@ const translations = {
     started_at: 'Commencée le',
 
     // Support Options
-    eclipse_chatbot_support: 'Assistant Eclipse',
-    eclipse_chatbot_support_description: 'Assistant IA Eclipse disponible 24/7',
-    email_support_description: 'Réponse sous 24h',
+     email_support_description: 'Réponse sous 24h',
     phone_support_description: 'Support direct par téléphone',
     priority_phone_support: 'Support Téléphonique Prioritaire',
     priority_phone_support_description: 'Support prioritaire 24/7',
@@ -1335,8 +1333,6 @@ const translations = {
     add_project: 'Ajouter un projet',
     add_prospect: 'Ajouter un prospect',
     actions: 'Actions',
-    chatbot_support: 'Support chatbot',
-    chatbot_support_description: 'Assistant IA disponible 24/7',
     no_newsletters_found: 'Aucune newsletter trouvée',
     planning: 'Planification',
      dates: 'Dates',
@@ -2167,8 +2163,6 @@ const translations = {
     two_factor_auth: 'Authentification à deux facteurs',
     enable_2fa_option: 'Activer l\'option 2FA pour les utilisateurs',
     features_settings: 'Fonctionnalités',
-    chatbot: 'Chatbot',
-    enable_support_chatbot: 'Activer le chatbot de support',
     analytics: 'Analytics',
     collect_usage_stats: 'Collecter les statistiques d\'utilisation',
     beta_features: 'Fonctionnalités Beta',
@@ -4193,8 +4187,6 @@ const translations = {
     remaining: 'remaining',
     started_at: 'Started at',
     // Support Options
-    chatbot_support: 'Chatbot Support',
-    chatbot_support_description: 'AI assistant available 24/7',
     phone_support_description: 'Direct phone support',
     priority_phone_support: 'Priority Phone Support',
     priority_phone_support_description: 'Priority support 24/7',
@@ -4252,10 +4244,6 @@ const translations = {
     error_code: 'Error Code',
     contact_support_if_problem_persists:
       'If the problem persists, contact our support.',
-
-    // Eclipse Chatbot
-    eclipse_chatbot_support: 'Eclipse Chatbot Support',
-    eclipse_chatbot_support_description: 'AI assistant available 24/7',
 
     // Clients
     no_invoice_found: 'No invoice found.',
@@ -5340,8 +5328,6 @@ won: 'Won',
     two_factor_auth: 'Two-factor authentication',
     enable_2fa_option: 'Enable 2FA option for users',
     features_settings: 'Features',
-    chatbot: 'Chatbot',
-    enable_support_chatbot: 'Enable support chatbot',
     analytics: 'Analytics',
     collect_usage_stats: 'Collect usage statistics',
     beta_features: 'Beta features',

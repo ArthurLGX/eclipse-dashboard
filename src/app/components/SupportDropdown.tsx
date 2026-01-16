@@ -3,7 +3,6 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { useChatbot } from '@/app/context/ChatbotContext';
 
 interface SupportDropdownProps {
   userPlan: string;
@@ -19,7 +18,6 @@ export default function SupportDropdown({
   onClose,
 }: SupportDropdownProps) {
   const { t } = useLanguage();
-  const { openChatbot } = useChatbot();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Fermer le dropdown si on clique en dehors
@@ -48,12 +46,11 @@ export default function SupportDropdown({
       case 'free':
         return [
           {
-            type: 'chatbot',
-            label: t('chatbot_support'),
-            icon: '🤖',
-            description: t('chatbot_support_description'),
+            type: 'email',
+            label: t('email_support'),
+            icon: '📧',
+            description: t('email_support_description'),
             action: () => {
-              openChatbot();
               onClose();
             },
           },
@@ -69,17 +66,7 @@ export default function SupportDropdown({
               window.location.href = 'mailto:support@eclipse-studio.com';
               onClose();
             },
-          },
-          {
-            type: 'chatbot',
-            label: t('chatbot_support'),
-            icon: '🤖',
-            description: t('chatbot_support_description'),
-            action: () => {
-              openChatbot();
-              onClose();
-            },
-          },
+          }
         ];
       case 'pro':
         return [
@@ -102,17 +89,7 @@ export default function SupportDropdown({
               window.location.href = 'arthur.legouix@gmail.com';
               onClose();
             },
-          },
-          {
-            type: 'chatbot',
-            label: t('chatbot_support'),
-            icon: '🤖',
-            description: t('chatbot_support_description'),
-            action: () => {
-              openChatbot();
-              onClose();
-            },
-          },
+          }
         ];
       case 'expert':
         return [
@@ -135,17 +112,7 @@ export default function SupportDropdown({
               window.location.href = 'arthur.legouix@gmail.com';
               onClose();
             },
-          },
-          {
-            type: 'chatbot',
-            label: t('chatbot_support'),
-            icon: '🤖',
-            description: t('chatbot_support_description'),
-            action: () => {
-              openChatbot();
-              onClose();
-            },
-          },
+          }
         ];
       default:
         return [

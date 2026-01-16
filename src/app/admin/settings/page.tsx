@@ -35,7 +35,6 @@ interface AppSettings {
     twoFactorEnabled: boolean;
   };
   features: {
-    chatbotEnabled: boolean;
     analyticsEnabled: boolean;
     betaFeatures: boolean;
   };
@@ -64,7 +63,6 @@ export default function AdminSettingsPage() {
       twoFactorEnabled: false,
     },
     features: {
-      chatbotEnabled: true,
       analyticsEnabled: true,
       betaFeatures: false,
     },
@@ -357,17 +355,6 @@ export default function AdminSettingsPage() {
           </h2>
           <div className="space-y-4">
             <SettingToggle
-              enabled={settings.features.chatbotEnabled}
-              onChange={(value) =>
-                setSettings({
-                  ...settings,
-                  features: { ...settings.features, chatbotEnabled: value },
-                })
-              }
-              label={t('ai_chatbot') || 'Chatbot IA'}
-              description={t('enable_ai_assistant') || "Activer l'assistant IA"}
-            />
-            <SettingToggle
               enabled={settings.features.analyticsEnabled}
               onChange={(value) =>
                 setSettings({
@@ -378,7 +365,7 @@ export default function AdminSettingsPage() {
               label={t('analytics') || 'Analytics'}
               description={t('collect_usage_data') || "Collecter les données d'utilisation"}
             />
-            <SettingToggle
+            <SettingToggle  
               enabled={settings.features.betaFeatures}
               onChange={(value) =>
                 setSettings({
