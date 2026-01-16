@@ -81,12 +81,17 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
     if (!userRes.ok) return null;
     const user = await userRes.json();
 
-    // Fetch owned clients
+    // Fetch owned clients (entity is 'clients' in Strapi)
     const clientsRes = await fetch(
-      `${apiUrl}/api/contacts?filters[users][id][$in]=${user.id}&populate=*&pagination[limit]=50`,
+      `${apiUrl}/api/clients?filters[users][id][$in]=${user.id}&populate=*&pagination[limit]=50`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const clientsData = await clientsRes.json();
+    
+    // Debug: log response
+    if (!clientsData.data) {
+      console.log('[AI Assistant] Clients API response:', JSON.stringify(clientsData).slice(0, 500));
+    }
     
     // Fetch owned projects
     const projectsRes = await fetch(
@@ -119,12 +124,12 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
     // Transform owned clients
     const ownedClients: ClientSummary[] = (clientsData.data || []).map((c: Record<string, unknown>) => ({
       id: c.documentId as string,
-      name: `${c.first_name || ''} ${c.last_name || ''}`.trim() || c.company_name as string,
-      company: c.company_name as string,
+      name: c.name as string || c.enterprise as string || 'Client sans nom',
+      company: c.enterprise as string,
       email: c.email as string,
-      status: c.contact_status as string || 'prospect',
+      status: c.processStatus as string || 'prospect',
       pipelineStatus: c.pipeline_status as string || 'new',
-      lastContact: c.last_contact_date as string,
+      lastContact: c.contacted_date as string,
       totalRevenue: 0,
       pendingInvoices: 0,
       isCollaborative: false,
@@ -143,12 +148,12 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
         if (!collaborativeClientsMap.has(clientId)) {
           collaborativeClientsMap.set(clientId, {
             id: clientId,
-            name: `${client.first_name || ''} ${client.last_name || ''}`.trim() || client.company_name as string || 'N/A',
-            company: client.company_name as string,
+            name: client.name as string || client.enterprise as string || 'N/A',
+            company: client.enterprise as string,
             email: client.email as string,
-            status: client.contact_status as string || 'prospect',
+            status: client.processStatus as string || 'prospect',
             pipelineStatus: client.pipeline_status as string || 'new',
-            lastContact: client.last_contact_date as string,
+            lastContact: client.contacted_date as string,
             totalRevenue: 0,
             pendingInvoices: 0,
             isCollaborative: true,
@@ -173,7 +178,7 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
         slug: p.slug as string,
         title: p.title as string,
         clientId: client?.documentId as string,
-        clientName: client ? `${client.first_name || ''} ${client.last_name || ''}`.trim() : 'N/A',
+        clientName: client ? (client.name as string || client.enterprise as string || 'N/A') : 'N/A',
         status: p.project_status as string,
         progress: typeof p.progress === 'number' ? p.progress : 0,
         deadline: p.end_date as string,
@@ -202,7 +207,7 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
           slug: p.slug as string,
           title: p.title as string,
           clientId: client?.documentId as string,
-          clientName: client ? `${client.first_name || ''} ${client.last_name || ''}`.trim() : 'N/A',
+          clientName: client ? (client.name as string || client.enterprise as string || 'N/A') : 'N/A',
           status: p.project_status as string,
           progress: typeof p.progress === 'number' ? p.progress : 0,
           deadline: p.end_date as string,
@@ -226,7 +231,7 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
         id: f.documentId as string,
         type: f.document_type as 'quote' | 'invoice',
         clientId: client?.documentId as string,
-        clientName: client ? `${client.first_name || ''} ${client.last_name || ''}`.trim() : 'N/A',
+        clientName: client ? (client.name as string || client.enterprise as string || 'N/A') : 'N/A',
         amount: (f.total_ttc as number) || 0,
         status: (f.document_type === 'quote' ? f.quote_status : f.facture_status) as string,
         dueDate: f.due_date as string,
