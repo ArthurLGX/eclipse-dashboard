@@ -85,18 +85,51 @@ export default function ClientFacturesPage() {
     {
       key: 'facture_status',
       label: t('status'),
-      render: v => (
-        <span className="flex items-center gap-2 text-secondary">
-          {v === 'paid' ? (
-            <IconCheck className="w-4 h-4 text-success" />
-          ) : v === 'sent' ? (
-            <IconCheck className="w-4 h-4 text-info" />
-          ) : (
-            <IconX className="w-4 h-4 text-warning" />
-          )}
-          {v === 'paid' ? t('paid') : v === 'sent' ? t('sent') : t('draft')}
-        </span>
-      ),
+      render: (_v, row) => {
+        // Pour les devis, utiliser quote_status; pour les factures, facture_status
+        const isQuote = row.document_type === 'quote';
+        const status = isQuote ? row.quote_status : row.facture_status;
+        
+        // Déterminer l'icône et le texte selon le statut
+        const getStatusDisplay = () => {
+          if (isQuote) {
+            // Statuts pour devis: draft, sent, accepted, rejected, expired
+            switch (status) {
+              case 'accepted':
+                return { icon: <IconCheck className="w-4 h-4 text-success" />, label: t('accepted') || 'Accepté' };
+              case 'sent':
+                return { icon: <IconCheck className="w-4 h-4 text-info" />, label: t('sent') || 'Envoyé' };
+              case 'rejected':
+                return { icon: <IconX className="w-4 h-4 text-danger" />, label: t('rejected') || 'Refusé' };
+              case 'expired':
+                return { icon: <IconX className="w-4 h-4 text-warning" />, label: t('expired') || 'Expiré' };
+              default:
+                return { icon: <IconX className="w-4 h-4 text-muted" />, label: t('draft') || 'Brouillon' };
+            }
+          } else {
+            // Statuts pour factures: draft, sent, paid, overdue
+            switch (status) {
+              case 'paid':
+                return { icon: <IconCheck className="w-4 h-4 text-success" />, label: t('paid') || 'Payé' };
+              case 'sent':
+                return { icon: <IconCheck className="w-4 h-4 text-info" />, label: t('sent') || 'Envoyé' };
+              case 'overdue':
+                return { icon: <IconX className="w-4 h-4 text-danger" />, label: t('overdue') || 'En retard' };
+              default:
+                return { icon: <IconX className="w-4 h-4 text-muted" />, label: t('draft') || 'Brouillon' };
+            }
+          }
+        };
+        
+        const { icon, label } = getStatusDisplay();
+        
+        return (
+          <span className="flex items-center gap-2 text-secondary">
+            {icon}
+            {label}
+          </span>
+        );
+      },
     },
     {
       key: 'date',
