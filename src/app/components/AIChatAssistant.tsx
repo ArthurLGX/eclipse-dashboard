@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,9 +15,16 @@ import {
   IconRefresh,
   IconMinimize,
   IconMaximize,
+  IconCopy,
+  IconCheck,
+  IconFileInvoice,
+  IconExternalLink,
+  IconCommand,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
+import { useAIAssistant } from '@/app/context/AIAssistantContext';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 // ============================================================================
@@ -30,23 +37,53 @@ interface EmailData {
 }
 
 interface TaskData {
+  id?: string;
   title: string;
   dueDate?: string;
+  projectId?: string;
+  created?: boolean;
+}
+
+interface QuoteData {
+  id?: string;
+  clientId: string;
+  clientName: string;
+  projectId?: string;
+  amount?: number;
+  created?: boolean;
 }
 
 interface ToolResult {
   success?: boolean;
   email?: EmailData;
   task?: TaskData;
+  quote?: QuoteData;
   steps?: string[];
+  error?: string;
+  actionUrl?: string;
 }
 
 // ============================================================================
 // TOOL RESULT COMPONENTS
 // ============================================================================
 
-const ToolResultCard: React.FC<{ toolName: string; result: ToolResult }> = ({ toolName, result }) => {
+const ToolResultCard: React.FC<{ 
+  toolName: string; 
+  result: ToolResult;
+  onAction?: (action: string, data: ToolResult) => void;
+}> = ({ toolName, result, onAction }) => {
   const { t } = useLanguage();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
 
   const getIcon = () => {
     switch (toolName) {
@@ -54,6 +91,8 @@ const ToolResultCard: React.FC<{ toolName: string; result: ToolResult }> = ({ to
         return <IconMail size={16} className="text-info" />;
       case 'createTask':
         return <IconListCheck size={16} className="text-success" />;
+      case 'createQuote':
+        return <IconFileInvoice size={16} className="text-accent" />;
       case 'suggestNextSteps':
         return <IconArrowRight size={16} className="text-warning" />;
       default:
@@ -64,15 +103,32 @@ const ToolResultCard: React.FC<{ toolName: string; result: ToolResult }> = ({ to
   const getTitle = () => {
     switch (toolName) {
       case 'generateRelanceEmail':
-        return t('email_generated') || 'Email généré';
+        return t('email_generated') || 'Email de relance généré';
       case 'createTask':
-        return t('task_created') || 'Tâche créée';
+        return result.task?.created 
+          ? (t('task_created') || 'Tâche créée ✓')
+          : (t('task_ready') || 'Tâche prête à créer');
+      case 'createQuote':
+        return result.quote?.created
+          ? (t('quote_created') || 'Devis créé ✓')
+          : (t('quote_ready') || 'Devis prêt à créer');
       case 'suggestNextSteps':
         return t('next_steps') || 'Prochaines étapes';
       default:
         return toolName;
     }
   };
+
+  if (!result.success) {
+    return (
+      <div className="mt-2 p-3 bg-danger-light border border-danger rounded-lg">
+        <div className="flex items-center gap-2">
+          <IconX size={16} className="text-danger" />
+          <span className="text-sm text-danger">{result.error || 'Une erreur est survenue'}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-2 p-3 bg-hover border border-default rounded-lg">
@@ -81,6 +137,7 @@ const ToolResultCard: React.FC<{ toolName: string; result: ToolResult }> = ({ to
         <span className="text-sm font-medium text-primary">{getTitle()}</span>
       </div>
       
+      {/* Email Result */}
       {toolName === 'generateRelanceEmail' && result.email && (
         <div className="space-y-2">
           <div className="text-xs text-muted">
@@ -89,33 +146,119 @@ const ToolResultCard: React.FC<{ toolName: string; result: ToolResult }> = ({ to
           <div className="text-xs text-secondary bg-card p-2 rounded border border-default max-h-32 overflow-y-auto whitespace-pre-wrap">
             {result.email.body}
           </div>
-          <button className="text-xs text-accent hover:underline flex items-center gap-1">
-            <IconMail size={12} />
-            {t('copy_email') || 'Copier l\'email'}
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => handleCopy(`Objet: ${result.email!.subject}\n\n${result.email!.body}`)}
+              className="text-xs text-accent hover:underline flex items-center gap-1 px-2 py-1 rounded bg-accent-light"
+            >
+              {copied ? <IconCheck size={12} /> : <IconCopy size={12} />}
+              {copied ? 'Copié !' : (t('copy_email') || 'Copier l\'email')}
+            </button>
+            <button 
+              onClick={() => onAction?.('openEmail', result)}
+              className="text-xs text-info hover:underline flex items-center gap-1 px-2 py-1 rounded bg-info-light"
+            >
+              <IconExternalLink size={12} />
+              {t('open_in_editor') || 'Ouvrir dans l\'éditeur'}
+            </button>
+          </div>
         </div>
       )}
 
+      {/* Task Result */}
       {toolName === 'createTask' && result.task && (
-        <div className="text-xs text-secondary">
-          <p><strong>Tâche:</strong> {result.task.title}</p>
-          {result.task.dueDate && (
-            <p><strong>Échéance:</strong> {result.task.dueDate}</p>
+        <div className="space-y-2">
+          <div className="text-xs text-secondary">
+            <p><strong>Tâche:</strong> {result.task.title}</p>
+            {result.task.dueDate && (
+              <p><strong>Échéance:</strong> {new Date(result.task.dueDate).toLocaleDateString('fr-FR')}</p>
+            )}
+          </div>
+          {result.task.created ? (
+            <p className="text-xs text-success flex items-center gap-1">
+              <IconCheck size={12} />
+              {t('task_created_success') || 'Tâche créée avec succès'}
+            </p>
+          ) : (
+            <button 
+              onClick={() => onAction?.('confirmTask', result)}
+              className="w-full text-xs text-white bg-success hover:bg-success/90 flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+            >
+              <IconCheck size={14} />
+              {t('confirm_create_task') || 'Confirmer la création'}
+            </button>
           )}
-          <p className="text-success mt-1">✓ {t('task_created_success') || 'Tâche créée avec succès'}</p>
         </div>
       )}
 
+      {/* Quote Result */}
+      {toolName === 'createQuote' && result.quote && (
+        <div className="space-y-2">
+          <div className="text-xs text-secondary">
+            <p><strong>Client:</strong> {result.quote.clientName}</p>
+            {result.quote.amount && (
+              <p><strong>Montant estimé:</strong> {result.quote.amount.toLocaleString('fr-FR')} €</p>
+            )}
+          </div>
+          {result.quote.created ? (
+            <div className="space-y-2">
+              <p className="text-xs text-success flex items-center gap-1">
+                <IconCheck size={12} />
+                {t('quote_created_success') || 'Devis créé avec succès'}
+              </p>
+              {result.actionUrl && (
+                <button 
+                  onClick={() => onAction?.('navigateToQuote', result)}
+                  className="w-full text-xs text-accent bg-accent-light hover:bg-accent hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+                >
+                  <IconExternalLink size={14} />
+                  {t('view_quote') || 'Voir le devis'}
+                </button>
+              )}
+            </div>
+          ) : (
+            <button 
+              onClick={() => onAction?.('confirmQuote', result)}
+              className="w-full text-xs text-white bg-accent hover:bg-accent/90 flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+            >
+              <IconFileInvoice size={14} />
+              {t('create_quote_now') || 'Créer le devis maintenant'}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Next Steps Result */}
       {toolName === 'suggestNextSteps' && result.steps && (
-        <ul className="text-xs text-secondary space-y-1">
+        <ul className="text-xs text-secondary space-y-1.5">
           {result.steps.map((step: string, i: number) => (
-            <li key={i} className="flex items-start gap-2">
-              <span className="text-accent font-bold">{i + 1}.</span>
+            <li key={i} className="flex items-start gap-2 p-1.5 rounded hover:bg-card cursor-pointer transition-colors">
+              <span className="text-accent font-bold min-w-[16px]">{i + 1}.</span>
               <span>{step}</span>
             </li>
           ))}
         </ul>
       )}
+    </div>
+  );
+};
+
+// ============================================================================
+// KEYBOARD SHORTCUT HINT
+// ============================================================================
+
+const KeyboardShortcutHint: React.FC = () => {
+  const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  
+  return (
+    <div className="flex items-center gap-1 text-xs text-muted">
+      <kbd className="px-1.5 py-0.5 rounded bg-card border border-default font-mono text-[10px]">
+        {isMac ? '⌘' : 'Ctrl'}
+      </kbd>
+      <span>+</span>
+      <kbd className="px-1.5 py-0.5 rounded bg-card border border-default font-mono text-[10px]">
+        K
+      </kbd>
     </div>
   );
 };
@@ -127,9 +270,11 @@ const ToolResultCard: React.FC<{ toolName: string; result: ToolResult }> = ({ to
 export default function AIChatAssistant() {
   const { t } = useLanguage();
   const { user } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const { isOpen, closeAssistant, openAssistant, initialPrompt, clearInitialPrompt } = useAIAssistant();
   const [isExpanded, setIsExpanded] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [pendingActions, setPendingActions] = useState<Map<string, ToolResult>>(new Map());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -140,6 +285,7 @@ export default function AIChatAssistant() {
     error,
     sendMessage,
     stop,
+    setMessages,
   } = useChat({
     id: 'eclipse-assistant',
     transport: new DefaultChatTransport({
@@ -162,6 +308,14 @@ export default function AIChatAssistant() {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen]);
+
+  // Handle initial prompt from context
+  useEffect(() => {
+    if (isOpen && initialPrompt) {
+      sendMessage({ text: initialPrompt });
+      clearInitialPrompt();
+    }
+  }, [isOpen, initialPrompt, sendMessage, clearInitialPrompt]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -194,6 +348,68 @@ export default function AIChatAssistant() {
     }
   };
 
+  // Handle tool actions (confirm task, quote, etc.)
+  const handleToolAction = useCallback(async (action: string, data: ToolResult) => {
+    switch (action) {
+      case 'confirmTask':
+        if (data.task) {
+          try {
+            // Call API to actually create the task
+            const response = await fetch('/api/ai/actions/create-task', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data.task),
+            });
+            
+            if (response.ok) {
+              const result = await response.json();
+              // Update the pending action to show success
+              setPendingActions(prev => {
+                const newMap = new Map(prev);
+                newMap.set(`task-${data.task!.title}`, { ...data, task: { ...data.task!, id: result.id, created: true } });
+                return newMap;
+              });
+            }
+          } catch (err) {
+            console.error('Failed to create task:', err);
+          }
+        }
+        break;
+
+      case 'confirmQuote':
+        if (data.quote) {
+          // Navigate to quote creation page with pre-filled data
+          const params = new URLSearchParams();
+          if (data.quote.clientId) params.set('client', data.quote.clientId);
+          if (data.quote.projectId) params.set('project', data.quote.projectId);
+          router.push(`/dashboard/factures/new?type=quote&${params.toString()}`);
+          closeAssistant();
+        }
+        break;
+
+      case 'navigateToQuote':
+        if (data.actionUrl) {
+          router.push(data.actionUrl);
+          closeAssistant();
+        }
+        break;
+
+      case 'openEmail':
+        // Open email in a new window or modal
+        if (data.email) {
+          const subject = encodeURIComponent(data.email.subject);
+          const body = encodeURIComponent(data.email.body);
+          window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+        }
+        break;
+    }
+  }, [router, closeAssistant]);
+
+  const handleClearChat = useCallback(() => {
+    setMessages([]);
+    setPendingActions(new Map());
+  }, [setMessages]);
+
   const panelWidth = isExpanded ? 'w-[500px]' : 'w-[380px]';
   const panelHeight = isExpanded ? 'h-[600px]' : 'h-[500px]';
 
@@ -208,9 +424,9 @@ export default function AIChatAssistant() {
             exit={{ scale: 0, opacity: 0 }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setIsOpen(true)}
+            onClick={() => openAssistant()}
             className="fixed bottom-6 left-6 z-[9999] w-14 h-14 rounded-full bg-accent shadow-xl flex items-center justify-center hover:shadow-2xl transition-shadow group"
-            title={t('ai_assistant') || 'Assistant IA Eclipse'}
+            title={`${t('ai_assistant') || 'Assistant IA Eclipse'} (⌘K)`}
           >
             <div className="relative">
               <Image
@@ -221,6 +437,12 @@ export default function AIChatAssistant() {
                 className="rounded-full"
               />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full border-2 border-accent animate-pulse" />
+            </div>
+            {/* Keyboard shortcut tooltip on hover */}
+            <div className="absolute left-full ml-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="bg-card border border-default rounded-lg px-2 py-1 shadow-lg whitespace-nowrap">
+                <KeyboardShortcutHint />
+              </div>
             </div>
           </motion.button>
         )}
@@ -248,12 +470,24 @@ export default function AIChatAssistant() {
                 />
                 <div>
                   <h3 className="font-semibold text-sm">Eclipse Copilot</h3>
-                  <p className="text-xs text-white/70">
+                  <p className="text-xs text-white/70 flex items-center gap-2">
                     {t('ai_assistant_subtitle') || 'Votre assistant business'}
+                    <span className="hidden sm:flex items-center gap-1 bg-white/20 px-1.5 py-0.5 rounded text-[10px]">
+                      <IconCommand size={10} />K
+                    </span>
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
+                {messages.length > 0 && (
+                  <button
+                    onClick={handleClearChat}
+                    className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
+                    title={t('clear_chat') || 'Nouvelle conversation'}
+                  >
+                    <IconRefresh size={16} />
+                  </button>
+                )}
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
                   className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
@@ -262,8 +496,9 @@ export default function AIChatAssistant() {
                   {isExpanded ? <IconMinimize size={16} /> : <IconMaximize size={16} />}
                 </button>
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeAssistant}
                   className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
+                  title="Fermer (Échap)"
                 >
                   <IconX size={18} />
                 </button>
@@ -361,7 +596,7 @@ export default function AIChatAssistant() {
                               </p>
                             );
                           }
-                          // Handle tool invocations - check if it's a tool-* type
+                          // Handle tool invocations
                           if (part.type.startsWith('tool-')) {
                             const toolPart = part as unknown as { 
                               type: string; 
@@ -371,9 +606,24 @@ export default function AIChatAssistant() {
                               output?: ToolResult;
                             };
                             const toolName = toolPart.toolName || toolPart.type.replace('tool-', '');
-                            if (toolPart.state === 'output' && toolPart.output) {
+                            
+                            // Check for pending action override
+                            const pendingKey = toolPart.output?.task 
+                              ? `task-${toolPart.output.task.title}` 
+                              : toolPart.output?.quote 
+                                ? `quote-${toolPart.output.quote.clientId}` 
+                                : null;
+                            const overriddenResult = pendingKey ? pendingActions.get(pendingKey) : null;
+                            const resultToShow = overriddenResult || toolPart.output;
+                            
+                            if (toolPart.state === 'output' && resultToShow) {
                               return (
-                                <ToolResultCard key={i} toolName={toolName} result={toolPart.output} />
+                                <ToolResultCard 
+                                  key={i} 
+                                  toolName={toolName} 
+                                  result={resultToShow}
+                                  onAction={handleToolAction}
+                                />
                               );
                             }
                             if (toolPart.state === 'call' || toolPart.state === 'input-streaming') {
@@ -431,6 +681,7 @@ export default function AIChatAssistant() {
                   placeholder={t('ai_input_placeholder') || 'Écris ton message...'}
                   className="flex-1 px-4 py-2.5 rounded-xl bg-hover border border-default text-primary placeholder:text-muted focus:outline-none focus:border-accent text-sm"
                   disabled={isLoading}
+                  data-ai-input="true"
                 />
                 {isLoading ? (
                   <button

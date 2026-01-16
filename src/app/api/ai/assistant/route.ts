@@ -20,6 +20,7 @@ interface ClientSummary {
   id: string;
   name: string;
   company?: string;
+  email?: string;
   status: string;
   pipelineStatus: string;
   lastContact?: string;
@@ -29,7 +30,9 @@ interface ClientSummary {
 
 interface ProjectSummary {
   id: string;
+  slug: string;
   title: string;
+  clientId?: string;
   clientName: string;
   status: string;
   progress: number;
@@ -41,6 +44,7 @@ interface ProjectSummary {
 interface InvoiceSummary {
   id: string;
   type: 'quote' | 'invoice';
+  clientId?: string;
   clientName: string;
   amount: number;
   status: string;
@@ -51,6 +55,7 @@ interface InvoiceSummary {
 interface TaskSummary {
   id: string;
   title: string;
+  projectId?: string;
   projectName: string;
   status: string;
   priority: string;
@@ -106,10 +111,11 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
       id: c.documentId as string,
       name: `${c.first_name || ''} ${c.last_name || ''}`.trim() || c.company_name as string,
       company: c.company_name as string,
+      email: c.email as string,
       status: c.contact_status as string || 'prospect',
       pipelineStatus: c.pipeline_status as string || 'new',
       lastContact: c.last_contact_date as string,
-      totalRevenue: 0, // Would need aggregation
+      totalRevenue: 0,
       pendingInvoices: 0,
     }));
 
@@ -121,7 +127,9 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
       
       return {
         id: p.documentId as string,
+        slug: p.slug as string,
         title: p.title as string,
+        clientId: client?.documentId as string,
         clientName: client ? `${client.first_name || ''} ${client.last_name || ''}`.trim() : 'N/A',
         status: p.project_status as string,
         progress: typeof p.progress === 'number' ? p.progress : 0,
@@ -140,6 +148,7 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
       return {
         id: f.documentId as string,
         type: f.document_type as 'quote' | 'invoice',
+        clientId: client?.documentId as string,
         clientName: client ? `${client.first_name || ''} ${client.last_name || ''}`.trim() : 'N/A',
         amount: (f.total_ttc as number) || 0,
         status: (f.document_type === 'quote' ? f.quote_status : f.facture_status) as string,
@@ -156,6 +165,7 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
       return {
         id: t.documentId as string,
         title: t.title as string,
+        projectId: project?.documentId as string,
         projectName: project?.title as string || 'N/A',
         status: t.task_status as string,
         priority: t.priority as string || 'medium',
@@ -201,21 +211,29 @@ function buildSystemPrompt(context: UserContext | null): string {
 1. **Analyse** : Ce que tu observes dans les données
 2. **Diagnostic** : Le problème ou l'opportunité identifiée
 3. **Actions** : 2-3 suggestions concrètes avec priorité
-4. Si pertinent, propose d'utiliser un outil (email, tâche...)
+4. Si pertinent, propose d'utiliser un outil (email, tâche, devis...)
 
-## Règles
-- Ne jamais inventer de données
+## Outils disponibles
+- generateRelanceEmail: Génère un email de relance personnalisé
+- createTask: Crée une tâche dans un projet (IMPORTANT: l'utilisateur devra confirmer)
+- createQuote: Prépare un devis pré-rempli pour un client (IMPORTANT: l'utilisateur devra confirmer)
+- suggestNextSteps: Suggère les prochaines étapes prioritaires
+
+## Règles IMPORTANTES
+- Ne jamais inventer de données - utilise UNIQUEMENT les données du contexte
 - Si tu n'as pas l'info, dis-le clairement
-- Propose toujours une prochaine étape actionnable`;
+- Propose toujours une prochaine étape actionnable
+- Pour les actions (créer tâche, devis...), demande TOUJOURS confirmation
+- Quand tu utilises un tool, explique pourquoi`;
 
   if (!context) {
     return basePrompt + '\n\n⚠️ Contexte utilisateur non disponible. Demande à l\'utilisateur les informations nécessaires.';
   }
 
-  // Build context summary
+  // Build context summary with more details
   const clientsSummary = context.clients.length > 0
-    ? context.clients.slice(0, 10).map(c => 
-        `- ${c.name}${c.company ? ` (${c.company})` : ''}: ${c.pipelineStatus}`
+    ? context.clients.slice(0, 15).map(c => 
+        `- ${c.name}${c.company ? ` (${c.company})` : ''} [ID: ${c.id}]: ${c.pipelineStatus}${c.email ? ` - ${c.email}` : ''}`
       ).join('\n')
     : 'Aucun client';
 
@@ -224,17 +242,26 @@ function buildSystemPrompt(context: UserContext | null): string {
         const issues = [];
         if (p.blockedTasks > 0) issues.push(`${p.blockedTasks} bloquées`);
         if (p.pendingTasks > 0) issues.push(`${p.pendingTasks} en attente`);
-        return `- ${p.title} (${p.clientName}): ${p.status}, ${p.progress}%${issues.length ? ` [${issues.join(', ')}]` : ''}`;
+        return `- ${p.title} [ID: ${p.id}] (Client: ${p.clientName}): ${p.status}, ${p.progress}%${issues.length ? ` [${issues.join(', ')}]` : ''}`;
       }).join('\n')
     : 'Aucun projet';
 
   const pendingQuotes = context.invoices.filter(i => i.type === 'quote' && i.status === 'sent');
   const overdueInvoices = context.invoices.filter(i => i.type === 'invoice' && i.status === 'overdue');
   const quotesToRelance = pendingQuotes.filter(q => q.daysSinceSent && q.daysSinceSent > 7);
+  const draftQuotes = context.invoices.filter(i => i.type === 'quote' && i.status === 'draft');
 
   const invoicesSummary = `
-- Devis en attente: ${pendingQuotes.length}${quotesToRelance.length > 0 ? ` (${quotesToRelance.length} à relancer - >7 jours)` : ''}
+- Devis en attente de réponse: ${pendingQuotes.length}${quotesToRelance.length > 0 ? ` (⚠️ ${quotesToRelance.length} à relancer - >7 jours)` : ''}
+- Devis en brouillon: ${draftQuotes.length}
 - Factures en retard: ${overdueInvoices.length}`;
+
+  // List quotes to relance with details
+  const quotesToRelanceDetails = quotesToRelance.length > 0
+    ? '\n\n### Devis à relancer (>7 jours)\n' + quotesToRelance.map(q => 
+        `- ${q.clientName}: ${q.amount.toLocaleString('fr-FR')}€ (envoyé il y a ${q.daysSinceSent} jours) [ID: ${q.id}]`
+      ).join('\n')
+    : '';
 
   const overdueTasks = context.tasks.filter(t => t.isOverdue);
   const highPriorityTasks = context.tasks.filter(t => t.priority === 'high' || t.priority === 'urgent');
@@ -242,6 +269,13 @@ function buildSystemPrompt(context: UserContext | null): string {
   const tasksSummary = `
 - Tâches en retard: ${overdueTasks.length}
 - Tâches haute priorité: ${highPriorityTasks.length}`;
+
+  // List overdue tasks
+  const overdueTasksDetails = overdueTasks.length > 0
+    ? '\n\n### Tâches en retard\n' + overdueTasks.slice(0, 5).map(t => 
+        `- "${t.title}" (${t.projectName}) - échéance: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString('fr-FR') : 'N/A'}`
+      ).join('\n')
+    : '';
 
   return `${basePrompt}
 
@@ -254,10 +288,10 @@ ${clientsSummary}
 ${projectsSummary}
 
 ### Facturation
-${invoicesSummary}
+${invoicesSummary}${quotesToRelanceDetails}
 
 ### Tâches
-${tasksSummary}
+${tasksSummary}${overdueTasksDetails}
 
 ${quotesToRelance.length > 0 ? `\n⚠️ ALERTE: ${quotesToRelance.length} devis attendent une réponse depuis plus de 7 jours !` : ''}
 ${overdueInvoices.length > 0 ? `\n⚠️ ALERTE: ${overdueInvoices.length} factures sont en retard de paiement !` : ''}
@@ -269,69 +303,79 @@ ${overdueTasks.length > 0 ? `\n⚠️ ALERTE: ${overdueTasks.length} tâches son
 // ============================================================================
 
 const generateRelanceEmail = tool({
-  description: 'Génère un email de relance personnalisé pour un client ou un devis en attente',
+  description: 'Génère un email de relance personnalisé pour un client ou un devis en attente. Utilise ce tool quand l\'utilisateur veut relancer un client.',
   parameters: z.object({
     clientName: z.string().describe('Nom du client'),
-    context: z.enum(['quote', 'invoice', 'project', 'general']).describe('Type de relance'),
-    tone: z.enum(['friendly', 'professional', 'urgent']).describe('Ton de l\'email'),
-    additionalContext: z.string().optional().describe('Contexte supplémentaire pour personnaliser'),
+    clientEmail: z.string().optional().describe('Email du client si disponible'),
+    context: z.enum(['quote', 'invoice', 'project', 'general']).describe('Type de relance: quote (devis en attente), invoice (facture impayée), project (point projet), general (reprise de contact)'),
+    tone: z.enum(['friendly', 'professional', 'urgent']).describe('Ton de l\'email: friendly (amical), professional (professionnel), urgent (avec urgence)'),
+    additionalContext: z.string().optional().describe('Contexte supplémentaire pour personnaliser l\'email'),
+    daysSinceLastContact: z.number().optional().describe('Nombre de jours depuis le dernier contact'),
   }),
-  execute: async ({ clientName, context, tone, additionalContext }) => {
-    const toneMap = {
-      friendly: 'amical et décontracté',
-      professional: 'professionnel et courtois',
-      urgent: 'professionnel mais avec une note d\'urgence',
+  execute: async ({ clientName, context, tone, additionalContext, daysSinceLastContact }) => {
+    const toneStyles = {
+      friendly: {
+        greeting: 'Bonjour',
+        closing: 'À très bientôt',
+        style: 'décontracté et chaleureux',
+      },
+      professional: {
+        greeting: 'Bonjour',
+        closing: 'Bien cordialement',
+        style: 'professionnel et courtois',
+      },
+      urgent: {
+        greeting: 'Bonjour',
+        closing: 'Dans l\'attente de votre retour',
+        style: 'professionnel avec une note d\'urgence',
+      },
     };
 
-    const contextMap = {
-      quote: `relance pour un devis envoyé`,
-      invoice: `rappel de paiement d'une facture`,
-      project: `point sur l'avancement du projet`,
-      general: `reprise de contact`,
-    };
+    const toneStyle = toneStyles[tone];
+    const urgencyNote = daysSinceLastContact && daysSinceLastContact > 14 
+      ? '\n\nJe me permets d\'insister car cela fait maintenant plus de deux semaines que nous attendons votre retour.'
+      : '';
 
-    // In a real implementation, this would call GPT to generate the email
     const emailTemplates: Record<string, { subject: string; body: string }> = {
       quote: {
         subject: `Suivi de notre proposition - ${clientName}`,
-        body: `Bonjour,
+        body: `${toneStyle.greeting},
 
-Je me permets de revenir vers vous concernant le devis que je vous ai envoyé récemment.
+Je me permets de revenir vers vous concernant le devis que je vous ai transmis.
 
-Avez-vous eu l'occasion de le consulter ? Je reste disponible pour en discuter et répondre à vos questions.
+Avez-vous eu l'occasion de le consulter ? Je reste entièrement disponible pour en discuter et répondre à toutes vos questions.${additionalContext ? `\n\n${additionalContext}` : ''}${urgencyNote}
 
-${additionalContext ? `\nNote: ${additionalContext}\n` : ''}
-Bien cordialement`,
+${toneStyle.closing}`,
       },
       invoice: {
-        subject: `Rappel - Facture en attente`,
-        body: `Bonjour,
+        subject: `Rappel - Facture en attente de règlement`,
+        body: `${toneStyle.greeting},
 
 Je me permets de vous relancer concernant la facture en attente de règlement.
 
-Pourriez-vous me confirmer le traitement de celle-ci ?
+Pourriez-vous me confirmer le traitement de celle-ci ? Si vous rencontrez des difficultés, n'hésitez pas à m'en faire part.${additionalContext ? `\n\n${additionalContext}` : ''}
 
-Bien cordialement`,
+${toneStyle.closing}`,
       },
       project: {
-        subject: `Point projet - ${clientName}`,
-        body: `Bonjour,
+        subject: `Point d'avancement - ${clientName}`,
+        body: `${toneStyle.greeting},
 
 Je souhaitais faire un point sur l'avancement de notre projet.
 
-Êtes-vous disponible pour un rapide échange cette semaine ?
+Êtes-vous disponible pour un rapide échange cette semaine ? Cela nous permettrait de valider les prochaines étapes ensemble.${additionalContext ? `\n\n${additionalContext}` : ''}
 
-Bien cordialement`,
+${toneStyle.closing}`,
       },
       general: {
-        subject: `Des nouvelles - ${clientName}`,
-        body: `Bonjour,
+        subject: `Prenons des nouvelles - ${clientName}`,
+        body: `${toneStyle.greeting},
 
 J'espère que vous allez bien. Je souhaitais prendre de vos nouvelles et voir si je peux vous accompagner sur de nouveaux projets.
 
-N'hésitez pas à me contacter si vous avez des besoins.
+N'hésitez pas à me contacter si vous avez des besoins ou si vous souhaitez discuter de nouvelles opportunités.${additionalContext ? `\n\n${additionalContext}` : ''}
 
-Bien cordialement`,
+${toneStyle.closing}`,
       },
     };
 
@@ -340,67 +384,101 @@ Bien cordialement`,
       email: emailTemplates[context],
       metadata: {
         clientName,
-        context: contextMap[context],
-        tone: toneMap[tone],
+        context,
+        tone: toneStyle.style,
       },
     };
   },
 });
 
 const createTask = tool({
-  description: 'Crée une nouvelle tâche dans un projet',
+  description: 'Prépare une nouvelle tâche à créer dans un projet. L\'utilisateur devra confirmer la création.',
   parameters: z.object({
     title: z.string().describe('Titre de la tâche'),
-    projectId: z.string().optional().describe('ID du projet'),
-    priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
-    dueDate: z.string().optional().describe('Date d\'échéance (format YYYY-MM-DD)'),
-    description: z.string().optional(),
+    projectId: z.string().optional().describe('ID du projet (documentId)'),
+    projectName: z.string().optional().describe('Nom du projet pour référence'),
+    priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium').describe('Priorité de la tâche'),
+    dueDate: z.string().optional().describe('Date d\'échéance au format YYYY-MM-DD'),
+    description: z.string().optional().describe('Description de la tâche'),
   }),
-  execute: async ({ title, priority, dueDate, description }) => {
-    // In a real implementation, this would create the task via API
+  execute: async ({ title, projectId, projectName, priority, dueDate, description }) => {
+    // This tool prepares the task, actual creation is done via a separate action endpoint
     return {
       success: true,
       task: {
         title,
+        projectId,
+        projectName,
         priority,
         dueDate,
         description,
-        status: 'todo',
+        created: false, // Will be true after user confirms
       },
-      message: `Tâche "${title}" créée avec succès`,
+      message: `Tâche "${title}" prête à être créée${projectName ? ` dans le projet "${projectName}"` : ''}. Confirme pour la créer.`,
+    };
+  },
+});
+
+const createQuote = tool({
+  description: 'Prépare un devis pré-rempli pour un client. L\'utilisateur sera redirigé vers la page de création avec les informations pré-remplies.',
+  parameters: z.object({
+    clientId: z.string().describe('ID du client (documentId)'),
+    clientName: z.string().describe('Nom du client'),
+    projectId: z.string().optional().describe('ID du projet associé si applicable'),
+    projectName: z.string().optional().describe('Nom du projet pour référence'),
+    estimatedAmount: z.number().optional().describe('Montant estimé du devis en euros'),
+    description: z.string().optional().describe('Description ou contexte du devis'),
+  }),
+  execute: async ({ clientId, clientName, projectId, projectName, estimatedAmount, description }) => {
+    return {
+      success: true,
+      quote: {
+        clientId,
+        clientName,
+        projectId,
+        projectName,
+        amount: estimatedAmount,
+        description,
+        created: false,
+      },
+      actionUrl: `/dashboard/factures/new?type=quote&client=${clientId}${projectId ? `&project=${projectId}` : ''}`,
+      message: `Devis prêt pour ${clientName}${estimatedAmount ? ` (~${estimatedAmount.toLocaleString('fr-FR')}€)` : ''}. Clique pour ouvrir l'éditeur de devis.`,
     };
   },
 });
 
 const suggestNextSteps = tool({
-  description: 'Suggère les prochaines étapes prioritaires basées sur le contexte',
+  description: 'Suggère les prochaines étapes prioritaires basées sur le contexte actuel. Utilise ce tool pour aider l\'utilisateur à prioriser.',
   parameters: z.object({
-    focus: z.enum(['project', 'client', 'revenue', 'general']).describe('Domaine de focus'),
-    projectId: z.string().optional(),
-    clientId: z.string().optional(),
+    focus: z.enum(['project', 'client', 'revenue', 'general']).describe('Domaine de focus: project (avancement projets), client (relation client), revenue (chiffre d\'affaires), general (vue globale)'),
+    projectId: z.string().optional().describe('ID du projet spécifique si focus=project'),
+    clientId: z.string().optional().describe('ID du client spécifique si focus=client'),
   }),
   execute: async ({ focus }) => {
-    // In a real implementation, this would analyze context and suggest steps
     const suggestions: Record<string, string[]> = {
       project: [
-        'Terminer les tâches bloquantes en priorité',
-        'Envoyer un point d\'avancement au client',
-        'Planifier la prochaine livraison',
+        'Traiter les tâches bloquantes en priorité - elles retardent tout le reste',
+        'Envoyer un point d\'avancement au client pour maintenir la relation',
+        'Planifier la prochaine livraison et définir les milestones',
+        'Vérifier si des ressources manquent pour avancer',
       ],
       client: [
         'Relancer les devis en attente depuis plus de 7 jours',
         'Programmer des points réguliers avec les clients actifs',
-        'Qualifier les nouveaux prospects',
+        'Qualifier les nouveaux prospects dans le pipeline',
+        'Mettre à jour les statuts clients dans le CRM',
       ],
       revenue: [
-        'Relancer les factures impayées',
-        'Convertir les devis en attente',
-        'Identifier les opportunités d\'upsell',
+        'Relancer les factures impayées en priorité',
+        'Convertir les devis en attente - chaque jour compte',
+        'Identifier les opportunités d\'upsell sur les clients existants',
+        'Préparer les factures pour les projets terminés',
       ],
       general: [
-        'Traiter les tâches en retard',
-        'Relancer les clients silencieux',
+        'Traiter les tâches en retard pour éviter l\'accumulation',
+        'Relancer les clients silencieux depuis plus de 2 semaines',
         'Mettre à jour le pipeline commercial',
+        'Bloquer du temps pour le travail de fond',
       ],
     };
 
@@ -437,6 +515,7 @@ export async function POST(req: Request) {
       tools: {
         generateRelanceEmail,
         createTask,
+        createQuote,
         suggestNextSteps,
       },
       maxSteps: 5,
@@ -451,4 +530,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

@@ -58,6 +58,7 @@ import { getModuleStatus, ModuleStatusConfig, DEFAULT_MODULE_STATUSES } from '@/
 import { MobileDrawer, MobileHeader, MobileBottomNav } from '@/app/components/mobile';
 import type { MobileDrawerItem } from '@/app/components/mobile';
 import AIChatAssistant from '@/app/components/AIChatAssistant';
+import { AIAssistantProvider } from '@/app/context/AIAssistantContext';
 
 interface SidebarItem {
   id: string;
@@ -83,7 +84,9 @@ export default function DashboardLayout({
         <LenisProvider>
           <UserPreferencesProvider>
             <OnboardingProvider>
-              <DashboardLayoutContent>{children}</DashboardLayoutContent>
+              <AIAssistantProvider>
+                <DashboardLayoutContent>{children}</DashboardLayoutContent>
+              </AIAssistantProvider>
             </OnboardingProvider>
           </UserPreferencesProvider>
         </LenisProvider>
