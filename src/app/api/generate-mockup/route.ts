@@ -210,7 +210,7 @@ const openai = process.env.OPENAI_API_KEY
 type DalleSize = '1024x1024' | '1792x1024';
 type DalleQuality = 'standard' | 'hd';
 
-export async function generateMockupImage(
+async function generateMockupImage(
   prompt: string,
   size: DalleSize = '1024x1024',
   quality: DalleQuality = 'standard',
