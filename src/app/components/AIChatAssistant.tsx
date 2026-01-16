@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   IconX,
@@ -12,8 +13,8 @@ import {
   IconListCheck,
   IconArrowRight,
   IconRefresh,
-  IconMinimize2,
-  IconMaximize2,
+  IconMinimize,
+  IconMaximize,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -23,27 +24,29 @@ import Image from 'next/image';
 // TYPES
 // ============================================================================
 
-interface ToolInvocation {
-  toolCallId: string;
-  toolName: string;
-  args: Record<string, unknown>;
-  state: 'partial-call' | 'call' | 'result';
-  result?: unknown;
+interface EmailData {
+  subject: string;
+  body: string;
 }
 
-interface MessagePart {
-  type: string;
-  text?: string;
-  toolInvocation?: ToolInvocation;
+interface TaskData {
+  title: string;
+  dueDate?: string;
+}
+
+interface ToolResult {
+  success?: boolean;
+  email?: EmailData;
+  task?: TaskData;
+  steps?: string[];
 }
 
 // ============================================================================
 // TOOL RESULT COMPONENTS
 // ============================================================================
 
-const ToolResultCard: React.FC<{ toolName: string; result: unknown }> = ({ toolName, result }) => {
+const ToolResultCard: React.FC<{ toolName: string; result: ToolResult }> = ({ toolName, result }) => {
   const { t } = useLanguage();
-  const data = result as Record<string, unknown>;
 
   const getIcon = () => {
     switch (toolName) {
@@ -78,13 +81,13 @@ const ToolResultCard: React.FC<{ toolName: string; result: unknown }> = ({ toolN
         <span className="text-sm font-medium text-primary">{getTitle()}</span>
       </div>
       
-      {toolName === 'generateRelanceEmail' && data.email && (
+      {toolName === 'generateRelanceEmail' && result.email && (
         <div className="space-y-2">
           <div className="text-xs text-muted">
-            <strong>Objet:</strong> {(data.email as Record<string, string>).subject}
+            <strong>Objet:</strong> {result.email.subject}
           </div>
           <div className="text-xs text-secondary bg-card p-2 rounded border border-default max-h-32 overflow-y-auto whitespace-pre-wrap">
-            {(data.email as Record<string, string>).body}
+            {result.email.body}
           </div>
           <button className="text-xs text-accent hover:underline flex items-center gap-1">
             <IconMail size={12} />
@@ -93,19 +96,19 @@ const ToolResultCard: React.FC<{ toolName: string; result: unknown }> = ({ toolN
         </div>
       )}
 
-      {toolName === 'createTask' && data.task && (
+      {toolName === 'createTask' && result.task && (
         <div className="text-xs text-secondary">
-          <p><strong>Tâche:</strong> {(data.task as Record<string, string>).title}</p>
-          {(data.task as Record<string, string>).dueDate && (
-            <p><strong>Échéance:</strong> {(data.task as Record<string, string>).dueDate}</p>
+          <p><strong>Tâche:</strong> {result.task.title}</p>
+          {result.task.dueDate && (
+            <p><strong>Échéance:</strong> {result.task.dueDate}</p>
           )}
           <p className="text-success mt-1">✓ {t('task_created_success') || 'Tâche créée avec succès'}</p>
         </div>
       )}
 
-      {toolName === 'suggestNextSteps' && data.steps && (
+      {toolName === 'suggestNextSteps' && result.steps && (
         <ul className="text-xs text-secondary space-y-1">
-          {(data.steps as string[]).map((step, i) => (
+          {result.steps.map((step: string, i: number) => (
             <li key={i} className="flex items-start gap-2">
               <span className="text-accent font-bold">{i + 1}.</span>
               <span>{step}</span>
@@ -126,24 +129,25 @@ export default function AIChatAssistant() {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // AI SDK useChat hook
+  // AI SDK v6 useChat hook with DefaultChatTransport
   const {
     messages,
-    input,
-    setInput,
-    isLoading,
+    status,
     error,
-    reload,
+    sendMessage,
     stop,
-    append,
   } = useChat({
-    api: '/api/ai/assistant',
     id: 'eclipse-assistant',
-    initialMessages: [],
+    transport: new DefaultChatTransport({
+      api: '/api/ai/assistant',
+    }),
   });
+
+  const isLoading = status === 'streaming' || status === 'submitted';
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -161,13 +165,11 @@ export default function AIChatAssistant() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!inputValue.trim() || isLoading) return;
 
-    await append({
-      role: 'user',
-      content: input,
-    });
-    setInput('');
+    const message = inputValue;
+    setInputValue('');
+    await sendMessage({ text: message });
   };
 
   const handleQuickAction = (action: string) => {
@@ -177,10 +179,19 @@ export default function AIChatAssistant() {
       next: t('ai_prompt_next') || 'Que devrais-je faire maintenant pour avancer ?',
     };
     
-    append({
-      role: 'user',
-      content: prompts[action] || action,
-    });
+    sendMessage({ text: prompts[action] || action });
+  };
+
+  const handleRetry = () => {
+    if (messages.length > 0) {
+      const lastUserMessage = [...messages].reverse().find(m => m.role === 'user');
+      if (lastUserMessage) {
+        const textPart = lastUserMessage.parts?.find(p => p.type === 'text');
+        if (textPart && 'text' in textPart) {
+          sendMessage({ text: textPart.text });
+        }
+      }
+    }
   };
 
   const panelWidth = isExpanded ? 'w-[500px]' : 'w-[380px]';
@@ -248,7 +259,7 @@ export default function AIChatAssistant() {
                   className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
                   title={isExpanded ? 'Réduire' : 'Agrandir'}
                 >
-                  {isExpanded ? <IconMinimize2 size={16} /> : <IconMaximize2 size={16} />}
+                  {isExpanded ? <IconMinimize size={16} /> : <IconMaximize size={16} />}
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
@@ -342,38 +353,40 @@ export default function AIChatAssistant() {
                         }`}
                       >
                         {/* Render message parts */}
-                        {message.parts ? (
-                          message.parts.map((part: MessagePart, i: number) => {
-                            if (part.type === 'text' && part.text) {
+                        {message.parts?.map((part, i) => {
+                          if (part.type === 'text') {
+                            return (
+                              <p key={i} className="text-sm whitespace-pre-wrap">
+                                {part.text}
+                              </p>
+                            );
+                          }
+                          // Handle tool invocations - check if it's a tool-* type
+                          if (part.type.startsWith('tool-')) {
+                            const toolPart = part as unknown as { 
+                              type: string; 
+                              toolCallId: string;
+                              toolName?: string;
+                              state: string; 
+                              output?: ToolResult;
+                            };
+                            const toolName = toolPart.toolName || toolPart.type.replace('tool-', '');
+                            if (toolPart.state === 'output' && toolPart.output) {
                               return (
-                                <p key={i} className="text-sm whitespace-pre-wrap">
-                                  {part.text}
-                                </p>
+                                <ToolResultCard key={i} toolName={toolName} result={toolPart.output} />
                               );
                             }
-                            if (part.type === 'tool-invocation' && part.toolInvocation) {
-                              const { toolName, state, result } = part.toolInvocation;
-                              if (state === 'result' && result) {
-                                return (
-                                  <ToolResultCard key={i} toolName={toolName} result={result} />
-                                );
-                              }
-                              if (state === 'call') {
-                                return (
-                                  <div key={i} className="flex items-center gap-2 text-xs text-muted mt-2">
-                                    <IconLoader2 size={14} className="animate-spin" />
-                                    <span>Exécution de {toolName}...</span>
-                                  </div>
-                                );
-                              }
+                            if (toolPart.state === 'call' || toolPart.state === 'input-streaming') {
+                              return (
+                                <div key={i} className="flex items-center gap-2 text-xs text-muted mt-2">
+                                  <IconLoader2 size={14} className="animate-spin" />
+                                  <span>Exécution de {toolName}...</span>
+                                </div>
+                              );
                             }
-                            return null;
-                          })
-                        ) : (
-                          <p className="text-sm whitespace-pre-wrap">
-                            {typeof message.content === 'string' ? message.content : ''}
-                          </p>
-                        )}
+                          }
+                          return null;
+                        })}
                       </div>
                     </div>
                   ))}
@@ -395,7 +408,7 @@ export default function AIChatAssistant() {
                     <div className="flex justify-center">
                       <div className="bg-danger-light border border-danger rounded-lg px-4 py-2 flex items-center gap-2">
                         <span className="text-sm text-danger">{error.message}</span>
-                        <button onClick={() => reload()} className="text-danger hover:underline">
+                        <button onClick={handleRetry} className="text-danger hover:underline">
                           <IconRefresh size={14} />
                         </button>
                       </div>
@@ -413,8 +426,8 @@ export default function AIChatAssistant() {
                 <input
                   ref={inputRef}
                   type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
                   placeholder={t('ai_input_placeholder') || 'Écris ton message...'}
                   className="flex-1 px-4 py-2.5 rounded-xl bg-hover border border-default text-primary placeholder:text-muted focus:outline-none focus:border-accent text-sm"
                   disabled={isLoading}
@@ -430,7 +443,7 @@ export default function AIChatAssistant() {
                 ) : (
                   <button
                     type="submit"
-                    disabled={!input.trim()}
+                    disabled={!inputValue.trim()}
                     className="p-2.5 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <IconSend size={18} />
@@ -444,4 +457,3 @@ export default function AIChatAssistant() {
     </>
   );
 }
-
