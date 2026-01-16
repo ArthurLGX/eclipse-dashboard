@@ -26,6 +26,8 @@ interface ClientSummary {
   lastContact?: string;
   totalRevenue: number;
   pendingInvoices: number;
+  isCollaborative?: boolean;
+  collaborativeProject?: string;
 }
 
 interface ProjectSummary {
@@ -39,6 +41,8 @@ interface ProjectSummary {
   deadline?: string;
   blockedTasks: number;
   pendingTasks: number;
+  isCollaborative?: boolean;
+  permission?: string;
 }
 
 interface InvoiceSummary {
@@ -78,19 +82,26 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
     if (!userRes.ok) return null;
     const user = await userRes.json();
 
-    // Fetch clients
+    // Fetch owned clients
     const clientsRes = await fetch(
       `${apiUrl}/api/contacts?filters[users][id][$in]=${user.id}&populate=*&pagination[limit]=50`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const clientsData = await clientsRes.json();
     
-    // Fetch projects
+    // Fetch owned projects
     const projectsRes = await fetch(
       `${apiUrl}/api/projects?filters[user][id][$eq]=${user.id}&populate[tasks]=*&populate[client]=*&pagination[limit]=50`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const projectsData = await projectsRes.json();
+
+    // Fetch collaborative projects (where user is collaborator, not owner)
+    const collabProjectsRes = await fetch(
+      `${apiUrl}/api/project-collaborators?populate[project][populate][client]=*&populate[project][populate][tasks]=*&filters[user][id][$eq]=${user.id}&filters[is_owner][$eq]=false&pagination[limit]=50`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const collabProjectsData = await collabProjectsRes.json();
 
     // Fetch invoices/quotes
     const invoicesRes = await fetch(
@@ -106,8 +117,8 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
     );
     const tasksData = await tasksRes.json();
 
-    // Transform data into summaries
-    const clients: ClientSummary[] = (clientsData.data || []).map((c: Record<string, unknown>) => ({
+    // Transform owned clients
+    const ownedClients: ClientSummary[] = (clientsData.data || []).map((c: Record<string, unknown>) => ({
       id: c.documentId as string,
       name: `${c.first_name || ''} ${c.last_name || ''}`.trim() || c.company_name as string,
       company: c.company_name as string,
@@ -117,9 +128,42 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
       lastContact: c.last_contact_date as string,
       totalRevenue: 0,
       pendingInvoices: 0,
+      isCollaborative: false,
     }));
 
-    const projects: ProjectSummary[] = (projectsData.data || []).map((p: Record<string, unknown>) => {
+    // Extract collaborative clients from collaborative projects
+    const ownedClientIds = new Set(ownedClients.map(c => c.id));
+    const collaborativeClientsMap = new Map<string, ClientSummary>();
+    
+    const collabProjects = (collabProjectsData.data || []);
+    for (const collab of collabProjects) {
+      const project = collab.project as Record<string, unknown>;
+      const client = project?.client as Record<string, unknown>;
+      if (client?.documentId && !ownedClientIds.has(client.documentId as string)) {
+        const clientId = client.documentId as string;
+        if (!collaborativeClientsMap.has(clientId)) {
+          collaborativeClientsMap.set(clientId, {
+            id: clientId,
+            name: `${client.first_name || ''} ${client.last_name || ''}`.trim() || client.company_name as string || 'N/A',
+            company: client.company_name as string,
+            email: client.email as string,
+            status: client.contact_status as string || 'prospect',
+            pipelineStatus: client.pipeline_status as string || 'new',
+            lastContact: client.last_contact_date as string,
+            totalRevenue: 0,
+            pendingInvoices: 0,
+            isCollaborative: true,
+            collaborativeProject: project.title as string,
+          });
+        }
+      }
+    }
+
+    // Merge all clients
+    const clients: ClientSummary[] = [...ownedClients, ...Array.from(collaborativeClientsMap.values())];
+
+    // Transform owned projects
+    const ownedProjects: ProjectSummary[] = (projectsData.data || []).map((p: Record<string, unknown>) => {
       const tasks = (p.tasks as Record<string, unknown>[]) || [];
       const blockedTasks = tasks.filter((t: Record<string, unknown>) => t.task_status === 'blocked').length;
       const pendingTasks = tasks.filter((t: Record<string, unknown>) => t.task_status === 'todo' || t.task_status === 'in_progress').length;
@@ -136,8 +180,42 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
         deadline: p.end_date as string,
         blockedTasks,
         pendingTasks,
+        isCollaborative: false,
       };
     });
+
+    // Transform collaborative projects
+    const ownedProjectIds = new Set(ownedProjects.map(p => p.id));
+    const collaborativeProjects: ProjectSummary[] = collabProjects
+      .filter((collab: Record<string, unknown>) => {
+        const project = collab.project as Record<string, unknown>;
+        return project?.documentId && !ownedProjectIds.has(project.documentId as string);
+      })
+      .map((collab: Record<string, unknown>) => {
+        const p = collab.project as Record<string, unknown>;
+        const tasks = (p.tasks as Record<string, unknown>[]) || [];
+        const blockedTasks = tasks.filter((t: Record<string, unknown>) => t.task_status === 'blocked').length;
+        const pendingTasks = tasks.filter((t: Record<string, unknown>) => t.task_status === 'todo' || t.task_status === 'in_progress').length;
+        const client = p.client as Record<string, unknown>;
+        
+        return {
+          id: p.documentId as string,
+          slug: p.slug as string,
+          title: p.title as string,
+          clientId: client?.documentId as string,
+          clientName: client ? `${client.first_name || ''} ${client.last_name || ''}`.trim() : 'N/A',
+          status: p.project_status as string,
+          progress: typeof p.progress === 'number' ? p.progress : 0,
+          deadline: p.end_date as string,
+          blockedTasks,
+          pendingTasks,
+          isCollaborative: true,
+          permission: collab.permission as string,
+        };
+      });
+
+    // Merge all projects
+    const projects: ProjectSummary[] = [...ownedProjects, ...collaborativeProjects];
 
     const now = new Date();
     const invoices: InvoiceSummary[] = (invoicesData.data || []).map((f: Record<string, unknown>) => {
@@ -232,17 +310,19 @@ function buildSystemPrompt(context: UserContext | null): string {
 
   // Build context summary with more details
   const clientsSummary = context.clients.length > 0
-    ? context.clients.slice(0, 15).map(c => 
-        `- ${c.name}${c.company ? ` (${c.company})` : ''} [ID: ${c.id}]: ${c.pipelineStatus}${c.email ? ` - ${c.email}` : ''}`
-      ).join('\n')
+    ? context.clients.slice(0, 15).map(c => {
+        const collabTag = c.isCollaborative ? ` [COLLAB via: ${c.collaborativeProject}]` : '';
+        return `- ${c.name}${c.company ? ` (${c.company})` : ''} [ID: ${c.id}]: ${c.pipelineStatus}${c.email ? ` - ${c.email}` : ''}${collabTag}`;
+      }).join('\n')
     : 'Aucun client';
 
   const projectsSummary = context.projects.length > 0
     ? context.projects.slice(0, 10).map(p => {
+        const collabTag = p.isCollaborative ? ` [COLLAB - ${p.permission}]` : '';
         const issues = [];
         if (p.blockedTasks > 0) issues.push(`${p.blockedTasks} bloquées`);
         if (p.pendingTasks > 0) issues.push(`${p.pendingTasks} en attente`);
-        return `- ${p.title} [ID: ${p.id}] (Client: ${p.clientName}): ${p.status}, ${p.progress}%${issues.length ? ` [${issues.join(', ')}]` : ''}`;
+        return `- ${p.title} [ID: ${p.id}] (Client: ${p.clientName}): ${p.status}, ${p.progress}%${issues.length ? ` [${issues.join(', ')}]` : ''}${collabTag}`;
       }).join('\n')
     : 'Aucun projet';
 
