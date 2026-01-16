@@ -114,12 +114,13 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
     );
     const invoicesData = await invoicesRes.json();
 
-    // Fetch tasks
-    const tasksRes = await fetch(
-      `${apiUrl}/api/project-tasks?filters[project][user][id][$eq]=${user.id}&populate[project]=*&pagination[limit]=100`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    const tasksData = await tasksRes.json();
+    // Debug: log projects/invoices response if empty
+    if (!projectsData.data || projectsData.data.length === 0) {
+      console.log('[AI Assistant] Projects API response:', JSON.stringify(projectsData).slice(0, 500));
+    }
+    if (!invoicesData.data || invoicesData.data.length === 0) {
+      console.log('[AI Assistant] Invoices API response:', JSON.stringify(invoicesData).slice(0, 500));
+    }
 
     // Transform owned clients
     const ownedClients: ClientSummary[] = (clientsData.data || []).map((c: Record<string, unknown>) => ({
@@ -239,22 +240,54 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
       };
     });
 
-    const tasks: TaskSummary[] = (tasksData.data || []).map((t: Record<string, unknown>) => {
-      const project = t.project as Record<string, unknown>;
-      const dueDate = t.due_date as string;
-      const isOverdue = dueDate ? new Date(dueDate) < now && t.task_status !== 'completed' : false;
-      
-      return {
-        id: t.documentId as string,
-        title: t.title as string,
-        projectId: project?.documentId as string,
-        projectName: project?.title as string || 'N/A',
-        status: t.task_status as string,
-        priority: t.priority as string || 'medium',
-        dueDate,
-        isOverdue,
-      };
-    });
+    // Extract tasks from projects (already fetched with populate[tasks])
+    const allTasks: TaskSummary[] = [];
+    const rawOwnedProjects = projectsData.data || [];
+    
+    // Tasks from owned projects
+    for (const p of rawOwnedProjects) {
+      const projectTasks = (p.tasks as Record<string, unknown>[]) || [];
+      for (const t of projectTasks) {
+        const dueDate = t.due_date as string;
+        const isOverdue = dueDate ? new Date(dueDate) < now && t.task_status !== 'completed' : false;
+        
+        allTasks.push({
+          id: t.documentId as string,
+          title: t.title as string,
+          projectId: p.documentId as string,
+          projectName: p.title as string || 'N/A',
+          status: t.task_status as string,
+          priority: t.priority as string || 'medium',
+          dueDate,
+          isOverdue,
+        });
+      }
+    }
+    
+    // Tasks from collaborative projects
+    for (const collab of collabProjects) {
+      const project = collab.project as Record<string, unknown>;
+      if (project) {
+        const projectTasks = (project.tasks as Record<string, unknown>[]) || [];
+        for (const t of projectTasks) {
+          const dueDate = t.due_date as string;
+          const isOverdue = dueDate ? new Date(dueDate) < now && t.task_status !== 'completed' : false;
+          
+          allTasks.push({
+            id: t.documentId as string,
+            title: t.title as string,
+            projectId: project.documentId as string,
+            projectName: project.title as string || 'N/A',
+            status: t.task_status as string,
+            priority: t.priority as string || 'medium',
+            dueDate,
+            isOverdue,
+          });
+        }
+      }
+    }
+    
+    const tasks: TaskSummary[] = allTasks;
 
     return {
       userId: user.id,
