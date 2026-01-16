@@ -206,11 +206,6 @@ const openai = process.env.OPENAI_API_KEY
 /**
  * Generate mockup using DALL·E 3 (primary) or Pollinations.ai (fallback)
  */
-async function fetchUrlToBase64(url: string): Promise<string> {
-  const res = await fetch(url);
-  const buffer = await res.arrayBuffer();
-  return Buffer.from(buffer).toString('base64');
-}
 
 type DalleSize = '1024x1024' | '1792x1024';
 type DalleQuality = 'standard' | 'hd';
