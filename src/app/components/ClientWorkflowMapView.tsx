@@ -1406,16 +1406,8 @@ export default function ClientWorkflowMapView({
                   const pos = clientPositions[clientKey] || { x: 400 + (index % 3) * 600, y: 400 + Math.floor(index / 3) * 600 };
                   const isDragging = draggingClient === clientKey;
                   const isSelected = selectedClient?.documentId === client.documentId;
-                  const stageStatuses = getStageStatuses(client.pipeline_status || null);
-                  const currentStageIndex = stageStatuses.findIndex(s => s === 'current');
-                  // Old pipeline-based state (kept for reference but not used)
-                  // const oldGlobalClientState: GlobalState = stageStatuses.some(s => s === 'blocked') 
-                  //   ? 'blocked' 
-                  //   : currentStageIndex === stages.length - 1 
-                  //     ? 'ok' 
-                  //     : 'partial';
 
-                  // Calculate completeness for this client - will be recalculated with real data below
+                  // Calculate completeness for this client using real data
 
                   // Satellites for this client - use REAL data from allProjects/allFactures props
                   // Filter by client.documentId or client.id to match the client
@@ -1492,7 +1484,6 @@ export default function ClientWorkflowMapView({
                   
                   // Recalculate global state based on real satellite data
                   const hasBlockedSat = clientSatellites.some(s => s.status === 'blocked');
-                  const allDone = clientSatellites.every(s => s.status === 'done' || !s.linked);
                   const allLinkedDone = clientSatellites.filter(s => s.linked).every(s => s.status === 'done');
                   const realGlobalState: GlobalState = hasBlockedSat 
                     ? 'blocked' 

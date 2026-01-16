@@ -180,11 +180,6 @@ export default function OnboardingTour({
     onSkip?.();
   }, [markCompleted, onSkip]);
 
-  const handleReplay = useCallback(() => {
-    setCurrentStep(0);
-    setIsVisible(true);
-  }, []);
-
   // Calculate tooltip position
   const getTooltipStyle = useCallback((): React.CSSProperties => {
     if (!targetRect || step?.position === 'center') {

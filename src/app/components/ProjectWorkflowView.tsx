@@ -30,6 +30,8 @@ import type { Client, Project, Facture } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import OnboardingTour, { useOnboardingStatus, type OnboardingStep } from './OnboardingTour';
+import { IconPlayerPlay, IconHelpCircle } from '@tabler/icons-react';
 
 // ============================================================================
 // TYPES
@@ -133,6 +135,87 @@ export default function ProjectWorkflowView({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [expandedStage, setExpandedStage] = useState<WorkflowStage | null>(null);
+  
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const { isCompleted: onboardingCompleted, reset: resetOnboarding } = useOnboardingStatus('project-workflow-tour');
+  
+  // Onboarding steps - focused on project execution
+  const onboardingSteps: OnboardingStep[] = useMemo(() => [
+    {
+      id: 'intro',
+      position: 'center',
+      title: t('onboarding_project_workflow_intro_title') || 'Le workflow de ce projet',
+      description: t('onboarding_project_workflow_intro_desc') || 'Cette vue montre tout ce qui a été fait et reste à faire pour CE projet spécifiquement.',
+      microCopy: t('onboarding_project_workflow_intro_micro') || 'Contrairement au pipeline (vue globale), ici vous êtes dans le concret.',
+      highlightStyle: 'glow',
+    },
+    {
+      id: 'breadcrumb',
+      target: '[data-onboarding="breadcrumb"]',
+      position: 'bottom',
+      title: t('onboarding_project_workflow_breadcrumb_title') || 'Vous savez toujours où vous êtes',
+      description: t('onboarding_project_workflow_breadcrumb_desc') || 'Le fil d\'Ariane indique le client et le projet actuels. Cliquez pour revenir en arrière.',
+      highlightStyle: 'pulse',
+    },
+    {
+      id: 'main-line',
+      target: '[data-onboarding="main-line"]',
+      position: 'bottom',
+      title: t('onboarding_project_workflow_mainline_title') || 'La ligne principale',
+      description: t('onboarding_project_workflow_mainline_desc') || 'Les 7 étapes représentent le cycle de vie complet d\'un projet : de la qualification au suivi.',
+      microCopy: t('onboarding_project_workflow_mainline_micro') || 'Qualification → Devis → Contrat → Exécution → Facturation → Livraison → Suivi',
+    },
+    {
+      id: 'done-node',
+      target: '[data-onboarding="node-done"]',
+      position: 'bottom',
+      title: t('onboarding_project_workflow_done_title') || 'Étapes terminées',
+      description: t('onboarding_project_workflow_done_desc') || 'Le vert indique que cette étape est complète. Vous avez déjà validé cette partie.',
+      highlightStyle: 'glow',
+    },
+    {
+      id: 'current-node',
+      target: '[data-onboarding="node-current"]',
+      position: 'top',
+      title: t('onboarding_project_workflow_current_title') || 'Étape en cours',
+      description: t('onboarding_project_workflow_current_desc') || 'L\'orange montre où vous en êtes actuellement dans ce projet.',
+      highlightStyle: 'pulse',
+    },
+    {
+      id: 'ghost-node',
+      target: '[data-onboarding="node-ghost"]',
+      position: 'top',
+      title: t('onboarding_project_workflow_ghost_title') || 'Éléments à créer',
+      description: t('onboarding_project_workflow_ghost_desc') || 'Les nodes gris en pointillés indiquent ce qui peut être créé. Cliquez pour ajouter un devis, contrat ou facture.',
+      microCopy: t('onboarding_project_workflow_ghost_micro') || 'L\'absence n\'est pas un bug, c\'est une information utile.',
+      ctaText: t('onboarding_project_workflow_ghost_cta') || 'Créer un élément',
+      highlightStyle: 'glow',
+    },
+    {
+      id: 'count-badge',
+      target: '[data-onboarding="count-badge"]',
+      position: 'bottom',
+      title: t('onboarding_project_workflow_count_title') || 'Nombre d\'éléments',
+      description: t('onboarding_project_workflow_count_desc') || 'Le badge indique combien de documents existent pour cette étape. Cliquez pour les voir.',
+    },
+    {
+      id: 'final',
+      position: 'center',
+      title: t('onboarding_project_workflow_final_title') || 'Vous êtes prêt !',
+      description: t('onboarding_project_workflow_final_desc') || 'Ce workflow vous montre l\'exécution concrète de votre projet. Le pipeline reste pour la vision globale.',
+      microCopy: t('onboarding_project_workflow_final_micro') || '👉 Pipeline = "Où en est la relation ?" | Workflow = "Qu\'est-ce qui a été fait ?"',
+      ctaText: t('onboarding_project_workflow_final_cta') || 'Compris ✓',
+    },
+  ], [t]);
+  
+  // Trigger onboarding on first visit
+  useEffect(() => {
+    if (!onboardingCompleted) {
+      const timer = setTimeout(() => setShowOnboarding(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [onboardingCompleted]);
 
   // Compute project status to determine current stage
   const currentStageIndex = useMemo(() => {
@@ -329,49 +412,12 @@ export default function ProjectWorkflowView({
     }
   };
 
-  // Render main node
-  const renderMainNode = (node: WorkflowNode, index: number) => {
-    const styles = STATUS_STYLES[node.status];
-    const StatusIcon = styles.icon;
-    const NodeIcon = node.icon;
-    const isExpanded = expandedStage === node.stage;
-    const isHovered = hoveredNode === node.id;
-    const nodeWidth = 140;
-    const nodeSpacing = 180;
-    const x = index * nodeSpacing;
-    const y = 200;
-
-    return (
-      <g key={node.id}>
-        {/* Connection line to next node */}
-        {index < STAGES_ORDER.length - 1 && (
-          <line
-            x1={x + nodeWidth}
-            y1={y + 35}
-            x2={x + nodeSpacing}
-            y2={y + 35}
-            className={`stroke-2 ${index < currentStageIndex ? 'stroke-success' : 'stroke-muted'}`}
-            strokeDasharray={index >= currentStageIndex ? '8 4' : undefined}
-          />
-        )}
-        
-        {/* Arrow indicator */}
-        {index < STAGES_ORDER.length - 1 && (
-          <polygon
-            points={`${x + nodeSpacing - 8},${y + 30} ${x + nodeSpacing - 8},${y + 40} ${x + nodeSpacing},${y + 35}`}
-            className={index < currentStageIndex ? 'fill-success' : 'fill-muted'}
-          />
-        )}
-      </g>
-    );
-  };
-
   return (
     <div className="h-full flex flex-col">
       {/* Breadcrumb contextuel */}
       <div className="flex-shrink-0 px-4 py-3 bg-card border-b border-default">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm">
+          <div data-onboarding="breadcrumb" className="flex items-center gap-2 text-sm">
             {onBack && (
               <button
                 onClick={onBack}
@@ -398,8 +444,22 @@ export default function ProjectWorkflowView({
             </span>
           </div>
           
-          {/* Zoom controls */}
+          {/* Controls */}
           <div className="flex items-center gap-1">
+            {/* Replay onboarding */}
+            {onboardingCompleted && (
+              <button
+                onClick={() => {
+                  resetOnboarding();
+                  setShowOnboarding(true);
+                }}
+                className="p-1.5 rounded-lg hover:bg-hover text-muted hover:text-accent transition-colors flex items-center gap-1"
+                title={t('replay_tutorial') || 'Revoir le tutoriel'}
+              >
+                <IconHelpCircle size={18} />
+              </button>
+            )}
+            <div className="w-px h-4 bg-default mx-1" />
             <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom -">
               <IconZoomOut size={18} />
             </button>
@@ -455,7 +515,7 @@ export default function ProjectWorkflowView({
           }}
         >
           {/* Main workflow line */}
-          <div className="relative flex items-center gap-4">
+          <div data-onboarding="main-line" className="relative flex items-center gap-4">
             {workflowNodes.map((node, index) => {
               const styles = STATUS_STYLES[node.status];
               const StatusIcon = styles.icon;
@@ -463,6 +523,15 @@ export default function ProjectWorkflowView({
               const isExpanded = expandedStage === node.stage;
               const isHovered = hoveredNode === node.id;
               const isGhost = node.status === 'ghost';
+              
+              // Determine onboarding target based on status
+              const getOnboardingAttr = () => {
+                if (isGhost) return 'node-ghost';
+                if (node.status === 'done') return 'node-done';
+                if (node.status === 'current') return 'node-current';
+                if (node.status === 'blocked') return 'node-blocked';
+                return undefined;
+              };
 
               return (
                 <React.Fragment key={node.id}>
@@ -481,6 +550,7 @@ export default function ProjectWorkflowView({
                     className="relative"
                     onMouseEnter={() => setHoveredNode(node.id)}
                     onMouseLeave={() => setHoveredNode(null)}
+                    data-onboarding={getOnboardingAttr()}
                   >
                     {/* Main node card */}
                     <motion.button
@@ -512,7 +582,7 @@ export default function ProjectWorkflowView({
 
                       {/* Count badge */}
                       {node.count !== undefined && node.count > 0 && (
-                        <span className={`mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${styles.bg} ${styles.text}`}>
+                        <span data-onboarding="count-badge" className={`mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${styles.bg} ${styles.text}`}>
                           {node.count}
                         </span>
                       )}
@@ -612,6 +682,17 @@ export default function ProjectWorkflowView({
           </div>
         </div>
       </div>
+      
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <OnboardingTour
+          tourId="project-workflow-tour"
+          steps={onboardingSteps}
+          onComplete={() => setShowOnboarding(false)}
+          onSkip={() => setShowOnboarding(false)}
+          forceShow={showOnboarding}
+        />
+      )}
     </div>
   );
 }
