@@ -40,6 +40,7 @@ import {
   IconPalette,
   IconFileText,
   IconBell,
+  IconBrandInstagram,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -359,6 +360,14 @@ function DashboardLayoutContent({
           label: t('media_library') || 'Bibliothèque',
           icon: <IconPhoto size={20} stroke={1} />,
           path: '/dashboard/newsletters/library',
+        },
+        {
+          id: 'instagram_planner',
+          label: t('instagram_planner') || 'Instagram Planner',
+          icon: <IconBrandInstagram size={20} stroke={1} />,
+          path: '/dashboard/instagram',
+          moduleId: 'instagram_planner',
+          status: getModuleStatus('instagram_planner', moduleStatuses) || undefined,
         },
       ],
     },

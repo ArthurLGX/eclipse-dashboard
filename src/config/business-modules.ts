@@ -85,7 +85,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     description: 'Freelance ou indépendant dans le développement web',
     descriptionEn: 'Freelance or independent web developer',
     defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'time_tracking', 'quotes', 'contracts'],
-    availableModules: ['newsletters', 'monitoring', 'calendar', 'growth_audit'],
+    availableModules: ['newsletters', 'monitoring', 'calendar', 'growth_audit', 'instagram_planner'],
     terminology: {
       project: 'Projet',
       projectEn: 'Project',
@@ -100,7 +100,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     description: 'Agence web, communication ou marketing',
     descriptionEn: 'Web, communication or marketing agency',
     defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'time_tracking', 'quotes', 'team', 'contracts'],
-    availableModules: ['newsletters', 'monitoring', 'calendar', 'planning', 'growth_audit'],
+    availableModules: ['newsletters', 'monitoring', 'calendar', 'planning', 'growth_audit', 'instagram_planner'],
     terminology: {
       project: 'Projet',
       projectEn: 'Project',
@@ -115,7 +115,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     description: 'Designer UI/UX, graphiste ou directeur artistique',
     descriptionEn: 'UI/UX designer, graphic artist or art director',
     defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'time_tracking', 'quotes', 'contracts'],
-    availableModules: ['portfolio', 'galleries', 'calendar'],
+    availableModules: ['portfolio', 'galleries', 'calendar', 'instagram_planner'],
     terminology: {
       project: 'Projet créatif',
       projectEn: 'Creative Project',
@@ -145,7 +145,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     description: 'Photographe professionnel, vidéaste',
     descriptionEn: 'Professional photographer, videographer',
     defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'time_tracking', 'quotes', 'contracts'],
-    availableModules: ['galleries', 'calendar', 'delivery', 'booking'],
+    availableModules: ['galleries', 'calendar', 'delivery', 'booking', 'instagram_planner'],
     terminology: {
       project: 'Shooting',
       projectEn: 'Shooting',
@@ -175,7 +175,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     description: 'Artisan, entrepreneur du bâtiment',
     descriptionEn: 'Craftsman, construction contractor',
     defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'time_tracking', 'quotes', 'contracts'],
-    availableModules: ['calendar', 'inventory', 'materials'],
+    availableModules: ['calendar', 'inventory', 'materials', 'instagram_planner'],
     terminology: {
       project: 'Chantier',
       projectEn: 'Site',
@@ -364,6 +364,16 @@ export const ALL_MODULES: Record<string, ModuleConfig> = {
     core: false,
     description: 'Audit SEO et structure de pages',
     descriptionEn: 'SEO and page structure audit',
+  },
+  instagram_planner: {
+    id: 'instagram_planner',
+    label: 'Instagram Planner',
+    labelEn: 'Instagram Planner',
+    icon: 'IconBrandInstagram',
+    path: '/dashboard/instagram',
+    core: false,
+    description: 'Planification et prévisualisation de posts Instagram',
+    descriptionEn: 'Plan and preview Instagram posts',
   },
 };
 
