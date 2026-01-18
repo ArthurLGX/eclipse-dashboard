@@ -154,6 +154,18 @@ export default function ContactAutocomplete({
     return colors[index % colors.length];
   };
 
+  // Récupérer l'URL de l'image avec le préfixe Strapi si nécessaire
+  const getImageUrl = (contact: Client): string | null => {
+    if (!contact.image?.url) return null;
+    
+    const url = contact.image.url;
+    // Si l'URL est relative, ajouter le préfixe Strapi
+    if (url.startsWith('/')) {
+      return `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+    }
+    return url;
+  };
+
   return (
     <div className="relative flex-1">
       <div className="relative">
@@ -170,7 +182,7 @@ export default function ContactAutocomplete({
             }
           }}
           placeholder={placeholder || t('search_contact_placeholder') || 'Rechercher un contact ou entrer un email...'}
-          className="input w-full pl-9"
+          className="input w-full !pl-9"
           autoComplete="off"
         />
         {query && (
@@ -210,12 +222,12 @@ export default function ContactAutocomplete({
                   }`}
                 >
                   {/* Avatar */}
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0 ${getAvatarColor(contact.name || contact.enterprise)}`}>
-                    {contact.image?.url ? (
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0 overflow-hidden ${getAvatarColor(contact.name || contact.enterprise)}`}>
+                    {getImageUrl(contact) ? (
                       <img
-                        src={contact.image.url}
+                        src={getImageUrl(contact)!}
                         alt={contact.name}
-                        className="w-full h-full rounded-full object-cover"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       getInitials(contact.name, contact.enterprise)

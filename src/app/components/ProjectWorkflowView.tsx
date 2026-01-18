@@ -762,7 +762,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
                 className="w-full p-4 bg-card border border-default rounded-xl hover:border-accent hover:shadow-lg transition-all text-left"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0 pr-4">
+                  <div className="flex-1 min-w-0 !pr-4">
                     <h3 className="font-semibold text-primary">{project.title}</h3>
                     {cleanDescription && (
                       <p className="text-sm text-secondary mt-1 truncate">
