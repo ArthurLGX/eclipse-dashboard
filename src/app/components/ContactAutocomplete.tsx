@@ -211,9 +211,9 @@ export default function ContactAutocomplete({
                 >
                   {/* Avatar */}
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0 ${getAvatarColor(contact.name || contact.enterprise)}`}>
-                    {contact.profile_picture?.url ? (
+                    {contact.image?.url ? (
                       <img
-                        src={contact.profile_picture.url}
+                        src={contact.image.url}
                         alt={contact.name}
                         className="w-full h-full rounded-full object-cover"
                       />

@@ -344,6 +344,50 @@ export default function RichTextEditor({
     setTimeout(normalizeFontTags, 20);
   }, [notifyChange, setupDraggableElements, decorateColorCodes, normalizeFontTags]);
 
+  // Apply font size using CSS (execCommand fontSize uses deprecated 1-7 values)
+  const applyFontSize = useCallback((size: string) => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+    
+    const range = selection.getRangeAt(0);
+    
+    if (range.collapsed) {
+      // No selection - insert a span for future text
+      const span = document.createElement('span');
+      span.style.fontSize = size;
+      span.innerHTML = '&#8203;'; // Zero-width space
+      range.insertNode(span);
+      
+      // Move cursor inside span
+      range.setStart(span, 1);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    } else {
+      // Wrap selected text in span
+      const span = document.createElement('span');
+      span.style.fontSize = size;
+      
+      try {
+        span.appendChild(range.extractContents());
+        range.insertNode(span);
+        
+        // Select the new content
+        range.selectNodeContents(span);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } catch {
+        // Fallback for complex selections
+        document.execCommand('fontSize', false, '7');
+        // Then find the font tags and convert them
+        setTimeout(normalizeFontTags, 10);
+      }
+    }
+    
+    editorRef.current?.focus();
+    notifyChange();
+  }, [notifyChange, normalizeFontTags]);
+
   // Handle input
   const handleInput = () => {
     notifyChange();
@@ -354,14 +398,69 @@ export default function RichTextEditor({
     setTimeout(checkForEmojiTrigger, 0);
   };
 
-  // Insert link
-  const insertLink = () => {
-    if (linkUrl) {
-      execCommand('createLink', linkUrl);
-      setLinkUrl('');
-      setShowLinkInput(false);
+  // Insert link - handles both selected text and empty selection
+  const insertLink = useCallback(() => {
+    if (!linkUrl) return;
+    
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+    
+    const range = selection.getRangeAt(0);
+    const url = linkUrl.startsWith('http') ? linkUrl : `https://${linkUrl}`;
+    
+    if (range.collapsed) {
+      // No text selected - insert link with URL as text
+      const link = document.createElement('a');
+      link.href = url;
+      link.textContent = linkUrl.replace(/^https?:\/\//, '');
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.style.color = 'var(--color-accent)';
+      link.style.textDecoration = 'underline';
+      
+      range.insertNode(link);
+      
+      // Move cursor after link
+      range.setStartAfter(link);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      
+      // Add space after
+      const space = document.createTextNode(' ');
+      range.insertNode(space);
+      range.setStartAfter(space);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    } else {
+      // Text selected - wrap in link
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.style.color = 'var(--color-accent)';
+      link.style.textDecoration = 'underline';
+      
+      try {
+        link.appendChild(range.extractContents());
+        range.insertNode(link);
+        
+        // Select the link content
+        range.selectNodeContents(link);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } catch {
+        // Fallback to execCommand
+        document.execCommand('createLink', false, url);
+      }
     }
-  };
+    
+    editorRef.current?.focus();
+    notifyChange();
+    setLinkUrl('');
+    setShowLinkInput(false);
+  }, [linkUrl, notifyChange]);
 
   const getVideoEmbedUrl = (url: string) => {
     try {
@@ -384,32 +483,68 @@ export default function RichTextEditor({
     }
   };
 
-  const insertVideo = () => {
-    if (!videoUrl) return;
+  const insertVideo = useCallback(() => {
+    if (!videoUrl || !editorRef.current) return;
+    
     const isMp4 = videoUrl.toLowerCase().endsWith('.mp4') || videoUrl.toLowerCase().includes('.mp4?');
     const isWebm = videoUrl.toLowerCase().endsWith('.webm') || videoUrl.toLowerCase().includes('.webm?');
     const isDirectVideo = isMp4 || isWebm;
 
-    const videoHtml = isDirectVideo
-      ? `
-        <div class="editor-block editor-video-block" data-type="video" contenteditable="false">
-          <video controls style="width: 100%; border-radius: 8px;">
-            <source src="${videoUrl}" type="${isWebm ? 'video/webm' : 'video/mp4'}" />
-          </video>
-        </div>
-        <p class="editor-block" data-type="text"><br></p>
-      `
-      : `
-        <div class="editor-block editor-video-block" data-type="video" contenteditable="false">
-          <iframe src="${getVideoEmbedUrl(videoUrl)}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width: 100%; height: 360px; border-radius: 8px;"></iframe>
-        </div>
-        <p class="editor-block" data-type="text"><br></p>
-      `;
+    // Create video container
+    const container = document.createElement('div');
+    container.className = 'editor-block editor-video-block';
+    container.setAttribute('data-type', 'video');
+    container.setAttribute('contenteditable', 'false');
 
-    execCommand('insertHTML', videoHtml);
+    if (isDirectVideo) {
+      const video = document.createElement('video');
+      video.controls = true;
+      video.style.cssText = 'width: 100%; border-radius: 8px;';
+      const source = document.createElement('source');
+      source.src = videoUrl;
+      source.type = isWebm ? 'video/webm' : 'video/mp4';
+      video.appendChild(source);
+      container.appendChild(video);
+    } else {
+      const iframe = document.createElement('iframe');
+      iframe.src = getVideoEmbedUrl(videoUrl);
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+      iframe.setAttribute('allowfullscreen', 'true');
+      iframe.style.cssText = 'width: 100%; height: 360px; border-radius: 8px;';
+      container.appendChild(iframe);
+    }
+
+    // Create paragraph for continued typing
+    const paragraph = document.createElement('p');
+    paragraph.className = 'editor-block';
+    paragraph.setAttribute('data-type', 'text');
+    paragraph.innerHTML = '<br>';
+
+    // Insert at cursor position
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(paragraph);
+      range.insertNode(container);
+      
+      // Move cursor to paragraph
+      range.setStart(paragraph, 0);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    } else {
+      // Append to editor if no selection
+      editorRef.current.appendChild(container);
+      editorRef.current.appendChild(paragraph);
+    }
+
+    editorRef.current.focus();
+    notifyChange();
     setVideoUrl('');
     setShowVideoInput(false);
-  };
+  }, [videoUrl, notifyChange]);
 
   // Emoji picker functions
   const getCaretPosition = useCallback(() => {
@@ -831,21 +966,85 @@ export default function RichTextEditor({
   };
 
   // Insert media from picker
-  const handleMediaSelect = (url: string) => {
+  const handleMediaSelect = useCallback((url: string) => {
+    if (!editorRef.current) return;
+
     if (mediaPickerType === 'image') {
-      // Insert image in its own block to make it independently draggable
-      const imgHtml = `<div class="editor-block editor-image-block" data-type="image" contenteditable="false"><img src="${url}" alt="Image" style="max-width: 100%; height: auto; border-radius: 8px; cursor: pointer; display: block;" /></div><p class="editor-block" data-type="text"><br></p>`;
-      execCommand('insertHTML', imgHtml);
+      // Create image container
+      const container = document.createElement('div');
+      container.className = 'editor-block editor-image-block';
+      container.setAttribute('data-type', 'image');
+      container.setAttribute('contenteditable', 'false');
+      
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = 'Image';
+      img.style.cssText = 'max-width: 100%; height: auto; border-radius: 8px; cursor: pointer; display: block;';
+      container.appendChild(img);
+
+      // Create paragraph for continued typing
+      const paragraph = document.createElement('p');
+      paragraph.className = 'editor-block';
+      paragraph.setAttribute('data-type', 'text');
+      paragraph.innerHTML = '<br>';
+
+      // Insert at cursor position
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(paragraph);
+        range.insertNode(container);
+        
+        // Move cursor to paragraph
+        range.setStart(paragraph, 0);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } else {
+        // Append to editor if no selection
+        editorRef.current.appendChild(container);
+        editorRef.current.appendChild(paragraph);
+      }
     } else {
-      // Document (PDF, Word, etc.) as styled link in its own paragraph
+      // Document (PDF, Word, etc.) as styled link
       const fileName = url.split('/').pop() || 'Document';
       const isPdf = url.toLowerCase().includes('.pdf');
       const icon = isPdf ? '📄' : '📎';
-      const linkHtml = `<p class="editor-block" data-type="text"><a href="${url}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; color: #7c3aed; text-decoration: none; padding: 8px 12px; background: rgba(124, 58, 237, 0.1); border-radius: 8px; font-weight: 500;">${icon} ${fileName}</a></p>`;
-      execCommand('insertHTML', linkHtml);
+      
+      const paragraph = document.createElement('p');
+      paragraph.className = 'editor-block';
+      paragraph.setAttribute('data-type', 'text');
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.style.cssText = 'display: inline-flex; align-items: center; gap: 6px; color: #7c3aed; text-decoration: none; padding: 8px 12px; background: rgba(124, 58, 237, 0.1); border-radius: 8px; font-weight: 500;';
+      link.innerHTML = `${icon} ${fileName}`;
+      paragraph.appendChild(link);
+
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(paragraph);
+        
+        // Move cursor after
+        range.setStartAfter(paragraph);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } else {
+        editorRef.current.appendChild(paragraph);
+      }
     }
+
+    editorRef.current.focus();
+    notifyChange();
     setShowMediaPicker(false);
-  };
+    setTimeout(setupDraggableElements, 10);
+  }, [mediaPickerType, notifyChange, setupDraggableElements]);
 
   // Show drag handles on hover
   const [hoveredBlock, setHoveredBlock] = useState<HTMLElement | null>(null);
@@ -1068,7 +1267,12 @@ export default function RichTextEditor({
             ))}
           </select>
           <select
-            onChange={(e) => execCommand('fontSize', e.target.value)}
+            onChange={(e) => {
+              if (e.target.value) {
+                applyFontSize(e.target.value);
+                e.target.value = ''; // Reset select
+              }
+            }}
             className="px-2 py-1 text-xs bg-input border border-input rounded text-muted"
             defaultValue=""
             title={t('toolbar_font_size') || 'Taille'}
