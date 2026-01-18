@@ -19,6 +19,7 @@ import {
   IconClock,
   IconPencil,
   IconHeading,
+  IconBuilding,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -28,10 +29,11 @@ import MediaPickerModal from '@/app/components/MediaPickerModal';
 import EmailScheduler from '@/app/components/EmailScheduler';
 import EmailPreviewModal from '@/app/components/EmailPreviewModal';
 import RichTextEditor, { cleanRichTextForEmail } from '@/app/components/RichTextEditor';
-import { fetchEmailSignature, createSentEmail } from '@/lib/api';
+import ContactAutocomplete from '@/app/components/ContactAutocomplete';
+import { fetchEmailSignature, createSentEmail, fetchClientsUser } from '@/lib/api';
 import { uploadToStrapi } from '@/lib/strapi-upload';
 import { useDraftSave } from '@/hooks/useDraftSave';
-import type { CreateEmailSignatureData } from '@/types';
+import type { CreateEmailSignatureData, Client } from '@/types';
 
 interface Attachment {
   id: string;
@@ -44,6 +46,7 @@ interface Recipient {
   id: string;
   email: string;
   name?: string;
+  enterprise?: string;
 }
 
 export default function ComposeEmailPage() {
@@ -65,10 +68,13 @@ function ComposeEmail() {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [recipients, setRecipients] = useState<Recipient[]>([]);
-  const [newRecipient, setNewRecipient] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [includeSignature, setIncludeSignature] = useState(true);
   const [scheduledAt, setScheduledAt] = useState<Date | null>(null);
+  
+  // Contacts pour l'autocomplétion
+  const [contacts, setContacts] = useState<Client[]>([]);
+  const [loadingContacts, setLoadingContacts] = useState(true);
   
   // UI state
   const [sending, setSending] = useState(false);
@@ -101,6 +107,26 @@ function ComposeEmail() {
     },
     autoSaveDelay: 10000, // Sauvegarde toutes les 10 secondes
   });
+  
+  // Charger les contacts de l'utilisateur
+  useEffect(() => {
+    const loadContacts = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const data = await fetchClientsUser(user.id);
+        // Filtrer pour ne garder que ceux avec un email
+        const contactsWithEmail = (data || []).filter((c: Client) => c.email);
+        setContacts(contactsWithEmail);
+      } catch (error) {
+        console.error('Error loading contacts:', error);
+      } finally {
+        setLoadingContacts(false);
+      }
+    };
+    
+    loadContacts();
+  }, [user?.id]);
   
   // Mémoiser les traductions pour EmailPreviewModal
   const previewTranslations = useMemo(() => ({
@@ -165,16 +191,10 @@ function ComposeEmail() {
     loadSignature();
   }, [user?.id]);
   
-  // Ajouter un destinataire
-  const addRecipient = useCallback(() => {
-    const email = newRecipient.trim().toLowerCase();
+  // Ajouter un destinataire depuis un contact
+  const addRecipientFromContact = useCallback((contact: Client) => {
+    const email = contact.email?.toLowerCase();
     if (!email) return;
-    
-    // Validation basique
-    if (!email.includes('@') || !email.includes('.')) {
-      showGlobalPopup(t('invalid_email') || 'Email invalide', 'error');
-      return;
-    }
     
     // Vérifier les doublons
     if (recipients.some(r => r.email === email)) {
@@ -182,9 +202,33 @@ function ComposeEmail() {
       return;
     }
     
-    setRecipients(prev => [...prev, { id: crypto.randomUUID(), email }]);
-    setNewRecipient('');
-  }, [newRecipient, recipients, showGlobalPopup, t]);
+    setRecipients(prev => [...prev, { 
+      id: crypto.randomUUID(), 
+      email,
+      name: contact.name,
+      enterprise: contact.enterprise,
+    }]);
+  }, [recipients, showGlobalPopup, t]);
+  
+  // Ajouter un destinataire manuellement
+  const addRecipientManual = useCallback((email: string) => {
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail) return;
+    
+    // Validation basique
+    if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      showGlobalPopup(t('invalid_email') || 'Email invalide', 'error');
+      return;
+    }
+    
+    // Vérifier les doublons
+    if (recipients.some(r => r.email === cleanEmail)) {
+      showGlobalPopup(t('recipient_exists') || 'Ce destinataire existe déjà', 'warning');
+      return;
+    }
+    
+    setRecipients(prev => [...prev, { id: crypto.randomUUID(), email: cleanEmail }]);
+  }, [recipients, showGlobalPopup, t]);
   
   // Supprimer un destinataire
   const removeRecipient = useCallback((id: string) => {
@@ -449,45 +493,68 @@ function ComposeEmail() {
               {t('recipients') || 'Destinataires'}
             </label>
             
-            <div className="flex flex-wrap gap-2 mb-3">
-              <AnimatePresence>
-                {recipients.map(recipient => (
-                  <motion.div
-                    key={recipient.id}
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-accent-light !text-accent rounded-full text-sm"
-                  >
-                    <span>{recipient.email}</span>
-                    <button
-                      onClick={() => removeRecipient(recipient.id)}
-                      className="p-0.5 hover:bg-accent-light rounded-full transition-colors"
+            {/* Liste des destinataires sélectionnés */}
+            {recipients.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                <AnimatePresence>
+                  {recipients.map(recipient => (
+                    <motion.div
+                      key={recipient.id}
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      className="flex items-center gap-2 px-3 py-2 bg-accent-light rounded-lg text-sm group"
                     >
-                      <IconX className="w-3.5 h-3.5" />
-                    </button>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+                      {/* Avatar */}
+                      <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                        {recipient.name 
+                          ? recipient.name.charAt(0).toUpperCase()
+                          : recipient.email.charAt(0).toUpperCase()
+                        }
+                      </div>
+                      
+                      {/* Info */}
+                      <div className="flex flex-col min-w-0">
+                        {recipient.name && (
+                          <span className="font-medium text-primary text-sm leading-tight truncate">
+                            {recipient.name}
+                          </span>
+                        )}
+                        <span className={`text-muted truncate ${recipient.name ? 'text-xs' : 'text-sm !text-accent'}`}>
+                          {recipient.email}
+                        </span>
+                      </div>
+                      
+                      {/* Entreprise badge */}
+                      {recipient.enterprise && (
+                        <span className="flex items-center gap-1 text-xs text-muted bg-white/50 px-1.5 py-0.5 rounded">
+                          <IconBuilding className="w-3 h-3" />
+                          <span className="truncate max-w-[80px]">{recipient.enterprise}</span>
+                        </span>
+                      )}
+                      
+                      {/* Remove button */}
+                      <button
+                        onClick={() => removeRecipient(recipient.id)}
+                        className="p-1 text-muted hover:text-danger hover:bg-danger-light rounded transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        <IconX className="w-3.5 h-3.5" />
+                      </button>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
             
-            <div className="flex gap-2">
-              <input
-                type="email"
-                value={newRecipient}
-                onChange={(e) => setNewRecipient(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && addRecipient()}
-                placeholder={t('add_recipient_placeholder') || 'email@example.com'}
-                className="input flex-1"
-              />
-              <button
-                onClick={addRecipient}
-                disabled={!newRecipient.trim()}
-                className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
-              >
-                {t('add') || 'Ajouter'}
-              </button>
-            </div>
+            {/* Autocomplete pour ajouter des destinataires */}
+            <ContactAutocomplete
+              contacts={contacts}
+              selectedEmails={recipients.map(r => r.email)}
+              onSelect={addRecipientFromContact}
+              onManualAdd={addRecipientManual}
+              placeholder={t('search_contact_or_email') || 'Rechercher un contact ou entrer un email...'}
+              loading={loadingContacts}
+            />
           </div>
           
           {/* Title & Subject */}
