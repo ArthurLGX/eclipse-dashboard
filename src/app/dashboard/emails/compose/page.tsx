@@ -114,9 +114,11 @@ function ComposeEmail() {
       if (!user?.id) return;
       
       try {
-        const data = await fetchClientsUser(user.id);
+        const response = await fetchClientsUser(user.id);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const data = (response as any)?.data || [];
         // Filtrer pour ne garder que ceux avec un email
-        const contactsWithEmail = (data || []).filter((c: Client) => c.email);
+        const contactsWithEmail = data.filter((c: Client) => c.email);
         setContacts(contactsWithEmail);
       } catch (error) {
         console.error('Error loading contacts:', error);
