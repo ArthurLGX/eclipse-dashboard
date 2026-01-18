@@ -93,7 +93,7 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
         const validLinks = parsed.filter(link => CONFIGURABLE_LINKS.includes(link));
         
         // Ajouter les nouveaux liens qui n'existaient pas avant (migration)
-        const newLinks: SidebarLinkId[] = ['contacts', 'media_library', 'settings', 'emails', 'monitoring', 'time_tracking', 'quotes', 'calendar', 'growth_audit', 'portfolio', 'pipeline', 'subscriptions', 'seo_audit', 'project_templates', 'email_templates', 'contracts'];
+        const newLinks: SidebarLinkId[] = ['contacts', 'media_library', 'settings', 'emails', 'monitoring', 'time_tracking', 'quotes', 'calendar', 'growth_audit', 'portfolio', 'pipeline', 'subscriptions', 'seo_audit', 'project_templates', 'email_templates', 'contracts', 'instagram_planner'];
         const missingNewLinks = newLinks.filter(link => !validLinks.includes(link));
         
         setVisibleLinksState([...validLinks, ...missingNewLinks]);
