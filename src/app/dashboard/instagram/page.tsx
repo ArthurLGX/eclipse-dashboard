@@ -147,9 +147,16 @@ function InstagramPlanner() {
     try {
       const apiPosts = await fetchInstagramPosts();
       setPosts(apiPosts.map(apiToLocalPost));
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error loading posts:', err);
-      setError('Erreur lors du chargement des posts');
+      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
+      if (errorMessage.includes('Not Found') || errorMessage.includes('404')) {
+        setError('API Instagram non accessible. Vérifiez les permissions Strapi (Settings > Roles > Authenticated > instagram-post)');
+      } else if (errorMessage.includes('Unauthorized') || errorMessage.includes('401')) {
+        setError('Non autorisé. Veuillez vous reconnecter.');
+      } else {
+        setError(`Erreur: ${errorMessage}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -225,9 +232,14 @@ function InstagramPlanner() {
 
       setShowCreateModal(false);
       setEditingPost(null);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error saving post:', err);
-      setError('Erreur lors de la sauvegarde du post');
+      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
+      if (errorMessage.includes('Not Found') || errorMessage.includes('404')) {
+        setError('API non accessible. Vérifiez les permissions Strapi pour instagram-post (create/update)');
+      } else {
+        setError(`Erreur: ${errorMessage}`);
+      }
     } finally {
       setIsSaving(false);
     }
@@ -242,9 +254,10 @@ function InstagramPlanner() {
       setPosts(prev => prev.filter(p => p.documentId !== documentId));
       setShowCreateModal(false);
       setEditingPost(null);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error deleting post:', err);
-      setError('Erreur lors de la suppression du post');
+      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
+      setError(`Erreur: ${errorMessage}`);
     }
   }, []);
 
@@ -704,7 +717,7 @@ function InstagramPlanner() {
             </div>
 
             {/* Quick Tips */}
-            <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-400/10 border border-accent/20 rounded-2xl p-4">
+            <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-400/10 border border-accent rounded-2xl p-4">
               <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
                 <IconSparkles className="w-5 h-5 text-accent" />
                 Conseils
