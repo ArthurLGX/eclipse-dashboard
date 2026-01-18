@@ -30,6 +30,11 @@ import {
   IconChevronRight,
   IconLoader2,
   IconRefresh,
+  IconBrandInstagram,
+  IconLink,
+  IconLinkOff,
+  IconExternalLink,
+  IconRocket,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -40,6 +45,12 @@ import {
   createInstagramPost,
   updateInstagramPost,
   deleteInstagramPost,
+  publishInstagramPost,
+  getInstagramConfig,
+  getInstagramAuthUrl,
+  disconnectInstagram,
+  syncInstagramStats,
+  type InstagramConfig,
 } from '@/lib/api';
 import type { 
   InstagramPost as ApiInstagramPost, 
@@ -130,6 +141,7 @@ function InstagramPlanner() {
   const [posts, setPosts] = useState<LocalInstagramPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -139,6 +151,11 @@ function InstagramPlanner() {
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [filterStatus, setFilterStatus] = useState<'all' | 'draft' | 'scheduled' | 'published'>('all');
   const [previewType, setPreviewType] = useState<'feed' | 'story' | 'reel'>('feed');
+  
+  // Instagram connection state
+  const [instagramConfig, setInstagramConfig] = useState<InstagramConfig | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [showConnectModal, setShowConnectModal] = useState(false);
 
   // Charger les posts depuis Strapi
   const loadPosts = useCallback(async () => {
@@ -162,10 +179,115 @@ function InstagramPlanner() {
     }
   }, []);
 
-  // Charger les posts au montage
+  // Charger la config Instagram
+  const loadInstagramConfig = useCallback(async () => {
+    try {
+      const response = await getInstagramConfig();
+      setInstagramConfig(response.data);
+    } catch (err) {
+      console.error('Error loading Instagram config:', err);
+    }
+  }, []);
+
+  // Charger les posts et la config au montage
   useEffect(() => {
     loadPosts();
-  }, [loadPosts]);
+    loadInstagramConfig();
+  }, [loadPosts, loadInstagramConfig]);
+
+  // Connecter Instagram
+  const handleConnectInstagram = useCallback(async () => {
+    setIsConnecting(true);
+    try {
+      const { authUrl } = await getInstagramAuthUrl();
+      // Ouvrir dans une nouvelle fenêtre popup
+      const popup = window.open(authUrl, 'instagram-auth', 'width=600,height=700');
+      
+      // Écouter le message de retour du callback
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data?.type === 'instagram-oauth-success') {
+          setInstagramConfig(event.data.config);
+          setShowConnectModal(false);
+          popup?.close();
+        } else if (event.data?.type === 'instagram-oauth-error') {
+          setError(event.data.error);
+          popup?.close();
+        }
+        window.removeEventListener('message', handleMessage);
+        setIsConnecting(false);
+      };
+      
+      window.addEventListener('message', handleMessage);
+    } catch (err) {
+      console.error('Error getting auth URL:', err);
+      setError('Erreur lors de la connexion à Instagram');
+      setIsConnecting(false);
+    }
+  }, []);
+
+  // Déconnecter Instagram
+  const handleDisconnectInstagram = useCallback(async () => {
+    if (!confirm('Voulez-vous vraiment déconnecter votre compte Instagram ?')) return;
+    
+    try {
+      await disconnectInstagram();
+      setInstagramConfig(null);
+    } catch (err) {
+      console.error('Error disconnecting Instagram:', err);
+      setError('Erreur lors de la déconnexion');
+    }
+  }, []);
+
+  // Synchroniser les stats
+  const handleSyncStats = useCallback(async () => {
+    try {
+      const response = await syncInstagramStats();
+      if (instagramConfig) {
+        setInstagramConfig({
+          ...instagramConfig,
+          followers_count: response.data.followers_count,
+          following_count: response.data.following_count,
+          media_count: response.data.media_count,
+        });
+      }
+    } catch (err) {
+      console.error('Error syncing stats:', err);
+      setError('Erreur lors de la synchronisation');
+    }
+  }, [instagramConfig]);
+
+  // Publier un post sur Instagram
+  const handlePublishPost = useCallback(async (documentId: string) => {
+    if (!instagramConfig?.is_connected) {
+      setError('Veuillez connecter votre compte Instagram d\'abord');
+      return;
+    }
+
+    if (!confirm('Publier ce post sur Instagram maintenant ?')) return;
+
+    setIsPublishing(true);
+    try {
+      const result = await publishInstagramPost(documentId);
+      
+      // Mettre à jour le post localement
+      setPosts(prev => prev.map(p => 
+        p.documentId === documentId 
+          ? { ...p, status: 'published' as const }
+          : p
+      ));
+      
+      // Ouvrir le lien Instagram
+      if (result.permalink) {
+        window.open(result.permalink, '_blank');
+      }
+    } catch (err: unknown) {
+      console.error('Error publishing:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
+      setError(`Erreur: ${errorMessage}`);
+    } finally {
+      setIsPublishing(false);
+    }
+  }, [instagramConfig]);
 
   // Filtrer les posts
   const filteredPosts = useMemo(() => {
@@ -440,8 +562,8 @@ function InstagramPlanner() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           <div className="bg-card border border-default rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                <IconPhoto className="w-5 h-5 text-purple-500" />
+              <div className="p-2 bg-accent-light rounded-lg">
+                <IconPhoto className="w-5 h-5 text-accent" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.total}</p>
@@ -451,8 +573,8 @@ function InstagramPlanner() {
           </div>
           <div className="bg-card border border-default rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-                <IconClock className="w-5 h-5 text-amber-500" />
+              <div className="p-2 bg-warning-light rounded-lg">
+                <IconClock className="w-5 h-5 text-warning" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.scheduled}</p>
@@ -462,8 +584,8 @@ function InstagramPlanner() {
           </div>
           <div className="bg-card border border-default rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-rose-100 dark:bg-rose-900/30 rounded-lg">
-                <IconHeart className="w-5 h-5 text-rose-500" />
+              <div className="p-2 bg-danger-light rounded-lg">
+                <IconHeart className="w-5 h-5 text-danger" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.totalLikes}</p>
@@ -473,8 +595,8 @@ function InstagramPlanner() {
           </div>
           <div className="bg-card border border-default rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                <IconMessageCircle className="w-5 h-5 text-blue-500" />
+              <div className="p-2 bg-accent-light rounded-lg">
+                <IconMessageCircle className="w-5 h-5 text-accent" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.totalComments}</p>
@@ -716,6 +838,111 @@ function InstagramPlanner() {
               </div>
             </div>
 
+            {/* Instagram Connection Card */}
+            <div className="bg-card border border-default rounded-2xl p-4">
+              <h3 className="font-semibold text-primary mb-4 flex items-center gap-2">
+                <IconBrandInstagram className="w-5 h-5 text-pink-500" />
+                Compte Instagram
+              </h3>
+
+              {instagramConfig?.is_connected ? (
+                <div className="space-y-4">
+                  {/* Connected account info */}
+                  <div className="flex items-center gap-3">
+                    {instagramConfig.profile_picture_url ? (
+                      <img 
+                        src={instagramConfig.profile_picture_url} 
+                        alt={instagramConfig.instagram_username}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                        <span className="text-white font-bold">
+                          {instagramConfig.instagram_username?.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-primary truncate">
+                        @{instagramConfig.instagram_username}
+                      </p>
+                      <p className="text-xs text-muted">
+                        {instagramConfig.instagram_account_type}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 px-2 py-1 bg-success-light text-success text-xs rounded-full">
+                      <IconCheck className="w-3 h-3" />
+                      Connecté
+                    </div>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="p-2 bg-hover rounded-lg">
+                      <p className="text-lg font-bold text-primary">{instagramConfig.media_count}</p>
+                      <p className="text-xs text-muted">Posts</p>
+                    </div>
+                    <div className="p-2 bg-hover rounded-lg">
+                      <p className="text-lg font-bold text-primary">
+                        {instagramConfig.followers_count >= 1000 
+                          ? `${(instagramConfig.followers_count / 1000).toFixed(1)}k` 
+                          : instagramConfig.followers_count}
+                      </p>
+                      <p className="text-xs text-muted">Followers</p>
+                    </div>
+                    <div className="p-2 bg-hover rounded-lg">
+                      <p className="text-lg font-bold text-primary">{instagramConfig.following_count}</p>
+                      <p className="text-xs text-muted">Suivis</p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleSyncStats}
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm text-muted hover:text-primary border border-default rounded-lg hover:bg-hover transition-colors"
+                    >
+                      <IconRefresh className="w-4 h-4" />
+                      Sync
+                    </button>
+                    <button
+                      onClick={handleDisconnectInstagram}
+                      className="flex items-center justify-center gap-2 px-3 py-2 text-sm text-danger hover:bg-danger-light border border-default rounded-lg transition-colors"
+                    >
+                      <IconLinkOff className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted">
+                    Connectez votre compte Instagram Business pour publier directement depuis Eclipse.
+                  </p>
+                  
+                  <button
+                    onClick={handleConnectInstagram}
+                    disabled={isConnecting}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+                  >
+                    {isConnecting ? (
+                      <IconLoader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <IconLink className="w-5 h-5" />
+                    )}
+                    Connecter Instagram
+                  </button>
+
+                  <div className="text-xs text-muted space-y-1">
+                    <p>⚠️ Prérequis :</p>
+                    <ul className="list-disc list-inside space-y-0.5 ml-2">
+                      <li>Compte Instagram Business ou Creator</li>
+                      <li>Page Facebook liée au compte</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Quick Tips */}
             <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-400/10 border border-accent rounded-2xl p-4">
               <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
@@ -900,7 +1127,7 @@ function InstagramPlanner() {
                         <button
                           key={tag}
                           onClick={() => addHashtag(tag)}
-                          className="px-2 py-1 text-xs text-muted bg-hover rounded-full hover:bg-accent-light hover:text-accent transition-colors"
+                          className="px-2 py-1 text-xs !text-muted bg-hover rounded-full hover:bg-accent-light hover:!text-accent transition-colors"
                         >
                           #{tag}
                         </button>
@@ -994,6 +1221,26 @@ function InstagramPlanner() {
                   >
                     Annuler
                   </button>
+                  
+                  {/* Publish button (only for saved posts with Instagram connected) */}
+                  {editingPost.documentId && editingPost.status !== 'published' && instagramConfig?.is_connected && (
+                    <button
+                      onClick={() => {
+                        handlePublishPost(editingPost.documentId!);
+                        setShowCreateModal(false);
+                      }}
+                      disabled={isPublishing || !editingPost.mediaUrls?.length}
+                      className="px-4 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {isPublishing ? (
+                        <IconLoader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <IconRocket className="w-4 h-4" />
+                      )}
+                      Publier
+                    </button>
+                  )}
+                  
                   <button
                     onClick={savePost}
                     disabled={!editingPost.mediaUrls?.length || isSaving}
@@ -1155,7 +1402,7 @@ function CalendarView({
             <div
               key={index}
               className={`min-h-[100px] border-b border-r border-default p-1 ${
-                !isCurrentMonth ? 'bg-hover/50' : ''
+                !isCurrentMonth ? 'bg-hover' : ''
               } ${isToday ? 'bg-accent/5' : ''}`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -1184,8 +1431,8 @@ function CalendarView({
                       post.status === 'published' 
                         ? 'bg-success-light text-success' 
                         : post.status === 'scheduled'
-                        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600'
-                        : 'bg-gray-100 dark:bg-gray-800 text-gray-600'
+                        ? 'bg-warning-light dark text-warning'
+                        : 'bg-muted text-primary'
                     }`}
                   >
                     {post.type === 'reel' ? (

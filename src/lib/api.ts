@@ -3789,3 +3789,68 @@ export const updateInstagramPost = async (
 export const deleteInstagramPost = async (documentId: string): Promise<void> => {
   await del(`instagram-posts/${documentId}`);
 };
+
+/** Publier un post Instagram */
+export const publishInstagramPost = async (documentId: string): Promise<{ instagram_post_id: string; permalink: string }> => {
+  const response = await post<{ success: boolean; data: { instagram_post_id: string; permalink: string } }>(
+    `instagram-posts/${documentId}/publish`,
+    {}
+  );
+  return response.data;
+};
+
+// ==========================================
+// Instagram Config (OAuth & Account)
+// ==========================================
+
+export interface InstagramConfig {
+  id: number;
+  documentId: string;
+  instagram_user_id: string;
+  instagram_username: string;
+  instagram_account_type: 'BUSINESS' | 'CREATOR' | 'PERSONAL';
+  facebook_page_name?: string;
+  profile_picture_url?: string;
+  followers_count: number;
+  following_count: number;
+  media_count: number;
+  is_connected: boolean;
+  last_sync_at?: string;
+  connection_error?: string;
+}
+
+/** Récupérer la config Instagram de l'utilisateur */
+export const getInstagramConfig = async (): Promise<{ data: InstagramConfig | null; connected: boolean }> => {
+  return await get<{ data: InstagramConfig | null; connected: boolean }>('instagram-config/me');
+};
+
+/** Récupérer l'URL d'authentification OAuth */
+export const getInstagramAuthUrl = async (): Promise<{ authUrl: string; state: string }> => {
+  return await get<{ authUrl: string; state: string }>('instagram-config/auth-url');
+};
+
+/** Échanger le code OAuth contre un token */
+export const instagramOAuthCallback = async (code: string, state: string): Promise<{ success: boolean; data: { instagram_username: string; profile_picture_url: string; followers_count: number } }> => {
+  return await post<{ success: boolean; data: { instagram_username: string; profile_picture_url: string; followers_count: number } }>(
+    'instagram-config/callback',
+    { code, state }
+  );
+};
+
+/** Déconnecter le compte Instagram */
+export const disconnectInstagram = async (): Promise<{ success: boolean; message: string }> => {
+  return await del<{ success: boolean; message: string }>('instagram-config/disconnect');
+};
+
+/** Rafraîchir le token Instagram */
+export const refreshInstagramToken = async (): Promise<{ success: boolean; message: string }> => {
+  return await post<{ success: boolean; message: string }>('instagram-config/refresh-token', {});
+};
+
+/** Synchroniser les stats Instagram */
+export const syncInstagramStats = async (): Promise<{ success: boolean; data: { followers_count: number; following_count: number; media_count: number } }> => {
+  return await post<{ success: boolean; data: { followers_count: number; following_count: number; media_count: number } }>(
+    'instagram-config/sync-stats',
+    {}
+  );
+};
