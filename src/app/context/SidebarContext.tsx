@@ -25,7 +25,8 @@ export type SidebarLinkId =
   | 'seo_audit'
   | 'project_templates'
   | 'email_templates'
-  | 'contracts';
+  | 'contracts'
+  | 'instagram_planner';
 
 // Tous les liens configurables
 export const CONFIGURABLE_LINKS: SidebarLinkId[] = [
@@ -51,6 +52,7 @@ export const CONFIGURABLE_LINKS: SidebarLinkId[] = [
   'project_templates',
   'email_templates',
   'contracts',
+  'instagram_planner',
 ];
 
 // IDs des catégories (toujours visibles)
