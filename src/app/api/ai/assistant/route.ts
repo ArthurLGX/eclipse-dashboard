@@ -452,6 +452,15 @@ const suggestNextStepsSchema = z.object({
   clientId: z.string().optional().describe('ID du client spécifique'),
 });
 
+const createContractSchema = z.object({
+  clientId: z.string().describe('ID du client (documentId)'),
+  clientName: z.string().describe('Nom du client'),
+  projectId: z.string().optional().describe('ID du projet associé'),
+  projectName: z.string().optional().describe('Nom du projet pour référence'),
+  contractType: z.enum(['freelance', 'service', 'maintenance', 'confidentiality', 'other']).default('service').describe('Type de contrat'),
+  title: z.string().optional().describe('Titre du contrat (sera généré automatiquement si non fourni)'),
+});
+
 // ============================================================================
 // TOOL EXECUTE FUNCTIONS
 // ============================================================================
@@ -610,6 +619,34 @@ async function executeSuggestNextSteps(params: z.infer<typeof suggestNextStepsSc
   };
 }
 
+async function executeCreateContract(params: z.infer<typeof createContractSchema>) {
+  const { clientId, clientName, projectId, projectName, contractType, title } = params;
+  
+  const contractTypeLabels: Record<string, string> = {
+    freelance: 'Contrat freelance',
+    service: 'Contrat de prestation de services',
+    maintenance: 'Contrat de maintenance',
+    confidentiality: 'Accord de confidentialité (NDA)',
+    other: 'Contrat',
+  };
+  
+  const generatedTitle = title || `${contractTypeLabels[contractType]} - ${clientName}${projectName ? ` - ${projectName}` : ''}`;
+  
+  return {
+    success: true,
+    contract: {
+      clientId,
+      clientName,
+      projectId,
+      projectName,
+      contractType,
+      title: generatedTitle,
+    },
+    message: `Contrat "${generatedTitle}" prêt à être créé pour ${clientName}.`,
+    actionUrl: `/dashboard/contracts/new?client=${clientId}${projectId ? `&project=${projectId}` : ''}&type=${contractType}&title=${encodeURIComponent(generatedTitle)}`,
+  };
+}
+
 // ============================================================================
 // ROUTE HANDLER
 // ============================================================================
@@ -661,6 +698,11 @@ export async function POST(req: Request) {
           description: 'Suggère les prochaines étapes prioritaires basées sur le contexte actuel.',
           inputSchema: suggestNextStepsSchema,
           execute: executeSuggestNextSteps,
+        },
+        createContract: {
+          description: 'Prépare un contrat pour un client. Utilise ce tool quand un devis est accepté ou quand le client demande un contrat.',
+          inputSchema: createContractSchema,
+          execute: executeCreateContract,
         },
       },
     });

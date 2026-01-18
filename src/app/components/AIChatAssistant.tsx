@@ -20,6 +20,7 @@ import {
   IconFileInvoice,
   IconExternalLink,
   IconCommand,
+  IconFileText,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -53,13 +54,26 @@ interface QuoteData {
   created?: boolean;
 }
 
+interface ContractData {
+  id?: string;
+  clientId: string;
+  clientName: string;
+  projectId?: string;
+  projectName?: string;
+  contractType: string;
+  title: string;
+  created?: boolean;
+}
+
 interface ToolResult {
   success?: boolean;
   email?: EmailData;
   task?: TaskData;
   quote?: QuoteData;
+  contract?: ContractData;
   steps?: string[];
   error?: string;
+  message?: string;
   actionUrl?: string;
 }
 
@@ -93,6 +107,8 @@ const ToolResultCard: React.FC<{
         return <IconListCheck size={16} className="text-success" />;
       case 'createQuote':
         return <IconFileInvoice size={16} className="text-accent" />;
+      case 'createContract':
+        return <IconFileText size={16} className="text-warning" />;
       case 'suggestNextSteps':
         return <IconArrowRight size={16} className="text-warning" />;
       default:
@@ -112,6 +128,10 @@ const ToolResultCard: React.FC<{
         return result.quote?.created
           ? (t('quote_created') || 'Devis créé ✓')
           : (t('quote_ready') || 'Devis prêt à créer');
+      case 'createContract':
+        return result.contract?.created
+          ? (t('contract_created') || 'Contrat créé ✓')
+          : (t('contract_ready') || 'Contrat prêt à créer');
       case 'suggestNextSteps':
         return t('next_steps') || 'Prochaines étapes';
       default:
@@ -223,6 +243,44 @@ const ToolResultCard: React.FC<{
             >
               <IconFileInvoice size={14} />
               {t('create_quote_now') || 'Créer le devis maintenant'}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Contract Result */}
+      {toolName === 'createContract' && result.contract && (
+        <div className="space-y-2">
+          <div className="text-xs text-secondary">
+            <p><strong>Contrat:</strong> {result.contract.title}</p>
+            <p><strong>Client:</strong> {result.contract.clientName}</p>
+            {result.contract.projectName && (
+              <p><strong>Projet:</strong> {result.contract.projectName}</p>
+            )}
+          </div>
+          {result.contract.created ? (
+            <div className="space-y-2">
+              <p className="text-xs text-success flex items-center gap-1">
+                <IconCheck size={12} />
+                {t('contract_created_success') || 'Contrat créé avec succès'}
+              </p>
+              {result.actionUrl && (
+                <button 
+                  onClick={() => onAction?.('navigateToContract', result)}
+                  className="w-full text-xs !text-warning bg-warning-light hover:bg-warning hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+                >
+                  <IconExternalLink size={14} />
+                  {t('view_contract') || 'Voir le contrat'}
+                </button>
+              )}
+            </div>
+          ) : (
+            <button 
+              onClick={() => onAction?.('confirmContract', result)}
+              className="w-full text-xs text-white bg-warning hover:bg-warning-light hover:!text-warning flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+            >
+              <IconFileText size={14} />
+              {t('create_contract_now') || 'Créer le contrat maintenant'}
             </button>
           )}
         </div>
@@ -420,6 +478,26 @@ export default function AIChatAssistant() {
           const subject = encodeURIComponent(data.email.subject);
           const body = encodeURIComponent(data.email.body);
           window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+        }
+        break;
+
+      case 'confirmContract':
+        if (data.contract) {
+          // Navigate to contract creation page with pre-filled data
+          const contractParams = new URLSearchParams();
+          if (data.contract.clientId) contractParams.set('client', data.contract.clientId);
+          if (data.contract.projectId) contractParams.set('project', data.contract.projectId);
+          if (data.contract.contractType) contractParams.set('type', data.contract.contractType);
+          if (data.contract.title) contractParams.set('title', data.contract.title);
+          router.push(`/dashboard/contracts/new?${contractParams.toString()}`);
+          closeAssistant();
+        }
+        break;
+
+      case 'navigateToContract':
+        if (data.actionUrl) {
+          router.push(data.actionUrl);
+          closeAssistant();
         }
         break;
     }
