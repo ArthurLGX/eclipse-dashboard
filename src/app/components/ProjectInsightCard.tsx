@@ -233,23 +233,21 @@ export default function ProjectInsightCard({
         {insight && (
           <div className="space-y-3">
             {/* Status + Summary */}
-            <div className={`flex items-start gap-3 p-3 rounded-lg ${getStatusStyles(insight.status).bg}`}>
-              <div className={`p-1.5 rounded-lg ${getStatusStyles(insight.status).iconBg}`}>
+            <div className={`flex items-start gap-2.5 p-3 rounded-lg ${getStatusStyles(insight.status).bg}`}>
+              <div className={`p-1.5 rounded-lg flex-shrink-0 ${getStatusStyles(insight.status).iconBg}`}>
                 {getStatusStyles(insight.status).icon}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-primary leading-tight">
-                  {insight.summary}
-                </p>
-              </div>
+              <p className="text-sm text-primary leading-snug flex-1">
+                {insight.summary}
+              </p>
             </div>
 
-            {/* Key Metric */}
+            {/* Key Metric - inline layout */}
             {insight.key_metric && (
-              <div className="flex items-center justify-between p-3 bg-hover rounded-lg">
-                <span className="text-xs text-muted">{insight.key_metric.label}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-primary">
+              <div className="flex items-center justify-between gap-3 p-2.5 bg-hover rounded-lg">
+                <span className="text-xs text-muted whitespace-nowrap">{insight.key_metric.label}</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-bold text-primary whitespace-nowrap">
                     {insight.key_metric.value}
                   </span>
                   {getTrendIcon(insight.key_metric.trend)}
@@ -259,8 +257,9 @@ export default function ProjectInsightCard({
 
             {/* Actionable Tip */}
             <div className="pt-2 border-t border-default">
-              <p className="text-xs text-secondary leading-relaxed">
-                💡 {insight.actionable_tip}
+              <p className="text-xs text-secondary leading-relaxed flex items-start gap-1.5">
+                <span className="flex-shrink-0">💡</span>
+                <span>{insight.actionable_tip}</span>
               </p>
             </div>
           </div>

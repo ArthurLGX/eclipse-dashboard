@@ -153,19 +153,19 @@ export default function ProjectProfitabilityCard({
         {t('profitability') || 'Rentabilité'}
       </h3>
 
-      {/* Status Alert */}
-      <div className={`flex items-center gap-2 p-3 rounded-lg ${statusConfig.bgColor} border ${statusConfig.borderColor} mb-4`}>
-        <StatusIcon className={`w-5 h-5 ${statusConfig.color}`} />
+      {/* Status Alert - compact inline */}
+      <div className={`flex items-center gap-2 p-2.5 rounded-lg ${statusConfig.bgColor} border ${statusConfig.borderColor} mb-4`}>
+        <StatusIcon className={`w-4 h-4 flex-shrink-0 ${statusConfig.color}`} />
         <span className={`text-sm font-medium ${statusConfig.color}`}>
           {statusConfig.label}
         </span>
       </div>
 
-      {/* Time Progress Bar */}
+      {/* Time Progress Bar - more compact */}
       <div className="mb-4">
-        <div className="flex justify-between text-sm mb-1">
-          <span className="text-muted">{t('time_consumption') || 'Consommation temps'}</span>
-          <span className={`font-medium ${
+        <div className="flex items-center justify-between gap-2 mb-1.5">
+          <span className="text-xs text-muted whitespace-nowrap">{t('time_consumption') || 'Consommation temps'}</span>
+          <span className={`text-sm font-bold whitespace-nowrap ${
             profitabilityData.consumptionPercent > 100 ? 'text-danger' :
             profitabilityData.consumptionPercent > 80 ? 'text-warning' : 'text-primary'
           }`}>
@@ -185,17 +185,17 @@ export default function ProjectProfitabilityCard({
         </div>
       </div>
 
-      {/* Time Stats */}
-      <div className="space-y-3">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-muted">{t('estimated_time') || 'Temps estimé'}</span>
-          <span className="text-sm font-medium text-primary">
+      {/* Time Stats - inline rows */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs text-muted whitespace-nowrap">{t('estimated_time') || 'Temps estimé'}</span>
+          <span className="text-sm font-semibold text-primary whitespace-nowrap">
             {formatHours(profitabilityData.estimatedHours)}
           </span>
         </div>
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-muted">{t('actual_time') || 'Temps réel'}</span>
-          <span className={`text-sm font-medium ${
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs text-muted whitespace-nowrap">{t('actual_time') || 'Temps réel'}</span>
+          <span className={`text-sm font-semibold whitespace-nowrap ${
             profitabilityData.difference > 0 ? 'text-danger' : 'text-success'
           }`}>
             {formatHours(profitabilityData.actualHours)}
@@ -203,13 +203,13 @@ export default function ProjectProfitabilityCard({
         </div>
         
         {profitabilityData.difference !== 0 && (
-          <div className="flex justify-between items-center pt-2 border-t border-default">
-            <span className="text-sm text-muted">
+          <div className="flex items-center justify-between gap-2 pt-2 border-t border-default">
+            <span className="text-xs text-muted whitespace-nowrap">
               {profitabilityData.difference > 0 
                 ? (t('overtime') || 'Dépassement') 
                 : (t('time_saved') || 'Économie')}
             </span>
-            <span className={`text-sm font-bold ${
+            <span className={`text-sm font-bold whitespace-nowrap ${
               profitabilityData.difference > 0 ? 'text-danger' : 'text-success'
             }`}>
               {profitabilityData.difference > 0 ? '+' : '-'}
@@ -221,17 +221,17 @@ export default function ProjectProfitabilityCard({
         {/* Value if hourly rate provided */}
         {profitabilityData.estimatedValue !== null && (
           <>
-            <div className="h-px bg-default my-2" />
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted">{t('estimated_value') || 'Valeur estimée'}</span>
-              <span className="text-sm font-medium text-primary">
+            <div className="h-px bg-default my-1" />
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-muted whitespace-nowrap">{t('estimated_value') || 'Valeur estimée'}</span>
+              <span className="text-sm font-semibold text-primary whitespace-nowrap">
                 {profitabilityData.estimatedValue.toLocaleString('fr-FR')} €
               </span>
             </div>
             {profitabilityData.actualCost !== null && profitabilityData.actualCost > 0 && (
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted">{t('actual_cost') || 'Coût réel'}</span>
-                <span className={`text-sm font-medium ${
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-muted whitespace-nowrap">{t('actual_cost') || 'Coût réel'}</span>
+                <span className={`text-sm font-semibold whitespace-nowrap ${
                   profitabilityData.actualCost > profitabilityData.estimatedValue 
                     ? 'text-danger' 
                     : 'text-success'

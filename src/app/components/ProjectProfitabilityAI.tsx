@@ -291,44 +291,49 @@ export default function ProjectProfitabilityAI({
         className="p-4 cursor-pointer hover:bg-hover transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${
-              profitability?.profitability === 'positive' ? 'bg-success-light' :
-              profitability?.profitability === 'negative' ? 'bg-danger-light' :
-              'bg-warning-light'
-            }`}>
-              {getProfitabilityIcon()}
-            </div>
-            <div>
-              <h3 className="font-semibold text-primary">
-                {t('profitability_analysis') || 'Analyse de rentabilité'}
-              </h3>
-              {profitability && (
-                <p className={`text-sm ${getRiskColor(profitability.risk_level)}`}>
-                  {profitability.summary}
-                </p>
-              )}
-            </div>
+        <div className="flex items-center gap-3">
+          {/* Icon */}
+          <div className={`p-2 rounded-lg flex-shrink-0 ${
+            profitability?.profitability === 'positive' ? 'bg-success-light' :
+            profitability?.profitability === 'negative' ? 'bg-danger-light' :
+            'bg-warning-light'
+          }`}>
+            {getProfitabilityIcon()}
           </div>
           
-          <div className="flex items-center gap-2">
-            {/* Indicateur de risque (si en cours) */}
-            {!isCompleted && alert && alert.risk !== 'low' && (
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskBgColor(alert.risk)} ${getRiskColor(alert.risk)}`}>
-                {alert.risk === 'high' ? '⚠️ Attention' : '⏳ Vigilance'}
-              </span>
-            )}
+          {/* Title & Summary */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center flex-wrap gap-x-2 gap-y-1">
+              <h3 className="font-semibold text-primary whitespace-nowrap">
+                {t('profitability_analysis') || 'Analyse de rentabilité'}
+              </h3>
+              
+              {/* Badge de risque inline */}
+              {!isCompleted && alert && alert.risk !== 'low' && (
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${getRiskBgColor(alert.risk)} ${getRiskColor(alert.risk)}`}>
+                  {alert.risk === 'high' ? '⚠️ Attention' : '⏳ Vigilance'}
+                </span>
+              )}
+              
+              {/* Montant inline */}
+              {profitability && (
+                <span className={`font-bold whitespace-nowrap ${
+                  profitability.profit_or_loss >= 0 ? 'text-success' : 'text-danger'
+                }`}>
+                  {profitability.profit_or_loss >= 0 ? '+' : ''}{profitability.profit_or_loss}€
+                </span>
+              )}
+            </div>
             
-            {/* Montant */}
             {profitability && (
-              <span className={`font-bold ${
-                profitability.profit_or_loss >= 0 ? 'text-success' : 'text-danger'
-              }`}>
-                {profitability.profit_or_loss >= 0 ? '+' : ''}{profitability.profit_or_loss}€
-              </span>
+              <p className={`text-sm mt-0.5 ${getRiskColor(profitability.risk_level)}`}>
+                {profitability.summary}
+              </p>
             )}
-            
+          </div>
+          
+          {/* Chevron */}
+          <div className="flex-shrink-0">
             {isExpanded ? (
               <IconChevronUp className="w-5 h-5 text-muted" />
             ) : (
@@ -349,33 +354,41 @@ export default function ProjectProfitabilityAI({
             className="overflow-hidden"
           >
             <div className="p-4 pt-0 space-y-4 border-t border-default">
-              {/* Stats rapides */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
-                <div className="text-center p-3 rounded-lg bg-muted">
-                  <IconClock className="w-4 h-4 text-muted mx-auto mb-1" />
-                  <p className="text-xs text-muted">{t('estimated') || 'Estimé'}</p>
-                  <p className="font-bold text-primary">{estimatedHours}h</p>
+              {/* Stats rapides - plus compact */}
+              <div className="grid grid-cols-2 gap-2 pt-4">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted">
+                  <div className="flex items-center gap-2">
+                    <IconClock className="w-4 h-4 text-muted flex-shrink-0" />
+                    <span className="text-xs text-muted">{t('estimated') || 'Estimé'}</span>
+                  </div>
+                  <span className="font-bold text-primary">{estimatedHours}h</span>
                 </div>
-                <div className="text-center p-3 rounded-lg bg-muted">
-                  <IconClock className="w-4 h-4 text-muted mx-auto mb-1" />
-                  <p className="text-xs text-muted">{t('actual') || 'Réel'}</p>
-                  <p className={`font-bold ${actualHours > estimatedHours ? 'text-danger' : 'text-success'}`}>
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted">
+                  <div className="flex items-center gap-2">
+                    <IconClock className="w-4 h-4 text-muted flex-shrink-0" />
+                    <span className="text-xs text-muted">{t('actual') || 'Réel'}</span>
+                  </div>
+                  <span className={`font-bold ${actualHours > estimatedHours ? 'text-danger' : 'text-success'}`}>
                     {actualHours}h
-                  </p>
+                  </span>
                 </div>
-                <div className="text-center p-3 rounded-lg bg-muted">
-                  <IconCurrencyEuro className="w-4 h-4 text-muted mx-auto mb-1" />
-                  <p className="text-xs text-muted">{t('planned_rate') || 'TJM prévu'}</p>
-                  <p className="font-bold text-primary">{hourlyRate}€/h</p>
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted">
+                  <div className="flex items-center gap-2">
+                    <IconCurrencyEuro className="w-4 h-4 text-muted flex-shrink-0" />
+                    <span className="text-xs text-muted whitespace-nowrap">{t('planned_rate') || 'TJM prévu'}</span>
+                  </div>
+                  <span className="font-bold text-primary">{hourlyRate}€/h</span>
                 </div>
-                <div className="text-center p-3 rounded-lg bg-muted">
-                  <IconCurrencyEuro className="w-4 h-4 text-muted mx-auto mb-1" />
-                  <p className="text-xs text-muted">{t('effective_rate') || 'TJM effectif'}</p>
-                  <p className={`font-bold ${
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted">
+                  <div className="flex items-center gap-2">
+                    <IconCurrencyEuro className="w-4 h-4 text-muted flex-shrink-0" />
+                    <span className="text-xs text-muted whitespace-nowrap">{t('effective_rate') || 'TJM effectif'}</span>
+                  </div>
+                  <span className={`font-bold ${
                     (profitability?.effective_hourly_rate || 0) >= hourlyRate ? 'text-success' : 'text-danger'
                   }`}>
                     {profitability?.effective_hourly_rate || '--'}€/h
-                  </p>
+                  </span>
                 </div>
               </div>
 
