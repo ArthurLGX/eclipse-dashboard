@@ -147,15 +147,17 @@ export default function RichTextEditor({
     { label: 'Nunito', value: 'Nunito' },
   ];
 
+  // execCommand('fontSize') utilise des valeurs 1-7, pas des pixels
+  // On utilise une approche différente avec des spans inline
   const fontSizeOptions = [
-    { label: '12px', value: '12' },
-    { label: '14px', value: '14' },
-    { label: '16px', value: '16' },
-    { label: '18px', value: '18' },
-    { label: '20px', value: '20' },
-    { label: '24px', value: '24' },
-    { label: '28px', value: '28' },
-    { label: '32px', value: '32' },
+    { label: '12px', value: '12px' },
+    { label: '14px', value: '14px' },
+    { label: '16px', value: '16px' },
+    { label: '18px', value: '18px' },
+    { label: '20px', value: '20px' },
+    { label: '24px', value: '24px' },
+    { label: '28px', value: '28px' },
+    { label: '32px', value: '32px' },
   ];
 
   // Internal onChange wrapper

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { IconUser, IconSearch, IconX, IconBuilding, IconMail } from '@tabler/icons-react';
+import {IconSearch, IconX, IconBuilding, IconMail } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import type { Client } from '@/types';
 
