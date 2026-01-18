@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconPlus,
@@ -28,16 +28,31 @@ import {
   IconGripVertical,
   IconChevronLeft,
   IconChevronRight,
+  IconLoader2,
+  IconRefresh,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import MediaPickerModal from '@/app/components/MediaPickerModal';
+import {
+  fetchInstagramPosts,
+  createInstagramPost,
+  updateInstagramPost,
+  deleteInstagramPost,
+} from '@/lib/api';
+import type { 
+  InstagramPost as ApiInstagramPost, 
+  InstagramPostType, 
+  InstagramPostStatus,
+  CreateInstagramPostData,
+} from '@/types';
 
-// Types
-interface InstagramPost {
+// Type local pour le composant (mapping depuis l'API)
+interface LocalInstagramPost {
   id: string;
-  type: 'post' | 'reel' | 'story' | 'carousel';
+  documentId: string;
+  type: InstagramPostType;
   mediaUrls: string[];
   caption: string;
   hashtags: string[];
@@ -46,83 +61,38 @@ interface InstagramPost {
     artist: string;
   };
   scheduledAt?: Date;
-  status: 'draft' | 'scheduled' | 'published';
+  status: InstagramPostStatus;
   likes?: number;
   comments?: number;
   createdAt: Date;
 }
 
-// Données de démonstration
-const DEMO_POSTS: InstagramPost[] = [
-  {
-    id: '1',
-    type: 'post',
-    mediaUrls: ['https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400'],
-    caption: 'Nouveau projet en cours ! 🚀 #design #webdesign',
-    hashtags: ['design', 'webdesign', 'creative', 'freelance'],
-    status: 'published',
-    likes: 124,
-    comments: 8,
-    createdAt: new Date('2024-01-15'),
-  },
-  {
-    id: '2',
-    type: 'reel',
-    mediaUrls: ['https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400'],
-    caption: 'Behind the scenes de ma dernière création',
-    hashtags: ['behindthescenes', 'creative', 'process'],
-    music: { title: 'Blinding Lights', artist: 'The Weeknd' },
-    status: 'published',
-    likes: 456,
-    comments: 23,
-    createdAt: new Date('2024-01-14'),
-  },
-  {
-    id: '3',
-    type: 'carousel',
-    mediaUrls: [
-      'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400',
-      'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400',
-    ],
-    caption: 'Avant/Après de cette refonte complète ✨',
-    hashtags: ['beforeafter', 'redesign', 'webdesign'],
-    status: 'scheduled',
-    scheduledAt: new Date('2024-01-20T14:00:00'),
-    createdAt: new Date('2024-01-13'),
-  },
-  {
-    id: '4',
-    type: 'post',
-    mediaUrls: ['https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400'],
-    caption: 'Tips pour améliorer votre workflow',
-    hashtags: ['tips', 'workflow', 'productivity'],
-    status: 'draft',
-    createdAt: new Date('2024-01-12'),
-  },
-  {
-    id: '5',
-    type: 'post',
-    mediaUrls: ['https://images.unsplash.com/photo-1551434678-e076c223a692?w=400'],
-    caption: 'Mon setup de travail 🖥️',
-    hashtags: ['setup', 'workspace', 'homeoffice'],
-    status: 'published',
-    likes: 89,
-    comments: 5,
-    createdAt: new Date('2024-01-11'),
-  },
-  {
-    id: '6',
-    type: 'reel',
-    mediaUrls: ['https://images.unsplash.com/photo-1542744094-3a31f272c490?w=400'],
-    caption: 'Comment je structure mes projets',
-    hashtags: ['tutorial', 'tips', 'organization'],
-    music: { title: 'Levitating', artist: 'Dua Lipa' },
-    status: 'published',
-    likes: 234,
-    comments: 12,
-    createdAt: new Date('2024-01-10'),
-  },
-];
+// Fonction pour convertir un post API en post local
+const apiToLocalPost = (post: ApiInstagramPost): LocalInstagramPost => ({
+  id: String(post.id),
+  documentId: post.documentId,
+  type: post.post_type,
+  mediaUrls: post.media_urls || [],
+  caption: post.caption || '',
+  hashtags: post.hashtags || [],
+  music: post.music,
+  scheduledAt: post.scheduled_at ? new Date(post.scheduled_at) : undefined,
+  status: post.post_status,
+  likes: post.likes_count,
+  comments: post.comments_count,
+  createdAt: new Date(post.createdAt),
+});
+
+// Fonction pour convertir un post local en données de création API
+const localToApiData = (post: Partial<LocalInstagramPost>): CreateInstagramPostData => ({
+  post_type: post.type || 'post',
+  media_urls: post.mediaUrls,
+  caption: post.caption,
+  hashtags: post.hashtags,
+  music: post.music,
+  scheduled_at: post.scheduledAt?.toISOString(),
+  post_status: post.status || 'draft',
+});
 
 // Hashtags populaires suggérés
 const SUGGESTED_HASHTAGS = [
@@ -157,15 +127,38 @@ function InstagramPlanner() {
   const { user } = useAuth();
   
   // State
-  const [posts, setPosts] = useState<InstagramPost[]>(DEMO_POSTS);
+  const [posts, setPosts] = useState<LocalInstagramPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<InstagramPost | null>(null);
-  const [editingPost, setEditingPost] = useState<Partial<InstagramPost> | null>(null);
+  const [selectedPost, setSelectedPost] = useState<LocalInstagramPost | null>(null);
+  const [editingPost, setEditingPost] = useState<Partial<LocalInstagramPost> | null>(null);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [filterStatus, setFilterStatus] = useState<'all' | 'draft' | 'scheduled' | 'published'>('all');
   const [previewType, setPreviewType] = useState<'feed' | 'story' | 'reel'>('feed');
+
+  // Charger les posts depuis Strapi
+  const loadPosts = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const apiPosts = await fetchInstagramPosts();
+      setPosts(apiPosts.map(apiToLocalPost));
+    } catch (err) {
+      console.error('Error loading posts:', err);
+      setError('Erreur lors du chargement des posts');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Charger les posts au montage
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
 
   // Filtrer les posts
   const filteredPosts = useMemo(() => {
@@ -184,7 +177,7 @@ function InstagramPlanner() {
   }), [posts]);
 
   // Ouvrir le modal de création
-  const openCreateModal = useCallback((type: 'post' | 'reel' | 'story' | 'carousel' = 'post') => {
+  const openCreateModal = useCallback((type: InstagramPostType = 'post') => {
     setEditingPost({
       type,
       mediaUrls: [],
@@ -196,56 +189,69 @@ function InstagramPlanner() {
   }, []);
 
   // Ouvrir le modal d'édition
-  const openEditModal = useCallback((post: InstagramPost) => {
+  const openEditModal = useCallback((post: LocalInstagramPost) => {
     setEditingPost({ ...post });
     setShowCreateModal(true);
   }, []);
 
   // Ouvrir le preview
-  const openPreview = useCallback((post: InstagramPost) => {
+  const openPreview = useCallback((post: LocalInstagramPost) => {
     setSelectedPost(post);
     setPreviewType(post.type === 'story' ? 'story' : post.type === 'reel' ? 'reel' : 'feed');
     setShowPreviewModal(true);
   }, []);
 
-  // Sauvegarder un post
-  const savePost = useCallback(() => {
+  // Sauvegarder un post (création ou mise à jour via API)
+  const savePost = useCallback(async () => {
     if (!editingPost) return;
 
-    if (editingPost.id) {
-      // Mise à jour
-      setPosts(prev => prev.map(p => 
-        p.id === editingPost.id ? { ...p, ...editingPost } as InstagramPost : p
-      ));
-    } else {
-      // Création
-      const newPost: InstagramPost = {
-        id: crypto.randomUUID(),
-        type: editingPost.type || 'post',
-        mediaUrls: editingPost.mediaUrls || [],
-        caption: editingPost.caption || '',
-        hashtags: editingPost.hashtags || [],
-        music: editingPost.music,
-        scheduledAt: editingPost.scheduledAt,
-        status: editingPost.status || 'draft',
-        createdAt: new Date(),
-      };
-      setPosts(prev => [newPost, ...prev]);
-    }
+    setIsSaving(true);
+    setError(null);
 
-    setShowCreateModal(false);
-    setEditingPost(null);
+    try {
+      const apiData = localToApiData(editingPost);
+
+      if (editingPost.documentId) {
+        // Mise à jour
+        const updatedPost = await updateInstagramPost(editingPost.documentId, apiData);
+        setPosts(prev => prev.map(p => 
+          p.documentId === editingPost.documentId ? apiToLocalPost(updatedPost) : p
+        ));
+      } else {
+        // Création
+        const newPost = await createInstagramPost(apiData);
+        setPosts(prev => [apiToLocalPost(newPost), ...prev]);
+      }
+
+      setShowCreateModal(false);
+      setEditingPost(null);
+    } catch (err) {
+      console.error('Error saving post:', err);
+      setError('Erreur lors de la sauvegarde du post');
+    } finally {
+      setIsSaving(false);
+    }
   }, [editingPost]);
 
-  // Supprimer un post
-  const deletePost = useCallback((id: string) => {
-    setPosts(prev => prev.filter(p => p.id !== id));
+  // Supprimer un post via API
+  const handleDeletePost = useCallback(async (documentId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce post ?')) return;
+
+    try {
+      await deleteInstagramPost(documentId);
+      setPosts(prev => prev.filter(p => p.documentId !== documentId));
+      setShowCreateModal(false);
+      setEditingPost(null);
+    } catch (err) {
+      console.error('Error deleting post:', err);
+      setError('Erreur lors de la suppression du post');
+    }
   }, []);
 
   // Ajouter un média
   const handleMediaSelect = useCallback((url: string) => {
     if (editingPost) {
-      setEditingPost(prev => ({
+      setEditingPost((prev) => ({
         ...prev,
         mediaUrls: [...(prev?.mediaUrls || []), url],
       }));
@@ -285,8 +291,32 @@ function InstagramPlanner() {
     }
   }, [editingPost]);
 
+  // Affichage du chargement
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <IconLoader2 className="w-12 h-12 text-accent animate-spin mx-auto mb-4" />
+          <p className="text-muted">Chargement des posts...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background p-6">
+      {/* Error Banner */}
+      {error && (
+        <div className="max-w-7xl mx-auto mb-4">
+          <div className="bg-danger-light border border-danger text-danger px-4 py-3 rounded-lg flex items-center justify-between">
+            <span>{error}</span>
+            <button onClick={() => setError(null)} className="text-danger hover:text-danger/80">
+              <IconX className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="max-w-7xl mx-auto mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -304,6 +334,16 @@ function InstagramPlanner() {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
+            {/* Refresh button */}
+            <button
+              onClick={loadPosts}
+              disabled={isLoading}
+              className="p-2 text-muted hover:text-primary hover:bg-hover rounded-lg transition-colors"
+              title="Rafraîchir"
+            >
+              <IconRefresh className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+            </button>
+
             {/* Filtres */}
             <select
               value={filterStatus}
@@ -474,7 +514,7 @@ function InstagramPlanner() {
               <div className="grid grid-cols-3 gap-0.5 bg-default">
                 {filteredPosts.slice(0, 9).map((post, index) => (
                   <motion.div
-                    key={post.id}
+                    key={post.documentId || post.id}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.05 }}
@@ -533,7 +573,7 @@ function InstagramPlanner() {
                 ))}
 
                 {/* Placeholder pour ajouter des posts */}
-                {filteredPosts.length < 9 && Array.from({ length: 9 - filteredPosts.length }).map((_, i) => (
+                {filteredPosts.length < 9 && Array.from({ length: Math.min(9 - filteredPosts.length, 9) }).map((_, i) => (
                   <div
                     key={`placeholder-${i}`}
                     className="aspect-square bg-card border-2 border-dashed border-default flex items-center justify-center cursor-pointer hover:border-accent transition-colors"
@@ -543,6 +583,21 @@ function InstagramPlanner() {
                   </div>
                 ))}
               </div>
+
+              {/* Empty state */}
+              {posts.length === 0 && (
+                <div className="p-12 text-center">
+                  <IconPhoto className="w-16 h-16 text-muted mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-primary mb-2">Aucun post</h3>
+                  <p className="text-muted mb-4">Commencez à créer vos posts Instagram</p>
+                  <button
+                    onClick={() => openCreateModal('post')}
+                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
+                  >
+                    Créer un post
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -570,7 +625,7 @@ function InstagramPlanner() {
                 {/* Story items */}
                 {posts.filter(p => p.type === 'story').slice(0, 5).map((story) => (
                   <button
-                    key={story.id}
+                    key={story.documentId || story.id}
                     onClick={() => openPreview(story)}
                     className="flex-shrink-0 flex flex-col items-center gap-1"
                   >
@@ -603,7 +658,7 @@ function InstagramPlanner() {
               <div className="space-y-3">
                 {posts.filter(p => p.status === 'scheduled').slice(0, 5).map((post) => (
                   <div
-                    key={post.id}
+                    key={post.documentId || post.id}
                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-hover transition-colors cursor-pointer"
                     onClick={() => openPreview(post)}
                   >
@@ -652,7 +707,7 @@ function InstagramPlanner() {
             <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-400/10 border border-accent/20 rounded-2xl p-4">
               <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
                 <IconSparkles className="w-5 h-5 text-accent" />
-                {t('tips') || 'Conseils'}
+                Conseils
               </h3>
               <ul className="space-y-2 text-sm text-secondary">
                 <li className="flex items-start gap-2">
@@ -693,7 +748,7 @@ function InstagramPlanner() {
               {/* Modal Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
                 <h2 className="text-lg font-semibold text-primary">
-                  {editingPost.id ? 'Modifier le post' : `Nouveau ${editingPost.type}`}
+                  {editingPost.documentId ? 'Modifier le post' : `Nouveau ${editingPost.type}`}
                 </h2>
                 <button
                   onClick={() => setShowCreateModal(false)}
@@ -909,12 +964,9 @@ function InstagramPlanner() {
               {/* Modal Footer */}
               <div className="flex items-center justify-between p-4 border-t border-default">
                 <div className="flex items-center gap-2">
-                  {editingPost.id && (
+                  {editingPost.documentId && (
                     <button
-                      onClick={() => {
-                        deletePost(editingPost.id!);
-                        setShowCreateModal(false);
-                      }}
+                      onClick={() => handleDeletePost(editingPost.documentId!)}
                       className="px-4 py-2 text-danger hover:bg-danger-light rounded-lg transition-colors"
                     >
                       <IconTrash className="w-4 h-4 inline mr-1" />
@@ -931,9 +983,10 @@ function InstagramPlanner() {
                   </button>
                   <button
                     onClick={savePost}
-                    disabled={!editingPost.mediaUrls?.length}
-                    className="px-6 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+                    disabled={!editingPost.mediaUrls?.length || isSaving}
+                    className="px-6 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                   >
+                    {isSaving && <IconLoader2 className="w-4 h-4 animate-spin" />}
                     {editingPost.scheduledAt ? 'Planifier' : 'Enregistrer'}
                   </button>
                 </div>
@@ -968,7 +1021,7 @@ function InstagramPlanner() {
         title="Sélectionner une image"
       />
 
-      {/* Calendar View Modal */}
+      {/* Calendar View */}
       <AnimatePresence>
         {viewMode === 'calendar' && (
           <CalendarView
@@ -998,8 +1051,8 @@ function CalendarView({
   onSelectPost, 
   onCreatePost 
 }: { 
-  posts: InstagramPost[];
-  onSelectPost: (post: InstagramPost) => void;
+  posts: LocalInstagramPost[];
+  onSelectPost: (post: LocalInstagramPost) => void;
   onCreatePost: (date: Date) => void;
 }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -1036,7 +1089,7 @@ function CalendarView({
 
   // Posts par jour
   const postsByDate = useMemo(() => {
-    const map = new Map<string, InstagramPost[]>();
+    const map = new Map<string, LocalInstagramPost[]>();
     posts.forEach(post => {
       const date = post.scheduledAt || post.createdAt;
       const key = date.toISOString().split('T')[0];
@@ -1112,7 +1165,7 @@ function CalendarView({
               <div className="space-y-1">
                 {dayPosts.slice(0, 3).map(post => (
                   <button
-                    key={post.id}
+                    key={post.documentId || post.id}
                     onClick={() => onSelectPost(post)}
                     className={`w-full flex items-center gap-1 p-1 rounded text-xs truncate ${
                       post.status === 'published' 
@@ -1152,7 +1205,7 @@ function PostPreviewModal({
   onEdit,
   username 
 }: { 
-  post: InstagramPost; 
+  post: LocalInstagramPost; 
   previewType: 'feed' | 'story' | 'reel';
   onClose: () => void;
   onEdit: () => void;
@@ -1292,4 +1345,3 @@ function PostPreviewModal({
     </motion.div>
   );
 }
-

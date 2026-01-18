@@ -1080,3 +1080,75 @@ export interface CreateMeetingNoteData {
 
 export type UpdateMeetingNoteData = Partial<CreateMeetingNoteData>;
 
+// ============================================================================
+// INSTAGRAM POSTS
+// ============================================================================
+
+export type InstagramPostType = 'post' | 'reel' | 'story' | 'carousel';
+export type InstagramPostStatus = 'draft' | 'scheduled' | 'published' | 'failed';
+
+export interface InstagramPostMusic {
+  title: string;
+  artist: string;
+}
+
+export interface InstagramPost {
+  id: number;
+  documentId: string;
+  post_type: InstagramPostType;
+  media_urls?: string[];
+  media?: Media[];
+  caption?: string;
+  hashtags?: string[];
+  music?: InstagramPostMusic;
+  scheduled_at?: string;
+  published_at?: string;
+  post_status: InstagramPostStatus;
+  likes_count?: number;
+  comments_count?: number;
+  views_count?: number;
+  engagement_rate?: number;
+  instagram_post_id?: string;
+  instagram_permalink?: string;
+  location?: string;
+  alt_text?: string;
+  cover_image_url?: string;
+  notes?: string;
+  author?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateInstagramPostData {
+  post_type: InstagramPostType;
+  media_urls?: string[];
+  media?: number[]; // IDs des médias
+  caption?: string;
+  hashtags?: string[];
+  music?: InstagramPostMusic;
+  scheduled_at?: string;
+  post_status?: InstagramPostStatus;
+  location?: string;
+  alt_text?: string;
+  cover_image_url?: string;
+  notes?: string;
+}
+
+export type UpdateInstagramPostData = Partial<CreateInstagramPostData>;
+
+export interface InstagramStats {
+  total: number;
+  drafts: number;
+  scheduled: number;
+  published: number;
+  totalLikes: number;
+  totalComments: number;
+  totalViews: number;
+  byType: {
+    post: number;
+    reel: number;
+    story: number;
+    carousel: number;
+  };
+}
+

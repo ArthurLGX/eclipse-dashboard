@@ -3720,3 +3720,72 @@ export const signContractAsClient = async (
     return { success: false, message: 'Network error' };
   }
 };
+
+// ============================================================================
+// INSTAGRAM POSTS
+// ============================================================================
+
+import type {
+  InstagramPost,
+  CreateInstagramPostData,
+  UpdateInstagramPostData,
+  InstagramStats,
+  InstagramPostStatus,
+} from '@/types';
+
+/** Récupère tous les posts Instagram de l'utilisateur */
+export const fetchInstagramPosts = async (): Promise<InstagramPost[]> => {
+  const response = await get<{ data: InstagramPost[] }>('instagram-posts?populate=*&sort=createdAt:desc');
+  return response.data || [];
+};
+
+/** Récupère un post Instagram par son documentId */
+export const fetchInstagramPostByDocumentId = async (documentId: string): Promise<InstagramPost | null> => {
+  const response = await get<{ data: InstagramPost }>(`instagram-posts/${documentId}?populate=*`);
+  return response.data || null;
+};
+
+/** Récupère les posts Instagram par statut */
+export const fetchInstagramPostsByStatus = async (status: InstagramPostStatus): Promise<InstagramPost[]> => {
+  const response = await get<{ data: InstagramPost[] }>(`instagram-posts/status/${status}`);
+  return response.data || [];
+};
+
+/** Récupère les posts Instagram planifiés dans une plage de dates */
+export const fetchScheduledInstagramPosts = async (
+  startDate?: string,
+  endDate?: string
+): Promise<InstagramPost[]> => {
+  let url = 'instagram-posts/scheduled';
+  if (startDate && endDate) {
+    url += `?startDate=${startDate}&endDate=${endDate}`;
+  }
+  const response = await get<{ data: InstagramPost[] }>(url);
+  return response.data || [];
+};
+
+/** Récupère les statistiques Instagram */
+export const fetchInstagramStats = async (): Promise<InstagramStats> => {
+  const response = await get<{ data: InstagramStats }>('instagram-posts/stats');
+  return response.data;
+};
+
+/** Crée un nouveau post Instagram */
+export const createInstagramPost = async (postData: CreateInstagramPostData): Promise<InstagramPost> => {
+  const response = await post<{ data: InstagramPost }>('instagram-posts', postData);
+  return response.data;
+};
+
+/** Met à jour un post Instagram */
+export const updateInstagramPost = async (
+  documentId: string,
+  postData: UpdateInstagramPostData
+): Promise<InstagramPost> => {
+  const response = await put<{ data: InstagramPost }>(`instagram-posts/${documentId}`, postData);
+  return response.data;
+};
+
+/** Supprime un post Instagram */
+export const deleteInstagramPost = async (documentId: string): Promise<void> => {
+  await del(`instagram-posts/${documentId}`);
+};
