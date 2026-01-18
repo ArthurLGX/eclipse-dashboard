@@ -7,8 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   IconX,
   IconSend,
-  IconLoader2,
-  IconSparkles,
+   IconSparkles,
   IconMail,
   IconListCheck,
   IconArrowRight,
