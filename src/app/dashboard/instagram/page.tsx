@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconPlus,
@@ -33,7 +34,6 @@ import {
   IconBrandInstagram,
   IconLink,
   IconLinkOff,
-  IconExternalLink,
   IconRocket,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -48,6 +48,7 @@ import {
   publishInstagramPost,
   getInstagramConfig,
   getInstagramAuthUrl,
+  instagramOAuthCallback,
   disconnectInstagram,
   syncInstagramStats,
   type InstagramConfig,
@@ -136,6 +137,8 @@ export default function InstagramPlannerPage() {
 function InstagramPlanner() {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   
   // State
   const [posts, setPosts] = useState<LocalInstagramPost[]>([]);
@@ -143,6 +146,7 @@ function InstagramPlanner() {
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -155,7 +159,50 @@ function InstagramPlanner() {
   // Instagram connection state
   const [instagramConfig, setInstagramConfig] = useState<InstagramConfig | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [showConnectModal, setShowConnectModal] = useState(false);
+  const [isProcessingCallback, setIsProcessingCallback] = useState(false);
+
+  // Handle OAuth callback
+  useEffect(() => {
+    const code = searchParams.get('code');
+    const state = searchParams.get('state');
+    const errorParam = searchParams.get('error');
+
+    if (errorParam) {
+      setError(decodeURIComponent(errorParam));
+      // Clean URL
+      router.replace('/dashboard/instagram');
+      return;
+    }
+
+    if (code && !isProcessingCallback) {
+      setIsProcessingCallback(true);
+      setIsConnecting(true);
+      
+      // Get stored state from sessionStorage for CSRF protection
+      const storedState = sessionStorage.getItem('instagram_oauth_state');
+      
+      instagramOAuthCallback(code, state || storedState || '')
+        .then((response) => {
+          // Refresh config to get full data
+          loadInstagramConfig();
+          setSuccess(`Compte Instagram @${response.data.instagram_username} connecté avec succès !`);
+          setTimeout(() => setSuccess(null), 5000);
+          // Clean stored state
+          sessionStorage.removeItem('instagram_oauth_state');
+        })
+        .catch((err) => {
+          console.error('Error handling Instagram callback:', err);
+          setError('Erreur lors de la connexion à Instagram. Veuillez réessayer.');
+        })
+        .finally(() => {
+          setIsConnecting(false);
+          setIsProcessingCallback(false);
+          // Clean URL
+          router.replace('/dashboard/instagram');
+        });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, router, isProcessingCallback]);
 
   // Charger les posts depuis Strapi
   const loadPosts = useCallback(async () => {
@@ -198,29 +245,16 @@ function InstagramPlanner() {
   // Connecter Instagram
   const handleConnectInstagram = useCallback(async () => {
     setIsConnecting(true);
+    setError(null);
     try {
-      const { authUrl } = await getInstagramAuthUrl();
-      // Ouvrir dans une nouvelle fenêtre popup
-      const popup = window.open(authUrl, 'instagram-auth', 'width=600,height=700');
-      
-      // Écouter le message de retour du callback
-      const handleMessage = (event: MessageEvent) => {
-        if (event.data?.type === 'instagram-oauth-success') {
-          setInstagramConfig(event.data.config);
-          setShowConnectModal(false);
-          popup?.close();
-        } else if (event.data?.type === 'instagram-oauth-error') {
-          setError(event.data.error);
-          popup?.close();
-        }
-        window.removeEventListener('message', handleMessage);
-        setIsConnecting(false);
-      };
-      
-      window.addEventListener('message', handleMessage);
+      const { authUrl, state } = await getInstagramAuthUrl();
+      // Store state for CSRF protection
+      sessionStorage.setItem('instagram_oauth_state', state);
+      // Redirect to Facebook OAuth
+      window.location.href = authUrl;
     } catch (err) {
       console.error('Error getting auth URL:', err);
-      setError('Erreur lors de la connexion à Instagram');
+      setError('Erreur lors de la connexion à Instagram. Vérifiez que l\'API Strapi est configurée.');
       setIsConnecting(false);
     }
   }, []);
@@ -448,6 +482,32 @@ function InstagramPlanner() {
             <button onClick={() => setError(null)} className="text-danger hover:text-danger/80">
               <IconX className="w-5 h-5" />
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Success Banner */}
+      {success && (
+        <div className="max-w-7xl mx-auto mb-4">
+          <div className="bg-success-light border border-success text-success px-4 py-3 rounded-lg flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <IconCheck className="w-5 h-5" />
+              {success}
+            </span>
+            <button onClick={() => setSuccess(null)} className="text-success hover:text-success/80">
+              <IconX className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Connecting Overlay */}
+      {isConnecting && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-card rounded-2xl p-8 shadow-xl flex flex-col items-center gap-4">
+            <IconLoader2 className="w-12 h-12 text-accent animate-spin" />
+            <p className="text-primary font-medium">Connexion à Instagram en cours...</p>
+            <p className="text-secondary text-sm">Vous allez être redirigé vers Facebook</p>
           </div>
         </div>
       )}
