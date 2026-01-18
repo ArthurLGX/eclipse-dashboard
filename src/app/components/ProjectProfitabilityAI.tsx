@@ -353,41 +353,41 @@ export default function ProjectProfitabilityAI({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="p-4 pt-0 space-y-4 border-t border-default">
-              {/* Stats rapides - plus compact */}
+            <div className="p-4 pt-0 space-y-4 border-t border-default overflow-hidden">
+              {/* Stats rapides - centré vertical pour éviter débordement */}
               <div className="grid grid-cols-2 gap-2 pt-4">
-                <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted">
-                  <div className="flex items-center gap-2">
-                    <IconClock className="w-4 h-4 text-muted flex-shrink-0" />
-                    <span className="text-xs text-muted">{t('estimated') || 'Estimé'}</span>
+                <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
+                  <div className="flex items-center gap-1.5 text-muted">
+                    <IconClock className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="text-xs">{t('estimated') || 'Estimé'}</span>
                   </div>
-                  <span className="font-bold text-primary">{estimatedHours}h</span>
+                  <span className="font-bold text-primary text-lg">{estimatedHours}h</span>
                 </div>
-                <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted">
-                  <div className="flex items-center gap-2">
-                    <IconClock className="w-4 h-4 text-muted flex-shrink-0" />
-                    <span className="text-xs text-muted">{t('actual') || 'Réel'}</span>
+                <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
+                  <div className="flex items-center gap-1.5 text-muted">
+                    <IconClock className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="text-xs">{t('actual') || 'Réel'}</span>
                   </div>
-                  <span className={`font-bold ${actualHours > estimatedHours ? 'text-danger' : 'text-success'}`}>
+                  <span className={`font-bold text-lg ${actualHours > estimatedHours ? 'text-danger' : 'text-success'}`}>
                     {actualHours}h
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted">
-                  <div className="flex items-center gap-2">
-                    <IconCurrencyEuro className="w-4 h-4 text-muted flex-shrink-0" />
-                    <span className="text-xs text-muted whitespace-nowrap">{t('planned_rate') || 'TJM prévu'}</span>
+                <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
+                  <div className="flex items-center gap-1.5 text-muted">
+                    <IconCurrencyEuro className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="text-xs truncate">{t('planned_rate') || 'Taux prévu'}</span>
                   </div>
-                  <span className="font-bold text-primary">{hourlyRate}€/h</span>
+                  <span className="font-bold text-primary text-lg">{hourlyRate}€</span>
                 </div>
-                <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted">
-                  <div className="flex items-center gap-2">
-                    <IconCurrencyEuro className="w-4 h-4 text-muted flex-shrink-0" />
-                    <span className="text-xs text-muted whitespace-nowrap">{t('effective_rate') || 'TJM effectif'}</span>
+                <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
+                  <div className="flex items-center gap-1.5 text-muted">
+                    <IconCurrencyEuro className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="text-xs truncate">{t('effective_rate') || 'Taux effectif'}</span>
                   </div>
-                  <span className={`font-bold ${
+                  <span className={`font-bold text-lg ${
                     (profitability?.effective_hourly_rate || 0) >= hourlyRate ? 'text-success' : 'text-danger'
                   }`}>
-                    {profitability?.effective_hourly_rate || '--'}€/h
+                    {profitability?.effective_hourly_rate || '--'}€
                   </span>
                 </div>
               </div>
