@@ -657,7 +657,7 @@ function InstagramPlanner() {
               <ul className="space-y-2 text-sm text-secondary">
                 <li className="flex items-start gap-2">
                   <IconCheck className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
-                  Publiez entre 18h et 21h pour plus d'engagement
+                  Publiez entre 18h et 21h pour plus d&apos;engagement
                 </li>
                 <li className="flex items-start gap-2">
                   <IconCheck className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
@@ -1253,7 +1253,7 @@ function PostPreviewModal({
                   </div>
 
                   {post.likes !== undefined && (
-                    <p className="font-semibold text-sm">{post.likes.toLocaleString()} J'aime</p>
+                    <p className="font-semibold text-sm">{post.likes.toLocaleString()} J&apos;aime</p>
                   )}
                   
                   {post.caption && (
