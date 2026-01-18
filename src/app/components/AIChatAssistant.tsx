@@ -302,6 +302,139 @@ const ToolResultCard: React.FC<{
 };
 
 // ============================================================================
+// TYPING INDICATOR (ChatGPT Style)
+// ============================================================================
+
+const TypingIndicator: React.FC<{ toolName?: string }> = ({ toolName }) => {
+  const { t } = useLanguage();
+  
+  const getToolLabel = (name?: string) => {
+    switch (name) {
+      case 'generateRelanceEmail':
+        return t('ai_preparing_email') || 'Rédaction de l\'email...';
+      case 'createTask':
+        return t('ai_preparing_task') || 'Préparation de la tâche...';
+      case 'createQuote':
+        return t('ai_preparing_quote') || 'Préparation du devis...';
+      case 'createContract':
+        return t('ai_preparing_contract') || 'Préparation du contrat...';
+      case 'suggestNextSteps':
+        return t('ai_assistant_analyzing') || 'Analyse en cours...';
+      default:
+        return t('ai_thinking') || 'Réflexion en cours...';
+    }
+  };
+
+  return (
+    <div className="flex justify-start">
+      <div className="bg-hover border border-default rounded-2xl rounded-bl-md px-4 py-3 max-w-[85%]">
+        <div className="flex items-center gap-3">
+          {/* Animated dots */}
+          <div className="flex items-center gap-1">
+            <motion.div
+              className="w-2 h-2 rounded-full bg-accent"
+              animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 0.8, repeat: Infinity, delay: 0 }}
+            />
+            <motion.div
+              className="w-2 h-2 rounded-full bg-accent"
+              animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
+            />
+            <motion.div
+              className="w-2 h-2 rounded-full bg-accent"
+              animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
+            />
+          </div>
+          <span className="text-sm text-secondary">
+            {getToolLabel(toolName)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// TOOL LOADING CARD
+// ============================================================================
+
+const ToolLoadingCard: React.FC<{ toolName: string; args?: Record<string, unknown> }> = ({ toolName, args }) => {
+  const { t } = useLanguage();
+  
+  const getIcon = () => {
+    switch (toolName) {
+      case 'generateRelanceEmail':
+        return <IconMail size={18} className="text-info" />;
+      case 'createTask':
+        return <IconListCheck size={18} className="text-success" />;
+      case 'createQuote':
+        return <IconFileInvoice size={18} className="text-accent" />;
+      case 'createContract':
+        return <IconFileText size={18} className="text-warning" />;
+      case 'suggestNextSteps':
+        return <IconArrowRight size={18} className="text-warning" />;
+      default:
+        return <IconSparkles size={18} className="text-accent" />;
+    }
+  };
+
+  const getLabel = () => {
+    switch (toolName) {
+      case 'generateRelanceEmail':
+        return t('ai_generating_email') || 'Génération de l\'email de relance...';
+      case 'createTask':
+        return t('ai_creating_task') || 'Création de la tâche...';
+      case 'createQuote':
+        const clientName = args?.clientName as string;
+        return clientName 
+          ? `${t('ai_preparing_quote') || 'Préparation du devis'} pour ${clientName}...`
+          : t('ai_preparing_quote') || 'Préparation du devis...';
+      case 'createContract':
+        const contractClient = args?.clientName as string;
+        return contractClient
+          ? `${t('ai_preparing_contract') || 'Préparation du contrat'} pour ${contractClient}...`
+          : t('ai_preparing_contract') || 'Préparation du contrat...';
+      case 'suggestNextSteps':
+        return t('ai_analyzing_steps') || 'Analyse des prochaines étapes...';
+      default:
+        return t('ai_processing') || 'Traitement en cours...';
+    }
+  };
+
+  return (
+    <motion.div 
+      className="mt-3 p-4 bg-card border border-default rounded-xl"
+      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="flex items-center gap-3">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          className="p-2 rounded-lg bg-hover"
+        >
+          {getIcon()}
+        </motion.div>
+        <div className="flex-1">
+          <p className="text-sm font-medium text-primary">{getLabel()}</p>
+          <div className="mt-1.5 h-1.5 bg-hover rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-accent rounded-full"
+              initial={{ width: '0%' }}
+              animate={{ width: '100%' }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// ============================================================================
 // KEYBOARD SHORTCUT HINT
 // ============================================================================
 
@@ -724,12 +857,15 @@ export default function AIChatAssistant() {
                                 />
                               );
                             }
-                            if (toolPart.state === 'call' || toolPart.state === 'input-streaming') {
+                            if (toolPart.state === 'call' || toolPart.state === 'partial-call') {
+                              // Extract args if available
+                              const args = (toolPart as unknown as { args?: Record<string, unknown> }).args;
                               return (
-                                <div key={i} className="flex items-center gap-2 text-xs text-muted mt-2">
-                                  <IconLoader2 size={14} className="animate-spin" />
-                                  <span>Exécution de {toolName}...</span>
-                                </div>
+                                <ToolLoadingCard 
+                                  key={i} 
+                                  toolName={toolName}
+                                  args={args}
+                                />
                               );
                             }
                           }
@@ -740,16 +876,7 @@ export default function AIChatAssistant() {
                   ))}
                   
                   {isLoading && (
-                    <div className="flex justify-start">
-                      <div className="bg-hover border border-default rounded-2xl rounded-bl-md px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <IconLoader2 size={16} className="animate-spin text-accent" />
-                          <span className="text-sm text-muted">
-                            {t('ai_thinking') || 'Réflexion en cours...'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                    <TypingIndicator />
                   )}
                   
                   {error && (
