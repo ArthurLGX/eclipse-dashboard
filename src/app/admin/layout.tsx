@@ -226,7 +226,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="dashboard-wrapper flex min-h-screen w-full">
         {/* Sidebar Desktop - Fixed */}
         <motion.div
-          className="sidebar hidden lg:flex fixed left-0 top-0 backdrop-blur-sm flex-col items-start justify-start gap-8 h-screen z-[1000] overflow-hidden transition-colors duration-300"
+          className="sidebar hidden lg:flex fixed left-0 top-0 backdrop-blur-sm flex-col items-start justify-start gap-3 h-screen z-[1000] overflow-hidden transition-colors duration-300"
           animate={{
             width: isExpanded || isPinned ? 300 : 64,
           }}

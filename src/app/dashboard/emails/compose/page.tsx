@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -20,6 +20,7 @@ import {
   IconPencil,
   IconHeading,
   IconBuilding,
+  IconCornerUpLeft,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -34,6 +35,15 @@ import { fetchEmailSignature, createSentEmail, fetchClientsUser } from '@/lib/ap
 import { uploadToStrapi } from '@/lib/strapi-upload';
 import { useDraftSave } from '@/hooks/useDraftSave';
 import type { CreateEmailSignatureData, Client } from '@/types';
+
+interface ReplyToData {
+  name: string;
+  email: string;
+  subject: string;
+  snippet: string;
+  date: string;
+  enterprise?: string;
+}
 
 interface Attachment {
   id: string;
@@ -62,6 +72,10 @@ function ComposeEmail() {
   const { user, token } = useAuth();
   const { showGlobalPopup } = usePopup();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // Reply to data (from notification)
+  const [replyToData, setReplyToData] = useState<ReplyToData | null>(null);
   
   // Form state
   const [title, setTitle] = useState(''); // Nouveau champ titre
@@ -75,6 +89,48 @@ function ComposeEmail() {
   // Contacts pour l'autocomplétion
   const [contacts, setContacts] = useState<Client[]>([]);
   const [loadingContacts, setLoadingContacts] = useState(true);
+  
+  // Parse reply-to data from URL params
+  useEffect(() => {
+    if (searchParams.get('replyTo') === 'true') {
+      const replyData: ReplyToData = {
+        name: searchParams.get('replyToName') || '',
+        email: searchParams.get('replyToEmail') || searchParams.get('to') || '',
+        subject: searchParams.get('replyToSubject') || '',
+        snippet: searchParams.get('replyToSnippet') || '',
+        date: searchParams.get('replyToDate') || '',
+        enterprise: searchParams.get('replyToEnterprise') || undefined,
+      };
+      setReplyToData(replyData);
+      
+      // Auto-fill recipient
+      if (replyData.email) {
+        setRecipients([{
+          id: crypto.randomUUID(),
+          email: replyData.email,
+          name: replyData.name || undefined,
+          enterprise: replyData.enterprise,
+        }]);
+      }
+      
+      // Auto-fill subject
+      const subjectParam = searchParams.get('subject');
+      if (subjectParam) {
+        setSubject(subjectParam);
+      }
+    } else {
+      // Handle regular to/subject params
+      const toParam = searchParams.get('to');
+      const subjectParam = searchParams.get('subject');
+      
+      if (toParam) {
+        setRecipients([{ id: crypto.randomUUID(), email: toParam }]);
+      }
+      if (subjectParam) {
+        setSubject(subjectParam);
+      }
+    }
+  }, [searchParams]);
   
   // UI state
   const [sending, setSending] = useState(false);
@@ -488,6 +544,79 @@ function ComposeEmail() {
       {/* Content */}
       <div className="max-w-4xl mx-auto p-6">
         <div className="space-y-6">
+          {/* Reply To Preview - Original Email */}
+          {replyToData && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-accent-light border border-accent rounded-xl p-5"
+            >
+              <div className="flex items-start gap-4">
+                {/* Reply Icon */}
+                <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
+                  <IconCornerUpLeft className="w-5 h-5 text-accent" />
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-medium text-accent uppercase tracking-wide">
+                      {t('replying_to') || 'Réponse à'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold text-primary">
+                      {replyToData.name || replyToData.email}
+                    </span>
+                    {replyToData.enterprise && (
+                      <span className="flex items-center gap-1 text-xs text-muted bg-background px-2 py-0.5 rounded">
+                        <IconBuilding className="w-3 h-3" />
+                        {replyToData.enterprise}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <p className="text-sm text-muted mt-0.5">
+                    {replyToData.email}
+                  </p>
+                  
+                  {/* Original Subject */}
+                  <div className="mt-3 p-3 bg-background rounded-lg">
+                    <p className="text-sm font-medium text-primary mb-1">
+                      {replyToData.subject}
+                    </p>
+                    {replyToData.snippet && (
+                      <p className="text-sm text-muted line-clamp-3">
+                        {replyToData.snippet}
+                      </p>
+                    )}
+                    {replyToData.date && (
+                      <p className="text-xs text-muted mt-2">
+                        {new Date(replyToData.date).toLocaleString('fr-FR', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'long',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Close button */}
+                <button
+                  onClick={() => setReplyToData(null)}
+                  className="p-1.5 text-muted hover:text-primary hover:bg-background rounded-lg transition-colors"
+                  title={t('dismiss') || 'Fermer'}
+                >
+                  <IconX className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+          
           {/* Recipients */}
           <div className="bg-card border border-default rounded-xl p-6">
             <label className="block text-sm font-medium text-secondary mb-3 flex items-center gap-2">
@@ -529,7 +658,7 @@ function ComposeEmail() {
                       
                       {/* Entreprise badge */}
                       {recipient.enterprise && (
-                        <span className="flex items-center gap-1 text-xs text-muted bg-white/50 px-1.5 py-0.5 rounded">
+                        <span className="flex items-center gap-1 text-xs text-muted bg-background px-1.5 py-0.5 rounded">
                           <IconBuilding className="w-3 h-3" />
                           <span className="truncate max-w-[80px]">{recipient.enterprise}</span>
                         </span>
@@ -635,7 +764,7 @@ function ComposeEmail() {
                         </div>
                         <button
                           onClick={() => removeAttachment(att.id)}
-                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                          className="p-2 text-danger hover:bg-danger-light rounded-lg transition-colors"
                         >
                           <IconTrash className="w-4 h-4" />
                         </button>
@@ -694,7 +823,7 @@ function ComposeEmail() {
                   <button
                     onClick={() => setIncludeSignature(!includeSignature)}
                     className={`relative w-12 h-6 rounded-full transition-colors ${
-                      includeSignature ? 'bg-accent' : 'bg-gray-300 dark:bg-gray-600'
+                      includeSignature ? 'bg-accent' : 'bg-muted'
                     }`}
                   >
                     <div 
@@ -717,9 +846,9 @@ function ComposeEmail() {
                 )}
                 
                 {!signatureData && !loadingSignature && (
-                  <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg flex items-start gap-2">
-                    <IconAlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                    <div className="text-sm text-amber-700 dark:text-amber-300">
+                  <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg flex items-start gap-2">
+                    <IconAlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-warning">
                       {t('no_signature_configured') || 'Aucune signature configurée. '}
                       <a 
                         href="/dashboard/settings?tab=email" 

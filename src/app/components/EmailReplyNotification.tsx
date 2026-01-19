@@ -55,14 +55,28 @@ export default function EmailReplyNotification({
       // Mark as read
       await markEmailAsRead(notification.email.id);
       
-      // Navigate to compose with pre-filled reply
+      // Navigate to compose with pre-filled reply and original email data
       const replySubject = notification.email.subject?.startsWith('Re:') 
         ? notification.email.subject 
         : `Re: ${notification.email.subject || ''}`;
       
-      router.push(
-        `/dashboard/emails/compose?to=${encodeURIComponent(notification.email.from_email)}&subject=${encodeURIComponent(replySubject)}`
-      );
+      const senderName = getSenderName(notification.email);
+      const params = new URLSearchParams({
+        to: notification.email.from_email,
+        subject: replySubject,
+        replyTo: 'true',
+        replyToName: senderName,
+        replyToEmail: notification.email.from_email,
+        replyToSubject: notification.email.subject || '(Sans objet)',
+        replyToSnippet: notification.email.snippet || '',
+        replyToDate: notification.email.received_at,
+      });
+      
+      if (notification.email.client?.enterprise) {
+        params.set('replyToEnterprise', notification.email.client.enterprise);
+      }
+      
+      router.push(`/dashboard/emails/compose?${params.toString()}`);
       
       onDismiss(notification.id);
     } catch (error) {
