@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { OnboardingProvider } from '@/app/context/OnboardingContext';
 import { UserPreferencesProvider, useUserPreferencesOptional } from '@/app/context/UserPreferencesContext';
+import { EmailNotificationProvider } from '@/app/context/EmailNotificationContext';
 import UnifiedOnboardingModal from '@/app/components/UnifiedOnboardingModal';
 import { LenisProvider } from '@/app/context/LenisContext';
 import {
@@ -85,11 +86,13 @@ export default function DashboardLayout({
       <TrialExpiredGuard>
         <LenisProvider>
           <UserPreferencesProvider>
-            <OnboardingProvider>
-              <AIAssistantProvider>
-                <DashboardLayoutContent>{children}</DashboardLayoutContent>
-              </AIAssistantProvider>
-            </OnboardingProvider>
+            <EmailNotificationProvider>
+              <OnboardingProvider>
+                <AIAssistantProvider>
+                  <DashboardLayoutContent>{children}</DashboardLayoutContent>
+                </AIAssistantProvider>
+              </OnboardingProvider>
+            </EmailNotificationProvider>
           </UserPreferencesProvider>
         </LenisProvider>
       </TrialExpiredGuard>
@@ -642,7 +645,7 @@ function DashboardLayoutContent({
                               <IconChevronDown
                                 size={16}
                                 className={`transition-all duration-200 ${
-                                  menuItemHovered === item.id || activeCategory === item.id ? 'rotate-180' : ''
+                                  menuItemHovered === item.id || (menuItemHovered === null && activeCategory === item.id) ? 'rotate-180' : ''
                                 }`}
                               />
                             </motion.div>
@@ -654,7 +657,7 @@ function DashboardLayoutContent({
                       <AnimatePresence>
                         {item.menuItems &&
                           (isExpanded || isPinned) &&
-                          (menuItemHovered === item.id || activeCategory === item.id) && (
+                          (menuItemHovered === item.id || (menuItemHovered === null && activeCategory === item.id)) && (
                             <motion.div
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
