@@ -1097,7 +1097,7 @@ export interface InstagramPost {
   documentId: string;
   post_type: InstagramPostType;
   media_urls?: string[];
-  media?: Media[];
+  media?: ImageFile[];
   caption?: string;
   hashtags?: string[];
   music?: InstagramPostMusic;
