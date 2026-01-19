@@ -13,8 +13,7 @@ import {
   IconTrash,
   IconRefresh,
   IconSearch,
-  IconFilter,
-  IconChevronLeft,
+   IconChevronLeft,
   IconChevronRight,
   IconLoader2,
   IconSend,
@@ -22,10 +21,7 @@ import {
   IconUser,
   IconBuilding,
   IconArrowLeft,
-  IconDotsVertical,
-  IconCheck,
-  IconX,
-  IconArchiveOff,
+   IconArchiveOff,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';

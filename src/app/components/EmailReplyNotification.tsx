@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconMail,
-  IconCheck,
-  IconX,
+   IconX,
   IconClock,
   IconSend,
   IconUser,
