@@ -1102,7 +1102,7 @@ export interface InstagramPost {
   hashtags?: string[];
   music?: InstagramPostMusic;
   scheduled_at?: string;
-  published_at?: string;
+  instagram_published_at?: string;
   post_status: InstagramPostStatus;
   likes_count?: number;
   comments_count?: number;
