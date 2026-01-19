@@ -2658,6 +2658,126 @@ export const countSentEmailsByCategory = async (
 };
 
 // ============================================================================
+// INBOX (RECEIVED EMAILS)
+// ============================================================================
+
+export interface ReceivedEmail {
+  id: number;
+  documentId: string;
+  message_id?: string;
+  from_email: string;
+  from_name?: string;
+  to_email?: string;
+  subject?: string;
+  content_text?: string;
+  content_html?: string;
+  snippet?: string;
+  received_at: string;
+  is_read: boolean;
+  is_starred: boolean;
+  is_archived: boolean;
+  has_attachments: boolean;
+  attachments?: Array<{ filename: string; contentType: string; size: number }>;
+  in_reply_to?: string;
+  references?: string[];
+  labels?: string[];
+  client?: {
+    id: number;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    enterprise?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InboxResponse {
+  data: ReceivedEmail[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+    unreadCount: number;
+  };
+}
+
+export interface InboxFilters {
+  page?: number;
+  pageSize?: number;
+  isRead?: boolean;
+  isStarred?: boolean;
+  isArchived?: boolean;
+  clientId?: number;
+  search?: string;
+}
+
+/** Récupère la boîte de réception */
+export const fetchInbox = async (filters: InboxFilters = {}): Promise<InboxResponse> => {
+  const params = new URLSearchParams();
+  
+  if (filters.page) params.append('page', String(filters.page));
+  if (filters.pageSize) params.append('pageSize', String(filters.pageSize));
+  if (filters.isRead !== undefined) params.append('isRead', String(filters.isRead));
+  if (filters.isStarred !== undefined) params.append('isStarred', String(filters.isStarred));
+  if (filters.isArchived !== undefined) params.append('isArchived', String(filters.isArchived));
+  if (filters.clientId) params.append('clientId', String(filters.clientId));
+  if (filters.search) params.append('search', filters.search);
+  
+  const url = `received-emails/inbox${params.toString() ? '?' + params.toString() : ''}`;
+  return await get<InboxResponse>(url);
+};
+
+/** Synchronise la boîte de réception avec le serveur IMAP */
+export const syncInbox = async (): Promise<{ synced: number; skipped: number; errors: string[] }> => {
+  const response = await post<{ data: { synced: number; skipped: number; errors: string[] } }>('received-emails/sync', {});
+  return response.data;
+};
+
+/** Récupère un email reçu par son ID */
+export const fetchReceivedEmail = async (id: number): Promise<ReceivedEmail | null> => {
+  try {
+    const response = await get<{ data: ReceivedEmail }>(`received-emails/${id}?populate=client`);
+    return response.data || null;
+  } catch {
+    return null;
+  }
+};
+
+/** Marque un email comme lu */
+export const markEmailAsRead = async (id: number): Promise<void> => {
+  await put<{ data: ReceivedEmail }>(`received-emails/${id}/read`, {});
+};
+
+/** Marque un email comme non lu */
+export const markEmailAsUnread = async (id: number): Promise<void> => {
+  await put<{ data: ReceivedEmail }>(`received-emails/${id}/unread`, {});
+};
+
+/** Toggle étoile sur un email */
+export const toggleEmailStar = async (id: number): Promise<void> => {
+  await put<{ data: ReceivedEmail }>(`received-emails/${id}/star`, {});
+};
+
+/** Archive un email */
+export const archiveEmail = async (id: number): Promise<void> => {
+  await put<{ data: ReceivedEmail }>(`received-emails/${id}/archive`, {});
+};
+
+/** Désarchive un email */
+export const unarchiveEmail = async (id: number): Promise<void> => {
+  await put<{ data: ReceivedEmail }>(`received-emails/${id}/unarchive`, {});
+};
+
+/** Supprime un email reçu */
+export const deleteReceivedEmail = async (id: number): Promise<void> => {
+  await del(`received-emails/${id}`);
+};
+
+// ============================================================================
 // EMAIL DRAFTS
 // ============================================================================
 

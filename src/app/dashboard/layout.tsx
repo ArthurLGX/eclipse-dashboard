@@ -41,6 +41,7 @@ import {
   IconFileText,
   IconBell,
   IconBrandInstagram,
+  IconInbox,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -315,6 +316,14 @@ function DashboardLayoutContent({
           path: '/dashboard/emails',
           moduleId: 'emails',
           status: getModuleStatus('emails', moduleStatuses) || undefined,
+        },
+        {
+          id: 'inbox',
+          label: t('inbox') || 'Boîte de réception',
+          icon: <IconInbox size={20} stroke={1} />,
+          path: '/dashboard/emails/inbox',
+          moduleId: 'emails',
+          status: 'new' as const,
         },
         // Technique
         {
