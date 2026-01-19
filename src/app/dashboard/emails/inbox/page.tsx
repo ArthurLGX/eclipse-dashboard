@@ -271,11 +271,11 @@ function InboxView() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] bg-secondary rounded-xl overflow-hidden">
+    <div className="flex h-[calc(100vh-80px)] bg-background rounded-xl overflow-hidden border border-default">
       {/* Email List */}
-      <div className={`${selectedEmail ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-[400px] lg:w-[450px] border-r border-muted bg-white/50`}>
+      <div className={`${selectedEmail ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-[400px] lg:w-[450px] border-r border-default bg-card`}>
         {/* Header */}
-        <div className="p-4 border-b border-muted">
+        <div className="p-4 border-b border-default">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <IconInbox className="w-6 h-6 text-accent" />
@@ -306,7 +306,7 @@ function InboxView() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('search_emails') || 'Rechercher...'}
-              className="w-full !pl-10 !pr-4 py-2 bg-secondary border border-muted rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full !pl-10 !pr-4 py-2 bg-background border border-default rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
             />
           </div>
           
@@ -317,7 +317,7 @@ function InboxView() {
               className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                 !showUnreadOnly && !showStarredOnly && !showArchived
                   ? 'bg-accent text-white'
-                  : 'bg-secondary-light text-muted hover:bg-secondary'
+                  : 'bg-background border border-default text-muted hover:border-accent'
               }`}
             >
               {t('all') || 'Tous'}
@@ -327,7 +327,7 @@ function InboxView() {
               className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                 showUnreadOnly
                   ? 'bg-accent text-white'
-                  : 'bg-secondary-light text-muted hover:bg-secondary'
+                  : 'bg-background border border-default text-muted hover:border-accent'
               }`}
             >
               {t('unread') || 'Non lus'}
@@ -337,7 +337,7 @@ function InboxView() {
               className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                 showStarredOnly
                   ? 'bg-amber-500 text-white'
-                  : 'bg-secondary-light text-muted hover:bg-secondary'
+                  : 'bg-background border border-default text-muted hover:border-amber-500'
               }`}
             >
               <IconStarFilled className="w-3 h-3 inline mr-1" />
@@ -348,7 +348,7 @@ function InboxView() {
               className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                 showArchived
                   ? 'bg-gray-500 text-white'
-                  : 'bg-secondary-light text-muted hover:bg-secondary'
+                  : 'bg-background border border-default text-muted hover:border-gray-500'
               }`}
             >
               <IconArchive className="w-3 h-3 inline mr-1" />
@@ -383,9 +383,9 @@ function InboxView() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   onClick={() => openEmail(email)}
-                  className={`flex items-start gap-3 p-4 border-b border-muted cursor-pointer transition-colors ${
-                    email.is_read ? 'bg-transparent hover:bg-secondary' : 'bg-accent-light hover:bg-accent-light'
-                  } ${selectedEmail?.id === email.id ? 'bg-accent-light' : ''}`}
+                  className={`flex items-start gap-3 p-4 border-b border-default cursor-pointer transition-colors ${
+                    email.is_read ? 'bg-card hover:bg-background' : 'bg-accent/10 hover:bg-accent/15'
+                  } ${selectedEmail?.id === email.id ? 'bg-accent/10 border-l-2 border-l-accent' : ''}`}
                 >
                   {/* Read indicator */}
                   <button
@@ -452,7 +452,7 @@ function InboxView() {
         
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between p-3 border-t border-muted">
+          <div className="flex items-center justify-between p-3 border-t border-default bg-card">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
@@ -475,11 +475,11 @@ function InboxView() {
       </div>
       
       {/* Email Detail */}
-      <div className={`${selectedEmail ? 'flex' : 'hidden md:flex'} flex-1 flex-col bg-white/30`}>
+      <div className={`${selectedEmail ? 'flex' : 'hidden md:flex'} flex-1 flex-col bg-background`}>
         {selectedEmail ? (
           <>
             {/* Detail Header */}
-            <div className="flex items-center justify-between p-4 border-b border-muted">
+            <div className="flex items-center justify-between p-4 border-b border-default bg-card">
               <button
                 onClick={() => setSelectedEmail(null)}
                 className="md:hidden p-2 text-muted hover:text-accent rounded-lg"
@@ -490,7 +490,7 @@ function InboxView() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleReply(selectedEmail)}
-                  className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-light transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-colors"
                 >
                   <IconSend className="w-4 h-4" />
                   {t('reply') || 'Répondre'}
@@ -498,7 +498,7 @@ function InboxView() {
                 
                 <button
                   onClick={(e) => handleArchive(selectedEmail, e)}
-                  className="p-2 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+                  className="p-2 text-muted hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
                   title={selectedEmail.is_archived ? t('unarchive') : t('archive')}
                 >
                   {selectedEmail.is_archived ? (
@@ -510,7 +510,7 @@ function InboxView() {
                 
                 <button
                   onClick={() => handleDelete(selectedEmail)}
-                  className="p-2 text-muted hover:text-danger hover:bg-danger-light rounded-lg transition-colors"
+                  className="p-2 text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                   title={t('delete')}
                 >
                   <IconTrash className="w-5 h-5" />
@@ -519,7 +519,7 @@ function InboxView() {
             </div>
             
             {/* Email Content */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-6 bg-card">
               {loadingEmail ? (
                 <div className="flex items-center justify-center h-40">
                   <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
@@ -532,8 +532,8 @@ function InboxView() {
                   </h2>
                   
                   {/* Sender Info */}
-                  <div className="flex items-start gap-4 mb-6 pb-6 border-b border-muted">
-                    <div className="w-12 h-12 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
+                  <div className="flex items-start gap-4 mb-6 pb-6 border-b border-default">
+                    <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
                       {selectedEmail.client?.enterprise ? (
                         <IconBuilding className="w-6 h-6 text-accent" />
                       ) : (
@@ -579,7 +579,7 @@ function InboxView() {
                   
                   {/* Attachments */}
                   {selectedEmail.has_attachments && selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
-                    <div className="mb-6 p-4 bg-secondary rounded-lg">
+                    <div className="mb-6 p-4 bg-background border border-default rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <IconPaperclip className="w-4 h-4 text-muted" />
                         <span className="text-sm font-medium text-primary">
@@ -590,10 +590,10 @@ function InboxView() {
                         {selectedEmail.attachments.map((att, idx) => (
                           <div
                             key={idx}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-white rounded border border-muted text-sm"
+                            className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default text-sm"
                           >
                             <IconPaperclip className="w-3 h-3 text-muted" />
-                            <span className="truncate max-w-[150px]">{att.filename}</span>
+                            <span className="truncate max-w-[150px] text-primary">{att.filename}</span>
                             <span className="text-xs text-muted">
                               ({Math.round(att.size / 1024)} Ko)
                             </span>

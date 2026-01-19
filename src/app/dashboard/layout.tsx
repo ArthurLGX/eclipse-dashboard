@@ -639,11 +639,11 @@ function DashboardLayoutContent({
                               exit={{ opacity: 0 }}
                               className="flex items-center gap-2"
                             >
-                              <span className="!text-sm font-medium whitespace-nowrap">
+                              <span className="!text-xs font-medium whitespace-nowrap">
                                 {item.label}
                               </span>
                               <IconChevronDown
-                                size={16}
+                                size={12}
                                 className={`transition-all duration-200 ${
                                   menuItemHovered === item.id || (menuItemHovered === null && activeCategory === item.id) ? 'rotate-180' : ''
                                 }`}
@@ -672,7 +672,7 @@ function DashboardLayoutContent({
                                   className={`nav-item w-full text-xs ${activeItem === menuItem.id ? 'active' : ''}`}
                                 >
                                   <div className="flex-shrink-0">{menuItem.icon}</div>
-                                  <span className="!text-sm font-medium whitespace-nowrap">
+                                  <span className="!text-xs font-medium whitespace-nowrap">
                                     {menuItem.label}
                                   </span>
                                   {/* Status badge */}
@@ -708,7 +708,7 @@ function DashboardLayoutContent({
                             exit={{ opacity: 0 }}
                             className="flex items-center gap-2"
                           >
-                            <span className="!text-sm font-medium whitespace-nowrap">
+                            <span className="!text-xs font-medium whitespace-nowrap">
                               {item.label}
                             </span>
                           </motion.div>
