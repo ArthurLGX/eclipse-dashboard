@@ -114,7 +114,7 @@ export default function EmailReplyNotification({
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 100, scale: 0.9 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-white rounded-xl shadow-2xl border border-border/50 overflow-hidden"
+            className="bg-white rounded-xl shadow-2xl border border-muted/50 overflow-hidden"
           >
             {/* Header */}
             <div 
@@ -149,7 +149,7 @@ export default function EmailReplyNotification({
             </div>
             
             {/* Action Buttons */}
-            <div className="flex border-t border-border/50">
+            <div className="flex border-t border-muted/50">
               <button
                 onClick={() => handleReplyNow(notification)}
                 disabled={processingId === notification.id}
@@ -162,7 +162,7 @@ export default function EmailReplyNotification({
               <button
                 onClick={() => handleArchive(notification)}
                 disabled={processingId === notification.id}
-                className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium text-muted hover:text-danger hover:bg-danger/10 border-l border-border/50 transition-colors disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium text-muted hover:text-danger hover:bg-danger/10 border-l border-muted/50 transition-colors disabled:opacity-50"
               >
                 <IconX className="w-4 h-4" />
                 {t('reply_no') || 'Non'}
@@ -171,7 +171,7 @@ export default function EmailReplyNotification({
               <button
                 onClick={() => handleLater(notification)}
                 disabled={processingId === notification.id}
-                className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium text-muted hover:text-primary hover:bg-secondary/50 border-l border-border/50 transition-colors disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium text-muted hover:text-primary hover:bg-secondary/50 border-l border-muted/50 transition-colors disabled:opacity-50"
               >
                 <IconClock className="w-4 h-4" />
                 {t('reply_later') || 'Plus tard'}

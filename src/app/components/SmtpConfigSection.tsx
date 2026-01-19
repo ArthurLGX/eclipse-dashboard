@@ -580,7 +580,7 @@ export default function SmtpConfigSection() {
         <button
           type="button"
           onClick={() => setShowImapConfig(!showImapConfig)}
-          className="w-full flex items-center justify-between p-4 rounded-xl bg-secondary-light hover:bg-secondary transition-colors"
+          className="w-full flex items-center justify-between p-4 rounded-xl bg-secondary hover:bg-secondary hover:opacity-80 transition-colors"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
@@ -631,7 +631,7 @@ export default function SmtpConfigSection() {
                 </div>
 
                 {/* Enable IMAP Toggle */}
-                <div className="flex items-center justify-between p-4 bg-secondary/5 rounded-xl">
+                <div className="flex items-center justify-between p-4 bg-secondary hover:opacity-80 transition-colors rounded-xl">
                   <div>
                     <h5 className="font-medium text-primary">
                       {t('enable_imap') || 'Activer la détection des réponses'}
@@ -644,7 +644,7 @@ export default function SmtpConfigSection() {
                     type="button"
                     onClick={() => handleChange('imap_enabled', !formData.imap_enabled)}
                     className={`relative w-12 h-6 rounded-full transition-colors ${
-                      formData.imap_enabled ? 'bg-purple-500' : 'bg-secondary/30'
+                      formData.imap_enabled ? 'bg-purple-500' : 'bg-secondary'
                     }`}
                   >
                     <span

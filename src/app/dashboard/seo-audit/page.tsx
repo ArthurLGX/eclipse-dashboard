@@ -81,7 +81,7 @@ function MetricCard({ title, displayValue, score }: { title: string; displayValu
   const color = getScoreColor(score * 100);
   
   return (
-    <div className={`p-4 rounded-lg ${color.bg} border border-border`}>
+    <div className={`p-4 rounded-lg ${color.bg} border border-muted`}>
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium">{title}</span>
         <div className={`w-3 h-3 rounded-full ${score >= 0.9 ? 'bg-green-500' : score >= 0.5 ? 'bg-amber-500' : 'bg-red-500'}`} />
@@ -228,7 +228,7 @@ export default function SEOAuditPage() {
       </div>
 
       {/* Search form */}
-      <div className="bg-card border border-border rounded-xl p-6">
+      <div className="bg-card border border-muted rounded-xl p-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <label className="block text-sm font-medium mb-2">{t('website_url') || 'URL du site'}</label>
@@ -239,7 +239,7 @@ export default function SEOAuditPage() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full !pl-10 !pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-accent"
+                className="w-full !pl-10 !pr-4 py-3 bg-background border border-muted rounded-lg focus:ring-1 focus:ring-accent"
                 onKeyDown={(e) => e.key === 'Enter' && runAudit()}
               />
             </div>
@@ -253,7 +253,7 @@ export default function SEOAuditPage() {
                 className={`flex items-center gap-2 px-4 py-3 rounded-lg border transition-colors ${
                   strategy === 'mobile' 
                     ? 'bg-accent text-white border-accent' 
-                    : 'border-border hover:bg-hover'
+                    : 'border-muted hover:bg-hover'
                 }`}
               >
                 <IconDeviceMobile size={18} />
@@ -264,7 +264,7 @@ export default function SEOAuditPage() {
                 className={`flex items-center gap-2 px-4 py-3 rounded-lg border transition-colors ${
                   strategy === 'desktop' 
                     ? 'bg-accent text-white border-accent' 
-                    : 'border-border hover:bg-hover'
+                    : 'border-muted hover:bg-hover'
                 }`}
               >
                 <IconDeviceDesktop size={18} />
@@ -304,7 +304,7 @@ export default function SEOAuditPage() {
       {result && (
         <div className="space-y-6">
           {/* Scores overview */}
-          <div className="bg-card border border-border rounded-xl p-6">
+          <div className="bg-card border border-muted rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-semibold">{result.url}</h2>
@@ -335,7 +335,7 @@ export default function SEOAuditPage() {
           </div>
 
           {/* Core Web Vitals */}
-          <div className="bg-card border border-border rounded-xl p-6">
+          <div className="bg-card border border-muted rounded-xl p-6">
             <h2 className="text-lg font-semibold mb-4">Core Web Vitals</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <MetricCard 
@@ -368,7 +368,7 @@ export default function SEOAuditPage() {
 
           {/* Opportunities */}
           {result.opportunities.length > 0 && (
-            <div className="bg-card border border-border rounded-xl p-6">
+            <div className="bg-card border border-muted rounded-xl p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <IconRocket size={20} className="text-amber-500" />
                 Opportunités d&apos;amélioration
@@ -395,7 +395,7 @@ export default function SEOAuditPage() {
 
           {/* Diagnostics */}
           {result.diagnostics.length > 0 && (
-            <div className="bg-card border border-border rounded-xl p-6">
+            <div className="bg-card border border-muted rounded-xl p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <IconAlertTriangle size={20} className="text-amber-500" />
                 Diagnostics

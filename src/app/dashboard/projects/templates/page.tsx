@@ -320,7 +320,7 @@ export default function ProjectTemplatesPage() {
           {templates.length === 0 && (
             <button
               onClick={initializeDefaults}
-              className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-hover"
+              className="flex items-center gap-2 px-4 py-2 border border-muted rounded-lg hover:bg-hover"
             >
               <IconTemplate size={18} />
               Créer templates par défaut
@@ -337,7 +337,7 @@ export default function ProjectTemplatesPage() {
       </div>
 
       {/* Search */}
-      <div className="flex gap-3 p-4 bg-card rounded-lg border border-border">
+      <div className="flex gap-3 p-4 bg-card rounded-lg border border-muted">
         <div className="relative flex-1">
           <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -345,7 +345,7 @@ export default function ProjectTemplatesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t('search') || 'Rechercher...'}
-            className="w-full !pl-9 !pr-3 py-2 bg-background border border-border rounded-lg"
+            className="w-full !pl-9 !pr-3 py-2 bg-background border border-muted rounded-lg"
           />
         </div>
       </div>
@@ -365,9 +365,9 @@ export default function ProjectTemplatesPage() {
           {filteredTemplates.map((template) => (
             <div 
               key={template.documentId} 
-              className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-card border border-muted rounded-xl overflow-hidden hover:shadow-md transition-shadow"
             >
-              <div className="p-4 border-b border-border">
+              <div className="p-4 border-b border-muted">
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h3 className="font-semibold">{template.name}</h3>

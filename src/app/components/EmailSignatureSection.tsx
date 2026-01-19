@@ -374,7 +374,7 @@ export default function EmailSignatureSection() {
           
           <div className="flex items-center gap-3">
             {/* Language Toggle */}
-            <div className="flex items-center gap-2 px-3 py-2 bg-secondary-light rounded-lg">
+            <div className="flex items-center gap-2 px-3 py-2 bg-secondary rounded-lg">
               <IconLanguage className="w-4 h-4 text-muted" />
               <button
                 onClick={() => setFooterLanguage('fr')}
