@@ -27,7 +27,7 @@ const EmailNotificationContext = createContext<EmailNotificationContextValue | n
 const SYNC_INTERVAL = 5 * 60 * 1000;
 
 export function EmailNotificationProvider({ children }: { children: React.ReactNode }) {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState<EmailNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -62,7 +62,7 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
 
   // Sync inbox and check for new emails
   const syncNow = useCallback(async () => {
-    if (!isAuthenticated || !user?.id || isSyncing) return;
+    if (!user?.id || isSyncing) return;
     
     setIsSyncing(true);
     try {
@@ -100,11 +100,11 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
     } finally {
       setIsSyncing(false);
     }
-  }, [isAuthenticated, user?.id, isSyncing, addNotification]);
+  }, [user?.id, isSyncing, addNotification]);
 
   // Initial sync and periodic sync
   useEffect(() => {
-    if (!isAuthenticated || !user?.id) return;
+    if (!user?.id) return;
 
     // Initial sync after a short delay
     const initialTimeout = setTimeout(() => {
@@ -120,7 +120,7 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
       clearTimeout(initialTimeout);
       clearInterval(interval);
     };
-  }, [isAuthenticated, user?.id, syncNow]);
+  }, [user?.id, syncNow]);
 
   // Auto-dismiss old notifications after 30 seconds
   useEffect(() => {
