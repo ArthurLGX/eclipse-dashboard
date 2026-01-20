@@ -81,11 +81,11 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
       // Check for new emails (emails we haven't seen before)
       if (response.data) {
         for (const email of response.data) {
-          // Only show notification for emails received in the last 10 minutes
+          // Only show notification for emails received in the last 30 minutes
           const emailDate = new Date(email.received_at).getTime();
-          const tenMinutesAgo = Date.now() - 10 * 60 * 1000;
+          const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
           
-          if (emailDate > tenMinutesAgo && !knownEmailIdsRef.current.has(email.id)) {
+          if (emailDate > thirtyMinutesAgo && !knownEmailIdsRef.current.has(email.id)) {
             addNotification(email);
           } else {
             // Mark as known without showing notification
