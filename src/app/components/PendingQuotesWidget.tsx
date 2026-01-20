@@ -92,11 +92,11 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
         className="bg-card border border-default rounded-xl overflow-hidden"
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-default bg-gradient-to-r from-violet-500/10 to-transparent">
+        <div className="px-6 py-4 border-b border-default bg-gradient-to-r from-accent-light to-transparent">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-100 dark:bg-violet-900/30 rounded-lg flex items-center justify-center">
-                <IconFileDescription className="w-5 h-5 text-violet-500" />
+              <div className="w-10 h-10 bg-accent-light rounded-lg flex items-center justify-center">
+                <IconFileDescription className="w-5 h-5 text-accent" />
               </div>
               <div>
                 <h3 className="font-semibold text-primary">
@@ -109,7 +109,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
             </div>
             <button
               onClick={() => router.push('/dashboard/factures?type=quote')}
-              className="text-sm text-violet-500 hover:text-violet-600 flex items-center gap-1"
+              className="text-sm text-accent hover:text-primary flex items-center gap-1"
             >
               {t('view_all') || 'Voir tout'}
               <IconChevronRight className="w-4 h-4" />
@@ -131,7 +131,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
             return (
               <div
                 key={quote.documentId}
-                className={`p-4 hover:bg-hover transition-colors ${isUrgent ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''}`}
+                className={`p-4 hover:bg-hover transition-colors ${isUrgent ? 'bg-warning-light' : ''}`}
               >
                 <div className="flex items-center justify-between gap-4">
                   {/* Infos du devis */}
@@ -141,7 +141,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {quote.reference}
                       </span>
                       {isUrgent && (
-                        <span className="flex items-center gap-1 text-xs text-amber-600 bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded-full">
+                        <span className="flex items-center gap-1 text-xs text-warning bg-warning-light px-2 py-0.5 rounded-full">
                           <IconAlertTriangle className="w-3 h-3" />
                           {t('urgent') || 'Urgent'}
                         </span>
@@ -150,7 +150,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                     <div className="flex items-center gap-3 text-sm text-muted">
                       <span>{clientName}</span>
                       <span>•</span>
-                      <span className="font-medium text-violet-500">
+                      <span className="font-medium text-accent">
                         {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: quote.currency || 'EUR' })
                           .format(quote.number || 0)}
                       </span>
@@ -170,7 +170,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {/* Bouton Relancer */}
                         <button
                           onClick={() => handleFollowUp(quote)}
-                          className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                          className="p-2 text-info hover:bg-info-light rounded-lg transition-colors"
                           title={t('follow_up') || 'Relancer'}
                         >
                           <IconMail className="w-4 h-4" />
@@ -179,7 +179,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {/* Bouton Accepté */}
                         <button
                           onClick={() => handleUpdateStatus(quote, 'accepted')}
-                          className="p-2 text-green-500 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                          className="p-2 text-success hover:bg-success-light rounded-lg transition-colors"
                           title={t('mark_accepted') || 'Marquer comme accepté'}
                         >
                           <IconCheck className="w-4 h-4" />
@@ -188,7 +188,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {/* Bouton Refusé */}
                         <button
                           onClick={() => handleUpdateStatus(quote, 'rejected')}
-                          className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                          className="p-2 text-danger hover:bg-danger-light rounded-lg transition-colors"
                           title={t('mark_rejected') || 'Marquer comme refusé'}
                         >
                           <IconX className="w-4 h-4" />
@@ -207,7 +207,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
           <div className="px-6 py-3 border-t border-default bg-hover text-center">
             <button
               onClick={() => router.push('/dashboard/factures?type=quote')}
-              className="text-sm text-violet-500 hover:text-violet-600"
+                className="text-sm text-accent hover:text-primary"
             >
               {`+ ${pendingQuotes.length - 5} ${t('other_quotes') || 'autres devis'}`}
             </button>
