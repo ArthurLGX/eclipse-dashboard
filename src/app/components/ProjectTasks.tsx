@@ -20,6 +20,7 @@ import {
   IconLayoutCards,
   IconTable,
   IconTimeline,
+  IconColumns,
   IconFileTypePdf,
   IconSubtask,
   IconUser,
@@ -30,6 +31,8 @@ import {
   IconSquare,
   IconSquareCheck,
   IconSelectAll,
+  IconGripVertical,
+  IconDots,
 } from '@tabler/icons-react';
 import ExcelImportModal, { type ImportedTask, type ImportProgressCallback } from './ExcelImportModal';
 import AITaskGenerator, { type GeneratedTask } from './AITaskGenerator';
@@ -46,6 +49,7 @@ import {
   updateTaskProgress,
 } from '@/lib/api';
 import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
+import { calculateParentTaskState } from '@/utils/dataCoherence';
 
 interface Collaborator {
   documentId: string;
@@ -77,7 +81,7 @@ interface ProjectTasksProps {
   onAllTasksCompleted?: () => void;
 }
 
-type ViewMode = 'cards' | 'table' | 'gantt';
+type ViewMode = 'cards' | 'kanban' | 'table' | 'gantt';
 
 // Types pour les options
 type TaskStatusOption = { value: TaskStatus; label: string; color: string; icon: React.ReactNode };
@@ -227,6 +231,7 @@ export default function ProjectTasks({
   // Options définies à l'intérieur du composant pour accéder à t()
   const VIEW_OPTIONS: { value: ViewMode; label: string; icon: React.ReactNode }[] = [
     { value: 'cards', label: t('cards') || 'Cartes', icon: <IconLayoutCards className="w-4 h-4" /> },
+    { value: 'kanban', label: 'Kanban', icon: <IconColumns className="w-4 h-4" /> },
     { value: 'table', label: t('table') || 'Tableau', icon: <IconTable className="w-4 h-4" /> },
     { value: 'gantt', label: t('gantt') || 'Gantt', icon: <IconTimeline className="w-4 h-4" /> },
   ];
@@ -1035,32 +1040,77 @@ export default function ProjectTasks({
 </html>`;
   };
 
+  // ============================================================================
+  // RÈGLES DE COHÉRENCE PARENT/ENFANTS (ISOPÉRIMÉTRIE)
+  // Utilise les fonctions centralisées de @/utils/dataCoherence
+  // ============================================================================
+
+  /**
+   * Met à jour le parent d'une sous-tâche après modification
+   * Utilise calculateParentTaskState de @/utils/dataCoherence
+   */
+  const syncParentTaskState = async (parentTaskDocId: string, allTasks: ProjectTask[]) => {
+    const parentTask = allTasks.find(t => t.documentId === parentTaskDocId);
+    if (!parentTask) return;
+    
+    // Récupérer toutes les sous-tâches de ce parent
+    const subtasks = allTasks.filter(t => t.parent_task?.documentId === parentTaskDocId);
+    if (subtasks.length === 0) return;
+    
+    // Utiliser la fonction centralisée pour calculer l'état cohérent
+    const { status: calculatedStatus, progress: calculatedProgress } = calculateParentTaskState(subtasks);
+    
+    // Vérifier si le parent a besoin d'être mis à jour
+    const needsUpdate = parentTask.task_status !== calculatedStatus || parentTask.progress !== calculatedProgress;
+    
+    if (needsUpdate) {
+      // Mise à jour du parent
+      await updateTaskStatus(parentTaskDocId, calculatedStatus);
+      if (calculatedProgress !== parentTask.progress) {
+        await updateTaskProgress(parentTaskDocId, calculatedProgress);
+      }
+    }
+  };
+
   const handleStatusChange = async (taskDocumentId: string, status: TaskStatus, alsoUpdateSubtasks = false) => {
     try {
+      // Trouver la tâche pour savoir si c'est une sous-tâche
+      const task = tasks.find(t => t.documentId === taskDocumentId);
+      const isSubtask = !!task?.parent_task;
+      const parentTaskDocId = task?.parent_task?.documentId;
+      
+      // 1. Mettre à jour le statut de la tâche elle-même
       await updateTaskStatus(taskDocumentId, status);
       
-      // Si on complète une tâche parente, mettre à jour aussi les sous-tâches
-      if (alsoUpdateSubtasks && status === 'completed') {
-        const task = tasks.find(t => t.documentId === taskDocumentId);
-        if (task?.subtasks && task.subtasks.length > 0) {
-          // Mettre à jour toutes les sous-tâches en parallèle
-          await Promise.all(
-            task.subtasks
-              .filter(st => st.task_status !== 'completed')
-              .map(st => updateTaskStatus(st.documentId, 'completed'))
-          );
-        }
+      // 2. Si c'est une tâche PARENTE et qu'on la complète, propager aux sous-tâches
+      if (alsoUpdateSubtasks && status === 'completed' && task?.subtasks && task.subtasks.length > 0) {
+        await Promise.all(
+          task.subtasks
+            .filter(st => st.task_status !== 'completed')
+            .map(st => updateTaskStatus(st.documentId, 'completed'))
+        );
       }
       
-      // Recharger les tâches
+      // 3. Recharger les tâches pour avoir l'état à jour
       const response = await fetchProjectTasks(projectDocumentId);
       const updatedTasks = response.data || [];
-      setTasks(updatedTasks);
       
-      // Vérifier si toutes les tâches sont terminées
-      if (updatedTasks.length > 0 && onAllTasksCompleted) {
-        const allCompleted = updatedTasks.every(
-          task => task.task_status === 'completed' || task.task_status === 'cancelled'
+      // 4. Si c'est une SOUS-TÂCHE, synchroniser l'état du parent
+      if (isSubtask && parentTaskDocId) {
+        await syncParentTaskState(parentTaskDocId, updatedTasks);
+        // Recharger une dernière fois pour avoir l'état final
+        const finalResponse = await fetchProjectTasks(projectDocumentId);
+        setTasks(finalResponse.data || []);
+      } else {
+        setTasks(updatedTasks);
+      }
+      
+      // 5. Vérifier si toutes les tâches principales sont terminées
+      const finalTasks = tasks;
+      const parentTasks = finalTasks.filter(t => !t.parent_task);
+      if (parentTasks.length > 0 && onAllTasksCompleted) {
+        const allCompleted = parentTasks.every(
+          t => t.task_status === 'completed' || t.task_status === 'cancelled'
         );
         if (allCompleted) {
           onAllTasksCompleted();
@@ -1713,6 +1763,25 @@ export default function ProjectTasks({
                 />
               ))}
             </div>
+          )}
+
+          {/* Vue Kanban */}
+          {viewMode === 'kanban' && (
+            <TaskKanbanView
+              tasks={filteredTasks}
+              canEdit={canEdit}
+              onStatusChange={handleStatusChange}
+              onEdit={setEditingTask}
+              onDelete={handleDeleteTask}
+              onAddTask={(status) => {
+                setNewTask(prev => ({ ...prev, status }));
+                setShowNewTaskForm(true);
+              }}
+              getStatusStyle={getStatusStyle}
+              getPriorityStyle={getPriorityStyle}
+              taskStatusOptions={TASK_STATUS_OPTIONS}
+              t={t}
+            />
           )}
 
           {/* Vue Tableau */}
@@ -2613,6 +2682,467 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
         </form>
       </motion.div>
     </motion.div>
+  );
+}
+
+// ============================================================================
+// VUE KANBAN
+// ============================================================================
+
+interface TaskKanbanViewProps {
+  tasks: ProjectTask[];
+  canEdit: boolean;
+  onStatusChange: (documentId: string, status: TaskStatus, alsoUpdateSubtasks?: boolean) => void;
+  onEdit: (task: ProjectTask) => void;
+  onDelete: (documentId: string) => void;
+  onAddTask: (status: TaskStatus) => void;
+  getStatusStyle: (status: TaskStatus) => string;
+  getPriorityStyle: (priority: TaskPriority) => string;
+  taskStatusOptions: TaskStatusOption[];
+  t: (key: string) => string;
+}
+
+// Configuration des colonnes Kanban pour les tâches
+const KANBAN_COLUMNS: { id: TaskStatus; title: string; color: string; bgColor: string; borderColor: string; icon: React.ReactNode }[] = [
+  { id: 'todo', title: 'todo', color: 'text-zinc-400', bgColor: 'bg-zinc-500/10', borderColor: 'border-zinc-500/30', icon: <IconClock className="w-4 h-4" /> },
+  { id: 'in_progress', title: 'in_progress', color: 'text-blue-400', bgColor: 'bg-blue-500/10', borderColor: 'border-blue-500/30', icon: <IconProgress className="w-4 h-4" /> },
+  { id: 'completed', title: 'completed', color: 'text-emerald-400', bgColor: 'bg-emerald-500/10', borderColor: 'border-emerald-500/30', icon: <IconCheck className="w-4 h-4" /> },
+  { id: 'cancelled', title: 'cancelled', color: 'text-red-400', bgColor: 'bg-red-500/10', borderColor: 'border-red-500/30', icon: <IconX className="w-4 h-4" /> },
+];
+
+// Carte de tâche pour le Kanban
+function KanbanTaskCard({
+  task,
+  onClick,
+  onDelete,
+  isDragging,
+  onDragStart,
+  onDragEnd,
+  getPriorityStyle,
+  t,
+}: {
+  task: ProjectTask;
+  onClick: () => void;
+  onDelete?: () => void;
+  isDragging: boolean;
+  onDragStart?: (e: React.DragEvent) => void;
+  onDragEnd?: () => void;
+  getPriorityStyle: (priority: TaskPriority) => string;
+  t: (key: string) => string;
+}) {
+  const [showMenu, setShowMenu] = useState(false);
+
+  const formatDate = (date: string | null | undefined) => {
+    if (!date) return null;
+    return new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  };
+
+  const priorityLabels: Record<TaskPriority, string> = {
+    low: t('low') || 'Basse',
+    medium: t('medium') || 'Moyenne',
+    high: t('high') || 'Haute',
+    urgent: t('urgent') || 'Urgente',
+  };
+
+  // Calculer la progression des sous-tâches
+  const subtasksProgress = task.subtasks && task.subtasks.length > 0
+    ? {
+        total: task.subtasks.length,
+        completed: task.subtasks.filter(st => st.task_status === 'completed').length,
+      }
+    : null;
+
+  return (
+    <div
+      className={`
+        group relative bg-card border border-muted rounded-lg p-3 cursor-pointer
+        transition-all duration-200 hover:shadow-md hover:border-accent
+        ${isDragging ? 'opacity-50 rotate-2 scale-105 shadow-xl' : ''}
+      `}
+      onClick={onClick}
+      draggable
+      onDragStart={(e) => {
+        e.dataTransfer.setData('taskId', task.documentId);
+        e.dataTransfer.setData('currentStatus', task.task_status);
+        onDragStart?.(e);
+      }}
+      onDragEnd={onDragEnd}
+    >
+      {/* Header avec titre et menu */}
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <IconGripVertical size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+          <h4 className="font-medium text-sm text-foreground line-clamp-2">{task.title}</h4>
+        </div>
+        
+        <div className="relative flex-shrink-0">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMenu(!showMenu);
+            }}
+            className="p-1 rounded hover:bg-hover opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <IconDots size={14} className="text-muted-foreground" />
+          </button>
+          
+          {showMenu && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
+              <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-muted rounded-lg shadow-xl py-1 min-w-[140px]">
+                <button
+                  onClick={(e) => { e.stopPropagation(); onClick(); setShowMenu(false); }}
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-hover flex items-center gap-2"
+                >
+                  <IconEdit size={14} /> {t('edit') || 'Modifier'}
+                </button>
+                {onDelete && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onDelete(); setShowMenu(false); }}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-hover text-red-500 flex items-center gap-2"
+                  >
+                    <IconTrash size={14} /> {t('delete') || 'Supprimer'}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Description (truncated) */}
+      {task.description && (
+        <div 
+          className="text-xs text-muted-foreground mb-2 line-clamp-2 [&_*]:inline"
+          dangerouslySetInnerHTML={{ __html: task.description }}
+        />
+      )}
+
+      {/* Progression bar */}
+      {(task.progress !== undefined && task.progress > 0) && (
+        <div className="mb-2">
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+            <span>{t('progress') || 'Progression'}</span>
+            <span>{task.progress}%</span>
+          </div>
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-accent rounded-full transition-all duration-300"
+              style={{ width: `${task.progress}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Sous-tâches */}
+      {subtasksProgress && (
+        <div className="flex items-center gap-2 mb-2 text-xs">
+          <IconSubtask size={12} className="text-muted-foreground" />
+          <span className={subtasksProgress.completed === subtasksProgress.total ? 'text-emerald-400' : 'text-muted-foreground'}>
+            {subtasksProgress.completed}/{subtasksProgress.total}
+          </span>
+          <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-emerald-500 rounded-full"
+              style={{ width: `${(subtasksProgress.completed / subtasksProgress.total) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Footer avec date, heures, priorité */}
+      <div className="flex items-center justify-between gap-2 pt-2 border-t border-muted">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          {task.due_date && (
+            <span className={`flex items-center gap-0.5 ${new Date(task.due_date) < new Date() && task.task_status !== 'completed' ? 'text-red-400' : ''}`}>
+              <IconCalendar size={12} />
+              {formatDate(task.due_date)}
+            </span>
+          )}
+          {task.estimated_hours && (
+            <span className="flex items-center gap-0.5">
+              <IconClock size={12} />
+              {task.estimated_hours}h
+            </span>
+          )}
+        </div>
+        
+        <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${getPriorityStyle(task.priority)}`}>
+          {priorityLabels[task.priority]}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// Colonne Kanban
+function KanbanColumn({
+  column,
+  tasks,
+  onStatusChange,
+  onTaskClick,
+  onDeleteTask,
+  onAddTask,
+  getPriorityStyle,
+  draggingTaskId,
+  onCardDragStart,
+  onCardDragEnd,
+  t,
+}: {
+  column: typeof KANBAN_COLUMNS[0];
+  tasks: ProjectTask[];
+  onStatusChange: (documentId: string, status: TaskStatus, alsoUpdateSubtasks?: boolean) => void;
+  onTaskClick: (task: ProjectTask) => void;
+  onDeleteTask?: (documentId: string) => void;
+  onAddTask?: () => void;
+  getPriorityStyle: (priority: TaskPriority) => string;
+  draggingTaskId?: string | null;
+  onCardDragStart?: (taskId: string) => void;
+  onCardDragEnd?: () => void;
+  t: (key: string) => string;
+}) {
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback(() => {
+    setIsDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    
+    const taskId = e.dataTransfer.getData('taskId');
+    const currentStatus = e.dataTransfer.getData('currentStatus');
+    
+    if (taskId && currentStatus !== column.id) {
+      // Si on marque comme "completed", proposer de valider les sous-tâches
+      const shouldUpdateSubtasks = column.id === 'completed';
+      onStatusChange(taskId, column.id, shouldUpdateSubtasks);
+    }
+    
+    onCardDragEnd?.();
+  }, [column.id, onStatusChange, onCardDragEnd]);
+
+  return (
+    <div 
+      className={`
+        flex flex-col min-w-[280px] max-w-[320px] rounded-xl border-2 transition-all duration-200
+        ${isDragOver ? 'border-accent bg-accent/5 scale-[1.02]' : 'border-transparent'}
+      `}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {/* Header */}
+      <div className={`kanban-header p-3 rounded-t-lg ${column.bgColor} border-b ${column.borderColor}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className={column.color}>{column.icon}</span>
+            <h3 className={`font-semibold text-sm ${column.color}`}>
+              {t(column.title) || column.title}
+            </h3>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${column.bgColor} ${column.color} border ${column.borderColor}`}>
+              {tasks.length}
+            </span>
+          </div>
+          {onAddTask && (
+            <button
+              onClick={onAddTask}
+              className={`p-1 rounded hover:bg-white/10 transition-colors ${column.color}`}
+              title={t('add_task') || 'Ajouter une tâche'}
+            >
+              <IconPlus size={16} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Cards */}
+      <div className="flex-1 p-2 space-y-2 overflow-y-auto max-h-[calc(100vh-350px)] min-h-[200px]">
+        <AnimatePresence mode="popLayout">
+          {tasks.map((task) => (
+            <motion.div
+              key={task.documentId}
+              layout
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            >
+              <KanbanTaskCard
+                task={task}
+                onClick={() => onTaskClick(task)}
+                onDelete={onDeleteTask ? () => onDeleteTask(task.documentId) : undefined}
+                isDragging={draggingTaskId === task.documentId}
+                onDragStart={() => onCardDragStart?.(task.documentId)}
+                onDragEnd={onCardDragEnd}
+                getPriorityStyle={getPriorityStyle}
+                t={t}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+        
+        {tasks.length === 0 && (
+          <div className="h-full min-h-[100px] flex items-center justify-center">
+            <p className="text-xs text-muted-foreground text-center">
+              {t('kanban_empty_column') || 'Glissez une tâche ici'}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Composant TaskKanbanView principal
+function TaskKanbanView({
+  tasks,
+  canEdit,
+  onStatusChange,
+  onEdit,
+  onDelete,
+  onAddTask,
+  getStatusStyle: _getStatusStyle,
+  getPriorityStyle,
+  taskStatusOptions: _taskStatusOptions,
+  t,
+}: TaskKanbanViewProps) {
+  void _getStatusStyle; // Utilisé pour éviter l'erreur de lint
+  void _taskStatusOptions;
+  
+  const [draggingTaskId, setDraggingTaskId] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isOverDeleteZone, setIsOverDeleteZone] = useState(false);
+
+  // Grouper les tâches par statut (seulement les tâches parentes, pas les sous-tâches)
+  const parentTasks = tasks.filter(t => !t.parent_task);
+  
+  const tasksByStatus = KANBAN_COLUMNS.reduce((acc, column) => {
+    acc[column.id] = parentTasks.filter(task => task.task_status === column.id);
+    return acc;
+  }, {} as Record<TaskStatus, ProjectTask[]>);
+
+  // Stats
+  const totalTasks = parentTasks.length;
+  const completedTasks = tasksByStatus['completed']?.length || 0;
+  const inProgressTasks = tasksByStatus['in_progress']?.length || 0;
+
+  // Handlers pour le drag global
+  const handleCardDragStart = useCallback((taskId: string) => {
+    setDraggingTaskId(taskId);
+    setIsDragging(true);
+  }, []);
+
+  const handleCardDragEnd = useCallback(() => {
+    setDraggingTaskId(null);
+    setIsDragging(false);
+    setIsOverDeleteZone(false);
+  }, []);
+
+  // Delete zone handlers
+  const handleDeleteZoneDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsOverDeleteZone(true);
+  }, []);
+
+  const handleDeleteZoneDragLeave = useCallback(() => {
+    setIsOverDeleteZone(false);
+  }, []);
+
+  const handleDeleteZoneDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsOverDeleteZone(false);
+    const taskId = e.dataTransfer.getData('taskId');
+    if (taskId && onDelete) {
+      onDelete(taskId);
+    }
+    handleCardDragEnd();
+  }, [onDelete, handleCardDragEnd]);
+
+  return (
+    <div className="space-y-4">
+      {/* Stats bar */}
+      <div className="flex flex-wrap gap-4 p-4 bg-card rounded-lg border border-muted">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">{t('total_tasks') || 'Total tâches'}:</span>
+          <span className="font-semibold text-foreground">{totalTasks}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">{t('in_progress') || 'En cours'}:</span>
+          <span className="font-semibold text-blue-400">{inProgressTasks}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">{t('completed') || 'Terminées'}:</span>
+          <span className="font-semibold text-emerald-400">{completedTasks}</span>
+        </div>
+        {totalTasks > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">{t('completion') || 'Complétion'}:</span>
+            <span className="font-semibold text-accent">{Math.round((completedTasks / totalTasks) * 100)}%</span>
+          </div>
+        )}
+      </div>
+
+      {/* Kanban columns */}
+      <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4">
+        {KANBAN_COLUMNS.map((column) => (
+          <KanbanColumn
+            key={column.id}
+            column={column}
+            tasks={tasksByStatus[column.id] || []}
+            onStatusChange={onStatusChange}
+            onTaskClick={onEdit}
+            onDeleteTask={canEdit ? onDelete : undefined}
+            onAddTask={canEdit ? () => onAddTask(column.id) : undefined}
+            getPriorityStyle={getPriorityStyle}
+            draggingTaskId={draggingTaskId}
+            onCardDragStart={handleCardDragStart}
+            onCardDragEnd={handleCardDragEnd}
+            t={t}
+          />
+        ))}
+      </div>
+
+      {/* Delete zone at bottom - appears when dragging */}
+      <AnimatePresence>
+        {isDragging && canEdit && (
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed bottom-0 left-0 right-0 z-50 p-4 flex justify-center"
+          >
+            <motion.div
+              onDragOver={handleDeleteZoneDragOver}
+              onDragLeave={handleDeleteZoneDragLeave}
+              onDrop={handleDeleteZoneDrop}
+              className={`
+                flex items-center gap-3 px-6 py-4 rounded-xl border-2 border-dashed transition-all duration-200
+                ${isOverDeleteZone 
+                  ? 'bg-red-500/20 border-red-500 scale-105 shadow-lg' 
+                  : 'bg-card border-red-500/50 backdrop-blur-sm shadow-md'
+                }
+              `}
+            >
+              <IconTrash 
+                size={24} 
+                className={`transition-colors ${isOverDeleteZone ? 'text-red-500' : 'text-red-400'}`} 
+              />
+              <span className={`font-medium ${isOverDeleteZone ? 'text-red-500' : 'text-red-400'}`}>
+                {t('delete') || 'Supprimer'}
+              </span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
