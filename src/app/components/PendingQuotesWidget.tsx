@@ -150,7 +150,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                     <div className="flex items-center gap-3 text-sm text-muted">
                       <span>{clientName}</span>
                       <span>•</span>
-                      <span className="font-medium text-accent">
+                      <span className="font-medium !text-white bg-accent rounded-full px-2 py-1">
                         {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: quote.currency || 'EUR' })
                           .format(quote.number || 0)}
                       </span>
