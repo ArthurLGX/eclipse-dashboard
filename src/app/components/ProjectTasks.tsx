@@ -145,7 +145,7 @@ function AvatarStack({
 }: { 
   users: (User | undefined)[]; 
   max?: number;
-  size?: 'sm' | 'md';
+  size?: 'xs' | 'sm' | 'md';
 }) {
   const validUsers = users.filter((u): u is User => !!u);
   const displayed = validUsers.slice(0, max);
@@ -153,18 +153,24 @@ function AvatarStack({
   
   if (displayed.length === 0) return null;
   
+  const sizeClasses = {
+    xs: 'w-4 h-4 text-[8px]',
+    sm: 'w-5 h-5 text-[10px]',
+    md: 'w-7 h-7 text-xs',
+  };
+  
   return (
-    <div className="flex items-center -space-x-2">
+    <div className="flex items-center -space-x-1.5">
       {displayed.map((user, i) => (
         <UserAvatar 
           key={user.id || i} 
           user={user} 
-          size={size}
-          className="ring-1 ring-card"
+          size={size === 'xs' ? 'sm' : size}
+          className={`ring-1 ring-card ${size === 'xs' ? '!w-4 !h-4 !text-[8px]' : ''}`}
         />
       ))}
       {remaining > 0 && (
-        <div className={`${size === 'sm' ? 'w-5 h-5 text-[10px]' : 'w-7 h-7 text-xs'} rounded-full bg-hover flex items-center justify-center ring-1 ring-card text-muted font-medium`}>
+        <div className={`${sizeClasses[size]} rounded-full bg-hover flex items-center justify-center ring-1 ring-card text-muted font-medium`}>
           +{remaining}
         </div>
       )}
@@ -1029,9 +1035,22 @@ export default function ProjectTasks({
 </html>`;
   };
 
-  const handleStatusChange = async (taskDocumentId: string, status: TaskStatus) => {
+  const handleStatusChange = async (taskDocumentId: string, status: TaskStatus, alsoUpdateSubtasks = false) => {
     try {
       await updateTaskStatus(taskDocumentId, status);
+      
+      // Si on complète une tâche parente, mettre à jour aussi les sous-tâches
+      if (alsoUpdateSubtasks && status === 'completed') {
+        const task = tasks.find(t => t.documentId === taskDocumentId);
+        if (task?.subtasks && task.subtasks.length > 0) {
+          // Mettre à jour toutes les sous-tâches en parallèle
+          await Promise.all(
+            task.subtasks
+              .filter(st => st.task_status !== 'completed')
+              .map(st => updateTaskStatus(st.documentId, 'completed'))
+          );
+        }
+      }
       
       // Recharger les tâches
       const response = await fetchProjectTasks(projectDocumentId);
@@ -1243,7 +1262,7 @@ export default function ProjectTasks({
               initial={{ width: 0 }}
               animate={{ width: `${overallProgress}%` }}
               transition={{ duration: 0.5 }}
-              className="h-full bg-gradient-to-r from-accent to-accent/80 rounded-full"
+              className="h-2 bg-accent rounded-full"
             />
           </div>
         </div>
@@ -1647,7 +1666,7 @@ export default function ProjectTasks({
                   canEdit={canEdit}
                   isExpanded={expandedTasks.has(task.documentId)}
                   onToggleExpand={() => toggleExpanded(task.documentId)}
-                  onStatusChange={(status) => handleStatusChange(task.documentId, status)}
+                  onStatusChange={(status, alsoUpdateSubtasks) => handleStatusChange(task.documentId, status, alsoUpdateSubtasks)}
                   onProgressChange={(progress) => handleProgressChange(task.documentId, progress)}
                   onClick={() => setEditingTask(task)}
                   onDelete={() => handleDeleteTask(task.documentId)}
@@ -1659,6 +1678,7 @@ export default function ProjectTasks({
                   onEditSubtask={(subtask) => setEditingTask(subtask)}
                   onDuplicateSubtask={(subtask) => handleDuplicateTask(subtask, false)}
                   onDeleteSubtask={(subtask) => handleDeleteTask(subtask.documentId)}
+                  onSubtaskStatusChange={(subtaskDocumentId, status) => handleStatusChange(subtaskDocumentId, status)}
                   getStatusStyle={getStatusStyle}
                   getPriorityStyle={getPriorityStyle}
                   taskStatusOptions={TASK_STATUS_OPTIONS}
@@ -1779,7 +1799,7 @@ interface TaskCardProps {
   canEdit: boolean;
   isExpanded: boolean;
   onToggleExpand: () => void;
-  onStatusChange: (status: TaskStatus) => void;
+  onStatusChange: (status: TaskStatus, alsoUpdateSubtasks?: boolean) => void;
   onProgressChange: (progress: number) => void;
   onClick: () => void;
   onDelete: () => void;
@@ -1788,6 +1808,7 @@ interface TaskCardProps {
   onEditSubtask: (subtask: ProjectTask) => void;
   onDuplicateSubtask: (subtask: ProjectTask) => void;
   onDeleteSubtask: (subtask: ProjectTask) => void;
+  onSubtaskStatusChange: (subtaskDocumentId: string, status: TaskStatus) => void;
   getStatusStyle: (status: TaskStatus) => string;
   getPriorityStyle: (priority: TaskPriority) => string;
   taskStatusOptions: TaskStatusOption[];
@@ -1824,6 +1845,7 @@ function TaskCard({
   onEditSubtask,
   onDuplicateSubtask,
   onDeleteSubtask,
+  onSubtaskStatusChange,
   getStatusStyle,
   getPriorityStyle,
   taskStatusOptions,
@@ -1960,7 +1982,10 @@ function TaskCard({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onStatusChange(task.task_status === 'completed' ? 'todo' : 'completed');
+                const newStatus = task.task_status === 'completed' ? 'todo' : 'completed';
+                // Si on complète une tâche parente avec des sous-tâches, les compléter aussi
+                const shouldUpdateSubtasks = newStatus === 'completed' && hasSubtasks;
+                onStatusChange(newStatus, shouldUpdateSubtasks);
               }}
               disabled={!canEdit}
               className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
@@ -2125,7 +2150,18 @@ function TaskCard({
               {/* Liste des sous-tâches */}
               {hasSubtasks && (
                 <div className="space-y-2 !pl-4 border-l-2" style={{ borderColor: taskColor + '40' }}>
-                  <p className="text-xs font-medium text-muted mb-2">{t('subtasks') || 'Sous-tâches'} ({task.subtasks?.length})</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-medium text-muted">{t('subtasks') || 'Sous-tâches'} ({task.subtasks?.length})</p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleExpand();
+                      }}
+                      className="text-xs text-muted hover:text-primary transition-colors"
+                    >
+                      {t('collapse') || 'Réduire'}
+                    </button>
+                  </div>
                   {task.subtasks?.map(subtask => (
                     <div 
                       key={subtask.documentId}
@@ -2135,14 +2171,25 @@ function TaskCard({
                         onEditSubtask(subtask); // Ouvre l'édition de la sous-tâche
                       }}
                     >
-                      <div 
-                        className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
-                        style={{ borderColor: taskColor }}
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Toggle le statut de la sous-tâche
+                          const newStatus = subtask.task_status === 'completed' ? 'todo' : 'completed';
+                          onSubtaskStatusChange(subtask.documentId, newStatus);
+                        }}
+                        disabled={!canEdit}
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                          subtask.task_status === 'completed'
+                            ? 'bg-accent border-accent'
+                            : 'border-default hover:border-accent'
+                        } ${!canEdit ? 'cursor-not-allowed opacity-50' : ''}`}
+                        style={subtask.task_status !== 'completed' ? { borderColor: taskColor } : undefined}
                       >
                         {subtask.task_status === 'completed' && (
-                          <IconCheck className="w-3 h-3" style={{ color: taskColor }} />
+                          <IconCheck className="w-3 h-3 text-white" />
                         )}
-                      </div>
+                      </button>
                       <span className={`flex-1 text-sm ${subtask.task_status === 'completed' ? 'line-through text-muted' : 'text-primary'}`}>
                         {subtask.title}
                       </span>

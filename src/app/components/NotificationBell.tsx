@@ -21,6 +21,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePreferences } from '@/app/context/PreferencesContext';
 import { useQuota, QuotaNotification } from '@/app/context/QuotaContext';
+import { useEmailNotificationsOptional } from '@/app/context/EmailNotificationContext';
 import {
   fetchNotifications,
   fetchUnreadNotificationCount,
@@ -38,11 +39,15 @@ export default function NotificationBell() {
   const { showGlobalPopup } = usePopup();
   const { preferences } = usePreferences();
   const { notifications: quotaNotifications } = useQuota();
+  const emailNotifications = useEmailNotificationsOptional();
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  
+  // Email unread count from context
+  const emailUnreadCount = emailNotifications?.unreadCount || 0;
   const [loading, setLoading] = useState(false);
   const [dismissedQuotaAlerts, setDismissedQuotaAlerts] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -277,14 +282,14 @@ export default function NotificationBell() {
         >
           <IconBell className="w-5 h-5" />
           
-          {/* Badge */}
-          {(unreadCount + visibleQuotaAlerts.length) > 0 && (
+          {/* Badge - includes notifications + quota alerts + unread emails */}
+          {(unreadCount + visibleQuotaAlerts.length + emailUnreadCount) > 0 && (
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-danger text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
             >
-              {(unreadCount + visibleQuotaAlerts.length) > 99 ? '99+' : (unreadCount + visibleQuotaAlerts.length)}
+              {(unreadCount + visibleQuotaAlerts.length + emailUnreadCount) > 99 ? '99+' : (unreadCount + visibleQuotaAlerts.length + emailUnreadCount)}
             </motion.span>
           )}
         </button>

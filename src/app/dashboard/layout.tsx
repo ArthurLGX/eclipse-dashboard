@@ -62,6 +62,7 @@ import { MobileDrawer, MobileHeader, MobileBottomNav } from '@/app/components/mo
 import type { MobileDrawerItem } from '@/app/components/mobile';
 import AIChatAssistant from '@/app/components/AIChatAssistant';
 import { AIAssistantProvider } from '@/app/context/AIAssistantContext';
+import { useEmailNotificationsOptional } from '@/app/context/EmailNotificationContext';
 
 interface SidebarItem {
   id: string;
@@ -73,6 +74,7 @@ interface SidebarItem {
   isCategory?: boolean; // Pour les catégories avec sous-menus
   moduleId?: string; // ID du module pour le filtrage dynamique
   status?: 'beta' | 'new'; // Badge status for the item
+  badgeCount?: number; // Numeric badge for counts (e.g., unread emails)
 }
 
 // Wrapper component that provides the context
@@ -119,6 +121,8 @@ function DashboardLayoutContent({
   const { resolvedMode, setThemeMode } = useTheme();
   const { isLinkVisible } = useSidebar();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
+  const emailNotifications = useEmailNotificationsOptional();
+  const emailUnreadCount = emailNotifications?.unreadCount || 0;
 
   // Load module statuses from localStorage (admin-configurable)
   useEffect(() => {
@@ -261,6 +265,7 @@ function DashboardLayoutContent({
       label: t('category_management') || 'Gestion',
       icon: <IconBriefcase size={20} stroke={1} />,
       isCategory: true,
+      badgeCount: emailUnreadCount > 0 ? emailUnreadCount : undefined,
       menuItems: [
         // Facturation (Factures + Devis - page unifiée)
         {
@@ -326,7 +331,7 @@ function DashboardLayoutContent({
           icon: <IconInbox size={20} stroke={1} />,
           path: '/dashboard/emails/inbox',
           moduleId: 'emails',
-          status: 'new' as const,
+          badgeCount: emailUnreadCount > 0 ? emailUnreadCount : undefined,
         },
         // Technique
         {
@@ -448,7 +453,7 @@ function DashboardLayoutContent({
       onClick: logout,
       path: '/login?type=login',
     },
-  ], [t, profilePictureUrl, logout, isAdmin, moduleStatuses]);
+  ], [t, profilePictureUrl, logout, isAdmin, moduleStatuses, emailUnreadCount]);
 
   // Filtrer les items selon les préférences de visibilité ET les modules activés
   const visibleSidebarItems = useMemo(() => {
@@ -642,6 +647,12 @@ function DashboardLayoutContent({
                               <span className="!text-xs font-medium whitespace-nowrap">
                                 {item.label}
                               </span>
+                              {/* Badge count for category */}
+                              {item.badgeCount && item.badgeCount > 0 && (
+                                <span className="min-w-[18px] h-[18px] px-1 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                                  {item.badgeCount > 99 ? '99+' : item.badgeCount}
+                                </span>
+                              )}
                               <IconChevronDown
                                 size={12}
                                 className={`transition-all duration-200 ${
@@ -665,7 +676,7 @@ function DashboardLayoutContent({
                               transition={{ duration: 0.2 }}
                               className="ml-6 space-y-0.5 overflow-hidden"
                             >
-                              {item.menuItems.map(menuItem => (
+                                              {item.menuItems.map(menuItem => (
                                 <motion.button
                                   key={menuItem.id}
                                   onClick={() => handleItemClick(menuItem)}
@@ -675,8 +686,14 @@ function DashboardLayoutContent({
                                   <span className="!text-xs font-medium whitespace-nowrap">
                                     {menuItem.label}
                                   </span>
+                                  {/* Badge count (e.g., unread emails) */}
+                                  {menuItem.badgeCount && menuItem.badgeCount > 0 && (
+                                    <span className="ml-auto min-w-[18px] h-[18px] px-1 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                                      {menuItem.badgeCount > 99 ? '99+' : menuItem.badgeCount}
+                                    </span>
+                                  )}
                                   {/* Status badge */}
-                                  {menuItem.status && (
+                                  {menuItem.status && !menuItem.badgeCount && (
                                     <span className={`ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                       menuItem.status === 'beta' 
                                         ? 'bg-warning-light text-warning border border-warning' 
