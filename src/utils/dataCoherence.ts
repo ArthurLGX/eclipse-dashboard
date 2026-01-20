@@ -108,7 +108,6 @@ export function calculateProjectState(tasks: SubtaskState[]): ProjectCoherenceSt
   
   const completedCount = tasks.filter(t => t.task_status === 'completed').length;
   const cancelledCount = tasks.filter(t => t.task_status === 'cancelled').length;
-  const inProgressCount = tasks.filter(t => t.task_status === 'in_progress').length;
   const blockedCount = tasks.filter(t => t.task_status === 'archived').length; // 'archived' peut représenter 'blocked'
   const todoCount = tasks.filter(t => t.task_status === 'todo').length;
   const totalActive = tasks.length - cancelledCount;
