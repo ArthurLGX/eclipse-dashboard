@@ -29,10 +29,12 @@ import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
-import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser, updateFactureById } from '@/lib/api';
+import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser, updateFactureById, fetchClientsUser } from '@/lib/api';
 import { generatePdfBase64 } from '@/lib/generatePdfBase64';
 import EmailSentSuccessModal from '@/app/components/EmailSentSuccessModal';
-import type { CreateEmailSignatureData, Facture, Company } from '@/types';
+import type { CreateEmailSignatureData, Facture, Company, Client } from '@/types';
+
+import ContactAutocomplete from '@/app/components/ContactAutocomplete';
 
 interface Recipient {
   id: string;
@@ -85,6 +87,10 @@ function InvoiceEmail() {
   const [loadingSignature, setLoadingSignature] = useState(true);
   const [footerLanguage, setFooterLanguage] = useState<FooterLanguage>('fr');
   
+  // Contacts pour l'autocomplétion
+  const [contacts, setContacts] = useState<Client[]>([]);
+  const [ loadingContacts, setLoadingContacts] = useState(true);
+
   // Charger les factures
   useEffect(() => {
     const loadInvoices = async () => {
@@ -710,14 +716,14 @@ Cordialement`;
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+                      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
                       onClick={() => setShowInvoiceSelector(false)}
                     >
                       <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}
-                        className="bg-card rounded-xl shadow-xl w-full max-w-lg max-h-[70vh] overflow-hidden"
+                        className="bg-card border border-default rounded-xl shadow-xl w-full max-w-lg max-h-[70vh] overflow-hidden"
                         onClick={e => e.stopPropagation()}
                       >
                         <div className="p-4 border-b border-default">
@@ -810,23 +816,15 @@ Cordialement`;
                   ))}
                 </div>
                 
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={newRecipient}
-                    onChange={(e) => setNewRecipient(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addRecipient()}
-                    placeholder={t('add_recipient_placeholder') || 'email@example.com'}
-                    className="input flex-1"
-                  />
-                  <button
-                    onClick={addRecipient}
-                    disabled={!newRecipient.trim()}
-                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
-                  >
-                    {t('add') || 'Ajouter'}
-                  </button>
-                </div>
+                {/* Autocomplete pour ajouter des destinataires */}
+            <ContactAutocomplete
+              contacts={contacts}
+              selectedEmails={recipients.map(r => r.email)}
+              onSelect={addRecipient}
+              onManualAdd={(email) => setRecipients(prev => [...prev, { id: crypto.randomUUID(), email }])}
+              placeholder={t('search_contact_or_email') || 'Rechercher un contact ou entrer un email...'}
+              loading={loadingContacts}
+            />
               </div>
               
               {/* Subject */}
@@ -926,7 +924,7 @@ Cordialement`;
                 {!signatureData && !loadingSignature && (
                   <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg flex items-start gap-2">
                     <IconAlertCircle className="w-5 h-5 text-warning !text-warning flex-shrink-0 mt-0.5" />
-                    <div className="text-sm text-warning !text-warning flex items-center gap-2 flex-wrap">
+                    <div className="text-sm text-warning flex items-center gap-2 flex-wrap">
                       {t('no_signature_configured') || 'Aucune signature configurée. '}
                       <a 
                         href="/dashboard/settings?tab=email" 

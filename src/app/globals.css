@@ -16,186 +16,196 @@
   --font-dm-sans: 'DM Sans', sans-serif;
   --font-dm-serif-text: 'DM Serif Text', serif;
   --font-racing: 'Racing Sans One', cursive;
+  
+  /* Highlight color for important buttons */
+  --color-highlight: #ff380b;
+  --color-highlight-hover: #e63309;
+  --color-highlight-text: #FFFFFF;
 }
 
 /* ============================================
-   DARK THEME (Default)
+   DARK THEME (Default) - Texte blanc sur fond noir
    ============================================ */
 :root.dark,
 :root:not(.light) {
-  /* Backgrounds */
-  --bg-page: #0D0A1A;
-  --bg-card: #1A1428;
-  --bg-card-hover: #221A38;
-  --bg-input: #1A1428;
-  --bg-sidebar: #0D0A1A;
-  --bg-hover: #2E2648;
-  --bg-muted: #251c3a;
+  /* Backgrounds - Noir */
+  --bg-page: #000000;
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --bg-card-hover: rgba(255, 255, 255, 0.1);
+  --bg-input: rgba(255, 255, 255, 0.08);
+  --bg-sidebar: #000000;
+  --bg-hover: rgba(255, 255, 255, 0.12);
+  --bg-muted: rgba(255, 255, 255, 0.03);
   
-  /* Borders */
-  --border-default: #2E2648;
-  --border-input: #3D3260;
-  --border-muted: #221A38;
+  /* Borders - Nuances de gris */
+  --border-default: rgba(255, 255, 255, 0.15);
+  --border-input: rgba(255, 255, 255, 0.2);
+  --border-muted: rgba(255, 255, 255, 0.08);
   
-  /* Text colors */
-  --text-primary: #E8E4F0;
-  --text-secondary: #A89EC8;
-  --text-muted: #7B6F9E;
-  --text-placeholder: #5A4F7A;
+  /* Text colors - Blanc et gris */
+  --text-primary: #FFFFFF;
+  --text-secondary: #B8B8B8;
+  --text-muted: #888888;
+  --text-placeholder: #666666;
 
   /* Register Button colors */
-  --bg-color-register: #e6e6e6;
-  --text-color-register: #000000;
-  --border-color-register: #d1d1d1;
+  --bg-color-register: rgba(255, 255, 255, 0.1);
+  --text-color-register: #FFFFFF;
+  --border-color-register: rgba(255, 255, 255, 0.2);
   
-  /* Accent colors */
-  --color-accent: #7C3AED;
-  --color-accent-light: #A78BFA;
-  --color-accent-bg: rgba(124, 58, 237, 0.15);
-  --color-accent-muted: rgba(124, 58, 237, 0.25);
-  --color-accent-subtle: rgba(124, 58, 237, 0.4);
-  --color-accent-border: rgba(124, 58, 237, 0.3);
-  --color-accent-text: #ffffff;
+  /* register button colors - hover mode */
+  --bg-color-register-hover: rgba(255, 255, 255, 0.2);
+  --text-color-register-hover: #FFFFFF;
+  --border-color-register-hover: rgba(255, 255, 255, 0.3);
+  
+  /* Accent colors - Noir et blanc */
+  --color-accent: #FFFFFF;
+  --color-accent-light: #E0E0E0;
+  --color-accent-bg: rgba(255, 255, 255, 0.1);
+  --color-accent-muted: rgba(255, 255, 255, 0.15);
+  --color-accent-subtle: rgba(255, 255, 255, 0.2);
+  --color-accent-border: rgba(255, 255, 255, 0.25);
+  --color-accent-text: #000000;
   
   /* Navigation active colors - Dark mode */
-  --nav-active-bg: rgba(124, 58, 237, 0.15);
-  --nav-active-text: #A78BFA;
-  --nav-active-border: rgba(124, 58, 237, 0.3);
+  --nav-active-bg: rgba(255, 255, 255, 0.15);
+  --nav-active-text: #FFFFFF;
+  --nav-active-border: rgba(255, 255, 255, 0.3);
   
-  /* Semantic colors */
-  --color-primary: #A78BFA;
-  --color-primary-bg: rgba(167, 139, 250, 0.15);
-  --color-primary-border: rgba(167, 139, 250, 0.3);
-  --color-primary-text: #A78BFA;
+  /* Semantic colors - Nuances de gris */
+  --color-primary: #FFFFFF;
+  --color-primary-bg: rgba(255, 255, 255, 0.1);
+  --color-primary-border: rgba(255, 255, 255, 0.25);
+  --color-primary-text: #FFFFFF;
   
-  --color-success: #34D399;
-  --color-success-bg: rgba(52, 211, 153, 0.15);
-  --color-success-border: rgba(52, 211, 153, 0.3);
-  --color-success-text: #34D399;
+  --color-success: #C0C0C0;
+  --color-success-bg: rgba(192, 192, 192, 0.1);
+  --color-success-border: rgba(192, 192, 192, 0.3);
+  --color-success-text: #C0C0C0;
   
-  --color-info: #60A5FA;
-  --color-info-bg: rgba(96, 165, 250, 0.15);
-  --color-info-border: rgba(96, 165, 250, 0.3);
-  --color-info-text: #60A5FA;
+  --color-info: #A8A8A8;
+  --color-info-bg: rgba(168, 168, 168, 0.1);
+  --color-info-border: rgba(168, 168, 168, 0.3);
+  --color-info-text: #A8A8A8;
   
-  --color-warning: #FBBF24;
-  --color-warning-bg: rgba(251, 191, 36, 0.15);
-  --color-warning-border: rgba(251, 191, 36, 0.3);
-  --color-warning-text: #FBBF24;
+  --color-warning: #ff380b;
+  --color-warning-bg: rgba(255, 56, 11, 0.1);
+  --color-warning-border: rgba(255, 56, 11, 0.3);
+  --color-warning-text: #ff380b;
   
-  --color-danger: #F87171;
-  --color-danger-bg: rgba(248, 113, 113, 0.15);
-  --color-danger-border: rgba(248, 113, 113, 0.3);
-  --color-danger-text: #F87171;
+  --color-danger: #FFFFFF;
+  --color-danger-bg: rgba(255, 255, 255, 0.1);
+  --color-danger-border: rgba(255, 255, 255, 0.25);
+  --color-danger-text: #FFFFFF;
   
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
-  --shadow-accent: 0 25px 50px -12px rgba(124, 58, 237, 0.15);
+  /* Shadows - Glass effect */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-accent: 0 8px 32px rgba(255, 255, 255, 0.1);
   
-  /* Gradients */
-  --gradient-sidebar: linear-gradient(180deg, #1A1030 0%, #0D0A1A 50%, #0F0820 100%);
+  /* Gradients - Dégradés de noir */
+  --gradient-sidebar: linear-gradient(180deg, #000000 0%, #0A0A0A 100%);
   
-  /* Banner gradients for project pages */
-  --banner-blue: linear-gradient(to bottom right, rgba(23, 37, 84, 0.8), #18181b, #18181b);
-  --banner-emerald: linear-gradient(to bottom right, rgba(6, 78, 59, 0.6), #18181b, #18181b);
-  --banner-amber: linear-gradient(to bottom right, rgba(78, 53, 6, 0.6), #18181b, #18181b);
-  --banner-purple: linear-gradient(to bottom right, rgba(59, 7, 100, 0.6), #18181b, #18181b);
-  --banner-rose: linear-gradient(to bottom right, rgba(76, 5, 25, 0.6), #18181b, #18181b);
-  --banner-cyan: linear-gradient(to bottom right, rgba(6, 78, 78, 0.6), #18181b, #18181b);
+  /* Banner gradients - Nuances de noirs */
+  --banner-blue: linear-gradient(to bottom right, #1A1A1A, #000000, #000000);
+  --banner-emerald: linear-gradient(to bottom right, #181818, #000000, #000000);
+  --banner-amber: linear-gradient(to bottom right, #1C1C1C, #000000, #000000);
+  --banner-purple: linear-gradient(to bottom right, #161616, #000000, #000000);
+  --banner-rose: linear-gradient(to bottom right, #141414, #000000, #000000);
+  --banner-cyan: linear-gradient(to bottom right, #121212, #000000, #000000);
 }
 
 /* ============================================
-   LIGHT THEME
+   LIGHT THEME - Texte noir sur fond blanc avec Glass Effect
    ============================================ */
 :root.light {
-  /* Backgrounds */
-  --bg-page: #F5F5F9;
-  --bg-card: #FFFFFF;
-  --bg-card-hover: #F9FAFB;
-  --bg-input: #FFFFFF;
-  --bg-sidebar: #FAFBFC;
-  --bg-hover: #F3F4F6;
-  --bg-muted: #f9f9fa;
+  /* Backgrounds - Blanc */
+  --bg-page: #FFFFFF;
+  --bg-card: rgba(0, 0, 0, 0.05);
+  --bg-card-hover: rgba(0, 0, 0, 0.1);
+  --bg-input: rgba(0, 0, 0, 0.08);
+  --bg-sidebar: #FFFFFF;
+  --bg-hover: rgba(0, 0, 0, 0.12);
+  --bg-muted: rgba(0, 0, 0, 0.03);
   
-  /* Borders */
-  --border-default: #E5E7EB;
-  --border-input: #D1D5DB;
-  --border-muted: #F3F4F6;
+  /* Borders - Nuances de gris */
+  --border-default: rgba(0, 0, 0, 0.15);
+  --border-input: rgba(0, 0, 0, 0.2);
+  --border-muted: rgba(0, 0, 0, 0.08);
   
-  /* Text colors */
-  --text-primary: #1F2937;
-  --text-secondary: #4B5563;
-  --text-muted: #6B7280;
-  --text-placeholder: #9CA3AF;
+  /* Text colors - Noir et gris */
+  --text-primary: #000000;
+  --text-secondary: #474747;
+  --text-muted: #777777;
+  --text-placeholder: #999999;
 
-    /* Register Button colors */
-  --bg-color-register: #e6e6e6;
+  /* Register Button colors */
+  --bg-color-register: rgba(0, 0, 0, 0.1);
   --text-color-register: #000000;
-  --border-color-register: #d1d1d1;
+  --border-color-register: rgba(0, 0, 0, 0.2);
 
   /* register button colors - hover mode */
-  --bg-color-register-hover: #0c0c0c;
-  --text-color-register-hover: #ffffff;
-  --border-color-register-hover: #303030;
+  --bg-color-register-hover: rgba(0, 0, 0, 0.2);
+  --text-color-register-hover: #000000;
+  --border-color-register-hover: rgba(0, 0, 0, 0.3);
 
-  /* Accent colors - Solid colors for light mode */
-  --color-accent: #7C3AED;
-  --color-accent-light: #A78BFA;
-  --color-accent-bg: rgba(124, 58, 237, 0.1);
-  --color-accent-muted: rgba(124, 58, 237, 0.15);
-  --color-accent-subtle: rgba(124, 58, 237, 0.25);
-  --color-accent-border: #C4B5FD;
-  --color-accent-text: #ffffff;
+  /* Accent colors - Noir et blanc */
+  --color-accent: #000000;
+  --color-accent-light: #1F1F1F;
+  --color-accent-bg: rgba(0, 0, 0, 0.1);
+  --color-accent-muted: rgba(0, 0, 0, 0.15);
+  --color-accent-subtle: rgba(0, 0, 0, 0.2);
+  --color-accent-border: rgba(0, 0, 0, 0.25);
+  --color-accent-text: #FFFFFF;
   
-  /* Navigation active colors - Light mode specific */
-  --nav-active-bg: #EDE9FE;
-  --nav-active-text: #5B21B6;
-  --nav-active-border: #C4B5FD;
+  /* Navigation active colors - Light mode */
+  --nav-active-bg: rgba(0, 0, 0, 0.15);
+  --nav-active-text: #000000;
+  --nav-active-border: rgba(0, 0, 0, 0.3);
   
-  /* Semantic colors - Solid backgrounds for light mode */
-  --color-primary: #7C3AED;
-  --color-primary-bg: #EDE9FE;
-  --color-primary-border: #C4B5FD;
-  --color-primary-text: #5B21B6;
+  /* Semantic colors - Nuances de gris */
+  --color-primary: #000000;
+  --color-primary-bg: rgba(0, 0, 0, 0.1);
+  --color-primary-border: rgba(0, 0, 0, 0.25);
+  --color-primary-text: #000000;
   
-  --color-success: #34dba6;
-  --color-success-bg: #D1FAE5;
-  --color-success-border: #6EE7B7;
-  --color-success-text: #065F46;
+  --color-success: #3F3F3F;
+  --color-success-bg: rgba(63, 63, 63, 0.1);
+  --color-success-border: rgba(63, 63, 63, 0.3);
+  --color-success-text: #3F3F3F;
   
-  --color-info: #2563EB;
-  --color-info-bg: #DBEAFE;
-  --color-info-border: #93C5FD;
-  --color-info-text: #1E40AF;
+  --color-info: #575757;
+  --color-info-bg: rgba(87, 87, 87, 0.1);
+  --color-info-border: rgba(87, 87, 87, 0.3);
+  --color-info-text: #575757;
   
-  --color-warning: #D97706;
-  --color-warning-bg: #FEF3C7;
-  --color-warning-border: #FCD34D;
-  --color-warning-text: #92400E;
+  --color-warning: #ff380b;
+  --color-warning-bg: rgba(255, 56, 11, 0.1);
+  --color-warning-border: rgba(255, 56, 11, 0.3);
+  --color-warning-text: #ff380b;
   
-  --color-danger: #DC2626;
-  --color-danger-bg: #FEE2E2;
-  --color-danger-border: #FCA5A5;
-  --color-danger-text: #991B1B;
+  --color-danger: #000000;
+  --color-danger-bg: rgba(0, 0, 0, 0.1);
+  --color-danger-border: rgba(0, 0, 0, 0.25);
+  --color-danger-text: #000000;
   
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --shadow-accent: 0 4px 14px -3px rgba(124, 58, 237, 0.25);
+  /* Shadows - Glass effect */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --shadow-accent: 0 8px 32px rgba(0, 0, 0, 0.1);
   
-  /* Gradients */
-  --gradient-sidebar: linear-gradient(180deg, #FAFBFC 0%, #F5F5F9 100%);
+  /* Gradients - Dégradés de blanc */
+  --gradient-sidebar: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
   
-  /* Banner gradients for project pages - Light mode */
-  --banner-blue: linear-gradient(to bottom right, #DBEAFE, #F5F5F9, #F5F5F9);
-  --banner-emerald: linear-gradient(to bottom right, #D1FAE5, #F5F5F9, #F5F5F9);
-  --banner-amber: linear-gradient(to bottom right, #FEF3C7, #F5F5F9, #F5F5F9);
-  --banner-purple: linear-gradient(to bottom right, #EDE9FE, #F5F5F9, #F5F5F9);
-  --banner-rose: linear-gradient(to bottom right, #FCE7F3, #F5F5F9, #F5F5F9);
-  --banner-cyan: linear-gradient(to bottom right, #CFFAFE, #F5F5F9, #F5F5F9);
+  /* Banner gradients - Nuances de blancs */
+  --banner-blue: linear-gradient(to bottom right, #E5E5E5, #FFFFFF, #FFFFFF);
+  --banner-emerald: linear-gradient(to bottom right, #E7E7E7, #FFFFFF, #FFFFFF);
+  --banner-amber: linear-gradient(to bottom right, #E3E3E3, #FFFFFF, #FFFFFF);
+  --banner-purple: linear-gradient(to bottom right, #E9E9E9, #FFFFFF, #FFFFFF);
+  --banner-rose: linear-gradient(to bottom right, #EBEBEB, #FFFFFF, #FFFFFF);
+  --banner-cyan: linear-gradient(to bottom right, #EDEDED, #FFFFFF, #FFFFFF);
 }
 
 /* ============================================
@@ -253,10 +263,10 @@
   --color-info-border: rgba(144, 144, 144, 0.25);
   --color-info-text: #B0B0B0;
   
-  --color-warning: #808080;
-  --color-warning-bg: rgba(128, 128, 128, 0.1);
-  --color-warning-border: rgba(128, 128, 128, 0.25);
-  --color-warning-text: #A0A0A0;
+  --color-warning: #ff380b;
+  --color-warning-bg: rgba(255, 56, 11, 0.1);
+  --color-warning-border: rgba(255, 56, 11, 0.25);
+  --color-warning-text: #ff380b;
   
   --color-danger: #FFFFFF;
   --color-danger-bg: rgba(255, 255, 255, 0.08);
@@ -335,10 +345,10 @@
   --color-info-border: #505050;
   --color-info-text: #505050;
   
-  --color-warning: #606060;
-  --color-warning-bg: rgba(96, 96, 96, 0.08);
-  --color-warning-border: #606060;
-  --color-warning-text: #606060;
+  --color-warning: #ff380b;
+  --color-warning-bg: rgba(255, 56, 11, 0.08);
+  --color-warning-border: #ff380b;
+  --color-warning-text: #ff380b;
   
   --color-danger: #000000;
   --color-danger-bg: rgba(0, 0, 0, 0.05);
@@ -390,6 +400,7 @@
 .bg-warning-light { background-color: var(--color-warning-bg); }
 .bg-danger { background-color: var(--color-danger); }
 .bg-danger-light { background-color: var(--color-danger-bg); }
+.bg-highlight { background-color: var(--color-highlight); }
 
 /* Text colors */
 .text-page { color: var(--text-primary); }
@@ -406,6 +417,7 @@
 .text-info { color: var(--color-info); }
 .text-warning { color: var(--color-warning); }
 .text-danger { color: var(--color-danger); }
+.text-highlight { color: var(--color-highlight); }
 
 /* Borders */
 .border-default { border-color: var(--border-default); }
@@ -417,6 +429,7 @@
 .border-info { border-color: var(--color-info-border); }
 .border-warning { border-color: var(--color-warning-border); }
 .border-danger { border-color: var(--color-danger-border); }
+.border-highlight { border-color: var(--color-highlight); }
 
 /* Divide colors - for divide-y and divide-x utilities */
 .divide-default > :not([hidden]) ~ :not([hidden]) { 
@@ -473,6 +486,38 @@
   transition: all 0.2s ease;
 }
 
+/* Glass effect sur les cards en mode dark */
+:root.dark .card,
+:root:not(.light) .card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark .card:hover,
+:root:not(.light) .card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Glass effect sur les cards en mode light */
+:root.light .card {
+  background: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+:root.light .card:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
 /* Buttons */
 
 button {
@@ -503,13 +548,38 @@ button {
 
 
 .btn-primary {
-  background-color: var(--color-accent);
-  color: var(--text-color-register-hover);
+  background-color: var(--color-highlight);
+  color: var(--color-highlight-text);
+  border: 1px solid var(--color-highlight);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent-light);
-  color: var(--text-color-register-hover);
+  background-color: var(--color-highlight-hover);
+  color: var(--color-highlight-text);
+  border-color: var(--color-highlight-hover);
+}
+
+/* Bouton important avec la couleur highlight */
+.btn-important {
+  background-color: var(--color-highlight);
+  color: var(--color-highlight-text);
+  border: 1px solid var(--color-highlight);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-important:hover {
+  background-color: var(--color-highlight-hover);
+  color: var(--color-highlight-text);
+  border-color: var(--color-highlight-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 56, 11, 0.3);
 }
 
 .btn-secondary {
@@ -518,10 +588,22 @@ button {
   border: none; 
 }
 
-
 .btn-secondary:hover {
   background-color: var(--bg-color-register-hover);
   color: var(--text-color-register-hover);
+}
+
+/* Mode light - Bouton secondary gris clair */
+:root.light .btn-secondary {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: #474747;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+:root.light .btn-secondary:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.2);
 }
 
 .btn-tertiary {
@@ -533,6 +615,19 @@ button {
 .btn-tertiary:hover {
   background-color: var(--color-accent-subtle);
   color: var(--color-accent-text);
+}
+
+/* Mode light - Bouton tertiary nuance de gris */
+:root.light .btn-tertiary {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #777777;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:root.light .btn-tertiary:hover {
+  background-color: rgba(0, 0, 0, 0.12);
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .btn-ghost {
@@ -547,6 +642,19 @@ button {
   color: var(--text-primary);
 }
 
+/* Mode light - Bouton ghost transparent */
+:root.light .btn-ghost {
+  background-color: transparent;
+  color: #777777;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+:root.light .btn-ghost:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
 .btn-success {
   background-color: var(--color-success-bg);
   color: var(--color-success-text);
@@ -556,6 +664,18 @@ button {
 .btn-success:hover {
   background-color: var(--color-success);
   color: white;
+}
+
+/* Mode light - Bouton success gris foncé */
+:root.light .btn-success {
+  background-color: rgba(63, 63, 63, 0.1);
+  color: #3F3F3F;
+  border: 1px solid rgba(63, 63, 63, 0.3);
+}
+
+:root.light .btn-success:hover {
+  background-color: rgba(63, 63, 63, 0.2);
+  color: #000000;
 }
 
 .btn-info {
@@ -569,6 +689,18 @@ button {
   color: white;
 }
 
+/* Mode light - Bouton info gris moyen */
+:root.light .btn-info {
+  background-color: rgba(87, 87, 87, 0.1);
+  color: #575757;
+  border: 1px solid rgba(87, 87, 87, 0.3);
+}
+
+:root.light .btn-info:hover {
+  background-color: rgba(87, 87, 87, 0.2);
+  color: #000000;
+}
+
 .btn-warning {
   background-color: var(--color-warning-bg);
   color: var(--color-warning-text);
@@ -577,7 +709,19 @@ button {
 
 .btn-warning:hover {
   background-color: var(--color-warning);
-  color: white;
+  color: var(--color-highlight-text);
+}
+
+/* Mode light - Bouton warning orange */
+:root.light .btn-warning {
+  background-color: rgba(255, 56, 11, 0.1);
+  color: #ff380b;
+  border: 1px solid rgba(255, 56, 11, 0.3);
+}
+
+:root.light .btn-warning:hover {
+  background-color: #ff380b;
+  color: #FFFFFF;
 }
 
 .btn-danger {
@@ -589,6 +733,18 @@ button {
 .btn-danger:hover {
   background-color: var(--color-danger);
   color: white;
+}
+
+/* Mode light - Bouton danger noir */
+:root.light .btn-danger {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+:root.light .btn-danger:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #000000;
 }
 
 /* Inputs */
@@ -611,6 +767,23 @@ button {
   box-shadow: 0 0 0 3px var(--color-accent-bg);
 }
 
+/* Mode light - Inputs avec glass effect */
+:root.light .input {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: #000000;
+  backdrop-filter: blur(10px);
+}
+
+:root.light .input::placeholder {
+  color: #999999;
+}
+
+:root.light .input:focus {
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
 /* Navigation items */
 .nav-item {
   display: flex;
@@ -623,22 +796,56 @@ button {
   font-weight: 500;
   font-size: 14px;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .nav-item:hover {
   background-color: var(--bg-hover);
-  color: var(--text-primary);
+  color: var(--color-highlight);
+}
+
+.nav-item:hover svg {
+  color: var(--color-highlight);
 }
 
 .nav-item.active {
-  background-color: var(--nav-active-bg);
-  color: var(--nav-active-text);
-  border: 1px solid var(--nav-active-border);
+  background-color: rgba(255, 56, 11, 0.1);
+  color: var(--color-highlight);
+  border: 1px solid var(--color-highlight);
 }
 
 .nav-item.active svg,
 .nav-item.active span {
-  color: var(--nav-active-text) !important;
+  color: var(--color-highlight) !important;
+}
+
+/* Mode light - Navigation items */
+:root.light .nav-item {
+  color: #777777;
+}
+
+:root.light .nav-item:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: var(--color-highlight);
+}
+
+:root.light .nav-item:hover svg {
+  color: var(--color-highlight);
+}
+
+:root.light .nav-item.active {
+  background-color: rgba(255, 56, 11, 0.1);
+  color: var(--color-highlight);
+  border: 1px solid var(--color-highlight);
+}
+
+:root.light .nav-item.active svg,
+:root.light .nav-item.active span {
+  color: var(--color-highlight) !important;
+}
+
+:root.light .nav-item svg {
+  color: #777777;
 }
 
 /* Sidebar */
@@ -719,6 +926,43 @@ button {
   color: var(--color-danger-text);
 }
 
+.badge-highlight {
+  background-color: var(--color-highlight);
+  color: var(--color-highlight-text);
+  border: 1px solid var(--color-highlight);
+}
+
+/* Mode light - Badges noir et blanc */
+:root.light .badge-primary {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+:root.light .badge-success {
+  background-color: rgba(63, 63, 63, 0.1);
+  color: #3F3F3F;
+  border: 1px solid rgba(63, 63, 63, 0.2);
+}
+
+:root.light .badge-info {
+  background-color: rgba(87, 87, 87, 0.1);
+  color: #575757;
+  border: 1px solid rgba(87, 87, 87, 0.2);
+}
+
+:root.light .badge-warning {
+  background-color: rgba(255, 56, 11, 0.1);
+  color: #ff380b;
+  border: 1px solid rgba(255, 56, 11, 0.2);
+}
+
+:root.light .badge-danger {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
 /* ============================================
    DASHBOARD DEMO COMPONENTS (Landing Page)
    ============================================ */
@@ -751,13 +995,13 @@ button {
 
 .demo-nav-item:hover {
   background-color: var(--bg-hover);
-  color: var(--text-primary);
+  color: var(--color-highlight);
 }
 
 .demo-nav-item.active {
   background-color: var(--color-accent-bg);
   border: 1px solid var(--color-accent-border);
-  color: var(--color-accent-light);
+  color: var(--color-highlight);
 }
 
 .demo-title {
@@ -796,6 +1040,71 @@ button {
   color: white;
 }
 
+/* Mode light - Demo components avec glass effect */
+:root.light .demo-container {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+:root.light .demo-sidebar {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-right: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+:root.light .demo-card {
+  background-color: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+:root.light .demo-card:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+:root.light .demo-nav-item {
+  color: #777777;
+}
+
+:root.light .demo-nav-item:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: var(--color-highlight);
+}
+
+:root.light .demo-nav-item.active {
+  background-color: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  color: var(--color-highlight);
+}
+
+:root.light .demo-title {
+  color: #000000;
+}
+
+:root.light .demo-subtitle {
+  color: #474747;
+}
+
+:root.light .demo-muted {
+  color: #777777;
+}
+
+:root.light .demo-stat-primary,
+:root.light .demo-stat-secondary,
+:root.light .demo-stat-tertiary {
+  color: #000000;
+}
+
+:root.light .demo-button {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  color: #000000;
+}
+
+:root.light .demo-button:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #000000;
+}
+
 /* ============================================
    BASE STYLES
    ============================================ */
@@ -821,6 +1130,19 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
+}
+
+/* Mode light - Scrollbar gris sur blanc */
+:root.light ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:root.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+:root.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
 
 /* Force visible scrollbar for modals */
@@ -863,6 +1185,26 @@ body {
   overflow-x: hidden;
 }
 
+/* Mode light - Body blanc */
+:root.light body {
+  background: #FFFFFF;
+  color: #000000;
+}
+
+/* Mode light - Tous les SVG et icônes en noir/gris */
+:root.light svg {
+  color: #474747;
+}
+
+:root.light button:hover svg,
+:root.light a:hover svg {
+  color: #000000;
+}
+
+:root.light .active svg {
+  color: #000000 !important;
+}
+
 /* Dashboard layout - Override body styles for proper scroll */
 body:has(.dashboard-wrapper) {
   align-items: stretch;
@@ -888,6 +1230,12 @@ main {
   width: 100%;
   height: 100%;
   font-family: var(--font-poppins), sans-serif;
+}
+
+/* Mode light - Main blanc avec texte noir */
+:root.light main {
+  background: #FFFFFF;
+  color: #000000;
 }
 
 h1 {
@@ -937,6 +1285,18 @@ p {
   line-height: 1.6;
 }
 
+/* Mode light - Titres et paragraphes en noir */
+:root.light h1,
+:root.light h2,
+:root.light h3,
+:root.light h4 {
+  color: #000000;
+}
+
+:root.light p {
+  color: #474747;
+}
+
 button {
   font-family: var(--font-poppins), sans-serif;
   font-size: 14px;
@@ -948,10 +1308,33 @@ a {
   font-size: 14px;
   font-weight: 500;
   color: var(--color-accent);
+  transition: color 0.2s ease;
 }
 
 a:hover {
   color: var(--color-accent-light);
+}
+
+/* Liens importants avec couleur highlight */
+a.link-highlight {
+  color: var(--text-primary);
+}
+
+a.link-highlight:hover {
+  color: var(--color-highlight);
+}
+
+/* Mode light - Liens en noir */
+:root.light a {
+  color: #000000;
+}
+
+:root.light a:hover {
+  color: #1F1F1F;
+}
+
+:root.light a.link-highlight:hover {
+  color: var(--color-highlight);
 }
 
 label {
@@ -960,8 +1343,18 @@ label {
   color: var(--text-secondary);
 }
 
+/* Mode light - Labels en gris */
+:root.light label {
+  color: #474747;
+}
+
 span {
   font-family: var(--font-poppins), sans-serif;
+}
+
+/* Mode light - Spans en blanc */
+:root.light span {
+  color: inherit;
 }
 
 /* Form elements */
@@ -983,6 +1376,28 @@ input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px var(--color-accent-bg);
+}
+
+/* Mode light - Form elements avec glass effect */
+:root.light input, 
+:root.light textarea, 
+:root.light select {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: #000000;
+  backdrop-filter: blur(10px);
+}
+
+:root.light input::placeholder, 
+:root.light textarea::placeholder {
+  color: #999999;
+}
+
+:root.light input:focus, 
+:root.light textarea:focus, 
+:root.light select:focus {
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Tables base */
@@ -1013,6 +1428,35 @@ tbody tr:hover {
   background-color: var(--bg-hover);
 }
 
+/* Mode light - Tables avec glass effect */
+:root.light table {
+  background-color: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+:root.light th {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+:root.light td {
+  color: #474747;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+:root.light tbody tr {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+:root.light tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+:root.light tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
 /* ============================================
    HEADER STYLES
    ============================================ */
@@ -1031,6 +1475,27 @@ header button svg {
 
 header button:hover svg {
   color: var(--color-accent);
+}
+
+/* Mode light - Header avec fond blanc */
+:root.light header {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+:root.light header a, 
+:root.light header span, 
+:root.light header p {
+  color: #000000;
+}
+
+:root.light header button svg {
+  color: #474747;
+}
+
+:root.light header button:hover svg {
+  color: #000000;
 }
 
 /* ============================================
@@ -1060,7 +1525,40 @@ nav button:hover, nav a:hover {
 
 nav button:hover span, nav a:hover span,
 nav button:hover svg, nav a:hover svg {
-  color: var(--color-accent-light);
+  color: var(--color-highlight);
+}
+
+/* Mode light - Sidebar blanc avec texte noir */
+:root.light aside, 
+:root.light [class*="sidebar"] {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+:root.light nav button, 
+:root.light nav a {
+  color: #474747;
+}
+
+:root.light nav button span, 
+:root.light nav a span {
+  color: #000000;
+}
+
+:root.light nav svg {
+  color: #474747;
+}
+
+:root.light nav button:hover, 
+:root.light nav a:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+:root.light nav button:hover span, 
+:root.light nav a:hover span,
+:root.light nav button:hover svg, 
+:root.light nav a:hover svg {
+  color: var(--color-highlight);
 }
 
 /* ============================================
@@ -1119,6 +1617,62 @@ nav button:hover svg, nav a:hover svg {
 
 .auth-link:hover {
   color: var(--color-accent-light);
+}
+
+/* Mode light - Auth pages avec glass effect */
+:root.light .auth-container {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #FFFFFF);
+  backdrop-filter: blur(20px);
+}
+
+:root.light .auth-header {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+:root.light .auth-content {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #FFFFFF);
+}
+
+:root.light .auth-input {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: #000000;
+  backdrop-filter: blur(10px);
+}
+
+:root.light .auth-input::placeholder {
+  color: #999999;
+}
+
+:root.light .auth-input:focus {
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+:root.light .auth-error {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+:root.light .auth-error p {
+  color: #000000;
+}
+
+:root.light .auth-title {
+  color: #000000;
+}
+
+:root.light .auth-subtitle {
+  color: #474747;
+}
+
+:root.light .auth-link {
+  color: #000000;
+}
+
+:root.light .auth-link:hover {
+  color: #1F1F1F;
 }
 
 /* ============================================
@@ -1661,7 +2215,7 @@ nav button:hover svg, nav a:hover svg {
 }
 
 .mobile-nav-icon.active {
-  color: var(--color-accent);
+  color: var(--color-highlight);
 }
 
 .mobile-nav-icon.active svg {
@@ -1674,11 +2228,11 @@ nav button:hover svg, nav a:hover svg {
 }
 
 .mobile-nav-label.active {
-  color: var(--color-accent);
+  color: var(--color-highlight);
 }
 
 .mobile-nav-indicator {
-  background-color: var(--color-accent-light);
+  background-color: var(--color-highlight);
 }
 
 /* Mobile Header - Glass effect */
@@ -1706,27 +2260,25 @@ nav button:hover svg, nav a:hover svg {
   border-right: 1px solid rgba(46, 38, 72, 0.5);
 }
 
-/* Light theme - Glass effect sans violet */
+/* Light theme - Glass effect blanc */
 :root.light .mobile-bottom-nav {
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(250, 250, 255, 0.95) 50%,
-    rgba(248, 248, 252, 0.98) 100%
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(245, 245, 245, 0.98) 100%
   );
   -webkit-backdrop-filter: blur(40px) saturate(200%);
   backdrop-filter: blur(40px) saturate(200%);
   box-shadow: 
-    0 -4px 30px rgba(0, 0, 0, 0.08),
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(200, 200, 220, 0.4);
+    0 -4px 30px rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-/* Light theme - Override les couleurs */
+/* Light theme - Icônes en noir avec highlight orange */
 :root.light .mobile-nav-icon {
-  color: #64748b;
+  color: #777777;
 }
 
 :root.light .mobile-nav-icon svg {
@@ -1735,7 +2287,7 @@ nav button:hover svg, nav a:hover svg {
 }
 
 :root.light .mobile-nav-icon.active {
-  color: #7c3aed;
+  color: var(--color-highlight);
 }
 
 :root.light .mobile-nav-icon.active svg {
@@ -1744,33 +2296,33 @@ nav button:hover svg, nav a:hover svg {
 }
 
 :root.light .mobile-nav-label {
-  color: #94a3b8;
+  color: #777777;
 }
 
 :root.light .mobile-nav-label.active {
-  color: #7c3aed;
+  color: var(--color-highlight);
 }
 
 :root.light .mobile-nav-indicator {
-  background-color: rgba(124, 58, 237, 0.1);
+  background-color: var(--color-highlight);
 }
 
 :root.light .mobile-header-glass {
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.95) 0%,
-    rgba(250, 250, 252, 0.9) 100%
+    rgba(245, 245, 245, 0.9) 100%
   );
-  border-color: rgba(229, 231, 235, 0.8);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 :root.light .mobile-drawer-glass {
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.98) 0%,
-    rgba(250, 250, 252, 0.98) 100%
+    rgba(245, 245, 245, 0.98) 100%
   );
-  border-right-color: rgba(229, 231, 235, 0.8);
+  border-right-color: rgba(0, 0, 0, 0.15);
 }
 
 /* Animation pour le drawer */
