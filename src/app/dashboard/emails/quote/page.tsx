@@ -594,9 +594,9 @@ Cordialement`;
               exit={{ opacity: 0, x: -20 }}
               className="bg-white rounded-xl shadow-lg overflow-hidden"
             >
-              <div className="p-4 bg-gray-50 border-b border-gray-200">
-                <div className="text-sm text-gray-500 mb-1">{t('to') || 'À'}: {recipients.map(r => r.email).join(', ')}</div>
-                <div className="font-semibold text-gray-800">{subject || '(Sans objet)'}</div>
+              <div className="p-4 bg-gray-50 border-b border-default">
+                <div className="text-sm text-muted mb-1">{t('to') || 'À'}: {recipients.map(r => r.email).join(', ')}</div>
+                <div className="font-semibold text-primary">{subject || '(Sans objet)'}</div>
               </div>
               
               <div className="p-6">
@@ -609,11 +609,11 @@ Cordialement`;
                 </div>
                 
                 {selectedQuote && (
-                  <div className="my-6 p-5 bg-violet-50 dark:bg-violet-900/20 rounded-lg border-l-4 border-violet-500">
-                    <div className="text-xs text-gray-500 uppercase mb-2">{t('quote') || 'Devis'}</div>
-                    <div className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-1">{selectedQuote.reference}</div>
-                    <div className="text-2xl font-bold text-violet-500">{formatAmount(calculateTotal(selectedQuote), selectedQuote.currency)}</div>
-                    <div className="mt-3 text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                  <div className="my-6 p-5 bg-accent-light rounded-lg border-l-4 border-accent">
+                    <div className="text-xs text-muted uppercase mb-2">{t('quote') || 'Devis'}</div>
+                    <div className="text-lg font-bold text-primary mb-1">{selectedQuote.reference}</div>
+                    <div className="text-2xl font-bold text-accent">{formatAmount(calculateTotal(selectedQuote), selectedQuote.currency)}</div>
+                    <div className="mt-3 text-sm text-muted space-y-1">
                       <div className="flex items-center gap-2">
                         <IconCalendar className="w-4 h-4" />
                         Date : {formatDate(selectedQuote.date)}
@@ -629,7 +629,7 @@ Cordialement`;
                 )}
                 
                 {includeSignature && signatureData && (
-                  <div className="mt-8 pt-6 border-t border-gray-200">
+                  <div className="mt-8 pt-6 border-t border-default">
                     <EmailFooter 
                       data={signatureData} 
                       mode="preview" 
@@ -642,12 +642,12 @@ Cordialement`;
                 )}
                 
                 {selectedQuote && (
-                  <div className="mt-6 pt-4 border-t border-gray-200">
-                    <div className="text-sm font-medium text-gray-700 mb-2">
+                  <div className="mt-6 pt-4 border-t border-default">
+                    <div className="text-sm font-medium text-muted mb-2">
                       {t('attachments') || 'Pièces jointes'} (1)
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg text-sm">
-                      <IconPaperclip className="w-4 h-4 text-gray-500" />
+                    <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg text-sm">
+                      <IconPaperclip className="w-4 h-4 text-muted" />
                       <span>Devis-{selectedQuote.reference}.pdf</span>
                     </div>
                   </div>
@@ -670,9 +670,9 @@ Cordialement`;
                 </label>
                 
                 {selectedQuote ? (
-                  <div className="flex items-center justify-between p-4 bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-accent-light border border-accent rounded-lg">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-violet-500 rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center">
                         <IconFileDescription className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -684,7 +684,7 @@ Cordialement`;
                     </div>
                     <button
                       onClick={() => setShowQuoteSelector(true)}
-                      className="px-3 py-1.5 text-sm text-violet-600 hover:bg-violet-100 dark:hover:bg-violet-900/40 rounded-lg transition-colors"
+                      className="px-3 py-1.5 text-sm text-accent hover:bg-accent-light rounded-lg transition-colors"
                     >
                       {t('change') || 'Changer'}
                     </button>
@@ -692,7 +692,7 @@ Cordialement`;
                 ) : (
                   <button
                     onClick={() => setShowQuoteSelector(true)}
-                    className="w-full p-6 border-2 border-dashed border-default rounded-lg text-center text-muted hover:border-violet-500 hover:text-violet-500 transition-colors"
+                    className="w-full p-6 border-2 border-dashed border-default rounded-lg text-center text-muted hover:border-accent hover:text-accent transition-colors"
                   >
                     <IconFileDescription className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     <span>{t('click_to_select_quote') || 'Cliquez pour sélectionner un devis'}</span>
@@ -706,14 +706,14 @@ Cordialement`;
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+                      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
                       onClick={() => setShowQuoteSelector(false)}
                     >
                       <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}
-                        className="bg-card rounded-xl shadow-xl w-full max-w-lg max-h-[70vh] overflow-hidden"
+                        className="bg-card border border-default rounded-xl shadow-xl w-full max-w-lg max-h-[70vh] overflow-hidden"
                         onClick={e => e.stopPropagation()}
                       >
                         <div className="p-4 border-b border-default">
@@ -733,7 +733,7 @@ Cordialement`;
                         <div className="max-h-[50vh] overflow-y-auto p-2">
                           {loadingQuotes ? (
                             <div className="flex items-center justify-center py-12">
-                              <IconLoader2 className="w-8 h-8 text-violet-500 animate-spin" />
+                              <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
                             </div>
                           ) : filteredQuotes.length === 0 ? (
                             <div className="text-center py-12 text-muted">
@@ -747,8 +747,8 @@ Cordialement`;
                                 onClick={() => handleSelectQuote(quote)}
                                 className="w-full p-3 flex items-center gap-4 hover:bg-accent-light rounded-lg transition-colors text-left"
                               >
-                                <div className="w-10 h-10 bg-violet-100 dark:bg-violet-900/30 rounded-lg flex items-center justify-center">
-                                  <IconFileDescription className="w-5 h-5 text-violet-500" />
+                                <div className="w-10 h-10 bg-accent-light rounded-lg flex items-center justify-center">
+                                  <IconFileDescription className="w-5 h-5 text-accent" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="font-medium text-primary truncate">{quote.reference}</div>
@@ -757,19 +757,20 @@ Cordialement`;
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <div className="font-semibold text-violet-500">
+                                  <div className="font-semibold text-accent">
                                     {formatAmount(calculateTotal(quote), quote.currency)}
                                   </div>
                                   <div className={`text-xs ${
-                                    quote.quote_status === 'accepted' ? 'text-green-500' :
-                                    quote.quote_status === 'rejected' ? 'text-red-500' :
-                                    quote.quote_status === 'expired' ? 'text-orange-500' :
-                                    'text-muted'
+                                      quote.quote_status === 'accepted' ? 'text-success' :
+                                      quote.quote_status === 'rejected' ? 'text-danger' :
+                                      quote.quote_status === 'expired' ? 'text-warning' :
+                                      quote.quote_status === 'sent' ? 'text-info' :
+                                      'text-muted'
                                   }`}>
-                                    {quote.quote_status === 'accepted' ? 'Accepté' :
-                                     quote.quote_status === 'rejected' ? 'Refusé' :
-                                     quote.quote_status === 'expired' ? 'Expiré' :
-                                     quote.quote_status === 'sent' ? 'Envoyé' : 'Brouillon'}
+                                    {quote.quote_status === 'accepted' ? t('accepted') :
+                                     quote.quote_status === 'rejected' ? t('rejected') :
+                                     quote.quote_status === 'expired' ? t('expired') :
+                                     quote.quote_status === 'sent' ? t('sent') : t('draft')}
                                   </div>
                                 </div>
                               </button>
@@ -795,12 +796,12 @@ Cordialement`;
                       key={recipient.id}
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 rounded-full text-sm"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-accent-light text-accent rounded-full text-sm"
                     >
                       <span>{recipient.name ? `${recipient.name} <${recipient.email}>` : recipient.email}</span>
                       <button
                         onClick={() => removeRecipient(recipient.id)}
-                        className="p-0.5 hover:bg-violet-500 hover:text-white rounded-full transition-colors"
+                        className="p-0.5 hover:bg-accent hover:text-white rounded-full transition-colors"
                       >
                         <IconX className="w-3.5 h-3.5" />
                       </button>
@@ -820,7 +821,7 @@ Cordialement`;
                   <button
                     onClick={addRecipient}
                     disabled={!newRecipient.trim()}
-                    className="px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors disabled:opacity-50"
+                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-light transition-colors disabled:opacity-50"
                   >
                     {t('add') || 'Ajouter'}
                   </button>
@@ -885,7 +886,7 @@ Cordialement`;
               <div className="bg-card border border-default rounded-xl p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <IconSignature className="w-5 h-5 text-violet-500" />
+                    <IconSignature className="w-5 h-5 text-accent" />
                     <div>
                       <div className="font-medium text-primary">
                         {t('include_signature') || 'Inclure la signature'}
@@ -899,7 +900,7 @@ Cordialement`;
                   <button
                     onClick={() => setIncludeSignature(!includeSignature)}
                     className={`relative w-12 h-6 rounded-full transition-colors ${
-                      includeSignature ? 'bg-violet-500' : 'bg-gray-300 dark:bg-gray-600'
+                      includeSignature ? 'bg-accent' : 'bg-gray-300 dark:bg-gray-600'
                     }`}
                   >
                     <div 
@@ -913,7 +914,7 @@ Cordialement`;
                 {signatureData && (
                   <Link
                     href="/dashboard/settings?tab=email"
-                    className="mt-3 inline-flex items-center gap-1.5 text-sm text-violet-500 hover:text-violet-400 transition-colors"
+                    className="mt-3 inline-flex items-center gap-1.5 text-sm text-accent hover:text-accent-light transition-colors"
                   >
                     <IconPencil className="w-3.5 h-3.5" />
                     {t('edit_signature') || 'Modifier la signature'}
@@ -922,7 +923,7 @@ Cordialement`;
                 
                 {!signatureData && !loadingSignature && (
                   <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg flex items-start gap-2">
-                    <IconAlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+                    <IconAlertCircle className="w-5 h-5 text-warning !text-warning  flex-shrink-0 mt-0.5" />
                     <div className="text-sm text-warning flex items-center gap-2 flex-wrap">
                       {t('no_signature_configured') || 'Aucune signature configurée. '}
                       <a 
