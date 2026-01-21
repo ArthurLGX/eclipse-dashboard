@@ -848,7 +848,7 @@ function ComposeEmail() {
                 {!signatureData && !loadingSignature && (
                   <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg flex items-start gap-2">
                     <IconAlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
-                    <div className="text-sm text-warning">
+                    <div className="text-sm text-warning flex items-center gap-2 flex-wrap">
                       {t('no_signature_configured') || 'Aucune signature configurée. '}
                       <a 
                         href="/dashboard/settings?tab=email" 

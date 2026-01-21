@@ -42,6 +42,11 @@
   --text-secondary: #A89EC8;
   --text-muted: #7B6F9E;
   --text-placeholder: #5A4F7A;
+
+  /* Register Button colors */
+  --bg-color-register: #e6e6e6;
+  --text-color-register: #000000;
+  --border-color-register: #d1d1d1;
   
   /* Accent colors */
   --color-accent: #7C3AED;
@@ -124,7 +129,17 @@
   --text-secondary: #4B5563;
   --text-muted: #6B7280;
   --text-placeholder: #9CA3AF;
-  
+
+    /* Register Button colors */
+  --bg-color-register: #e6e6e6;
+  --text-color-register: #000000;
+  --border-color-register: #d1d1d1;
+
+  /* register button colors - hover mode */
+  --bg-color-register-hover: #0c0c0c;
+  --text-color-register-hover: #ffffff;
+  --border-color-register-hover: #303030;
+
   /* Accent colors - Solid colors for light mode */
   --color-accent: #7C3AED;
   --color-accent-light: #A78BFA;
@@ -486,25 +501,27 @@ button {
   cursor: pointer;
 }
 
+
 .btn-primary {
   background-color: var(--color-accent);
-  color: var(--color-accent-text);
-  border: 1px solid var(--color-accent);
+  color: var(--text-color-register-hover);
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
+  background-color: var(--color-accent-light);
+  color: var(--text-color-register-hover);
 }
 
 .btn-secondary {
-  background-color: var(--color-accent-subtle);
-  color: var(--color-accent-text);
-  border: 1px solid transparent;
+  background-color: var(--bg-color-register);
+  color: var(--text-color-register);
+  border: none; 
 }
 
+
 .btn-secondary:hover {
-  background-color: var(--color-accent);
-  color: var(--color-accent-text);
+  background-color: var(--bg-color-register-hover);
+  color: var(--text-color-register-hover);
 }
 
 .btn-tertiary {

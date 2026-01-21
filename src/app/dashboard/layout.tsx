@@ -598,7 +598,7 @@ function DashboardLayoutContent({
                       title={resolvedMode === 'dark' ? 'Mode clair' : 'Mode sombre'}
                     >
                       {resolvedMode === 'dark' ? (
-                        <IconSun size={16} className="text-warning" />
+                        <IconSun stroke={'#ffd700'} size={16} className="!text-warning" />
                       ) : (
                         <IconMoon size={16} className="!text-accent" />
                       )}
@@ -611,7 +611,7 @@ function DashboardLayoutContent({
                       {isPinned ? (
                         <IconPinFilled size={16} className="!text-accent" />
                       ) : (
-                        <IconPin size={16} className="text-secondary" />
+                        <IconPin size={16} className="!text-secondary" />
                       )}
                     </button>
                   </div>
@@ -753,7 +753,7 @@ function DashboardLayoutContent({
                   className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-hover transition-colors"
                 >
                   {resolvedMode === 'dark' ? (
-                    <IconSun size={18} className="text-warning" />
+                    <IconSun stroke={'#ffd700'} size={18} className="!text-warning" />
                   ) : (
                     <IconMoon size={18} className="!text-accent" />
                   )}
@@ -763,7 +763,7 @@ function DashboardLayoutContent({
                   onClick={() => router.push('/dashboard/notifications')}
                   className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-hover transition-colors"
                 >
-                  <IconBell size={18} className="text-secondary" />
+                  <IconBell size={18} className="!text-secondary" />
                 </button>
               </div>
             }

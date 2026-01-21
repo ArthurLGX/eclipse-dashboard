@@ -1006,7 +1006,8 @@ const translations = {
     with_pending_tasks: 'Avec tâches en cours',
     project_type: 'Type de projet',
     invoice_date: 'Date de facture',
-    
+    no_facture_found: 'Aucune facture trouvée',
+
     no_recent_activity: 'Aucune activité récente',
     // Clients
     add_client: 'Nouveau client',
@@ -1379,6 +1380,16 @@ const translations = {
      dates: 'Dates',
     project_updated_success: 'Projet mis à jour avec succès',
     project_auto_completed: 'Toutes les tâches terminées ! Projet marqué comme terminé.',
+
+    // Email confirmation
+    email_confirmation_loading: 'Vérification en cours...',
+    email_confirmation_loading_description: 'Nous vérifions votre email, veuillez patienter.',
+    email_confirmation_success: 'Email confirmé !',
+    email_confirmation_success_description: 'Votre adresse email a été vérifiée avec succès. Vous pouvez maintenant vous connecter à votre compte.',
+    email_confirmation_login: 'Se connecter',
+    email_confirmation_register: 'Créer un compte',
+    email_confirmation_error: 'Échec de la confirmation',
+    email_confirmation_error_description: 'Une erreur est survenue lors de la confirmation de votre email.',
 
     // Partage de projet & Collaboration
     share_project: 'Partager le projet',
@@ -2688,6 +2699,8 @@ const translations = {
     workflow_guide_create_invoice: 'Devis accepté → créez une facture',
     workflow_guide_create_contract: 'Devis accepté → sécurisez avec un contrat',
     workflow_guide_create_project: 'Contrat signé → démarrez le projet',
+
+    ai_anylizing: 'Analyse en cours...',
 
     // IA - Génération de contrats
     ai_generate_contract: 'Générer un contrat avec l\'IA',
@@ -4315,7 +4328,6 @@ const translations = {
     with_pending_tasks: 'With pending tasks',
     project_type: 'Project type',
     invoice_date: 'Invoice date',
-    
     // Clients
     add_client: 'Add Client',
     search_placeholder_clients: 'Search by name, email or company...',
@@ -5902,7 +5914,7 @@ won: 'Won',
     // AI - Contract Generation
     ai_generate_contract: 'Generate contract with AI',
     ai_contract_description: 'Personalized legal documents',
-    
+    ai_anylizing: 'IAAnalyzing in progress...',
     // Contracts - Management
     contract_save_error: 'Error saving contract',
     contract_saved: 'Contract saved successfully!',
@@ -6216,6 +6228,16 @@ won: 'Won',
     configure_webhook: 'Configure webhook',
     integrate: 'Integrate',
     to_your_meetings: 'to your meetings',
+
+    // Email confirmation
+    email_confirmation_loading: 'Checking...',
+    email_confirmation_loading_description: 'We are checking your email, please wait.',
+    email_confirmation_success: 'Email confirmed!',
+    email_confirmation_success_description: 'Your email has been confirmed successfully. You can now login to your account.',
+    email_confirmation_login: 'Login',
+    email_confirmation_register: 'Create account',
+    email_confirmation_error: 'Confirmation error',
+    email_confirmation_error_description: 'An error occurred while confirming your email.',
 
     // Growth Audit
     growth_audit: 'Growth Audit',

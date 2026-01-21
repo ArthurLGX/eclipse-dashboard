@@ -23,15 +23,13 @@ export const RegisterBtn = ({ onClick }: RegisterBtnProps) => {
         id="registerBtn"
         href="/login?type=register"
         onClick={onClick}
-        className="btn-secondary group flex flex-row items-center justify-center gap-2 !text-xs capitalize rounded-full lg:w-fit w-full !px-4 !py-2"
+        className="btn-secondary border border-default group flex flex-row items-center justify-center gap-2 !text-xs capitalize rounded-full lg:w-fit w-full !px-4 !py-2 transition-all ease-in-out duration-300"
       >
-        <span className="flex flex-row !text-white group-hover:!text-accent !text-xs lg:w-full w-fit items-center justify-center gap-2">
           {t('register')}
           <IconArrowRight
             size={16}
             className="group-hover:-rotate-45 transition-all ease-in-out duration-300"
           />
-        </span>
       </Link>
     </motion.div>
   );

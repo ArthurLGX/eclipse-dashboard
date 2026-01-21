@@ -275,17 +275,17 @@ export default function AddClientModal({
           >
             {loading ? (
               <>
-                <IconLoader2 size={16} className="animate-spin" />
+                <IconLoader2 size={16} className="animate-spin !text-accent" />
                 <span>{t('loading')}</span>
               </>
             ) : success ? (
               <>
-                <IconCheck size={16} />
+                <IconCheck size={16} className="!text-success" />
                 <span>Ajouté !</span>
               </>
             ) : (
               <>
-                <IconUserPlus size={16} />
+                <IconUserPlus size={16} className="!text-accent" />
                 <span>{t('add_client')}</span>
               </>
             )}

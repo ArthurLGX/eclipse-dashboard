@@ -269,7 +269,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     title={resolvedMode === 'dark' ? 'Mode clair' : 'Mode sombre'}
                   >
                     {resolvedMode === 'dark' ? (
-                      <IconSun size={16} className="text-warning" />
+                      <IconSun stroke={'#ffd700'} size={16} className="!text-warning" />
                     ) : (
                       <IconMoon size={16} className="!text-accent" />
                     )}
@@ -282,7 +282,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     {isPinned ? (
                       <IconPinFilled size={16} className="!text-accent" />
                     ) : (
-                      <IconPin size={16} className="text-secondary" />
+                      <IconPin size={16} className="!text-secondary" />
                     )}
                   </button>
                 </div>

@@ -115,7 +115,7 @@ export default function DailySuggestionsModal() {
   const getTimeOfDayIcon = () => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return <IconSunrise className="w-5 h-5 text-amber-400" />;
-    if (hour >= 12 && hour < 18) return <IconSun className="w-5 h-5 text-yellow-400" />;
+    if (hour >= 12 && hour < 18) return <IconSun stroke={'#ffd700'} className="!text-warning w-5 h-5" />;
     return <IconMoon className="w-5 h-5 text-indigo-400" />;
   };
 

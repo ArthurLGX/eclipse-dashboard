@@ -1306,12 +1306,12 @@ export default function ShareProjectModal({
                     {includeSignature && (
                       <div>
                         {emailSignature ? (
-                          <div className="flex items-center gap-2 text-xs text-success">
+                          <div className="flex items-center gap-2 text-xs text-success !text-success">
                             <IconCheck className="w-4 h-4" />
                             {emailSignature.sender_name || emailSignature.company_name || t('signature_loaded') || 'Signature chargée'}
                           </div>
                         ) : (
-                          <p className="text-xs text-warning">
+                          <p className="text-xs text-warning !text-warning">
                             {t('no_signature_configured') || 'Aucune signature configurée'}
                           </p>
                         )}

@@ -30,13 +30,14 @@ export default function ThemeToggle() {
       >
         {resolvedMode === 'dark' ? (
           <IconSun
+            stroke={'#ffd700'}
             size={18}
-            className="text-warning group-hover:opacity-80 transition-colors"
+            className="!text-warning group-hover:opacity-80 transition-colors"
           />
         ) : (
           <IconMoon
             size={18}
-            className="text-accent group-hover:opacity-80 transition-colors"
+            className="!text-accent group-hover:opacity-80 transition-colors"
           />
         )}
       </motion.div>

@@ -694,7 +694,7 @@ export default function FacturesPage() {
         onAdvancedFilterChange={handleAdvancedFilterChange}
         columns={columns}
         data={filteredFactures}
-        emptyMessage={isQuoteMode ? (t('no_quote_found') || 'Aucun devis trouvé') : t('no_facture_found')}
+        emptyMessage={isQuoteMode ? (t('no_quote_found') || 'Aucun devis trouvé') : t('no_invoice_found')}
         selectable={true}
         onDeleteSelected={handleDeleteMultipleFactures}
         getItemId={(facture) => facture.documentId || ''}
