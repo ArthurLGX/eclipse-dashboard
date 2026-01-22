@@ -61,7 +61,6 @@ function InvoiceEmail() {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [recipients, setRecipients] = useState<Recipient[]>([]);
-  const [newRecipient, setNewRecipient] = useState('');
   const [includeSignature, setIncludeSignature] = useState(true);
   
   // Invoice state
@@ -404,25 +403,6 @@ Cordialement`;
     }]);
   }, [recipients, showGlobalPopup, t]);
 
-  // Ajouter un destinataire
-  const addRecipient = useCallback(() => {
-    const email = newRecipient.trim().toLowerCase();
-    if (!email) return;
-    
-    if (!email.includes('@') || !email.includes('.')) {
-      showGlobalPopup(t('invalid_email') || 'Email invalide', 'error');
-      return;
-    }
-    
-    if (recipients.some(r => r.email === email)) {
-      showGlobalPopup(t('recipient_exists') || 'Ce destinataire existe déjà', 'warning');
-      return;
-    }
-    
-    setRecipients(prev => [...prev, { id: crypto.randomUUID(), email }]);
-    setNewRecipient('');
-  }, [newRecipient, recipients, showGlobalPopup, t]);
-  
   const removeRecipient = useCallback((id: string) => {
     setRecipients(prev => prev.filter(r => r.id !== id));
   }, []);
