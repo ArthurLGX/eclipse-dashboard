@@ -29,7 +29,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
-import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser, updateFactureById, fetchClientsUser } from '@/lib/api';
+import { fetchEmailSignature, createSentEmail, createEmailDraft, updateEmailDraft, fetchEmailDraft, fetchCompanyUser, updateFactureById, fetchContacts } from '@/lib/api';
 import { generatePdfBase64 } from '@/lib/generatePdfBase64';
 import EmailSentSuccessModal from '@/app/components/EmailSentSuccessModal';
 import type { CreateEmailSignatureData, Facture, Company, Client } from '@/types';
@@ -89,7 +89,28 @@ function InvoiceEmail() {
   
   // Contacts pour l'autocomplétion
   const [contacts, setContacts] = useState<Client[]>([]);
-  const [ loadingContacts, setLoadingContacts] = useState(true);
+  const [loadingContacts, setLoadingContacts] = useState(true);
+
+  // Charger les contacts pour l'autocomplétion
+  useEffect(() => {
+    const loadContacts = async () => {
+      if (!user?.id) return;
+      
+      try {
+        setLoadingContacts(true);
+        const response = await fetchContacts(user.id);
+        if (response?.data) {
+          setContacts(response.data);
+        }
+      } catch (error) {
+        console.error('Error loading contacts:', error);
+      } finally {
+        setLoadingContacts(false);
+      }
+    };
+    
+    loadContacts();
+  }, [user?.id]);
 
   // Charger les factures
   useEffect(() => {
@@ -363,6 +384,26 @@ Cordialement`;
     inv.client?.name?.toLowerCase().includes(invoiceSearch.toLowerCase())
   );
   
+  // Ajouter un destinataire depuis l'autocomplete
+  const addRecipientFromContact = useCallback((contact: Client) => {
+    const email = contact.email?.trim().toLowerCase();
+    if (!email) {
+      showGlobalPopup(t('no_email_for_contact') || 'Ce contact n\'a pas d\'email', 'error');
+      return;
+    }
+    
+    if (recipients.some(r => r.email === email)) {
+      showGlobalPopup(t('recipient_exists') || 'Ce destinataire existe déjà', 'warning');
+      return;
+    }
+    
+    setRecipients(prev => [...prev, { 
+      id: crypto.randomUUID(), 
+      email,
+      name: contact.name || contact.enterprise
+    }]);
+  }, [recipients, showGlobalPopup, t]);
+
   // Ajouter un destinataire
   const addRecipient = useCallback(() => {
     const email = newRecipient.trim().toLowerCase();
@@ -820,7 +861,7 @@ Cordialement`;
             <ContactAutocomplete
               contacts={contacts}
               selectedEmails={recipients.map(r => r.email)}
-              onSelect={addRecipient}
+              onSelect={addRecipientFromContact}
               onManualAdd={(email) => setRecipients(prev => [...prev, { id: crypto.randomUUID(), email }])}
               placeholder={t('search_contact_or_email') || 'Rechercher un contact ou entrer un email...'}
               loading={loadingContacts}
