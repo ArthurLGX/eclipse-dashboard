@@ -359,7 +359,7 @@ export default function FacturesPage() {
         key: 'date',
         label: t('date'),
         render: (value) => (
-          <p className="text-secondary">
+          <p className="text-primary">
             {value ? formatDate(value as string) : '-'}
           </p>
         ),
@@ -372,7 +372,7 @@ export default function FacturesPage() {
         key: 'valid_until',
         label: t('valid_until') || 'Valide jusqu\'au',
         render: (value) => (
-          <p className="text-secondary">
+          <p className="text-primary">
             {value ? formatDate(value as string) : '-'}
           </p>
         ),
@@ -404,7 +404,7 @@ export default function FacturesPage() {
         key: 'due_date',
         label: t('due_date'),
         render: (value) => (
-          <p className="text-secondary">
+          <p className="text-primary">
             {value ? formatDate(value as string) : '-'}
           </p>
         ),
@@ -437,7 +437,7 @@ export default function FacturesPage() {
         key: 'number',
         label: t('amount'),
         render: (value) => (
-          <p className={`font-medium ${isQuoteMode ? 'text-violet-600 dark:text-violet-400' : 'text-amber-600 dark:text-amber-400'}`}>
+          <p className={`font-medium ${isQuoteMode ? '!text-secondary' : '!text-accent'}`}>
             {value ? formatCurrency(value as number) : '-'}
           </p>
         ),
@@ -448,7 +448,7 @@ export default function FacturesPage() {
         render: (value, row) => {
           const clientData = value || row.client_id;
           return (
-            <p className="text-secondary">
+            <p className="text-primary">
               {clientData && typeof clientData === 'object' ? (clientData as Client).name : '-'}
             </p>
           );
@@ -458,7 +458,7 @@ export default function FacturesPage() {
         key: 'project',
         label: t('project'),
         render: (value) => (
-          <p className="text-secondary">
+          <p className="text-primary">
             {value && typeof value === 'object' ? (value as Project).title : '-'}
           </p>
         ),
@@ -601,7 +601,7 @@ export default function FacturesPage() {
           label: t('accepted_quotes') || 'Devis acceptés',
           value: stats.accepted || 0,
           colorClass: 'text-success',
-          icon: <IconCheck className="w-6 h-6 text-success" />,
+          icon: <IconCheck className="w-6 h-6 !text-success-text -text" />,
         },
         {
           label: t('pending_quotes') || 'En attente',
@@ -628,13 +628,13 @@ export default function FacturesPage() {
           label: t('active_factures'),
           value: stats.paid || 0,
           colorClass: 'text-success',
-          icon: <IconCheck className="w-6 h-6 text-success" />,
+          icon: <IconCheck className="w-6 h-6 !text-success-text -text" />,
         },
         {
           label: t('revenue'),
           value: formatCurrency(stats.paidAmount || 0),
           colorClass: 'text-success',
-          icon: <IconCurrencyEuro className="w-6 h-6 text-success" />,
+          icon: <IconCurrencyEuro className="w-6 h-6 !text-success-text -text" />,
         },
         {
           label: t('new_factures_this_month'),
@@ -664,7 +664,7 @@ export default function FacturesPage() {
         onClick={() => router.push('/dashboard/factures?type=quote')}
         className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
           isQuoteMode
-            ? 'bg-card text-violet-600 dark:text-violet-400 shadow-sm'
+            ? 'bg-card !text-secondary shadow-sm'
             : 'text-muted hover:text-primary'
         }`}
       >
@@ -727,7 +727,7 @@ export default function FacturesPage() {
             </div>
           </div>
 
-          <p className="text-secondary">
+          <p className="text-primary">
             {t('convert_quote_confirm_desc') || 'Le devis sera marqué comme "accepté" et une nouvelle facture sera créée avec les mêmes informations.'}
           </p>
 

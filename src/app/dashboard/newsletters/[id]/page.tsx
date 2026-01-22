@@ -361,15 +361,15 @@ export default function NewsletterDetailPage() {
                     <h3 className="font-semibold text-primary mb-4">{t('quick_stats') || 'Statistiques rapides'}</h3>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-secondary">{t('total_recipients') || 'Total destinataires'}</span>
+                        <span className="text-primary">{t('total_recipients') || 'Total destinataires'}</span>
                         <span className="font-bold text-primary">{newsletter.subscribers?.length || 0}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-secondary">{t('status') || 'Statut'}</span>
+                        <span className="text-primary">{t('status') || 'Statut'}</span>
                         <StatusBadge status={newsletter.n_status} t={t} />
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-secondary">{t('template') || 'Template'}</span>
+                        <span className="text-primary">{t('template') || 'Template'}</span>
                         <TemplateBadge template={newsletter.template} t={t} />
                       </div>
                     </div>

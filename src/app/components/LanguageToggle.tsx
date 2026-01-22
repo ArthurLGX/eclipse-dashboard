@@ -13,7 +13,7 @@ export default function LanguageToggle() {
 
   return (
     <div className="flex flex-row lg:items-center items-start gap-2">
-      <IconLanguage size={16} className="text-secondary" />
+      <IconLanguage size={16} className="text-primary" />
       <select
         value={language}
         onChange={handleLanguageChange}

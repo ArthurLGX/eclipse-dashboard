@@ -229,7 +229,7 @@ export default function MeetingNotePanel({
             {t('meeting_notes') || 'Notes de réunion'}
           </span>
           {note && (
-            <span className="px-2 py-0.5 bg-success-light text-success text-xs rounded-full">
+            <span className="px-2 py-0.5 bg-success-light !text-success-text -text text-xs rounded-full">
               {t('saved') || 'Enregistré'}
             </span>
           )}
@@ -301,7 +301,7 @@ export default function MeetingNotePanel({
                   {actionItems.length > 0 && (
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <IconListCheck className="w-4 h-4 text-success" />
+                        <IconListCheck className="w-4 h-4 !text-success-text -text" />
                         <span className="text-sm font-medium text-primary">
                           {t('action_items') || 'Actions à faire'} ({actionItems.filter(i => !i.completed).length}/{actionItems.length})
                         </span>

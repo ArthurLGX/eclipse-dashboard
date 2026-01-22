@@ -813,7 +813,7 @@ ${user?.username || 'L\'équipe'}`;
                 <React.Fragment key={s}>
                   <div className={`flex items-center gap-2 ${
                     step === s ? 'text-accent' : 
-                    ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'text-success' : 'text-muted'
+                    ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'text-success-text' : 'text-muted'
                   }`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium ${
                       step === s ? 'bg-accent text-white' : 
@@ -1062,7 +1062,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Warning */}
                 <div className="p-4 bg-warning-light rounded-xl flex items-start gap-3">
-                  <IconAlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+                  <IconAlertTriangle className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium text-warning">
                       {t('contract_warning_title') || 'Important'}
@@ -1093,9 +1093,9 @@ ${user?.username || 'L\'équipe'}`;
                 {dateWarnings.length > 0 && (
                   <div className="p-4 bg-warning-light rounded-xl border border-warning">
                     <div className="flex items-start gap-3">
-                      <IconAlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+                      <IconAlertTriangle className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-warning mb-2">
+                        <p className="text-sm font-medium text-warning-text mb-2">
                           {contractLanguage === 'fr' 
                             ? '⚠️ Attention aux dates du contrat' 
                             : '⚠️ Contract date warnings'}
@@ -1265,7 +1265,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {generatedContract.warnings && generatedContract.warnings.length > 0 && (
                   <div className="p-4 bg-warning-light rounded-xl">
-                    <p className="text-sm font-medium text-warning flex items-center gap-2 mb-2">
+                    <p className="text-sm font-medium text-warning-text flex items-center gap-2 mb-2">
                       <IconAlertTriangle className="w-4 h-4" />
                       {t('warnings') || 'Points d\'attention'}
                     </p>
@@ -1385,7 +1385,7 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Alert for missing date/location */}
                 {(!signatureLocation || !signatureDate) && (
                   <div className="p-4 bg-warning-light rounded-xl border border-warning">
-                    <p className="text-sm text-warning flex items-center gap-2">
+                    <p className="text-sm text-warning-text flex items-center gap-2">
                       <IconAlertTriangle className="w-4 h-4 flex-shrink-0" />
                       <span>
                         {t('missing_signature_info') || 'Veuillez renseigner le lieu et la date de signature dans l\'étape de configuration.'}
@@ -1422,12 +1422,12 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Success message */}
                 <div className="p-4 bg-success-light rounded-xl border border-success">
                   <div className="flex items-start gap-3">
-                    <IconCheck className="w-6 h-6 text-success flex-shrink-0 mt-0.5" />
+                    <IconCheck className="w-6 h-6 !text-success-text -text flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-medium text-success">
+                      <p className="font-medium !text-success-text -text">
                         {t('contract_saved') || 'Contrat sauvegardé avec succès !'}
                       </p>
-                      <p className="text-sm text-success mt-1">
+                      <p className="text-sm !text-success-text -text mt-1">
                         {t('contract_ready_to_send') || 'Le contrat est prêt à être envoyé au client pour signature.'}
                       </p>
                     </div>
@@ -1453,7 +1453,7 @@ ${user?.username || 'L\'équipe'}`;
                   </div>
                   {!selectedClient?.email && (
                     <div className="mt-3 p-3 bg-warning-light rounded-lg">
-                      <p className="text-sm text-warning flex items-center gap-2">
+                      <p className="text-sm text-warning-text flex items-center gap-2">
                         <IconAlertTriangle className="w-4 h-4" />
                         {t('client_no_email_warning') || 'Ce client n\'a pas d\'email. Ajoutez-en un pour pouvoir envoyer le contrat.'}
                       </p>

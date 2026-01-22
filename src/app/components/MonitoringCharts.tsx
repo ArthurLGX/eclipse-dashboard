@@ -409,7 +409,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           className="card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconChartBar className="w-4 h-4 text-success" />
+            <IconChartBar className="w-4 h-4 !text-success-text -text" />
             <span className="text-sm font-medium text-primary">{t('uptime_timeline') || 'Uptime par heure'}</span>
           </div>
           <div className="h-40">

@@ -766,7 +766,7 @@ export default function CalendarPage() {
                             {!event.is_completed && (
                               <button
                                 onClick={() => handleComplete(event)}
-                                className="p-1 hover:bg-success-light rounded text-success"
+                                className="p-1 hover:bg-success-light rounded !text-success-text -text"
                               >
                                 <IconCheck className="w-3 h-3" />
                               </button>
@@ -1471,7 +1471,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                     <span className={`text-sm font-medium ${noteMode === 'fathom' && fathomConfigured ? 'text-success' : 'text-secondary'}`}>
                       Fathom AI
                     </span>
-                    {noteMode === 'fathom' && fathomConfigured && <IconCheck className="w-4 h-4 text-success ml-auto" />}
+                    {noteMode === 'fathom' && fathomConfigured && <IconCheck className="w-4 h-4 !text-success-text -text ml-auto" />}
                   </div>
                   <p className="text-xs text-muted mt-1">
                     {noteMode === 'fathom' && fathomConfigured
@@ -1485,8 +1485,8 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
               {/* Message de succès Fathom */}
               {noteMode === 'fathom' && fathomConfigured && (
                 <div className="flex items-center gap-2 p-2 rounded-lg !bg-success-light border border-success">
-                  <IconCheck className="w-4 h-4 text-success" />
-                  <span className="text-sm text-success">
+                  <IconCheck className="w-4 h-4 !text-success-text -text" />
+                  <span className="text-sm !text-success-text -text">
                     {t('fathom_will_join') || 'Fathom rejoindra automatiquement votre réunion et prendra les notes'}
                   </span>
                 </div>

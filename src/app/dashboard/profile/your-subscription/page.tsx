@@ -232,13 +232,13 @@ export default function YourSubscriptionPage() {
                           {subscription.plan?.name || 'Plan'}
                         </h3>
                         {subscription.trial && (
-                          <span className="bg-warning-light !text-warning !text-xs px-2 py-1 rounded-full">
+                          <span className="bg-warning-light !text-warning-text !text-xs px-2 py-1 rounded-full">
                             {t('trial')}
                           </span>
                         )}
                       </div>
                       <div className="!text-right">
-                        <div className="!text-2xl font-bold !text-success">
+                        <div className="!text-2xl font-bold !text-success-text">
                           €{subscription.plan?.price_monthly || 0}
                         </div>
                         <div className="!text-sm text-secondary">

@@ -645,7 +645,7 @@ export default function ShareProjectModal({
                         onClick={() => setPermission('edit')}
                         className={`flex-1 py-2 px-4 rounded-lg border transition-colors ${
                           permission === 'edit'
-                            ? 'bg-success-light border-success text-success'
+                            ? 'bg-success-light border-success !text-success-text '
                             : 'border-default text-secondary hover:border-input'
                         }`}
                       >
@@ -669,8 +669,8 @@ export default function ShareProjectModal({
                 >
                   {linkCopied ? (
                     <>
-                      <IconCheck className="w-5 h-5 text-success" />
-                      <span className="text-success">{t('link_copied') || 'Lien copié !'}</span>
+                      <IconCheck className="w-5 h-5 !text-success-text -text" />
+                      <span className="text-success-text">{t('link_copied') || 'Lien copié !'}</span>
                     </>
                   ) : (
                     <>
@@ -727,7 +727,7 @@ export default function ShareProjectModal({
                 <div className="flex items-center justify-between p-3 bg-warning-light border border-warning rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-warning-light flex items-center justify-center">
-                      <span className="text-warning font-medium">
+                      <span className="text-warning-text font-medium">
                         {ownerName?.[0]?.toUpperCase() || '?'}
                       </span>
                     </div>
@@ -735,7 +735,7 @@ export default function ShareProjectModal({
                       <p className="text-sm text-primary">
                         {ownerName || ownerEmail || 'Propriétaire'}
                       </p>
-                      <p className="text-xs text-warning font-medium">
+                      <p className="text-xs text-warning-text font-medium">
                         {t('owner') || 'Propriétaire'}
                       </p>
                     </div>
@@ -816,7 +816,7 @@ export default function ShareProjectModal({
                           type="checkbox"
                           checked={publicLinkConfig.show_gantt}
                           onChange={(e) => setPublicLinkConfig({ ...publicLinkConfig, show_gantt: e.target.checked })}
-                          className="w-4 h-4 rounded border-input bg-input text-success focus:ring-success/50"
+                          className="w-4 h-4 rounded border-input bg-input !text-success-text -text focus:ring-success/50"
                         />
                         <div className="flex items-center gap-2">
                           <IconTimeline className="w-4 h-4 !text-accent-light" />
@@ -831,10 +831,10 @@ export default function ShareProjectModal({
                           type="checkbox"
                           checked={publicLinkConfig.show_progress}
                           onChange={(e) => setPublicLinkConfig({ ...publicLinkConfig, show_progress: e.target.checked })}
-                          className="w-4 h-4 rounded border-input bg-input text-success focus:ring-success/50"
+                          className="w-4 h-4 rounded border-input bg-input !text-success-text -text focus:ring-success/50"
                         />
                         <div className="flex items-center gap-2">
-                          <IconChartBar className="w-4 h-4 text-success" />
+                          <IconChartBar className="w-4 h-4 !text-success-text -text" />
                           <span className="text-sm text-secondary group-hover:text-primary">
                             {t('show_progress') || 'Afficher les statistiques de progression'}
                           </span>
@@ -846,7 +846,7 @@ export default function ShareProjectModal({
                           type="checkbox"
                           checked={publicLinkConfig.show_tasks}
                           onChange={(e) => setPublicLinkConfig({ ...publicLinkConfig, show_tasks: e.target.checked })}
-                          className="w-4 h-4 rounded border-input bg-input text-success focus:ring-success/50"
+                          className="w-4 h-4 rounded border-input bg-input !text-success-text -text focus:ring-success/50"
                         />
                         <div className="flex items-center gap-2">
                           <IconEye className="w-4 h-4 text-info" />
@@ -933,7 +933,7 @@ export default function ShareProjectModal({
                               </p>
                               <div className="flex items-center gap-2 text-xs text-muted">
                                 {link.show_gantt && <span className="px-1.5 py-0.5 bg-primary-light !text-accent-light rounded">Gantt</span>}
-                                {link.show_progress && <span className="px-1.5 py-0.5 bg-success-light text-success rounded">Stats</span>}
+                                {link.show_progress && <span className="px-1.5 py-0.5 bg-success-light !text-success-text -text rounded">Stats</span>}
                                 {link.show_tasks && <span className="px-1.5 py-0.5 bg-info-light text-info rounded">Tâches</span>}
                                 {link.expires_at && (
                                   <span className="text-muted">
@@ -1306,12 +1306,12 @@ export default function ShareProjectModal({
                     {includeSignature && (
                       <div>
                         {emailSignature ? (
-                          <div className="flex items-center gap-2 text-xs text-success !text-success">
+                          <div className="flex items-center gap-2 text-xs !text-success-text -text !text-success-text">
                             <IconCheck className="w-4 h-4" />
                             {emailSignature.sender_name || emailSignature.company_name || t('signature_loaded') || 'Signature chargée'}
                           </div>
                         ) : (
-                          <p className="text-xs text-warning !text-warning">
+                          <p className="text-xs text-warning-text !text-warning">
                             {t('no_signature_configured') || 'Aucune signature configurée'}
                           </p>
                         )}

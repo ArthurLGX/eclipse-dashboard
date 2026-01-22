@@ -229,7 +229,7 @@ function ResetPasswordContent() {
               className="!text-center"
             >
               <div className="w-20 h-20 bg-success-light rounded-full flex items-center justify-center mx-auto mb-6">
-                <IconCheck size={40} className="text-success" />
+                <IconCheck size={40} className="text-success-text" />
               </div>
               <h2 className="!text-2xl font-bold text-primary mb-4">
                 Mot de passe réinitialisé !

@@ -266,7 +266,7 @@ export default function ProjectProfitabilityAI({
   const getProfitabilityIcon = () => {
     if (!profitability) return <IconChartLine className="w-5 h-5" />;
     switch (profitability.profitability) {
-      case 'positive': return <IconTrendingUp className="w-5 h-5 text-success" />;
+      case 'positive': return <IconTrendingUp className="w-5 h-5 !text-success-text -text" />;
       case 'negative': return <IconTrendingDown className="w-5 h-5 text-danger" />;
       default: return <IconChartLine className="w-5 h-5 text-warning" />;
     }
@@ -439,7 +439,7 @@ export default function ProjectProfitabilityAI({
                   <ul className="space-y-1">
                     {profitability.recommendations.map((rec, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-secondary">
-                        <IconCheck className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
+                        <IconCheck className="w-4 h-4 !text-success-text -text flex-shrink-0 mt-0.5" />
                         {rec}
                       </li>
                     ))}

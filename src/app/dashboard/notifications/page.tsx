@@ -404,7 +404,7 @@ export default function NotificationsPage() {
                   {alert.type === 'quota_exceeded' || alert.type === 'trial_expired' ? (
                     <IconAlertTriangle className="text-danger flex-shrink-0" size={24} />
                   ) : (
-                    <IconClock className="text-warning flex-shrink-0" size={24} />
+                    <IconClock className="text-warning-text flex-shrink-0" size={24} />
                   )}
                   <div>
                     <p className={`font-medium ${
@@ -450,7 +450,7 @@ export default function NotificationsPage() {
             <h1 className="text-3xl font-bold text-primary mb-2">
               {t('notifications') || 'Notifications'}
             </h1>
-            <p className="text-secondary">
+            <p className="text-primary">
               {t('notifications_description') || 'Gérez vos notifications et invitations'}
             </p>
           </div>
@@ -751,7 +751,7 @@ export default function NotificationsPage() {
                       <div className="flex items-center gap-2">
                         <span className={`text-xs px-2 py-0.5 rounded-full ${
                           notification.type === 'project_invitation' 
-                            ? 'bg-accenttext-accent'
+                            ? 'bg-accent text-accent'
                             : notification.type === 'project_update'
                             ? 'bg-infotext-accent'
                             : 'bg-muted text-secondary'

@@ -13,7 +13,7 @@ interface AuditCategoryBlockProps {
 }
 
 function getScoreBadgeColor(score: number): string {
-  if (score >= 80) return 'bg-success-light text-success';
+  if (score >= 80) return 'bg-success-light !text-success-text ';
   if (score >= 60) return 'bg-warning-light text-warning';
   if (score >= 40) return 'bg-warning-light text-warning';
   return 'bg-danger-light text-danger';

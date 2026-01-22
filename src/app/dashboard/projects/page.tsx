@@ -350,7 +350,7 @@ export default function ProjectsPage() {
       key: 'client',
       label: t('client'),
       render: (value) => (
-        <p className="text-secondary">
+        <p className="text-primary">
           {(value as { name?: string })?.name || 'N/A'}
         </p>
       ),
@@ -364,7 +364,7 @@ export default function ProjectsPage() {
           status === 'completed' ? { label: t('completed') || 'Terminé', className: 'badge-success' } :
           status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'badge-warning' } :
           status === 'planning' ? { label: t('planning') || 'Planification', className: 'badge-info' } :
-          status === 'archived' ? { label: t('archived') || 'Archivé', className: 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300' } :
+          status === 'archived' ? { label: t('archived') || 'Archivé', className: 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:!text-primary' } :
           { label: status, className: 'badge-primary' };
 
         return (
@@ -378,7 +378,7 @@ export default function ProjectsPage() {
       key: 'start_date',
       label: t('start_date'),
       render: (value) => (
-        <p className="text-secondary">
+        <p className="text-primary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
@@ -387,7 +387,7 @@ export default function ProjectsPage() {
       key: 'end_date',
       label: t('end_date'),
       render: (value) => (
-        <p className="text-secondary">
+        <p className="text-primary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
@@ -574,10 +574,10 @@ export default function ProjectsPage() {
           className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
             activeTab === 'active'
               ? 'bg-accent text-white shadow-md'
-              : 'bg-card text-secondary hover:bg-hover border border-default'
+              : 'bg-card text-primary hover:bg-hover border border-default'
           }`}
         >
-          <IconBuilding className="w-4 h-4" />
+          <IconBuilding className={`w-4 h-4 ${activeTab === 'active' ? '!text-white' : '!text-accent'}`} />
           {t('active_projects') || 'Projets actifs'}
           <span className={`ml-1 px-2 py-0.5 text-xs rounded-full ${
             activeTab === 'active' ? 'bg-white/20' : 'bg-muted'
@@ -590,18 +590,16 @@ export default function ProjectsPage() {
           className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
             activeTab === 'archived'
               ? 'bg-warning text-white shadow-md'
-              : 'bg-card text-secondary hover:bg-hover border border-default'
+              : 'bg-card text-primary hover:bg-hover border border-default'
           }`}
         >
-          <IconArchive className="w-4 h-4" />
+          <IconArchive className={`w-4 h-4 ${activeTab === 'archived' ? '!text-white' : '!text-warning'}`} />
           {t('archived_projects') || 'Archives'}
-          {archivedProjects.length > 0 && (
-            <span className={`ml-1 px-2 py-0.5 text-xs rounded-full ${
-              activeTab === 'archived' ? 'bg-white/20' : 'bg-warning-light text-warning'
-            }`}>
-              {archivedProjects.length}
-            </span>
-          )}
+          <span className={`ml-1 px-2 py-0.5 text-xs rounded-full ${
+            activeTab === 'archived' ? 'bg-white/20' : 'bg-warning-light text-warning'
+          }`}>
+            {archivedProjects.length}
+          </span>
         </button>
       </div>
 
@@ -623,7 +621,7 @@ export default function ProjectsPage() {
             label: t('total_projects'),
             value: stats.limit > 0 ? `${stats.total}/${stats.limit}` : stats.total,
             colorClass: 'text-success',
-            icon: <IconBuilding className="w-6 h-6 text-success" />,
+            icon: <IconBuilding className="w-6 h-6 !text-success-text -text" />,
           },
           {
             label: t('completed_projects'),

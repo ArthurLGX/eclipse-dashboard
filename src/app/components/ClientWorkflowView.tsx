@@ -35,7 +35,7 @@ const getStatusClasses = (status: NodeStatus) => {
   switch (status) {
     case 'done':
       return {
-        badge: 'bg-success-light text-success',
+        badge: 'bg-success-light !text-success-text ',
         border: 'border-success',
           dot: 'bg-success',
         background: 'bg-success-light',

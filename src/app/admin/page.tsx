@@ -214,7 +214,7 @@ export default function AdminOverviewPage() {
 
   const getHealthStatusColor = (status: string) => {
     switch (status) {
-      case 'ok': return 'text-success';
+      case 'ok': return 'text-success-text';
       case 'error': return 'text-danger';
       default: return 'text-warning';
     }
@@ -230,7 +230,7 @@ export default function AdminOverviewPage() {
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'user_registered': return <IconUserPlus className="w-4 h-4 text-success" />;
+      case 'user_registered': return <IconUserPlus className="w-4 h-4 !text-success-text -text" />;
       case 'subscription_changed': return <IconCreditCard className="w-4 h-4 text-info" />;
       case 'email_sent': return <IconMail className="w-4 h-4 !text-accent" />;
       case 'error': return <IconAlertTriangle className="w-4 h-4 text-danger" />;
@@ -299,7 +299,7 @@ export default function AdminOverviewPage() {
               <span className="text-xs">{t('database') || 'Base de données'}</span>
             </div>
             <p className={`text-sm font-medium ${
-              serverHealth.database === 'connected' ? 'text-success' : 'text-danger'
+              serverHealth.database === 'connected' ? 'text-success-text' : 'text-danger'
             }`}>
               {serverHealth.database === 'connected' ? t('connected') || 'Connectée' : t('disconnected') || 'Déconnectée'}
             </p>
@@ -311,7 +311,7 @@ export default function AdminOverviewPage() {
               <span className="text-xs">{t('response_time') || 'Temps de réponse'}</span>
             </div>
             <p className={`text-sm font-medium ${
-              (serverHealth.responseTime || 0) < 200 ? 'text-success' : 
+              (serverHealth.responseTime || 0) < 200 ? 'text-success-text' : 
               (serverHealth.responseTime || 0) < 500 ? 'text-warning' : 'text-danger'
             }`}>
               {serverHealth.responseTime ? `${serverHealth.responseTime}ms` : '-'}
@@ -358,7 +358,7 @@ export default function AdminOverviewPage() {
             label: t('active_subscriptions') || 'Abonnements actifs',
             value: stats.totalSubscriptions,
             icon: IconCreditCard,
-            color: 'text-success',
+            color: 'text-success-text',
             bgColor: 'bg-success-light',
             trend: '+5%',
             trendUp: true,
@@ -396,7 +396,7 @@ export default function AdminOverviewPage() {
                   <Icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
                 <div className={`flex items-center gap-1 text-xs font-medium ${
-                  stat.trendUp ? 'text-success' : 'text-danger'
+                  stat.trendUp ? 'text-success-text' : 'text-danger'
                 }`}>
                   {stat.trendUp ? (
                     <IconTrendingUp className="w-3.5 h-3.5" />

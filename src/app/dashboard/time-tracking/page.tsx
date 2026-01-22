@@ -349,10 +349,10 @@ export default function TimeTrackingPage() {
           <div className="card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-success-light rounded-lg">
-                <IconBriefcase className="w-5 h-5 text-success" />
+                <IconBriefcase className="w-5 h-5 !text-success-text -text" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-success">{formatDuration(stats.billableTime)}</p>
+                <p className="text-2xl font-bold !text-success-text -text">{formatDuration(stats.billableTime)}</p>
                 <p className="text-xs text-muted">{t('billable_time') || 'Temps facturable'}</p>
               </div>
             </div>
@@ -458,7 +458,7 @@ export default function TimeTrackingPage() {
                             <div className="flex-1 min-w-0">
                               <p className="font-medium text-primary truncate flex items-center gap-2">
                                 {entry.description || t('no_description') || 'Sans description'}
-                                {isRunning && <span className="text-xs text-warning font-normal">({t('running') || 'en cours'})</span>}
+                                {isRunning && <span className="text-xs text-warning-text font-normal">({t('running') || 'en cours'})</span>}
                                 {entry.source && entry.source !== 'manual' && (
                                   <TimeSourceBadge source={entry.source as TimeEntrySource} />
                                 )}
@@ -495,7 +495,7 @@ export default function TimeTrackingPage() {
                               )}
                             </div>
                             {entry.billable && entry.hourly_rate && (
-                              <span className="text-xs text-success">
+                              <span className="text-xs !text-success-text -text">
                                 {formatCurrency(actualDuration / 60 * entry.hourly_rate)}
                               </span>
                             )}

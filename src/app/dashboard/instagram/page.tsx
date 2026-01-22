@@ -489,7 +489,7 @@ function InstagramPlanner() {
       {/* Success Banner */}
       {success && (
         <div className="max-w-7xl mx-auto mb-4">
-          <div className="bg-success-light border border-success text-success px-4 py-3 rounded-lg flex items-center justify-between">
+          <div className="bg-success-light border border-success !text-success-text -text px-4 py-3 rounded-lg flex items-center justify-between">
             <span className="flex items-center gap-2">
               <IconCheck className="w-5 h-5" />
               {success}
@@ -930,7 +930,7 @@ function InstagramPlanner() {
                         {instagramConfig.instagram_account_type}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 px-2 py-1 bg-success-light text-success text-xs rounded-full">
+                    <div className="flex items-center gap-1 px-2 py-1 bg-success-light !text-success-text -text text-xs rounded-full">
                       <IconCheck className="w-3 h-3" />
                       Connecté
                     </div>
@@ -1011,15 +1011,15 @@ function InstagramPlanner() {
               </h3>
               <ul className="space-y-2 text-sm text-secondary">
                 <li className="flex items-start gap-2">
-                  <IconCheck className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
+                  <IconCheck className="w-4 h-4 !text-success-text -text flex-shrink-0 mt-0.5" />
                   Publiez entre 18h et 21h pour plus d&apos;engagement
                 </li>
                 <li className="flex items-start gap-2">
-                  <IconCheck className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
+                  <IconCheck className="w-4 h-4 !text-success-text -text flex-shrink-0 mt-0.5" />
                   Utilisez 5-10 hashtags pertinents
                 </li>
                 <li className="flex items-start gap-2">
-                  <IconCheck className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
+                  <IconCheck className="w-4 h-4 !text-success-text -text flex-shrink-0 mt-0.5" />
                   Alternez entre posts, reels et stories
                 </li>
               </ul>
@@ -1129,7 +1129,7 @@ function InstagramPlanner() {
                         {editingPost.caption && (
                           <p className="text-sm">
                             <span className="font-medium">{user?.username || 'vous'}</span>{' '}
-                            <span className="text-secondary">
+                            <span className="text-primary">
                               {editingPost.caption.substring(0, 100)}
                               {editingPost.caption.length > 100 && '...'}
                             </span>
@@ -1489,7 +1489,7 @@ function CalendarView({
                     onClick={() => onSelectPost(post)}
                     className={`w-full flex items-center gap-1 p-1 rounded text-xs truncate ${
                       post.status === 'published' 
-                        ? 'bg-success-light text-success' 
+                        ? 'bg-success-light !text-success-text ' 
                         : post.status === 'scheduled'
                         ? 'bg-warning-light dark text-warning'
                         : 'bg-muted text-primary'
@@ -1632,7 +1632,7 @@ function PostPreviewModal({
                   {post.caption && (
                     <p className="text-sm">
                       <span className="font-medium">{username}</span>{' '}
-                      <span className="text-secondary">{post.caption}</span>
+                      <span className="text-primary">{post.caption}</span>
                     </p>
                   )}
 

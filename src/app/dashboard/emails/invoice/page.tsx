@@ -626,7 +626,7 @@ Cordialement`;
               className="bg-white rounded-xl shadow-lg overflow-hidden"
             >
               <div className="p-4 bg-gray-50 border-b border-gray-200">
-                <div className="text-sm text-gray-500 mb-1">{t('to') || 'À'}: {recipients.map(r => r.email).join(', ')}</div>
+                <div className="text-sm text-info  mb-1">{t('to') || 'À'}: {recipients.map(r => r.email).join(', ')}</div>
                 <div className="font-semibold text-gray-800">{subject || '(Sans objet)'}</div>
               </div>
               
@@ -642,7 +642,7 @@ Cordialement`;
                 {/* Invoice Card Preview */}
                 {selectedInvoice && (
                   <div className="my-6 p-5 bg-gray-50 rounded-lg border-l-4 border-amber-500">
-                    <div className="text-xs text-gray-500 uppercase mb-2">{t('invoice') || 'Facture'}</div>
+                    <div className="text-xs text-info  uppercase mb-2">{t('invoice') || 'Facture'}</div>
                     <div className="text-lg font-bold text-gray-800 mb-1">{selectedInvoice.reference}</div>
                     <div className="text-2xl font-bold text-amber-500">{formatAmount(calculateTotal(selectedInvoice), selectedInvoice.currency)}</div>
                     <div className="mt-3 text-sm text-gray-600 space-y-1">
@@ -678,7 +678,7 @@ Cordialement`;
                       {t('attachments') || 'Pièces jointes'} (1)
                     </div>
                     <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg text-sm">
-                      <IconPaperclip className="w-4 h-4 text-gray-500" />
+                      <IconPaperclip className="w-4 h-4 text-info " />
                       <span>Facture-{selectedInvoice.reference}.pdf</span>
                     </div>
                   </div>
@@ -944,8 +944,8 @@ Cordialement`;
                 
                 {!signatureData && !loadingSignature && (
                   <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg flex items-start gap-2">
-                    <IconAlertCircle className="w-5 h-5 text-warning !text-warning flex-shrink-0 mt-0.5" />
-                    <div className="text-sm text-warning flex items-center gap-2 flex-wrap">
+                    <IconAlertCircle className="w-5 h-5 text-warning-text !text-warning-text flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-warning-text flex items-center gap-2 flex-wrap">
                       {t('no_signature_configured') || 'Aucune signature configurée. '}
                       <a 
                         href="/dashboard/settings?tab=email" 

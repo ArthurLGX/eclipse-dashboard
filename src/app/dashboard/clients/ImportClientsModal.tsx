@@ -599,7 +599,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
               <div className="space-y-4">
                 {/* Stats */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light text-success text-sm">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light !text-success-text -text text-sm">
                     <IconCheck className="w-4 h-4" />
                     {validCount} {t('import_valid') || 'valide(s)'}
                   </div>
@@ -722,7 +722,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 {/* Error list */}
                 {invalidCount > 0 && (
                   <div className="p-4 rounded-xl bg-warning-light border border-warning">
-                    <p className="text-sm text-warning font-medium mb-2">
+                    <p className="text-sm text-warning-text font-medium mb-2">
                       {t('import_errors_found') || 'Erreurs détectées :'}
                     </p>
                     <ul className="text-sm text-secondary space-y-1">
@@ -774,7 +774,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           }`}>
                             {option.label}
                             {option.value === 'skip' && (
-                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success-light text-success">
+                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success-light !text-success-text -text">
                                 {t('recommended') || 'Recommandé'}
                               </span>
                             )}
@@ -820,7 +820,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           }`}>
                             {option.label}
                             {option.value === 'email_only' && (
-                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success-light text-success">
+                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success-light !text-success-text -text">
                                 {t('recommended') || 'Recommandé'}
                               </span>
                             )}

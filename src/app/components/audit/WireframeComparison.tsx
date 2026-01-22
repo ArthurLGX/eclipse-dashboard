@@ -182,7 +182,7 @@ export default function WireframeComparison({
             {/* Ideal Structure (After) */}
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <span className="px-2 py-1 bg-success-light text-success text-xs font-medium rounded-full">
+                <span className="px-2 py-1 bg-success-light !text-success-text -text text-xs font-medium rounded-full">
                   {t('ideal_structure') || 'Structure idéale'}
                 </span>
                 <span className="text-xs text-muted">
@@ -210,7 +210,7 @@ export default function WireframeComparison({
                           <div className="flex items-center justify-between mb-1">
                             <div className="flex items-center gap-2">
                               {isDetected ? (
-                                <IconCheck className="w-4 h-4 text-success" />
+                                <IconCheck className="w-4 h-4 !text-success-text -text" />
                               ) : (
                                 <IconAlertTriangle className="w-4 h-4 text-warning" />
                               )}
@@ -312,7 +312,7 @@ export default function WireframeComparison({
               <p className="text-xs text-muted">{t('structure_score') || 'Score structure'}</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-success">{detectedSections.filter(s => s.detected).length}</p>
+              <p className="text-2xl font-bold !text-success-text -text">{detectedSections.filter(s => s.detected).length}</p>
               <p className="text-xs text-muted">{t('detected_sections') || 'Sections détectées'}</p>
             </div>
             <div className="text-center">
@@ -334,9 +334,9 @@ export default function WireframeComparison({
             className="mt-4 p-4 bg-warning-light border border-warning rounded-lg"
           >
             <div className="flex items-start gap-3">
-              <IconArrowRight className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+              <IconArrowRight className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-warning mb-1">
+                <p className="text-sm font-medium text-warning-text mb-1">
                   {t('priority_improvements') || 'Améliorations prioritaires'}
                 </p>
                 <p className="text-sm text-secondary">

@@ -696,8 +696,8 @@ function DashboardLayoutContent({
                                   {menuItem.status && !menuItem.badgeCount && (
                                     <span className={`ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                       menuItem.status === 'beta' 
-                                        ? 'bg-warning-light text-warning border border-warning' 
-                                        : 'bg-success-light text-success border border-success'
+                                        ? 'bg-warning-light text-warning-text border border-warning' 
+                                        : 'bg-success-light !text-success-text -text border border-success'
                                     }`}>
                                       {menuItem.status === 'beta' ? 'Beta' : 'New'}
                                     </span>

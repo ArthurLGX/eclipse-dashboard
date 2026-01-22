@@ -103,7 +103,7 @@ const ToolResultCard: React.FC<{
       case 'generateRelanceEmail':
         return <IconMail size={16} className="text-info" />;
       case 'createTask':
-        return <IconListCheck size={16} className="text-success" />;
+        return <IconListCheck size={16} className="text-success-text" />;
       case 'createQuote':
         return <IconFileInvoice size={16} className="text-accent" />;
       case 'createContract':
@@ -194,7 +194,7 @@ const ToolResultCard: React.FC<{
             )}
           </div>
           {result.task.created ? (
-            <p className="text-xs text-success flex items-center gap-1">
+            <p className="text-xs !text-success-text -text flex items-center gap-1">
               <IconCheck size={12} />
               {t('task_created_success') || 'Tâche créée avec succès'}
             </p>
@@ -221,7 +221,7 @@ const ToolResultCard: React.FC<{
           </div>
           {result.quote.created ? (
             <div className="space-y-2">
-              <p className="text-xs text-success flex items-center gap-1">
+              <p className="text-xs !text-success-text -text flex items-center gap-1">
                 <IconCheck size={12} />
                 {t('quote_created_success') || 'Devis créé avec succès'}
               </p>
@@ -259,14 +259,14 @@ const ToolResultCard: React.FC<{
           </div>
           {result.contract.created ? (
             <div className="space-y-2">
-              <p className="text-xs text-success flex items-center gap-1">
+              <p className="text-xs !text-success-text -text flex items-center gap-1">
                 <IconCheck size={12} />
                 {t('contract_created_success') || 'Contrat créé avec succès'}
               </p>
               {result.actionUrl && (
                 <button 
                   onClick={() => onAction?.('navigateToContract', result)}
-                  className="w-full text-xs !text-warning bg-warning-light hover:bg-warning hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+                  className="w-full text-xs !text-warning-text bg-warning-light hover:bg-warning hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
                 >
                   <IconExternalLink size={14} />
                   {t('view_contract') || 'Voir le contrat'}
@@ -276,7 +276,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmContract', result)}
-              className="w-full text-xs text-white bg-warning hover:bg-warning-light hover:!text-warning flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full text-xs text-white bg-warning hover:bg-warning-light hover:!text-warning-text flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
             >
               <IconFileText size={14} />
               {t('create_contract_now') || 'Créer le contrat maintenant'}
@@ -367,7 +367,7 @@ const ToolLoadingCard: React.FC<{ toolName: string; args?: Record<string, unknow
       case 'generateRelanceEmail':
         return <IconMail size={18} className="text-info" />;
       case 'createTask':
-        return <IconListCheck size={18} className="text-success" />;
+        return <IconListCheck size={18} className="text-success-text" />;
       case 'createQuote':
         return <IconFileInvoice size={18} className="text-accent" />;
       case 'createContract':

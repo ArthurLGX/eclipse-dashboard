@@ -503,12 +503,12 @@ export default function AIInvoiceGenerator({
                 {/* Totals */}
                 <div className="p-4 bg-accent-light rounded-xl space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-secondary">{t('total_ht') || 'Total HT'}</span>
+                    <span className="text-primary">{t('total_ht') || 'Total HT'}</span>
                     <span className="font-medium text-primary">{totalHT.toLocaleString('fr-FR')} €</span>
                   </div>
                   {generatedData.tva_applicable && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-secondary">TVA ({generatedData.tva_rate}%)</span>
+                      <span className="text-primary">TVA ({generatedData.tva_rate}%)</span>
                       <span className="font-medium text-primary">{totalTVA.toLocaleString('fr-FR')} €</span>
                     </div>
                   )}

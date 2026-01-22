@@ -146,7 +146,7 @@ export default function AdminModulesPage() {
                     onClick={() => handleStatusChange(module.id, 'beta')}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
                       currentStatus === 'beta'
-                        ? 'bg-warning-light text-warning font-medium border border-warning'
+                        ? 'bg-warning-light text-warning-text font-medium border border-warning'
                         : 'text-muted bg-muted'
                     }`}
                   >
@@ -157,7 +157,7 @@ export default function AdminModulesPage() {
                     onClick={() => handleStatusChange(module.id, 'new')}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
                       currentStatus === 'new'
-                        ? 'bg-success-light text-success font-medium border border-success'
+                        ? 'bg-success-light !text-success-text font-medium border border-success'
                         : 'text-muted hover:bg-hover'
                     }`}
                   >
@@ -206,13 +206,13 @@ export default function AdminModulesPage() {
         </h3>
         <ul className="text-sm text-primary space-y-1">
           <li className="flex items-center gap-2">
-            <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-warning-light text-warning border border-warning rounded-full">Beta</span>
+            <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-warning-light text-warning-text border border-warning rounded-full">Beta</span>
             {language === 'fr' 
               ? 'Module en cours de développement, peut contenir des bugs'
               : 'Module under development, may contain bugs'}
           </li>
           <li className="flex items-center gap-2">
-            <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-success-light text-success border border-success rounded-full">New</span>
+            <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-success-light !text-success-text -text border border-success rounded-full">New</span>
             {language === 'fr' 
               ? 'Nouveau module récemment ajouté'
               : 'New module recently added'}

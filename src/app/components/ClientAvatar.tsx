@@ -112,7 +112,7 @@ export default function ClientAvatar({
   // Cas 4: Initiale
   return (
     <div className={`${config.container} rounded-full bg-zinc-700 flex items-center justify-center flex-shrink-0 ${className}`}>
-      <span className={`text-zinc-300 font-medium ${config.text}`}>
+      <span className={`!text-primary font-medium ${config.text}`}>
         {initial}
       </span>
     </div>

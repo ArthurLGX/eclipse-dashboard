@@ -92,7 +92,7 @@ export default function ForgotPassword() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="!text-center mt-6"
               >
-                <p className="text-secondary">
+                <p className="text-primary">
                   Vous vous souvenez de votre mot de passe ?{' '}
                   <Link
                     href="/login"
@@ -111,7 +111,7 @@ export default function ForgotPassword() {
               className="!text-center"
             >
               <div className="w-20 h-20 bg-success-light rounded-full flex items-center justify-center mx-auto mb-6">
-                <IconCheck size={40} className="text-success" />
+                <IconCheck size={40} className="text-success-text" />
               </div>
               <h2 className="!text-2xl font-bold text-primary mb-4">
                 Email envoyé !

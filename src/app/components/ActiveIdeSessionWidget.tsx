@@ -134,7 +134,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
               </span>
-              <span className="text-xs font-medium text-success">
+              <span className="text-xs font-medium !text-success-text -text">
                 {activeSession?.project?.title || 'VS Code'}
               </span>
             </motion.div>
@@ -193,7 +193,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
                 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-success">
+                    <span className="text-xs font-semibold uppercase tracking-wider !text-success-text -text">
                       {t('live') || 'En cours'}
                     </span>
                   </div>
@@ -204,7 +204,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
                       href={`/dashboard/projects/${activeSession.project.documentId}`}
                       className="flex items-center gap-1.5 mt-1 group"
                     >
-                      <IconFolder size={14} className="text-success" />
+                      <IconFolder size={14} className="text-success-text" />
                       <span className="text-sm font-medium text-primary group-hover:text-accent transition-colors truncate">
                         {activeSession.project.title}
                       </span>

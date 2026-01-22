@@ -185,7 +185,7 @@ export default function ProspectsPage() {
       key: 'email',
       label: t('email'),
       render: (value) => (
-        <p className="text-secondary">{value as string}</p>
+        <p className="text-primary">{value as string}</p>
       ),
     },
     {
@@ -210,7 +210,7 @@ export default function ProspectsPage() {
       key: 'createdAt',
       label: t('creation_date'),
       render: (value) => (
-        <p className="text-secondary">
+        <p className="text-primary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),
@@ -286,7 +286,7 @@ export default function ProspectsPage() {
           label: t('quote_sent') || 'Devis envoyés',
           value: stats.quote_sent,
           colorClass: 'text-success',
-          icon: <IconUserPlus className="w-6 h-6 text-success" />,
+          icon: <IconUserPlus className="w-6 h-6 !text-success-text -text" />,
         },
       ]}
       loading={loading}

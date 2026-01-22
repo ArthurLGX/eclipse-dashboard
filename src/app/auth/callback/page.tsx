@@ -64,7 +64,7 @@ function CallbackContent() {
           />
         </div>
         <h2 className="text-xl font-semibold mb-2">Connexion en cours...</h2>
-        <p className="text-secondary">Veuillez patienter</p>
+        <p className="text-primary">Veuillez patienter</p>
       </motion.div>
     </div>
   );

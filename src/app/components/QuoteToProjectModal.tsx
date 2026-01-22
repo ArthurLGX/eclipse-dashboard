@@ -566,7 +566,7 @@ export default function QuoteToProjectModal({
                   className="py-12 text-center"
                 >
                   <IconLoader2 className="w-12 h-12 text-violet-500 animate-spin mx-auto mb-4" />
-                  <p className="text-secondary">
+                  <p className="text-primary">
                     {t('creating_project') || 'Création du projet en cours...'}
                   </p>
                 </motion.div>

@@ -46,7 +46,7 @@ export default function QuotaAlert() {
               {notification.type === 'quota_exceeded' || notification.type === 'trial_expired' ? (
                 <IconAlertTriangle className="text-danger flex-shrink-0" size={24} />
               ) : (
-                <IconClock className="text-warning flex-shrink-0" size={24} />
+                <IconClock className="text-warning-text flex-shrink-0" size={24} />
               )}
               <div>
                 <p className={`font-medium ${

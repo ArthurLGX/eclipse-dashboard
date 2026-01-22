@@ -274,7 +274,7 @@ export default function MeetingIntegrationsPage() {
         {/* Status Badge */}
         <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
           isConnected 
-            ? 'bg-success-light text-success' 
+            ? 'bg-success-light !text-success-text ' 
             : 'bg-warning-light text-warning'
         }`}>
           {isConnected ? (
@@ -513,19 +513,19 @@ export default function MeetingIntegrationsPage() {
           </h2>
           <ul className="space-y-2 text-sm text-secondary">
             <li className="flex items-start gap-2">
-              <IconCheck className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+              <IconCheck className="w-4 h-4 !text-success-text -text mt-0.5 flex-shrink-0" />
               <span><strong>Mets le lien Google Meet/Zoom</strong> dans le champ &quot;Lieu&quot; de l&apos;événement Eclipse</span>
             </li>
             <li className="flex items-start gap-2">
-              <IconCheck className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+              <IconCheck className="w-4 h-4 !text-success-text -text mt-0.5 flex-shrink-0" />
               <span><strong>Utilise des titres similaires</strong> entre Eclipse et la réunion réelle</span>
             </li>
             <li className="flex items-start gap-2">
-              <IconCheck className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+              <IconCheck className="w-4 h-4 !text-success-text -text mt-0.5 flex-shrink-0" />
               <span><strong>Associe toujours un projet</strong> pour retrouver les notes facilement</span>
             </li>
             <li className="flex items-start gap-2">
-              <IconCheck className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+              <IconCheck className="w-4 h-4 !text-success-text -text mt-0.5 flex-shrink-0" />
               <span><strong>Crée l&apos;événement avant</strong> la réunion pour que le matching fonctionne</span>
             </li>
           </ul>

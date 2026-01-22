@@ -115,7 +115,7 @@ export default function DailySuggestionsModal() {
   const getTimeOfDayIcon = () => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return <IconSunrise className="w-5 h-5 text-amber-400" />;
-    if (hour >= 12 && hour < 18) return <IconSun stroke={'#ffd700'} className="!text-warning w-5 h-5" />;
+    if (hour >= 12 && hour < 18) return <IconSun stroke={'#ffd700'} className="!text-warning-text w-5 h-5" />;
     return <IconMoon className="w-5 h-5 text-indigo-400" />;
   };
 
@@ -145,7 +145,7 @@ export default function DailySuggestionsModal() {
       case 'high':
         return 'bg-danger-light text-danger border-danger';
       case 'medium':
-        return 'bg-warning-light text-warning border-warning';
+        return 'bg-warning-light text-warning-text border-warning';
       case 'low':
         return 'bg-info-light text-info border-info';
       default:
@@ -272,7 +272,7 @@ export default function DailySuggestionsModal() {
                 {data.suggestions.length === 0 ? (
                   <div className="text-center py-8">
                     <div className="w-16 h-16 rounded-full bg-success-light flex items-center justify-center mx-auto mb-4">
-                      <IconSparkles className="w-8 h-8 text-success" />
+                      <IconSparkles className="w-8 h-8 !text-success-text -text" />
                     </div>
                     <p className="text-lg font-medium text-primary mb-2">
                       {t('all_caught_up') || 'Tout est à jour !'}

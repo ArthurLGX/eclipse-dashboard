@@ -735,26 +735,25 @@ export default function FacturePage() {
       className="min-h-screen p-6"
     >
       {/* Header avec actions */}
-      <div className="max-w-4xl mx-auto rounded-lg flex flex-col gap-4 overflow-hidden  ">
-        <div className="flex lg:flex-row flex-col gap-2 justify-between">
+      <div className="max-w-4xl mx-auto rounded-lg flex flex-col gap-4 overflow-hidden  rounded-full  ">
+        <div className="flex lg:flex-row flex-col gap-2 justify-between bg-accent-light h-fit rounded-full p-2">
           {/* Bouton paramètres de facturation */}
           <button
             onClick={() => window.open('/dashboard/settings?tab=invoice', '_blank')}
-            className="flex items-center justify-center gap-2 bg-slate-500/10 text-slate-500 border border-slate-500/20 px-4 py-2 rounded-lg hover:bg-slate-500/20 transition-colors"
+            className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
             title={t('billing_settings') || 'Paramètres de facturation'}
           >
-            <IconSettings className="w-4 h-4" />
-            {t('billing_settings') || 'Paramètres'}
+            <IconSettings className="w-4 h-4" color="white" />
           </button>
           
           <div className="flex lg:flex-row flex-col gap-2">
           {!editing ? (
             <button
               onClick={handleEdit}
-              className="flex items-center justify-center gap-2 bg-accent-light !text-accent border border-accent px-4 py-2 rounded-lg hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
             >
-              <IconEdit className="w-4 h-4" />
-              {t('edit')}
+              <IconEdit className="w-4 h-4" color="white" />
+            
             </button>
           ) : (
             <>
@@ -762,7 +761,7 @@ export default function FacturePage() {
               {isCreationMode && (
                 <button
                   onClick={() => setShowAIGenerator(true)}
-                  className="flex items-center justify-center gap-2 bg-accent-light !text-accent border border-accent px-4 py-2 rounded-lg hover:bg-accent hover:text-white transition-all"
+                  className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
                 >
                   <Image 
                     src="/images/logo/eclipse-logo.png" 
@@ -776,16 +775,14 @@ export default function FacturePage() {
               )}
               <button
                 onClick={handleSave}
-                className="flex items-center justify-center gap-2 bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-colors"
+                className="flex items-center justify-center gap-2 bg-success !text-white border border-success px-4 py-2 rounded-full hover:bg-[var(--color-success)] hover:text-white transition-colors"
               >
-                {t('save')}
-              </button>
+               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center justify-center gap-2 bg-muted text-secondary border border-default px-4 py-2 rounded-lg hover:bg-card transition-colors"
+                className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:text-white transition-colors"
               >
-                {t('cancel')}
-              </button>
+               </button>
             </>
           )}
           {!editing && (
@@ -794,40 +791,35 @@ export default function FacturePage() {
               {isQuote && facture?.quote_status !== 'accepted' && (
                 <button
                   onClick={() => setShowConvertModal(true)}
-                  className="flex items-center justify-center gap-2 bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-colors"
+                  className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
                 >
-                  <IconFileInvoice className="w-4 h-4" />
-                  {t('convert_to_invoice') || 'Convertir en facture'}
-                </button>
+                  <IconFileInvoice className="w-4 h-4" color="white" />
+                 </button>
               )}
               {/* Badge devis accepté */}
               {isQuote && facture?.quote_status === 'accepted' && (
-                <div className="flex items-center gap-2 bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg">
-                  <IconCheck className="w-4 h-4" />
-                  {t('quote_accepted') || 'Devis accepté'}
-                </div>
+                <div className="flex items-center gap-2 bg-accent border border-accent px-4 py-2 rounded-full">
+                  <IconCheck className="w-4 h-4" color="white" />
+                 </div>
               )}
               <button
                 onClick={handleSendEmail}
-                className="flex items-center justify-center gap-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 px-4 py-2 rounded-lg hover:bg-amber-500/20 transition-colors"
+                className="flex !text-xs flex-1 w-full items-center justify-center gap-2 bg-warning !text-white border border-warning px-4 py-2 rounded-full hover:bg-[var(--color-warning)] hover:text-white transition-colors"
               >
-                <IconMail className="w-4 h-4" />
-                {t('send_email')}
-              </button>
+                <IconMail className="w-4 h-4" color="white" />
+               </button>
               <button
                 onClick={handleDownloadPDF}
-                className="flex items-center justify-center gap-2 bg-purple-500/10 text-purple-400 border border-purple-500/20 px-4 py-2 rounded-lg hover:bg-purple-500/20 transition-colors"
+                className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
               >
-                <IconDownload className="w-4 h-4" />
-                {t('download_pdf')}
-              </button>
+                <IconDownload className="w-4 h-4" color="white" />
+               </button>
               <button
                 onClick={handleDelete}
-                className="flex items-center justify-center gap-2 bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-2 rounded-lg hover:bg-red-500/20 transition-colors"
+                className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:text-white transition-colors"
               >
-                <IconTrash className="w-4 h-4" />
-                {t('delete')}
-              </button>
+                <IconTrash className="w-4 h-4" color="white" />
+               </button>
             </>
           )}
           </div>
@@ -1307,7 +1299,7 @@ export default function FacturePage() {
                 <h3 className="!text-lg font-semibold !text-black mb-3">
                   {t('notes')}
                 </h3>
-                <p className="!text-zinc-300">{facture.notes}</p>
+                <p className="!!text-primary">{facture.notes}</p>
               </div>
             )}
 
@@ -1449,7 +1441,7 @@ export default function FacturePage() {
             </div>
           </div>
 
-          <p className="text-secondary">
+          <p className="text-primary">
             {t('convert_quote_confirm_desc') || 'Le devis sera marqué comme "accepté" et une nouvelle facture sera créée avec les mêmes informations.'}
           </p>
 

@@ -217,7 +217,7 @@ export default function AddClientModal({
                 onClick={() => setProcessStatus('client')}
                 className={`flex-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   processStatus === 'client'
-                    ? 'bg-success-light text-success'
+                    ? 'bg-success-light !text-success-text '
                     : 'bg-hover text-secondary hover:bg-card'
                 }`}
               >
@@ -280,7 +280,7 @@ export default function AddClientModal({
               </>
             ) : success ? (
               <>
-                <IconCheck size={16} className="!text-success" />
+                <IconCheck size={16} className="!text-success-text" />
                 <span>Ajouté !</span>
               </>
             ) : (

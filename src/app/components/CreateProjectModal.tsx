@@ -652,7 +652,7 @@ export default function CreateProjectModal({
                       <span className="text-sm text-secondary">
                         {t('estimated_value') || 'Valeur estimée'}
                       </span>
-                      <span className="text-lg font-bold text-success">
+                      <span className="text-lg font-bold !text-success-text -text">
                         {(calculateTemplateTotals(selectedTemplate).totalHours * hourlyRate).toLocaleString('fr-FR')} €
                       </span>
                     </div>

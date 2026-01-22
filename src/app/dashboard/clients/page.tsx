@@ -672,17 +672,17 @@ export default function ClientsPage() {
     {
       key: 'email',
       label: t('email'),
-      render: (value) => <p className="text-secondary">{value as string}</p>,
+      render: (value) => <p className="text-primary">{value as string}</p>,
     },
     {
       key: 'enterprise',
       label: t('enterprise'),
-      render: (value) => <p className="text-zinc-300">{(value as string) || 'N/A'}</p>,
+      render: (value) => <p className="!text-primary">{(value as string) || 'N/A'}</p>,
     },
     {
       key: 'website',
       label: t('website'),
-      render: (value) => <p className="text-zinc-300">{(value as string) || 'N/A'}</p>,
+      render: (value) => <p className="!text-primary">{(value as string) || 'N/A'}</p>,
     },
     {
       key: 'processStatus',
@@ -706,7 +706,7 @@ export default function ClientsPage() {
       key: 'createdAt',
       label: t('creation_date'),
       render: (value) => (
-        <p className="text-zinc-300">
+        <p className="!text-primary">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
       ),
@@ -789,7 +789,7 @@ export default function ClientsPage() {
             label: t('all_contacts') || 'Tous les contacts',
             value: stats.limit > 0 ? `${stats.total}/${stats.limit}` : stats.total,
             colorClass: ownershipFilter === 'all' ? 'text-success border-2 border-success' : 'text-success',
-            icon: <IconUsers className="w-6 h-6 text-success" />,
+            icon: <IconUsers className="w-6 h-6 !text-success-text -text" />,
             onClick: () => setOwnershipFilter('all'),
           },
           {

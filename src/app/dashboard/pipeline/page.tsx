@@ -969,7 +969,7 @@ export default function PipelinePage() {
                 <IconCheck size={16} />
                 <span className="text-xs font-medium">{t('kpi_won_revenue') || 'CA Gagné'}</span>
               </div>
-              <p className="text-xl font-bold text-success">
+              <p className="text-xl font-bold !text-success-text -text">
                 {formatCurrency(kpis.wonValue)}
               </p>
               <p className="text-xs text-muted mt-1">
@@ -1025,7 +1025,7 @@ export default function PipelinePage() {
                 <IconCheck size={16} />
                 <span className="text-xs font-medium">{t('won') || 'Gagnés'}</span>
               </div>
-              <p className="text-xl font-bold text-success">
+              <p className="text-xl font-bold !text-success-text -text">
                 {kpis.wonCount}
               </p>
               <p className="text-xs text-muted mt-1">

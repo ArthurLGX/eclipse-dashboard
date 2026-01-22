@@ -778,7 +778,7 @@ const PROJECT_TYPES = [
                 <p className="text-xl font-bold text-primary">
                   {totalFactures.toLocaleString('fr-FR')} €
                 </p>
-                <p className="text-xs text-success">
+                <p className="text-xs !text-success-text -text">
                   {paidFactures.toLocaleString('fr-FR')} € {t('paid') || 'payé'}
                 </p>
               </div>
@@ -804,7 +804,7 @@ const PROJECT_TYPES = [
                     <p className="text-xl font-bold text-warning">{pendingTasks} {t('tasks_pending')}</p>
                   )}
                 </div>
-                <p className="text-xs text-success">
+                <p className="text-xs !text-success-text -text">
                   {completedTasks} {t('tasks_completed')} • {tasksProgress}% {t('progress')}
                 </p>
               </div>
@@ -878,7 +878,7 @@ const PROJECT_TYPES = [
                   {/* Description */}
                   <div className="card p-6">
                     <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-                      <IconFileText className="w-5 h-5 text-success" />
+                      <IconFileText className="w-5 h-5 !text-success-text -text" />
                       {t('description')}
                     </h2>
                     {isEditMode ? (
@@ -1275,7 +1275,7 @@ const PROJECT_TYPES = [
                                 {(facture.number || 0).toLocaleString('fr-FR')} €
                               </p>
                               <span className={`text-xs px-2 py-0.5 rounded-full ${
-                                facture.facture_status === 'paid' ? 'bg-success-light text-success' :
+                                facture.facture_status === 'paid' ? 'bg-success-light !text-success-text ' :
                                 facture.facture_status === 'sent' ? 'bg-info-light text-info' :
                                 'bg-warning-light text-warning'
                               }`}>
@@ -1334,7 +1334,7 @@ const PROJECT_TYPES = [
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-success-light rounded-lg">
-                    <IconCalendar className="w-4 h-4 text-success" />
+                    <IconCalendar className="w-4 h-4 !text-success-text -text" />
                   </div>
                   <div className="flex-1">
                     <p className="text-xs text-muted mb-0.5">{t('start_date')}</p>
@@ -1482,20 +1482,20 @@ const PROJECT_TYPES = [
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted">{t('created_at')}</span>
-                  <span className="text-secondary">
+                  <span className="text-primary">
                     {new Date(project.createdAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted">{t('updated_at')}</span>
-                  <span className="text-secondary">
+                  <span className="text-primary">
                     {new Date(project.updatedAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
                 {!isOwner && (
                   <div className="flex justify-between pt-2 border-t border-default">
                     <span className="text-muted">{t('your_role')}</span>
-                    <span className="text-warning font-medium">{t('collaborator')}</span>
+                    <span className="text-warning-text font-medium">{t('collaborator')}</span>
                   </div>
                 )}
               </div>

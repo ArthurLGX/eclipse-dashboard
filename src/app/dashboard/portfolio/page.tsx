@@ -862,7 +862,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     onClick={() => updateSetting('columns', num as 2 | 3 | 4)}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       settings.columns === num
-                        ? 'bg-accenttext-accent'
+                        ? 'bg-accent text-accent'
                         : 'bg-muted text-secondary hover:bg-hover'
                     }`}
                   >
@@ -888,7 +888,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     onClick={() => updateSetting('gap', gap.id as PortfolioSettings['gap'])}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       settings.gap === gap.id
-                        ? 'bg-accenttext-accent'
+                        ? 'bg-accent text-accent'
                         : 'bg-muted text-secondary hover:bg-hover'
                     }`}
                   >
@@ -955,7 +955,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                       readOnly
                       className="flex-1 px-3 py-2 bg-muted border border-input rounded-lg text-primary text-sm"
                     />
-                    <button className="px-3 py-2 bg-accenttext-accent rounded-lg hover:bg-accent transition-colors">
+                    <button className="px-3 py-2 bg-accent text-accent rounded-lg hover:bg-accent transition-colors">
                       <IconCopy size={18} />
                     </button>
                   </div>
@@ -1208,7 +1208,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
             </div>
           </div>
           <button onClick={handleClose} className="p-2 hover:bg-hover rounded-lg transition-colors">
-            <IconX size={20} className="text-secondary" />
+            <IconX size={20} className="text-primary" />
           </button>
         </div>
 
@@ -1235,7 +1235,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                   <button
                     onClick={handleScrape}
                     disabled={loading || !url.trim()}
-                    className="px-6 py-3 bg-accenttext-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                    className="px-6 py-3 bg-accent text-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                   >
                     {loading ? (
                       <>
@@ -1388,7 +1388,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
             <button
               onClick={handleImport}
               disabled={selectedCount === 0}
-              className="px-6 py-2 bg-accenttext-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-accent text-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
             >
               <IconDownload size={18} />
               {t('portfolio_import_btn')} {selectedCount} {t('portfolio_import_projects')}
@@ -1691,7 +1691,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
               href={project.projectUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-lg bg-accenttext-accent font-medium transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-lg bg-accent text-accent font-medium transition-opacity hover:opacity-90"
             >
               <IconExternalLink size={18} />
               Voir le projet
@@ -1970,7 +1970,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accenttext-accent rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accent text-accent rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
                       >
                         {uploading ? (
                           <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -2152,7 +2152,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-accenttext-accent font-medium hover:bg-accent transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-accent text-accent font-medium hover:bg-accent transition-colors"
             >
               {project ? t('save') : t('portfolio_create')}
             </button>
@@ -2183,7 +2183,7 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
       </p>
       <button
         onClick={onAddProject}
-        className="flex items-center gap-2 px-6 py-3 bg-accenttext-accent font-medium rounded-xl hover:bg-accent transition-colors"
+        className="flex items-center gap-2 px-6 py-3 bg-accent text-accent font-medium rounded-xl hover:bg-accent transition-colors"
       >
         <IconPlus size={20} />
         {t('portfolio_add_first')}
@@ -2482,7 +2482,7 @@ export default function PortfolioPage() {
       <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <IconLoader2 size={32} className="animate-spin !text-accent" />
-          <p className="text-secondary">{t('portfolio_loading')}</p>
+          <p className="text-primary">{t('portfolio_loading')}</p>
         </div>
       </div>
     );
@@ -2559,7 +2559,7 @@ export default function PortfolioPage() {
                   {linkCopied ? (
                     <IconCheck size={18} className="!text-accent" />
                   ) : (
-                    <IconShare size={18} className="text-secondary" />
+                    <IconShare size={18} className="text-primary" />
                   )}
                 </button>
               )}
@@ -2568,21 +2568,21 @@ export default function PortfolioPage() {
                 className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
                 title={t('portfolio_preview')}
               >
-                <IconEye size={18} className="text-secondary" />
+                <IconEye size={18} className="text-primary" />
               </button>
               <button
                 onClick={() => setIsImportModalOpen(true)}
                 className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
                 title={t('portfolio_import_from_site')}
               >
-                <IconDownload size={18} className="text-secondary" />
+                <IconDownload size={18} className="text-primary" />
               </button>
               <button
                 onClick={() => setIsSettingsOpen(true)}
                 className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
                 title={t('portfolio_settings')}
               >
-                <IconSettings size={18} className="text-secondary" />
+                <IconSettings size={18} className="text-primary" />
               </button>
               <button
                 onClick={() => {
@@ -2672,7 +2672,7 @@ export default function PortfolioPage() {
               {/* Grid */}
               {filteredProjects.length === 0 ? (
                 <div className="text-center py-20">
-                  <p className="text-secondary">
+                  <p className="text-primary">
                     {t('portfolio_no_category')}
                   </p>
                 </div>

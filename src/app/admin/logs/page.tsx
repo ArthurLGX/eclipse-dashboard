@@ -122,7 +122,7 @@ export default function AdminLogsPage() {
 
   const getTypeColor = (type: DisplayLog['type']) => {
     const colors: Record<DisplayLog['type'], string> = {
-      login: 'bg-success-light text-success',
+      login: 'bg-success-light !text-success-text',
       logout: 'bg-info-light text-info',
       register: 'bg-accent-light !text-accent',
       update: 'bg-warning-light text-warning',
@@ -137,7 +137,7 @@ export default function AdminLogsPage() {
   const getStatusIcon = (status: DisplayLog['status']) => {
     switch (status) {
       case 'success':
-        return <IconCheck className="w-4 h-4 text-success" />;
+        return <IconCheck className="w-4 h-4 !text-success-text -text" />;
       case 'error':
         return <IconX className="w-4 h-4 text-danger" />;
       case 'warning':

@@ -77,7 +77,7 @@ export default function ClientFacturesPage() {
       key: 'number',
       label: t('amount'),
       render: v => (
-        <span className="text-secondary">
+        <span className="text-primary">
           {(v as number)?.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) || '-'}
         </span>
       ),
@@ -96,7 +96,7 @@ export default function ClientFacturesPage() {
             // Statuts pour devis: draft, sent, accepted, rejected, expired
             switch (status) {
               case 'accepted':
-                return { icon: <IconCheck className="w-4 h-4 text-success" />, label: t('accepted') || 'Accepté' };
+                return { icon: <IconCheck className="w-4 h-4 !text-success-text -text" />, label: t('accepted') || 'Accepté' };
               case 'sent':
                 return { icon: <IconCheck className="w-4 h-4 text-info" />, label: t('sent') || 'Envoyé' };
               case 'rejected':
@@ -110,7 +110,7 @@ export default function ClientFacturesPage() {
             // Statuts pour factures: draft, sent, paid, overdue
             switch (status) {
               case 'paid':
-                return { icon: <IconCheck className="w-4 h-4 text-success" />, label: t('paid') || 'Payé' };
+                return { icon: <IconCheck className="w-4 h-4 !text-success-text -text" />, label: t('paid') || 'Payé' };
               case 'sent':
                 return { icon: <IconCheck className="w-4 h-4 text-info" />, label: t('sent') || 'Envoyé' };
               case 'overdue':
@@ -177,7 +177,7 @@ export default function ClientFacturesPage() {
                   href={pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-success-light text-success border border-success hover:opacity-80 transition-colors text-xs font-semibold"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-success-light !text-success-text -text border border-success hover:opacity-80 transition-colors text-xs font-semibold"
                   download
                 >
                   <IconDownload className="w-4 h-4" />

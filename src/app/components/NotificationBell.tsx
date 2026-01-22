@@ -241,7 +241,7 @@ export default function NotificationBell() {
 
     // Notifications de contrats
     if (notification.type === 'contract_signed') {
-      return <IconFileCheck className="w-5 h-5 text-success" />;
+      return <IconFileCheck className="w-5 h-5 !text-success-text -text" />;
     }
     
     if (notification.type === 'contract_pending') {

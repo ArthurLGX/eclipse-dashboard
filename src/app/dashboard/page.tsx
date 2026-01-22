@@ -214,7 +214,7 @@ export default function DashboardPage() {
         {stats.revenueByMonth.map((month, i) => (
           <div key={i} className="flex-1 flex flex-col items-center gap-1">
             <div 
-              className="w-full bg-violet-500/80 rounded-t transition-all hover:bg-violet-500"
+              className="w-full bg-warning rounded-t transition-all hover:bg-violet-500"
               style={{ height: `${(month.value / maxValue) * 100}%`, minHeight: month.value > 0 ? '4px' : '2px' }}
             />
             <span className="text-[10px] text-muted">{month.month}</span>
@@ -251,8 +251,8 @@ export default function DashboardPage() {
             className="card cursor-pointer p-4 bg-gradient-to-br from-violet-500/10 to-transparent border-violet-500/20"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center">
-                <IconCurrencyEuro className="w-5 h-5 text-violet-500" />
+              <div className="w-10 h-10 bg-warning-light rounded-lg flex items-center justify-center">
+                <IconCurrencyEuro className="w-5 h-5 text-warning-text" />
               </div>
               {stats.caTrend !== 0 && (
                 <div className={`flex items-center gap-0.5 text-xs font-medium ${stats.caTrend > 0 ? 'text-green-500' : 'text-red-500'}`}>
@@ -271,14 +271,14 @@ export default function DashboardPage() {
           <motion.div
             whileHover={{ scale: 1.02 }}
             onClick={() => router.push('/dashboard/clients')}
-            className="card cursor-pointer p-4 bg-gradient-to-br from-emerald-500/10 to-transparent border-emerald-500/20"
+            className="card cursor-pointer p-4 bg-gradient-to-br from-success to-transparent border-success"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                <IconUsers className="w-5 h-5 text-emerald-500" />
+              <div className="w-10 h-10 bg-success rounded-lg flex items-center justify-center">
+                <IconUsers className="w-5 h-5 !text-success-text" />
               </div>
               {stats.newClientsThisMonth.length > 0 && (
-                <div className="flex items-center gap-0.5 text-xs font-medium text-emerald-500">
+                <div className="flex items-center gap-0.5 text-xs font-medium !text-success-text">
                   +{stats.newClientsThisMonth.length}
                 </div>
               )}
@@ -293,11 +293,11 @@ export default function DashboardPage() {
           <motion.div
             whileHover={{ scale: 1.02 }}
             onClick={() => router.push('/dashboard/projects')}
-            className="card cursor-pointer p-4 bg-gradient-to-br from-blue-500/10 to-transparent border-blue-500/20"
+            className="card cursor-pointer p-4 bg-gradient-to-br from-info to-transparent border-info"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <IconBriefcase className="w-5 h-5 text-blue-500" />
+              <div className="w-10 h-10 bg-info rounded-lg flex items-center justify-center">
+                <IconBriefcase className="w-5 h-5 text-info" />
               </div>
               <div className="text-xs text-muted">
                 {stats.inProgressProjects.length} {t('in_progress_short')}
@@ -316,10 +316,10 @@ export default function DashboardPage() {
             className="card cursor-pointer p-4 bg-gradient-to-br from-purple-500/10 to-transparent border-purple-500/20"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                <IconUserSearch className="w-5 h-5 text-purple-500" />
+              <div className="w-10 h-10 bg-info rounded-lg flex items-center justify-center">
+                <IconUserSearch className="w-5 h-5 text-info" />
               </div>
-              <div className="text-xs font-medium text-purple-500">
+              <div className="text-xs font-medium text-info">
                 {stats.conversionRate}% conv.
               </div>
             </div>
@@ -336,8 +336,8 @@ export default function DashboardPage() {
             className={`card cursor-pointer p-4 ${stats.unpaidInvoices.length > 0 ? 'bg-gradient-to-br from-red-500/10 to-transparent border-red-500/20' : 'bg-gradient-to-br from-gray-500/10 to-transparent'}`}
           >
             <div className="flex items-start justify-between mb-2">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stats.unpaidInvoices.length > 0 ? 'bg-red-500/20' : 'bg-gray-500/20'}`}>
-                <IconFileInvoice className={`w-5 h-5 ${stats.unpaidInvoices.length > 0 ? 'text-red-500' : 'text-gray-500'}`} />
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stats.unpaidInvoices.length > 0 ? 'bg-danger' : 'bg-info'}`}>
+                <IconFileInvoice className={`w-5 h-5 ${stats.unpaidInvoices.length > 0 ? 'text-red-500' : 'text-info'}`} />
               </div>
               {stats.unpaidInvoices.length > 0 && (
                 <IconAlertTriangle className="w-4 h-4 text-red-500" />
@@ -358,10 +358,10 @@ export default function DashboardPage() {
               <h3 className="font-semibold text-primary">{t('revenue_evolution')}</h3>
               <button 
                 onClick={() => router.push('/dashboard/revenue')}
-                className="text-xs text-violet-500 hover:text-violet-600 flex items-center gap-1"
+                className="text-xs text-secondary hover:text-primary flex items-center gap-1 !shadow-none"
               >
                 {t('view_details')}
-                <IconArrowUpRight className="w-3 h-3" />
+                <IconArrowUpRight className="w-3 h-3 !text-secondary" style={{ color: 'var(--color-secondary)' }} />
               </button>
             </div>
             {loading ? (
@@ -371,7 +371,7 @@ export default function DashboardPage() {
             )}
             <div className="mt-3 pt-3 border-t border-default flex justify-between text-sm">
               <span className="text-muted">{t('total_revenue')}</span>
-              <span className="font-semibold text-violet-500">
+              <span className="font-semibold !text-secondary">
                 {stats.totalCA.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
               </span>
             </div>
@@ -390,54 +390,7 @@ export default function DashboardPage() {
 
         {/* Ligne 3 : Stats détaillées + Activité récente */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Statistiques détaillées */}
-          <div className="card p-6">
-            <h3 className="font-semibold text-primary mb-4">{t('statistics')}</h3>
-            {loading ? (
-              <div className="space-y-3">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="flex justify-between">
-                    <div className="h-4 bg-hover rounded w-32 animate-pulse"></div>
-                    <div className="h-4 bg-hover rounded w-16 animate-pulse"></div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-accent-light border border-accent rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <IconUsers className="w-5 h-5 text-emerald-400" />
-                    <span className="text-secondary">{t('active_clients')}</span>
-                  </div>
-                  <span className="font-bold text-emerald-400">{stats.activeClients.length}</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-accent-light border border-accent   rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <IconBriefcase className="w-5 h-5 text-blue-400" />
-                    <span className="text-secondary">{t('projects_in_progress')}</span>
-                  </div>
-                  <span className="font-bold text-blue-400">{stats.inProgressProjects.length}</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-accent-light border border-accent rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <IconCheck className="w-5 h-5 text-green-400" />
-                    <span className="text-secondary">{t('completed_projects')}</span>
-                  </div>
-                  <span className="font-bold text-green-400">{stats.completedProjects.length}</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-accent-light border border-accent rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <IconTrendingUp className="w-5 h-5 text-purple-400" />
-                    <span className="text-secondary">{t('conversion_rate')}</span>
-                  </div>
-                  <span className="font-bold text-purple-400">{stats.conversionRate}%</span>
-                </div>
-              </div>
-            )}
-          </div>
+          
 
           {/* Activité récente enrichie */}
           <div className="card p-6">
@@ -465,15 +418,15 @@ export default function DashboardPage() {
                   return (
                     <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-hover transition-colors">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        activity.color === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500' :
-                        activity.color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-500' :
-                        activity.color === 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-500' :
-                        'bg-gray-100 dark:bg-gray-900/30 text-gray-500'
+                        activity.color === 'emerald' ? 'bg-success !text-success-text ' :
+                        activity.color === 'blue' ? 'bg-info text-info' :
+                        activity.color === 'green' ? 'bg-success !text-success-text ' :
+                        'bg-muted text-muted'
                       }`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-secondary truncate">{activity.message}</p>
+                        <p className="text-sm text-primary truncate">{activity.message}</p>
                         {activity.time && (
                           <p className="text-xs text-muted">{activity.time}</p>
                         )}

@@ -962,7 +962,7 @@ export default function ExcelImportModal({
             <div className="flex items-center gap-3">
               <div className="flex items-center -space-x-2">
                 <div className="w-10 h-10 rounded-lg bg-success-light flex items-center justify-center z-10">
-                  <IconFileImport className="w-5 h-5 text-success" />
+                  <IconFileImport className="w-5 h-5 !text-success-text -text" />
                 </div>
               </div>
               <div>
@@ -1288,7 +1288,7 @@ export default function ExcelImportModal({
                           {field.required && <span className="text-danger">*</span>}
                         </label>
                         {columnMapping[field.key] !== null && (
-                          <IconCheck className="w-4 h-4 text-success" />
+                          <IconCheck className="w-4 h-4 !text-success-text -text" />
                         )}
                       </div>
                       <select
@@ -1373,7 +1373,7 @@ export default function ExcelImportModal({
                           <td className="px-3 py-2 text-primary">{task.title}</td>
                           <td className="px-3 py-2">
                             <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                              task.task_status === 'completed' ? 'bg-success-light text-success' :
+                              task.task_status === 'completed' ? 'bg-success-light !text-success-text ' :
                               task.task_status === 'in_progress' ? 'bg-info-light text-info' :
                               task.task_status === 'cancelled' ? 'bg-danger-light text-danger' :
                               'bg-muted text-secondary'

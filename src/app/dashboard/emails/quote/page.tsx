@@ -546,7 +546,7 @@ Cordialement`;
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500 hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light !text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
             >
               {showPreview ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
               {showPreview ? (t('edit') || 'Éditer') : (t('preview') || 'Aperçu')}
@@ -923,8 +923,8 @@ Cordialement`;
                 
                 {!signatureData && !loadingSignature && (
                   <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg flex items-start gap-2">
-                    <IconAlertCircle className="w-5 h-5 text-warning !text-warning  flex-shrink-0 mt-0.5" />
-                    <div className="text-sm text-warning flex items-center gap-2 flex-wrap">
+                    <IconAlertCircle className="w-5 h-5 text-warning-text !text-warning-text  flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-warning-text flex items-center gap-2 flex-wrap">
                       {t('no_signature_configured') || 'Aucune signature configurée. '}
                       <a 
                         href="/dashboard/settings?tab=email" 

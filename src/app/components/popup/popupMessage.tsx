@@ -76,7 +76,7 @@ const PopupMessage = ({
         ) : (
           <IconAlertCircle
             size={20}
-            className="text-warning rounded-full bg-warning-light p-1"
+            className="text-warning-text rounded-full bg-warning-light p-1"
           />
         )}
         {message}

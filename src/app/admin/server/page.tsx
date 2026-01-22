@@ -192,11 +192,11 @@ export default function AdminServerPage() {
               health.status === 'ok' ? 'bg-success-light' : 'bg-danger-light'
             }`}>
               {health.status === 'ok' ? (
-                <IconCheck className="w-12 h-12 text-success" />
+                <IconCheck className="w-12 h-12 !text-success-text -text" />
               ) : health.status === 'error' ? (
                 <IconX className="w-12 h-12 text-danger" />
               ) : (
-                <IconAlertTriangle className="w-12 h-12 text-warning animate-pulse" />
+                <IconAlertTriangle className="w-12 h-12 text-warning-text animate-pulse" />
               )}
             </div>
             <div>
@@ -292,7 +292,7 @@ export default function AdminServerPage() {
                   }`} />
                 </div>
                 <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
-                  service.status === 'ok' ? 'bg-success-light text-success' : 'bg-danger-light text-danger'
+                  service.status === 'ok' ? 'bg-success-light !text-success-text ' : 'bg-danger-light text-danger'
                 }`}>
                   {service.status === 'ok' ? (
                     <><IconCheck className="w-3 h-3" /> OK</>
@@ -390,7 +390,7 @@ export default function AdminServerPage() {
             >
               <div className="flex items-center gap-3">
                 {h.status === 'ok' ? (
-                  <IconCheck className="w-4 h-4 text-success" />
+                  <IconCheck className="w-4 h-4 !text-success-text -text" />
                 ) : (
                   <IconX className="w-4 h-4 text-danger" />
                 )}

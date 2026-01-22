@@ -102,7 +102,7 @@ function CopyableField({ label, value }: { label: string; value: string }) {
           className="p-2 hover:bg-hover rounded-lg transition-colors text-secondary"
           title={t('copy') || 'Copier'}
         >
-          {copied ? <IconCheck size={18} className="text-success" /> : <IconCopy size={18} />}
+          {copied ? <IconCheck size={18} className="text-success-text" /> : <IconCopy size={18} />}
         </button>
       </div>
     </div>
@@ -267,7 +267,7 @@ function ApiTokensSection() {
               <button
                 onClick={handleCreateToken}
                 disabled={creating || !newTokenName.trim()}
-                className="flex-1 px-4 py-2 bg-accenttext-accent rounded-lg hover:opacity-90 disabled:opacity-50 transition-colors"
+                className="flex-1 px-4 py-2 bg-accent text-accent rounded-lg hover:opacity-90 disabled:opacity-50 transition-colors"
               >
                 {creating ? (t('creating') || 'Création...') : (t('create') || 'Créer')}
               </button>
@@ -380,7 +380,7 @@ function GoogleIntegrationCard() {
           </div>
           <span className={`px-2 py-1 text-xs font-medium rounded-full ${
             isAuthenticated 
-              ? 'bg-success-light text-success' 
+              ? 'bg-success-light !text-success-text ' 
               : 'bg-muted text-secondary'
           }`}>
             {isAuthenticated ? (t('integration_available') || 'Disponible') : (t('integration_not_configured') || 'Non configuré')}
@@ -395,7 +395,7 @@ function GoogleIntegrationCard() {
               <p className="text-sm text-muted">{t('google_sheets_desc') || 'Importer des tâches depuis Google Sheets'}</p>
             </div>
           </div>
-          <span className="px-2 py-1 text-xs font-medium rounded-full bg-success-light text-success">
+          <span className="px-2 py-1 text-xs font-medium rounded-full bg-success-light !text-success-text -text">
             {t('integration_available') || 'Disponible'}
           </span>
         </div>

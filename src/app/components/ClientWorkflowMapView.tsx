@@ -64,7 +64,7 @@ interface SatelliteData {
 const STATUS_STYLES: Record<NodeStatus, { dot: string; badge: string; border: string; background: string; ring: string }> = {
   done: {
     dot: 'bg-success',
-    badge: 'bg-success-light text-success',
+    badge: 'bg-success-light !text-success-text ',
     border: 'border-success',
     background: 'bg-page',
     ring: 'shadow-[0_8px_20px_rgba(16,185,129,0.18)]',
@@ -1189,7 +1189,7 @@ export default function ClientWorkflowMapView({
                   {/* Global state badge */}
                   <div 
                     className={`mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 cursor-help ${
-                      globalState === 'ok' ? 'bg-success-light text-success' :
+                      globalState === 'ok' ? 'bg-success-light !text-success-text ' :
                       globalState === 'blocked' ? 'bg-danger-light text-danger' :
                       'bg-warning-light text-warning'
                     }`}
@@ -1688,7 +1688,7 @@ export default function ClientWorkflowMapView({
                             animate={{ scale: 1 }}
                             transition={{ delay: 0.3, type: 'spring', stiffness: 400 }}
                             className={`mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 ${
-                              realGlobalState === 'ok' ? 'bg-success-light text-success' :
+                              realGlobalState === 'ok' ? 'bg-success-light !text-success-text ' :
                               realGlobalState === 'blocked' ? 'bg-danger-light text-danger' :
                               'bg-warning-light text-warning'
                             }`}

@@ -198,10 +198,10 @@ export default function MonitoringPage() {
           <div className="card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-success-light rounded-lg">
-                <IconCheck className="w-5 h-5 text-success" />
+                <IconCheck className="w-5 h-5 !text-success-text -text" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-success">{stats.up}</p>
+                <p className="text-2xl font-bold !text-success-text -text">{stats.up}</p>
                 <p className="text-xs text-muted">{t('sites_up') || 'En ligne'}</p>
               </div>
             </div>
@@ -753,7 +753,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
               </div>
 
               <div className="p-3 bg-warning-light border border-warning rounded-lg">
-                <p className="text-xs text-warning flex items-center gap-2">
+                <p className="text-xs text-warning-text flex items-center gap-2">
                   <IconKey className="w-4 h-4" />
                   {t('credentials_info') || 'Les identifiants de connexion seront gérés dans une section sécurisée séparée.'}
                 </p>

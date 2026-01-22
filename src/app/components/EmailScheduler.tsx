@@ -191,7 +191,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-2 p-3 bg-success-light border border success rounded-lg"
               >
-                <IconCheck className="w-5 h-5 text-success" />
+                <IconCheck className="w-5 h-5 !text-success-text -text" />
                 <span className="text-success text-sm">
                   Envoi programmé le{' '}
                   <strong>

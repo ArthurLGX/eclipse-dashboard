@@ -200,7 +200,7 @@ export default function MediaLibraryPage() {
           <div className="bg-card rounded-xl p-4 border border-default">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-success-light rounded-lg">
-                <IconPhoto className="w-5 h-5 text-success" />
+                <IconPhoto className="w-5 h-5 !text-success-text -text" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.total}</p>
@@ -270,7 +270,7 @@ export default function MediaLibraryPage() {
             <h3 className="text-lg font-medium text-primary mb-2">
               {t('no_media') || 'Aucun média'}
             </h3>
-            <p className="text-secondary">
+            <p className="text-primary">
               {searchQuery || filterType !== 'all'
                 ? (t('no_media_filter') || 'Aucun média ne correspond à vos critères')
                 : (t('no_media_yet') || 'Vous n\'avez pas encore uploadé de médias')
@@ -330,7 +330,7 @@ export default function MediaLibraryPage() {
                       className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors"
                     >
                       {copiedId === file.id ? (
-                        <IconCheck className="w-5 h-5 text-success" />
+                        <IconCheck className="w-5 h-5 !text-success-text -text" />
                       ) : (
                         <IconCopy className="w-5 h-5 text-white" />
                       )}

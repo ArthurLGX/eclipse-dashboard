@@ -183,7 +183,7 @@ export default function Home() {
       render: value => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
-            <span className="text-zinc-300 font-medium !text-sm">
+            <span className="!text-primary font-medium !text-sm">
               {(value as string).charAt(0).toUpperCase()}
             </span>
           </div>
@@ -194,12 +194,12 @@ export default function Home() {
     {
       key: 'email',
       label: 'Email',
-      render: value => <p className="text-zinc-300">{value as string}</p>,
+      render: value => <p className="!text-primary">{value as string}</p>,
     },
     {
       key: 'enterprise',
       label: 'Entreprise',
-      render: value => <p className="text-zinc-300">{value as string}</p>,
+      render: value => <p className="!text-primary">{value as string}</p>,
     },
     {
       key: 'processStatus',
@@ -239,7 +239,7 @@ export default function Home() {
       key: 'createdAt',
       label: t('created_at'),
       render: value => (
-        <p className="text-zinc-300">
+        <p className="!text-primary">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
       ),
@@ -257,7 +257,7 @@ export default function Home() {
     {
       key: 'client',
       label: t('client'),
-      render: value => <p className="text-zinc-300">{value as string}</p>,
+      render: value => <p className="!text-primary">{value as string}</p>,
     },
     {
       key: 'status',
@@ -297,7 +297,7 @@ export default function Home() {
       key: 'createdAt',
       label: t('created_at'),
       render: value => (
-        <p className="text-zinc-300">
+        <p className="!text-primary">
           {new Date(value as string).toLocaleDateString('fr-FR')}
         </p>
       ),
@@ -430,27 +430,27 @@ export default function Home() {
     {
       key: 'first_name',
       label: t('first_name'),
-      render: value => <p className="text-zinc-300">{value as string}</p>,
+      render: value => <p className="!text-primary">{value as string}</p>,
     },
     {
       key: 'last_name',
       label: t('last_name'),
-      render: value => <p className="text-zinc-300">{value as string}</p>,
+      render: value => <p className="!text-primary">{value as string}</p>,
     },
     {
       key: 'email',
       label: t('email'),
-      render: value => <p className="text-zinc-300">{value as string}</p>,
+      render: value => <p className="!text-primary">{value as string}</p>,
     },
     {
       key: 'actions',
       label: t('actions'),
-      render: value => <p className="text-zinc-300">{value as string}</p>,
+      render: value => <p className="!text-primary">{value as string}</p>,
     },
     {
       key: 'createdAt',
       label: t('created_at'),
-      render: value => <p className="text-zinc-300">{value as string}</p>,
+      render: value => <p className="!text-primary">{value as string}</p>,
     },
   ];
 
@@ -552,7 +552,7 @@ export default function Home() {
               initial={{ opacity: 0, y: '5%' }}
               animate={{ opacity: 1, y: 1 }}
               transition={{ duration: 0.6, ease: 'easeInOut', delay: 0.3 }}
-              className="bg-violet-100 dark:bg-emerald-300/20 backdrop-blur-xs py-2 px-4 rounded-full !text-violet-700 dark:!text-emerald-200 font-extrabold shadow-md shadow-violet-200/50 dark:shadow-emerald-300/20"
+              className="bg-accent-bg backdrop-blur-xs py-2 px-4 rounded-full !text-accent-text font-extrabold shadow-md shadow-accent-subtle"
             >
               {t('hero_subtitle_bottom')}
             </motion.span>
@@ -690,7 +690,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 2.4 }}
             className="text-center mt-12"
           >
-            <p className="text-xl text-zinc-600 dark:text-zinc-300 mb-6">
+            <p className="text-xl text-zinc-600 dark:!text-primary mb-6">
               {t('ready_to_transform')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

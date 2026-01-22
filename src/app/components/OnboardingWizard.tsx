@@ -223,7 +223,7 @@ export default function OnboardingWizard() {
                     {/* Action */}
                     <div className="shrink-0">
                       {status === 'completed' ? (
-                        <span className="text-sm text-success font-medium">
+                        <span className="text-sm !text-success-text -text font-medium">
                           {t('completed') || 'Terminé'}
                         </span>
                       ) : (

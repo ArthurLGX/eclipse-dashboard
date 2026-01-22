@@ -208,8 +208,8 @@ export default function UsageProgressBar() {
   const getProgressColor = (current: number, limit: number) => {
     const percentage = limit === 0 ? 0 : (current / limit) * 100;
     if (percentage >= 90) return 'bg-success';
-    if (percentage >= 75) return 'bg-info';
-    return 'bg-info';
+    if (percentage >= 75) return 'bg-warning';
+    return 'bg-warning';
   };
 
   const getProgressWidth = (current: number, limit: number) => {
@@ -277,7 +277,7 @@ export default function UsageProgressBar() {
         {Object.entries(usageData).map(([key, data]) => (
           <div key={key} className="flex-1 min-w-48 w-full">
             <div className="flex justify-between items-center mb-2">
-              <span className="!text-sm text-secondary font-medium">
+              <span className="!text-sm text-primary font-medium">
                 {data.label}
               </span>
               <span className="!text-sm text-primary font-semibold">

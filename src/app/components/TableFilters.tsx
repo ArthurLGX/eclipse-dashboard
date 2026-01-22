@@ -168,7 +168,7 @@ export default function TableFilters({
             className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
               showAdvanced || activeFiltersCount > 0
                 ? 'bg-accent-light border-accent !text-accent'
-                : 'bg-card border-default text-secondary hover:border-accent'
+                : 'bg-card border-default text-primary hover:!text-secondary hover:border-accent'
             }`}
           >
             <IconAdjustments className="w-5 h-5" />
@@ -189,34 +189,34 @@ export default function TableFilters({
               onClick={() => onViewModeChange('table')}
               className={`flex items-center justify-center p-2.5 transition-all ${
                 viewMode === 'table'
-                  ? 'bg-accent text-white'
-                  : 'text-secondary hover:text-primary hover:bg-muted'
+                  ? 'bg-accent !text-white'
+                  : 'text-primary hover:!text-secondary hover:bg-muted'
               }`}
               title={t('table_view') || 'Vue tableau'}
             >
-              <IconTable className="w-5 h-5" />
+              <IconTable className={`w-5 h-5 ${viewMode === 'table' ? '!text-white' : '!text-accent'}`} />
             </button>
             <button
               onClick={() => onViewModeChange('cards')}
               className={`flex items-center justify-center p-2.5 transition-all ${
                 viewMode === 'cards'
-                  ? 'bg-accent text-white'
-                  : 'text-secondary hover:text-primary hover:bg-muted'
+                  ? 'bg-accent !text-white'
+                  : 'text-primary hover:!text-secondary hover:bg-muted'
               }`}
               title={t('cards_view') || 'Vue cartes'}
             >
-              <IconLayoutGrid className="w-5 h-5" />
+              <IconLayoutGrid className={`w-5 h-5 ${viewMode === 'cards' ? '!text-white' : '!text-accent'}`} />
             </button>
             <button
               onClick={() => onViewModeChange('map')}
               className={`flex items-center justify-center p-2.5 transition-all ${
                 viewMode === 'map'
-                  ? 'bg-accent text-white'
-                  : 'text-secondary hover:text-primary hover:bg-muted'
+                  ? 'bg-accent !text-white'
+                  : 'text-primary hover:!text-secondary hover:bg-muted'
               }`}
               title={t('map_view') || 'Vue map'}
             >
-              <IconLayoutGridAdd className="w-5 h-5" />
+              <IconLayoutGridAdd className={`w-5 h-5 ${viewMode === 'map' ? '!text-white' : '!text-accent'}`} />
             </button>
           </div>
         )}
@@ -270,6 +270,7 @@ export default function TableFilters({
                     
                     {filter.type === 'select' && filter.options && (
                       <select
+                        id={filter.id}
                         value={(filter.value as string) || ''}
                         onChange={e => onAdvancedFilterChange?.(filter.id, e.target.value)}
                         className="input px-3 py-2 text-sm min-w-[180px]"

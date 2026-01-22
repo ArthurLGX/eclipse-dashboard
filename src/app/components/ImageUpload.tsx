@@ -534,7 +534,7 @@ export default function ImageUpload({
               {/* Message si mode lecture */}
               {disabled && (
                 <div className="px-4 py-3 bg-hover border-b border-default text-center">
-                  <p className="text-warning text-xs font-medium">
+                  <p className="text-warning-text text-xs font-medium">
                     ⚠️ Passez en mode édition pour modifier l&apos;image
                   </p>
                 </div>

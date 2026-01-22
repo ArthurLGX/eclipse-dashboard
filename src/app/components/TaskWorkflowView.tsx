@@ -1035,7 +1035,7 @@ export default function TaskWorkflowView({
             return (
               <div key={status} className="flex items-center gap-2">
                 <StatusIcon size={14} className={config.color} />
-                <span className="text-secondary">
+                <span className="text-primary">
                   {t(`task_status_${status}`) || status.replace('_', ' ')}
                 </span>
               </div>

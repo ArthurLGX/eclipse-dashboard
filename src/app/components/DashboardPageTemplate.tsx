@@ -133,7 +133,7 @@ export default function DashboardPageTemplate<T>({
               key={index}
               className={`flex items-center justify-center gap-2 rounded-lg px-4 py-2 transition-all duration-300 cursor-pointer lg:w-fit w-full ${
                 action.variant === 'outline' 
-                  ? 'btn-outline border border-default text-secondary hover:bg-card-hover' 
+                  ? 'btn-outline border border-default text-primary hover:bg-card-hover' 
                   : action.variant === 'primary'
                     ? 'btn-primary'
                     : 'btn-secondary'

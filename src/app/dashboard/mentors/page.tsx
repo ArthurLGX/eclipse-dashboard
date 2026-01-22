@@ -61,7 +61,7 @@ export default function MentorsPage() {
       key: 'email',
       label: t('email'),
       render: (value) => (
-        <p className="text-zinc-300">{value as string}</p>
+        <p className="!text-primary">{value as string}</p>
       ),
     },
     {
@@ -70,7 +70,7 @@ export default function MentorsPage() {
       render: (value) => {
         const projects = value as { id: number; title: string }[] | undefined;
         return (
-          <p className="text-zinc-300">
+          <p className="!text-primary">
             {projects?.length || 0} {t('projects')?.toLowerCase()}
           </p>
         );
@@ -80,7 +80,7 @@ export default function MentorsPage() {
       key: 'createdAt',
       label: t('created_at'),
       render: (value) => (
-        <p className="text-zinc-300">
+        <p className="!text-primary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),

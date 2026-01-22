@@ -417,13 +417,13 @@ export default function RevenuePage() {
         // Configuration des statuts
         const statusConfig: Record<string, { label: string; className: string }> = {
           // Statuts facture
-          paid: { label: t('paid') || 'Payée', className: 'bg-success-light text-success' },
+          paid: { label: t('paid') || 'Payée', className: 'bg-success-light !text-success-text ' },
           sent: { label: t('sent') || 'Envoyée', className: 'bg-accent-light !text-accent' },
           draft: { label: t('draft') || 'Brouillon', className: 'bg-warning-light text-warning' },
           overdue: { label: t('overdue') || 'En retard', className: 'bg-danger/10 text-danger' },
           cancelled: { label: t('cancelled') || 'Annulée', className: 'bg-muted/20 text-muted' },
           // Statuts devis
-          accepted: { label: t('accepted') || 'Accepté', className: 'bg-success-light text-success' },
+          accepted: { label: t('accepted') || 'Accepté', className: 'bg-success-light !text-success-text ' },
           rejected: { label: t('rejected') || 'Refusé', className: 'bg-danger/10 text-danger' },
           negotiation: { label: t('negotiation') || 'Négociation', className: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' },
         };
@@ -478,7 +478,7 @@ export default function RevenuePage() {
                   href={pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-1 text-success hover:bg-hover rounded transition-colors"
+                  className="p-1 !text-success-text -text hover:bg-hover rounded transition-colors"
                   download
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -524,7 +524,7 @@ export default function RevenuePage() {
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 1, ease: 'easeOut' }}
-            className="h-2 bg-primary rounded-full"
+            className="h-2 bg-warning rounded-full"
           />
         </div>
         <span className="text-xs text-muted whitespace-nowrap">

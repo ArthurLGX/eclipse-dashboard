@@ -134,7 +134,7 @@ export default function DeleteConfirmModal({
             {/* Warning */}
             {warningMessage && (
               <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg">
-                <p className="text-warning text-sm">{warningMessage}</p>
+                <p className="text-warning-text text-sm">{warningMessage}</p>
               </div>
             )}
 

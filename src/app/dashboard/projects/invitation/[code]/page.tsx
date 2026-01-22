@@ -236,7 +236,7 @@ export default function InvitationPage() {
       <div className="min-h-screen flex items-center justify-center bg-page">
         <div className="text-center">
           <IconLoader2 className="w-12 h-12 !text-accent animate-spin mx-auto mb-4" />
-          <p className="text-secondary">{t('loading') || 'Chargement...'}</p>
+          <p className="text-primary">{t('loading') || 'Chargement...'}</p>
         </div>
       </div>
     );

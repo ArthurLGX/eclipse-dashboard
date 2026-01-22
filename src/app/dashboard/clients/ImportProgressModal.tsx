@@ -66,7 +66,7 @@ export default function ImportProgressModal({
       case 'creating':
         return <IconLoader2 className="w-5 h-5 !text-accent animate-spin" />;
       case 'success':
-        return <IconCheck className="w-5 h-5 text-success" />;
+        return <IconCheck className="w-5 h-5 !text-success-text -text" />;
       case 'error':
         return <IconX className="w-5 h-5 text-danger" />;
       case 'skipped':
@@ -117,7 +117,7 @@ export default function ImportProgressModal({
           {/* Progress bar */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-secondary">
+              <span className="text-primary">
                 {currentIndex} / {totalCount} {t('clients') || 'clients'}
               </span>
               <span className="text-primary font-medium">{progressPercent}%</span>
@@ -134,12 +134,12 @@ export default function ImportProgressModal({
 
           {/* Stats */}
           <div className="flex flex-wrap gap-3 mt-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light text-success text-sm">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light !text-success-text -text text-sm">
               <IconCheck className="w-4 h-4" />
               {successCount} {t('import_success_count') || 'ajouté(s)'}
             </div>
             {skippedCount > 0 && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-warning-light text-warning text-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-warning-light text-warning-text text-sm">
                 <IconPlayerSkipForward className="w-4 h-4" />
                 {skippedCount} {t('import_skipped_count') || 'ignoré(s)'}
               </div>
@@ -252,7 +252,7 @@ export default function ImportProgressModal({
                   {t('import_complete') || 'Import terminé !'}
                 </p>
                 <p className="text-sm text-secondary">
-                  <span className="text-success">{successCount} {t('import_clients_added') || 'ajouté(s)'}</span>
+                  <span className="text-success-text">{successCount} {t('import_clients_added') || 'ajouté(s)'}</span>
                   {skippedCount > 0 && (
                     <span className="text-warning">, {skippedCount} {t('import_clients_skipped') || 'ignoré(s)'}</span>
                   )}

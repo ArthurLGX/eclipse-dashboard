@@ -533,11 +533,11 @@ export default function GrowthAuditPage() {
                   {/* Canonical & OG */}
                   <div className="flex gap-3">
                     <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.hasCanonical ? 'bg-success-light' : 'bg-danger-light'}`}>
-                      {result.seo.hasCanonical ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-danger" />}
+                      {result.seo.hasCanonical ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 text-danger" />}
                       <span className="text-sm">Canonical</span>
                     </div>
                     <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.hasOpenGraph ? 'bg-success-light' : 'bg-danger-light'}`}>
-                      {result.seo.hasOpenGraph ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-danger" />}
+                      {result.seo.hasOpenGraph ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 text-danger" />}
                       <span className="text-sm">Open Graph</span>
                     </div>
                   </div>
@@ -545,12 +545,12 @@ export default function GrowthAuditPage() {
                   {/* Twitter Cards & Structured Data */}
                   <div className="flex gap-3">
                     <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.hasTwitterCards ? 'bg-success-light' : 'bg-danger-light'}`}>
-                      {result.seo.hasTwitterCards ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-danger" />}
+                      {result.seo.hasTwitterCards ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 text-danger" />}
                       <IconBrandTwitter className="w-4 h-4" />
                       <span className="text-sm">Twitter Cards</span>
                     </div>
                     <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.hasStructuredData ? 'bg-success-light' : 'bg-danger-light'}`}>
-                      {result.seo.hasStructuredData ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-danger" />}
+                      {result.seo.hasStructuredData ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 text-danger" />}
                       <IconDeviceDesktopAnalytics className="w-4 h-4" />
                       <span className="text-sm">Schema.org</span>
                     </div>
@@ -559,12 +559,12 @@ export default function GrowthAuditPage() {
                   {/* Language & Viewport */}
                   <div className="flex gap-3">
                     <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.language ? 'bg-success-light' : 'bg-warning-light'}`}>
-                      {result.seo.language ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-warning" />}
+                      {result.seo.language ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 text-warning" />}
                       <IconLanguage className="w-4 h-4" />
                       <span className="text-sm">{result.seo.language || t('missing_lang') || 'Lang manquant'}</span>
                     </div>
                     <div className={`flex-1 flex items-center gap-2 p-3 rounded-lg ${result.seo.viewport ? 'bg-success-light' : 'bg-danger-light'}`}>
-                      {result.seo.viewport ? <IconCheck className="w-4 h-4 text-success" /> : <IconX className="w-4 h-4 text-danger" />}
+                      {result.seo.viewport ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 text-danger" />}
                       <span className="text-sm">Viewport</span>
                     </div>
                   </div>
@@ -582,7 +582,7 @@ export default function GrowthAuditPage() {
                           <p className="text-xs text-muted">{t('total') || 'Total'}</p>
                         </div>
                         <div className="p-2 bg-success-light rounded">
-                          <p className="text-lg font-bold text-success">{result.seo.images.withAlt}</p>
+                          <p className="text-lg font-bold !text-success-text -text">{result.seo.images.withAlt}</p>
                           <p className="text-xs text-muted">{t('with_alt') || 'Avec alt'}</p>
                         </div>
                         <div className={`p-2 rounded ${result.seo.images.withoutAlt > 0 ? 'bg-danger-light' : 'bg-success-light'}`}>
@@ -637,8 +637,8 @@ export default function GrowthAuditPage() {
                   {result.seo.structuredDataTypes && result.seo.structuredDataTypes.length > 0 && (
                     <div className="p-3 bg-success-light rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <IconRobot className="w-4 h-4 text-success" />
-                        <span className="text-sm font-medium text-success">{t('structured_data_found') || 'Données structurées trouvées'}</span>
+                        <IconRobot className="w-4 h-4 !text-success-text -text" />
+                        <span className="text-sm font-medium !text-success-text -text">{t('structured_data_found') || 'Données structurées trouvées'}</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {result.seo.structuredDataTypes.map((type, i) => (
@@ -662,7 +662,7 @@ export default function GrowthAuditPage() {
 
                   {/* JS Rendering Status */}
                   {result.jsRendered !== undefined && (
-                    <div className={`p-2 rounded-lg text-xs flex items-center gap-2 ${result.jsRendered ? 'bg-success-light text-success' : 'bg-warning-light text-warning'}`}>
+                    <div className={`p-2 rounded-lg text-xs flex items-center gap-2 ${result.jsRendered ? 'bg-success-light !text-success-text ' : 'bg-warning-light text-warning'}`}>
                       <IconCode className="w-4 h-4" />
                       {result.jsRendered 
                         ? (t('js_rendered') || 'DOM rendu avec JavaScript') 
@@ -690,7 +690,7 @@ export default function GrowthAuditPage() {
                             key={section}
                             className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 ${
                               detected
-                                ? 'bg-success-light text-success'
+                                ? 'bg-success-light !text-success-text '
                                 : 'bg-danger-light text-danger'
                             }`}
                           >
@@ -747,12 +747,12 @@ export default function GrowthAuditPage() {
                   {/* Jargon */}
                   {result.message.jargonWords.length > 0 && (
                     <div className="p-3 bg-warning-light border border-warning rounded-lg">
-                      <p className="text-sm text-warning mb-2">
+                      <p className="text-sm text-warning-text mb-2">
                         <strong>{t('technical_jargon')}:</strong>
                       </p>
                       <div className="flex flex-wrap gap-1">
                         {result.message.jargonWords.map((word, i) => (
-                          <span key={i} className="px-2 py-0.5 bg-warning-light text-warning text-xs rounded">
+                          <span key={i} className="px-2 py-0.5 bg-warning-light text-warning-text text-xs rounded">
                             {word}
                           </span>
                         ))}
@@ -787,7 +787,7 @@ export default function GrowthAuditPage() {
                     ))
                   ) : (
                     <div className="text-center py-6 text-muted">
-                      <IconCheck className="w-8 h-8 mx-auto mb-2 text-success" />
+                      <IconCheck className="w-8 h-8 mx-auto mb-2 !text-success-text -text" />
                       <p>Aucune recommandation majeure</p>
                     </div>
                   )}

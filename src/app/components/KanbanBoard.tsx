@@ -33,11 +33,11 @@ const PIPELINE_COLUMNS: PipelineColumn[] = [
   { id: 'form_sent', title: 'pipeline_form_sent', color: 'text-accent', bgColor: 'bg-accent-light', borderColor: 'border-accent' },
   { id: 'qualified', title: 'pipeline_qualified', color: 'text-info', bgColor: 'bg-info-light', borderColor: 'border-info' },
   { id: 'quote_sent', title: 'pipeline_quote_sent', color: 'text-warning', bgColor: 'bg-warning-light', borderColor: 'border-warning' },
-  { id: 'quote_accepted', title: 'pipeline_quote_accepted', color: 'text-success', bgColor: 'bg-success-light', borderColor: 'border-success' },
+  { id: 'quote_accepted', title: 'pipeline_quote_accepted', color: 'text-success-text', bgColor: 'bg-success-light', borderColor: 'border-success' },
   { id: 'negotiation', title: 'pipeline_negotiation', color: 'text-warning', bgColor: 'bg-warning-light', borderColor: 'border-warning' },
   { id: 'in_progress', title: 'pipeline_in_progress', color: 'text-accent', bgColor: 'bg-accent-light', borderColor: 'border-accent' },
-  { id: 'delivered', title: 'pipeline_delivered', color: 'text-success', bgColor: 'bg-success-light', borderColor: 'border-success' },
-  { id: 'won', title: 'pipeline_won', color: 'text-success', bgColor: 'bg-success-light', borderColor: 'border-success' },
+  { id: 'delivered', title: 'pipeline_delivered', color: 'text-success-text', bgColor: 'bg-success-light', borderColor: 'border-success' },
+  { id: 'won', title: 'pipeline_won', color: 'text-success-text', bgColor: 'bg-success-light', borderColor: 'border-success' },
   { id: 'maintenance', title: 'pipeline_maintenance', color: 'text-info', bgColor: 'bg-info-light', borderColor: 'border-info' },
   { id: 'lost', title: 'pipeline_lost', color: 'text-danger', bgColor: 'bg-danger-light', borderColor: 'border-danger' },
 ];
@@ -156,7 +156,7 @@ function ContactCard({
           <div className="min-w-0">
             <h4 className="font-medium text-sm text-foreground truncate">{contact.name}</h4>
             {contact.processStatus === 'client' && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-success-lighttext-success">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-success-light !text-success-text">
                 Client
               </span>
             )}
@@ -312,7 +312,7 @@ function ContactCard({
 
       {/* Next action reminder */}
       {contact.next_action && (
-        <div className="mt-2 p-2 bg-warning-light text-warning rounded text-xs truncate">
+        <div className="mt-2 p-2 bg-warning-light text-warning-text rounded text-xs truncate">
           📌 {contact.next_action}
         </div>
       )}

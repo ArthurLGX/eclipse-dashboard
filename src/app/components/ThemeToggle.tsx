@@ -32,7 +32,7 @@ export default function ThemeToggle() {
           <IconSun
             stroke={'#ffd700'}
             size={18}
-            className="!text-warning group-hover:opacity-80 transition-colors"
+            className="!text-warning-text group-hover:opacity-80 transition-colors"
           />
         ) : (
           <IconMoon

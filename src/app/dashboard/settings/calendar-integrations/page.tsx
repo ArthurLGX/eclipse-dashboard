@@ -227,7 +227,7 @@ export default function CalendarIntegrationsPage() {
                     <h3 className="font-semibold text-primary flex items-center gap-2">
                       {provider.name}
                       {provider.connected && (
-                        <span className="flex items-center gap-1 text-xs text-success bg-success-light px-2 py-0.5 rounded-full">
+                        <span className="flex items-center gap-1 text-xs !text-success-text -text bg-success-light px-2 py-0.5 rounded-full">
                           <IconCheck className="w-3 h-3" />
                           {t('connected') || 'Connecté'}
                         </span>

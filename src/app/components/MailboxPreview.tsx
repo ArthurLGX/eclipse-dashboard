@@ -483,12 +483,12 @@ export default function MailboxPreview({
                     <span className="font-semibold text-gray-900 truncate">
                       {signatureData?.company_name || `${sender.firstName} ${sender.lastName}`}
                     </span>
-                    <span className="text-xs text-gray-500 flex-shrink-0 ml-2">{sendTime}</span>
+                    <span className="text-xs text-info  flex-shrink-0 ml-2">{sendTime}</span>
                   </div>
                   <p className="font-medium text-gray-800 text-sm truncate mb-0.5">
                     {newsletter.subject}
                   </p>
-                  <p className="text-gray-500 text-xs truncate">
+                  <p className="text-info text-xs truncate">
                     {newsletter.title}
                   </p>
                 </div>
@@ -531,13 +531,13 @@ export default function MailboxPreview({
                 {newsletter.subject}
               </h2>
               <div className="flex items-center gap-2">
-                <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
+                <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
                   <IconArchive className="w-5 h-5" />
                 </button>
-                <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
+                <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
                   <IconTrash className="w-5 h-5" />
                 </button>
-                <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
+                <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
                   <IconDots className="w-5 h-5" />
                 </button>
               </div>
@@ -574,7 +574,7 @@ export default function MailboxPreview({
                     &lt;{sender.email}&gt;
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div className="flex items-center gap-2 text-sm text-info ">
                   <span>{translations.to_me}</span>
                   <IconChevronDown className="w-4 h-4" />
                 </div>

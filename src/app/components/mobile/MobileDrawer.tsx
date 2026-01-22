@@ -92,7 +92,7 @@ export default function MobileDrawer({
                   onClick={onClose}
                   className="w-9 h-9 flex items-center justify-center rounded-xl bg-hover hover:bg-muted transition-colors active:scale-95"
                 >
-                  <IconX size={20} className="text-secondary" />
+                  <IconX size={20} className="text-primary" />
                 </button>
               </div>
 
@@ -149,8 +149,8 @@ export default function MobileDrawer({
                                     {subItem.status && (
                                       <span className={`ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                         subItem.status === 'beta'
-                                          ? 'bg-warning-light text-warning border border-warning'
-                                          : 'bg-success-light text-success border border-success'
+                                          ? 'bg-warning-light text-warning-text border border-warning'
+                                          : 'bg-success-light !text-success-text -text border border-success'
                                       }`}>
                                         {subItem.status === 'beta' ? 'Beta' : 'New'}
                                       </span>

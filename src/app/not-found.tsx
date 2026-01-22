@@ -64,7 +64,7 @@ export default function NotFound() {
 
           <button
             onClick={handleGoBack}
-            className="group relative px-4 py-2 border-1 border-zinc-700 cursor-pointer hover:border-emerald-300 text-zinc-300 hover:!text-emerald-400 font-semibold rounded-lg transition-all duration-300 transform  hover:shadow-lg hover:shadow-emerald-500/25   "
+            className="group relative px-4 py-2 border-1 border-zinc-700 cursor-pointer hover:border-emerald-300 !text-primary hover:!text-emerald-400 font-semibold rounded-lg transition-all duration-300 transform  hover:shadow-lg hover:shadow-emerald-500/25   "
           >
             <span className="relative z-10">{t('go_back')}</span>
           </button>

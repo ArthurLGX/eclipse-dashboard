@@ -102,12 +102,12 @@ export default function AssignProjectDropdown({
         {loading ? (
           <IconLoader2 size={20} className="animate-spin" />
         ) : (
-          <IconFolderPlus size={20} />
+          <IconFolderPlus size={20} className="!text-white" />
         )}
         {t('assign_project') || 'Assigner un projet'}
         <IconChevronDown 
           size={18} 
-          className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
+          className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} !text-white`} 
         />
       </button>
 
@@ -165,7 +165,7 @@ export default function AssignProjectDropdown({
                     {assigningId === project.id ? (
                       <IconLoader2 size={18} className="text-info animate-spin" />
                     ) : successId === project.id ? (
-                      <IconCheck size={18} className="text-success" />
+                      <IconCheck size={18} className="text-success-text" />
                     ) : (
                       <IconPlus size={18} className="text-muted" />
                     )}

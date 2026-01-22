@@ -219,10 +219,10 @@ export const BreadCrumb = () => {
               onClick={() => handleNavigation(item.path, item.segment, item.isLast)}
               className={`text-sm transition-colors capitalize ${
                 item.isLast
-                  ? '!text-violet-400 font-medium cursor-default' // Page active en violet
-                  : clickable
-                    ? 'text-zinc-600 hover:text-zinc-300 hover:underline cursor-pointer'
-                    : 'text-zinc-500 cursor-default' // Non-cliquable
+                  ? '!text-accent-subtle font-medium cursor-default' // Page active en accent-subtle
+                  : clickable && !item.isLast
+                    ? 'text-accent-subtle hover:text-accent-bg hover:underline cursor-pointer'
+                    : 'text-accent-subtle cursor-default' // Non-cliquable
               }`}
               aria-current={item.isLast ? 'page' : undefined}
             >
@@ -231,7 +231,7 @@ export const BreadCrumb = () => {
 
             {/* Afficher la flèche seulement si ce n'est pas le dernier élément */}
             {!item.isLast && (
-              <IconChevronRight className="text-zinc-600" size={16} />
+              <IconChevronRight className="text-accent-subtle" size={16} />
             )}
           </div>
         );

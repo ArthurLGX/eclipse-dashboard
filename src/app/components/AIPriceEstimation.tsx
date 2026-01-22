@@ -101,7 +101,7 @@ export default function AIPriceEstimation({
     if (!estimation) return null;
     switch (estimation.comparison) {
       case 'above':
-        return <IconTrendingUp className="w-4 h-4 text-success" />;
+        return <IconTrendingUp className="w-4 h-4 !text-success-text -text" />;
       case 'below':
         return <IconTrendingDown className="w-4 h-4 text-danger" />;
       default:

@@ -459,7 +459,7 @@ export default function TimeTrackingAnalyticsPage() {
   const getAccuracyIcon = (accuracy: number) => {
     if (accuracy > 110) return <IconTrendingUp className="w-4 h-4 text-danger" />;
     if (accuracy < 90) return <IconTrendingDown className="w-4 h-4 text-info" />;
-    return <IconTarget className="w-4 h-4 text-success" />;
+    return <IconTarget className="w-4 h-4 !text-success-text -text" />;
   };
 
   return (
@@ -568,10 +568,10 @@ export default function TimeTrackingAnalyticsPage() {
               <div className="card p-5">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-success-light rounded-xl">
-                    <IconTrendingUp className="w-6 h-6 text-success" />
+                    <IconTrendingUp className="w-6 h-6 !text-success-text -text" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-success">{analytics.completedTasks}</p>
+                    <p className="text-2xl font-bold !text-success-text -text">{analytics.completedTasks}</p>
                     <p className="text-xs text-muted">{t('tasks_completed') || 'Tâches terminées'}</p>
                   </div>
                 </div>
@@ -623,7 +623,7 @@ export default function TimeTrackingAnalyticsPage() {
                     <p className="text-xs text-muted">{t('underestimated') || 'Sous-estimées'}</p>
                   </div>
                   <div>
-                    <p className="text-lg font-bold text-success">{analytics.accurateCount}</p>
+                    <p className="text-lg font-bold !text-success-text -text">{analytics.accurateCount}</p>
                     <p className="text-xs text-muted">{t('accurate') || 'Précises'}</p>
                   </div>
                   <div>
@@ -723,7 +723,7 @@ export default function TimeTrackingAnalyticsPage() {
                 )}
                 {analytics.avgAccuracy >= 80 && analytics.avgAccuracy <= 120 && (
                   <div className="flex items-start gap-3 p-3 bg-success-light rounded-lg">
-                    <IconTarget className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                    <IconTarget className="w-5 h-5 !text-success-text -text flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-primary">
                         {t('good_estimation') || 'Excellente précision !'}
@@ -736,7 +736,7 @@ export default function TimeTrackingAnalyticsPage() {
                 )}
                 {analytics.exceededTasks > analytics.completedTasks && (
                   <div className="flex items-start gap-3 p-3 bg-warning-light rounded-lg">
-                    <IconClock className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+                    <IconClock className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-primary">
                         {t('many_exceeded') || 'Beaucoup de dépassements'}

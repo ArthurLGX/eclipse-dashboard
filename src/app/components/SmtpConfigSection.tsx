@@ -356,7 +356,7 @@ export default function SmtpConfigSection() {
         {existingConfig && (
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${
             existingConfig.is_verified 
-              ? 'bg-success-light text-success' 
+              ? 'bg-success-light !text-success-text ' 
               : 'bg-warning-light text-warning'
           }`}>
             {existingConfig.is_verified ? (
@@ -414,19 +414,19 @@ export default function SmtpConfigSection() {
             className="p-3 rounded-lg bg-warning-light border border-warning"
           >
             <div className="flex items-start gap-3">
-              <IconKey className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+              <IconKey className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="text-sm !font-bold text-warning font-medium mb-1">
+                <p className="text-sm !font-bold text-warning-text font-medium mb-1">
                   {t('smtp_app_password_title') || 'Mot de passe d\'application requis'}
                 </p>
-                <p className="text-xs text-warning mb-4">
+                <p className="text-xs text-warning-text mb-4">
                   {t('smtp_app_password_desc') || 'Pour des raisons de sécurité, la plupart des fournisseurs exigent un mot de passe d\'application au lieu de votre mot de passe habituel.'}
                 </p>
                 <a
                   href={presets.find(p => p.host === formData.smtp_host)?.appPasswordUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex btn-outline transition-all ease-in-out duration-300 items-center gap-1.5 text-sm text-warning underline hover:underline font-medium"
+                  className="inline-flex btn-outline transition-all ease-in-out duration-300 items-center gap-1.5 text-sm text-warning-text underline hover:underline font-medium"
                 >
                   <IconExternalLink className="w-4 h-4" />
                   {presets.find(p => p.host === formData.smtp_host)?.appPasswordLabel}
@@ -597,7 +597,7 @@ export default function SmtpConfigSection() {
           </div>
           <div className="flex items-center gap-3">
             {existingConfig?.imap_verified && (
-              <span className="px-2 py-1 rounded-full bg-success-light text-success text-xs flex items-center gap-1">
+              <span className="px-2 py-1 rounded-full bg-success-light !text-success-text -text text-xs flex items-center gap-1">
                 <IconCheck className="w-3 h-3" />
                 {t('verified') || 'Vérifié'}
               </span>

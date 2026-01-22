@@ -361,7 +361,7 @@ export default function AITaskGenerator({
   const getPriorityColor = (priority: TaskPriority) => {
     switch (priority) {
       case 'urgent': return 'text-danger bg-danger-light';
-      case 'high': return 'text-warning bg-warning-light';
+      case 'high': return 'text-warning-text bg-warning-light';
       case 'medium': return 'text-info bg-info-light';
       case 'low': return 'text-success bg-success-light';
       default: return 'text-muted bg-hover';

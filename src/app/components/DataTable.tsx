@@ -467,7 +467,7 @@ export default function DataTable<T = unknown>({
               {statusValue !== null && statusValue !== undefined && (
                 <div className="flex-shrink-0">
                   {statusCol?.render ? statusCol.render(statusValue, row) : (
-                    <span className="px-2.5 py-1 rounded-full bg-success-light text-success text-xs font-medium">
+                    <span className="px-2.5 py-1 rounded-full bg-success-light !text-success-text text-xs font-medium">
                       {String(statusValue)}
                     </span>
                   )}
@@ -592,9 +592,9 @@ export default function DataTable<T = unknown>({
                       className="flex-shrink-0 mt-0.5"
                     >
                       {isFav ? (
-                        <IconStarFilled className="w-4 h-4 text-warning" />
+                        <IconStarFilled className="w-4 h-4 !text-warning-text" />
                       ) : (
-                        <IconStar className="w-4 h-4 text-muted hover:text-warning transition-colors" />
+                        <IconStar className="w-4 h-4 !text-secondary hover:text-warning-text transition-colors" />
                       )}
                     </button>
                   )}
@@ -720,14 +720,14 @@ export default function DataTable<T = unknown>({
               <th className="w-12 py-3 px-2 lg:px-4">
                 <button
                   onClick={toggleCurrentPage}
-                  className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
+                  className="flex items-center justify-center text-muted hover:text-primary transition-colors"
                 >
                   {allCurrentPageSelected ? (
-                    <IconSquareCheck stroke={1} className="w-5 h-5 !text-accent" />
+                    <IconSquareCheck stroke={1} className="w-5 h-5 !text-muted" />
                   ) : someCurrentPageSelected ? (
-                    <IconSquareMinus stroke={1} className="w-5 h-5 !text-accent" />
+                    <IconSquareMinus stroke={1} className="w-5 h-5 !text-muted" />
                   ) : (
-                    <IconSquare className="w-5 h-5" />
+                    <IconSquare className="w-5 h-5 text-muted" />
                   )}
                 </button>
               </th>
@@ -794,12 +794,12 @@ export default function DataTable<T = unknown>({
                               e.stopPropagation();
                               onToggleFavorite?.(row);
                             }}
-                            className="text-muted hover:text-warning transition-colors"
+                            className="!text-warning hover:text-warning-text transition-colors"
                           >
                             {rowIsFavorite ? (
-                              <IconStarFilled className="w-4 h-4 text-warning" />
+                              <IconStarFilled className="w-4 h-4 !text-warning" />
                             ) : (
-                              <IconStar className="w-4 h-4" />
+                              <IconStar className="w-4 h-4 !text-secondary hover:text-warning-text transition-colors" />
                             )}
                           </button>
                         </td>
@@ -808,10 +808,10 @@ export default function DataTable<T = unknown>({
                         <td className="w-12 py-4 px-2 lg:px-4">
                           <button
                             onClick={(e) => toggleItem(itemId, e)}
-                            className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
+                            className="flex items-center justify-center text-muted hover:text-primary transition-colors"
                           >
                             {isSelected ? (
-                              <IconSquareCheck className="w-5 h-5 !text-accent" />
+                              <IconSquareCheck className="w-5 h-5 !text-muted" />
                             ) : (
                               <IconSquare className="w-5 h-5" />
                             )}
@@ -860,10 +860,10 @@ export default function DataTable<T = unknown>({
                             e.stopPropagation();
                             onToggleFavorite?.(row);
                           }}
-                          className="text-muted hover:text-warning transition-colors"
+                          className="!text-warning hover:text-warning-text transition-colors"
                         >
                           {rowIsFavorite ? (
-                            <IconStarFilled className="w-4 h-4 text-warning" />
+                            <IconStarFilled className="w-4 h-4 !text-warning" />
                           ) : (
                             <IconStar className="w-4 h-4" />
                           )}
@@ -874,10 +874,10 @@ export default function DataTable<T = unknown>({
                       <td className="w-12 py-4 px-2 lg:px-4">
                         <button
                           onClick={(e) => toggleItem(itemId, e)}
-                          className="flex items-center justify-center text-secondary hover:text-primary transition-colors"
+                          className="flex items-center justify-center text-muted hover:text-primary transition-colors"
                         >
                           {isSelected ? (
-                            <IconSquareCheck className="w-5 h-5 !text-accent" />
+                            <IconSquareCheck className="w-5 h-5 !text-muted" />
                           ) : (
                             <IconSquare className="w-5 h-5" />
                           )}

@@ -292,7 +292,7 @@ export default function NewProjectModal({
                 onClick={() => toggleTechnology(tech)}
                 className={`px-2 py-1 rounded text-xs font-medium transition-colors
                   ${technologies.includes(tech)
-                    ? 'bg-accenttext-accent'
+                    ? 'bg-accent text-accent'
                     : 'bg-hover text-secondary hover:bg-card hover:text-primary'
                   }`}
               >

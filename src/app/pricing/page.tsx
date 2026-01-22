@@ -571,7 +571,7 @@ export default function Plans() {
 
                                         if (typeof value === 'boolean') {
                                           return value ? (
-                                            <IconCheck className="w-5 h-5 text-success mx-auto" />
+                                            <IconCheck className="w-5 h-5 !text-success-text -text mx-auto" />
                                           ) : (
                                             <IconX className="w-5 h-5 text-muted mx-auto" />
                                           );

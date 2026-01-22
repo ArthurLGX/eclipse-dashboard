@@ -1160,8 +1160,8 @@ export default function UnifiedOnboardingModal() {
 
                   {/* Summary cards */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                    <div className="p-5 bg-success-light text-success border border-success rounded-xl">
-                      <IconUser className="w-8 h-8 text-success mx-auto mb-2" />
+                    <div className="p-5 bg-success-light !text-success-text -text border border-success rounded-xl">
+                      <IconUser className="w-8 h-8 !text-success-text -text mx-auto mb-2" />
                       <p className="font-semibold text-primary">{createdClient?.name || 'Client'}</p>
                       <p className="text-sm text-muted">{t('client_created') || 'Client créé'}</p>
                     </div>

@@ -380,7 +380,7 @@ function EmailRow({ email, onClick }: { email: SentEmail; onClick?: () => void }
               ? 'bg-purple-500/10 text-purple-500'
               : email.category === 'invoice'
                 ? 'bg-blue-500/10 text-blue-500'
-                : 'bg-gray-500/10 text-gray-500'
+                : 'bg-gray-500/10 text-info '
           }`}>
             {email.category}
           </span>
@@ -498,7 +498,7 @@ function EmailDetailModal({
                       ? 'bg-purple-500/10 text-purple-500'
                       : email.category === 'invoice'
                         ? 'bg-blue-500/10 text-blue-500'
-                        : 'bg-gray-500/10 text-gray-500'
+                        : 'bg-gray-500/10 text-info '
                   }`}>
                     {email.category}
                   </span>
@@ -619,7 +619,7 @@ function EmailDetailModal({
                       <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
                         recipient.opened
                           ? 'bg-green-500/10 text-green-500'
-                          : 'bg-gray-500/10 text-gray-500'
+                          : 'bg-gray-500/10 text-info '
                       }`}>
                         <IconEye className="w-3 h-3" />
                         {recipient.opened ? (
@@ -638,7 +638,7 @@ function EmailDetailModal({
                       <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
                         recipient.clicked
                           ? 'bg-orange-500/10 text-orange-500'
-                          : 'bg-gray-500/10 text-gray-500'
+                          : 'bg-gray-500/10 text-info '
                       }`}>
                         <IconClick className="w-3 h-3" />
                         {recipient.clicked ? (

@@ -315,7 +315,7 @@ export default function GeneratedMockup({
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-warning-light flex items-center justify-center">
                 <IconAlertTriangle className="w-8 h-8 text-warning" />
               </div>
-              <h4 className="text-lg font-semibold text-warning mb-2">
+              <h4 className="text-lg font-semibold text-warning-text mb-2">
                 {error === 'rate_limit'
                   ? (t('rate_limit_title') || 'Limite de requêtes atteinte')
                   : (t('generation_error') || 'Erreur de génération')}
@@ -381,7 +381,7 @@ export default function GeneratedMockup({
                   {/* Ideal */}
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="px-2 py-1 bg-success-light text-success text-xs font-medium rounded-full">
+                      <span className="px-2 py-1 bg-success-light !text-success-text -text text-xs font-medium rounded-full">
                         {t('ideal') || 'Idéal'}
                       </span>
                       {mockup?.fromCache && (

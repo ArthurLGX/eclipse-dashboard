@@ -374,7 +374,7 @@ function EmailPreview({
                 />
               ) : (
                 <div className="w-16 h-16 rounded-lg bg-gray-300 flex items-center justify-center">
-                  <IconUser className="w-8 h-8 text-gray-500" />
+                  <IconUser className="w-8 h-8 text-info " />
                 </div>
               )}
             </div>
@@ -408,22 +408,22 @@ function EmailPreview({
               {/* Social Links */}
               <div className="flex items-center gap-3 mt-3">
                 {footerSettings.linkedin && (
-                  <a href={footerSettings.linkedin} className="text-gray-500 hover:text-blue-600">
+                  <a href={footerSettings.linkedin} className="text-info hover:text-blue-600">
                     <IconBrandLinkedin className="w-5 h-5" />
                   </a>
                 )}
                 {footerSettings.twitter && (
-                  <a href={footerSettings.twitter} className="text-gray-500 hover:text-sky-500">
+                  <a href={footerSettings.twitter} className="text-info hover:text-sky-500">
                     <IconBrandTwitter className="w-5 h-5" />
                   </a>
                 )}
                 {footerSettings.instagram && (
-                  <a href={footerSettings.instagram} className="text-gray-500 hover:text-pink-600">
+                  <a href={footerSettings.instagram} className="text-info hover:text-pink-600">
                     <IconBrandInstagram className="w-5 h-5" />
                   </a>
                 )}
                 {footerSettings.facebook && (
-                  <a href={footerSettings.facebook} className="text-gray-500 hover:text-blue-700">
+                  <a href={footerSettings.facebook} className="text-info hover:text-blue-700">
                     <IconBrandFacebook className="w-5 h-5" />
                   </a>
                 )}
@@ -2707,7 +2707,7 @@ export default function ComposeNewsletterPage() {
                       ${currentStep === step.id 
                         ? 'bg-accent-light !text-white' 
                         : index < stepIndex 
-                          ? 'bg-success-light text-success' 
+                          ? 'bg-success-light !text-success-text ' 
                           : '!text-primary hover:text-secondary'
                       }`}
                   >
@@ -2998,7 +2998,7 @@ export default function ComposeNewsletterPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <h2 className="text-2xl font-bold text-primary mb-2">{t('write_content')}</h2>
-                        <p className="text-secondary">{t('write_content_desc')}</p>
+                        <p className="text-primary">{t('write_content_desc')}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
@@ -3709,7 +3709,7 @@ export default function ComposeNewsletterPage() {
                         <div className="bg-card rounded-xl p-5 border border-default">
                           <div className="flex items-center gap-3 mb-3">
                             <div className="w-10 h-10 rounded-lg bg-success-light flex items-center justify-center">
-                              <IconUsers className="w-5 h-5 text-success" />
+                              <IconUsers className="w-5 h-5 !text-success-text -text" />
                             </div>
                             <span className="text-sm text-secondary">{t('step_recipients')}</span>
                           </div>
@@ -3822,7 +3822,7 @@ export default function ComposeNewsletterPage() {
                   <button
                     onClick={handleNextStep}
                     disabled={!canProceed()}
-                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accenttext-accent font-medium
+                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accent text-accent font-medium
                       hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     <span>{t('next')}</span>
@@ -3994,12 +3994,12 @@ export default function ComposeNewsletterPage() {
                               <span className="font-semibold text-gray-900 truncate">
                                 {footerSettings.firstName} {footerSettings.lastName}
                               </span>
-                              <span className="text-xs text-gray-500 flex-shrink-0 ml-2">{t('now')}</span>
+                              <span className="text-xs text-info  flex-shrink-0 ml-2">{t('now')}</span>
                             </div>
                             <p className="font-medium text-gray-800 text-sm truncate mb-0.5">
                               {emailSubject || t('email_subject_label')}
                             </p>
-                            <p className="text-gray-500 text-xs truncate">
+                            <p className="text-info text-xs truncate">
                               {emailTitle || t('content_preview_placeholder')}
                             </p>
                           </div>
@@ -4049,13 +4049,13 @@ export default function ComposeNewsletterPage() {
                           {emailSubject || t('email_subject_label')}
                         </h2>
                         <div className="flex items-center gap-2">
-                          <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
+                          <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
                             <IconArchive className="w-5 h-5" />
                           </button>
-                          <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
+                          <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
                             <IconTrash className="w-5 h-5" />
                           </button>
-                          <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
+                          <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
                             <IconDots className="w-5 h-5" />
                           </button>
                         </div>
@@ -4076,7 +4076,7 @@ export default function ComposeNewsletterPage() {
                               &lt;{footerSettings.email || 'email@example.com'}&gt;
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <div className="flex items-center gap-2 text-sm text-info ">
                             <span>{t('to_me')}</span>
                             <IconChevronDown className="w-4 h-4" />
                           </div>

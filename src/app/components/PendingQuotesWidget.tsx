@@ -109,10 +109,10 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
             </div>
             <button
               onClick={() => router.push('/dashboard/factures?type=quote')}
-              className="text-sm text-accent hover:text-primary flex items-center gap-1"
+              className="text-sm text-secondary hover:text-primary flex items-center gap-1 !shadow-none"
             >
               {t('view_all') || 'Voir tout'}
-              <IconChevronRight className="w-4 h-4" />
+              <IconChevronRight className="w-4 h-4 !text-secondary" style={{ color: 'var(--color-secondary)' }} />
             </button>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {quote.reference}
                       </span>
                       {isUrgent && (
-                        <span className="flex items-center gap-1 text-xs text-warning bg-warning-light px-2 py-0.5 rounded-full">
+                        <span className="flex items-center gap-1 text-xs text-warning-text bg-warning-light px-2 py-0.5 rounded-full">
                           <IconAlertTriangle className="w-3 h-3" />
                           {t('urgent') || 'Urgent'}
                         </span>
@@ -179,7 +179,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {/* Bouton Accepté */}
                         <button
                           onClick={() => handleUpdateStatus(quote, 'accepted')}
-                          className="p-2 text-success hover:bg-success-light rounded-lg transition-colors"
+                          className="p-2 !text-success-text -text hover:bg-success-light rounded-lg transition-colors"
                           title={t('mark_accepted') || 'Marquer comme accepté'}
                         >
                           <IconCheck className="w-4 h-4" />

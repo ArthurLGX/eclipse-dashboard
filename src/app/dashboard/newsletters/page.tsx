@@ -78,14 +78,14 @@ export default function NewslettersPage() {
       key: 'title',
       label: t('title'),
       render: (value: unknown) => (
-        <p className="text-zinc-300">{value as string}</p>
+        <p className="!text-primary">{value as string}</p>
       ),
     },
     {
       key: 'subject',
       label: t('subject'),
       render: (value: unknown) => (
-        <p className="text-zinc-300">{value as string}</p>
+        <p className="!text-primary">{value as string}</p>
       ),
     },
     {
@@ -110,14 +110,14 @@ export default function NewslettersPage() {
       key: 'createdAt',
       label: t('created_at'),
       render: (value: unknown) => (
-        <p className="text-zinc-300">{value as string}</p>
+        <p className="!text-primary">{value as string}</p>
       ),
     },
     {
       key: 'actions',
       label: t('actions'),
       render: () => (
-        <p className="text-zinc-300 flex items-center gap-2 cursor-pointer hover:text-zinc-200 transition-colors">
+        <p className="!text-primary flex items-center gap-2 cursor-pointer hover:text-zinc-200 transition-colors">
           <IconPencil className="w-4 h-4" />
           <IconTrash className="w-4 h-4 !text-red-400" />
         </p>

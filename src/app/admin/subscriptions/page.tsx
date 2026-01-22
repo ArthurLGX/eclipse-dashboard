@@ -429,7 +429,7 @@ export default function AdminSubscriptionsPage() {
                       const status = getSubStatus(sub).toLowerCase();
                       return (
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          status === 'active' ? 'bg-success-light text-success' :
+                          status === 'active' ? 'bg-success-light !text-success-text ' :
                           status === 'trial' ? 'bg-info-light text-info' :
                           status === 'canceled' ? 'bg-danger-light text-danger' :
                           'bg-warning-light text-warning'

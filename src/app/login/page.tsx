@@ -364,7 +364,7 @@ function LoginContent() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="!text-center mt-6"
           >
-            <p className="text-secondary">
+            <p className="text-primary">
               {isLogin
                 ? "Don't have an account? "
                 : 'Already have an account? '}

@@ -435,7 +435,7 @@ export default function ProjectWorkflowView({
             <IconChevronRight size={14} className="text-muted" />
             <span className="font-medium text-primary">{project.title}</span>
             <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-              project.project_status === 'completed' ? 'bg-success-light text-success' :
+              project.project_status === 'completed' ? 'bg-success-light !text-success-text ' :
               project.project_status === 'in_progress' ? 'bg-warning-light text-warning' :
               project.project_status === 'archived' ? 'bg-muted text-secondary' :
               'bg-info-light text-info'
@@ -620,7 +620,7 @@ export default function ProjectWorkflowView({
                               <span className="text-primary truncate">{item.label}</span>
                               <span className={`px-1.5 py-0.5 rounded text-xs ${
                                 item.status === 'paid' || item.status === 'accepted' || item.status === 'signed' 
-                                  ? 'bg-success-light text-success'
+                                  ? 'bg-success-light !text-success-text '
                                   : item.status === 'overdue' || item.status === 'rejected'
                                     ? 'bg-danger-light text-danger'
                                     : 'bg-warning-light text-warning'
@@ -672,20 +672,20 @@ export default function ProjectWorkflowView({
         <div className="absolute bottom-4 left-4 bg-card border border-default rounded-lg p-3 text-xs space-y-1.5">
           <div className="font-medium text-primary mb-2">{t('legend') || 'Légende'}</div>
           <div className="flex items-center gap-2">
-            <IconCheck size={14} className="text-success" />
-            <span className="text-secondary">{t('status_done') || 'Fait'}</span>
+            <IconCheck size={14} className="text-success-text" />
+            <span className="text-primary">{t('status_done') || 'Fait'}</span>
           </div>
           <div className="flex items-center gap-2">
             <IconClock size={14} className="text-warning" />
-            <span className="text-secondary">{t('status_in_progress') || 'En cours'}</span>
+            <span className="text-primary">{t('status_in_progress') || 'En cours'}</span>
           </div>
           <div className="flex items-center gap-2">
             <IconAlertTriangle size={14} className="text-danger" />
-            <span className="text-secondary">{t('status_blocked') || 'Bloqué'}</span>
+            <span className="text-primary">{t('status_blocked') || 'Bloqué'}</span>
           </div>
           <div className="flex items-center gap-2">
             <IconCircleDashed size={14} className="text-muted" />
-            <span className="text-secondary">{t('status_to_create') || 'À créer'}</span>
+            <span className="text-primary">{t('status_to_create') || 'À créer'}</span>
           </div>
         </div>
       </div>
@@ -743,7 +743,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
           <h2 className="text-2xl font-bold text-primary mb-2">
             {t('select_project_title') || 'Sélectionnez un projet'}
           </h2>
-          <p className="text-secondary">
+          <p className="text-primary">
             {t('select_project_desc') || `${client.name} a ${projects.length} projets. Choisissez celui dont vous voulez voir le workflow.`}
           </p>
         </div>
@@ -773,7 +773,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                      project.project_status === 'completed' ? 'bg-success-light text-success' :
+                      project.project_status === 'completed' ? 'bg-success-light !text-success-text ' :
                       project.project_status === 'in_progress' ? 'bg-warning-light text-warning' :
                       project.project_status === 'archived' ? 'bg-muted text-secondary' :
                       'bg-info-light text-info'

@@ -82,7 +82,7 @@ export default function SettingsPage() {
   }, [searchParams]);
 
   const tabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'appearance', label: t('appearance') || 'Apparence', icon: <IconSun stroke={'#ffd700'} className="!text-warning w-4 h-4" /> },
+    { id: 'appearance', label: t('appearance') || 'Apparence', icon: <IconSun stroke={'#ffd700'} className="!text-warning-text w-4 h-4" /> },
     { id: 'modules', label: t('modules') || 'Modules', icon: <IconPuzzle className="w-4 h-4" /> },
     { id: 'integrations', label: t('integrations') || 'Intégrations', icon: <IconPlugConnected className="w-4 h-4" /> },
     { id: 'notifications', label: t('notifications') || 'Notifications', icon: <IconBell className="w-4 h-4" /> },
@@ -238,8 +238,8 @@ export default function SettingsPage() {
             className={`
               flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all
               ${activeTab === tab.id
-                ? 'bg-accenttext-accent'
-                : 'bg-muted text-secondary hover:text-primary hover:bg-hover'
+                ? 'bg-accent text-white'
+                : 'bg-muted text-primary hover:text-primary hover:bg-hover'
               }
             `}
           >
@@ -279,8 +279,8 @@ export default function SettingsPage() {
                   <p className="text-sm text-secondary mb-2">{t('theme_mode') || 'Mode'}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { value: 'light', icon: <IconSun stroke={'#ffd700'} className="!text-warning w-4 h-4" />, label: t('theme_light') || 'Clair' },
-                      { value: 'dark', icon: <IconMoon className="!text-warning w-4 h-4" />, label: t('theme_dark') || 'Sombre' },
+                      { value: 'light', icon: <IconSun stroke={'#ffd700'} className="!text-warning-text w-4 h-4" />, label: t('theme_light') || 'Clair' },
+                      { value: 'dark', icon: <IconMoon className="!text-warning-text w-4 h-4" />, label: t('theme_dark') || 'Sombre' },
                       { value: 'system', icon: <IconDeviceDesktop className="w-4 h-4" />, label: t('theme_system') || 'Système' },
                     ].map((opt) => (
                       <OptionButton key={opt.value} selected={themeMode === opt.value} onClick={() => setThemeMode(opt.value as 'light' | 'dark' | 'system')}>
@@ -994,7 +994,7 @@ function OptionButton({ children, selected, onClick }: { children: React.ReactNo
       className={`
         flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all
         ${selected
-          ? 'border-accent bg-accenttext-accent'
+          ? 'border-accent bg-accent text-accent'
           : 'border-default text-secondary hover:border-muted hover:text-primary'
         }
       `}

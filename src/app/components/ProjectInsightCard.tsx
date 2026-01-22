@@ -148,7 +148,7 @@ export default function ProjectInsightCard({
         return {
           bg: 'bg-success-light',
           border: 'border-success',
-          icon: <IconCheck className="w-5 h-5 text-success" />,
+          icon: <IconCheck className="w-5 h-5 !text-success-text -text" />,
           iconBg: 'bg-success-light',
         };
       case 'warning':
@@ -171,7 +171,7 @@ export default function ProjectInsightCard({
   const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
     switch (trend) {
       case 'up':
-        return <IconTrendingUp className="w-4 h-4 text-success" />;
+        return <IconTrendingUp className="w-4 h-4 !text-success-text -text" />;
       case 'down':
         return <IconTrendingDown className="w-4 h-4 text-danger" />;
       case 'stable':

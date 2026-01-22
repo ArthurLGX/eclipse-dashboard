@@ -192,7 +192,7 @@ export default function SharedProjectPage() {
       <div className="min-h-screen flex items-center justify-center bg-page">
         <div className="text-center">
           <IconLoader2 className="w-12 h-12 !text-accent-light animate-spin mx-auto mb-4" />
-          <p className="text-secondary">{t('loading_project')}</p>
+          <p className="text-primary">{t('loading_project')}</p>
         </div>
       </div>
     );
@@ -245,8 +245,8 @@ export default function SharedProjectPage() {
 
   const statusConfig = {
     planning: { label: t('planning'), colorClass: 'bg-info-light text-info border-info' },
-    in_progress: { label: t('in_progress'), colorClass: 'bg-warning-light text-warning border-warning' },
-    completed: { label: t('done'), colorClass: 'bg-success-light text-success border-success' },
+    in_progress: { label: t('in_progress'), colorClass: 'bg-warning-light text-warning-text border-warning' },
+    completed: { label: t('done'), colorClass: 'bg-success-light !text-success-text -text border-success' },
   }[project.project_status] || { label: project.project_status, colorClass: 'bg-muted text-muted border-muted' };
 
   return (
@@ -342,7 +342,7 @@ export default function SharedProjectPage() {
                 <IconCheck className="w-4 h-4" />
                 {t('tasks_completed')}
               </div>
-              <div className="text-3xl font-bold text-success">{completedTasks}</div>
+              <div className="text-3xl font-bold !text-success-text -text">{completedTasks}</div>
               <div className="text-sm text-muted">{t('on_tasks')} {parentTasks.length} {t('tasks_label')}</div>
             </div>
 
@@ -473,7 +473,7 @@ export default function SharedProjectPage() {
             ) : (
               <div className="card p-8 text-center">
                 <IconTimeline className="w-12 h-12 text-muted mx-auto mb-3" />
-                <p className="text-secondary">
+                <p className="text-primary">
                   {statusFilter !== 'all' 
                     ? (t('no_tasks_with_status') || 'Aucune tâche avec ce statut')
                     : (t('no_tasks_yet') || 'Aucune tâche dans ce projet pour le moment')}
@@ -514,7 +514,7 @@ export default function SharedProjectPage() {
             ) : (
               <div className="card p-8 text-center">
                 <IconProgress className="w-12 h-12 text-muted mx-auto mb-3" />
-                <p className="text-secondary">
+                <p className="text-primary">
                   {t('no_tasks_with_status') || 'Aucune tâche avec ce statut'}
                 </p>
               </div>
@@ -535,7 +535,7 @@ export default function SharedProjectPage() {
                 <IconUserPlus className="w-6 h-6 !text-accent" />
                 {t('want_to_collaborate')}
               </h3>
-              <p className="text-secondary">
+              <p className="text-primary">
                 {t('collaborate_description')}
               </p>
             </div>
@@ -592,7 +592,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
     const colorMap: Record<string, string> = {
       muted: 'bg-muted text-muted border-muted',
       info: 'bg-info-light text-info border-info',
-      success: 'bg-success-light text-success border-success',
+      success: 'bg-success-light !text-success-text -text border-success',
       danger: 'bg-danger-light text-danger border-danger',
     };
     return colorMap[statusConfig.color] || colorMap.muted;
@@ -619,7 +619,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
           task.task_status === 'in_progress' ? 'bg-info-light' : 'bg-muted/30'
         }`}>
           {task.task_status === 'completed' ? (
-            <IconCheck className="w-4 h-4 text-success" />
+            <IconCheck className="w-4 h-4 !text-success-text -text" />
           ) : task.task_status === 'in_progress' ? (
             <IconProgress className="w-4 h-4 text-info" />
           ) : task.task_status === 'cancelled' ? (
@@ -1120,7 +1120,7 @@ function PublicGanttView({ tasks, projectName }: {
     return (
       <div className="text-center py-12 card">
         <IconTimeline className="w-12 h-12 text-muted mx-auto mb-3" />
-        <p className="text-secondary">{t('no_tasks_for_gantt')}</p>
+        <p className="text-primary">{t('no_tasks_for_gantt')}</p>
       </div>
     );
   }

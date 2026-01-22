@@ -129,7 +129,7 @@ export default function ClientDetailsPage() {
       render: (value) => {
         const status = value as string;
         const config =
-          status === 'completed' ? { label: t('completed') || 'Terminé', className: 'bg-success-light text-success' } :
+          status === 'completed' ? { label: t('completed') || 'Terminé', className: 'bg-success-light !text-success-text ' } :
           status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'bg-warning-light text-warning' } :
           status === 'planning' ? { label: t('planning') || 'Planification', className: 'bg-info-light text-info' } :
           { label: status, className: 'bg-muted text-secondary' };
@@ -299,7 +299,7 @@ export default function ClientDetailsPage() {
               {client.name}
             </h1>
           </div>
-          <div className="flex flex-wrap flex-col text-secondary mb-2">
+          <div className="flex flex-wrap flex-col text-primary mb-2">
             {client.email && (
               <span className="flex items-center gap-1">
                 <IconMail className="w-4 h-4" stroke={1} /> {client.email}
@@ -327,10 +327,10 @@ export default function ClientDetailsPage() {
             )}
           </div>
           <div className="flex gap-4 mt-2">
-            <span className="bg-accent-light flex items-center gap-2 !text-accent px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+            <span className="bg-accent-light flex items-center gap-2 !text-accent-text px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
               {client.processStatus}
             </span>
-            <span className="bg-muted px-3 flex items-center gap-2 py-1 rounded-full text-xs text-secondary">
+            <span className="bg-muted px-3 flex items-center gap-2 py-1 rounded-full text-xs text-primary">
               Créé le {new Date(client.createdAt).toLocaleDateString('fr-FR')}
             </span>
           </div>
@@ -371,7 +371,7 @@ export default function ClientDetailsPage() {
             <IconFileInvoice className="w-4 h-4" />
             {t('invoices')}
             {(client.factures?.length || 0) > 0 && (
-              <span className="absolute -top-2 -right-2 bg-success-light text-success text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-success-light !text-success-text -text text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                 {client.factures?.length}
               </span>
             )}
@@ -441,11 +441,11 @@ export default function ClientDetailsPage() {
           type="button"
           onClick={() => setActiveTab('workflow')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
-            activeTab === 'workflow' ? 'bg-accent text-white' : 'bg-hover text-secondary hover:text-primary'
+            activeTab === 'workflow' ? 'bg-accent text-white' : 'bg-hover text-primary hover:!text-secondary'
           }`}
           title={t('client_journey_subtitle') || 'Qu\'est-ce qui existe et qu\'est-ce qui manque ?'}
         >
-          <IconRoute size={14} />
+          <IconRoute size={14} className={activeTab === 'workflow' ? '!text-white' : '!text-secondary hover:!text-secondary'} />
           {t('workflow_tab') || 'Parcours client'}
         </button>
       </div>

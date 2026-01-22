@@ -353,7 +353,7 @@ export default function AdminUsersPage() {
             {selectedUsers.length} {t('users_selected') || 'utilisateur(s) sélectionné(s)'}
           </span>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-1.5 text-sm bg-warning-light text-warning rounded-lg hover:bg-warning-light">
+            <button className="px-3 py-1.5 text-sm bg-warning-light text-warning-text rounded-lg hover:bg-warning-light">
               {t('block') || 'Bloquer'}
             </button>
             <button className="px-3 py-1.5 text-sm bg-danger-light text-danger rounded-lg hover:bg-danger-light">
@@ -437,7 +437,7 @@ export default function AdminUsersPage() {
                       <IconMail className="w-4 h-4 text-muted" />
                       <span className="text-sm text-secondary">{user.email}</span>
                       {user.confirmed && (
-                        <IconCheck className="w-4 h-4 text-success" title={t('email_confirmed') || 'Email confirmé'} />
+                        <IconCheck className="w-4 h-4 !text-success-text -text" title={t('email_confirmed') || 'Email confirmé'} />
                       )}
                     </div>
                   </td>
@@ -459,7 +459,7 @@ export default function AdminUsersPage() {
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
                       user.blocked 
                         ? 'bg-danger-light text-danger' 
-                        : 'bg-success-light text-success'
+                        : 'bg-success-light !text-success-text '
                     }`}>
                       {user.blocked ? (
                         <>

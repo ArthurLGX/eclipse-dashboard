@@ -267,12 +267,12 @@ export default function ContractsPage() {
           <p className="text-2xl font-bold text-primary mt-1">{stats.total}</p>
         </div>
         <div className="p-4 bg-success-light rounded-xl">
-          <p className="text-sm text-success">{t('contract_signed') || 'Signés'}</p>
-          <p className="text-2xl font-bold text-success mt-1">{stats.signed}</p>
+          <p className="text-sm !text-success-text -text">{t('contract_signed') || 'Signés'}</p>
+          <p className="text-2xl font-bold !text-success-text -text mt-1">{stats.signed}</p>
         </div>
         <div className="p-4 bg-warning-light rounded-xl">
           <p className="text-sm text-warning">{t('pending') || 'En attente'}</p>
-          <p className="text-2xl font-bold text-warning mt-1">{stats.pending}</p>
+          <p className="text-2xl font-bold text-warning-text mt-1">{stats.pending}</p>
         </div>
         <div className="p-4 bg-hover rounded-xl">
           <p className="text-sm text-muted">{t('contract_drafts') || 'Brouillons'}</p>
@@ -460,7 +460,7 @@ export default function ContractsPage() {
       {!loading && contracts.length > 0 && filteredContracts.length === 0 && (
         <div className="text-center py-12">
           <IconSearch className="w-12 h-12 text-muted mx-auto mb-4" />
-          <p className="text-secondary">
+          <p className="text-primary">
             {t('no_contracts_match') || 'Aucun contrat ne correspond à votre recherche'}
           </p>
         </div>
