@@ -216,7 +216,7 @@ function ApiTokensSection() {
                   ×
                 </button>
               </div>
-              <p className="text-smtext-success-light">
+              <p className="text-sm text-success-light">
                 {t('token_created_warning') || 'Copiez ce token maintenant. Il ne sera plus affiché !'}
               </p>
               <div className="flex items-center gap-2">

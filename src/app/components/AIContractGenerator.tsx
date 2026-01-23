@@ -1016,7 +1016,7 @@ ${user?.username || 'L\'équipe'}`;
                       <IconSparkles className="w-4 h-4" />
                       {t('project_context') || 'L\'IA adaptera le contrat selon ce projet'}
                     </p>
-                    <div className="text-smtext-info-light space-y-1">
+                    <div className="text-sm text-info-light space-y-1">
                       <p><strong>Projet:</strong> {selectedProject.title}</p>
                       {selectedProject.description && (
                         <div 
@@ -1083,7 +1083,7 @@ ${user?.username || 'L\'équipe'}`;
                     <p className="text-sm font-medium text-warning">
                       {t('contract_warning_title') || 'Important'}
                     </p>
-                    <p className="text-xstext-warning-light mt-1">
+                    <p className="text-xs text-warning-light mt-1">
                       {t('contract_warning_text') || 'Ce contrat est généré à titre indicatif. Faites-le relire par un professionnel du droit avant utilisation.'}
                     </p>
                   </div>
@@ -1118,7 +1118,7 @@ ${user?.username || 'L\'équipe'}`;
                         </p>
                         <ul className="space-y-1">
                           {dateWarnings.map((warning, index) => (
-                            <li key={index} className="text-smtext-warning-light flex items-start gap-2">
+                            <li key={index} className="text-sm text-warning-light flex items-start gap-2">
                               <span className="text-warning">•</span>
                               {warning}
                             </li>
@@ -1271,7 +1271,7 @@ ${user?.username || 'L\'équipe'}`;
                       <IconBulb className="w-4 h-4" />
                       {t('tips') || 'Conseils'}
                     </p>
-                    <ul className="text-xstext-info-light space-y-1">
+                    <ul className="text-xs text-info-light space-y-1">
                       {generatedContract.tips.map((tip, i) => (
                         <li key={i}>• {tip}</li>
                       ))}
@@ -1280,12 +1280,12 @@ ${user?.username || 'L\'équipe'}`;
                 )}
 
                 {generatedContract.warnings && generatedContract.warnings.length > 0 && (
-                  <div className="p-4 bg-warning-light rounded-xl">
-                    <p className="text-sm font-medium text-warning-text flex items-center gap-2 mb-2">
+                  <div className="p-4 bg-accent-light rounded-xl">
+                    <p className="text-sm font-medium text-accent flex items-center gap-2 mb-2">
                       <IconAlertTriangle className="w-4 h-4" />
                       {t('warnings') || 'Points d\'attention'}
                     </p>
-                    <ul className="text-xstext-warning-light space-y-1">
+                    <ul className="text-xs text-accent space-y-1">
                       {generatedContract.warnings.map((warning, i) => (
                         <li key={i}>• {warning}</li>
                       ))}
@@ -1468,8 +1468,8 @@ ${user?.username || 'L\'équipe'}`;
                     </div>
                   </div>
                   {!selectedClient?.email && (
-                    <div className="mt-3 p-3 bg-warning-light rounded-lg">
-                      <p className="text-sm text-warning-text flex items-center gap-2">
+                    <div className="mt-3 p-3 bg-accent-light rounded-lg">
+                      <p className="text-sm text-accent flex items-center gap-2">
                         <IconAlertTriangle className="w-4 h-4" />
                         {t('client_no_email_warning') || 'Ce client n\'a pas d\'email. Ajoutez-en un pour pouvoir envoyer le contrat.'}
                       </p>
