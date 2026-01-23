@@ -92,6 +92,8 @@ const translations = {
     pricing: 'Tarifs',
     contact: 'Contact',
     login: 'Connexion',
+    error_login: 'Erreur lors de la connexion',
+    backto_login: 'Retour à la connexion',
     register: 'Inscription',
     go_to_offers: 'Voir les offres',
     reset_password: 'Réinitialiser le mot de passe',
@@ -6282,6 +6284,8 @@ won: 'Won',
     choose_a_username: 'Choose a username',
     enter_your_password: 'Enter your password',
     confirm_your_password: 'Confirm your password',
+
+    
     // Growth Audit
     growth_audit: 'Growth Audit',
     growth_audit_desc: 'Analyze SEO and structure of your pages',

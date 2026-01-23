@@ -13,9 +13,8 @@ export default function GoogleRedirectPage() {
   const { t } = useLanguage();
   useEffect(() => {
     const handleCallback = async () => {
-      // Récupérer les tokens depuis l'URL
-      const accessToken = searchParams.get('access_token'); // Token Google OAuth
-      const idToken = searchParams.get('id_token'); // ID Token Google
+      // Strapi envoie directement le JWT dans l'URL après authentification
+      const jwtToken = searchParams.get('access_token');
       const errorParam = searchParams.get('error');
 
       if (errorParam) {
@@ -23,46 +22,39 @@ export default function GoogleRedirectPage() {
         return;
       }
 
-      if (!accessToken) {
+      if (!jwtToken) {
         setError(t('no_token_received_from_google'));
         return;
       }
 
       try {
-        // Appeler le callback Strapi pour échanger le token Google contre un JWT Strapi
-        const callbackResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/google/callback?access_token=${accessToken}${idToken ? `&id_token=${idToken}` : ''}`,
-          {
-            credentials: 'include', // Important pour les cookies
-          }
-        );
+        // Vérifier que le token est valide en récupérant les infos utilisateur
+        const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        });
 
-        if (!callbackResponse.ok) {
-          const errorData = await callbackResponse.json();
-          throw new Error(errorData.error?.message || t('authentication_error'));
+        if (!response.ok) {
+          throw new Error(t('authentication_error'));
         }
 
-        const authData = await callbackResponse.json();
+        const user = await response.json();
         
-        // Strapi renvoie { jwt, user }
-        if (!authData.jwt) {
-          throw new Error('Aucun JWT reçu de Strapi');
-        }
-
-        // Stocker le token JWT Strapi
-        localStorage.setItem('token', authData.jwt);
-        localStorage.setItem('user', JSON.stringify(authData.user));
+        // Stocker le token JWT Strapi et les infos utilisateur
+        localStorage.setItem('token', jwtToken);
+        localStorage.setItem('user', JSON.stringify(user));
 
         // Rediriger vers le dashboard
         router.push('/dashboard');
       } catch (err) {
         console.error('Erreur lors de la connexion Google:', err);
-        setError(err instanceof Error ? err.message : 'Erreur de connexion');
+        setError(err instanceof Error ? err.message : t('authentication_error'));
       }
     };
 
     handleCallback();
-  }, [searchParams, router]);
+  }, [searchParams, router, t]);
 
   if (error) {
     return (
