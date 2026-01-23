@@ -208,14 +208,12 @@ function LoginContent() {
                 transition={{ delay: 0.2 }}
                 className="flex items-center gap-3 mb-8"
               >
-                <div className="w-10 h-10 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center">
-                  <IconLock className="w-5 h-5 text-accent" />
-                </div>
+               
                 <div>
-                  <h2 className="text-lg font-semibold text-primary">
+                  <h1 className=" uppercase text-primary mb-2 !text-right">
                     {isLogin ? t('welcome_to_eclipse') : t('join_eclipse')}
-                  </h2>
-                  <p className="text-xs text-muted">
+                  </h1>
+                  <p className="text-xs text-muted !text-right">
                     {isLogin ? t('better_project_reviews_for_developers') : t('create_your_account')}
                   </p>
                 </div>
@@ -229,7 +227,7 @@ function LoginContent() {
                 className="flex items-center gap-2 mb-6"
               >
                 <span className="text-sm text-muted">
-                  {isLogin ? t("don't_have_an_account") : t("already_have_an_account")}
+                  {isLogin ? t("don_t_have_an_account") : t("already_have_an_account")}
                 </span>
                 <button
                   onClick={toggleMode}

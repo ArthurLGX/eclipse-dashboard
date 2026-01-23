@@ -1448,6 +1448,15 @@ const translations = {
     invitation_already_rejected: 'Cette invitation a été refusée',
     invitation_expired: 'Cette invitation a expiré',
 
+    // Login
+    welcome_to_eclipse: 'Bienvenue dans Eclipse',
+    better_project_reviews_for_developers: 'Meilleures évaluations de projets pour les freelances',
+    don_t_have_an_account: "Vous n'avez pas de compte ?",
+    already_have_an_account: "Vous avez déjà un compte ?",
+    terms_of_service: 'Conditions d\'utilisation',
+    privacy_policy: 'Politique de confidentialité',
+    by_signing_up_you_agree_to_eclipse_s_terms_of_service: 'En vous inscrivant, vous acceptez les conditions d\'utilisation d\'Eclipse',
+
     // Tâches de projet
     project_tasks: 'Tâches du projet',
     project_invoices: 'Factures du projet',
@@ -5476,7 +5485,15 @@ won: 'Won',
     will_be_deactivated_plural: 'will be deactivated',
     quota_selection_saved: 'Selection saved successfully',
     items_deactivated: 'items deactivated',
-    
+
+      welcome_to_eclipse: 'Welcome to Eclipse',
+      better_project_reviews_for_developers: 'Better project reviews for developers',
+      don_t_have_an_account: "Don't have an account?",
+      already_have_an_account: "Already have an account?",
+      terms_of_service: 'Terms of service',
+    privacy_policy: 'Privacy policy',
+    by_signing_up_you_agree_to_eclipse_s_terms_of_service: 'By signing up, you agree to Eclipse\'s terms of service',
+      
     // Modules & Business Types
     modules: 'Modules',
     your_business: 'Your business',
