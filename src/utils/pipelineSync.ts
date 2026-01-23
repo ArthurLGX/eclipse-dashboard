@@ -221,7 +221,7 @@ export function calculatePipelineKPIs(
     const clientAlt = quote.client && typeof quote.client === 'object'
       ? (quote.client as Client).documentId
       : undefined;
-    return lostContactIds.has(clientId) || lostContactIds.has(clientAlt);
+    return (clientId && lostContactIds.has(clientId)) || (clientAlt && lostContactIds.has(clientAlt)) || false;
   };
   
   // Calcul des valeurs monétaires (exclure les devis de contacts perdus)
