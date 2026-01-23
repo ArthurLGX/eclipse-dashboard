@@ -242,7 +242,6 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
 
           <AnimatePresence mode="sync">
             {steps.map((step, index) => {
-              const isActive = activeSteps.includes(step.id);
               const stepIndex = activeSteps.indexOf(step.id);
               const isVisible = stepIndex >= 0;
               

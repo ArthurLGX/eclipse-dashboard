@@ -35,7 +35,6 @@ function LoginContent() {
   const router = useRouter();
   const { authenticated, hasHydrated, login, user } = useAuth();
   const { showGlobalPopup } = usePopup();
-  const { t } = useLanguage();
 
   // Check for OAuth error in URL
   useEffect(() => {
@@ -419,7 +418,7 @@ function LoginContent() {
                 {/* Terms */}
                 {!isLogin && (
                   <p className="text-xs text-center text-muted">
-                    By signing up, you agree to Eclipse's{' '}
+                    By signing up, you agree to Eclipse&apos;s{' '}
                     <a href="#" className="text-accent hover:underline">
                       Terms of Service
                     </a>{' '}
