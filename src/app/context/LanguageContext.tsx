@@ -1454,6 +1454,10 @@ const translations = {
     don_t_have_an_account: "Vous n'avez pas de compte ?",
     already_have_an_account: "Vous avez déjà un compte ?",
     terms_of_service: 'Conditions d\'utilisation',
+    enter_your_username: 'Entrez votre nom d\'utilisateur',
+    choose_a_username: 'Choisissez un nom d\'utilisateur',
+    enter_your_password: 'Entrez votre mot de passe',
+    confirm_your_password: 'Confirmez votre mot de passe',
     privacy_policy: 'Politique de confidentialité',
     by_signing_up_you_agree_to_eclipse_s_terms_of_service: 'En vous inscrivant, vous acceptez les conditions d\'utilisation d\'Eclipse',
 
@@ -6269,7 +6273,15 @@ won: 'Won',
     email_confirmation_register: 'Create account',
     email_confirmation_error: 'Confirmation error',
     email_confirmation_error_description: 'An error occurred while confirming your email.',
-
+    // Login
+    error_connecting: 'Error connecting',
+    back_to_login: 'Back to login',
+    no_token_received_from_google: 'No token received from Google',
+    authentication_error: 'Authentication error',
+    enter_your_username: 'Enter your username',
+    choose_a_username: 'Choose a username',
+    enter_your_password: 'Enter your password',
+    confirm_your_password: 'Confirm your password',
     // Growth Audit
     growth_audit: 'Growth Audit',
     growth_audit_desc: 'Analyze SEO and structure of your pages',
