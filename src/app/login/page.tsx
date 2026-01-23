@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import {
@@ -10,7 +11,7 @@ import {
   fetchCreateAccount,
   fetchSubscriptionsUser,
 } from '@/lib/api';
-import { IconBrandGoogle, IconBrandGithub, IconEye, IconEyeOff } from '@tabler/icons-react';
+import { IconBrandGithub, IconEye, IconEyeOff } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProgressiveTimeline from '@/app/components/ProgressiveTimeline';
 
@@ -238,6 +239,16 @@ function LoginContent() {
               </motion.div>
 
               {/* OAuth Buttons */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.35 }}
+                className="text-center text-xs text-muted mb-3"
+              >
+                {isLogin 
+                  ? t('continue_with_oauth') || 'Continuez avec votre compte' 
+                  : t('signup_with_oauth') || 'Inscrivez-vous en un clic'}
+              </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -248,17 +259,34 @@ function LoginContent() {
                   type="button"
                   onClick={handleGoogleLogin}
                   disabled={isGoogleLoading}
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <IconBrandGoogle className="w-5 h-5 text-[#4285F4]" />
-                  <span className="text-sm font-medium text-secondary group-hover:text-primary">{t('google')}</span>
+                  {isGoogleLoading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+                      <span className="text-sm font-medium text-secondary">Loading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Image 
+                        src="/images/google-icon.png" 
+                        alt="Google" 
+                        width={20} 
+                        height={20}
+                        className="w-5 h-5"
+                      />
+                      <span className="text-sm font-medium text-secondary group-hover:text-primary">{t('google')}</span>
+                    </>
+                  )}
                 </button>
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group opacity-50 cursor-not-allowed"
+                  disabled
+                  title={t('coming_soon') || 'Prochainement'}
                 >
-                  <IconBrandGithub className="w-5 h-5 text-secondary group-hover:text-primary" />
-                  <span className="text-sm font-medium text-secondary group-hover:text-primary">{t('github')}</span>
+                  <IconBrandGithub className="w-5 h-5 text-secondary" />
+                  <span className="text-sm font-medium text-secondary">{t('github')}</span>
                 </button>
               </motion.div>
 
