@@ -36,6 +36,8 @@ function LoginContent() {
   const { authenticated, hasHydrated, login, user } = useAuth();
   const { showGlobalPopup } = usePopup();
 
+  const { t } = useLanguage();
+
   // Check for OAuth error in URL
   useEffect(() => {
     const urlError = searchParams.get('error');
@@ -211,10 +213,10 @@ function LoginContent() {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-primary">
-                    {isLogin ? 'Welcome to Eclipse' : 'Join Eclipse'}
+                    {isLogin ? t('welcome_to_eclipse') : t('join_eclipse')}
                   </h2>
                   <p className="text-xs text-muted">
-                    {isLogin ? 'Better project reviews for developers' : 'Create your account'}
+                    {isLogin ? t('better_project_reviews_for_developers') : t('create_your_account')}
                   </p>
                 </div>
               </motion.div>
@@ -227,13 +229,13 @@ function LoginContent() {
                 className="flex items-center gap-2 mb-6"
               >
                 <span className="text-sm text-muted">
-                  {isLogin ? "Don't have an account?" : "Already have an account?"}
+                  {isLogin ? t("don't_have_an_account") : t("already_have_an_account")}
                 </span>
                 <button
                   onClick={toggleMode}
                   className="text-sm text-accent hover:text-accent/80 font-medium transition-colors underline"
                 >
-                  {isLogin ? 'Sign Up' : 'Login'}
+                  {isLogin ? t('sign_up') : t('login')}
                 </button>
               </motion.div>
 
@@ -251,14 +253,14 @@ function LoginContent() {
                   className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group disabled:opacity-50"
                 >
                   <IconBrandGoogle className="w-5 h-5 text-[#4285F4]" />
-                  <span className="text-sm font-medium text-secondary group-hover:text-primary">Google</span>
+                  <span className="text-sm font-medium text-secondary group-hover:text-primary">{t('google')}</span>
                 </button>
                 <button
                   type="button"
                   className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group"
                 >
                   <IconBrandGithub className="w-5 h-5 text-secondary group-hover:text-primary" />
-                  <span className="text-sm font-medium text-secondary group-hover:text-primary">GitHub</span>
+                  <span className="text-sm font-medium text-secondary group-hover:text-primary">{t('github')}</span>
                 </button>
               </motion.div>
 
@@ -298,11 +300,11 @@ function LoginContent() {
                 {/* Email/Username */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-secondary">
-                    {isLogin ? 'Username' : 'Email'}
+                    {isLogin ? t('username') : t('email')}
                   </label>
                   <input
                     type={isLogin ? 'text' : 'email'}
-                    placeholder={isLogin ? 'Enter your username' : 'name@example.com'}
+                    placeholder={isLogin ? t('enter_your_username') : t('name@example.com')}
                     value={isLogin ? username : email}
                     required
                     autoComplete={isLogin ? 'username' : 'email'}
@@ -319,10 +321,10 @@ function LoginContent() {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2"
                   >
-                    <label className="text-sm font-medium text-secondary">Username</label>
+                    <label className="text-sm font-medium text-secondary">{t('username')}</label>
                     <input
                       type="text"
-                      placeholder="Choose a username"
+                      placeholder={t('choose_a_username')}
                       value={username}
                       required={!isLogin}
                       autoComplete="username"
@@ -335,20 +337,20 @@ function LoginContent() {
                 {/* Password */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-secondary">Password</label>
+                      <label className="text-sm font-medium text-secondary">{t('password')}</label>
                     {isLogin && (
                       <a
                         href="/forgot-password"
                         className="text-xs text-muted hover:text-accent transition-colors"
                       >
-                        Forgot password?
+                        {t('forgot_password')}
                       </a>
                     )}
                   </div>
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter your password"
+                      placeholder={t('enter_your_password')}
                       value={password}
                       required
                       autoComplete={isLogin ? 'current-password' : 'new-password'}
@@ -379,11 +381,11 @@ function LoginContent() {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2"
                   >
-                    <label className="text-sm font-medium text-secondary">Confirm Password</label>
+                    <label className="text-sm font-medium text-secondary">{t('confirm_password')}</label>
                     <div className="relative">
                       <input
                         type={showConfirmPassword ? 'text' : 'password'}
-                        placeholder="Confirm your password"
+                        placeholder={t('confirm_your_password')}
                         value={confirmPassword}
                         required={!isLogin}
                         autoComplete="new-password"
@@ -412,19 +414,19 @@ function LoginContent() {
                   type="submit"
                   className="w-full bg-highlight hover:bg-highlight-hover text-highlight-text font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
-                  {isLogin ? 'Sign In' : 'Sign Up'}
+                  {isLogin ? t('sign_in') : t('sign_up')}
                 </button>
 
                 {/* Terms */}
                 {!isLogin && (
                   <p className="text-xs text-center text-muted">
-                    By signing up, you agree to Eclipse&apos;s{' '}
+                    {t('by_signing_up_you_agree_to_eclipse_s_terms_of_service')}
                     <a href="#" className="text-accent hover:underline">
-                      Terms of Service
+                      {t('terms_of_service')}
                     </a>{' '}
                     and{' '}
                     <a href="#" className="text-accent hover:underline">
-                      Privacy Policy
+                      {t('privacy_policy')}
                     </a>
                   </p>
                 )}
@@ -448,11 +450,12 @@ function LoginContent() {
 }
 
 function LoginLoading() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-page">
       <div className="flex flex-col items-center gap-4">
         <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-        <p className="text-muted">Chargement...</p>
+          <p className="text-muted">{t('loading')}...</p>
       </div>
     </div>
   );
