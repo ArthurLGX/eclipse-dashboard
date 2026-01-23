@@ -10,7 +10,7 @@ import {
   fetchCreateAccount,
   fetchSubscriptionsUser,
 } from '@/lib/api';
-import { IconBrandGoogle, IconBrandGithub, IconEye, IconEyeOff, IconLock } from '@tabler/icons-react';
+import { IconBrandGoogle, IconBrandGithub, IconEye, IconEyeOff } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProgressiveTimeline from '@/app/components/ProgressiveTimeline';
 
