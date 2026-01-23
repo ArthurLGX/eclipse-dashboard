@@ -12,8 +12,9 @@ export default function GoogleRedirectPage() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      // Récupérer le token d'accès depuis l'URL (envoyé par Strapi)
-      const accessToken = searchParams.get('access_token');
+      // Récupérer les tokens depuis l'URL
+      const accessToken = searchParams.get('access_token'); // Token Google OAuth
+      const idToken = searchParams.get('id_token'); // ID Token Google
       const errorParam = searchParams.get('error');
 
       if (errorParam) {
@@ -27,24 +28,29 @@ export default function GoogleRedirectPage() {
       }
 
       try {
-        // Stocker le token JWT
-        localStorage.setItem('token', accessToken);
+        // Appeler le callback Strapi pour échanger le token Google contre un JWT Strapi
+        const callbackResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/google/callback?access_token=${accessToken}${idToken ? `&id_token=${idToken}` : ''}`,
+          {
+            credentials: 'include', // Important pour les cookies
+          }
+        );
 
-        // Récupérer les informations utilisateur depuis Strapi
-        const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Impossible de récupérer les informations utilisateur');
+        if (!callbackResponse.ok) {
+          const errorData = await callbackResponse.json();
+          throw new Error(errorData.error?.message || 'Erreur lors de l\'authentification');
         }
 
-        const user = await response.json();
+        const authData = await callbackResponse.json();
         
-        // Stocker les infos utilisateur
-        localStorage.setItem('user', JSON.stringify(user));
+        // Strapi renvoie { jwt, user }
+        if (!authData.jwt) {
+          throw new Error('Aucun JWT reçu de Strapi');
+        }
+
+        // Stocker le token JWT Strapi
+        localStorage.setItem('token', authData.jwt);
+        localStorage.setItem('user', JSON.stringify(authData.user));
 
         // Rediriger vers le dashboard
         router.push('/dashboard');
