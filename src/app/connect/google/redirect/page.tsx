@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { IconBrandGoogle, IconAlertCircle } from '@tabler/icons-react';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 export default function GoogleRedirectPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
-
+  const { t } = useLanguage();
   useEffect(() => {
     const handleCallback = async () => {
       // Récupérer les tokens depuis l'URL
@@ -23,7 +24,7 @@ export default function GoogleRedirectPage() {
       }
 
       if (!accessToken) {
-        setError('Aucun token reçu de Google');
+        setError(t('no_token_received_from_google'));
         return;
       }
 
@@ -38,7 +39,7 @@ export default function GoogleRedirectPage() {
 
         if (!callbackResponse.ok) {
           const errorData = await callbackResponse.json();
-          throw new Error(errorData.error?.message || 'Erreur lors de l\'authentification');
+          throw new Error(errorData.error?.message || t('authentication_error'));
         }
 
         const authData = await callbackResponse.json();
@@ -69,20 +70,20 @@ export default function GoogleRedirectPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center p-8 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-color)] max-w-md"
+          className="text-center p-8 rounded-xl bg-card border-default max-w-md"
         >
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
             <IconAlertCircle className="w-8 h-8 text-red-500" />
           </div>
-          <h1 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-            Erreur de connexion
+          <h1 className="text-xl font-bold text-center text-primary mb-2">
+            {t('error_connecting')}
           </h1>
-          <p className="text-[var(--text-secondary)] mb-6">{error}</p>
+            <p className="text-center text-primary mb-6">{error}</p>
           <button
             onClick={() => router.push('/login')}
-            className="px-6 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 transition-opacity"
-          >
-            Retour à la connexion
+            className="px-6 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-opacity"
+          > 
+            {t('back_to_login')}
           </button>
         </motion.div>
       </div>
