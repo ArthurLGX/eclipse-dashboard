@@ -949,17 +949,17 @@ export default function PipelinePage() {
         <div className="space-y-4">
           {/* Cartes de stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {/* CA Potentiel (Devis envoyés) */}
+            {/* CA Potentiel (Tous devis actifs) */}
             <div className="bg-card border border-default rounded-xl p-4">
               <div className="flex items-center gap-2 text-muted mb-2">
                 <IconReceipt size={16} />
                 <span className="text-xs font-medium">{t('kpi_potential_revenue') || 'CA Potentiel'}</span>
               </div>
               <p className="text-xl font-bold text-violet-500">
-                {formatCurrency(kpis.potentialValue + kpis.inNegotiationValue)}
+                {formatCurrency(kpis.potentialValue)}
               </p>
               <p className="text-xs text-muted mt-1">
-                {kpis.quotesSentCount} {t('kpi_quotes_sent') || 'devis envoyés'}
+                {kpis.quotesSentCount + kpis.quotesAcceptedCount} {t('kpi_active_quotes') || 'devis actifs'}
               </p>
             </div>
 

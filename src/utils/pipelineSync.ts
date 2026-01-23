@@ -206,15 +206,71 @@ export function calculatePipelineKPIs(
   // Filtrer uniquement les devis (pas les factures)
   const onlyQuotes = quotes.filter(q => q.document_type === 'quote');
   
-  // Calcul des valeurs monétaires
-  const sentQuotes = onlyQuotes.filter(q => q.quote_status === 'sent');
-  const acceptedQuotes = onlyQuotes.filter(q => q.quote_status === 'accepted');
-  const rejectedQuotes = onlyQuotes.filter(q => q.quote_status === 'rejected');
-  const negotiationQuotes = onlyQuotes.filter(q => (q.quote_status as string) === 'negotiation');
+  // Obtenir les IDs des contacts perdus pour les exclure
+  const lostContactIds = new Set(
+    contacts
+      .filter(c => c.pipeline_status === 'lost')
+      .map(c => c.documentId)
+  );
   
-  const potentialValue = sentQuotes.reduce((sum, q) => sum + (q.number || 0), 0);
+  // Fonction helper pour vérifier si un devis appartient à un contact perdu
+  const isFromLostContact = (quote: Facture): boolean => {
+    const clientId = quote.client_id && typeof quote.client_id === 'object' 
+      ? (quote.client_id as Client).documentId 
+      : quote.client_id;
+    const clientAlt = quote.client && typeof quote.client === 'object'
+      ? (quote.client as Client).documentId
+      : undefined;
+    return lostContactIds.has(clientId) || lostContactIds.has(clientAlt);
+  };
+  
+  // Calcul des valeurs monétaires (exclure les devis de contacts perdus)
+  const sentQuotes = onlyQuotes.filter(q => q.quote_status === 'sent' && !isFromLostContact(q));
+  const acceptedQuotes = onlyQuotes.filter(q => q.quote_status === 'accepted' && !isFromLostContact(q));
+  const rejectedQuotes = onlyQuotes.filter(q => q.quote_status === 'rejected');
+  const negotiationQuotes = onlyQuotes.filter(q => (q.quote_status as string) === 'negotiation' && !isFromLostContact(q));
+  
+  // CA Potentiel = tous les devis actifs (envoyés, négociation, acceptés non encore facturés)
+  const quotesValue = [
+    ...sentQuotes, 
+    ...negotiationQuotes,
+    ...acceptedQuotes
+  ].reduce((sum, q) => sum + (q.number || 0), 0);
+  
+  // Ajouter la valeur estimée des contacts "en cours" ou "devis accepté" qui n'ont pas de devis associé
+  // (pour couvrir les cas où le projet est créé sans devis formel)
+  // EXCLURE les contacts perdus
+  const contactsWithValue = contacts.filter(c => 
+    c.pipeline_status !== 'lost' && // ✅ Exclure les perdus
+    (c.pipeline_status === 'in_progress' || 
+     c.pipeline_status === 'quote_accepted' ||
+     c.pipeline_status === 'delivered') && 
+    c.estimated_value
+  );
+  
+  // Pour éviter de compter deux fois, on vérifie que le contact n'a pas déjà un devis dans notre liste
+  const contactsWithoutQuotes = contactsWithValue.filter(contact => {
+    const hasQuote = [...sentQuotes, ...negotiationQuotes, ...acceptedQuotes].some(q => {
+      const clientId = q.client_id && typeof q.client_id === 'object' 
+        ? (q.client_id as Client).documentId 
+        : q.client_id;
+      const clientAlt = q.client && typeof q.client === 'object'
+        ? (q.client as Client).documentId
+        : undefined;
+      return clientId === contact.documentId || clientAlt === contact.documentId;
+    });
+    return !hasQuote;
+  });
+  
+  const estimatedValue = contactsWithoutQuotes.reduce((sum, c) => sum + (c.estimated_value || 0), 0);
+  
+  const potentialValue = quotesValue + estimatedValue;
+  
+  // CA Gagné = devis acceptés (qui deviendront des factures)
   const wonValue = acceptedQuotes.reduce((sum, q) => sum + (q.number || 0), 0);
   const lostValue = rejectedQuotes.reduce((sum, q) => sum + (q.number || 0), 0);
+  
+  // Valeur en négociation (sous-ensemble du potentiel, pour affichage séparé si besoin)
   const inNegotiationValue = negotiationQuotes.reduce((sum, q) => sum + (q.number || 0), 0);
   
   // Compteurs par statut
