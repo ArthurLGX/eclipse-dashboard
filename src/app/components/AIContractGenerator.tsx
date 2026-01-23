@@ -828,11 +828,11 @@ ${user?.username || 'L\'équipe'}`;
               {['config', 'review', 'sign', 'send'].map((s, i) => (
                 <React.Fragment key={s}>
                   <div className={`flex items-center gap-2 ${
-                    step === s ? 'text-accent' : 
-                    ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'text-success-text' : 'text-muted'
+                    step === s ? 'text-secondary' : 
+                    ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'text-success' : 'text-muted'
                   }`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium ${
-                      step === s ? 'bg-accent text-white' : 
+                      step === s ? 'bg-secondary text-white' : 
                       ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'bg-success text-white' : 'bg-hover'
                     }`}>
                       {['config', 'review', 'sign', 'send'].indexOf(step) > i ? <IconCheck className="w-4 h-4" /> : i + 1}
@@ -989,7 +989,7 @@ ${user?.username || 'L\'équipe'}`;
                         className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
                           contractLanguage === 'fr'
                             ? 'border-accent bg-accent-light !text-accent'
-                            : 'border-muted bg-muted text-secondary hover:text-primary'
+                            : 'border-muted bg-muted text-primary hover:text-primary'
                         }`}
                       >
                         🇫🇷 Français
@@ -1000,7 +1000,7 @@ ${user?.username || 'L\'équipe'}`;
                         className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
                           contractLanguage === 'en'
                             ? 'border-accent bg-accent-light !text-accent'
-                            : 'border-muted bg-muted text-secondary hover:text-primary'
+                            : 'border-muted bg-muted text-primary hover:text-primary'
                         }`}
                       >
                         🇬🇧 English
@@ -1063,7 +1063,7 @@ ${user?.username || 'L\'équipe'}`;
                           key={index}
                           className="flex items-center gap-2 p-3 bg-muted rounded-lg"
                         >
-                          <span className="flex-1 text-sm text-secondary">{clause}</span>
+                          <span className="flex-1 text-sm text-primary">{clause}</span>
                           <button
                             onClick={() => handleRemoveClause(index)}
                             className="text-danger hover:opacity-80"
@@ -1107,14 +1107,14 @@ ${user?.username || 'L\'équipe'}`;
                 )}
                 
                 {dateWarnings.length > 0 && (
-                  <div className="p-4 bg-warning-light rounded-xl border border-warning">
+                  <div className="p-4 bg-accent-light rounded-xl border border-warning">
                     <div className="flex items-start gap-3">
                       <IconAlertTriangle className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-warning-text mb-2">
+                        <p className="text-sm font-medium text-accent mb-2">
                           {contractLanguage === 'fr' 
-                            ? '⚠️ Attention aux dates du contrat' 
-                            : '⚠️ Contract date warnings'}
+                            ? 'Attention aux dates du contrat' 
+                            : 'Contract date warnings'}
                         </p>
                         <ul className="space-y-1">
                           {dateWarnings.map((warning, index) => (
@@ -1180,19 +1180,19 @@ ${user?.username || 'L\'équipe'}`;
                       <p className="font-semibold text-primary">ENTRE LES SOUSSIGNÉS :</p>
                       <div className="mt-2 p-3 bg-muted rounded-lg">
                         <p className="font-medium text-primary">{generatedContract.parties.provider.name}</p>
-                        <p className="text-secondary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
+                        <p className="text-primary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
                       </div>
                       <p className="text-center my-2 text-muted">ET</p>
                       <div className="p-3 bg-muted rounded-lg">
                         <p className="font-medium text-primary">{generatedContract.parties.client.name}</p>
-                        <p className="text-secondary whitespace-pre-line">{generatedContract.parties.client.details}</p>
+                        <p className="text-primary whitespace-pre-line">{generatedContract.parties.client.details}</p>
                       </div>
                     </div>
 
                     {/* Preamble */}
                     <div className="mb-6 text-sm">
                       <p className="font-semibold text-primary mb-2">PRÉAMBULE</p>
-                      <p className="text-secondary whitespace-pre-line">{generatedContract.preamble}</p>
+                      <p className="text-primary whitespace-pre-line">{generatedContract.preamble}</p>
                     </div>
 
                     {/* Articles */}
@@ -1203,7 +1203,7 @@ ${user?.username || 'L\'équipe'}`;
                           <p className="font-semibold text-primary">
                             Article {article.number} - {article.title}
                           </p>
-                          <p className="text-secondary whitespace-pre-line mt-1">{article.content}</p>
+                          <p className="text-primary whitespace-pre-line mt-1">{article.content}</p>
                         </div>
                       ))}
                     </div>
@@ -1400,7 +1400,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Alert for missing date/location */}
                 {(!signatureLocation || !signatureDate) && (
-                  <div className="p-4 bg-warning-light rounded-xl border border-warning">
+                  <div className="p-4 bg-accent-light rounded-xl border border-warning">
                     <p className="text-sm text-warning-text flex items-center gap-2">
                       <IconAlertTriangle className="w-4 h-4 flex-shrink-0" />
                       <span>
@@ -1413,7 +1413,7 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Contract Summary */}
                 <div className="p-4 bg-muted rounded-xl text-sm">
                   <p className="text-muted mb-2">{t('contract_summary') || 'Récapitulatif'}</p>
-                  <div className="space-y-1 text-secondary">
+                  <div className="space-y-1 text-primary">
                     <p><strong className="text-primary">Contrat:</strong> {generatedContract.title}</p>
                     <p>
                       <strong className="text-primary">Lieu:</strong>{' '}
@@ -1489,7 +1489,7 @@ ${user?.username || 'L\'équipe'}`;
                         type="text"
                         value={signatureLink}
                         readOnly
-                        className="flex-1 p-3 bg-muted rounded-lg text-sm text-secondary border border-muted"
+                        className="flex-1 p-3 bg-muted rounded-lg text-sm text-primary border border-muted"
                       />
                       <button
                         onClick={() => {
@@ -1567,7 +1567,7 @@ ${user?.username || 'L\'équipe'}`;
               <>
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                  className="px-4 py-2 text-sm text-primary hover:text-primary transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
@@ -1607,7 +1607,7 @@ ${user?.username || 'L\'équipe'}`;
               <>
                 <button
                   onClick={() => setStep('config')}
-                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                  className="px-4 py-2 text-sm text-primary hover:text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
@@ -1643,7 +1643,7 @@ ${user?.username || 'L\'équipe'}`;
               <>
                 <button
                   onClick={() => setStep('review')}
-                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                  className="px-4 py-2 text-sm text-primary hover:text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
@@ -1681,7 +1681,7 @@ ${user?.username || 'L\'équipe'}`;
               <>
                 <button
                   onClick={() => setStep('sign')}
-                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                  className="px-4 py-2 text-sm text-primary hover:text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
