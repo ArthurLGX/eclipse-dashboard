@@ -136,7 +136,7 @@ export default function SupportDropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggle}
-        className="cursor-pointer w-full bg-hover text-primary px-4 py-2 rounded-lg hover:bg-card border border-default transition-colors !text-sm flex items-center justify-between"
+        className="cursor-pointer w-full bg-muted text-primary px-4 py-2 rounded-lg hover:bg-card border border-default transition-colors !text-sm flex items-center justify-between"
       >
         <span>{t('contact_support')}</span>
         <motion.span

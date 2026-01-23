@@ -197,7 +197,7 @@ export default function TrialExpiredModal({
             <div className="flex gap-3">
               <button
                 onClick={handleClose}
-                className="flex-1 bg-hover text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
+                className="flex-1 bg-muted text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
               >
                 {t('cancel')}
               </button>

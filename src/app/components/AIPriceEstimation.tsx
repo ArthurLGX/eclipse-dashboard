@@ -217,7 +217,7 @@ export default function AIPriceEstimation({
               {estimation && !loading && (
                 <div className="space-y-4">
                   {/* Main suggestion */}
-                  <div className="flex items-center justify-between p-3 bg-hover rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-3">
                       <IconSparkles className="w-5 h-5 !text-accent" />
                       <div>

@@ -144,7 +144,7 @@ export default function FreePlanModal({
                   30 jours
                 </span>
               </div>
-              <div className="w-full bg-hover rounded-full h-2">
+              <div className="w-full bg-muted rounded-full h-2">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${trialProgress}%` }}
@@ -162,7 +162,7 @@ export default function FreePlanModal({
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="flex-1 bg-hover text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                className="flex-1 bg-muted text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors disabled:opacity-50"
               >
                 {t('cancel')}
               </button>

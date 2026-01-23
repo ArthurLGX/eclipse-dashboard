@@ -126,7 +126,7 @@ export default function DeleteConfirmModal({
 
             {/* Item Name */}
             {displayName && (
-              <div className="mt-4 p-3 bg-hover rounded-lg border border-default">
+              <div className="mt-4 p-3 bg-muted rounded-lg border border-default">
                 <p className="text-primary font-medium truncate">{displayName}</p>
               </div>
             )}

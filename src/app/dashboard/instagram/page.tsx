@@ -463,7 +463,7 @@ function InstagramPlanner() {
   // Affichage du chargement
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="text-center">
           <IconLoader2 className="w-12 h-12 text-accent animate-spin mx-auto mb-4" />
           <p className="text-muted">Chargement des posts...</p>
@@ -473,7 +473,7 @@ function InstagramPlanner() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-page p-6">
       {/* Error Banner */}
       {error && (
         <div className="max-w-7xl mx-auto mb-4">
@@ -938,11 +938,11 @@ function InstagramPlanner() {
 
                   {/* Stats */}
                   <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="p-2 bg-hover rounded-lg">
+                    <div className="p-2 bg-muted rounded-lg">
                       <p className="text-lg font-bold text-primary">{instagramConfig.media_count}</p>
                       <p className="text-xs text-muted">Posts</p>
                     </div>
-                    <div className="p-2 bg-hover rounded-lg">
+                    <div className="p-2 bg-muted rounded-lg">
                       <p className="text-lg font-bold text-primary">
                         {instagramConfig.followers_count >= 1000 
                           ? `${(instagramConfig.followers_count / 1000).toFixed(1)}k` 
@@ -950,7 +950,7 @@ function InstagramPlanner() {
                       </p>
                       <p className="text-xs text-muted">Followers</p>
                     </div>
-                    <div className="p-2 bg-hover rounded-lg">
+                    <div className="p-2 bg-muted rounded-lg">
                       <p className="text-lg font-bold text-primary">{instagramConfig.following_count}</p>
                       <p className="text-xs text-muted">Suivis</p>
                     </div>
@@ -1187,7 +1187,7 @@ function InstagramPlanner() {
                         <button
                           key={tag}
                           onClick={() => addHashtag(tag)}
-                          className="px-2 py-1 text-xs !text-muted bg-hover rounded-full hover:bg-accent-light hover:!text-accent transition-colors"
+                          className="px-2 py-1 text-xs !text-muted bg-muted rounded-full hover:bg-accent-light hover:!text-accent transition-colors"
                         >
                           #{tag}
                         </button>
@@ -1204,7 +1204,7 @@ function InstagramPlanner() {
                       </label>
                       
                       {editingPost.music ? (
-                        <div className="flex items-center justify-between p-3 bg-hover rounded-lg">
+                        <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                               <IconMusic className="w-5 h-5 text-white" />
@@ -1227,7 +1227,7 @@ function InstagramPlanner() {
                             <button
                               key={music.title}
                               onClick={() => setEditingPost(prev => ({ ...prev, music }))}
-                              className="flex items-center gap-2 p-2 text-left bg-hover rounded-lg hover:bg-accent-light transition-colors"
+                              className="flex items-center gap-2 p-2 text-left bg-muted rounded-lg hover:bg-accent-light transition-colors"
                             >
                               <IconMusic className="w-4 h-4 text-accent" />
                               <div className="min-w-0">

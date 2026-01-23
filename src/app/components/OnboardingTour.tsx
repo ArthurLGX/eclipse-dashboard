@@ -287,7 +287,7 @@ export default function OnboardingTour({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Progress bar */}
-            <div className="h-1.5 bg-hover">
+            <div className="h-1.5 bg-muted">
               <motion.div
                 className="h-full bg-accent"
                 initial={{ width: 0 }}
@@ -386,7 +386,7 @@ export function OnboardingReplayButton({
   return (
     <button
       onClick={onReplay}
-      className="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:text-accent bg-hover hover:bg-accent-light rounded-lg transition-all"
+      className="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:text-accent bg-muted hover:bg-accent-light rounded-lg transition-all"
       title={label || t('replay_tutorial') || 'Revoir le tutoriel'}
     >
       <IconPlayerPlay size={14} className="!text-accent" />

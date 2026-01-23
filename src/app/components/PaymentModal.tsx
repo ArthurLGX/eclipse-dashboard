@@ -173,7 +173,7 @@ const CheckoutForm: React.FC<{
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 bg-hover text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
+          className="flex-1 bg-muted text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
         >
           {t('cancel')}
         </button>
@@ -266,7 +266,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-4 bg-hover text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors"
+                  className="mt-4 bg-muted text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors"
                 >
                   {t('close')}
                 </button>

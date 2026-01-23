@@ -31,7 +31,7 @@
   /* Backgrounds - Noir */
   --bg-page: #000000;
   --bg-card: #101010;
-  --bg-card-hover: rgba(255, 255, 255, 0.1);
+  --bg-card-hover: rgb(36, 36, 36);
   --bg-input: #1b1b1b;
   --bg-sidebar: #000000;
   --bg-hover: #1b1b1b;

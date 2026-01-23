@@ -78,7 +78,7 @@ function ProjectsBackground({ userProjects }: { userProjects: Project[] }) {
               <IconFolder className="w-4 h-4 !text-accent" />
               <span className="text-sm font-medium text-primary truncate">{project.title}</span>
             </div>
-            <div className="h-1.5 bg-hover rounded-full overflow-hidden mb-2">
+            <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-2">
               <div 
                 className={`h-full ${getStatusColor(project.status)} rounded-full`}
                 style={{ width: `${project.progress}%` }}
@@ -260,7 +260,7 @@ export default function InvitationPage() {
           <p className="text-secondary mb-6">{error}</p>
           <button
             onClick={() => router.push('/dashboard/projects')}
-            className="px-6 py-3 bg-hover hover:bg-muted text-primary rounded-xl transition-colors"
+            className="px-6 py-3 bg-muted hover:bg-muted text-primary rounded-xl transition-colors"
           >
             {t('back_to_projects') || 'Retour aux projets'}
           </button>
@@ -364,7 +364,7 @@ export default function InvitationPage() {
           <button
             onClick={handleReject}
             disabled={processing}
-            className="flex-1 py-3 px-4 bg-hover hover:bg-muted disabled:opacity-50 text-primary rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 px-4 bg-muted hover:bg-muted disabled:opacity-50 text-primary rounded-xl transition-colors flex items-center justify-center gap-2"
           >
             {processing ? (
               <IconLoader2 className="w-5 h-5 animate-spin" />

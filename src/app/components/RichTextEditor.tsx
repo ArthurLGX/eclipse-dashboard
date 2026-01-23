@@ -1111,7 +1111,7 @@ export default function RichTextEditor({
         {`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Playfair+Display:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap');`}
       </style>
       {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-1 p-2 border-b border-default bg-hover">
+        <div className="flex flex-wrap items-center gap-1 p-2 border-b border-default bg-muted">
         {/* Text format */}
         <div className="flex items-center gap-0.5 border-r border-default !pr-2 mr-1">
           <button

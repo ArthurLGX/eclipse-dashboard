@@ -30,8 +30,8 @@ export default function LandingPageSkeleton() {
                 key={i}
                 className="bg-muted p-6 rounded-lg border border-default"
               >
-                <div className="h-6 bg-hover rounded mb-2 animate-pulse"></div>
-                <div className="h-4 bg-hover rounded animate-pulse"></div>
+                <div className="h-6 bg-muted rounded mb-2 animate-pulse"></div>
+                <div className="h-4 bg-muted rounded animate-pulse"></div>
               </div>
             ))}
           </div>

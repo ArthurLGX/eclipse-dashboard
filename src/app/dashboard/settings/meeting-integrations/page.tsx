@@ -311,7 +311,7 @@ export default function MeetingIntegrationsPage() {
                       ? 'border-accent bg-accent-light'
                       : step.completed
                       ? 'border-success bg-success-light'
-                      : 'border-default bg-hover'
+                      : 'border-default bg-muted'
                   }`}
                 >
                   <div className="flex items-start gap-4">

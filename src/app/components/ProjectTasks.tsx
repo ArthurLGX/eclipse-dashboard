@@ -117,7 +117,7 @@ function UserAvatar({
   
   if (!user) {
     return (
-      <div className={`${sizeClasses[size]} rounded-full bg-hover flex items-center justify-center ${className}`}>
+      <div className={`${sizeClasses[size]} rounded-full bg-muted flex items-center justify-center ${className}`}>
         <IconUser className="w-3 h-3 text-muted" />
       </div>
     );
@@ -174,7 +174,7 @@ function AvatarStack({
         />
       ))}
       {remaining > 0 && (
-        <div className={`${sizeClasses[size]} rounded-full bg-hover flex items-center justify-center ring-1 ring-card text-muted font-medium`}>
+        <div className={`${sizeClasses[size]} rounded-full bg-muted flex items-center justify-center ring-1 ring-card text-muted font-medium`}>
           +{remaining}
         </div>
       )}
@@ -1307,7 +1307,7 @@ export default function ProjectTasks({
             <span className="text-sm text-primary">{t('overall_progress') || 'Progression globale'}</span>
             <span className="text-sm font-medium !text-accent">{overallProgress}%</span>
           </div>
-          <div className="h-2 bg-hover rounded-full overflow-hidden">
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${overallProgress}%` }}
@@ -2086,7 +2086,7 @@ function TaskCard({
               
               {/* Compteur sous-tâches */}
               {hasSubtasks && (
-                <span className="flex items-center gap-1 text-xs text-muted bg-hover px-2 py-0.5 rounded-full">
+                <span className="flex items-center gap-1 text-xs text-muted bg-muted px-2 py-0.5 rounded-full">
                   <IconSubtask className="w-3.5 h-3.5" />
                   {completedSubtasks}/{totalSubtasks}
                 </span>
@@ -2104,7 +2104,7 @@ function TaskCard({
             {/* Barre de progression */}
             {task.task_status !== 'cancelled' && (
               <div className="mt-2 flex items-center gap-3">
-                <div className="flex-1 h-1.5 bg-hover rounded-full overflow-hidden">
+                <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-100"
                     style={{ 
@@ -2234,7 +2234,7 @@ function TaskCard({
                   {task.subtasks?.map(subtask => (
                     <div 
                       key={subtask.documentId}
-                      className="group flex items-center gap-2 p-2 rounded-lg bg-hover hover:bg-hover transition-colors cursor-pointer"
+                      className="group flex items-center gap-2 p-2 rounded-lg bg-muted hover:bg-hover transition-colors cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         onEditSubtask(subtask); // Ouvre l'édition de la sous-tâche
@@ -2325,7 +2325,7 @@ function TaskCard({
             max="100"
             value={displayProgress}
             onChange={(e) => onProgressChange(parseInt(e.target.value))}
-            className="w-full h-1 bg-hover rounded-lg appearance-none cursor-pointer slider-thumb"
+            className="w-full h-1 bg-muted rounded-lg appearance-none cursor-pointer slider-thumb"
           />
         </div>
       )}
@@ -2624,7 +2624,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                 </div>
                 
                 {hasSubtasks ? (
-                  <div className="space-y-2 p-3 rounded-lg bg-hover border border-default">
+                  <div className="space-y-2 p-3 rounded-lg bg-muted border border-default">
                     {task.subtasks?.map(subtask => (
                       <div 
                         key={subtask.documentId}
@@ -2656,7 +2656,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-4 text-muted text-sm rounded-lg bg-hover border border-default">
+                  <div className="text-center py-4 text-muted text-sm rounded-lg bg-muted border border-default">
                     {t('no_subtasks') || 'Aucune sous-tâche'}
                   </div>
                 )}
@@ -3236,7 +3236,7 @@ function TaskTableView({
               </td>
               <td className="py-3 px-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-16 h-1.5 bg-hover rounded-full overflow-hidden">
+                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-accent rounded-full transition-all"
                       style={{ width: `${task.progress || 0}%` }}

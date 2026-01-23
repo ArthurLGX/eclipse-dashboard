@@ -274,7 +274,7 @@ export default function ContractsPage() {
           <p className="text-sm text-warning">{t('pending') || 'En attente'}</p>
           <p className="text-2xl font-bold text-warning-text mt-1">{stats.pending}</p>
         </div>
-        <div className="p-4 bg-hover rounded-xl">
+        <div className="p-4 bg-muted rounded-xl">
           <p className="text-sm text-muted">{t('contract_drafts') || 'Brouillons'}</p>
           <p className="text-2xl font-bold text-secondary mt-1">{stats.draft}</p>
         </div>

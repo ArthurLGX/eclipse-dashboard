@@ -345,7 +345,7 @@ export default function ProjectTemplatesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t('search') || 'Rechercher...'}
-            className="w-full !pl-9 !pr-3 py-2 bg-background border border-muted rounded-lg"
+            className="w-full !pl-9 !pr-3 py-2 bg-page border border-muted rounded-lg"
           />
         </div>
       </div>
@@ -419,7 +419,7 @@ export default function ProjectTemplatesPage() {
               </div>
               
               {/* Tasks preview */}
-              <div className="p-3 bg-hover/30 max-h-40 overflow-y-auto">
+              <div className="p-3 bg-muted/30 max-h-40 overflow-y-auto">
                 <p className="text-xs font-medium text-muted-foreground mb-2 uppercase">Aperçu des tâches</p>
                 <div className="space-y-1">
                   {(template.tasks || []).slice(0, 5).map((task, idx) => (

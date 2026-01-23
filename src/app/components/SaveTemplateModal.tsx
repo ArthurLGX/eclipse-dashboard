@@ -123,7 +123,7 @@ export default function SaveTemplateModal({
           {/* Content */}
           <div className="p-4 space-y-4">
             {/* Aperçu du template */}
-            <div className="p-4 rounded-xl border border-default bg-hover/30">
+            <div className="p-4 rounded-xl border border-default bg-muted/30">
               <p className="text-xs text-muted mb-3 uppercase tracking-wide">
                 {t('template_preview') || 'Aperçu du thème'}
               </p>

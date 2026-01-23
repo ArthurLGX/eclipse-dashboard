@@ -150,7 +150,7 @@ const ToolResultCard: React.FC<{
   }
 
   return (
-    <div className="mt-2 p-3 bg-hover border border-default rounded-lg">
+    <div className="mt-2 p-3 bg-muted border border-default rounded-lg">
       <div className="flex items-center gap-2 mb-2">
         {getIcon()}
         <span className="text-sm font-medium text-primary">{getTitle()}</span>
@@ -413,13 +413,13 @@ const ToolLoadingCard: React.FC<{ toolName: string; args?: Record<string, unknow
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-          className="p-2 rounded-lg bg-hover"
+          className="p-2 rounded-lg bg-muted"
         >
           {getIcon()}
         </motion.div>
         <div className="flex-1">
           <p className="text-sm font-medium text-primary">{getLabel()}</p>
-          <div className="mt-1.5 h-1.5 bg-hover rounded-full overflow-hidden">
+          <div className="mt-1.5 h-1.5 bg-muted rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-accent rounded-full"
               initial={{ width: '0%' }}
@@ -753,7 +753,7 @@ export default function AIChatAssistant() {
                   <div className="space-y-2 w-full">
                     <button
                       onClick={() => handleQuickAction('blocked')}
-                      className="w-full p-3 text-left rounded-xl bg-hover border border-default hover:border-accent transition-colors group"
+                      className="w-full p-3 text-left rounded-xl bg-muted border border-default hover:border-accent transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">🚧</span>
@@ -770,7 +770,7 @@ export default function AIChatAssistant() {
                     
                     <button
                       onClick={() => handleQuickAction('relance')}
-                      className="w-full p-3 text-left rounded-xl bg-hover border border-default hover:border-accent transition-colors group"
+                      className="w-full p-3 text-left rounded-xl bg-muted border border-default hover:border-accent transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">📧</span>
@@ -787,7 +787,7 @@ export default function AIChatAssistant() {
                     
                     <button
                       onClick={() => handleQuickAction('next')}
-                      className="w-full p-3 text-left rounded-xl bg-hover border border-default hover:border-accent transition-colors group"
+                      className="w-full p-3 text-left rounded-xl bg-muted border border-default hover:border-accent transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">🎯</span>
@@ -903,7 +903,7 @@ export default function AIChatAssistant() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder={t('ai_input_placeholder') || 'Écris ton message...'}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-hover border border-default text-primary placeholder:text-muted focus:outline-none focus:border-accent text-sm"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-muted border border-default text-primary placeholder:text-muted focus:outline-none focus:border-accent text-sm"
                   disabled={isLoading}
                   data-ai-input="true"
                 />

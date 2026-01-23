@@ -442,7 +442,7 @@ export default function QuoteToProjectModal({
                   </div>
 
                   {/* Timing scope */}
-                  <div className="p-3 rounded-lg border border-default bg-hover space-y-3">
+                  <div className="p-3 rounded-lg border border-default bg-muted space-y-3">
                     <div className="flex items-center gap-2 text-sm font-medium text-secondary">
                       <IconClock className="w-4 h-4" />
                       {t('timing_scope') || 'Périmètre temporel'} *

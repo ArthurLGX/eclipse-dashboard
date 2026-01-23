@@ -283,7 +283,7 @@ function TemplateModal({
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
                 required
               />
             </div>
@@ -293,7 +293,7 @@ function TemplateModal({
               <select
                 value={formData.pipeline_stage}
                 onChange={(e) => setFormData({ ...formData, pipeline_stage: e.target.value as ProspectStatus })}
-                className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
               >
                 {Object.entries(PIPELINE_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>
@@ -306,7 +306,7 @@ function TemplateModal({
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
               >
                 <option value="prospect">Prospect</option>
                 <option value="client">Client</option>
@@ -325,7 +325,7 @@ function TemplateModal({
                 type="text"
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
                 placeholder="Ex: Devis pour {{company_name}}"
                 required
               />
@@ -336,7 +336,7 @@ function TemplateModal({
               <textarea
                 value={formData.body}
                 onChange={(e) => setFormData({ ...formData, body: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-muted rounded-lg font-mono text-sm"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg font-mono text-sm"
                 rows={15}
                 placeholder="Utilisez {{variable}} pour les champs dynamiques"
                 required
@@ -555,13 +555,13 @@ export default function EmailTemplatesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t('search') || 'Rechercher...'}
-            className="w-full !pl-9 !pr-3 py-2 bg-background border border-muted rounded-lg"
+            className="w-full !pl-9 !pr-3 py-2 bg-page border border-muted rounded-lg"
           />
         </div>
         <select
           value={stageFilter}
           onChange={(e) => setStageFilter(e.target.value)}
-          className="px-3 py-2 bg-background border border-muted rounded-lg"
+          className="px-3 py-2 bg-page border border-muted rounded-lg"
         >
           <option value="">{t('all_stages') || 'Toutes les étapes'}</option>
           {Object.entries(PIPELINE_LABELS).map(([value, label]) => (

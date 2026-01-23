@@ -171,7 +171,7 @@ export default function AdminModulesPage() {
         </div>
 
         {/* Save button */}
-        <div className="p-4 border-t border-default bg-hover flex items-center justify-between">
+        <div className="p-4 border-t border-default bg-muted flex items-center justify-between">
           <p className="text-sm text-muted">
             {language === 'fr' 
               ? 'Les changements seront visibles après rechargement de la page'

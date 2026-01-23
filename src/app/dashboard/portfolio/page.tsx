@@ -1567,7 +1567,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 z-10 p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent transition-colors"
+        className="absolute top-6 right-6 z-10 p-3 rounded-full bg-muted text-primary hover:bg-accent hover:text-accent transition-colors"
       >
         <IconX size={24} />
       </button>
@@ -1581,13 +1581,13 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
             <>
               <button
                 onClick={() => setCurrentMediaIndex((i) => (i > 0 ? i - 1 : project.media.length - 1))}
-                className="absolute left-4 p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent transition-colors"
+                className="absolute left-4 p-3 rounded-full bg-muted text-primary hover:bg-accent hover:text-accent transition-colors"
               >
                 <IconChevronLeft size={24} />
               </button>
               <button
                 onClick={() => setCurrentMediaIndex((i) => (i < project.media.length - 1 ? i + 1 : 0))}
-                className="absolute right-4 lg:right-auto lg:left-[calc(100%-4rem)] p-3 rounded-full bg-hover text-primary hover:bg-accent hover:text-accent transition-colors"
+                className="absolute right-4 lg:right-auto lg:left-[calc(100%-4rem)] p-3 rounded-full bg-muted text-primary hover:bg-accent hover:text-accent transition-colors"
               >
                 <IconChevronRight size={24} />
               </button>
@@ -1896,7 +1896,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
               {media.map((item) => (
                 <div key={item.id} className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
                   {item.type === 'video' ? (
-                    <div className="w-full h-full flex items-center justify-center bg-hover">
+                    <div className="w-full h-full flex items-center justify-center bg-muted">
                       <IconVideo size={24} className="text-primary" />
                     </div>
                   ) : (
@@ -1985,7 +1985,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                           addMediaUrl('image');
                           setShowMediaPicker(false);
                         }}
-                        className="flex items-center gap-2 py-3 px-4 bg-hover text-primary rounded-lg hover:bg-muted transition-colors"
+                        className="flex items-center gap-2 py-3 px-4 bg-muted text-primary rounded-lg hover:bg-muted transition-colors"
                       >
                         <IconLink className="w-5 h-5" />
                         URL

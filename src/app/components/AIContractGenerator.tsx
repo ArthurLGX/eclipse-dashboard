@@ -877,7 +877,7 @@ ${user?.username || 'L\'équipe'}`;
                           setSelectedClientId(e.target.value || null);
                           setSelectedProjectId(null); // Reset project when client changes
                         }}
-                        className="w-full px-4 py-2.5 bg-hover border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                        className="w-full px-4 py-2.5 bg-muted border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
                         disabled={loadingData}
                       >
                         <option value="">{t('select_client') || 'Sélectionner un client'}</option>
@@ -901,7 +901,7 @@ ${user?.username || 'L\'équipe'}`;
                       <select
                         value={selectedProjectId || ''}
                         onChange={(e) => setSelectedProjectId(e.target.value || null)}
-                        className="w-full px-4 py-2.5 bg-hover border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                        className="w-full px-4 py-2.5 bg-muted border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
                         disabled={loadingData || !selectedClientId}
                       >
                         <option value="">{t('select_project') || 'Sélectionner un projet'}</option>
@@ -956,7 +956,7 @@ ${user?.username || 'L\'équipe'}`;
                       onChange={(e) => setSignatureLocation(e.target.value)}
                       placeholder="Paris, France"
                       required
-                      className={`w-full px-4 py-2.5 bg-hover border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary ${
+                      className={`w-full px-4 py-2.5 bg-muted border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary ${
                         !signatureLocation ? 'border-warning' : 'border-muted'
                       }`}
                     />
@@ -972,7 +972,7 @@ ${user?.username || 'L\'équipe'}`;
                       value={signatureDate}
                       onChange={(e) => setSignatureDate(e.target.value)}
                       required
-                      className={`w-full px-4 py-2.5 bg-hover border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary ${
+                      className={`w-full px-4 py-2.5 bg-muted border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary ${
                         !signatureDate ? 'border-warning' : 'border-muted'
                       }`}
                     />
@@ -989,7 +989,7 @@ ${user?.username || 'L\'équipe'}`;
                         className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
                           contractLanguage === 'fr'
                             ? 'border-accent bg-accent-light !text-accent'
-                            : 'border-muted bg-hover text-secondary hover:text-primary'
+                            : 'border-muted bg-muted text-secondary hover:text-primary'
                         }`}
                       >
                         🇫🇷 Français
@@ -1000,7 +1000,7 @@ ${user?.username || 'L\'équipe'}`;
                         className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
                           contractLanguage === 'en'
                             ? 'border-accent bg-accent-light !text-accent'
-                            : 'border-muted bg-hover text-secondary hover:text-primary'
+                            : 'border-muted bg-muted text-secondary hover:text-primary'
                         }`}
                       >
                         🇬🇧 English
@@ -1046,7 +1046,7 @@ ${user?.username || 'L\'équipe'}`;
                       onChange={e => setNewClause(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && handleAddClause()}
                       placeholder={t('add_clause_placeholder') || 'Ex: Clause de non-concurrence sur 6 mois...'}
-                      className="flex-1 px-4 py-2 bg-hover border border-muted rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none"
+                      className="flex-1 px-4 py-2 bg-muted border border-muted rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none"
                     />
                     <button
                       onClick={handleAddClause}
@@ -1061,7 +1061,7 @@ ${user?.username || 'L\'équipe'}`;
                       {customClauses.map((clause, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-2 p-3 bg-hover rounded-lg"
+                          className="flex items-center gap-2 p-3 bg-muted rounded-lg"
                         >
                           <span className="flex-1 text-sm text-secondary">{clause}</span>
                           <button
@@ -1136,7 +1136,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Toggle Edit/Preview mode */}
                 <div className="flex items-center justify-end">
-                  <div className="flex items-center gap-1 p-1 bg-hover rounded-lg">
+                  <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
                     <button
                       onClick={() => setIsEditMode(false)}
                       className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
@@ -1178,12 +1178,12 @@ ${user?.username || 'L\'équipe'}`;
                     {/* Parties */}
                     <div className="mb-6 text-sm">
                       <p className="font-semibold text-primary">ENTRE LES SOUSSIGNÉS :</p>
-                      <div className="mt-2 p-3 bg-hover rounded-lg">
+                      <div className="mt-2 p-3 bg-muted rounded-lg">
                         <p className="font-medium text-primary">{generatedContract.parties.provider.name}</p>
                         <p className="text-secondary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
                       </div>
                       <p className="text-center my-2 text-muted">ET</p>
-                      <div className="p-3 bg-hover rounded-lg">
+                      <div className="p-3 bg-muted rounded-lg">
                         <p className="font-medium text-primary">{generatedContract.parties.client.name}</p>
                         <p className="text-secondary whitespace-pre-line">{generatedContract.parties.client.details}</p>
                       </div>
@@ -1339,7 +1339,7 @@ ${user?.username || 'L\'équipe'}`;
                         {t('client_signature') || 'Signature Client'}
                       </p>
                     </div>
-                    <div className="w-full h-32 border-2 border-dashed border-muted rounded-lg bg-hover flex flex-col items-center justify-center gap-2 text-muted">
+                    <div className="w-full h-32 border-2 border-dashed border-muted rounded-lg bg-muted flex flex-col items-center justify-center gap-2 text-muted">
                       <IconSignature className="w-8 h-8" />
                       <span className="text-sm text-center px-4">
                         {t('client_will_sign_here') || 'Le client signera ici après réception du contrat'}
@@ -1411,7 +1411,7 @@ ${user?.username || 'L\'équipe'}`;
                 )}
 
                 {/* Contract Summary */}
-                <div className="p-4 bg-hover rounded-xl text-sm">
+                <div className="p-4 bg-muted rounded-xl text-sm">
                   <p className="text-muted mb-2">{t('contract_summary') || 'Récapitulatif'}</p>
                   <div className="space-y-1 text-secondary">
                     <p><strong className="text-primary">Contrat:</strong> {generatedContract.title}</p>
@@ -1489,7 +1489,7 @@ ${user?.username || 'L\'équipe'}`;
                         type="text"
                         value={signatureLink}
                         readOnly
-                        className="flex-1 p-3 bg-hover rounded-lg text-sm text-secondary border border-muted"
+                        className="flex-1 p-3 bg-muted rounded-lg text-sm text-secondary border border-muted"
                       />
                       <button
                         onClick={() => {
@@ -1614,7 +1614,7 @@ ${user?.username || 'L\'équipe'}`;
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleCopyContract}
-                    className="flex items-center gap-2 px-4 py-2 bg-hover text-primary rounded-lg hover:bg-card transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-muted text-primary rounded-lg hover:bg-card transition-colors"
                   >
                     <IconCopy className="w-4 h-4" />
                     {t('copy') || 'Copier'}
@@ -1651,7 +1651,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleConfirm}
                     disabled={!signatures.provider || saving}
-                    className="flex items-center gap-2 px-4 py-2 bg-hover text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-muted text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
                   >
                     <IconCheck className="w-4 h-4" />
                     {t('save_only') || 'Sauvegarder'}
@@ -1689,7 +1689,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleDownloadPDF}
                     disabled={!savedContract}
-                    className="flex items-center gap-2 px-4 py-2 bg-hover text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-muted text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
                   >
                     <IconDownload className="w-4 h-4" />
                     {t('download_pdf') || 'PDF'}

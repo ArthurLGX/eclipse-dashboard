@@ -523,7 +523,7 @@ Cordialement`;
   };
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-page">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">

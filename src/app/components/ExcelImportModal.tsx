@@ -1325,7 +1325,7 @@ export default function ExcelImportModal({
                         <thead>
                           <tr>
                             {headers.map((header, i) => (
-                              <th key={i} className="px-3 py-2 text-left text-muted bg-hover font-medium">
+                              <th key={i} className="px-3 py-2 text-left text-muted bg-muted font-medium">
                                 {header || `Col ${i + 1}`}
                               </th>
                             ))}

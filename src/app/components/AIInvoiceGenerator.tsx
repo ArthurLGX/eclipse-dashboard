@@ -310,7 +310,7 @@ export default function AIInvoiceGenerator({
                         ? (t('ai_quote_placeholder') || 'Ex: Site vitrine pour un restaurant avec 5 pages, formulaire de réservation, intégration Google Maps...')
                         : (t('ai_invoice_placeholder') || 'Ex: Développement d\'une application mobile de livraison avec backend API...')
                     }
-                    className="w-full h-40 p-4 bg-hover border border-default rounded-xl resize-none focus:ring-1 focus:ring-accent focus:border-transparent"
+                    className="w-full h-40 p-4 bg-muted border border-default rounded-xl resize-none focus:ring-1 focus:ring-accent focus:border-transparent"
                   />
                 </div>
 
@@ -352,7 +352,7 @@ export default function AIInvoiceGenerator({
                       <button
                         key={i}
                         onClick={() => setPrompt(example)}
-                        className="px-3 py-1.5 text-xs bg-hover text-secondary rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
+                        className="px-3 py-1.5 text-xs bg-muted text-secondary rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
                       >
                         {example}
                       </button>
@@ -373,7 +373,7 @@ export default function AIInvoiceGenerator({
             {step === 'review' && generatedData && (
               <div className="space-y-6">
                 {/* Confidence indicator */}
-                <div className="flex items-center gap-3 p-4 bg-hover rounded-xl">
+                <div className="flex items-center gap-3 p-4 bg-muted rounded-xl">
                   <div className={`p-2 rounded-lg ${
                     generatedData.confidence >= 0.8 ? 'bg-success-light' :
                     generatedData.confidence >= 0.5 ? 'bg-warning-light' : 'bg-danger-light'
@@ -400,7 +400,7 @@ export default function AIInvoiceGenerator({
                 {(generatedData.client || generatedData.project) && (
                   <div className="grid grid-cols-2 gap-4">
                     {generatedData.client && (
-                      <div className="p-4 bg-hover rounded-xl">
+                      <div className="p-4 bg-muted rounded-xl">
                         <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
                           <IconUser className="w-3.5 h-3.5" />
                           {t('client') || 'Client'}
@@ -412,7 +412,7 @@ export default function AIInvoiceGenerator({
                       </div>
                     )}
                     {generatedData.project && (
-                      <div className="p-4 bg-hover rounded-xl">
+                      <div className="p-4 bg-muted rounded-xl">
                         <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
                           <IconFileInvoice className="w-3.5 h-3.5" />
                           {t('project') || 'Projet'}
@@ -440,7 +440,7 @@ export default function AIInvoiceGenerator({
                   
                   <div className="space-y-3">
                     {editedLines.map((line, index) => (
-                      <div key={index} className="p-4 bg-hover rounded-xl space-y-3">
+                      <div key={index} className="p-4 bg-muted rounded-xl space-y-3">
                         <div className="flex items-start gap-3">
                           <input
                             type="text"
@@ -520,7 +520,7 @@ export default function AIInvoiceGenerator({
 
                 {/* Notes */}
                 {generatedData.notes && (
-                  <div className="p-4 bg-hover rounded-xl">
+                  <div className="p-4 bg-muted rounded-xl">
                     <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2">
                       {t('notes') || 'Notes'}
                     </p>

@@ -67,7 +67,7 @@ export default function WireframeComparison({
       className="card overflow-hidden"
     >
       {/* Header */}
-      <div className="px-4 py-3 bg-hover flex items-center justify-between border-b border-default">
+      <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">
         <div className="flex items-center gap-3">
           <div className="p-1.5 bg-accent-light rounded-lg">
             <IconLayoutGrid className="w-4 h-4 !text-accent" />

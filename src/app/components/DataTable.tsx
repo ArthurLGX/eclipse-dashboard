@@ -337,17 +337,17 @@ export default function DataTable<T = unknown>({
             <tr className="border-b border-default">
               {draggable && (
                 <th className="w-10 py-3 px-2">
-                  <div className="h-4 w-4 bg-hover rounded animate-pulse"></div>
+                  <div className="h-4 w-4 bg-muted rounded animate-pulse"></div>
                 </th>
               )}
               {showFavorites && (
                 <th className="w-10 py-3 px-2">
-                  <div className="h-4 w-4 bg-hover rounded animate-pulse"></div>
+                  <div className="h-4 w-4 bg-muted rounded animate-pulse"></div>
                 </th>
               )}
               {selectable && (
                 <th className="w-12 py-3 px-4">
-                  <div className="h-5 w-5 bg-hover rounded animate-pulse"></div>
+                  <div className="h-5 w-5 bg-muted rounded animate-pulse"></div>
                 </th>
               )}
               {columns.map((column, index) => (
@@ -355,7 +355,7 @@ export default function DataTable<T = unknown>({
                   key={index}
                   className="!text-left py-3 px-4 text-secondary font-semibold"
                 >
-                  <div className="h-4 bg-hover rounded w-24 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
                 </th>
               ))}
             </tr>
@@ -365,22 +365,22 @@ export default function DataTable<T = unknown>({
               <tr key={i} className="border-b border-default">
                 {draggable && (
                   <td className="w-10 px-2">
-                    <div className="h-4 w-4 bg-hover rounded animate-pulse"></div>
+                    <div className="h-4 w-4 bg-muted rounded animate-pulse"></div>
                   </td>
                 )}
                 {showFavorites && (
                   <td className="w-10 px-2">
-                    <div className="h-4 w-4 bg-hover rounded animate-pulse"></div>
+                    <div className="h-4 w-4 bg-muted rounded animate-pulse"></div>
                   </td>
                 )}
                 {selectable && (
                   <td className="w-12 px-4">
-                    <div className="h-5 w-5 bg-hover rounded animate-pulse"></div>
+                    <div className="h-5 w-5 bg-muted rounded animate-pulse"></div>
                   </td>
                 )}
                 {columns.map((column, index) => (
                   <td key={index} className="px-4">
-                    <div className="h-4 bg-hover rounded w-20 animate-pulse"></div>
+                    <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>
                   </td>
                 ))}
               </tr>

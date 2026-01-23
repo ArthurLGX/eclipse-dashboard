@@ -1176,7 +1176,7 @@ export default function ClientWorkflowMapView({
                       className="w-14 h-14 rounded-full border border-default object-cover"
                     />
                   ) : (
-                    <div className="w-14 h-14 rounded-full bg-hover text-primary font-bold text-xl flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-full bg-muted text-primary font-bold text-xl flex items-center justify-center">
                       {radialClient.name?.slice(0, 2).toUpperCase() || 'CL'}
                     </div>
                   )}
@@ -1325,7 +1325,7 @@ export default function ClientWorkflowMapView({
                                   className="w-6 h-6 rounded-full border border-accent bg-accent-light p-0.5 object-cover shadow-sm animate-pulse"
                                 />
                               ) : (
-                                <div className="w-6 h-6 rounded-full border border-warning bg-hover text-[10px] font-semibold text-secondary flex items-center justify-center shadow-sm">
+                                <div className="w-6 h-6 rounded-full border border-warning bg-muted text-[10px] font-semibold text-secondary flex items-center justify-center shadow-sm">
                                   {client.name?.slice(0, 2).toUpperCase() || 'CL'}
                                 </div>
                               )}
@@ -1672,7 +1672,7 @@ export default function ClientWorkflowMapView({
                               className="w-14 h-14 rounded-full border border-default object-cover"
                             />
                           ) : (
-                            <div className="w-14 h-14 rounded-full bg-hover text-primary font-bold text-xl flex items-center justify-center">
+                            <div className="w-14 h-14 rounded-full bg-muted text-primary font-bold text-xl flex items-center justify-center">
                               {client.name?.slice(0, 2).toUpperCase() || 'CL'}
                             </div>
                           )}
@@ -1832,7 +1832,7 @@ export default function ClientWorkflowMapView({
                   </span>
                 </div>
               ))}
-              <div className="p-3 rounded-lg bg-hover text-sm text-secondary">
+              <div className="p-3 rounded-lg bg-muted text-sm text-secondary">
                 {activeNode.client.notes || (t('workflow_node_placeholder') || 'Zone de détails du devis/contrat/projet/facture.')}
               </div>
               <div className="flex justify-end">

@@ -1446,7 +1446,7 @@ export default function FacturePage() {
           </p>
 
           {/* Option pour mettre à jour le statut du client */}
-          <div className="flex items-start gap-3 p-4 bg-hover rounded-lg">
+          <div className="flex items-start gap-3 p-4 bg-muted rounded-lg">
             <input
               type="checkbox"
               id="updateClientStatus"

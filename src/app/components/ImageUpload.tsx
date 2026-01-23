@@ -533,7 +533,7 @@ export default function ImageUpload({
             >
               {/* Message si mode lecture */}
               {disabled && (
-                <div className="px-4 py-3 bg-hover border-b border-default text-center">
+                <div className="px-4 py-3 bg-muted border-b border-default text-center">
                   <p className="text-warning-text text-xs font-medium">
                     ⚠️ Passez en mode édition pour modifier l&apos;image
                   </p>
@@ -713,7 +713,7 @@ export default function ImageUpload({
                     step="0.1"
                     value={scale}
                     onChange={(e) => setScale(Number(e.target.value))}
-                    className="flex-1 h-2 bg-hover rounded-lg appearance-none cursor-pointer accent-accent"
+                    className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-accent"
                   />
                   <div className="flex items-center gap-2 text-secondary">
                     <IconZoomIn className="w-4 h-4" />
@@ -733,7 +733,7 @@ export default function ImageUpload({
                     step="1"
                     value={rotation}
                     onChange={(e) => setRotation(Number(e.target.value))}
-                    className="flex-1 h-2 bg-hover rounded-lg appearance-none cursor-pointer accent-accent"
+                    className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-accent"
                   />
                   <span className="text-sm text-muted w-12 text-right">{rotation}°</span>
                   <button
@@ -748,14 +748,14 @@ export default function ImageUpload({
                 <div className="flex gap-2 justify-center">
                   <button
                     onClick={() => setRotation(r => r - 90)}
-                    className="px-3 py-1.5 text-sm bg-hover text-secondary rounded-lg hover:bg-card transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 text-sm bg-muted text-secondary rounded-lg hover:bg-card transition-colors flex items-center gap-1"
                   >
                     <IconRotate className="w-4 h-4 -scale-x-100" />
                     -90°
                   </button>
                   <button
                     onClick={() => setRotation(r => r + 90)}
-                    className="px-3 py-1.5 text-sm bg-hover text-secondary rounded-lg hover:bg-card transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 text-sm bg-muted text-secondary rounded-lg hover:bg-card transition-colors flex items-center gap-1"
                   >
                     <IconRotate className="w-4 h-4" />
                     +90°
@@ -768,7 +768,7 @@ export default function ImageUpload({
                 <button
                   onClick={handleCancel}
                   disabled={uploading}
-                  className="px-4 py-2 text-secondary bg-hover rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                  className="px-4 py-2 text-secondary bg-muted rounded-lg hover:bg-card transition-colors disabled:opacity-50"
                 >
                   Annuler
                 </button>
@@ -910,7 +910,7 @@ export default function ImageUpload({
                     }}
                     onKeyDown={(e) => e.key === 'Enter' && handleSubmitUrl()}
                     placeholder="https://example.com/image.jpg"
-                    className="w-full px-4 py-3 bg-hover border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-info/50 focus:border-info"
+                    className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-info/50 focus:border-info"
                   />
                   {urlError && (
                     <p className="mt-2 text-sm text-danger flex items-center gap-1">

@@ -225,7 +225,7 @@ export default function GrowthAuditPage() {
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
                     pageType === type.value
                       ? 'border-accent bg-accent-light !text-accent'
-                      : 'border-default bg-hover text-muted hover:text-primary hover:border-accent'
+                      : 'border-default bg-muted text-muted hover:text-primary hover:border-accent'
                   }`}
                 >
                   {type.icon}
@@ -346,7 +346,7 @@ export default function GrowthAuditPage() {
               </div>
 
               {/* Progress bar connecting steps */}
-              <div className="relative h-1 bg-hover rounded-full overflow-hidden mb-6">
+              <div className="relative h-1 bg-muted rounded-full overflow-hidden mb-6">
                 <motion.div
                   className="absolute inset-y-0 left-0 bg-accent rounded-full"
                   initial={{ width: '0%' }}
@@ -470,7 +470,7 @@ export default function GrowthAuditPage() {
               >
                 <div className="space-y-3">
                   {/* Title */}
-                  <div className="flex items-center justify-between p-3 bg-hover rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <span className="text-sm text-secondary">Title</span>
                     <span className={`flex items-center gap-2 text-sm ${result.seo.title ? 'text-success' : 'text-danger'}`}>
                       {result.seo.title ? (
@@ -488,7 +488,7 @@ export default function GrowthAuditPage() {
                   </div>
 
                   {/* Meta Description */}
-                  <div className="flex items-center justify-between p-3 bg-hover rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <span className="text-sm text-secondary">Meta Description</span>
                     <span className={`flex items-center gap-2 text-sm ${result.seo.metaDescription ? 'text-success' : 'text-danger'}`}>
                       {result.seo.metaDescription ? (
@@ -506,7 +506,7 @@ export default function GrowthAuditPage() {
                   </div>
 
                   {/* H1 */}
-                  <div className="flex items-center justify-between p-3 bg-hover rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <span className="text-sm text-secondary">H1</span>
                     <span className={`flex items-center gap-2 text-sm ${
                       result.structure.hasH1 && result.structure.h1Count === 1 ? 'text-success' :
@@ -571,7 +571,7 @@ export default function GrowthAuditPage() {
 
                   {/* Images Analysis */}
                   {result.seo.images && (
-                    <div className="p-3 bg-hover rounded-lg">
+                    <div className="p-3 bg-muted rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <IconPhoto className="w-4 h-4 text-muted" />
                         <span className="text-sm font-medium text-primary">{t('images_analysis') || 'Analyse des images'}</span>
@@ -609,7 +609,7 @@ export default function GrowthAuditPage() {
 
                   {/* Links Analysis */}
                   {result.seo.links && (
-                    <div className="p-3 bg-hover rounded-lg">
+                    <div className="p-3 bg-muted rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <IconLink className="w-4 h-4 text-muted" />
                         <span className="text-sm font-medium text-primary">{t('links_analysis') || 'Analyse des liens'}</span>
@@ -652,7 +652,7 @@ export default function GrowthAuditPage() {
 
                   {/* Robots Meta */}
                   {result.seo.robotsMeta && (
-                    <div className="p-3 bg-hover rounded-lg flex items-center justify-between">
+                    <div className="p-3 bg-muted rounded-lg flex items-center justify-between">
                       <span className="text-sm text-secondary flex items-center gap-2">
                         <IconRobot className="w-4 h-4" /> Robots
                       </span>
@@ -723,18 +723,18 @@ export default function GrowthAuditPage() {
                 <div className="space-y-3">
                   {/* Word counts */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-hover rounded-lg text-center">
+                    <div className="p-3 bg-muted rounded-lg text-center">
                       <p className="text-2xl font-bold text-primary">{result.message.benefitWordCount}</p>
                       <p className="text-xs text-muted">Mots bénéfices</p>
                     </div>
-                    <div className="p-3 bg-hover rounded-lg text-center">
+                    <div className="p-3 bg-muted rounded-lg text-center">
                       <p className="text-2xl font-bold text-primary">{result.message.featureWordCount}</p>
                       <p className="text-xs text-muted">Mots features</p>
                     </div>
                   </div>
 
                   {/* Average sentence length */}
-                  <div className="p-3 bg-hover rounded-lg flex items-center justify-between">
+                  <div className="p-3 bg-muted rounded-lg flex items-center justify-between">
                     <span className="text-sm text-secondary">Longueur moyenne des phrases</span>
                     <span className={`text-sm font-medium ${
                       result.message.avgSentenceLength <= 20 ? 'text-success' :

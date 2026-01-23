@@ -191,7 +191,7 @@ export default function ProjectInsightCard({
       className="bg-card border border-default rounded-xl overflow-hidden"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-default bg-hover">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-default bg-muted">
         <div className="flex items-center gap-2">
           <Image 
             src="/images/logo/eclipse-logo.png" 
@@ -244,7 +244,7 @@ export default function ProjectInsightCard({
 
             {/* Key Metric - inline layout */}
             {insight.key_metric && (
-              <div className="flex items-center justify-between gap-3 p-2.5 bg-hover rounded-lg">
+              <div className="flex items-center justify-between gap-3 p-2.5 bg-muted rounded-lg">
                 <span className="text-xs text-muted whitespace-nowrap">{insight.key_metric.label}</span>
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm font-bold text-primary whitespace-nowrap">

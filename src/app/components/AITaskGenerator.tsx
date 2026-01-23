@@ -364,7 +364,7 @@ export default function AITaskGenerator({
       case 'high': return 'text-warning-text bg-warning-light';
       case 'medium': return 'text-info bg-info-light';
       case 'low': return 'text-success bg-success-light';
-      default: return 'text-muted bg-hover';
+      default: return 'text-muted bg-muted';
     }
   };
 
@@ -393,7 +393,7 @@ export default function AITaskGenerator({
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-background rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-page rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
@@ -430,7 +430,7 @@ export default function AITaskGenerator({
             {step === 'input' && (
               <div className="space-y-6">
                 {/* Input mode selector */}
-                <div className="flex gap-2 p-1 bg-hover rounded-xl">
+                <div className="flex gap-2 p-1 bg-muted rounded-xl">
                   {[
                     { id: 'prompt' as InputMode, label: t('from_description') || 'Description', icon: IconListCheck },
                     { id: 'meeting' as InputMode, label: t('from_meeting') || 'Notes de réunion', icon: IconMicrophone },
@@ -441,7 +441,7 @@ export default function AITaskGenerator({
                       onClick={() => setInputMode(mode.id)}
                       className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         inputMode === mode.id
-                          ? 'bg-background text-primary shadow-sm'
+                          ? 'bg-page text-primary shadow-sm'
                           : 'text-secondary hover:text-primary'
                       }`}
                     >
@@ -461,7 +461,7 @@ export default function AITaskGenerator({
                       value={prompt}
                       onChange={e => setPrompt(e.target.value)}
                       placeholder={t('ai_tasks_prompt_placeholder') || 'Ex: Développer un système d\'authentification avec login, register, reset password, et 2FA...'}
-                      className="w-full h-40 p-4 bg-hover border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                      className="w-full h-40 p-4 bg-muted border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
                     />
                   </div>
                 )}
@@ -475,7 +475,7 @@ export default function AITaskGenerator({
                       value={meetingNotes}
                       onChange={e => setMeetingNotes(e.target.value)}
                       placeholder={t('ai_meeting_placeholder') || 'Collez le transcript ou les notes de votre réunion client...'}
-                      className="w-full h-48 p-4 bg-hover border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent font-mono text-sm"
+                      className="w-full h-48 p-4 bg-muted border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent font-mono text-sm"
                     />
                   </div>
                 )}
@@ -490,7 +490,7 @@ export default function AITaskGenerator({
                         value={fathomUrl}
                         onChange={e => setFathomUrl(e.target.value)}
                         placeholder={t('ai_fathom_placeholder') || 'Collez l\'URL de votre réunion Fathom ou le contenu exporté (résumé, action items, transcript)...'}
-                        className="w-full h-48 p-4 bg-hover border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                        className="w-full h-48 p-4 bg-muted border border-default rounded-xl resize-none focus:ring-2 focus:ring-accent focus:border-transparent"
                       />
                     </div>
                     <div className="p-4 bg-info-light rounded-xl">
@@ -502,7 +502,7 @@ export default function AITaskGenerator({
                 )}
 
                 {/* Project context */}
-                <div className="p-4 bg-hover rounded-xl">
+                <div className="p-4 bg-muted rounded-xl">
                   <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2">
                     {t('project_context') || 'Contexte du projet'}
                   </p>
@@ -533,7 +533,7 @@ export default function AITaskGenerator({
             {step === 'review' && (
               <div className="space-y-4">
                 {/* Stats */}
-                <div className="flex items-center gap-4 p-4 bg-hover rounded-xl">
+                <div className="flex items-center gap-4 p-4 bg-muted rounded-xl">
                   <div className="flex items-center gap-2">
                     <IconListCheck className="w-5 h-5 !text-accent" />
                     <span className="text-sm font-medium text-primary">
@@ -561,7 +561,7 @@ export default function AITaskGenerator({
                     <div
                       key={taskIndex}
                       className={`border rounded-xl transition-colors ${
-                        task.selected ? 'border-accent bg-accent-light' : 'border-default bg-hover opacity-60'
+                        task.selected ? 'border-accent bg-accent-light' : 'border-default bg-muted opacity-60'
                       }`}
                     >
                       {/* Task header */}
@@ -591,7 +591,7 @@ export default function AITaskGenerator({
                             value={task.title}
                             onChange={e => updateTaskField(taskIndex, 'title', e.target.value)}
                             placeholder={t('task_title') || 'Titre de la tâche'}
-                            className="w-full px-3 py-2 bg-background border border-default rounded-lg text-sm font-medium"
+                            className="w-full px-3 py-2 bg-page border border-default rounded-lg text-sm font-medium"
                           />
                           
                           <div className="flex items-center gap-3">
@@ -602,7 +602,7 @@ export default function AITaskGenerator({
                                 value={task.estimated_hours || ''}
                                 onChange={e => updateTaskField(taskIndex, 'estimated_hours', parseFloat(e.target.value) || undefined)}
                                 placeholder="0"
-                                className="w-16 px-2 py-1 bg-background border border-default rounded text-sm text-center"
+                                className="w-16 px-2 py-1 bg-page border border-default rounded text-sm text-center"
                                 min="0"
                                 step="0.5"
                               />
@@ -648,7 +648,7 @@ export default function AITaskGenerator({
                             <div
                               key={subtaskIndex}
                               className={`flex items-center gap-3 p-3 rounded-lg ${
-                                subtask.selected ? 'bg-background' : 'bg-hover opacity-60'
+                                subtask.selected ? 'bg-page' : 'bg-hover opacity-60'
                               }`}
                             >
                               <input

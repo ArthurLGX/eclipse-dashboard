@@ -488,7 +488,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
                 return (
                   <div
                     key={subtask.id}
-                    className="p-2 rounded-lg bg-hover border border-default"
+                    className="p-2 rounded-lg bg-muted border border-default"
                   >
                     <div className="flex items-center gap-2 mb-1">
                       {/* Toggle checkbox */}
@@ -886,7 +886,7 @@ export default function TaskWorkflowView({
               {t('task_workflow') || 'Workflow des tâches'}
             </h3>
             {/* Overall progress with visual bar */}
-            <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-hover">
+            <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-muted">
               <span className="text-xs text-secondary">{t('progress') || 'Progression'}:</span>
               <div className="flex items-center gap-2">
                 <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
@@ -1171,7 +1171,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
                         return (
                           <div
                             key={subtask.id}
-                            className="flex items-center gap-3 p-2 rounded-lg bg-hover"
+                            className="flex items-center gap-3 p-2 rounded-lg bg-muted"
                           >
                             <StIcon size={14} className={stConfig.color} />
                             <span className="text-sm text-primary flex-1 truncate">{subtask.title}</span>

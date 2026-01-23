@@ -489,7 +489,7 @@ function ComposeEmail() {
   };
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-page">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between p-4">
@@ -570,7 +570,7 @@ function ComposeEmail() {
                       {replyToData.name || replyToData.email}
                     </span>
                     {replyToData.enterprise && (
-                      <span className="flex items-center gap-1 text-xs text-muted bg-background px-2 py-0.5 rounded">
+                      <span className="flex items-center gap-1 text-xs text-muted bg-page px-2 py-0.5 rounded">
                         <IconBuilding className="w-3 h-3" />
                         {replyToData.enterprise}
                       </span>
@@ -582,7 +582,7 @@ function ComposeEmail() {
                   </p>
                   
                   {/* Original Subject */}
-                  <div className="mt-3 p-3 bg-background rounded-lg">
+                  <div className="mt-3 p-3 bg-page rounded-lg">
                     <p className="text-sm font-medium text-primary mb-1">
                       {replyToData.subject}
                     </p>
@@ -608,7 +608,7 @@ function ComposeEmail() {
                 {/* Close button */}
                 <button
                   onClick={() => setReplyToData(null)}
-                  className="p-1.5 text-muted hover:text-primary hover:bg-background rounded-lg transition-colors"
+                  className="p-1.5 text-muted hover:text-primary hover:bg-page rounded-lg transition-colors"
                   title={t('dismiss') || 'Fermer'}
                 >
                   <IconX className="w-4 h-4" />
@@ -658,7 +658,7 @@ function ComposeEmail() {
                       
                       {/* Entreprise badge */}
                       {recipient.enterprise && (
-                        <span className="flex items-center gap-1 text-xs text-muted bg-background px-1.5 py-0.5 rounded">
+                        <span className="flex items-center gap-1 text-xs text-muted bg-page px-1.5 py-0.5 rounded">
                           <IconBuilding className="w-3 h-3" />
                           <span className="truncate max-w-[80px]">{recipient.enterprise}</span>
                         </span>
@@ -753,7 +753,7 @@ function ComposeEmail() {
                     {attachments.map(att => (
                       <div 
                         key={att.id}
-                        className="flex items-center justify-between p-3 bg-background rounded-lg"
+                        className="flex items-center justify-between p-3 bg-page rounded-lg"
                       >
                         <div className="flex items-center gap-3">
                           <IconPaperclip className="w-5 h-5 text-muted" />

@@ -164,7 +164,7 @@ function EmailsDashboard() {
   ];
   
   return (
-    <div className="min-h-screen bg-background p-6 md:p-10">
+    <div className="min-h-screen bg-page p-6 md:p-10">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -334,7 +334,7 @@ function EmailsDashboard() {
                 <div
                   key={draft.documentId}
                   onClick={() => handleOpenDraft(draft)}
-                  className="group flex items-center gap-4 p-4 bg-hover rounded-lg cursor-pointer hover:bg-hover transition-colors"
+                  className="group flex items-center gap-4 p-4 bg-muted rounded-lg cursor-pointer hover:bg-hover transition-colors"
                 >
                   <div 
                     className="w-10 h-10 rounded-lg flex items-center justify-center"

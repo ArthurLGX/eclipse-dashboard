@@ -232,7 +232,7 @@ export default function MonitoringPage() {
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1 bg-hover rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
             {(['all', 'frontend', 'backend', 'api', 'other'] as const).map((type) => (
               <button
                 key={type}
@@ -624,7 +624,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
                   className={`p-2 rounded-lg border text-sm font-medium transition-colors flex flex-col items-center gap-1 ${
                     siteType === type
                       ? 'border-accent bg-accent-light !text-accent'
-                      : 'border-default bg-hover text-muted hover:text-primary'
+                      : 'border-default bg-muted text-muted hover:text-primary'
                   }`}
                 >
                   {type === 'frontend' && <IconDeviceDesktop className="w-5 h-5" />}
@@ -692,7 +692,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
             <button
               type="button"
               onClick={() => setShowServerInfo(!showServerInfo)}
-              className="w-full flex items-center justify-between p-3 bg-hover rounded-lg text-sm font-medium text-secondary hover:text-primary transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-muted rounded-lg text-sm font-medium text-secondary hover:text-primary transition-colors"
             >
               <span className="flex items-center gap-2">
                 <IconServer className="w-4 h-4" />
@@ -709,7 +709,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="space-y-4 p-4 bg-hover rounded-lg"
+              className="space-y-4 p-4 bg-muted rounded-lg"
             >
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">

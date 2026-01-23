@@ -490,7 +490,7 @@ export default function TimeTrackingAnalyticsPage() {
           </div>
           
           {/* Date Range Filter */}
-          <div className="flex items-center gap-1 bg-hover rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
             {(['week', 'month', '3months', 'year'] as const).map((range) => (
               <button
                 key={range}
@@ -655,7 +655,7 @@ export default function TimeTrackingAnalyticsPage() {
                     </p>
                   ) : (
                     analytics.groupedDeviations.map((item) => (
-                      <div key={item.projectId} className="flex items-center justify-between p-2 rounded-lg bg-hover">
+                      <div key={item.projectId} className="flex items-center justify-between p-2 rounded-lg bg-muted">
                         <div className="flex items-center gap-2 min-w-0 flex-1">
                           {getAccuracyIcon(item.accuracy)}
                           <div className="min-w-0 flex-1">

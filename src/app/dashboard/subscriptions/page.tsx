@@ -165,7 +165,7 @@ function SubscriptionModal({
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+              className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
               placeholder="Maintenance site vitrine"
               required
             />
@@ -177,7 +177,7 @@ function SubscriptionModal({
               <select
                 value={formData.client}
                 onChange={(e) => setFormData({ ...formData, client: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
               >
                 <option value="">Sélectionner...</option>
                 {clients.map((c) => (
@@ -190,7 +190,7 @@ function SubscriptionModal({
               <select
                 value={formData.project}
                 onChange={(e) => setFormData({ ...formData, project: e.target.value })}
-                className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
               >
                 <option value="">Sélectionner...</option>
                 {projects.map((p) => (
@@ -208,7 +208,7 @@ function SubscriptionModal({
                   type="number"
                   value={formData.monthly_amount}
                   onChange={(e) => setFormData({ ...formData, monthly_amount: parseFloat(e.target.value) })}
-                  className="w-full px-3 py-2 bg-background border border-muted rounded-lg !pr-8"
+                  className="w-full px-3 py-2 bg-page border border-muted rounded-lg !pr-8"
                   required
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
@@ -222,7 +222,7 @@ function SubscriptionModal({
                 max="28"
                 value={formData.billing_day}
                 onChange={(e) => setFormData({ ...formData, billing_day: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
               />
             </div>
             <div>
@@ -230,7 +230,7 @@ function SubscriptionModal({
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as ClientSubscription['status'] })}
-                className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
               >
                 <option value="pending">En attente</option>
                 <option value="active">Actif</option>
@@ -246,7 +246,7 @@ function SubscriptionModal({
               type="date"
               value={formData.start_date}
               onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-              className="w-full px-3 py-2 bg-background border border-muted rounded-lg"
+              className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
               required
             />
           </div>
@@ -256,7 +256,7 @@ function SubscriptionModal({
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-3 py-2 bg-background border border-muted rounded-lg resize-none"
+              className="w-full px-3 py-2 bg-page border border-muted rounded-lg resize-none"
               rows={2}
               placeholder="Accompagnement mensuel..."
             />
@@ -472,13 +472,13 @@ export default function SubscriptionsPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Rechercher..."
-            className="w-full !pl-9 !pr-3 py-2 bg-background border border-muted rounded-lg"
+            className="w-full !pl-9 !pr-3 py-2 bg-page border border-muted rounded-lg"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-2 bg-background border border-muted rounded-lg"
+          className="px-3 py-2 bg-page border border-muted rounded-lg"
         >
           <option value="">Tous les statuts</option>
           <option value="active">Actif</option>
@@ -546,7 +546,7 @@ export default function SubscriptionsPage() {
                   </div>
                 </div>
 
-                <div className="p-3 bg-hover/30 text-sm space-y-2">
+                <div className="p-3 bg-muted/30 text-sm space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-1">
                       <IconCalendar size={14} />

@@ -372,7 +372,7 @@ export default function TimeTrackingPage() {
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1 bg-hover rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
             {(['today', 'week', 'month', 'all'] as const).map((filter) => (
               <button
                 key={filter}

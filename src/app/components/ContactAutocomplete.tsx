@@ -241,7 +241,7 @@ export default function ContactAutocomplete({
                         {contact.name || contact.enterprise || 'Sans nom'}
                       </span>
                       {contact.enterprise && contact.name && (
-                        <span className="flex items-center gap-1 text-xs text-muted bg-hover px-1.5 py-0.5 rounded">
+                        <span className="flex items-center gap-1 text-xs text-muted bg-muted px-1.5 py-0.5 rounded">
                           <IconBuilding className="w-3 h-3" />
                           {contact.enterprise}
                         </span>
@@ -257,7 +257,7 @@ export default function ContactAutocomplete({
             </div>
 
             {/* Footer hint */}
-            <div className="px-4 py-2 bg-hover border-t border-default text-xs text-muted flex items-center justify-between">
+            <div className="px-4 py-2 bg-muted border-t border-default text-xs text-muted flex items-center justify-between">
               <span>↑↓ pour naviguer, Entrée pour sélectionner</span>
               <span>Esc pour fermer</span>
             </div>

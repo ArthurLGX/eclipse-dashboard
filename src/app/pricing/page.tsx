@@ -267,30 +267,30 @@ export default function Plans() {
               >
                 {/* Badge skeleton */}
                 <div className="absolute top-4 right-1/2 translate-x-1/2">
-                  <div className="h-6 w-24 bg-hover rounded-full"></div>
+                  <div className="h-6 w-24 bg-muted rounded-full"></div>
                 </div>
 
                 {/* Title and description skeleton */}
                 <div className="text-center my-8 w-full">
-                  <div className="h-8 w-32 bg-hover rounded mb-4 mx-auto"></div>
-                  <div className="h-4 w-48 bg-hover rounded mx-auto"></div>
+                  <div className="h-8 w-32 bg-muted rounded mb-4 mx-auto"></div>
+                  <div className="h-4 w-48 bg-muted rounded mx-auto"></div>
                 </div>
 
                 {/* Price skeleton */}
                 <div className="text-center mb-8 w-full">
-                  <div className="h-12 w-24 bg-hover rounded mb-4 mx-auto"></div>
-                  <div className="h-4 w-32 bg-hover rounded mx-auto"></div>
+                  <div className="h-12 w-24 bg-muted rounded mb-4 mx-auto"></div>
+                  <div className="h-4 w-32 bg-muted rounded mx-auto"></div>
                 </div>
 
                 {/* Features skeleton */}
                 <div className="space-y-4 mb-8 w-full">
-                  <div className="h-4 w-full bg-hover rounded"></div>
-                  <div className="h-4 w-3/4 bg-hover rounded"></div>
-                  <div className="h-4 w-1/2 bg-hover rounded"></div>
+                  <div className="h-4 w-full bg-muted rounded"></div>
+                  <div className="h-4 w-3/4 bg-muted rounded"></div>
+                  <div className="h-4 w-1/2 bg-muted rounded"></div>
                 </div>
 
                 {/* Button skeleton */}
-                <div className="w-full h-12 bg-hover rounded-lg"></div>
+                <div className="w-full h-12 bg-muted rounded-lg"></div>
               </motion.div>
             ))}
           </>

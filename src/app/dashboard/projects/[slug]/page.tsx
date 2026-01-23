@@ -1078,7 +1078,7 @@ const PROJECT_TYPES = [
                         {meetingNotes.map((note) => (
                           <div
                             key={note.documentId}
-                            className="p-4 bg-hover rounded-xl border border-transparent hover:border-default transition-all"
+                            className="p-4 bg-muted rounded-xl border border-transparent hover:border-default transition-all"
                           >
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex-1 min-w-0">
@@ -1246,7 +1246,7 @@ const PROJECT_TYPES = [
                           <Link
                             key={facture.documentId}
                             href={`/dashboard/factures/${generateSlug(`${facture.reference}-${facture.client_id?.name || 'facture'}`, facture.documentId)}`}
-                            className="flex items-center justify-between p-4 bg-hover rounded-xl hover:bg-muted transition-all group border border-transparent hover:border-default"
+                            className="flex items-center justify-between p-4 bg-muted rounded-xl hover:bg-muted transition-all group border border-transparent hover:border-default"
                           >
                             <div className="flex items-center gap-4">
                               <div className={`p-3 rounded-xl ${
@@ -1400,7 +1400,7 @@ const PROJECT_TYPES = [
               ) : project.client ? (
                 <Link
                   href={`/dashboard/clients/${generateClientSlug(project.client.name, project.client.documentId)}`}
-                  className="flex items-center gap-3 p-3 bg-hover rounded-lg hover:bg-muted transition-colors group"
+                  className="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors group"
                 >
                   <div className="w-10 h-10 bg-info-light rounded-full flex items-center justify-center">
                     <span className="text-info font-semibold">
@@ -1451,7 +1451,7 @@ const PROJECT_TYPES = [
                 
                 {/* Collaborators */}
                 {collaborators.filter(c => !c.is_owner).map(collab => (
-                  <div key={collab.documentId} className="flex items-center gap-3 p-2 bg-hover rounded-lg">
+                  <div key={collab.documentId} className="flex items-center gap-3 p-2 bg-muted rounded-lg">
                     <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
                       <span className="text-accent text-sm font-medium">
                         {collab.user?.username?.[0]?.toUpperCase() || '?'}

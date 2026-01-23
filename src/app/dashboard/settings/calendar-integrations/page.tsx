@@ -311,7 +311,7 @@ export default function CalendarIntegrationsPage() {
               href="https://console.cloud.google.com/apis/credentials"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-hover rounded-lg hover:bg-muted transition-colors"
+              className="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors"
             >
               <IconBrandGoogle className="w-5 h-5 text-[#4285F4]" />
               <div>
@@ -324,7 +324,7 @@ export default function CalendarIntegrationsPage() {
               href="https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-hover rounded-lg hover:bg-muted transition-colors"
+              className="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors"
             >
               <IconBrandWindows className="w-5 h-5 text-[#0078D4]" />
               <div>

@@ -329,7 +329,7 @@ export default function SharedProjectPage() {
                 {t('progression')}
               </div>
               <div className="text-3xl font-bold text-primary mb-2">{overallProgress}%</div>
-              <div className="h-2 bg-hover rounded-full overflow-hidden">
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-accent rounded-full transition-all duration-500"
                   style={{ width: `${overallProgress}%` }}
@@ -692,7 +692,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
 
         {/* Progress bar */}
         <div className="w-24 hidden sm:block flex-shrink-0">
-          <div className="h-1.5 bg-hover rounded-full overflow-hidden">
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full transition-all ${
                 task.task_status === 'completed' ? 'bg-success' : 'bg-accent'

@@ -1409,7 +1409,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
 
           {/* Section Notes de réunion - pour les événements de type meeting */}
           {eventType === 'meeting' && (
-            <div className="p-4 rounded-xl border border-default bg-hover space-y-3">
+            <div className="p-4 rounded-xl border border-default bg-muted space-y-3">
               <div className="flex items-center gap-2 text-sm font-medium text-primary">
                 <IconNotes className="w-4 h-4 !text-accent" />
                 {t('meeting_notes') || 'Notes de réunion'}
@@ -1509,7 +1509,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
           )}
 
           {/* Conseils pour le matching Fathom */}
-          <div className="p-4 rounded-xl border border-default bg-hover/30 mt-4">
+          <div className="p-4 rounded-xl border border-default bg-muted/30 mt-4">
             <p className="text-xs text-muted leading-relaxed">
               <span className="font-medium text-secondary">💡 {t('tips_title') || 'Conseils pour le matching Fathom'} :</span><br />
               • {t('tip_meeting_link') || 'Mets le lien Google Meet/Zoom dans le champ "Lieu"'}<br />

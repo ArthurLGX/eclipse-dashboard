@@ -359,7 +359,7 @@ export default function MeetingNotePanel({
                           {t('transcription') || 'Transcription'}
                         </span>
                       </div>
-                      <div className="p-3 bg-hover rounded-lg max-h-40 overflow-y-auto">
+                      <div className="p-3 bg-muted rounded-lg max-h-40 overflow-y-auto">
                         <p className="text-sm text-secondary whitespace-pre-wrap">{transcription}</p>
                       </div>
                     </div>

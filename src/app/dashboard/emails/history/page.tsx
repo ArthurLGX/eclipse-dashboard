@@ -197,7 +197,7 @@ function EmailHistory() {
   };
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-page">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-card border-b border-default p-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -216,7 +216,7 @@ function EmailHistory() {
           </div>
           
           {/* Search */}
-          <div className="flex items-center gap-2 bg-background rounded-lg  px-3 py-2 w-72">
+          <div className="flex items-center gap-2 bg-page rounded-lg  px-3 py-2 w-72">
             <IconSearch className="w-4 h-4 text-muted" />
             <input
               type="text"
@@ -267,7 +267,7 @@ function EmailHistory() {
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         selectedCategory === cat.id
                           ? 'bg-accent-light !text-accent'
-                          : 'bg-background text-muted'
+                          : 'bg-page text-muted'
                       }`}>
                         {count}
                       </span>
@@ -434,7 +434,7 @@ function EmailHistory() {
               
               {/* Attachments if any */}
               {selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
-                <div className="px-4 py-3 border-b border-default bg-background/50">
+                <div className="px-4 py-3 border-b border-default bg-page/50">
                   <div className="flex items-center gap-2 text-sm">
                     <IconPaperclip className="w-4 h-4 text-muted" />
                     <span className="text-muted">{t('attachments') || 'Pièces jointes'}:</span>

@@ -172,7 +172,7 @@ export default function ProjectProfitabilityCard({
             {profitabilityData.consumptionPercent}%
           </span>
         </div>
-        <div className="h-2 bg-hover rounded-full overflow-hidden">
+        <div className="h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${Math.min(profitabilityData.consumptionPercent, 100)}%` }}

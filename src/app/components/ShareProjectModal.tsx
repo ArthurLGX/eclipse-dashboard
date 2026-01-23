@@ -657,15 +657,15 @@ export default function ShareProjectModal({
 
                 {/* Séparateur */}
                 <div className="flex items-center gap-4">
-                  <div className="flex-1 h-px bg-hover" />
+                  <div className="flex-1 h-px bg-muted" />
                   <span className="text-xs text-muted uppercase">{t('or') || 'ou'}</span>
-                  <div className="flex-1 h-px bg-hover" />
+                  <div className="flex-1 h-px bg-muted" />
                 </div>
 
                 {/* Partage par lien */}
                 <button
                   onClick={handleCopyLink}
-                  className="w-full py-3 px-4 bg-hover hover:bg-card-hover border border-default rounded-xl text-primary transition-colors flex items-center justify-center gap-3"
+                  className="w-full py-3 px-4 bg-muted hover:bg-card-hover border border-default rounded-xl text-primary transition-colors flex items-center justify-center gap-3"
                 >
                   {linkCopied ? (
                     <>
@@ -691,7 +691,7 @@ export default function ShareProjectModal({
                       {pendingInvitations.map((invitation) => (
                         <div
                           key={invitation.documentId}
-                          className="flex items-center justify-between p-3 bg-hover rounded-lg"
+                          className="flex items-center justify-between p-3 bg-muted rounded-lg"
                         >
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-warning-light flex items-center justify-center">
@@ -753,7 +753,7 @@ export default function ShareProjectModal({
                   collaborators.map((collab) => (
                     <div
                       key={collab.documentId}
-                      className="flex items-center justify-between p-3 bg-hover rounded-lg"
+                      className="flex items-center justify-between p-3 bg-muted rounded-lg"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-success-light flex items-center justify-center">
@@ -921,7 +921,7 @@ export default function ShareProjectModal({
                       {publicLinks.map((link) => (
                         <div
                           key={link.documentId}
-                          className="flex items-center justify-between p-3 bg-hover border border-default rounded-lg"
+                          className="flex items-center justify-between p-3 bg-muted border border-default rounded-lg"
                         >
                           <div className="flex items-center gap-3 flex-1 min-w-0">
                             <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center flex-shrink-0">

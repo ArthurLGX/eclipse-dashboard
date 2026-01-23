@@ -271,7 +271,7 @@ function InboxView() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] bg-background rounded-xl overflow-hidden border border-default">
+    <div className="flex h-[calc(100vh-80px)] bg-page rounded-xl overflow-hidden border border-default">
       {/* Email List */}
       <div className={`${selectedEmail ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-[400px] lg:w-[450px] border-r border-default bg-card`}>
         {/* Header */}
@@ -306,7 +306,7 @@ function InboxView() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('search_emails') || 'Rechercher...'}
-              className="w-full !pl-10 !pr-4 py-2 bg-background border border-default rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
+              className="w-full !pl-10 !pr-4 py-2 bg-page border border-default rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
             />
           </div>
           
@@ -317,7 +317,7 @@ function InboxView() {
               className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                 !showUnreadOnly && !showStarredOnly && !showArchived
                   ? 'bg-accent text-white'
-                  : 'bg-background border border-default text-muted hover:border-accent'
+                  : 'bg-page border border-default text-muted hover:border-accent'
               }`}
             >
               {t('all') || 'Tous'}
@@ -327,7 +327,7 @@ function InboxView() {
               className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                 showUnreadOnly
                   ? 'bg-accent text-white'
-                  : 'bg-background border border-default text-muted hover:border-accent'
+                  : 'bg-page border border-default text-muted hover:border-accent'
               }`}
             >
               {t('unread') || 'Non lus'}
@@ -337,7 +337,7 @@ function InboxView() {
               className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                 showStarredOnly
                   ? 'bg-amber-500 text-white'
-                  : 'bg-background border border-default text-muted hover:border-amber-500'
+                  : 'bg-page border border-default text-muted hover:border-amber-500'
               }`}
             >
               <IconStarFilled className="w-3 h-3 inline mr-1" />
@@ -348,7 +348,7 @@ function InboxView() {
               className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                 showArchived
                   ? 'bg-gray-500 text-white'
-                  : 'bg-background border border-default text-muted hover:border-gray-500'
+                  : 'bg-page border border-default text-muted hover:border-gray-500'
               }`}
             >
               <IconArchive className="w-3 h-3 inline mr-1" />
@@ -384,7 +384,7 @@ function InboxView() {
                   exit={{ opacity: 0, x: -20 }}
                   onClick={() => openEmail(email)}
                   className={`flex items-start gap-3 p-4 border-b border-default cursor-pointer transition-colors ${
-                    email.is_read ? 'bg-card hover:bg-background' : 'bg-accent/10 hover:bg-accent/15'
+                    email.is_read ? 'bg-card hover:bg-page' : 'bg-accent/10 hover:bg-accent/15'
                   } ${selectedEmail?.id === email.id ? 'bg-accent/10 border-l-2 border-l-accent' : ''}`}
                 >
                   {/* Read indicator */}
@@ -475,7 +475,7 @@ function InboxView() {
       </div>
       
       {/* Email Detail */}
-      <div className={`${selectedEmail ? 'flex' : 'hidden md:flex'} flex-1 flex-col bg-background`}>
+      <div className={`${selectedEmail ? 'flex' : 'hidden md:flex'} flex-1 flex-col bg-page`}>
         {selectedEmail ? (
           <>
             {/* Detail Header */}
@@ -579,7 +579,7 @@ function InboxView() {
                   
                   {/* Attachments */}
                   {selectedEmail.has_attachments && selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
-                    <div className="mb-6 p-4 bg-background border border-default rounded-lg">
+                    <div className="mb-6 p-4 bg-page border border-default rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <IconPaperclip className="w-4 h-4 text-muted" />
                         <span className="text-sm font-medium text-primary">

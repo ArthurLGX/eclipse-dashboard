@@ -648,7 +648,7 @@ export default function FacturesPage() {
 
   // Onglets pour basculer entre Factures et Devis
   const tabs = (
-    <div className="flex w-fit gap-1 p-1 bg-hover rounded-lg mb-6">
+    <div className="flex w-fit gap-1 p-1 bg-muted rounded-lg mb-6">
       <button
         onClick={() => router.push('/dashboard/factures')}
         className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
@@ -732,7 +732,7 @@ export default function FacturesPage() {
           </p>
 
           {/* Option pour mettre à jour le statut du client */}
-          <div className="flex items-start gap-3 p-4 bg-hover rounded-lg">
+          <div className="flex items-start gap-3 p-4 bg-muted rounded-lg">
             <input
               type="checkbox"
               id="updateClientStatusTable"

@@ -239,7 +239,7 @@ export default function SEOAuditPage() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full !pl-10 !pr-4 py-3 bg-background border border-muted rounded-lg focus:ring-1 focus:ring-accent"
+                className="w-full !pl-10 !pr-4 py-3 bg-page border border-muted rounded-lg focus:ring-1 focus:ring-accent"
                 onKeyDown={(e) => e.key === 'Enter' && runAudit()}
               />
             </div>
@@ -375,7 +375,7 @@ export default function SEOAuditPage() {
               </h2>
               <div className="space-y-3">
                 {result.opportunities.map((opp) => (
-                  <div key={opp.id} className="flex items-start gap-3 p-3 bg-hover rounded-lg">
+                  <div key={opp.id} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                     <div className={`w-2 h-2 rounded-full mt-2 ${
                       opp.score >= 0.9 ? 'bg-green-500' : opp.score >= 0.5 ? 'bg-amber-500' : 'bg-red-500'
                     }`} />
@@ -402,7 +402,7 @@ export default function SEOAuditPage() {
               </h2>
               <div className="space-y-3">
                 {result.diagnostics.map((diag) => (
-                  <div key={diag.id} className="flex items-start gap-3 p-3 bg-hover rounded-lg">
+                  <div key={diag.id} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                     <div className={`w-2 h-2 rounded-full mt-2 ${
                       diag.score >= 0.9 ? 'bg-green-500' : diag.score >= 0.5 ? 'bg-amber-500' : 'bg-red-500'
                     }`} />

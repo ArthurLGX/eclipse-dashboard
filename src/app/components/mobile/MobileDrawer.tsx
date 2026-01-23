@@ -90,7 +90,7 @@ export default function MobileDrawer({
                 <SidebarLogo />
                 <button
                   onClick={onClose}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-hover hover:bg-muted transition-colors active:scale-95"
+                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-muted hover:bg-muted transition-colors active:scale-95"
                 >
                   <IconX size={20} className="text-primary" />
                 </button>
