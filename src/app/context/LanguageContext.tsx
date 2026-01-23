@@ -94,6 +94,7 @@ const translations = {
     login: 'Connexion',
     error_login: 'Erreur lors de la connexion',
     backto_login: 'Retour à la connexion',
+    continue_with_oauth: 'Continuer avec OAuth',
     register: 'Inscription',
     go_to_offers: 'Voir les offres',
     reset_password: 'Réinitialiser le mot de passe',
@@ -5358,6 +5359,8 @@ won: 'Won',
     estimated_duration: 'Estimated duration',
     
     // Admin Users
+        continue_with_oauth: 'Continue with OAuth',
+
     users_management: 'Users Management',
     users_total: 'total users',
     all_roles: 'All roles',
