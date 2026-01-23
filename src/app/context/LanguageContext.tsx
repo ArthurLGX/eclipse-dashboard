@@ -1524,6 +1524,13 @@ const translations = {
     due_dates: 'Dates d\'échéance',
     billed: 'Facturé',
 
+    // Gravitational Flow
+
+    one_flow: 'Un seul flux.',
+    your_business_description: 'Votre entreprise est votre sang. C\'est ce que vous faites, ce que vous aimez, et ce que vous êtes passionné par.',
+    payment: 'Paiement',
+    your_business_: 'Votre entreprise',
+
     // Import Excel / Google Sheets
     import: 'Importer',
     import_excel: 'Importer depuis Excel',
@@ -5473,6 +5480,7 @@ won: 'Won',
     // Modules & Business Types
     modules: 'Modules',
     your_business: 'Your business',
+    your_business_: 'Your business',
     select_your_modules: 'Select your modules',
     modules_desc: 'You can change them later in settings',
     enabled_modules: 'Enabled modules',
@@ -5910,6 +5918,12 @@ won: 'Won',
     workflow_guide_create_invoice: 'Quote accepted → create an invoice',
     workflow_guide_create_contract: 'Quote accepted → secure with a contract',
     workflow_guide_create_project: 'Contract signed → start the project',
+
+    // Gravitational Flow
+
+    one_flow: 'One flow',
+    your_business_description: 'Your business is your lifeblood. It\'s what you do, what you love, and what you\'re passionate about.',
+    payment: 'Payment',
 
     // AI - Contract Generation
     ai_generate_contract: 'Generate contract with AI',

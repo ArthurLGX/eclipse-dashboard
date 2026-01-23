@@ -30,12 +30,12 @@
 :root:not(.light) {
   /* Backgrounds - Noir */
   --bg-page: #000000;
-  --bg-card: rgba(255, 255, 255, 0.05);
+  --bg-card: #101010;
   --bg-card-hover: rgba(255, 255, 255, 0.1);
-  --bg-input: rgba(255, 255, 255, 0.08);
+  --bg-input: #1b1b1b;
   --bg-sidebar: #000000;
-  --bg-hover: rgba(255, 255, 255, 0.12);
-  --bg-muted: rgba(255, 255, 255, 0.03);
+  --bg-hover: #1b1b1b;
+  --bg-muted: #1b1b1b;
   
   /* Borders - Nuances de gris */
   --border-default: rgba(255, 255, 255, 0.15);
@@ -90,7 +90,7 @@
   
   --color-warning: #851b03;
   --color-warning-light: #f57048;
-  --color-warning-bg: w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center;
+  --color-warning-bg: #f57048;
   --color-warning-border: rgba(255, 56, 11, 0.3);
   --color-warning-text: #310c01 ;
   
@@ -133,7 +133,7 @@
   /* Borders - Nuances de gris */
   --border-default: #e0e0e0;
   --border-input: #d0d0d0;
-  --border-muted: rgb(95, 95, 95);
+  --border-muted: #d6d6d6;
   
   /* Text colors - Noir et gris */
   --text-primary: #000000;
@@ -382,36 +382,109 @@
    ============================================ */
 
 /* Backgrounds */
-.bg-page { background-color: var(--bg-page); }
-.bg-card { background-color: var(--bg-card); }
-.bg-card-hover { background-color: var(--bg-card-hover); }
-.bg-input { background-color: var(--bg-input); }
-.bg-sidebar { background-color: var(--bg-sidebar); }
+.bg-page { 
+  
+  background-color: var(--bg-page); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-card { 
+  background-color: var(--bg-card); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-card-hover { 
+  background-color: var(--bg-card-hover); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-input { 
+  background-color: var(--bg-input); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-sidebar { 
+  background-color: var(--bg-sidebar); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 .bg-hover { background-color: var(--bg-hover); }
-.bg-muted { background-color: var(--bg-muted); }
+.bg-muted { 
+  background-color: var(--bg-muted); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 
-.bg-accent { background-color: var(--color-accent); }
-.bg-accent-light { background-color: var(--color-accent-bg); }
-.bg-accent-muted { background-color: var(--color-accent-muted); }
+.bg-accent { background-color: var(--color-accent); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-accent-light { background-color: var(--color-accent-bg); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-accent-muted { background-color: var(--color-accent-muted); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 .bg-accent-subtle { background-color: var(--color-accent-subtle); }
-.bg-primary { background-color: var(--color-primary); }
-.bg-primary-light { background-color: var(--color-primary-bg); }
+.bg-primary { background-color: var(--color-primary); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-primary-light { background-color: var(--color-primary-bg); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 .bg-success { background-color: var(--color-success); }
-.bg-success-light { background-color: var(--color-success-bg); }
-.bg-info { background-color: var(--color-info); }
-.bg-info-light { background-color: var(--color-info-bg); }
-.bg-warning { background-color: var(--color-warning); }
-.bg-warning-light { background-color: var(--color-warning-light); }
-.bg-danger { background-color: var(--color-danger); }
-.bg-danger-light { background-color: var(--color-danger-bg); }
-.bg-highlight { background-color: var(--color-highlight); }
+.bg-success-light { background-color: var(--color-success-bg); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-info { background-color: var(--color-info); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-info-light { background-color: var(--color-info-bg); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-warning { background-color: var(--color-warning); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-warning-light { background-color: var(--color-warning-light); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+    .bg-danger { background-color: var(--color-danger); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-danger-light { background-color: var(--color-danger-bg); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bg-highlight { background-color: var(--color-highlight); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 
 /* Warning colors */
-.bg-warning-light { background-color: var(--color-warning-light); }
+.bg-warning-light { background-color: var(--color-warning-bg); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 .text-warning-light { color: var(--color-warning-light); }
-.border-warning-light { border-color: var(--color-warning-light); }
+.border-warning-light { border-color: var(--color-warning-light); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 .bg-warning-text { background-color: var(--color-warning-text); }
-.text-warning-text { color: var(--color-warning-text); }
+.text-warning-text { color: var(--color-warning-text); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 .border-warning-text { border-color: var(--color-warning-text); }
 
 

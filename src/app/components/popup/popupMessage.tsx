@@ -61,22 +61,22 @@ const PopupMessage = ({
       />
 
       <p
-        className={`flex flex-row items-center gap-2 ${type === 'success' ? 'text-success' : type === 'error' ? 'text-danger' : 'text-warning'}`}
+        className={`flex flex-row items-center gap-2 ${type === 'success' ? '!text-success-text' : type === 'error' ? '!text-danger-text' : '!text-warning-text'}`}
       >
         {type === 'success' ? (
           <IconCheck
             size={20}
-            className="text-success rounded-full bg-success-light p-1"
+            className="!text-success-text  rounded-full bg-success-light p-1"
           />
         ) : type === 'error' ? (
           <IconX
             size={20}
-            className="text-danger rounded-full bg-danger-light p-1"
+            className="!text-danger-text rounded-full bg-danger-light p-1"
           />
         ) : (
           <IconAlertCircle
             size={20}
-            className="text-warning-text rounded-full bg-warning-light p-1"
+            className="!text-warning-text rounded-full bg-warning-light p-1"
           />
         )}
         {message}

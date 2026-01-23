@@ -139,6 +139,7 @@ export default function AIContractGenerator({
 
   // Signature canvas ref
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isSavingRef = useRef(false);
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
 
@@ -178,6 +179,7 @@ export default function AIContractGenerator({
       setEmailContent('');
       setIsEditMode(false);
       setEditedContractHtml('');
+      isSavingRef.current = false; // Reset flag de protection
     }
   }, [isOpen, company?.location, initialClient?.documentId, initialProject?.documentId]);
 
@@ -609,6 +611,19 @@ export default function AIContractGenerator({
   const handleSaveContract = async (): Promise<Contract | null> => {
     if (!generatedContract || !user?.id) return null;
     
+    // Si déjà sauvegardé, retourner le contrat existant
+    if (savedContract) {
+      console.log('Contract already saved, returning existing...');
+      return savedContract;
+    }
+    
+    // Empêcher les doubles soumissions
+    if (isSavingRef.current) {
+      console.log('Save already in progress, skipping...');
+      return null;
+    }
+    
+    isSavingRef.current = true;
     setSaving(true);
     setError(null);
     
@@ -640,6 +655,7 @@ export default function AIContractGenerator({
       return null;
     } finally {
       setSaving(false);
+      isSavingRef.current = false;
     }
   };
 

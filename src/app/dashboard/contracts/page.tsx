@@ -82,16 +82,16 @@ export default function ContractsPage() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, showGlobalPopup, t]);
+  }, [user?.id]);
 
   useEffect(() => {
     loadContracts();
   }, [loadContracts]);
 
-  const handleContractGenerated = () => {
+  const handleContractGenerated = useCallback(() => {
     loadContracts();
     showGlobalPopup(t('contract_generated') || 'Contrat généré avec succès !', 'success');
-  };
+  }, [loadContracts, showGlobalPopup, t]);
 
   const handleDeleteContract = async (documentId: string) => {
     if (!confirm(t('confirm_delete_contract') || 'Êtes-vous sûr de vouloir supprimer ce contrat ?')) {
@@ -215,7 +215,7 @@ export default function ContractsPage() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-2 w-64 bg-card rounded-xl border border-muted shadow-lg z-50 overflow-hidden"
+                  className="absolute right-0 mt-2 w-64 bg-card rounded-xl border border-default shadow-lg z-50 overflow-hidden"
                 >
                   <button
                     onClick={() => {
@@ -232,7 +232,7 @@ export default function ContractsPage() {
                       <p className="text-xs text-muted">{t('create_manually_desc') || 'Partir de zéro'}</p>
                     </div>
                   </button>
-                  <div className="border-t border-muted" />
+                  <div className="border-t border-default" />
                   <button
                     onClick={() => {
                       setShowAIGenerator(true);
@@ -262,7 +262,7 @@ export default function ContractsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="p-4 bg-card rounded-xl border border-muted">
+        <div className="p-4 bg-card rounded-xl border border-default">
           <p className="text-sm text-muted">{t('total') || 'Total'}</p>
           <p className="text-2xl font-bold text-primary mt-1">{stats.total}</p>
         </div>
@@ -335,7 +335,7 @@ export default function ContractsPage() {
           {/* Two options */}
           <div className="flex flex-col sm:flex-row gap-4">
             <button 
-              className="flex items-center gap-2 px-6 py-3 bg-card border border-muted text-primary rounded-xl hover:bg-hover transition-all"
+              className="flex items-center gap-2 px-6 py-3 bg-card border border-default text-primary rounded-xl hover:bg-hover transition-all"
               onClick={() => setShowManualCreator(true)}
             >
               <IconPencil size={20} />
@@ -369,12 +369,12 @@ export default function ContractsPage() {
               
               return (
                 <motion.div
-                  key={contract.documentId}
+                  key={`${contract.documentId || contract.id || 'contract'}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ delay: index * 0.05 }}
-                  className="p-4 bg-card rounded-xl border border-muted hover:border-accent transition-all group"
+                  className="p-4 bg-card rounded-xl border border-default hover:border-accent transition-all group"
                 >
                   <div className="flex flex-col md:flex-row md:items-center gap-4">
                     {/* Main info */}

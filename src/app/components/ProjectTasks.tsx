@@ -1237,7 +1237,7 @@ export default function ProjectTasks({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
-            <IconProgress className="w-5 h-5 !text-accent" />
+            <IconProgress className="w-5 h-5 !text-primary" />
             {t('project_tasks')}
           </h3>
           <p className="text-sm text-muted mt-1">
@@ -1304,7 +1304,7 @@ export default function ProjectTasks({
       {tasks.length > 0 && (
         <div className="bg-muted rounded-lg p-4 border border-default">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-secondary">{t('overall_progress') || 'Progression globale'}</span>
+            <span className="text-sm text-primary">{t('overall_progress') || 'Progression globale'}</span>
             <span className="text-sm font-medium !text-accent">{overallProgress}%</span>
           </div>
           <div className="h-2 bg-hover rounded-full overflow-hidden">
@@ -1328,7 +1328,7 @@ export default function ProjectTasks({
               className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                 filter === 'all'
                   ? 'bg-accent text-white'
-                  : 'bg-muted text-secondary hover:bg-hover'
+                  : 'bg-muted !text-primary hover:bg-hover'
               }`}
             >
               Toutes ({taskStats.total})
@@ -1340,7 +1340,7 @@ export default function ProjectTasks({
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1.5 ${
                   filter === option.value
                     ? getStatusStyle(option.value)
-                    : 'bg-muted text-secondary hover:bg-hover'
+                    : 'bg-accent-light !text-accent hover:bg-hover'
                 }`}
               >
                 {option.icon}
@@ -1357,7 +1357,7 @@ export default function ProjectTasks({
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
                   showArchived
                     ? 'bg-warning-light text-warning'
-                    : 'bg-muted text-secondary hover:bg-hover'
+                    : 'bg-muted text-primary hover:bg-hover'
                 }`}
                 title={showArchived 
                   ? (t('hide_archived_tasks') || 'Masquer les archivées') 
@@ -1378,7 +1378,7 @@ export default function ProjectTasks({
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
                   isSelectionMode
                     ? 'bg-accent text-white'
-                    : 'bg-muted text-secondary hover:bg-hover'
+                    : 'bg-muted text-primary hover:bg-hover'
                 }`}
                 title={isSelectionMode 
                   ? (t('deselect_all') || 'Désélectionner') 
@@ -1397,7 +1397,7 @@ export default function ProjectTasks({
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors ${
                     viewMode === option.value
                       ? 'bg-accent text-white'
-                      : 'text-secondary hover:text-primary'
+                      : 'text-primary hover:text-primary'
                   }`}
                   title={option.label}
                 >
@@ -1461,7 +1461,7 @@ export default function ProjectTasks({
               {/* Annuler */}
               <button
                 onClick={deselectAllTasks}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-muted text-secondary hover:bg-hover transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-muted text-primary hover:bg-hover transition-colors"
               >
                 <IconX className="w-4 h-4" />
               </button>
@@ -1535,7 +1535,7 @@ export default function ProjectTasks({
                   setShowNewTaskForm(false);
                   setParentTaskForSubtask(null);
                 }}
-                className="p-1 text-secondary hover:text-primary"
+                className="p-1 text-primary hover:text-primary"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -1552,7 +1552,7 @@ export default function ProjectTasks({
               />
 
               <div>
-                <label className="block text-sm text-secondary mb-1">{t('description') || 'Description'}</label>
+                <label className="block text-sm text-primary mb-1">{t('description') || 'Description'}</label>
                 <RichTextEditor
                   value={newTask.description}
                   onChange={(val) => setNewTask({ ...newTask, description: val })}
@@ -1564,7 +1564,7 @@ export default function ProjectTasks({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm text-secondary mb-1">{t('status') || 'Statut'}</label>
+                  <label className="block text-sm text-primary mb-1">{t('status') || 'Statut'}</label>
                   <select
                     value={newTask.task_status}
                     onChange={(e) => setNewTask({ ...newTask, task_status: e.target.value as TaskStatus })}
@@ -1577,7 +1577,7 @@ export default function ProjectTasks({
                 </div>
 
                 <div>
-                  <label className="block text-sm text-secondary mb-1">{t('priority') || 'Priorité'}</label>
+                  <label className="block text-sm text-primary mb-1">{t('priority') || 'Priorité'}</label>
                   <select
                     value={newTask.priority}
                     onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as TaskPriority })}
@@ -1590,7 +1590,7 @@ export default function ProjectTasks({
                 </div>
 
                 <div>
-                  <label className="block text-sm text-secondary mb-1">{t('assigned_to') || 'Assigner à'}</label>
+                  <label className="block text-sm text-primary mb-1">{t('assigned_to') || 'Assigner à'}</label>
                   <select
                     value={newTask.assigned_to}
                     onChange={(e) => setNewTask({ ...newTask, assigned_to: e.target.value })}
@@ -1609,7 +1609,7 @@ export default function ProjectTasks({
               {/* Sélecteur de couleur (uniquement pour les tâches principales) */}
               {!parentTaskForSubtask && (
                 <div>
-                  <label className="block text-sm text-secondary mb-2 flex items-center gap-1">
+                  <label className="block text-sm text-primary mb-2 flex items-center gap-1">
                     <IconPalette className="w-4 h-4" />
                     {t('task_color') || 'Couleur du groupe'}
                   </label>
@@ -1631,7 +1631,7 @@ export default function ProjectTasks({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm text-secondary mb-1">{t('start_date') || 'Date de début'}</label>
+                  <label className="block text-sm text-primary mb-1">{t('start_date') || 'Date de début'}</label>
                   <input
                     type="date"
                     value={newTask.start_date}
@@ -1641,7 +1641,7 @@ export default function ProjectTasks({
                 </div>
 
                 <div>
-                  <label className="block text-sm text-secondary mb-1">{t('due_date') || 'Échéance'}</label>
+                  <label className="block text-sm text-primary mb-1">{t('due_date') || 'Échéance'}</label>
                   <input
                     type="date"
                     value={newTask.due_date}
@@ -1651,7 +1651,7 @@ export default function ProjectTasks({
                 </div>
 
                 <div>
-                  <label className="block text-sm text-secondary mb-1">{t('estimated_hours') || 'Heures estimées'}</label>
+                  <label className="block text-sm text-primary mb-1">{t('estimated_hours') || 'Heures estimées'}</label>
                   <input
                     type="number"
                     step="0.5"
@@ -1669,7 +1669,7 @@ export default function ProjectTasks({
               <button
                 type="button"
                 onClick={() => setShowNewTaskForm(false)}
-                className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+                className="px-4 py-2 text-primary hover:text-primary transition-colors"
               >
                 {t('cancel') || 'Annuler'}
               </button>
@@ -1697,7 +1697,7 @@ export default function ProjectTasks({
           {canEdit && filter === 'all' && (
             <button
               onClick={() => setShowNewTaskForm(true)}
-              className="mt-4 px-4 py-2 bg-card hover:bg-hover text-secondary rounded-lg transition-colors inline-flex items-center gap-2 border border-default"
+              className="mt-4 px-4 py-2 bg-card hover:bg-hover text-primary rounded-lg transition-colors inline-flex items-center gap-2 border border-default"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_first_task') || 'Ajouter une tâche'}
@@ -2201,13 +2201,13 @@ function TaskCard({
             >
               {task.description && (
                 <div 
-                  className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert px-1 mb-3
+                  className="text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert px-1 mb-3
                     [&_h1]:text-lg [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:text-primary
                     [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:text-primary
-                    [&_p]:mb-2 [&_p]:text-secondary
+                    [&_p]:mb-2 [&_p]:text-primary
                     [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-2
                     [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-2
-                    [&_li]:mb-1 [&_li]:text-secondary
+                    [&_li]:mb-1 [&_li]:text-primary
                     [&_a]:text-accent [&_a]:underline
                     [&_strong]:font-semibold [&_strong]:text-primary
                     [&_em]:italic
@@ -2415,7 +2415,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
               {task.assigned_to && (
                 <div className="flex items-center gap-2 mt-2">
                   <UserAvatar user={task.assigned_to} size="sm" />
-                  <span className="text-sm text-secondary">
+                  <span className="text-sm text-primary">
                     {t('assigned_to') || 'Assigné à'}: {task.assigned_to.username || task.assigned_to.email}
                   </span>
                 </div>
@@ -2424,7 +2424,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             <button
               type="button"
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-hover text-secondary hover:text-primary transition-colors"
+              className="p-2 rounded-lg hover:bg-hover text-primary hover:text-primary transition-colors"
             >
               <IconX className="w-5 h-5" />
             </button>
@@ -2432,7 +2432,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
 
           <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
             <div>
-              <label className="block text-sm font-medium text-secondary mb-1">
+              <label className="block text-sm font-medium text-primary mb-1">
                 {t('title') || 'Titre'} *
               </label>
               <input
@@ -2445,7 +2445,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary mb-1">
+              <label className="block text-sm font-medium text-primary mb-1">
                 {t('description') || 'Description'}
               </label>
               <RichTextEditor
@@ -2459,7 +2459,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">
+                <label className="block text-sm font-medium text-primary mb-1">
                   {t('status') || 'Statut'}
                 </label>
                 <select
@@ -2474,7 +2474,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">
+                <label className="block text-sm font-medium text-primary mb-1">
                   {t('priority') || 'Priorité'}
                 </label>
                 <select
@@ -2490,7 +2490,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary mb-1">
+              <label className="block text-sm font-medium text-primary mb-1">
                 {t('progress') || 'Progression'}: {formData.progress}%
               </label>
               <input
@@ -2505,7 +2505,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">
+                <label className="block text-sm font-medium text-primary mb-1">
                   {t('start_date') || 'Date de début'}
                 </label>
                 <input
@@ -2517,7 +2517,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">
+                <label className="block text-sm font-medium text-primary mb-1">
                   {t('due_date') || 'Échéance'}
                 </label>
                 <input
@@ -2531,7 +2531,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">
+                <label className="block text-sm font-medium text-primary mb-1">
                   {t('estimated_hours') || 'Heures estimées'}
                 </label>
                 <input
@@ -2545,7 +2545,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">
+                <label className="block text-sm font-medium text-primary mb-1">
                   {t('actual_hours') || 'Heures réelles'}
                 </label>
                 <input
@@ -2561,7 +2561,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
 
             {/* Assignation */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-1">
+              <label className="block text-sm font-medium text-primary mb-1">
                 {t('assigned_to') || 'Assigner à'}
               </label>
               <select
@@ -2581,7 +2581,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             {/* Sélecteur de couleur (uniquement pour les tâches principales) */}
             {!isSubtask && (
               <div>
-                <label className="block text-sm font-medium text-secondary mb-2 flex items-center gap-1">
+                <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-1">
                   <IconPalette className="w-4 h-4" />
                   {t('task_color') || 'Couleur du groupe'}
                 </label>
@@ -2605,7 +2605,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             {!isSubtask && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-secondary flex items-center gap-1">
+                  <label className="text-sm font-medium text-primary flex items-center gap-1">
                     <IconSubtask className="w-4 h-4" />
                     {t('subtasks') || 'Sous-tâches'}
                     {hasSubtasks && <span className="text-muted">({task.subtasks?.length})</span>}
@@ -2668,7 +2668,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+              className="px-4 py-2 text-primary hover:text-primary transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>
@@ -3242,20 +3242,20 @@ function TaskTableView({
                       style={{ width: `${task.progress || 0}%` }}
                     />
                   </div>
-                  <span className="text-xs text-secondary">{task.progress || 0}%</span>
+                  <span className="text-xs text-primary">{task.progress || 0}%</span>
                 </div>
               </td>
               <td className="py-3 px-4">
                 <span className={`text-sm ${
                   task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed'
                     ? 'text-red-400'
-                    : 'text-secondary'
+                    : 'text-primary'
                 }`}>
                   {formatDate(task.due_date)}
                 </span>
               </td>
               <td className="py-3 px-4">
-                <span className="text-sm text-secondary">
+                <span className="text-sm text-primary">
                   {task.actual_hours || 0}/{task.estimated_hours || 0}h
                 </span>
               </td>
@@ -3264,13 +3264,13 @@ function TaskTableView({
                   <div className="flex items-center justify-end gap-1">
                     <button
                       onClick={() => onEdit(task)}
-                      className="p-1.5 text-secondary hover:text-primary hover:bg-hover rounded transition-colors"
+                      className="p-1.5 text-primary hover:text-primary hover:bg-hover rounded transition-colors"
                     >
                       <IconEdit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => onDelete(task.documentId)}
-                      className="p-1.5 text-secondary hover:text-red-400 hover:bg-hover rounded transition-colors"
+                      className="p-1.5 text-primary hover:text-red-400 hover:bg-hover rounded transition-colors"
                     >
                       <IconTrash className="w-4 h-4" />
                     </button>
@@ -3814,7 +3814,7 @@ function TaskGanttView({
               </h3>
               <button
                 onClick={() => setShowExportModal(false)}
-                className="p-1 text-secondary hover:text-primary transition-colors"
+                className="p-1 text-primary hover:text-primary transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -3836,7 +3836,7 @@ function TaskGanttView({
                       onChange={(e) => setExportFileName(e.target.value)}
                       className="flex-1 px-3 py-2 text-sm bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                     />
-                    <span className="text-secondary text-sm">.pdf</span>
+                    <span className="text-primary text-sm">.pdf</span>
                   </div>
                 </div>
 
@@ -3891,7 +3891,7 @@ function TaskGanttView({
                   </button>
                   <button
                     onClick={() => setShowExportModal(false)}
-                    className="w-full py-2 px-4 text-sm border border-default rounded-lg text-secondary hover:bg-hover transition-colors"
+                    className="w-full py-2 px-4 text-sm border border-default rounded-lg text-primary hover:bg-hover transition-colors"
                   >
                     {t('cancel') || 'Annuler'}
                   </button>
@@ -3933,7 +3933,7 @@ function TaskGanttView({
         <button
           onClick={() => setShowExportModal(true)}
           disabled={isExporting}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-card border border-default rounded-lg text-secondary hover:text-primary hover:bg-hover transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-card border border-default rounded-lg text-primary hover:text-primary hover:bg-hover transition-colors disabled:opacity-50"
         >
           <IconFileTypePdf className="w-4 h-4" />
           {isExporting ? (t('exporting') || 'Export...') : (t('export_pdf') || 'Export PDF')}
@@ -4172,7 +4172,7 @@ function TaskGanttView({
                                     >
                                       {subtask.task_status === 'completed' && <IconCheck className="w-2 h-2 text-white" />}
                                     </div>
-                                    <span className={`text-xs truncate max-w-[130px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-secondary'}`}>
+                                    <span className={`text-xs truncate max-w-[130px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
                                       {subtask.title}
                                     </span>
                                     {subtask.assigned_to && <UserAvatar user={subtask.assigned_to} size="sm" className="ml-auto" />}

@@ -334,7 +334,7 @@ export default function ProjectsPage() {
           <div className="flex items-start gap-2">
             <h4 className="text-primary font-medium">{value as string}</h4>
             {taskCounts[row.documentId] > 0 && (
-              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-amber-500 rounded-full">
+              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-accent rounded-full">
                 {taskCounts[row.documentId]}
               </span>
             )}

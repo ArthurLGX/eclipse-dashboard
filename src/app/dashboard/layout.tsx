@@ -656,7 +656,7 @@ function DashboardLayoutContent({
                               <IconChevronDown
                                 size={12}
                                 className={`transition-all duration-200 ${
-                                  menuItemHovered === item.id || (menuItemHovered === null && activeCategory === item.id) ? 'rotate-180' : ''
+                                  menuItemHovered === item.id ? 'rotate-180' : ''
                                 }`}
                               />
                             </motion.div>
@@ -668,7 +668,7 @@ function DashboardLayoutContent({
                       <AnimatePresence>
                         {item.menuItems &&
                           (isExpanded || isPinned) &&
-                          (menuItemHovered === item.id || (menuItemHovered === null && activeCategory === item.id)) && (
+                          menuItemHovered === item.id && (
                             <motion.div
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}

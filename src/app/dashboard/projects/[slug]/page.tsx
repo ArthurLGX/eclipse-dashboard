@@ -512,7 +512,7 @@ const PROJECT_TYPES = [
                   <IconHourglass className="w-8 h-8 text-warning" />
                 </div>
                 <h2 className="text-xl font-bold text-primary mb-2">{t('pending_request')}</h2>
-                <p className="text-secondary mb-4">{t('collaboration_request_pending')}</p>
+                <p className="text-primary mb-4">{t('collaboration_request_pending')}</p>
               </div>
             ) : collaborationRequestStatus === 'rejected' ? (
               <div className="text-center">
@@ -520,7 +520,7 @@ const PROJECT_TYPES = [
                   <IconX className="w-8 h-8 text-danger" />
                 </div>
                 <h2 className="text-xl font-bold text-primary mb-2">{t('collaboration_rejected')}</h2>
-                <p className="text-secondary mb-4">{t('your_request_was_rejected')}</p>
+                <p className="text-primary mb-4">{t('your_request_was_rejected')}</p>
               </div>
             ) : (
               <div className="text-center">
@@ -528,7 +528,7 @@ const PROJECT_TYPES = [
                   <IconUserPlus className="w-8 h-8 !text-accent" />
                 </div>
                 <h2 className="text-xl font-bold text-primary mb-2">{t('request_collaboration')}</h2>
-                <p className="text-secondary mb-6">{t('collaboration_request_description')}</p>
+                <p className="text-primary mb-6">{t('collaboration_request_description')}</p>
                 <button
                   onClick={handleRequestAccess}
                   disabled={isRequestingAccess}
@@ -602,7 +602,7 @@ const PROJECT_TYPES = [
           <div className="flex items-center justify-between mb-5">
             <Link
               href="/dashboard/projects"
-              className="flex items-center gap-2 text-secondary hover:text-primary transition-colors group"
+              className="flex items-center gap-2 text-primary hover:text-primary transition-colors group"
             >
               <IconArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               <span className="text-sm">{t('projects') || 'Projets'}</span>
@@ -740,14 +740,14 @@ const PROJECT_TYPES = [
                     <StatusIcon className="w-3.5 h-3.5" />
                     {statusConfig.label}
                   </span>
-                  <span className="text-secondary text-sm flex items-center gap-1.5">
+                  <span className="text-primary text-sm flex items-center gap-1.5">
                     <ProjectTypeIcon type={project.type} className="w-4 h-4" />
                     {PROJECT_TYPES.find(t => t.value === project.type)?.label}
                   </span>
                   {project.client && (
                     <Link 
                       href={`/dashboard/clients/${generateClientSlug(project.client.name, project.client.documentId)}`}
-                      className="text-secondary hover:text-accent text-sm flex items-center gap-1.5 transition-colors"
+                      className="text-primary hover:text-accent text-sm flex items-center gap-1.5 transition-colors"
                     >
                       <IconBuilding className="w-4 h-4" />
                       {project.client.name}
@@ -839,7 +839,7 @@ const PROJECT_TYPES = [
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-t-lg transition-colors ${
                   activeTab === tab.id
                     ? 'bg-page !text-accent border-t border-x border-default'
-                    : 'text-secondary hover:text-primary hover:bg-hover'
+                    : 'text-primary hover:text-primary hover:bg-hover'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -850,7 +850,7 @@ const PROJECT_TYPES = [
                       ? 'bg-warning-light text-warning' 
                       : activeTab === tab.id 
                         ? 'bg-accent-light !text-accent' 
-                        : 'bg-muted text-secondary'
+                        : 'bg-muted text-primary'
                   }`}>
                     {tab.count}
                   </span>
@@ -891,7 +891,7 @@ const PROJECT_TYPES = [
                       />
                     ) : project.description ? (
                       <div 
-                        className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+                        className="text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
                           [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2
                           [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2
                           [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
@@ -899,7 +899,7 @@ const PROJECT_TYPES = [
                         dangerouslySetInnerHTML={{ __html: project.description }}
                       />
                     ) : (
-                      <p className="text-secondary leading-relaxed italic text-muted">
+                      <p className="text-primary leading-relaxed italic text-muted">
                         {t('no_description_available')}
                       </p>
                     )}
@@ -922,7 +922,7 @@ const PROJECT_TYPES = [
                         />
                       ) : (
                         <div 
-                          className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+                          className="text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
                             [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2
                             [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2
                             [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
@@ -939,7 +939,7 @@ const PROJECT_TYPES = [
                       <button
                         type="button"
                         onClick={() => setIsEditMode(false)}
-                        className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+                        className="px-4 py-2 text-primary hover:text-primary transition-colors"
                       >
                         {t('cancel')}
                       </button>
@@ -1118,7 +1118,7 @@ const PROJECT_TYPES = [
                                 </div>
 
                                 {note.summary && (
-                                  <p className="text-sm text-secondary line-clamp-2 mb-3">
+                                  <p className="text-sm text-primary line-clamp-2 mb-3">
                                     {note.summary}
                                   </p>
                                 )}
@@ -1156,7 +1156,7 @@ const PROJECT_TYPES = [
                                   Voir la transcription
                                 </summary>
                                 <div className="mt-3 p-4 bg-page rounded-lg border border-default max-h-64 overflow-y-auto">
-                                  <p className="text-sm text-secondary whitespace-pre-wrap">
+                                  <p className="text-sm text-primary whitespace-pre-wrap">
                                     {note.transcription}
                                   </p>
                                 </div>

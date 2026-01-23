@@ -10,10 +10,9 @@ import {
   fetchCreateAccount,
   fetchSubscriptionsUser,
 } from '@/lib/api';
-import { BackBtn } from '@/app/components/buttons/backBtn';
-import useLenis from '@/utils/useLenis';
-import { IconBrandGoogle } from '@tabler/icons-react';
+import { IconBrandGoogle, IconBrandGithub, IconEye, IconEyeOff, IconLock } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import ProgressiveTimeline from '@/app/components/ProgressiveTimeline';
 
 interface SubscriptionData {
   subscription_status: string;
@@ -37,8 +36,6 @@ function LoginContent() {
   const { authenticated, hasHydrated, login, user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const { t } = useLanguage();
-
-  useLenis();
 
   // Check for OAuth error in URL
   useEffect(() => {
@@ -64,10 +61,7 @@ function LoginContent() {
       if (isLogin) {
         const data = await fetchLogin(username, password);
         if (data.jwt && data.user) {
-          
-          // Utiliser la fonction login du contexte qui gère tout
           login(data.user, data.jwt);
-
           showGlobalPopup('Login successful', 'success');
         } else {
           console.error('Login failed');
@@ -103,7 +97,6 @@ function LoginContent() {
 
     const checkSubscriptionAndRedirect = async () => {
       try {
-        // Vérifier si l'utilisateur a un abonnement
         const subscription = await fetchSubscriptionsUser(user.id) as { data?: SubscriptionData[] };
 
         if (
@@ -118,7 +111,6 @@ function LoginContent() {
         }
       } catch (error) {
         console.error('Error checking subscription:', error);
-        // En cas d'erreur, rediriger vers pricing par défaut
         router.push('/pricing');
       }
     };
@@ -174,232 +166,295 @@ function LoginContent() {
 
   const handleGoogleLogin = () => {
     setIsGoogleLoading(true);
-    // Redirect to Strapi's Google OAuth endpoint
     const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
     window.location.href = `${strapiUrl}/api/connect/google`;
   };
 
   return (
-    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
-      {/* Left side - Form */}
-      <div className="auth-header z-100 w-full rounded-t-xl">
-        <BackBtn />
+    <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center py-32">
+      {/* Background avec grille subtile qui s'estompe */}
+      <div className="absolute inset-0 bg-page">
+        {/* Grille fine avec masque radial */}
+        <div 
+          className="absolute inset-0 opacity-[0.15]"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, var(--border-muted) 1px, transparent 1px),
+              linear-gradient(to bottom, var(--border-muted) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+            maskImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, black 0%, transparent 100%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, black 0%, transparent 100%)',
+          }}
+        />
       </div>
-      <div className="flex-1 flex items-center justify-center p-4 md:p-16 auth-content rounded-b-xl">
-        <div className="md:max-w-md max-w-full">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: 'easeInOut' }}
-            className="!text-center mb-8"
-          >
-            <h1 className="!text-4xl font-bold auth-title mb-2">
-              {isLogin ? 'Welcome Back' : 'Create Account'}
-            </h1>
-            <p className="auth-subtitle">
-              {isLogin
-                ? 'Sign in to your account'
-                : 'Join us today to start your journey'}
-            </p>
-          </motion.div>
 
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: 'easeInOut' }}
-            onSubmit={handleSubmit}
-            className="space-y-6"
-          >
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="auth-error rounded-lg p-3"
+      {/* Container principal */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative z-10 w-full max-w-7xl mx-auto px-4"
+      >
+        <div className="backdrop-blur-2xl bg-card/50 rounded-3xl border border-default shadow-2xl overflow-hidden">
+          <div className="grid lg:grid-cols-2 grid-cols-1 min-h-[650px]">
+            {/* Côté gauche - Formulaire */}
+            <div className="p-8 lg:p-12 flex flex-col justify-center">
+              {/* Logo */}
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="flex items-center gap-3 mb-8"
               >
-                <p className="!text-sm !text-center">{error}</p>
+                <div className="w-10 h-10 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center">
+                  <IconLock className="w-5 h-5 text-accent" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-primary">
+                    {isLogin ? 'Welcome to Eclipse' : 'Join Eclipse'}
+                  </h2>
+                  <p className="text-xs text-muted">
+                    {isLogin ? 'Better project reviews for developers' : 'Create your account'}
+                  </p>
+                </div>
               </motion.div>
-            )}
 
-            <div className="space-y-2">
-              <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                required
-                onChange={e => setUsername(e.target.value)}
-                className="w-full p-3 auth-input rounded-lg transition-all duration-200"
-              />
-            </div>
-
-            {!isLogin && (
+              {/* Lien "Already have an account" / "Don't have an account" */}
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex items-center gap-2 mb-6"
               >
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  required={!isLogin}
-                  onChange={e => setEmail(e.target.value)}
-                  className="w-full p-3 auth-input rounded-lg transition-all duration-200"
-                />
+                <span className="text-sm text-muted">
+                  {isLogin ? "Don't have an account?" : "Already have an account?"}
+                </span>
+                <button
+                  onClick={toggleMode}
+                  className="text-sm text-accent hover:text-accent/80 font-medium transition-colors underline"
+                >
+                  {isLogin ? 'Sign Up' : 'Login'}
+                </button>
               </motion.div>
-            )}
 
-            <div className="space-y-2">
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Password"
-                  value={password}
-                  required
-                  onChange={e => {
-                    setPassword(e.target.value);
-                    setPasswordError(validatePassword(e.target.value));
-                  }}
-                  className="w-full p-3 !pr-10 auth-input rounded-lg transition-all duration-200"
-                />
+              {/* OAuth Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="grid grid-cols-2 gap-3 mb-6"
+              >
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                  onClick={handleGoogleLogin}
+                  disabled={isGoogleLoading}
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group disabled:opacity-50"
                 >
-                  {showPassword ? '👁️' : '👁️‍🗨️'}
+                  <IconBrandGoogle className="w-5 h-5 text-[#4285F4]" />
+                  <span className="text-sm font-medium text-secondary group-hover:text-primary">Google</span>
                 </button>
-              </div>
-              {passwordError && (
-                <p className="text-danger !text-xs">{passwordError}</p>
-              )}
-            </div>
+                <button
+                  type="button"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group"
+                >
+                  <IconBrandGithub className="w-5 h-5 text-secondary group-hover:text-primary" />
+                  <span className="text-sm font-medium text-secondary group-hover:text-primary">GitHub</span>
+                </button>
+              </motion.div>
 
-            {!isLogin && (
+              {/* Divider */}
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="relative my-6"
               >
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Confirm Password"
-                    value={confirmPassword}
-                    required={!isLogin}
-                    onChange={e => {
-                      setConfirmPassword(e.target.value);
-                      checkPassword(e.target.value);
-                    }}
-                    className="w-full p-3 !pr-10 auth-input rounded-lg transition-all duration-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-primary transition-colors"
-                  >
-                    {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
-                  </button>
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-default"></div>
                 </div>
-                {confirmPasswordError && (
-                  <p className="text-danger !text-xs">
-                    {confirmPasswordError}
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted">OR</span>
+                </div>
+              </motion.div>
+
+              {/* Formulaire */}
+              <motion.form
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                onSubmit={handleSubmit}
+                className="space-y-4"
+              >
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-3 bg-danger-bg border border-danger rounded-xl"
+                  >
+                    <p className="text-sm text-danger text-center">{error}</p>
+                  </motion.div>
+                )}
+
+                {/* Email/Username */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-secondary">
+                    {isLogin ? 'Username' : 'Email'}
+                  </label>
+                  <input
+                    type={isLogin ? 'text' : 'email'}
+                    placeholder={isLogin ? 'Enter your username' : 'name@example.com'}
+                    value={isLogin ? username : email}
+                    required
+                    autoComplete={isLogin ? 'username' : 'email'}
+                    onChange={e => isLogin ? setUsername(e.target.value) : setEmail(e.target.value)}
+                    className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                  />
+                </div>
+
+                {/* Username pour register */}
+                {!isLogin && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="space-y-2"
+                  >
+                    <label className="text-sm font-medium text-secondary">Username</label>
+                    <input
+                      type="text"
+                      placeholder="Choose a username"
+                      value={username}
+                      required={!isLogin}
+                      autoComplete="username"
+                      onChange={e => setUsername(e.target.value)}
+                      className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                    />
+                  </motion.div>
+                )}
+
+                {/* Password */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-secondary">Password</label>
+                    {isLogin && (
+                      <a
+                        href="/forgot-password"
+                        className="text-xs text-muted hover:text-accent transition-colors"
+                      >
+                        Forgot password?
+                      </a>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Enter your password"
+                      value={password}
+                      required
+                      autoComplete={isLogin ? 'current-password' : 'new-password'}
+                      onChange={e => {
+                        setPassword(e.target.value);
+                        if (!isLogin) setPasswordError(validatePassword(e.target.value));
+                      }}
+                      className="w-full px-4 py-3 pr-12 bg-input border border-input rounded-xl text-primary placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                    >
+                      {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                    </button>
+                  </div>
+                  {passwordError && !isLogin && (
+                    <p className="text-danger text-xs">{passwordError}</p>
+                  )}
+                </div>
+
+                {/* Confirm Password */}
+                {!isLogin && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="space-y-2"
+                  >
+                    <label className="text-sm font-medium text-secondary">Confirm Password</label>
+                    <div className="relative">
+                      <input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        placeholder="Confirm your password"
+                        value={confirmPassword}
+                        required={!isLogin}
+                        autoComplete="new-password"
+                        onChange={e => {
+                          setConfirmPassword(e.target.value);
+                          checkPassword(e.target.value);
+                        }}
+                        className="w-full px-4 py-3 pr-12 bg-input border border-input rounded-xl text-primary placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                      >
+                        {showConfirmPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                      </button>
+                    </div>
+                    {confirmPasswordError && (
+                      <p className="text-danger text-xs">{confirmPasswordError}</p>
+                    )}
+                  </motion.div>
+                )}
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="w-full bg-highlight hover:bg-highlight-hover text-highlight-text font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
+                  {isLogin ? 'Sign In' : 'Sign Up'}
+                </button>
+
+                {/* Terms */}
+                {!isLogin && (
+                  <p className="text-xs text-center text-muted">
+                    By signing up, you agree to Eclipse's{' '}
+                    <a href="#" className="text-accent hover:underline">
+                      Terms of Service
+                    </a>{' '}
+                    and{' '}
+                    <a href="#" className="text-accent hover:underline">
+                      Privacy Policy
+                    </a>
                   </p>
                 )}
-              </motion.div>
-            )}
-
-            <motion.button
-              type="submit"
-              className="btn-primary w-full font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
-            >
-              {isLogin ? 'Sign In' : 'Create Account'}
-            </motion.button>
-
-            {/* Divider */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-default"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-card text-secondary">{t('or_continue_with')}</span>
-              </div>
+              </motion.form>
             </div>
 
-            {/* Google Login Button */}
-            <motion.button
-              type="button"
-              onClick={handleGoogleLogin}
-              disabled={isGoogleLoading}
-              className="w-full flex items-center justify-center gap-3 py-3 px-6 rounded-lg border border-default bg-card hover:bg-hover transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            {/* Côté droit - Animation progressive timeline */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="relative lg:flex hidden flex-col items-center justify-center p-12 border-l border-default overflow-hidden"
             >
-              {isGoogleLoading ? (
-                <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <IconBrandGoogle className="w-5 h-5 text-[#4285F4]" />
-              )}
-              <span className="font-medium">
-                {isGoogleLoading ? t('connecting') : t('continue_with_google')}
-              </span>
-            </motion.button>
-
-            {isLogin && (
-              <div className="!text-center">
-                <a
-                  href="/forgot-password"
-                  className="auth-link !text-sm transition-colors duration-200"
-                >
-                  Forgot your password?
-                </a>
-              </div>
-            )}
-          </motion.form>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="!text-center mt-6"
-          >
-            <p className="text-primary">
-              {isLogin
-                ? "Don't have an account? "
-                : 'Already have an account? '}
-              <button
-                onClick={toggleMode}
-                className="auth-link cursor-pointer transition-colors duration-200"
-              >
-                {isLogin ? 'Sign up' : 'Sign in'}
-              </button>
-            </p>
-          </motion.div>
+              <ProgressiveTimeline />
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
 
 function LoginLoading() {
   return (
-    <div className="flex h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
-      <div className="flex-1 flex items-center justify-center p-16">
-        <div className="w-full max-w-md">
-          <div className="!text-center mb-8">
-            <div className="h-8 bg-muted rounded w-48 mx-auto mb-2 animate-pulse"></div>
-            <div className="h-4 bg-muted rounded w-32 mx-auto animate-pulse"></div>
-          </div>
-          <div className="space-y-6">
-            <div className="h-12 bg-muted rounded animate-pulse"></div>
-            <div className="h-12 bg-muted rounded animate-pulse"></div>
-            <div className="h-12 bg-muted rounded animate-pulse"></div>
-            <div className="h-12 bg-muted rounded animate-pulse"></div>
-          </div>
-        </div>
+    <div className="min-h-screen w-full flex items-center justify-center bg-page">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+        <p className="text-muted">Chargement...</p>
       </div>
-      <div className="flex-1 bg-hover rounded-r-xl"></div>
     </div>
   );
 }

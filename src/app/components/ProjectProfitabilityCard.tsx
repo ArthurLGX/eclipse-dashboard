@@ -112,7 +112,7 @@ export default function ProjectProfitabilityCard({
       default:
         return {
           icon: IconTrendingDown,
-          color: 'text-success',
+          color: '!text-success',
           bgColor: 'bg-success-light',
           borderColor: 'border-success',
           label: t('on_track') || 'En bonne voie',
@@ -196,7 +196,7 @@ export default function ProjectProfitabilityCard({
         <div className="flex items-center justify-between gap-2">
           <span className="text-xs text-muted whitespace-nowrap">{t('actual_time') || 'Temps réel'}</span>
           <span className={`text-sm font-semibold whitespace-nowrap ${
-            profitabilityData.difference > 0 ? 'text-danger' : 'text-success'
+            profitabilityData.difference > 0 ? '!text-danger' : '!text-success'
           }`}>
             {formatHours(profitabilityData.actualHours)}
           </span>
@@ -210,7 +210,7 @@ export default function ProjectProfitabilityCard({
                 : (t('time_saved') || 'Économie')}
             </span>
             <span className={`text-sm font-bold whitespace-nowrap ${
-              profitabilityData.difference > 0 ? 'text-danger' : 'text-success'
+              profitabilityData.difference > 0 ? '!text-danger' : '!text-success'
             }`}>
               {profitabilityData.difference > 0 ? '+' : '-'}
               {formatHours(Math.abs(profitabilityData.difference))}
