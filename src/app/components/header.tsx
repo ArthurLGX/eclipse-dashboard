@@ -123,7 +123,7 @@ export const Header = () => {
                     setIsMenuOpen(false);
                   }}
                 >
-                  <Link className={`${isActive(link.path) ? 'text-primary' : 'text-secondary'}`} href={link.path}>{link.name}</Link>
+                  <Link className={`${isActive(link.path) ? 'text-secondary' : 'text-primary'}`} href={link.path}>{link.name}</Link>
                 </motion.li>
               ))}
               <div className="flex items-center gap-2">
@@ -178,7 +178,7 @@ export const Header = () => {
                 </div>
                 <IconLogout
                   onClick={handleLogout}
-                  className="cursor-pointer hover:scale-[1.1] text-secondary hover:text-accent transition-all ease-in-out duration-300"
+                  className="cursor-pointer hover:scale-[1.1] text-primary hover:text-secondary transition-all ease-in-out duration-300"
                   size={24}
                 />
               </div>
@@ -189,7 +189,7 @@ export const Header = () => {
           <div className="lg:hidden">
             <button
               onClick={toggleMenu}
-              className="p-2 text-secondary hover:text-accent transition-colors"
+              className="p-2 text-primary hover:text-secondary transition-colors"
             >
               {isMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
             </button>

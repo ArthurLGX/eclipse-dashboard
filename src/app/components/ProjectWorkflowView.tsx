@@ -412,6 +412,27 @@ export default function ProjectWorkflowView({
     }
   };
 
+  // Secondary action handlers
+  const handleSecondaryAction = useCallback((action: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const slug = `${client.name.toLowerCase().replace(/\s+/g, '-')}--${client.documentId}`;
+    
+    switch (action) {
+      case 'emails':
+        router.push(`/dashboard/emails/compose?client=${client.documentId}&project=${project.documentId}`);
+        break;
+      case 'notes':
+        router.push(`/dashboard/clients/${slug}?tab=notes`);
+        break;
+      case 'docs':
+        router.push(`/dashboard/clients/${slug}?tab=documents`);
+        break;
+      case 'time':
+        router.push(`/dashboard/time-tracking?project=${project.documentId}`);
+        break;
+    }
+  }, [router, client, project.documentId]);
+
   return (
     <div className="flex flex-col" style={{ minHeight: '600px', height: '70vh' }}>
       {/* Breadcrumb contextuel */}
@@ -646,18 +667,47 @@ export default function ProjectWorkflowView({
                     {(node.stage === 'execution' || node.stage === 'quote' || node.stage === 'invoicing') && (
                       <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex gap-2">
                         {[
-                          { icon: IconMail, label: 'Emails', color: 'text-info' },
-                          { icon: IconNote, label: 'Notes', color: 'text-warning' },
-                          { icon: IconFile, label: 'Docs', color: 'text-accent' },
-                          { icon: IconClock2, label: 'Time', color: 'text-success' },
+                          { 
+                            icon: IconMail, 
+                            label: t('workflow_action_emails') || 'Envoyer un email', 
+                            action: 'emails',
+                            color: 'text-info' 
+                          },
+                          { 
+                            icon: IconNote, 
+                            label: t('workflow_action_notes') || 'Ajouter une note', 
+                            action: 'notes',
+                            color: 'text-warning' 
+                          },
+                          { 
+                            icon: IconFile, 
+                            label: t('workflow_action_docs') || 'Voir les documents', 
+                            action: 'docs',
+                            color: 'text-accent' 
+                          },
+                          { 
+                            icon: IconClock2, 
+                            label: t('workflow_action_time') || 'Suivre le temps', 
+                            action: 'time',
+                            color: 'text-success' 
+                          },
                         ].map((secondary) => (
-                          <button
-                            key={secondary.label}
-                            className="p-1.5 rounded-lg bg-card border border-default hover:border-accent hover:bg-hover transition-colors"
-                            title={secondary.label}
-                          >
-                            <secondary.icon size={14} className={secondary.color} />
-                          </button>
+                          <div key={secondary.label} className="relative group">
+                            <button
+                              onClick={(e) => handleSecondaryAction(secondary.action, e)}
+                              className="p-1.5 rounded-lg bg-card border border-default hover:border-accent hover:bg-hover transition-colors"
+                            >
+                              <secondary.icon size={14} className={secondary.color} />
+                            </button>
+                            
+                            {/* Tooltip au hover */}
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-card border border-accent rounded-lg shadow-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50">
+                              <span className="text-xs text-primary font-medium">{secondary.label}</span>
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                                <div className="border-4 border-transparent border-t-accent"></div>
+                              </div>
+                            </div>
+                          </div>
                         ))}
                       </div>
                     )}
