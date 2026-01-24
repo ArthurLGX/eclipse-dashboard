@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {useLanguage} from '@/app/context/LanguageContext';
 
 /**
  * ProgressiveTimeline - Animation premium de process flow linéaire
@@ -38,6 +39,7 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
   autoRestart = true,
   onComplete
 }) => {
+  const { t } = useLanguage();
   const [activeSteps, setActiveSteps] = useState<string[]>([]);
   const [phase, setPhase] = useState(0); // 0: grid, 1: steps, 2: acceleration, 3: zoom out
   const [showBranches, setShowBranches] = useState<string[]>([]);
@@ -47,51 +49,51 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
   const steps: TimelineStep[] = React.useMemo(() => [
     { 
       id: 'contact', 
-      label: 'Contact', 
+      label: t('contact') || 'Contact', 
       icon: '👤',
       hasAutomation: false 
     },
     { 
       id: 'devis', 
-      label: 'Devis', 
+      label: t('devis') || 'Devis', 
       icon: '📄',
       hasAutomation: true,
-      automationLabel: 'Génération auto'
+      automationLabel: t('generation_auto') || 'Génération auto'
     },
     { 
       id: 'relance', 
-      label: 'Relance', 
+      label: t('relance') || 'Relance', 
       icon: '📧',
       hasAutomation: true,
       automationLabel: 'Relance auto'
     },
     { 
       id: 'contrat', 
-      label: 'Contrat', 
+      label: t('contrat') || 'Contrat', 
       icon: '✍️',
       hasAutomation: true,
-      automationLabel: 'Signature électronique'
+      automationLabel: t('signature_electronique') || 'Signature électronique'
     },
     { 
       id: 'projet', 
-      label: 'Projet', 
+      label: t('projet') || 'Projet', 
       icon: '🚀',
       hasAutomation: true,
-      automationLabel: 'Suivi temps réel'
+      automationLabel: t('suivi_temps_reel') || 'Suivi temps réel'
     },
     { 
       id: 'facture', 
-      label: 'Facture', 
+      label: t('facture') || 'Facture', 
       icon: '💰',
       hasAutomation: true,
-      automationLabel: 'Facturation auto'
+      automationLabel: t('facturation_auto') || 'Facturation auto'
     },
     { 
       id: 'paiement', 
-      label: 'Paiement', 
+      label: t('paiement') || 'Paiement', 
       icon: '✅',
       hasAutomation: true,
-      automationLabel: 'Rappel auto'
+      automationLabel: t('rappel_auto') || 'Rappel auto'
     },
   ], []);
 
@@ -535,7 +537,7 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 className="w-3 h-3 border-2 border-accent border-t-transparent rounded-full"
               />
-              <span className="text-xs text-secondary">Flux en cours...</span>
+              <span className="text-xs text-secondary">{t('flux_in_progress') || 'Flux en cours...'}</span>
             </div>
           </motion.div>
         )}

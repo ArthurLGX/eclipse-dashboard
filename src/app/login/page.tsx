@@ -243,7 +243,7 @@ function LoginContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.35 }}
-                className="text-center text-xs text-muted mb-3"
+                className="!text-left text-xs text-muted mb-3"
               >
                 {isLogin 
                   ? t('continue_with_oauth') || 'Continuez avec votre compte' 
@@ -301,7 +301,7 @@ function LoginContent() {
                   <div className="w-full border-t border-default"></div>
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted">OR</span>
+                  <span className="bg-card px-2 text-muted">{t('or')}</span>
                 </div>
               </motion.div>
 

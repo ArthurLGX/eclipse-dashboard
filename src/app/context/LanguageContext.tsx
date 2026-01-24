@@ -1515,6 +1515,23 @@ const translations = {
     task_color: 'Couleur du groupe',
     no_tasks_filter: 'Aucune tâche avec ce statut',
     add_first_task: 'Ajouter une tâche',
+
+    // Progressive Timeline
+    devis: 'Devis',
+    relance: 'Relance',
+    contrat: 'Contrat',
+    projet: 'Projet',
+    facture: 'Facture',
+    paiement: 'Paiement',
+    signature_electronique: 'Signature électronique',
+    suivi_temps_reel: 'Suivi temps réel',
+    facturation_auto: 'Facturation auto',
+    rappel_auto: 'Rappel auto',
+    generation_auto: 'Génération auto',
+    flux_in_progress: 'Flux en cours...',
+
+       google: 'Google',
+    github: 'GitHub',
     // Gantt
     task_name: 'Nom de la tâche',
     due_range: 'Période',
@@ -5323,6 +5340,8 @@ won: 'Won',
     configure: 'Configure',
     checking: 'Checking...',
 
+    google: 'Google',
+    github: 'GitHub',
     // Admin Dashboard
     email_confirmation_required: 'Email confirmation required',
     visible_in_inbox: 'Visible in inbox',
@@ -5357,7 +5376,23 @@ won: 'Won',
     upgraded_to_pro: 'Upgraded to Pro plan',
     emails_sent_count: 'emails sent',
     estimated_duration: 'Estimated duration',
-    
+
+    // Progressive Timeline
+    devis: 'Quote',
+    relance: 'Follow up',
+    contrat: 'Contract  ',
+    projet: 'Project',
+    facture: 'Invoice',
+    paiement: 'Payment',
+    signature_electronique: 'Electronic signature',
+    suivi_temps_reel: 'Real-time tracking',
+    facturation_auto: 'Automatic invoicing',
+    rappel_auto: 'Automatic reminder',
+    generation_auto: 'Automatic generation',
+    flux_in_progress: 'Process in progress...',
+
+
+
     // Admin Users
         continue_with_oauth: 'Continue with OAuth',
 
