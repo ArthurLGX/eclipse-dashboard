@@ -991,7 +991,7 @@ button {
 }
 
 .badge-success {
-  background-color: var(--color-success-bg);
+  background-color: var(--color-success);
   color: var(--color-success-text);
 }
 
@@ -1018,15 +1018,15 @@ button {
 
 /* Mode light - Badges noir et blanc */
 :root.light .badge-primary {
-  background-color: rgba(0, 0, 0, 0.1);
-  color: #000000;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary-text);
+  border: 1px solid var(--color-primary-border);
 }
 
 :root.light .badge-success {
-  background-color: rgba(63, 63, 63, 0.1);
-  color: #3F3F3F;
-  border: 1px solid rgba(63, 63, 63, 0.2);
+  background-color: var(--color-success);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
 }
 
 :root.light .badge-info {
@@ -1036,15 +1036,15 @@ button {
 }
 
 :root.light .badge-warning {
-  background-color: rgba(255, 56, 11, 0.1);
-  color: #ff380b;
-  border: 1px solid rgba(255, 56, 11, 0.2);
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-border);
 }
 
 :root.light .badge-danger {
-  background-color: rgba(0, 0, 0, 0.1);
-  color: #000000;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-text);
+  border: 1px solid var(--color-danger-border);
 }
 
 /* ============================================
