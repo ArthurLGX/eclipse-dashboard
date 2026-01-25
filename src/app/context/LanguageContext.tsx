@@ -5394,7 +5394,9 @@ won: 'Won',
 
 
     // Admin Users
-        continue_with_oauth: 'Continue with OAuth',
+    continue_with_oauth: 'Continue with OAuth',
+        
+    ai_tasks_description: "Génération de tâches intelligente",
 
     users_management: 'Users Management',
     users_total: 'total users',

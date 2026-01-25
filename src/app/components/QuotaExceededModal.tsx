@@ -125,7 +125,7 @@ export default function QuotaExceededModal<T>({
         >
           {/* Header */}
           <div className="flex items-start gap-4 mb-6">
-            <div className="p-2 rounded-xl bg-accent-light">
+            <div className="p-2 rounded-xl bg-muted">
               <img 
                 src="/images/logo/eclipse-logo.png" 
                 alt="Eclipse Logo" 
@@ -136,7 +136,7 @@ export default function QuotaExceededModal<T>({
               <h2 className="text-xl font-bold text-primary">
                 {t('quota_exceeded_title') || 'Quota dépassé'}
               </h2>
-              <p className="text-secondary mt-1">
+              <p className="text-muted mt-1">
                 {t('quota_exceeded_description') || 'Votre plan a changé. Vous avez'}{' '}
                 <span className="font-bold text-danger">{items.length}</span>{' '}
                 {entityName} {t('but_your_limit_is') || 'mais votre limite est de'}{' '}

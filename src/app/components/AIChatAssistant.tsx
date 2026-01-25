@@ -655,7 +655,7 @@ export default function AIChatAssistant() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => openAssistant()}
-            className="fixed bottom-6 left-6 z-[9999] w-14 h-14 rounded-full bg-accent-light border border-accent shadow-xl flex items-center justify-center hover:shadow-2xl transition-shadow group"
+            className="fixed bottom-6 left-6 z-[9999] w-14 h-14 rounded-full bg-muted border border-muted shadow-xl flex items-center justify-center hover:shadow-2xl transition-shadow group"
             title={`${t('ai_assistant') || 'Assistant IA Eclipse'} (⌘K)`}
           >
             <div className="relative">
@@ -689,20 +689,20 @@ export default function AIChatAssistant() {
             className={`fixed bottom-6 left-6 z-[9999] ${panelWidth} ${panelHeight} bg-card border border-default rounded-2xl shadow-2xl flex flex-col overflow-hidden`}
           >
             {/* Header */}
-            <div className="flex-shrink-0 px-4 py-3 bg-accent text-white flex items-center justify-between">
+            <div className="flex-shrink-0 px-4 py-3 bg-muted text-primary flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Image
                   src="/images/logo/eclipse-logo.png"
                   alt="Eclipse AI"
                   width={28}
                   height={28}
-                  className="rounded-full bg-accent-light"
+                  className="rounded-full bg-muted"
                 />
                 <div>
-                  <h3 className="font-semibold text-sm !text-white">Eclipse Copilot</h3>
-                  <p className="text-xs !text-white opacity-70 flex items-center gap-2">
+                  <h3 className="font-semibold text-sm text-primary">Eclipse Copilot</h3>
+                  <p className="text-xs text-muted flex items-center gap-2">
                     {t('ai_assistant_subtitle') || 'Votre assistant business'}
-                    <span className="hidden sm:flex items-center gap-1 bg-accent-light text-accent px-1.5 py-0.5 rounded text-[10px]">
+                    <span className="hidden sm:flex items-center gap-1 bg-muted text-muted px-1.5 py-0.5 rounded text-[10px]">
                       <IconCommand size={10} />K
                     </span>
                   </p>
@@ -712,7 +712,7 @@ export default function AIChatAssistant() {
                 {messages.length > 0 && (
                   <button
                     onClick={handleClearChat}
-                    className="p-1.5 rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-muted hover:text-primary transition-colors"
                     title={t('clear_chat') || 'Nouvelle conversation'}
                   >
                     <IconRefresh size={16} />
@@ -720,14 +720,14 @@ export default function AIChatAssistant() {
                 )}
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-1.5 rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-muted hover:text-primary transition-colors"
                   title={isExpanded ? 'Réduire' : 'Agrandir'}
                 >
                   {isExpanded ? <IconMinimize size={16} /> : <IconMaximize size={16} />}
                 </button>
                 <button
                   onClick={closeAssistant}
-                  className="p-1.5 rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-muted hover:text-primary transition-colors"
                   title="Fermer (Échap)"
                 >
                   <IconX size={18} />
@@ -739,13 +739,13 @@ export default function AIChatAssistant() {
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-page">
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-4">
-                  <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center mb-4">
-                    <IconSparkles size={32} className="text-accent" />
+                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                    <IconSparkles size={32} className="text-muted" />
                   </div>
                   <h4 className="font-semibold text-primary mb-2">
                     {t('ai_welcome_title') || 'Salut'} {user?.username || ''} ! 👋
                   </h4>
-                  <p className="text-sm text-secondary mb-6">
+                  <p className="text-sm text-muted mb-6">
                     {t('ai_welcome_message') || 'Je suis là pour t\'aider à avancer sur tes projets et clients. Pose-moi une question ou choisis une action rapide.'}
                   </p>
                   
@@ -753,12 +753,12 @@ export default function AIChatAssistant() {
                   <div className="space-y-2 w-full">
                     <button
                       onClick={() => handleQuickAction('blocked')}
-                      className="w-full p-3 text-left rounded-xl bg-muted border border-default hover:border-accent transition-colors group"
+                      className="w-full p-3 text-left rounded-xl bg-muted border border-default hover:border-muted transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">🚧</span>
                         <div>
-                          <p className="text-sm font-medium text-primary group-hover:text-accent">
+                          <p className="text-sm font-medium text-primary group-hover:text-muted">
                             {t('ai_action_blocked') || 'Je suis bloqué'}
                           </p>
                           <p className="text-xs text-muted">
@@ -770,12 +770,12 @@ export default function AIChatAssistant() {
                     
                     <button
                       onClick={() => handleQuickAction('relance')}
-                      className="w-full p-3 text-left rounded-xl bg-muted border border-default hover:border-accent transition-colors group"
+                      className="w-full p-3 text-left rounded-xl bg-muted border border-default hover:border-muted transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">📧</span>
                         <div>
-                          <p className="text-sm font-medium text-primary group-hover:text-accent">
+                          <p className="text-sm font-medium text-primary group-hover:text-muted">
                             {t('ai_action_relance') || 'Relances prioritaires'}
                           </p>
                           <p className="text-xs text-muted">
@@ -787,12 +787,12 @@ export default function AIChatAssistant() {
                     
                     <button
                       onClick={() => handleQuickAction('next')}
-                      className="w-full p-3 text-left rounded-xl bg-muted border border-default hover:border-accent transition-colors group"
+                      className="w-full p-3 text-left rounded-xl bg-muted border border-default hover:border-muted transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">🎯</span>
                         <div>
-                          <p className="text-sm font-medium text-primary group-hover:text-accent">
+                          <p className="text-sm font-medium text-primary group-hover:text-muted">
                             {t('ai_action_next') || 'Quoi faire maintenant ?'}
                           </p>
                           <p className="text-xs text-muted">
@@ -813,7 +813,7 @@ export default function AIChatAssistant() {
                       <div
                         className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
                           message.role === 'user'
-                            ? 'bg-accent text-white rounded-br-md'
+                            ? 'bg-muted text-primary rounded-br-md'
                             : 'bg-hover !text-primary border border-default rounded-bl-md'
                         }`}
                       >
@@ -903,7 +903,7 @@ export default function AIChatAssistant() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder={t('ai_input_placeholder') || 'Écris ton message...'}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-muted border border-default text-primary placeholder:text-muted focus:outline-none focus:border-accent text-sm"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-muted border border-default text-primary placeholder:text-muted focus:outline-none focus:border-muted text-sm"
                   disabled={isLoading}
                   data-ai-input="true"
                 />
@@ -911,7 +911,7 @@ export default function AIChatAssistant() {
                   <button
                     type="button"
                     onClick={stop}
-                    className="p-2.5 rounded-xl bg-danger text-white hover:bg-danger-light hover:!text-danger transition-colors"
+                    className="p-2.5 rounded-xl bg-danger text-danger-text hover:bg-danger-light hover:!text-danger transition-colors"
                   >
                     <IconX size={18} />
                   </button>
@@ -919,7 +919,7 @@ export default function AIChatAssistant() {
                   <button
                     type="submit"
                     disabled={!inputValue.trim()}
-                    className="p-2.5 rounded-xl bg-accent text-white hover:bg-accent-light hover:!text-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2.5 rounded-xl bg-muted text-primary hover:bg-hover hover:!text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <IconSend size={18} />
                   </button>

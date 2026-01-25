@@ -149,7 +149,7 @@ export default function DailySuggestionsModal() {
       case 'low':
         return 'bg-info-light text-info border-info';
       default:
-        return 'bg-hover text-secondary border-muted';
+        return 'bg-hover text-primary border-muted';
     }
   };
 
@@ -200,7 +200,7 @@ export default function DailySuggestionsModal() {
             
             <div className="relative flex items-start justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-accent-light rounded-2xl">
+                <div className="p-3 bg-muted rounded-2xl">
                   <Image 
                     src="/images/logo/eclipse-logo.png" 
                     alt="Eclipse Assistant" 
@@ -283,7 +283,7 @@ export default function DailySuggestionsModal() {
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm font-medium text-secondary mb-3">
+                    <p className="text-sm font-medium text-primary mb-3">
                       {t('suggested_actions') || 'Actions suggérées pour aujourd\'hui'}
                     </p>
                     
@@ -325,7 +325,7 @@ export default function DailySuggestionsModal() {
                               
                               {/* Metadata */}
                               {suggestion.metadata && (
-                                <div className="flex items-center gap-3 mt-2 text-xs text-secondary">
+                                <div className="flex items-center gap-3 mt-2 text-xs text-muted">
                                   {suggestion.metadata.clientName && (
                                     <span>👤 {suggestion.metadata.clientName}</span>
                                   )}
@@ -343,7 +343,7 @@ export default function DailySuggestionsModal() {
                             </div>
                             
                             {/* Action */}
-                            <div className="flex items-center gap-2 !text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-center gap-2 !text-muted opacity-0 group-hover:opacity-100 transition-opacity">
                               <span className="text-sm font-medium hidden sm:inline">
                                 {suggestion.action.label}
                               </span>
@@ -362,7 +362,7 @@ export default function DailySuggestionsModal() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="mt-6 p-4 bg-gradient-to-r from-accent-light to-info-light rounded-xl"
+                    className="mt-6 p-4 bg-muted rounded-xl"
                   >
                     <div className="flex items-start gap-3">
                       <span className="text-2xl">💡</span>
@@ -370,7 +370,7 @@ export default function DailySuggestionsModal() {
                         <p className="text-sm font-medium text-primary mb-1">
                           {t('tip_of_the_day') || 'Conseil du jour'}
                         </p>
-                        <p className="text-sm text-secondary">
+                        <p className="text-sm text-muted">
                           {data.motivational_tip}
                         </p>
                       </div>
@@ -388,7 +388,7 @@ export default function DailySuggestionsModal() {
             </p>
             <button
               onClick={handleClose}
-              className="px-4 py-2 bg-accent text-white rounded-lg text-sm hover:opacity-90 transition-colors"
+              className="px-4 py-2 bg-muted text-primary rounded-lg text-sm hover:opacity-90 transition-colors"
             >
               {t('start_day') || 'Commencer ma journée'}
             </button>

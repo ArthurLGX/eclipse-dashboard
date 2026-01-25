@@ -1275,8 +1275,8 @@ export default function ProjectTasks({
             {/* Bouton IA */}
             <button
               onClick={() => setShowAIGenerator(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-accent-light hover:bg-accent hover:text-white !text-accent rounded-lg transition-colors"
-              title="Eclipse Assistant"
+              className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-accent hover:text-white !text-accent rounded-lg transition-colors"
+              title={t('ai_assistant') || 'Assistant IA Eclipse'}
             >
               <Image 
                 src="/images/logo/eclipse-logo.png" 
@@ -1285,13 +1285,13 @@ export default function ProjectTasks({
                 height={16}
                 className="w-4 h-4"
               />
-              <span className="hidden sm:inline">Assistant</span>
+              <span className="hidden sm:inline">{t('ai_assistant') || 'Assistant IA Eclipse'}</span>
             </button>
             
             {/* Bouton Nouvelle tâche */}
             <button
               onClick={() => setShowNewTaskForm(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-[var(--color-accent)] text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-hover text-primary rounded-lg transition-colors"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_task') || 'Nouvelle tâche'}
@@ -1305,14 +1305,14 @@ export default function ProjectTasks({
         <div className="bg-muted rounded-lg p-4 border border-default">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-primary">{t('overall_progress') || 'Progression globale'}</span>
-            <span className="text-sm font-medium !text-accent">{overallProgress}%</span>
+            <span className="text-sm font-medium !text-muted">{overallProgress}%</span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${overallProgress}%` }}
               transition={{ duration: 0.5 }}
-              className="h-2 bg-accent rounded-full"
+              className="h-2 bg-muted rounded-full"
             />
           </div>
         </div>

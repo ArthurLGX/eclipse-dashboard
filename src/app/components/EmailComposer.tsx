@@ -1243,7 +1243,7 @@ Cordialement`);
                     addRecipientManual(input.value);
                     input.value = '';
                   }}
-                  className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-light transition-colors"
+                  className="px-4 py-2 bg-muted text-primary rounded-lg hover:bg-muted transition-colors"
                 >
                   <IconPlus className="w-5 h-5" />
                 </button>
@@ -1288,7 +1288,7 @@ Cordialement`);
           {/* Message */}
           <div className="bg-card border border-default rounded-xl p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-secondary">
+              <label className="text-sm font-medium text-muted">
                 {t('message') || 'Message'} *
               </label>
 
@@ -1297,7 +1297,7 @@ Cordialement`);
                   type="button"
                   onClick={handleGenerateAIContent}
                   disabled={generatingAI || !selectedDocument}
-                  className="flex items-center gap-2 px-3 py-1.5 text-xs bg-accent-light !text-accent rounded-lg hover:bg-accent-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted !text-muted rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {generatingAI ? (
                     <>

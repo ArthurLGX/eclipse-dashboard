@@ -240,7 +240,7 @@ export default function ContractsPage() {
                     }}
                     className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-hover transition-colors"
                   >
-                    <div className="p-2 bg-accent-light rounded-lg">
+                    <div className="p-2 bg-muted rounded-lg">
                       <Image 
                         src="/images/logo/eclipse-logo.png" 
                         alt="Eclipse Assistant" 

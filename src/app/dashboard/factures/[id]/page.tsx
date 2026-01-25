@@ -761,7 +761,7 @@ export default function FacturePage() {
               {isCreationMode && (
                 <button
                   onClick={() => setShowAIGenerator(true)}
-                  className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+                  className="flex items-center justify-center gap-2 bg-muted !text-primary border border-muted px-4 py-2 rounded-full hover:bg-hover transition-colors"
                 >
                   <Image 
                     src="/images/logo/eclipse-logo.png" 

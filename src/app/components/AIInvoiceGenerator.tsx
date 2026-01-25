@@ -264,7 +264,7 @@ export default function AIInvoiceGenerator({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent-light rounded-xl">
+              <div className="p-2 bg-muted rounded-xl">
                 <Image 
                   src="/images/logo/eclipse-logo.png" 
                   alt="Eclipse Assistant" 
