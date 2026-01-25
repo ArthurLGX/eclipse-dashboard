@@ -38,7 +38,7 @@ import EmailScheduler from '@/app/components/EmailScheduler';
 import EmailPreviewModal from '@/app/components/EmailPreviewModal';
 import RichTextEditor, { cleanRichTextForEmail } from '@/app/components/RichTextEditor';
 import ContactAutocomplete from '@/app/components/ContactAutocomplete';
-import EmailFooter, { type FooterLanguage } from '@/app/components/EmailFooter';
+import { type FooterLanguage } from '@/app/components/EmailFooter';
 import SmtpStatusIndicator, { SmtpWarningBanner } from '@/app/components/SmtpStatusIndicator';
 import EmailSentSuccessModal from '@/app/components/EmailSentSuccessModal';
 import { 

@@ -213,7 +213,6 @@ export default function AITaskGenerator({
 
     // Assertion de type pour aider TypeScript après les closures
     const finalMinDate = minDate as Date | null;
-    const finalMaxDate = maxDate as Date | null;
 
     // Utiliser la date effective : au minimum aujourd'hui
     // Les tâches ne peuvent pas être créées de manière rétroactive
