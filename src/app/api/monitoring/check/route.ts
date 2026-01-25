@@ -149,34 +149,67 @@ function generateAlertEmailTemplate(site: MonitoredSite, result: CheckResult): s
   <meta name="supported-color-schemes" content="light only">
   <title>Alerte Monitoring</title>
   <style>
-    :root { color-scheme: light only; }
+    /* Force light mode pour tous les clients email */
+    :root { 
+      color-scheme: light only !important; 
+      supported-color-schemes: light only !important;
+    }
+    
+    /* Bloque spécifiquement le dark mode */
     @media (prefers-color-scheme: dark) {
-      body, table, td, div, p, a, span, h1 {
-        background-color: #F3F4F6 !important;
+      :root { 
+        color-scheme: light !important; 
+      }
+      body, table, td, div, p, a, span, h1, strong {
+        background-color: #FFFFFF !important;
+        color: #111827 !important;
+      }
+      [data-ogsc] {
+        background-color: #FFFFFF !important;
         color: #111827 !important;
       }
     }
+    
+    /* Gmail spécifique */
+    u + .body { 
+      background-color: #F3F4F6 !important; 
+    }
+    
+    /* Outlook spécifique */
+    .ExternalClass { 
+      width: 100%; 
+      background-color: #F3F4F6 !important; 
+    }
+    .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {
+      line-height: 100%;
+      background-color: #FFFFFF !important;
+      color: #111827 !important;
+    }
   </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #F3F4F6 !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F3F4F6 !important;">
+<body class="body" style="margin: 0; padding: 0; background-color: #F3F4F6 !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;" data-ogsc>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F3F4F6 !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
     <tr>
       <td align="center" style="padding: 40px 20px; background-color: #F3F4F6 !important;">
-        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF !important; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+        <!--[if mso | IE]>
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF;">
+        <tr><td>
+        <![endif]-->
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #FFFFFF !important; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
           <!-- Header -->
           <tr>
             <td align="center" style="padding: 32px 40px 24px; background-color: #FFFFFF !important;">
-              <div style="font-size: 48px; margin-bottom: 16px;">${statusIcon}</div>
-              <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #111827 !important;">Alerte Monitoring</h1>
+              <div style="font-size: 48px; margin-bottom: 16px; line-height: 1;">${statusIcon}</div>
+              <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #111827 !important; background-color: transparent !important;">ALERTE MONITORING</h1>
             </td>
           </tr>
           
           <!-- Status Banner -->
           <tr>
-            <td style="padding: 0 40px;">
-              <div style="background-color: ${statusBgColor}; border-left: 4px solid ${statusColor}; border-radius: 8px; padding: 16px 20px;">
-                <p style="margin: 0; font-size: 16px; color: #374151;">
-                  <strong style="color: ${statusColor};">${site.name}</strong> est actuellement <strong style="color: ${statusColor};">${statusText}</strong>
+            <td style="padding: 0 40px; background-color: #FFFFFF !important;">
+              <div style="background-color: ${statusBgColor} !important; border-left: 4px solid ${statusColor}; border-radius: 8px; padding: 16px 20px;">
+                <p style="margin: 0; font-size: 16px; color: #374151 !important; background-color: transparent !important;">
+                  <strong style="color: ${statusColor} !important; background-color: transparent !important;">${site.name}</strong> est actuellement <strong style="color: ${statusColor} !important; background-color: transparent !important;">${statusText}</strong>
                 </p>
               </div>
             </td>
@@ -185,33 +218,33 @@ function generateAlertEmailTemplate(site: MonitoredSite, result: CheckResult): s
           <!-- Details -->
           <tr>
             <td style="padding: 24px 40px; background-color: #FFFFFF !important;">
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF !important;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB; background-color: #FFFFFF !important;">
-                    <span style="color: #6B7280 !important; font-size: 14px;">URL</span><br>
-                    <a href="${site.url}" style="color: #7C3AED !important; text-decoration: none; font-size: 14px; word-break: break-all;">${site.url}</a>
+                    <span style="color: #6B7280 !important; font-size: 14px; background-color: transparent !important;">URL</span><br>
+                    <a href="${site.url}" style="color: #7C3AED !important; text-decoration: none; font-size: 14px; word-break: break-all; background-color: transparent !important;">${site.url}</a>
                   </td>
                 </tr>
                 ${result.responseTime ? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB; background-color: #FFFFFF !important;">
-                    <span style="color: #6B7280 !important; font-size: 14px;">Temps de réponse</span><br>
-                    <span style="color: #111827 !important; font-size: 16px; font-weight: 600;">${result.responseTime}ms</span>
+                    <span style="color: #6B7280 !important; font-size: 14px; background-color: transparent !important;">Temps de réponse</span><br>
+                    <span style="color: #111827 !important; font-size: 16px; font-weight: 600; background-color: transparent !important;">${result.responseTime}ms</span>
                   </td>
                 </tr>
                 ` : ''}
                 ${result.error ? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #E5E7EB; background-color: #FFFFFF !important;">
-                    <span style="color: #6B7280 !important; font-size: 14px;">Erreur</span><br>
-                    <span style="color: #DC2626 !important; font-size: 14px;">${result.error}</span>
+                    <span style="color: #6B7280 !important; font-size: 14px; background-color: transparent !important;">Erreur</span><br>
+                    <span style="color: #DC2626 !important; font-size: 14px; background-color: transparent !important;">${result.error}</span>
                   </td>
                 </tr>
                 ` : ''}
                 <tr>
                   <td style="padding: 12px 0; background-color: #FFFFFF !important;">
-                    <span style="color: #6B7280 !important; font-size: 14px;">Vérifié le</span><br>
-                    <span style="color: #111827 !important; font-size: 14px;">${dateStr}</span>
+                    <span style="color: #6B7280 !important; font-size: 14px; background-color: transparent !important;">Vérifié le</span><br>
+                    <span style="color: #111827 !important; font-size: 14px; background-color: transparent !important;">${dateStr}</span>
                   </td>
                 </tr>
               </table>
@@ -221,10 +254,13 @@ function generateAlertEmailTemplate(site: MonitoredSite, result: CheckResult): s
           <!-- Footer -->
           <tr>
             <td align="center" style="padding: 24px 40px 32px; border-top: 1px solid #E5E7EB; background-color: #FFFFFF !important;">
-              <p style="margin: 0; font-size: 12px; color: #9CA3AF !important;">Eclipse Dashboard - Monitoring</p>
+              <p style="margin: 0; font-size: 12px; color: #9CA3AF !important; background-color: transparent !important;">Eclipse Dashboard - Monitoring</p>
             </td>
           </tr>
         </table>
+        <!--[if mso | IE]>
+        </td></tr></table>
+        <![endif]-->
       </td>
     </tr>
   </table>

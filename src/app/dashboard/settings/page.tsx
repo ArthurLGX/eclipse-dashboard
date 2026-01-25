@@ -994,8 +994,8 @@ function OptionButton({ children, selected, onClick }: { children: React.ReactNo
       className={`
         flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all
         ${selected
-          ? 'border-accent bg-accent text-accent'
-          : 'border-default text-secondary hover:border-muted hover:text-primary'
+          ? 'border-accent bg-accent text-white'
+            : 'border-default text-primary hover:border-muted hover:text-secondary'
         }
       `}
     >
