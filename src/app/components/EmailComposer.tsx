@@ -27,7 +27,6 @@ import {
   IconCornerUpLeft,
   IconSearch,
   IconFileText,
-  IconCalendar,
   IconDeviceFloppy,
   IconPlus,
 } from '@tabler/icons-react';
@@ -52,7 +51,6 @@ import {
   fetchCompanyUser,
   updateQuoteStatusWithSync,
   updateFactureById,
-  fetchContacts,
 } from '@/lib/api';
 import { uploadToStrapi } from '@/lib/strapi-upload';
 import { useDraftSave } from '@/hooks/useDraftSave';
@@ -841,7 +839,10 @@ Cordialement`);
           recipients: recipients.map(r => r.email),
           content: activeFeatures.richText ? cleanRichTextForEmail(message) : message,
           category: type === 'compose' ? 'classic' : type,
-          attachments: emailAttachments.length > 0 ? emailAttachments.map(a => ({ name: a.filename || a.path, url: '' })) : undefined,
+          attachments: emailAttachments.length > 0 ? emailAttachments.map(a => ({ 
+            name: a.filename || ('path' in a ? a.path : ''), 
+            url: '' 
+          })) : undefined,
           sent_at: new Date().toISOString(),
           status_mail: 'sent',
           tracking_id: result.trackingId,
@@ -1511,7 +1512,7 @@ Cordialement`);
           setShowSuccessModal(false);
           router.push('/dashboard/emails');
         }}
-        type={type}
+        type={type === 'compose' ? 'classic' : type}
         recipientCount={recipients.length}
         documentReference={selectedDocument?.reference}
       />
