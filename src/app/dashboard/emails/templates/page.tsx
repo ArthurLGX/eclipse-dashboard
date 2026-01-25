@@ -590,7 +590,7 @@ export default function EmailTemplatesPage() {
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h3 className="font-semibold">{template.name}</h3>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-accent-light !text-accent">
+                  <span className="badge badge-warning">
                     {PIPELINE_LABELS[template.pipeline_stage] || template.pipeline_stage}
                   </span>
                 </div>

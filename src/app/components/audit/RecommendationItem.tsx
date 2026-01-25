@@ -95,7 +95,7 @@ export default function RecommendationItem({ text, priority, index = 0 }: Recomm
       transition={{ delay: index * 0.05 }}
       className={`flex items-start gap-3 p-4 bg-card rounded-lg border-l-4 ${styles.border} hover:bg-hover transition-colors`}
     >
-      <div className={`p-1.5 rounded-lg bg-accent-light`}>
+      <div className={`p-1.5`}>
         <IconBulb className={`w-4 h-4 ${styles.icon}`} />
       </div>
       <div className="flex-1 min-w-0">

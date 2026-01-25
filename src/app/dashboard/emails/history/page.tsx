@@ -266,7 +266,7 @@ function EmailHistory() {
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         selectedCategory === cat.id
-                          ? 'bg-accent-light !text-accent'
+                          ? 'badge badge-warning'
                           : 'bg-page text-muted'
                       }`}>
                         {count}

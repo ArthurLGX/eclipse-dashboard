@@ -492,7 +492,7 @@ export default function CreateProjectModal({
                         onClick={() => setShowNewClientForm(true)}
                         className="flex items-center gap-2 text-sm !text-accent hover:underline"
                       >
-                        <IconPlus className="w-4 h-4" />
+                        <IconPlus className="w-4 h-4" color="white" />
                         {t('create_new_client') || 'Créer un nouveau client'}
                       </button>
                     </div>

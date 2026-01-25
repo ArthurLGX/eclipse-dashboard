@@ -33,6 +33,7 @@ import {
   IconClock,
   IconChartLine,
   IconPlayerPlay,
+  IconChevronUp,
 } from '@tabler/icons-react';
 import OnboardingTour, { useOnboardingStatus, type OnboardingStep } from '@/app/components/OnboardingTour';
 import { Line } from 'react-chartjs-2';
@@ -933,12 +934,13 @@ export default function PipelinePage() {
           >
             <IconChartLine size={18} />
             {t('show_kpis') || 'KPIs'}
+            <IconChevronUp size={18} className={`${showKPIs ? '' : 'rotate-180'} transition-transform`} />
           </button>
           <button
             onClick={() => setContactModal({ isOpen: true, contact: null })}
             className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent transition-colors"
           >
-            <IconPlus size={18} />
+            <IconPlus size={18} color="white" />
             {t('new_contact') || 'Nouveau contact'}
           </button>
         </div>

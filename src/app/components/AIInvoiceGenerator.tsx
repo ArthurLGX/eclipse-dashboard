@@ -433,7 +433,7 @@ export default function AIInvoiceGenerator({
                       onClick={addLine}
                       className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent-light !text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
                     >
-                      <IconPlus className="w-3.5 h-3.5" />
+                      <IconPlus className="w-3.5 h-3.5" color="white" />
                       {t('add_line') || 'Ajouter'}
                     </button>
                   </div>

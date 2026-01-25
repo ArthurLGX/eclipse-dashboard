@@ -510,7 +510,7 @@ export default function CalendarPage() {
               }}
               className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
             >
-              <IconPlus className="w-4 h-4" />
+              <IconPlus className="w-4 h-4" color="white" />
               {t('new_event') || 'Nouvel événement'}
             </button>
           </div>

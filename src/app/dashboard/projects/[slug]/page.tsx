@@ -1275,9 +1275,9 @@ const PROJECT_TYPES = [
                                 {(facture.number || 0).toLocaleString('fr-FR')} €
                               </p>
                               <span className={`text-xs px-2 py-0.5 rounded-full ${
-                                facture.facture_status === 'paid' ? 'bg-success-light !text-success-text ' :
-                                facture.facture_status === 'sent' ? 'bg-info-light text-info' :
-                                'bg-warning-light text-warning'
+                                facture.facture_status === 'paid' ? 'badge badge-success' :
+                                facture.facture_status === 'sent' ? 'badge badge-info' :
+                                'badge badge-warning'
                               }`}>
                                 {facture.facture_status === 'paid' ? 'Payée' :
                                  facture.facture_status === 'sent' ? 'Envoyée' : 'Brouillon'}
@@ -1294,7 +1294,7 @@ const PROJECT_TYPES = [
                         <p className="text-muted mb-4">{t('no_invoices_for_this_project')}</p>
                         <Link
                           href={`/dashboard/factures/ajouter?projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}`}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-accent-light !text-accent rounded-lg hover:opacity-80 transition-colors"
+                          className="inline-flex items-center gap-2 px-4 py-2 btn-primary rounded-lg hover:opacity-80 transition-colors"
                         >
                           <IconPlus className="w-4 h-4" />
                           {t('create_invoice')}

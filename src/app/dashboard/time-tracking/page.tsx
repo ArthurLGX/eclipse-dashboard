@@ -283,7 +283,7 @@ export default function TimeTrackingPage() {
               onClick={() => setShowAddModal(true)}
               className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
             >
-              <IconPlus className="w-4 h-4" />
+              <IconPlus className="w-4 h-4" color="white" />
               {t('start_task') || 'Démarrer une tâche'}
             </button>
           </div>
@@ -518,11 +518,13 @@ export default function TimeTrackingPage() {
                         {/* Barre de progression */}
                         {entry.estimated_duration && actualDuration > 0 && (
                           <div className="mt-2 ml-5">
-                            <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
+                            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                               <div 
                                 className={`h-full rounded-full transition-all ${isOverEstimate ? 'bg-danger' : isRunning ? 'bg-warning' : 'bg-accent'}`}
-                                style={{ width: `${progressPercent}%` }}
-                              />
+                                style={{ width: `${progressPercent}%`, backgroundColor: isOverEstimate ? 'var(--color-danger)' : isRunning ? 'var(--color-warning)' : 'var(--color-accent)' }}
+                              >
+                                {progressPercent}%
+                              </div>
                             </div>
                           </div>
                         )}

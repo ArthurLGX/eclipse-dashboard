@@ -589,7 +589,7 @@ export default function AITaskGenerator({
                     onClick={addTask}
                     className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs bg-muted !text-muted rounded-lg hover:bg-muted hover:text-primary transition-colors"
                   >
-                    <IconPlus className="w-3.5 h-3.5" />
+                    <IconPlus className="w-3.5 h-3.5"  />
                     {t('add_task') || 'Ajouter'}
                   </button>
                 </div>

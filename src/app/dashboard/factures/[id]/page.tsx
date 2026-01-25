@@ -43,6 +43,8 @@ import {
   IconRefresh,
   IconFileInvoice,
   IconCheck,
+  IconDeviceFloppy,
+  IconX,
 } from '@tabler/icons-react';
 import AIInvoiceGenerator from '@/app/components/AIInvoiceGenerator';
 import AIPriceEstimation from '@/app/components/AIPriceEstimation';
@@ -777,11 +779,13 @@ export default function FacturePage() {
                 onClick={handleSave}
                 className="flex items-center justify-center gap-2 bg-success !text-white border border-success px-4 py-2 rounded-full hover:bg-[var(--color-success)] hover:text-white transition-colors"
               >
+                <IconDeviceFloppy className="w-4 h-4" color="black" />
                </button>
               <button
                 onClick={handleCancel}
                 className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:text-white transition-colors"
-              >
+                  > 
+                <IconX className="w-4 h-4" color="white" />
                </button>
             </>
           )}

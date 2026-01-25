@@ -176,7 +176,7 @@ export default function MonitoringPage() {
               onClick={() => setShowAddModal(true)}
               className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
             >
-              <IconPlus className="w-4 h-4" />
+              <IconPlus className="w-4 h-4" color="white" />
               {t('add_site') || 'Ajouter un site'}
             </button>
           </div>
@@ -243,10 +243,10 @@ export default function MonitoringPage() {
                     : 'text-muted hover:text-primary'
                 }`}
               >
-                {type === 'all' && <IconWorld className="w-4 h-4" />}
-                {type === 'frontend' && <IconDeviceDesktop className="w-4 h-4" />}
-                {type === 'backend' && <IconServer className="w-4 h-4" />}
-                {type === 'api' && <IconApi className="w-4 h-4" />}
+                {type === 'all' && <IconWorld className={`w-4 h-4 ${typeFilter === type ? '!text-white' : 'text-muted'}`} />}
+                {type === 'frontend' && <IconDeviceDesktop className={`w-4 h-4 ${typeFilter === type ? '!text-white' : 'text-muted'}`} />}
+                {type === 'backend' && <IconServer className={`w-4 h-4 ${typeFilter === type ? '!text-white' : 'text-muted'}`} />}
+                {type === 'api' && <IconApi className={`w-4 h-4 ${typeFilter === type ? '!text-white' : 'text-muted'}`} />}
                 {type === 'all' ? (t('all') || 'Tous') :
                  type === 'frontend' ? 'Frontend' :
                  type === 'backend' ? 'Backend' :
@@ -358,20 +358,20 @@ export default function MonitoringPage() {
                           })()}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
+                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium badge border ${statusConfig.bg} ${statusConfig.text}-text border-${statusConfig.bg}`}>
                             {statusConfig.icon}
                             {site.site_status.toUpperCase()}
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`font-mono text-sm ${site.uptime_percentage >= 99 ? 'text-success' : site.uptime_percentage >= 95 ? 'text-warning' : 'text-error'}`}>
+                          <span className={`font-mono text-sm ${site.uptime_percentage >= 99 ? 'text-success-text' : site.uptime_percentage >= 95 ? 'text-warning-text' : 'text-error-text'}`}>
                             {formatUptime(site.uptime_percentage)}
                           </span>
                         </td>
                         <td className="px-4 py-3">
                           <span className={`font-mono text-sm ${
-                            site.last_response_time && site.last_response_time < 500 ? 'text-success' :
-                            site.last_response_time && site.last_response_time < 2000 ? 'text-warning' : 'text-error'
+                            site.last_response_time && site.last_response_time < 500 ? 'text-success-text' :
+                            site.last_response_time && site.last_response_time < 2000 ? 'text-warning-text' : 'text-error-text'
                           }`}>
                             {formatResponseTime(site.last_response_time)}
                           </span>
@@ -379,7 +379,7 @@ export default function MonitoringPage() {
                         <td className="px-4 py-3">
                           {sslDays !== null ? (
                             <span className={`inline-flex items-center gap-1 text-xs ${
-                              sslDays > 30 ? 'text-success' : sslDays > 7 ? 'text-warning' : 'text-error'
+                              sslDays > 30 ? 'text-success-text' : sslDays > 7 ? 'text-warning-text' : 'text-error-text'
                             }`}>
                               <IconLock className="w-3 h-3" />
                               {sslDays}j
@@ -627,14 +627,10 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
                       : 'border-default bg-muted text-muted hover:text-primary'
                   }`}
                 >
-                  {type === 'frontend' && <IconDeviceDesktop className="w-5 h-5" />}
-                  {type === 'backend' && <IconServer className="w-5 h-5" />}
-                  {type === 'api' && <IconApi className="w-5 h-5" />}
-                  {type === 'other' && <IconWorld className="w-5 h-5" />}
-                  {type === 'frontend' ? 'Frontend' :
-                   type === 'backend' ? 'Backend' :
-                   type === 'api' ? 'API' :
-                   (t('other') || 'Autre')}
+                  {type === 'frontend' && <IconDeviceDesktop className={`w-5 h-5 ${siteType === type ? 'text-accent' : 'text-muted'}`} />}
+                  {type === 'backend' && <IconServer className={`w-5 h-5 ${siteType === type ? 'text-accent' : 'text-muted'}`} />}
+                  {type === 'api' && <IconApi className={`w-5 h-5 ${siteType === type ? 'text-accent' : 'text-muted'}`} />}
+                  {type === 'other' && <IconWorld className={`w-5 h-5 ${siteType === type ? '!text-white' : 'text-muted'}`} />}
                 </button>
               ))}
             </div>

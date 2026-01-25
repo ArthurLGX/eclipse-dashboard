@@ -1312,7 +1312,7 @@ export default function ProjectTasks({
               initial={{ width: 0 }}
               animate={{ width: `${overallProgress}%` }}
               transition={{ duration: 0.5 }}
-              className="h-2 bg-muted rounded-full"
+              className="h-2 bg-accent rounded-full"
             />
           </div>
         </div>
@@ -1340,7 +1340,7 @@ export default function ProjectTasks({
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1.5 ${
                   filter === option.value
                     ? getStatusStyle(option.value)
-                    : 'bg-accent-light !text-accent hover:bg-hover'
+                    : 'bg-card !text-primary hover:bg-hover'
                 }`}
               >
                 {option.icon}
@@ -2963,7 +2963,7 @@ function KanbanColumn({
       </div>
 
       {/* Cards */}
-      <div className="flex-1 p-2 space-y-2 overflow-y-auto max-h-[calc(100vh-350px)] min-h-[200px]">
+      <div className="flex-1 p-2 space-y-2 overflow-y-auto min-h-[200px]">
         <AnimatePresence mode="popLayout">
           {tasks.map((task) => (
             <motion.div

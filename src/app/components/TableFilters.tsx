@@ -245,7 +245,7 @@ export default function TableFilters({
             <div className="p-4 lg:p-5 rounded-xl bg-card border border-default shadow-sm">
               {/* Header */}
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-default">
-                <div className="p-1.5 rounded-lg bg-accent-light">
+                <div className="p-1.5">
                   <IconFilter className="w-4 h-4 !text-accent" />
                 </div>
                 <span className="text-sm font-semibold text-primary">

@@ -774,7 +774,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           }`}>
                             {option.label}
                             {option.value === 'skip' && (
-                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success-light !text-success-text -text">
+                              <span className="ml-2 badge badge-success-text">
                                 {t('recommended') || 'Recommandé'}
                               </span>
                             )}
@@ -820,7 +820,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           }`}>
                             {option.label}
                             {option.value === 'email_only' && (
-                              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-success-light !text-success-text -text">
+                              <span className="ml-2 badge badge-success-text">
                                 {t('recommended') || 'Recommandé'}
                               </span>
                             )}

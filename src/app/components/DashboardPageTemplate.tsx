@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import TableFilters, { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
 import DataTable, { Column, CustomAction, ViewMode } from '@/app/components/DataTable';
 import LandingPageSkeleton from './LandingPageSkeleton';
+import { IconPlus } from '@tabler/icons-react';
 
 interface StatCard {
   label: string;
@@ -146,9 +147,10 @@ export default function DashboardPageTemplate<T>({
           ))}
           {/* Main action button */}
           <button
-            className="btn-primary cursor-pointer lg:w-fit w-full rounded-lg px-4 py-2 transition-all duration-300"
+            className="btn-primary flex items-center justify-center gap-2 cursor-pointer lg:w-fit w-full rounded-lg px-4 py-2 transition-all duration-300"
             onClick={onActionButtonClick || (() => {})}
           >
+            <IconPlus size={18} color="white" />
             {actionButtonLabel}
           </button>
         </div>

@@ -664,9 +664,9 @@ export default function AIChatAssistant() {
                 alt="Eclipse AI"
                 width={32}
                 height={32}
-                className="rounded-full bg-accent-light"
+                className="rounded-full"
               />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full border-2 border-accent animate-pulse" />
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full border-2 border-success animate-pulse" />
             </div>
             {/* Keyboard shortcut tooltip on hover */}
             <div className="absolute left-full ml-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">

@@ -417,21 +417,21 @@ export default function RevenuePage() {
         // Configuration des statuts
         const statusConfig: Record<string, { label: string; className: string }> = {
           // Statuts facture
-          paid: { label: t('paid') || 'Payée', className: 'bg-success-light !text-success-text ' },
-          sent: { label: t('sent') || 'Envoyée', className: 'bg-accent-light !text-accent' },
-          draft: { label: t('draft') || 'Brouillon', className: 'bg-warning-light text-warning' },
-          overdue: { label: t('overdue') || 'En retard', className: 'bg-danger/10 text-danger' },
-          cancelled: { label: t('cancelled') || 'Annulée', className: 'bg-muted/20 text-muted' },
+          paid: { label: t('paid') || 'Payée', className: 'badge badge-success' },
+          sent: { label: t('sent') || 'Envoyée', className: 'badge badge-info' },
+          draft: { label: t('draft') || 'Brouillon', className: 'badge badge-warning' },
+          overdue: { label: t('overdue') || 'En retard', className: 'badge badge-danger' },
+          cancelled: { label: t('cancelled') || 'Annulée', className: 'badge badge-muted' },
           // Statuts devis
-          accepted: { label: t('accepted') || 'Accepté', className: 'bg-success-light !text-success-text ' },
-          rejected: { label: t('rejected') || 'Refusé', className: 'bg-danger/10 text-danger' },
-          negotiation: { label: t('negotiation') || 'Négociation', className: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' },
+          accepted: { label: t('accepted') || 'Accepté', className: 'badge badge-success' },
+          rejected: { label: t('rejected') || 'Refusé', className: 'badge badge-danger' },
+          negotiation: { label: t('negotiation') || 'Négociation', className: 'badge badge-purple' },
         };
         
-        const config = statusConfig[status || ''] || { label: status || '-', className: 'bg-muted/20 text-muted' };
+        const config = statusConfig[status || ''] || { label: status || '-', className: 'badge badge-muted' };
         
         return (
-          <span className={`text-xs px-2 py-0.5 rounded-full ${config.className}`}>
+          <span className={`badge ${config.className}`}>
             {config.label}
           </span>
         );

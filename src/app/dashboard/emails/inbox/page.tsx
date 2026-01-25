@@ -492,7 +492,7 @@ function InboxView() {
                   onClick={() => handleReply(selectedEmail)}
                   className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-colors"
                 >
-                  <IconSend className="w-4 h-4" />
+                  <IconSend className="w-4 h-4" color="white" />
                   {t('reply') || 'Répondre'}
                 </button>
                 
@@ -510,10 +510,10 @@ function InboxView() {
                 
                 <button
                   onClick={() => handleDelete(selectedEmail)}
-                  className="p-2 text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                  className="p-2 text-muted hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
                   title={t('delete')}
                 >
-                  <IconTrash className="w-5 h-5" />
+                  <IconTrash className="w-5 h-5" color="red" />
                 </button>
               </div>
             </div>

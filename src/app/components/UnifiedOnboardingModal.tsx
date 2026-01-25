@@ -852,7 +852,7 @@ export default function UnifiedOnboardingModal() {
                   </div>
                   <span className="text-muted">{Math.round(progress)}%</span>
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div className="h-2 bg-accent rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}

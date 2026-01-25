@@ -94,10 +94,10 @@
   --color-warning-border: rgba(255, 56, 11, 0.3);
   --color-warning-text: #310c01 ;
   
-  --color-danger: #FFFFFF;
-  --color-danger-bg: rgba(255, 255, 255, 0.1);
-  --color-danger-border: rgba(255, 255, 255, 0.25);
-  --color-danger-text: #FFFFFF;
+  --color-danger: #ff380b;
+  --color-danger-bg: #ff380b;
+  --color-danger-border: #ff380b;
+  --color-danger-text: #000000;
   
   /* Shadows - Glass effect */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
@@ -187,10 +187,10 @@
   --color-warning-border: #d0d0d0;
   --color-warning-text: #ff380b;
   
-  --color-danger: #000000;
-    --color-danger-bg: #e0e0e0;
-  --color-danger-border: #d0d0d0;
-  --color-danger-text: #000000;
+  --color-danger: #ff380b;
+    --color-danger-bg: #ff380b;
+  --color-danger-border: #ff380b;
+  --color-danger-text: #ffffff;
   
   /* Shadows - Glass effect */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -271,10 +271,10 @@
   --color-warning-border: #d0d0d0;
   --color-warning-text: #ff380b;
   
-  --color-danger: #FFFFFF;
-  --color-danger-bg: #e0e0e0;
-  --color-danger-border: #d0d0d0;
-  --color-danger-text: #FFFFFF;
+  --color-danger: #ff380b;
+  --color-danger-bg: #ff380b;
+  --color-danger-border: #ff380b;
+  --color-danger-text: #000000;
   
   /* Shadows - Minimal */
   --shadow-sm: none;
@@ -354,9 +354,9 @@
   --color-warning-border: #ff380b;
   --color-warning-text: #ff380b;
   
-  --color-danger: #000000;
-    --color-danger-bg: #e0e0e0;
-  --color-danger-border: #000000;
+  --color-danger: #ff380b;
+    --color-danger-bg: #ff380b;
+  --color-danger-border: #ff380b;
   --color-danger-text: #000000;
   
   /* Shadows - Minimal */
