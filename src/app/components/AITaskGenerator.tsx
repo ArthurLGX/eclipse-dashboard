@@ -178,6 +178,8 @@ export default function AITaskGenerator({
     if (selectedTasks.length === 0) return;
 
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Réinitialiser l'heure à minuit
+    
     const projectStart = parseDate(projectStartDate || undefined);
     const projectEnd = parseDate(projectEndDate || undefined);
 
@@ -195,12 +197,30 @@ export default function AITaskGenerator({
         if (subEnd) candidates.push(subEnd);
       });
       candidates.forEach(date => {
-        if (!minDate || date < minDate) minDate = date;
-        if (!maxDate || date > maxDate) maxDate = date;
+        if (minDate === null) {
+          minDate = date;
+        } else if (date < minDate) {
+          minDate = date;
+        }
+        
+        if (maxDate === null) {
+          maxDate = date;
+        } else if (date > maxDate) {
+          maxDate = date;
+        }
       });
     });
 
-    const rangeStart = projectStart || minDate || today;
+    // Assertion de type pour aider TypeScript après les closures
+    const finalMinDate = minDate as Date | null;
+    const finalMaxDate = maxDate as Date | null;
+
+    // Utiliser la date effective : au minimum aujourd'hui
+    // Les tâches ne peuvent pas être créées de manière rétroactive
+    const effectiveProjectStart = projectStart && projectStart > today ? projectStart : null;
+    const effectiveMinDate = finalMinDate && finalMinDate > today ? finalMinDate : null;
+    
+    const rangeStart = effectiveProjectStart || effectiveMinDate || today;
     const fallbackEnd = new Date(rangeStart.getTime() + Math.max(7, selectedTasks.length * 2) * 24 * 60 * 60 * 1000);
     const rangeEnd = projectEnd || maxDate || fallbackEnd;
 
@@ -251,6 +271,26 @@ export default function AITaskGenerator({
     setError(null);
 
     try {
+      // Calculer la date de début effective : au minimum aujourd'hui
+      // (les tâches ne peuvent pas être créées de manière rétroactive)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Réinitialiser l'heure à minuit
+      
+      let effectiveStartDate = projectStartDate;
+      
+      if (projectStartDate) {
+        const projectStart = new Date(projectStartDate);
+        projectStart.setHours(0, 0, 0, 0);
+        
+        // Si la date de début du projet est dans le passé, utiliser aujourd'hui
+        if (projectStart < today) {
+          effectiveStartDate = today.toISOString().split('T')[0];
+        }
+      } else {
+        // Si pas de date de début projet, utiliser aujourd'hui
+        effectiveStartDate = today.toISOString().split('T')[0];
+      }
+
       const response = await fetch('/api/ai/tasks-generator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -259,7 +299,7 @@ export default function AITaskGenerator({
           content,
           projectTitle,
           projectDescription: stripHtml(projectDescription || ''),
-          projectStartDate,
+          projectStartDate: effectiveStartDate,
           projectEndDate,
           existingTasks: existingTasks?.map(t => ({
             title: t.title,
@@ -399,7 +439,7 @@ export default function AITaskGenerator({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent-light rounded-xl">
+              <div className="p-2 bg-card rounded-xl">
                 <Image 
                   src="/images/logo/eclipse-logo.png" 
                   alt="Eclipse Assistant" 
@@ -442,7 +482,7 @@ export default function AITaskGenerator({
                       className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         inputMode === mode.id
                           ? 'bg-page text-primary shadow-sm'
-                          : 'text-secondary hover:text-primary'
+                          : 'text-muted hover:text-primary'
                       }`}
                     >
                       <mode.icon className="w-4 h-4" />
@@ -509,7 +549,7 @@ export default function AITaskGenerator({
                   <p className="text-sm font-medium text-primary">{projectTitle}</p>
                   {projectDescription && (
                     <div 
-                      className="text-sm text-secondary mt-1 line-clamp-2 prose prose-sm max-w-none"
+                      className="text-sm text-primary mt-1 line-clamp-2 prose prose-sm max-w-none"
                       dangerouslySetInnerHTML={{ __html: projectDescription }}
                     />
                   )}
@@ -561,7 +601,7 @@ export default function AITaskGenerator({
                     <div
                       key={taskIndex}
                       className={`border rounded-xl transition-colors ${
-                        task.selected ? 'border-accent bg-accent-light' : 'border-default bg-muted opacity-60'
+                        task.selected ? 'border-success-border bg-success-light' : 'border-default bg-muted opacity-60'
                       }`}
                     >
                       {/* Task header */}
@@ -621,7 +661,7 @@ export default function AITaskGenerator({
                             </select>
                             
                             {task.phase && (
-                              <span className="px-2 py-1 bg-muted rounded text-xs text-secondary">
+                              <span className="px-2 py-1 bg-muted rounded text-xs text-muted">
                                 {task.phase}
                               </span>
                             )}
@@ -658,7 +698,7 @@ export default function AITaskGenerator({
                                 className="w-4 h-4 rounded border-default !text-accent focus:ring-accent"
                               />
                               <IconSubtask className="w-4 h-4 text-muted" />
-                              <span className="flex-1 text-sm text-secondary">{subtask.title}</span>
+                              <span className="flex-1 text-sm text-primary">{subtask.title}</span>
                               {subtask.estimated_hours && (
                                 <span className="text-xs text-muted">{subtask.estimated_hours}h</span>
                               )}
@@ -687,7 +727,7 @@ export default function AITaskGenerator({
               <>
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                  className="px-4 py-2 text-sm text-muted hover:text-primary transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
@@ -713,14 +753,14 @@ export default function AITaskGenerator({
               <>
                 <button
                   onClick={() => setStep('input')}
-                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                  className="px-4 py-2 text-sm text-muted hover:text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
                 <button
                   onClick={handleRescheduleDates}
                   disabled={totalSelectedTasks === 0}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-secondary hover:text-primary border border-default rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-muted hover:text-primary border border-default rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <IconCalendarEvent className="w-4 h-4" />
                   {t('reschedule_dates') || 'Ré-étaler les dates'}
@@ -728,7 +768,7 @@ export default function AITaskGenerator({
                 <button
                   onClick={handleConfirm}
                   disabled={totalSelectedTasks === 0}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-success text-success-text rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <IconCheck className="w-4 h-4" />
                   {t('add_selected_tasks') || `Ajouter ${totalSelectedTasks} tâche${totalSelectedTasks > 1 ? 's' : ''}`}
