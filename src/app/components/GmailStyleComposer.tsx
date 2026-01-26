@@ -98,14 +98,16 @@ export default function GmailStyleComposer({
             }}
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed z-[100] bg-card border border-default shadow-2xl flex flex-col"
+            className={`fixed z-[100] bg-card border border-default shadow-2xl flex flex-col ${
+              isMaximized ? 'max-w-7xl max-h-[90vh] mx-auto' : ''
+            }`}
             style={{
               bottom: isMaximized ? 0 : 0,
               right: isMaximized ? 0 : '24px',
               top: isMaximized ? 0 : 'auto',
               left: isMaximized ? 0 : 'auto',
-              width: isMaximized ? '100vw' : isMinimized ? '320px' : '600px',
-              height: isMaximized ? '100vh' : isMinimized ? '56px' : '680px',
+              width: isMaximized ? '100%' : isMinimized ? '320px' : '600px',
+              height: isMaximized ? '90vh' : isMinimized ? '56px' : '680px',
               borderRadius: isMaximized ? '0' : '16px 16px 0 0',
             }}
           >
