@@ -806,6 +806,113 @@ export interface CreateSentEmailData {
 }
 
 // ============================================================================
+// EMAIL DRAFTS (Brouillons)
+// ============================================================================
+
+export interface EmailDraft {
+  id: number;
+  documentId: string;
+  name?: string;
+  subject?: string;
+  recipients?: Array<{ id: string; email: string; name?: string }>;
+  cc?: string[];
+  bcc?: string[];
+  content?: string;
+  category: EmailCategory;
+  attachments?: Array<{ name: string; url: string }>;
+  related_document_id?: string;
+  related_document_type?: 'invoice' | 'quote' | 'newsletter' | 'none';
+  include_signature?: boolean;
+  footer_language?: 'fr' | 'en';
+  last_modified?: string;
+  reply_to_message_id?: string; // Pour mode réponse
+  // Relations
+  users?: number | { id: number };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEmailDraftData {
+  name?: string;
+  subject?: string;
+  recipients?: Array<{ id: string; email: string; name?: string }>;
+  cc?: string[];
+  bcc?: string[];
+  content?: string;
+  category: EmailCategory;
+  attachments?: Array<{ name: string; url: string }>;
+  related_document_id?: string;
+  related_document_type?: 'invoice' | 'quote' | 'newsletter' | 'none';
+  include_signature?: boolean;
+  footer_language?: 'fr' | 'en';
+  reply_to_message_id?: string;
+}
+
+export interface UpdateEmailDraftData {
+  name?: string;
+  subject?: string;
+  recipients?: Array<{ id: string; email: string; name?: string }>;
+  cc?: string[];
+  bcc?: string[];
+  content?: string;
+  category?: EmailCategory;
+  attachments?: Array<{ name: string; url: string }>;
+  related_document_id?: string;
+  related_document_type?: 'invoice' | 'quote' | 'newsletter' | 'none';
+  include_signature?: boolean;
+  footer_language?: 'fr' | 'en';
+  reply_to_message_id?: string;
+}
+
+// ============================================================================
+// EMAIL LABELS (Libellés personnalisés)
+// ============================================================================
+
+export interface EmailLabel {
+  id: number;
+  documentId: string;
+  name: string;
+  color: string;
+  description?: string;
+  // Relations
+  users?: number | { id: number };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEmailLabelData {
+  name: string;
+  color: string;
+  description?: string;
+}
+
+export interface UpdateEmailLabelData {
+  name?: string;
+  color?: string;
+  description?: string;
+}
+
+// ============================================================================
+// AI EMAIL CATEGORIZATION
+// ============================================================================
+
+export type AIEmailCategory = 
+  | 'inbox' 
+  | 'purchases' 
+  | 'social' 
+  | 'notifications' 
+  | 'forums' 
+  | 'promotions'
+  | 'important'
+  | 'spam';
+
+export interface AICategorizationResult {
+  category: AIEmailCategory;
+  confidence: number; // 0-1
+  reasoning?: string;
+}
+
+// ============================================================================
 // MONITORING (Sites surveillés)
 // ============================================================================
 

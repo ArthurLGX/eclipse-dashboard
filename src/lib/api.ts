@@ -2501,8 +2501,23 @@ export const setDefaultCustomTemplate = async (
 // EMAIL SIGNATURE
 // ============================================================================
 
-import type { EmailSignature, CreateEmailSignatureData, UpdateEmailSignatureData, SentEmail, CreateSentEmailData, EmailCategory } from '@/types';
-export type { EmailCategory };
+import type { 
+  EmailSignature, 
+  CreateEmailSignatureData, 
+  UpdateEmailSignatureData, 
+  SentEmail, 
+  CreateSentEmailData, 
+  EmailCategory,
+  EmailDraft,
+  CreateEmailDraftData,
+  UpdateEmailDraftData,
+  EmailLabel,
+  CreateEmailLabelData,
+  UpdateEmailLabelData,
+  AIEmailCategory,
+  AICategorizationResult,
+} from '@/types';
+export type { EmailCategory, AIEmailCategory };
 
 /** Récupère la signature email d'un utilisateur */
 export const fetchEmailSignature = async (userId: number): Promise<EmailSignature | null> => {
@@ -2681,6 +2696,8 @@ export interface ReceivedEmail {
   in_reply_to?: string;
   references?: string[];
   labels?: string[];
+  ai_category?: AIEmailCategory;
+  ai_category_confidence?: number;
   client?: {
     id: number;
     email: string;
@@ -2780,37 +2797,7 @@ export const deleteReceivedEmail = async (id: number): Promise<void> => {
 // ============================================================================
 // EMAIL DRAFTS
 // ============================================================================
-
-export interface EmailDraft {
-  id: number;
-  documentId: string;
-  name?: string;
-  subject?: string;
-  recipients?: Array<{ id: string; email: string; name?: string }>;
-  content?: string;
-  category: 'newsletter' | 'invoice' | 'quote' | 'classic';
-  attachments?: Array<{ name: string; url: string }>;
-  related_document_id?: string;
-  related_document_type?: 'invoice' | 'quote' | 'newsletter' | 'none';
-  include_signature?: boolean;
-  footer_language?: 'fr' | 'en';
-  last_modified?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateEmailDraftData {
-  name?: string;
-  subject?: string;
-  recipients?: Array<{ id: string; email: string; name?: string }>;
-  content?: string;
-  category: 'newsletter' | 'invoice' | 'quote' | 'classic';
-  attachments?: Array<{ name: string; url: string }>;
-  related_document_id?: string;
-  related_document_type?: 'invoice' | 'quote' | 'newsletter' | 'none';
-  include_signature?: boolean;
-  footer_language?: 'fr' | 'en';
-}
+// Types imported from @/types
 
 /** Récupère les brouillons d'emails d'un utilisateur */
 export const fetchEmailDrafts = async (
@@ -2916,6 +2903,128 @@ export const countEmailDraftsByCategory = async (
   }
   
   return counts;
+};
+
+// ============================================================================
+// EMAIL LABELS (Libellés personnalisés)
+// ============================================================================
+
+/** Récupère les libellés d'un utilisateur */
+export const fetchEmailLabels = async (userId: number): Promise<EmailLabel[]> => {
+  const response = await get<ApiResponse<EmailLabel[]>>(
+    `email-labels?filters[users][id][$eq]=${userId}&sort=name:asc`
+  );
+  return response.data || [];
+};
+
+/** Récupère un libellé par son ID */
+export const fetchEmailLabel = async (documentId: string): Promise<EmailLabel | null> => {
+  try {
+    const response = await get<ApiResponse<EmailLabel>>(`email-labels/${documentId}`);
+    return response.data || null;
+  } catch {
+    return null;
+  }
+};
+
+/** Crée un libellé */
+export const createEmailLabel = async (
+  userId: number,
+  data: CreateEmailLabelData
+): Promise<EmailLabel> => {
+  const response = await post<ApiResponse<EmailLabel>>(
+    'email-labels',
+    { ...data, users: { set: [userId] } }
+  );
+  return response.data;
+};
+
+/** Met à jour un libellé */
+export const updateEmailLabel = async (
+  documentId: string,
+  data: UpdateEmailLabelData
+): Promise<EmailLabel> => {
+  const response = await put<ApiResponse<EmailLabel>>(
+    `email-labels/${documentId}`,
+    { data }
+  );
+  return response.data;
+};
+
+/** Supprime un libellé */
+export const deleteEmailLabel = async (documentId: string): Promise<void> => {
+  await del(`email-labels/${documentId}`);
+};
+
+/** Assigne un libellé à un email */
+export const assignLabelToEmail = async (
+  emailId: number,
+  labelName: string
+): Promise<void> => {
+  await put<{ data: ReceivedEmail }>(
+    `received-emails/${emailId}/add-label`,
+    { label: labelName }
+  );
+};
+
+/** Retire un libellé d'un email */
+export const removeLabelFromEmail = async (
+  emailId: number,
+  labelName: string
+): Promise<void> => {
+  await put<{ data: ReceivedEmail }>(
+    `received-emails/${emailId}/remove-label`,
+    { label: labelName }
+  );
+};
+
+// ============================================================================
+// AI EMAIL CATEGORIZATION
+// ============================================================================
+
+/** Catégorise un email avec l'IA */
+export const categorizeEmailWithAI = async (
+  emailId: number
+): Promise<AICategorizationResult> => {
+  const response = await post<{ data: AICategorizationResult }>(
+    `received-emails/${emailId}/categorize-ai`,
+    {}
+  );
+  return response.data;
+};
+
+/** Catégorise plusieurs emails en batch */
+export const categorizeMultipleEmailsWithAI = async (
+  emailIds: number[]
+): Promise<{ success: number; failed: number; results: Record<number, AICategorizationResult> }> => {
+  const response = await post<{ 
+    data: { 
+      success: number; 
+      failed: number; 
+      results: Record<number, AICategorizationResult>;
+    } 
+  }>(
+    'received-emails/categorize-batch',
+    { emailIds }
+  );
+  return response.data;
+};
+
+/** Applique la catégorie IA à un email */
+export const applyAICategoryToEmail = async (
+  emailId: number,
+  category: AIEmailCategory,
+  confidence: number
+): Promise<void> => {
+  await put<{ data: ReceivedEmail }>(
+    `received-emails/${emailId}`,
+    { 
+      data: {
+        ai_category: category,
+        ai_category_confidence: confidence
+      }
+    }
+  );
 };
 
 // ============================================================================

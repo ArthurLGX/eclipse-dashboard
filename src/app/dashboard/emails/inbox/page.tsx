@@ -39,9 +39,15 @@ import {
   unarchiveEmail,
   deleteReceivedEmail,
   fetchReceivedEmail,
+  fetchSentEmails,
+  fetchEmailDrafts,
+  fetchEmailLabels,
+  categorizeEmailWithAI,
+  categorizeMultipleEmailsWithAI,
   type ReceivedEmail,
   type InboxFilters,
 } from '@/lib/api';
+import type { EmailDraft, EmailLabel, SentEmail } from '@/types';
 
 export default function InboxPage() {
   return (
@@ -61,10 +67,14 @@ function InboxView() {
 
   // State
   const [emails, setEmails] = useState<ReceivedEmail[]>([]);
+  const [sentEmails, setSentEmails] = useState<SentEmail[]>([]);
+  const [drafts, setDrafts] = useState<EmailDraft[]>([]);
+  const [labels, setLabels] = useState<EmailLabel[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
-  const [selectedEmail, setSelectedEmail] = useState<ReceivedEmail | null>(null);
+  const [selectedEmail, setSelectedEmail] = useState<ReceivedEmail | SentEmail | EmailDraft | null>(null);
   const [loadingEmail, setLoadingEmail] = useState(false);
+  const [categorizingAI, setCategorizingAI] = useState(false);
   
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -93,6 +103,20 @@ function InboxView() {
       document.body.style.overflow = '';
     };
   }, []);
+
+  // Charger les libellés au démarrage
+  useEffect(() => {
+    const loadLabels = async () => {
+      if (!user?.id) return;
+      try {
+        const userLabels = await fetchEmailLabels(user.id);
+        setLabels(userLabels);
+      } catch (error) {
+        console.error('Error loading labels:', error);
+      }
+    };
+    loadLabels();
+  }, [user?.id]);
 
   // Gérer le changement de vue depuis la sidebar
   const handleViewChange = useCallback((view: EmailView) => {
@@ -131,49 +155,72 @@ function InboxView() {
     
     setLoading(true);
     try {
-      // Adapter les filtres selon la vue active
-      const filters: InboxFilters = {
-        page,
-        pageSize,
-        isArchived: showArchived || activeView === 'waiting',
-      };
-      
       // Filtres spécifiques par vue
       switch (activeView) {
-        case 'inbox':
-          // Boîte de réception normale
-          break;
-        case 'starred':
-          filters.isStarred = true;
-          break;
-        case 'sent':
-          // TODO: Implémenter fetchSentEmails
+        case 'sent': {
+          // Charger les emails envoyés
+          const sent = await fetchSentEmails(user.id, undefined, pageSize);
+          setSentEmails(sent);
           setEmails([]);
+          setDrafts([]);
           setTotalPages(1);
-          setUnreadCount(0);
           setLoading(false);
           return;
-        case 'drafts':
-          // TODO: Implémenter fetchDrafts
+        }
+        case 'drafts': {
+          // Charger les brouillons
+          const emailDrafts = await fetchEmailDrafts(user.id);
+          setDrafts(emailDrafts);
           setEmails([]);
+          setSentEmails([]);
           setTotalPages(1);
-          setUnreadCount(0);
           setLoading(false);
           return;
-        default:
-          // Pour les autres vues (purchases, social, etc.), on pourrait filtrer par catégories
-          // Pour l'instant, on affiche la boîte de réception
+        }
+        default: {
+          // Emails reçus (inbox, starred, waiting, etc.)
+          const filters: InboxFilters = {
+            page,
+            pageSize,
+            isArchived: showArchived || activeView === 'waiting',
+          };
+          
+          // Filtres par vue
+          if (activeView === 'starred') {
+            filters.isStarred = true;
+          }
+          
+          // Filtres additionnels
+          if (showUnreadOnly) filters.isRead = false;
+          if (showStarredOnly) filters.isStarred = true;
+          if (searchQuery) filters.search = searchQuery;
+          
+          const response = await fetchInbox(filters);
+          
+          // Filtrer par catégorie IA si nécessaire
+          let filteredEmails = response.data || [];
+          if (activeView === 'purchases') {
+            filteredEmails = filteredEmails.filter(e => e.ai_category === 'purchases');
+          } else if (activeView === 'social') {
+            filteredEmails = filteredEmails.filter(e => e.ai_category === 'social');
+          } else if (activeView === 'notifications') {
+            filteredEmails = filteredEmails.filter(e => e.ai_category === 'notifications');
+          } else if (activeView === 'forums') {
+            filteredEmails = filteredEmails.filter(e => e.ai_category === 'forums');
+          } else if (activeView === 'promotions') {
+            filteredEmails = filteredEmails.filter(e => e.ai_category === 'promotions');
+          } else if (activeView === 'important') {
+            filteredEmails = filteredEmails.filter(e => e.ai_category === 'important');
+          }
+          
+          setEmails(filteredEmails);
+          setSentEmails([]);
+          setDrafts([]);
+          setTotalPages(response.meta?.pagination?.pageCount || 1);
+          setUnreadCount(response.meta?.unreadCount || 0);
           break;
+        }
       }
-      
-      if (showUnreadOnly) filters.isRead = false;
-      if (showStarredOnly) filters.isStarred = true;
-      if (searchQuery) filters.search = searchQuery;
-      
-      const response = await fetchInbox(filters);
-      setEmails(response.data || []);
-      setTotalPages(response.meta?.pagination?.pageCount || 1);
-      setUnreadCount(response.meta?.unreadCount || 0);
     } catch (error) {
       console.error('Error loading inbox:', error);
       showGlobalPopup(t('error_loading_inbox') || 'Erreur lors du chargement', 'error');
@@ -261,8 +308,10 @@ function InboxView() {
       setEmails(prev => prev.map(e => 
         e.id === email.id ? { ...e, is_starred: !e.is_starred } : e
       ));
-      if (selectedEmail?.id === email.id) {
-        setSelectedEmail(prev => prev ? { ...prev, is_starred: !prev.is_starred } : null);
+      if (selectedEmail?.id === email.id && 'is_starred' in selectedEmail) {
+        setSelectedEmail((prev: ReceivedEmail | SentEmail | EmailDraft | null) => 
+          prev && 'is_starred' in prev ? { ...prev, is_starred: !(prev as ReceivedEmail).is_starred } : null
+        );
       }
     } catch (error) {
       console.error('Error toggling star:', error);
@@ -322,6 +371,33 @@ function InboxView() {
     setReplyToEmail(null);
     setComposerType(type);
     setShowComposer(true);
+  };
+
+  // Catégoriser tous les emails visibles avec l'IA
+  const handleCategorizeAllWithAI = async () => {
+    if (emails.length === 0) {
+      showGlobalPopup('Aucun email à catégoriser', 'info');
+      return;
+    }
+
+    setCategorizingAI(true);
+    try {
+      const emailIds = emails.map(e => e.id);
+      const result = await categorizeMultipleEmailsWithAI(emailIds);
+      
+      showGlobalPopup(
+        `${result.success} emails catégorisés avec succès${result.failed > 0 ? `, ${result.failed} échecs` : ''}`,
+        result.failed === 0 ? 'success' : 'warning'
+      );
+      
+      // Recharger les emails pour voir les nouvelles catégories
+      await loadEmails();
+    } catch (error) {
+      console.error('Error categorizing emails:', error);
+      showGlobalPopup('Erreur lors de la catégorisation IA', 'error');
+    } finally {
+      setCategorizingAI(false);
+    }
   };
 
   // Titre de la vue active
@@ -442,50 +518,73 @@ function InboxView() {
             />
           </div>
           
-          {/* Filters */}
-          <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
-            <button
-              onClick={() => { setShowUnreadOnly(false); setShowStarredOnly(false); setShowArchived(false); }}
-              className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
-                !showUnreadOnly && !showStarredOnly && !showArchived
-                  ? 'bg-accent text-white'
-                  : 'bg-page border border-default text-muted hover:border-accent'
-              }`}
-            >
-              {t('all') || 'Tous'}
-            </button>
-            <button
-              onClick={() => { setShowUnreadOnly(true); setShowStarredOnly(false); setShowArchived(false); }}
-              className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
-                showUnreadOnly
-                  ? 'bg-accent text-white'
-                  : 'bg-page border border-default text-muted hover:border-accent'
-              }`}
-            >
-              {t('unread') || 'Non lus'}
-            </button>
-            <button
-              onClick={() => { setShowStarredOnly(true); setShowUnreadOnly(false); setShowArchived(false); }}
-              className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
-                showStarredOnly
-                  ? 'bg-amber-500 text-white'
-                  : 'bg-page border border-default text-muted hover:border-amber-500'
-              }`}
-            >
-              <IconStarFilled className="w-3 h-3 inline mr-1" />
-              {t('starred') || 'Favoris'}
-            </button>
-            <button
-              onClick={() => { setShowArchived(true); setShowUnreadOnly(false); setShowStarredOnly(false); }}
-              className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
-                showArchived
-                  ? 'bg-gray-500 text-white'
-                  : 'bg-page border border-default text-muted hover:border-gray-500'
-              }`}
-            >
-              <IconArchive className="w-3 h-3 inline mr-1" />
-              {t('archived') || 'Archivés'}
-            </button>
+          {/* Filters & Actions */}
+          <div className="space-y-2 mt-3">
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              <button
+                onClick={() => { setShowUnreadOnly(false); setShowStarredOnly(false); setShowArchived(false); }}
+                className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                  !showUnreadOnly && !showStarredOnly && !showArchived
+                    ? 'bg-accent text-white'
+                    : 'bg-page border border-default text-muted hover:border-accent'
+                }`}
+              >
+                {t('all') || 'Tous'}
+              </button>
+              <button
+                onClick={() => { setShowUnreadOnly(true); setShowStarredOnly(false); setShowArchived(false); }}
+                className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                  showUnreadOnly
+                    ? 'bg-accent text-white'
+                    : 'bg-page border border-default text-muted hover:border-accent'
+                }`}
+              >
+                {t('unread') || 'Non lus'}
+              </button>
+              <button
+                onClick={() => { setShowStarredOnly(true); setShowUnreadOnly(false); setShowArchived(false); }}
+                className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                  showStarredOnly
+                    ? 'bg-amber-500 text-white'
+                    : 'bg-page border border-default text-muted hover:border-amber-500'
+                }`}
+              >
+                <IconStarFilled className="w-3 h-3 inline mr-1" />
+                {t('starred') || 'Favoris'}
+              </button>
+              <button
+                onClick={() => { setShowArchived(true); setShowUnreadOnly(false); setShowStarredOnly(false); }}
+                className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                  showArchived
+                    ? 'bg-gray-500 text-white'
+                    : 'bg-page border border-default text-muted hover:border-gray-500'
+                }`}
+              >
+                <IconArchive className="w-3 h-3 inline mr-1" />
+                {t('archived') || 'Archivés'}
+              </button>
+            </div>
+            
+            {/* Bouton Catégorisation IA (uniquement pour les emails reçus) */}
+            {emails.length > 0 && activeView !== 'sent' && activeView !== 'drafts' && (
+              <button
+                onClick={handleCategorizeAllWithAI}
+                disabled={categorizingAI}
+                className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              >
+                {categorizingAI ? (
+                  <>
+                    <IconLoader2 className="w-4 h-4 animate-spin" />
+                    <span>Catégorisation en cours...</span>
+                  </>
+                ) : (
+                  <>
+                    <IconStar className="w-4 h-4" />
+                    <span>✨ Catégoriser avec l'IA ({emails.length} emails)</span>
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
         
@@ -498,7 +597,82 @@ function InboxView() {
             <div className="flex items-center justify-center h-40">
               <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
             </div>
+          ) : activeView === 'sent' ? (
+            // Liste des emails envoyés
+            sentEmails.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-40 text-muted">
+                <IconSend className="w-12 h-12 mb-2 opacity-50" />
+                <p>Aucun email envoyé</p>
+              </div>
+            ) : (
+              <AnimatePresence mode="popLayout">
+                {sentEmails.map((email, index) => (
+                  <motion.div
+                    key={`sent-${email.documentId || email.id || index}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    onClick={() => setSelectedEmail(email)}
+                    className={`flex items-start gap-3 p-4 border-b border-default cursor-pointer transition-colors bg-card hover:bg-page ${
+                      selectedEmail?.id === email.id ? 'bg-accent/10 border-l-2 border-l-accent' : ''
+                    }`}
+                  >
+                    <IconSend className="w-5 h-5 text-blue-500 mt-1" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium text-primary truncate">
+                          À : {email.recipients.join(', ')}
+                        </span>
+                        <span className="text-xs text-muted whitespace-nowrap ml-2">
+                          {formatDate(email.sent_at)}
+                        </span>
+                      </div>
+                      <div className="text-sm font-medium text-primary mb-1 truncate">{email.subject}</div>
+                      <div className="text-xs text-muted line-clamp-2">{email.content.replace(/<[^>]*>/g, '')}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            )
+          ) : activeView === 'drafts' ? (
+            // Liste des brouillons
+            drafts.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-40 text-muted">
+                <IconMailOpened className="w-12 h-12 mb-2 opacity-50" />
+                <p>Aucun brouillon</p>
+              </div>
+            ) : (
+              <AnimatePresence mode="popLayout">
+                {drafts.map((draft, index) => (
+                  <motion.div
+                    key={`draft-${draft.documentId || draft.id || index}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    onClick={() => setSelectedEmail(draft)}
+                    className={`flex items-start gap-3 p-4 border-b border-default cursor-pointer transition-colors bg-card hover:bg-page ${
+                      selectedEmail?.id === draft.id ? 'bg-accent/10 border-l-2 border-l-accent' : ''
+                    }`}
+                  >
+                    <IconMailOpened className="w-5 h-5 text-gray-500 mt-1" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium text-primary truncate">
+                          Brouillon {draft.name ? `- ${draft.name}` : ''}
+                        </span>
+                        <span className="text-xs text-muted whitespace-nowrap ml-2">
+                          {formatDate(draft.updatedAt)}
+                        </span>
+                      </div>
+                      <div className="text-sm font-medium text-primary mb-1 truncate">{draft.subject || '(Sans objet)'}</div>
+                      <div className="text-xs text-muted line-clamp-2">{draft.content || ''}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            )
           ) : emails.length === 0 ? (
+            // Aucun email reçu
             <div className="flex flex-col items-center justify-center h-40 text-muted">
               <IconInbox className="w-12 h-12 mb-2 opacity-50" />
               <p>{t('no_emails') || 'Aucun email'}</p>
@@ -510,6 +684,7 @@ function InboxView() {
               </button>
             </div>
           ) : (
+            // Liste des emails reçus
             <AnimatePresence mode="popLayout">
               {emails.map((email) => (
                 <motion.div
@@ -725,7 +900,7 @@ function InboxView() {
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {selectedEmail.attachments.map((att, idx) => (
+                        {selectedEmail.attachments.map((att: { filename: string; contentType: string; size: number }, idx: number) => (
                           <div
                             key={idx}
                             className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default text-sm"
