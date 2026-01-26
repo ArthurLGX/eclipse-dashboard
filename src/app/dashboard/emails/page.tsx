@@ -21,7 +21,8 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import { fetchEmailDrafts, deleteEmailDraft, type EmailDraft } from '@/lib/api';
+import { fetchEmailDrafts, deleteEmailDraft } from '@/lib/api';
+import type { EmailDraft } from '@/types';
 
 export default function EmailsPage() {
   return (
