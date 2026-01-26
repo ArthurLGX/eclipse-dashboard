@@ -212,7 +212,7 @@ export default function SharedProjectPage() {
           <h1 className="text-xl font-semibold text-primary mb-2">
             {t('invalid_link')}
           </h1>
-          <p className="text-secondary mb-6">{error || t('link_expired_or_not_found')}</p>
+          <p className="text-primary mb-6">{error || t('link_expired_or_not_found')}</p>
           <p className="text-sm text-muted">
             {t('contact_owner_for_new_link')}
           </p>
@@ -244,10 +244,10 @@ export default function SharedProjectPage() {
     : null;
 
   const statusConfig = {
-    planning: { label: t('planning'), colorClass: 'bg-info-light text-info border-info' },
-    in_progress: { label: t('in_progress'), colorClass: 'bg-warning-light text-warning-text border-warning' },
-    completed: { label: t('done'), colorClass: 'bg-success-light !text-success-text -text border-success' },
-  }[project.project_status] || { label: project.project_status, colorClass: 'bg-muted text-muted border-muted' };
+    planning: { label: t('planning'), colorClass: 'badge badge-info' },
+    in_progress: { label: t('in_progress'), colorClass: 'badge badge-warning' },
+    completed: { label: t('done'), colorClass: 'badge badge-success' },
+  }[project.project_status] || { label: project.project_status, colorClass: 'badge badge-muted' };
 
   return (
     <div className="min-h-screen bg-page w-full px-8 pt-32 pb-8">
@@ -267,7 +267,7 @@ export default function SharedProjectPage() {
                   {statusConfig.label}
                 </span>
                 {project.user?.username && (
-                  <span className="text-secondary text-sm">
+                  <span className="text-primary text-sm">
                     {t('by')} {project.user.username}
                   </span>
                 )}
@@ -291,7 +291,7 @@ export default function SharedProjectPage() {
                 href={`/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
                 className="btn btn-primary flex items-center gap-2 px-4 py-2 text-sm"
               >
-                <IconExternalLink className="w-4 h-4" />
+                <IconExternalLink className="w-4 h-4" color="white" />
                 {t('access_project')}
               </a>
             </div>
@@ -305,7 +305,7 @@ export default function SharedProjectPage() {
             className="card p-6 mb-6"
           >
             <div 
-              className="text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+              className="text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
                 [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2
                 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2
                 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
@@ -324,7 +324,7 @@ export default function SharedProjectPage() {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
           >
             <div className="card p-5">
-              <div className="flex items-center gap-2 text-secondary text-sm mb-2">
+              <div className="flex items-center gap-2 text-primary text-sm mb-2">
                 <IconChartBar className="w-4 h-4" />
                 {t('progression')}
               </div>
@@ -338,7 +338,7 @@ export default function SharedProjectPage() {
             </div>
 
             <div className="card p-5">
-              <div className="flex items-center gap-2 text-secondary text-sm mb-2">
+              <div className="flex items-center gap-2 text-primary text-sm mb-2">
                 <IconCheck className="w-4 h-4" />
                 {t('tasks_completed')}
               </div>
@@ -347,7 +347,7 @@ export default function SharedProjectPage() {
             </div>
 
             <div className="card p-5">
-              <div className="flex items-center gap-2 text-secondary text-sm mb-2">
+              <div className="flex items-center gap-2 text-primary text-sm mb-2">
                 <IconProgress className="w-4 h-4" />
                 {t('in_progress')}
               </div>
@@ -358,8 +358,8 @@ export default function SharedProjectPage() {
             </div>
 
             <div className="card p-5">
-              <div className="flex items-center gap-2 text-secondary text-sm mb-2">
-                <IconCalendar className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-primary text-sm mb-2">
+                <IconCalendar className="w-4 h-4" color="white"/>
                 {t('deadline')}
               </div>
               <div className={`text-3xl font-bold ${
@@ -387,7 +387,7 @@ export default function SharedProjectPage() {
           >
             <div className="card p-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="flex items-center gap-2 text-secondary">
+                <div className="flex items-center gap-2 text-primary">
                   <IconFilter className="w-5 h-5" />
                   <span className="font-medium">{t('filter_by_status') || 'Filtrer par statut'}</span>
                 </div>
@@ -404,7 +404,7 @@ export default function SharedProjectPage() {
                         className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                           isActive
                             ? 'bg-accent text-white shadow-sm'
-                            : 'bg-muted text-secondary hover:bg-hover hover:text-primary'
+                            : 'bg-muted text-primary hover:bg-hover hover:text-primary'
                         }`}
                       >
                         <span className={isActive ? 'text-white' : option.color}>
@@ -429,7 +429,7 @@ export default function SharedProjectPage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="mt-3 pt-3 border-t border-default"
                 >
-                  <p className="text-sm text-secondary">
+                  <p className="text-sm text-primary">
                     {t('showing') || 'Affichage de'}{' '}
                     <span className="font-semibold text-primary">{filteredTasks.length}</span>{' '}
                     {t('tasks_on') || 'tâche(s) sur'}{' '}
@@ -532,7 +532,7 @@ export default function SharedProjectPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex-1">
               <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-2">
-                <IconUserPlus className="w-6 h-6 !text-accent" />
+                <IconUserPlus className="w-6 h-6" color="white" />
                 {t('want_to_collaborate')}
               </h3>
               <p className="text-primary">
@@ -646,13 +646,13 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
           {task.description && (
             <div className="mt-2">
               <div 
-                className={`text-secondary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+                className={`text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
                   [&_h1]:text-base [&_h1]:font-bold [&_h1]:mb-1 [&_h1]:text-primary
                   [&_h2]:text-sm [&_h2]:font-semibold [&_h2]:mb-1 [&_h2]:text-primary
-                  [&_p]:mb-1 [&_p]:text-secondary
+                  [&_p]:mb-1 [&_p]:text-primary
                   [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-1
                   [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-1
-                  [&_li]:mb-0.5 [&_li]:text-secondary
+                  [&_li]:mb-0.5 [&_li]:text-primary
                   [&_a]:text-accent [&_a]:underline
                   [&_strong]:font-semibold [&_strong]:text-primary
                   [&_em]:italic
@@ -1139,7 +1139,7 @@ function PublicGanttView({ tasks, projectName }: {
               </h3>
               <button
                 onClick={() => setShowExportModal(false)}
-                className="p-1 text-secondary hover:text-primary transition-colors"
+                className="p-1 text-primary hover:text-primary transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -1158,7 +1158,7 @@ function PublicGanttView({ tasks, projectName }: {
                       onChange={(e) => setExportFileName(e.target.value)}
                       className="flex-1 px-3 py-2 text-sm bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                     />
-                    <span className="text-secondary text-sm">.pdf</span>
+                    <span className="text-primary text-sm">.pdf</span>
                   </div>
                 </div>
 
@@ -1472,7 +1472,7 @@ function PublicGanttView({ tasks, projectName }: {
                                     >
                                       {subtask.task_status === 'completed' && <IconCheck className="w-2 h-2 text-white" />}
                                     </div>
-                                    <span className={`text-xs truncate max-w-[140px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-secondary'}`}>
+                                    <span className={`text-xs truncate max-w-[140px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
                                       {subtask.title}
                                     </span>
                                   </div>

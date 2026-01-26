@@ -36,6 +36,7 @@ import {
 } from '@tabler/icons-react';
 import ExcelImportModal, { type ImportedTask, type ImportProgressCallback } from './ExcelImportModal';
 import AITaskGenerator, { type GeneratedTask } from './AITaskGenerator';
+import DraggableGanttBar from './DraggableGanttBar';
 import type { User } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -1812,6 +1813,10 @@ export default function ProjectTasks({
               taskStatusOptions={TASK_STATUS_OPTIONS}
               projectName={undefined}
               t={t}
+              onTasksChange={() => {
+                // Recharger les tâches après modification des dates
+                loadTasks();
+              }}
             />
           )}
         </>
@@ -3296,6 +3301,7 @@ interface TaskGanttViewProps {
   taskStatusOptions: TaskStatusOption[];
   projectName?: string;
   t: (key: string) => string;
+  onTasksChange?: () => void; // Callback pour recharger les tâches après modification
 }
 
 function TaskGanttView({
@@ -3305,6 +3311,7 @@ function TaskGanttView({
   taskStatusOptions,
   projectName,
   t,
+  onTasksChange,
 }: TaskGanttViewProps) {
   const ganttRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -3572,6 +3579,32 @@ function TaskGanttView({
     };
     return colorNames[color] || t('group') || 'Groupe';
   }, [t]);
+
+  // Gestion du changement de dates via drag-and-drop
+  const handleTaskDateChange = useCallback(async (taskId: string, newStartDate: string, newDueDate: string) => {
+    // Trouver la tâche à mettre à jour
+    const taskToUpdate = tasks.find(t => t.documentId === taskId);
+    if (!taskToUpdate) {
+      console.error('Task not found:', taskId);
+      return;
+    }
+
+    try {
+      // Mettre à jour la tâche avec les nouvelles dates
+      await updateProjectTask(taskToUpdate.documentId, {
+        start_date: newStartDate,
+        due_date: newDueDate,
+      });
+
+      // Recharger les tâches pour refléter les changements
+      if (onTasksChange) {
+        onTasksChange();
+      }
+    } catch (error) {
+      console.error('Error updating task dates:', error);
+      throw error; // Propager l'erreur pour que DraggableGanttBar puisse gérer l'échec
+    }
+  }, [tasks, onTasksChange]);
 
   // Fonction pour générer le HTML d'export (réutilisable pour aperçu et export)
   const generateExportHTML = useCallback((mode: 'light' | 'dark') => {
@@ -4126,28 +4159,34 @@ function TaskGanttView({
                                     style={{ left: `${(todayIndex * 32) + 16}px` }}
                                   />
                                 )}
-                                {/* Barre de la tâche - utilise le pourcentage effectif */}
-                                <div
-                                  className="absolute top-1/2 -translate-y-1/2 h-7 rounded-md shadow-sm hover:shadow-md transition-shadow"
-                                  style={{
-                                    left: `${startOffset * 32}px`,
-                                    width: `${Math.max(duration * 32, 32)}px`,
-                                    backgroundColor: task.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
-                                  }}
-                                >
-                                  <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${effectiveProgress}%` }} />
-                                  <div className="relative h-full flex items-center justify-between px-2 overflow-hidden">
-                                    <span className="text-[11px] text-white font-medium truncate">
-                                      {duration > 3 ? task.title : ''}
-                                    </span>
-                                    {/* Afficher le pourcentage effectif (moyenne des sous-tâches si présentes) */}
-                                    {duration > 2 && (
-                                      <span className="text-[10px] text-white/90 font-semibold ml-1 flex-shrink-0">
-                                        {effectiveProgress}%
+                                {/* Barre de la tâche - Draggable & Resizable */}
+                                {ganttData && (
+                                  <DraggableGanttBar
+                                    taskId={task.documentId}
+                                    startOffset={startOffset}
+                                    duration={duration}
+                                    dayWidth={32}
+                                    startDate={effectiveStartDate}
+                                    dueDate={effectiveEndDate}
+                                    minDate={ganttData.minDate}
+                                    color={group.color}
+                                    taskStatus={task.task_status}
+                                    progress={effectiveProgress}
+                                    onDateChange={handleTaskDateChange}
+                                  >
+                                    <div className="flex items-center justify-between px-2 overflow-hidden h-full">
+                                      <span className="text-[11px] text-white font-medium truncate">
+                                        {duration > 3 ? task.title : ''}
                                       </span>
-                                    )}
-                                  </div>
-                                </div>
+                                      {/* Afficher le pourcentage effectif (moyenne des sous-tâches si présentes) */}
+                                      {duration > 2 && (
+                                        <span className="text-[10px] text-white/90 font-semibold ml-1 flex-shrink-0">
+                                          {effectiveProgress}%
+                                        </span>
+                                      )}
+                                    </div>
+                                  </DraggableGanttBar>
+                                )}
                               </div>
                             </td>
                           </tr>
@@ -4194,16 +4233,25 @@ function TaskGanttView({
                                     {todayIndex >= 0 && (
                                       <div className="absolute top-0 bottom-0 w-0.5 bg-red-500" style={{ left: `${(todayIndex * 32) + 16}px` }} />
                                     )}
-                                    <div
-                                      className="absolute top-1/2 -translate-y-1/2 h-4 rounded opacity-70 hover:opacity-100 transition-opacity"
-                                      style={{
-                                        left: `${subPos.startOffset * 32}px`,
-                                        width: `${Math.max(subPos.duration * 32, 24)}px`,
-                                        backgroundColor: subtask.task_status === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : group.color,
-                                      }}
-                                    >
-                                      <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l" style={{ width: `${subtask.progress || 0}%` }} />
-                                    </div>
+                                    {/* Barre de sous-tâche - Draggable & Resizable */}
+                                    {ganttData && (
+                                      <DraggableGanttBar
+                                        taskId={subtask.documentId}
+                                        startOffset={subPos.startOffset}
+                                        duration={subPos.duration}
+                                        dayWidth={32}
+                                        startDate={subtask.start_date}
+                                        dueDate={subtask.due_date}
+                                        minDate={ganttData.minDate}
+                                        color={group.color}
+                                        taskStatus={subtask.task_status}
+                                        progress={subtask.progress || 0}
+                                        onDateChange={handleTaskDateChange}
+                                        className="h-4 opacity-70 hover:opacity-100"
+                                      >
+                                        <div />
+                                      </DraggableGanttBar>
+                                    )}
                                   </div>
                                 </td>
                               </tr>
