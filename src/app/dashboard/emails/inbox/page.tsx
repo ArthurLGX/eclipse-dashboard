@@ -903,7 +903,7 @@ function InboxView() {
                       <span className="text-sm text-primary">{selectedEmail.recipients.join(', ')}</span>
                     </div>
                     <p className="text-xs text-muted">
-                      Envoyé le {new Date(selectedEmail.sent_at).toLocaleString(&apos;fr-FR&apos;, {weekday: &apos;long&apos;, year: &apos;numeric&apos;, month: &apos;long&apos;, day: &apos;numeric&apos;, hour: &apos;2-digit&apos;, minute: &apos;2-digit&apos;})}
+                      Envoyé le {new Date(selectedEmail.sent_at).toLocaleString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
                     </p>
                     <span className={`mt-2 inline-block px-2 py-1 text-xs rounded-full ${
                       selectedEmail.status_mail === 'sent' ? 'bg-green-100 text-green-700' :
