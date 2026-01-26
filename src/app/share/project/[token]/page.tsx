@@ -289,7 +289,7 @@ export default function SharedProjectPage() {
               </a>
               <a
                 href={`/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
-                className="btn btn-primary flex items-center gap-2 px-4 py-2 text-sm"
+                className="btn btn-primary !text-white flex items-center gap-2 px-4 py-2 text-sm"
               >
                 <IconExternalLink className="w-4 h-4" color="white" />
                 {t('access_project')}
@@ -1241,7 +1241,7 @@ function PublicGanttView({ tasks, projectName }: {
           whileTap={{ scale: 0.98 }}
           className="flex items-center gap-2 px-3 py-1.5 text-sm bg-accent text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
         >
-          <IconCalendar className="w-4 h-4" />
+          <IconCalendar className="w-4 h-4" color="white" />
           {t('today') || "Aujourd'hui"}
         </motion.button>
         
