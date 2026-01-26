@@ -131,12 +131,23 @@ export default function CompactEmailForm({
   // Générer la signature HTML
   const renderSignatureHtml = useCallback((data: CreateEmailSignatureData) => {
     let html = '<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-family: Arial, sans-serif;">';
+    
+    // Ajouter le logo si disponible
+    if (data.logo_url) {
+      html += `<div style="margin-bottom: 15px;">`;
+      html += `<img src="${data.logo_url}" alt="${data.company_name || 'Logo'}" style="height: ${data.logo_size || 60}px; width: auto;" />`;
+      html += `</div>`;
+    }
+    
     html += `<div style="font-size: 14px; color: #333;">`;
     if (data.sender_name) {
       html += `<div style="font-weight: bold; margin-bottom: 4px;">${data.sender_name}</div>`;
     }
     if (data.sender_title) {
       html += `<div style="color: #666; font-size: 12px; margin-bottom: 8px;">${data.sender_title}</div>`;
+    }
+    if (data.company_name) {
+      html += `<div style="font-size: 12px; color: #666; margin-bottom: 4px;">${data.company_name}</div>`;
     }
     if (data.phone) {
       html += `<div style="font-size: 12px; color: #666;">📞 ${data.phone}</div>`;
@@ -156,8 +167,8 @@ export default function CompactEmailForm({
 
     setSending(true);
     try {
-      // Construire le contenu HTML
-      let htmlContent = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">`;
+      // Construire le contenu HTML (aligné à gauche)
+      let htmlContent = `<div style="font-family: Arial, sans-serif; max-width: 600px;">`;
       htmlContent += message;
 
       // Ajouter l'email original si mode réponse

@@ -12,7 +12,7 @@ import {
   IconTrash,
   IconRefresh,
   IconSearch,
-   IconChevronLeft,
+  IconChevronLeft,
   IconChevronRight,
   IconLoader2,
   IconSend,
@@ -20,12 +20,9 @@ import {
   IconUser,
   IconBuilding,
   IconArrowLeft,
-   IconArchiveOff,
-  IconPlus,
-  IconChevronDown,
-  IconFileDescription,
-  IconFileInvoice,
+  IconArchiveOff,
 } from '@tabler/icons-react';
+import EmailSidebar, { type EmailView } from '@/app/components/EmailSidebar';
 import GmailStyleComposer from '@/app/components/GmailStyleComposer';
 import type { EmailComposerType } from '@/app/components/EmailComposer';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -59,6 +56,9 @@ function InboxView() {
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
 
+  // Current view (sidebar navigation)
+  const [activeView, setActiveView] = useState<EmailView>('inbox');
+
   // State
   const [emails, setEmails] = useState<ReceivedEmail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,7 +82,6 @@ function InboxView() {
   const [showComposer, setShowComposer] = useState(false);
   const [composerType, setComposerType] = useState<EmailComposerType>('compose');
   const [replyToEmail, setReplyToEmail] = useState<ReceivedEmail | null>(null);
-  const [showTypeMenu, setShowTypeMenu] = useState(false);
 
   // Gérer le scroll focus - bloquer le scroll du body pour cette page
   useEffect(() => {
@@ -95,17 +94,77 @@ function InboxView() {
     };
   }, []);
 
+  // Gérer le changement de vue depuis la sidebar
+  const handleViewChange = useCallback((view: EmailView) => {
+    setActiveView(view);
+    setSelectedEmail(null);
+    setPage(1);
+    
+    // Réinitialiser les filtres selon la vue
+    switch (view) {
+      case 'inbox':
+        setShowArchived(false);
+        setShowStarredOnly(false);
+        setShowUnreadOnly(false);
+        break;
+      case 'starred':
+        setShowStarredOnly(true);
+        setShowArchived(false);
+        setShowUnreadOnly(false);
+        break;
+      case 'sent':
+        // TODO: Charger les emails envoyés
+        break;
+      case 'drafts':
+        // TODO: Charger les brouillons
+        break;
+      default:
+        setShowArchived(false);
+        setShowStarredOnly(false);
+        setShowUnreadOnly(false);
+    }
+  }, []);
+
   // Load emails
   const loadEmails = useCallback(async () => {
     if (!user?.id) return;
     
     setLoading(true);
     try {
+      // Adapter les filtres selon la vue active
       const filters: InboxFilters = {
         page,
         pageSize,
-        isArchived: showArchived,
+        isArchived: showArchived || activeView === 'waiting',
       };
+      
+      // Filtres spécifiques par vue
+      switch (activeView) {
+        case 'inbox':
+          // Boîte de réception normale
+          break;
+        case 'starred':
+          filters.isStarred = true;
+          break;
+        case 'sent':
+          // TODO: Implémenter fetchSentEmails
+          setEmails([]);
+          setTotalPages(1);
+          setUnreadCount(0);
+          setLoading(false);
+          return;
+        case 'drafts':
+          // TODO: Implémenter fetchDrafts
+          setEmails([]);
+          setTotalPages(1);
+          setUnreadCount(0);
+          setLoading(false);
+          return;
+        default:
+          // Pour les autres vues (purchases, social, etc.), on pourrait filtrer par catégories
+          // Pour l'instant, on affiche la boîte de réception
+          break;
+      }
       
       if (showUnreadOnly) filters.isRead = false;
       if (showStarredOnly) filters.isStarred = true;
@@ -121,7 +180,7 @@ function InboxView() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, page, pageSize, showArchived, showUnreadOnly, showStarredOnly, searchQuery, showGlobalPopup, t]);
+  }, [user?.id, page, pageSize, showArchived, showUnreadOnly, showStarredOnly, searchQuery, activeView, showGlobalPopup, t]);
 
   useEffect(() => {
     loadEmails();
@@ -263,7 +322,42 @@ function InboxView() {
     setReplyToEmail(null);
     setComposerType(type);
     setShowComposer(true);
-    setShowTypeMenu(false);
+  };
+
+  // Titre de la vue active
+  const getViewTitle = (view: EmailView): string => {
+    const titles: Record<EmailView, string> = {
+      inbox: t('inbox') || 'Boîte de réception',
+      starred: t('starred') || 'Messages suivis',
+      waiting: t('waiting') || 'En attente',
+      important: t('important') || 'Important',
+      sent: t('sent') || 'Messages envoyés',
+      drafts: t('drafts') || 'Brouillons',
+      purchases: t('purchases') || 'Achats',
+      social: t('social') || 'Réseaux sociaux',
+      notifications: t('notifications') || 'Notifications',
+      forums: t('forums') || 'Forums',
+      promotions: t('promotions') || 'Promotions',
+    };
+    return titles[view] || 'Mail';
+  };
+
+  // Icône de la vue active
+  const getViewIcon = (view: EmailView) => {
+    const icons: Record<EmailView, React.ReactNode> = {
+      inbox: <IconInbox className="w-6 h-6 text-accent" />,
+      starred: <IconStarFilled className="w-6 h-6 text-amber-500" />,
+      waiting: <IconArchive className="w-6 h-6 text-muted" />,
+      important: <IconMail className="w-6 h-6 text-red-500" />,
+      sent: <IconSend className="w-6 h-6 text-blue-500" />,
+      drafts: <IconMailOpened className="w-6 h-6 text-gray-500" />,
+      purchases: <IconInbox className="w-6 h-6 text-green-500" />,
+      social: <IconInbox className="w-6 h-6 text-purple-500" />,
+      notifications: <IconInbox className="w-6 h-6 text-orange-500" />,
+      forums: <IconInbox className="w-6 h-6 text-teal-500" />,
+      promotions: <IconInbox className="w-6 h-6 text-pink-500" />,
+    };
+    return icons[view] || <IconInbox className="w-6 h-6 text-accent" />;
   };
 
   // Format date
@@ -299,17 +393,28 @@ function InboxView() {
 
   return (
     <div className="flex h-[calc(100vh-80px)] bg-page rounded-xl overflow-hidden border border-default overscroll-contain">
+      {/* Gmail-style Sidebar */}
+      <EmailSidebar
+        activeView={activeView}
+        onViewChange={handleViewChange}
+        onNewMessage={() => handleNewEmail('compose')}
+        onNewQuote={() => handleNewEmail('quote')}
+        onNewInvoice={() => handleNewEmail('invoice')}
+        unreadCounts={{
+          inbox: unreadCount,
+        }}
+      />
       {/* Email List */}
       <div className={`${selectedEmail ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-[400px] lg:w-[450px] border-r border-default bg-card overscroll-contain`}>
         {/* Header */}
         <div className="p-4 border-b border-default">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <IconInbox className="w-6 h-6 text-accent" />
+              {getViewIcon(activeView)}
               <h1 className="text-xl font-bold text-primary">
-                {t('inbox') || 'Boîte de réception'}
+                {getViewTitle(activeView)}
               </h1>
-              {unreadCount > 0 && (
+              {activeView === 'inbox' && unreadCount > 0 && (
                 <span className="px-2 py-0.5 text-xs font-semibold bg-accent text-white rounded-full">
                   {unreadCount}
                 </span>
@@ -325,80 +430,6 @@ function InboxView() {
             </button>
           </div>
 
-          {/* Bouton Nouveau message (style Gmail) */}
-          <div className="relative mb-4">
-            <button
-              onClick={() => setShowTypeMenu(!showTypeMenu)}
-              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-accent text-white rounded-2xl hover:shadow-lg shadow-md transition-all hover:scale-[1.02]"
-            >
-              <IconPlus className="w-5 h-5" />
-              <span className="font-semibold">{t('compose') || 'Nouveau'}</span>
-              <IconChevronDown className={`w-4 h-4 transition-transform ${showTypeMenu ? 'rotate-180' : ''}`} />
-            </button>
-
-            {/* Menu déroulant */}
-            <AnimatePresence>
-              {showTypeMenu && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-[90]" 
-                    onClick={() => setShowTypeMenu(false)}
-                  />
-                  <motion.div
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-full left-0 right-0 mt-2 bg-card border border-default rounded-xl shadow-xl overflow-hidden z-[100]"
-                  >
-                    <button
-                      onClick={() => handleNewEmail('compose')}
-                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left group"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-                        <IconMail className="w-5 h-5 !text-accent" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium text-primary group-hover:text-accent transition-colors">
-                          {t('classic_email') || 'Email classique'}
-                        </div>
-                        <div className="text-xs text-muted">{t('send_regular_email') || 'Message standard'}</div>
-                      </div>
-                    </button>
-                    <button
-                      onClick={() => handleNewEmail('quote')}
-                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left border-t border-default group"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-                        <IconFileDescription className="w-5 h-5 text-blue-500" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium text-primary group-hover:text-blue-500 transition-colors">
-                          {t('send_quote') || 'Devis'}
-                        </div>
-                        <div className="text-xs text-muted">{t('send_quote_desc') || 'Avec PDF joint'}</div>
-                      </div>
-                    </button>
-                    <button
-                      onClick={() => handleNewEmail('invoice')}
-                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left border-t border-default group"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
-                        <IconFileInvoice className="w-5 h-5 text-green-500" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium text-primary group-hover:text-green-500 transition-colors">
-                          {t('send_invoice') || 'Facture'}
-                        </div>
-                        <div className="text-xs text-muted">{t('send_invoice_desc') || 'Avec PDF joint'}</div>
-                      </div>
-                    </button>
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
-          </div>
-          
           {/* Search */}
           <div className="relative">
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
