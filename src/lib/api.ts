@@ -2510,7 +2510,6 @@ import type {
   EmailCategory,
   EmailDraft,
   CreateEmailDraftData,
-  UpdateEmailDraftData,
   EmailLabel,
   CreateEmailLabelData,
   UpdateEmailLabelData,
