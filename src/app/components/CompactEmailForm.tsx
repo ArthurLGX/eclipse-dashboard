@@ -39,7 +39,6 @@ interface Recipient {
 }
 
 export default function CompactEmailForm({
-  type,
   replyToEmail,
   onSuccess,
 }: CompactEmailFormProps) {
