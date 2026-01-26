@@ -118,7 +118,7 @@ export interface EmailComposerProps {
 // COMPOSANT PRINCIPAL
 // ============================================================================
 
-export default function EmailComposer({ type, features, replyToEmail, onSuccess, compact = false }: EmailComposerProps) {
+export default function EmailComposer({ type, features, onSuccess, compact = false }: EmailComposerProps) {
   const { t } = useLanguage();
   const { user, token } = useAuth();
   const { showGlobalPopup } = usePopup();

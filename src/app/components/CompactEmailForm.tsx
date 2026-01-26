@@ -5,7 +5,6 @@ import { motion } from 'motion/react';
 import {
   IconSend,
   IconLoader2,
-  IconPaperclip,
   IconX,
   IconChevronDown,
   IconChevronUp,

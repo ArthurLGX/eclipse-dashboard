@@ -7,11 +7,9 @@ import {
   IconMinus,
   IconMaximize,
   IconMinimize,
-  IconChevronDown,
   IconMail,
   IconFileDescription,
   IconFileInvoice,
-  IconNews,
 } from '@tabler/icons-react';
 import CompactEmailForm from './CompactEmailForm';
 import { useLanguage } from '@/app/context/LanguageContext';

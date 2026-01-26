@@ -108,7 +108,7 @@ export default function MeetingIntegrationsPage() {
           }
         } else {
         }
-      } catch (error) {
+      } catch {
       } finally {
         setLoading(false);
       }

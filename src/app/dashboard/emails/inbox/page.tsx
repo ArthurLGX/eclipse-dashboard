@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconInbox,
@@ -26,7 +25,6 @@ import {
   IconChevronDown,
   IconFileDescription,
   IconFileInvoice,
-  IconNews,
 } from '@tabler/icons-react';
 import GmailStyleComposer from '@/app/components/GmailStyleComposer';
 import type { EmailComposerType } from '@/app/components/EmailComposer';
@@ -60,7 +58,6 @@ function InboxView() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
-  const router = useRouter();
 
   // State
   const [emails, setEmails] = useState<ReceivedEmail[]>([]);

@@ -52,8 +52,8 @@ function verifyWebhookSignature(
 
     const signatures = signatureBlock.split(' ');
     return signatures.includes(expected);
-  } catch (error) {
-    console.error('Error verifying webhook signature:', error);
+  } catch (_error) {
+    console.error('Error verifying webhook signature:', _error);
     return false;
   }
 }
@@ -132,7 +132,7 @@ async function findMatchingCalendarEvent(
 
     // Si pas de match exact, prendre le premier événement meeting du jour
     return events[0];
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -215,12 +215,12 @@ async function createOrUpdateMeetingNote(
     }
 
     if (!response.ok) {
-      const error = await response.text();
+      await response.text();
       return false;
     }
 
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -288,7 +288,7 @@ export async function POST(request: NextRequest) {
       message: 'Meeting note saved successfully',
       linked_to_event: !!calendarEvent,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

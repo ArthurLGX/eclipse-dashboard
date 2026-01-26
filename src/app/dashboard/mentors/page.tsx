@@ -88,7 +88,7 @@ export default function MentorsPage() {
     {
       key: 'actions',
       label: t('actions'),
-      render: (_, row) => (
+      render: () => (
         <TableActions
           onEdit={() => {}}
           onDelete={() => {}}

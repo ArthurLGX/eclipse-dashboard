@@ -624,7 +624,7 @@ export default function UnifiedOnboardingModal() {
         if (existingClient) {
           client = { id: existingClient.id, documentId: existingClient.documentId, name: existingClient.name };
          }
-      } catch (err) {
+      } catch {
        }
       
       // Create client if not found
