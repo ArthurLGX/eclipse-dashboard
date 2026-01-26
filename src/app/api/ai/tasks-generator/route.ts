@@ -73,9 +73,11 @@ RÈGLES IMPORTANTES:
 - Ajoute des sous-tâches pour les tâches complexes
 - Les priorités sont: low, medium, high, urgent
 - Évite les doublons avec les tâches existantes
-- Estime des dates pour CHAQUE tâche et sous-tâche: start_date et due_date (format YYYY-MM-DD)
-- Si les dates de projet sont fournies, répartis les tâches dans cette plage
+- **IMPORTANT**: Génère TOUJOURS des dates start_date et due_date pour CHAQUE tâche et sous-tâche (format YYYY-MM-DD obligatoire)
+- Si les dates de projet sont fournies (${projectStartDate} à ${projectEndDate}), répartis intelligemment les tâches dans cette plage
+- Les tâches doivent se suivre logiquement dans le temps
 - Les sous-tâches doivent être comprises entre les dates de la tâche parente
+- Ne jamais laisser start_date ou due_date à null
 
 RETOURNE UN JSON VALIDE avec cette structure:
 {
@@ -200,29 +202,53 @@ RETOURNE UN JSON VALIDE avec cette structure:
 
       items.forEach((item, idx) => {
         const isLast = idx === items.length - 1;
-        const sliceDays = isLast ? days - Math.ceil((cursor.getTime() - rangeStart.getTime()) / (1000 * 60 * 60 * 24)) : Math.max(1, Math.round(days * (weights[idx] / totalWeight)));
-        const start = item.start_date ? parseDate(item.start_date) : cursor;
-        const end = item.due_date ? parseDate(item.due_date) : new Date((start || cursor).getTime());
-
-        if (!item.start_date) {
-          item.start_date = formatDate(start || cursor);
+        const sliceDays = isLast 
+          ? days - Math.ceil((cursor.getTime() - rangeStart.getTime()) / (1000 * 60 * 60 * 24)) 
+          : Math.max(1, Math.round(days * (weights[idx] / totalWeight)));
+        
+        // Parser les dates existantes, mais utiliser cursor si null ou invalide
+        const parsedStart = item.start_date ? parseDate(item.start_date) : null;
+        const parsedEnd = item.due_date ? parseDate(item.due_date) : null;
+        
+        // Utiliser les dates parsées OU cursor si les dates sont nulles/invalides
+        const start = parsedStart || new Date(cursor);
+        
+        // Si pas de date de début OU date invalide, assigner cursor
+        if (!parsedStart) {
+          item.start_date = formatDate(start);
         }
-        if (!item.due_date) {
-          end?.setDate((start || cursor).getDate() + Math.max(1, sliceDays));
-          item.due_date = formatDate(end || new Date());
+        
+        // Calculer la date de fin
+        const end = parsedEnd || new Date(start.getTime() + Math.max(1, sliceDays) * 24 * 60 * 60 * 1000);
+        
+        // Si pas de date de fin OU date invalide, calculer à partir du start + durée
+        if (!parsedEnd) {
+          item.due_date = formatDate(end);
         }
-        cursor = new Date(end?.getTime() || 0); 
+        
+        // Avancer le curseur pour la prochaine tâche
+        cursor = new Date(end.getTime() + 24 * 60 * 60 * 1000); // +1 jour de marge
       });
     };
 
-    const fallbackEnd = projectEnd || new Date(projectStart.getTime() + (result.tasks.length || 1) * 3 * 24 * 60 * 60 * 1000);
+    // Calculer une date de fin par défaut si non fournie (basée sur nombre de tâches et heures estimées)
+    const estimatedDays = Math.max(
+      result.tasks.length * 3, // Minimum 3 jours par tâche
+      Math.ceil((result.total_estimated_hours || result.tasks.length * 8) / 8) // Basé sur heures estimées (8h/jour)
+    );
+    const fallbackEnd = projectEnd || new Date(projectStart.getTime() + estimatedDays * 24 * 60 * 60 * 1000);
 
     if (result.tasks.length > 0) {
+      // Normaliser les dates inversées
       result.tasks.forEach((task: { start_date?: string | null; due_date?: string | null; subtasks?: Array<{ start_date?: string | null; due_date?: string | null }> }) => {
         normalizeRange(task);
         task.subtasks?.forEach(sub => normalizeRange(sub));
       });
+      
+      // Distribuer les dates de toutes les tâches
       distributeRange(result.tasks, projectStart, fallbackEnd);
+      
+      // Distribuer les dates des sous-tâches dans la plage de leur tâche parente
       result.tasks.forEach((task: { start_date?: string | null; due_date?: string | null; subtasks?: Array<{ estimated_hours?: number | null; start_date?: string | null; due_date?: string | null }> }) => {
         if (task.subtasks && task.subtasks.length > 0) {
           const taskStart = parseDate(task.start_date || undefined) || projectStart;

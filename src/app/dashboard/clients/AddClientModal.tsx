@@ -81,7 +81,9 @@ export default function AddClientModal({
         isActive,
       });
       setSuccess(true);
+      // Attendre un peu pour l'animation de succès, puis fermer
       setTimeout(() => {
+        setLoading(false);
         onClose();
       }, 800);
     } catch (err) {
@@ -131,12 +133,11 @@ export default function AddClientModal({
           <div>
             <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
               <IconMail size={14} className="text-muted" />
-              {t('email')} <span className="!text-accent">*</span>
+              {t('email')}
             </label>
             <input
               type="email"
               placeholder="jean@email.com"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="input w-full px-3 py-2 text-sm"
@@ -270,7 +271,7 @@ export default function AddClientModal({
           </button>
           <button
             type="submit"
-            disabled={loading || !name || !email}
+            disabled={loading || !name}
             className={`btn-primary flex-1 px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {loading ? (

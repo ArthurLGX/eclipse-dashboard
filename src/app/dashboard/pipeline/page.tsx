@@ -91,6 +91,18 @@ function SelectContactModal({
     });
   }, [contacts, searchTerm]);
 
+  // Gérer le scroll avec useEffect
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const getInitials = (name: string) => {
@@ -98,9 +110,15 @@ function SelectContactModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden overscroll-contain"
+      onWheel={(e) => e.stopPropagation()}
+    >
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-card border border-default rounded-xl shadow-xl w-full max-w-md m-4">
+      <div 
+        className="relative bg-card border border-default rounded-xl shadow-xl w-full max-w-md m-4 max-h-[90vh] flex flex-col overscroll-contain"
+        onWheel={(e) => e.stopPropagation()}
+      >
         <div className="sticky top-0 bg-card border-b border-default p-4 rounded-t-xl">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
@@ -262,6 +280,18 @@ function ContactModal({
     }
   };
 
+  // Gérer le scroll avec useEffect
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const sourceOptions: { value: ContactSource; label: string }[] = [
@@ -280,9 +310,15 @@ function ContactModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden overscroll-contain"
+      onWheel={(e) => e.stopPropagation()}
+    >
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-card border border-default rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+      <div 
+        className="relative bg-card border border-default rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 overscroll-contain"
+        onWheel={(e) => e.stopPropagation()}
+      >
         <div className="sticky top-0 bg-card border-b border-default p-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-primary">
             {contact ? t('edit_contact') || 'Modifier le contact' : t('new_contact') || 'Nouveau contact'}

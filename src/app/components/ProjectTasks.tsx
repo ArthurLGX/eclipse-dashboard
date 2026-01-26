@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
+import { useModalFocus } from '@/hooks/useModalFocus';
 import {
   IconPlus,
   IconCheck,
@@ -2354,6 +2355,7 @@ interface TaskEditModalProps {
 function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptions, allMembers, onAddSubtask, t }: TaskEditModalProps) {
   const isSubtask = !!task.parent_task;
   const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+  const modalRef = useModalFocus(true);
   
   const [formData, setFormData] = useState({
     title: task.title,
@@ -2392,15 +2394,19 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-hidden overscroll-contain"
       onClick={onClose}
+      onWheel={(e) => e.stopPropagation()}
     >
       <motion.div
+        ref={modalRef}
+        tabIndex={-1}
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="bg-card border border-default rounded-2xl w-full max-w-5xl shadow-2xl overflow-hidden"
+        className="bg-card border border-default rounded-2xl w-full max-w-5xl shadow-2xl overflow-hidden outline-none overscroll-contain"
         onClick={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
       >
         <form onSubmit={handleSubmit}>
           <div 
@@ -3321,6 +3327,18 @@ function TaskGanttView({
   const [exportFileName, setExportFileName] = useState(`gantt-${projectName || 'project'}-${new Date().toISOString().split('T')[0]}`);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
+  // Gérer le scroll lock pour la modale d'export
+  useEffect(() => {
+    if (showExportModal) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [showExportModal]);
+
   // Fonction utilitaire pour normaliser une date à minuit (début de journée)
   const normalizeDate = useCallback((date: Date): Date => {
     const normalized = new Date(date);
@@ -3838,8 +3856,14 @@ function TaskGanttView({
     <div className="space-y-2">
       {/* Modal de sélection du mode d'export avec aperçu */}
       {showExportModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card border border-default rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-hidden overscroll-contain"
+          onWheel={(e) => e.stopPropagation()}
+        >
+          <div 
+            className="bg-card border border-default rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col overscroll-contain"
+            onWheel={(e) => e.stopPropagation()}
+          >
             {/* Header */}
             <div className="p-4 border-b border-default flex items-center justify-between">
               <h3 className="text-lg font-semibold text-primary">
