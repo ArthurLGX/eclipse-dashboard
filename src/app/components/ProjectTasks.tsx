@@ -387,6 +387,9 @@ export default function ProjectTasks({
       const subtasks = freshTasks.filter(t => t.parent_task?.documentId === parentTaskDocId);
       if (subtasks.length === 0) return;
 
+      // Utiliser calculateParentTaskState pour obtenir le statut et la progression cohérents
+      const { status: calculatedStatus, progress: calculatedProgress } = calculateParentTaskState(subtasks);
+
       // Calculer la somme des heures estimées
       const totalEstimatedHours = subtasks.reduce((sum, st) => {
         return sum + (st.estimated_hours || 0);
@@ -403,7 +406,10 @@ export default function ProjectTasks({
         .filter((d): d is string => !!d)
         .map(d => new Date(d));
 
-      const updates: Parameters<typeof updateProjectTask>[1] = {};
+      const updates: Parameters<typeof updateProjectTask>[1] = {
+        task_status: calculatedStatus,
+        progress: calculatedProgress,
+      };
       
       // Mettre à jour les heures estimées (somme des sous-tâches)
       if (totalEstimatedHours > 0) {
@@ -1088,8 +1094,15 @@ export default function ProjectTasks({
       if (alsoUpdateSubtasks && status === 'completed' && task?.subtasks && task.subtasks.length > 0) {
         await Promise.all(
           task.subtasks
-            .filter(st => st.task_status !== 'completed')
-            .map(st => updateTaskStatus(st.documentId, 'completed'))
+            .filter(st => st.task_status !== 'completed' || st.progress < 100)
+            .map(async (st) => {
+              // Mettre le statut à "completed"
+              await updateTaskStatus(st.documentId, 'completed');
+              // Mettre la progression à 100%
+              if (st.progress < 100) {
+                await updateTaskProgress(st.documentId, 100);
+              }
+            })
         );
       }
       
@@ -1139,11 +1152,39 @@ export default function ProjectTasks({
     // Debounce l'appel API (500ms après la fin du glissement)
     progressTimeoutRef.current[taskDocumentId] = setTimeout(async () => {
       try {
+        // Trouver la tâche pour vérifier si c'est une sous-tâche
+        const task = tasks.find(t => t.documentId === taskDocumentId);
+        const isSubtask = !!task?.parent_task;
+        const parentTaskDocId = task?.parent_task?.documentId;
+        
+        // Mettre à jour la progression
         await updateTaskProgress(taskDocumentId, progress);
-        // Ne pas recharger toute la liste - juste mettre à jour localement
-        setTasks(prev => prev.map(t => 
-          t.documentId === taskDocumentId ? { ...t, progress } : t
-        ));
+        
+        // Si la progression atteint 100%, passer le statut à "completed"
+        if (progress === 100 && task?.task_status !== 'completed') {
+          await updateTaskStatus(taskDocumentId, 'completed');
+        }
+        
+        // Si la progression descend en dessous de 100% et que le statut est "completed", le changer
+        if (progress < 100 && task?.task_status === 'completed') {
+          await updateTaskStatus(taskDocumentId, 'in_progress');
+        }
+        
+        // Recharger les tâches pour avoir l'état à jour
+        const response = await fetchProjectTasks(projectDocumentId);
+        const updatedTasks = response.data || [];
+        
+        // Si c'est une sous-tâche, synchroniser le parent
+        if (isSubtask && parentTaskDocId) {
+          await syncParentTaskState(parentTaskDocId, updatedTasks);
+          // Recharger une dernière fois pour avoir l'état final
+          const finalResponse = await fetchProjectTasks(projectDocumentId);
+          setTasks(finalResponse.data || []);
+        } else {
+          setTasks(updatedTasks);
+        }
+        
+        // Nettoyer la progression locale
         setLocalProgress(prev => {
           const next = { ...prev };
           delete next[taskDocumentId];
@@ -1153,7 +1194,7 @@ export default function ProjectTasks({
         console.error('Error updating progress:', error);
       }
     }, 500);
-  }, []);
+  }, [tasks, projectDocumentId]);
 
   // Cleanup des timeouts
   useEffect(() => {
@@ -1213,16 +1254,38 @@ export default function ProjectTasks({
   // Compter les tâches archivées (pour le badge)
   const archivedCount = parentTasks.filter(t => t.task_status === 'archived').length;
 
-  // Stats basées sur toutes les tâches (y compris sous-tâches)
+  // Stats basées sur les tâches "atomiques" (tâches sans sous-tâches + toutes les sous-tâches)
+  // Règle: Si une tâche parente a des sous-tâches, on ne compte que ses sous-tâches
+  //        Si une tâche parente n'a pas de sous-tâches, on la compte
+  const atomicTasks = tasks.filter(task => {
+    // Si c'est une sous-tâche, on la compte toujours
+    if (task.parent_task) return true;
+    // Si c'est une tâche parente sans sous-tâches, on la compte
+    if (!task.subtasks || task.subtasks.length === 0) return true;
+    // Si c'est une tâche parente avec sous-tâches, on ne la compte PAS
+    return false;
+  });
+
+  // Filtrer les tâches atomiques par statut et archivées (pour Kanban et Tableau)
+  const filteredAtomicTasks = atomicTasks.filter(task => {
+    // Filtre par statut
+    const matchesStatus = filter === 'all' || task.task_status === filter;
+    
+    // Filtre des archivées (sauf si on veut les voir ou si le filtre est 'archived')
+    const matchesArchived = showArchived || filter === 'archived' || task.task_status !== 'archived';
+    
+    return matchesStatus && matchesArchived;
+  });
+
   const taskStats = {
-    total: tasks.length,
-    todo: tasks.filter(t => t.task_status === 'todo').length,
-    in_progress: tasks.filter(t => t.task_status === 'in_progress').length,
-    completed: tasks.filter(t => t.task_status === 'completed').length,
+    total: atomicTasks.length,
+    todo: atomicTasks.filter(t => t.task_status === 'todo').length,
+    in_progress: atomicTasks.filter(t => t.task_status === 'in_progress').length,
+    completed: atomicTasks.filter(t => t.task_status === 'completed').length,
   };
 
-  const overallProgress = tasks.length > 0
-    ? Math.round(tasks.reduce((sum, t) => sum + (t.progress || 0), 0) / tasks.length)
+  const overallProgress = atomicTasks.length > 0
+    ? Math.round(atomicTasks.reduce((sum, t) => sum + (t.progress || 0), 0) / atomicTasks.length)
     : 0;
 
   if (loading) {
@@ -1346,7 +1409,7 @@ export default function ProjectTasks({
                 }`}
               >
                 {option.icon}
-                {option.label} ({tasks.filter(t => t.task_status === option.value).length})
+                {option.label} ({atomicTasks.filter(t => t.task_status === option.value).length})
               </button>
             ))}
           </div>
@@ -1770,7 +1833,7 @@ export default function ProjectTasks({
           {/* Vue Kanban */}
           {viewMode === 'kanban' && (
             <TaskKanbanView
-              tasks={filteredTasks}
+              tasks={filteredAtomicTasks}
               canEdit={canEdit}
               onStatusChange={handleStatusChange}
               onEdit={setEditingTask}
@@ -1789,7 +1852,7 @@ export default function ProjectTasks({
           {/* Vue Tableau */}
           {viewMode === 'table' && (
             <TaskTableView
-              tasks={filteredTasks}
+              tasks={filteredAtomicTasks}
               canEdit={canEdit}
               onStatusChange={handleStatusChange}
               onEdit={setEditingTask}
@@ -2370,6 +2433,26 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
     color: task.color || TASK_COLORS[0],
     assigned_to: task.assigned_to?.id?.toString() || '',
   });
+
+  // Synchroniser automatiquement le statut et la progression
+  useEffect(() => {
+    // Si le statut passe à "completed", mettre la progression à 100%
+    if (formData.task_status === 'completed' && formData.progress < 100) {
+      setFormData(prev => ({ ...prev, progress: 100 }));
+    }
+    // Si la progression atteint 100%, passer le statut à "completed"
+    else if (formData.progress === 100 && formData.task_status !== 'completed' && formData.task_status !== 'cancelled') {
+      setFormData(prev => ({ ...prev, task_status: 'completed' }));
+    }
+    // Si le statut passe de "completed" à autre chose, et que la progression est à 100%, la réduire à 90%
+    else if (formData.task_status !== 'completed' && formData.task_status !== 'cancelled' && formData.progress === 100) {
+      setFormData(prev => ({ ...prev, progress: 90 }));
+    }
+    // Si la progression descend en dessous de 100% et que le statut est "completed", changer en "in_progress"
+    else if (formData.progress < 100 && formData.task_status === 'completed') {
+      setFormData(prev => ({ ...prev, task_status: 'in_progress' }));
+    }
+  }, [formData.task_status, formData.progress]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

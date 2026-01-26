@@ -34,7 +34,7 @@ export interface SubtaskState {
  * - Toutes sous-tâches 'completed' → parent 'completed', progress 100%
  * - Au moins une 'in_progress' → parent 'in_progress'
  * - Toutes 'todo' → parent 'todo', progress 0%
- * - Mix → parent 'in_progress', progress calculé
+ * - Mix → parent 'in_progress', progress = moyenne des progressions des sous-tâches
  */
 export function calculateParentTaskState(subtasks: SubtaskState[]): TaskCoherenceState {
   if (!subtasks || subtasks.length === 0) {
@@ -46,19 +46,31 @@ export function calculateParentTaskState(subtasks: SubtaskState[]): TaskCoherenc
   const inProgressCount = subtasks.filter(st => st.task_status === 'in_progress').length;
   const totalActive = subtasks.length - cancelledCount;
   
+  // Calculer la progression moyenne basée sur la progression de chaque sous-tâche
+  const activeSubtasks = subtasks.filter(st => st.task_status !== 'cancelled');
+  const totalProgress = activeSubtasks.reduce((sum, st) => {
+    // Les tâches terminées comptent pour 100%
+    if (st.task_status === 'completed') {
+      return sum + 100;
+    }
+    // Sinon, prendre la progression actuelle
+    return sum + (st.progress || 0);
+  }, 0);
+  
+  const averageProgress = totalActive > 0 ? Math.round(totalProgress / totalActive) : 0;
+  
   // Toutes terminées (ou annulées)
   if (completedCount === totalActive && totalActive > 0) {
     return { status: 'completed', progress: 100 };
   }
   
-  // Toutes à faire (aucune en cours ou terminée)
-  if (completedCount === 0 && inProgressCount === 0) {
+  // Toutes à faire (aucune en cours ou terminée, et progression globale à 0)
+  if (completedCount === 0 && inProgressCount === 0 && averageProgress === 0) {
     return { status: 'todo', progress: 0 };
   }
   
-  // Sinon, en cours avec progression calculée
-  const progress = totalActive > 0 ? Math.round((completedCount / totalActive) * 100) : 0;
-  return { status: 'in_progress', progress };
+  // Sinon, en cours avec progression calculée (moyenne)
+  return { status: 'in_progress', progress: averageProgress };
 }
 
 /**
