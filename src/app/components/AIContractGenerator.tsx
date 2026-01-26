@@ -613,14 +613,12 @@ export default function AIContractGenerator({
     
     // Si déjà sauvegardé, retourner le contrat existant
     if (savedContract) {
-      console.log('Contract already saved, returning existing...');
-      return savedContract;
+       return savedContract;
     }
     
     // Empêcher les doubles soumissions
     if (isSavingRef.current) {
-      console.log('Save already in progress, skipping...');
-      return null;
+       return null;
     }
     
     isSavingRef.current = true;
@@ -701,7 +699,7 @@ ${user?.username || 'L\'équipe'}`;
       );
       
       if (onContractGenerated && generatedContract) {
-        onContractGenerated(generatedContract);
+         onContractGenerated(generatedContract);
       }
       onClose();
     } catch (err) {
@@ -713,14 +711,20 @@ ${user?.username || 'L\'équipe'}`;
   };
 
   const handleConfirm = async () => {
+    // Empêcher les doubles clics
+    if (isSavingRef.current) {
+       return;
+    }
+    
     // Save contract first if not already saved
     if (!savedContract) {
       const contract = await handleSaveContract();
       if (!contract) return;
     }
     
+    // Appeler le callback de rafraîchissement une seule fois
     if (generatedContract && onContractGenerated) {
-      onContractGenerated(generatedContract);
+       onContractGenerated(generatedContract);
     }
     onClose();
   };
@@ -1574,7 +1578,7 @@ ${user?.username || 'L\'équipe'}`;
                 <button
                   onClick={handleGenerate}
                   disabled={loading || !selectedClientId || !signatureLocation || !signatureDate}
-                  className={`flex items-center gap-2 px-6 py-2.5 text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
+                  className={`flex items-center gap-2 px-6 py-2.5 text-primary btn-primary rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
                     manualMode ? 'bg-info' : 'bg-accent'
                   }`}
                 >
@@ -1589,9 +1593,9 @@ ${user?.username || 'L\'équipe'}`;
                   ) : (
                     <>
                       {manualMode ? (
-                        <IconEdit className="w-4 h-4" />
+                        <IconEdit className="w-4 h-4" color="white" />
                       ) : (
-                        <IconSparkles className="w-4 h-4" />
+                        <IconSparkles className="w-4 h-4" color="white" />
                       )}
                       {manualMode
                         ? (t('create_contract') || 'Créer le contrat')
@@ -1630,9 +1634,9 @@ ${user?.username || 'L\'équipe'}`;
                       }
                       setStep('sign');
                     }}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 btn-primary text-white rounded-xl hover:opacity-90 transition-colors"
                   >
-                    <IconSignature className="w-4 h-4" />
+                    <IconSignature className="w-4 h-4" color="white" />
                     {t('proceed_to_sign') || 'Passer à la signature'}
                   </button>
                 </div>
@@ -1650,11 +1654,20 @@ ${user?.username || 'L\'équipe'}`;
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleConfirm}
-                    disabled={!signatures.provider || saving}
+                    disabled={!signatures.provider || saving || savedContract !== null}
                     className="flex items-center gap-2 px-4 py-2 bg-muted text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
                   >
-                    <IconCheck className="w-4 h-4" />
-                    {t('save_only') || 'Sauvegarder'}
+                    {savedContract ? (
+                      <>
+                        <IconCheck className="w-4 h-4" />
+                        {t('saved') || 'Sauvegardé'}
+                      </>
+                    ) : (
+                      <>
+                        <IconCheck className="w-4 h-4" />
+                        {t('save_only') || 'Sauvegarder'}
+                      </>
+                    )}
                   </button>
                   <button
                     onClick={handleProceedToSend}

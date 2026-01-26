@@ -75,13 +75,25 @@ export default function ContractsPage() {
     setLoading(true);
     try {
       const data = await fetchUserContracts(user.id);
-      setContracts(data);
+       
+      // Dédupliquer les contrats par documentId
+      const uniqueContracts = data.reduce((acc: Contract[], contract) => {
+        if (!acc.some(c => c.documentId === contract.documentId)) {
+          acc.push(contract);
+        } else {
+          console.warn('⚠️ Duplicate contract detected:', contract.documentId, contract.title);
+        }
+        return acc;
+      }, []);
+      
+       setContracts(uniqueContracts);
     } catch (err) {
       console.error('Error loading contracts:', err);
       showGlobalPopup(t('error_loading_contracts') || 'Erreur lors du chargement des contrats', 'error');
     } finally {
       setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   useEffect(() => {
@@ -89,7 +101,7 @@ export default function ContractsPage() {
   }, [loadContracts]);
 
   const handleContractGenerated = useCallback(() => {
-    loadContracts();
+     loadContracts();
     showGlobalPopup(t('contract_generated') || 'Contrat généré avec succès !', 'success');
   }, [loadContracts, showGlobalPopup, t]);
 

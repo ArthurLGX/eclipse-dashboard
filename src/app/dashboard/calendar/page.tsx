@@ -131,8 +131,7 @@ export default function CalendarPage() {
       fetch(`/api/integrations/fathom?userId=${user.id}`)
         .then(res => res.json())
         .then(data => {
-          console.log('Fathom config:', data);
-          setIsConnected(data.connected);
+           setIsConnected(data.connected);
         });
     }
   }, [user?.id]);

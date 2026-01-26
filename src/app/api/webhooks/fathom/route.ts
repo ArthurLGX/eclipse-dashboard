@@ -106,7 +106,6 @@ async function findMatchingCalendarEvent(
     const events = data.data || [];
 
     if (events.length === 0) {
-      console.log('No matching calendar events found for date:', meetingDate);
       return null;
     }
 
@@ -118,7 +117,6 @@ async function findMatchingCalendarEvent(
 
       // Match par URL de meeting dans location
       if (meetingUrl && eventLocation.includes(meetingUrl.toLowerCase())) {
-        console.log('Matched by meeting URL:', event.documentId);
         return event;
       }
 
@@ -128,16 +126,13 @@ async function findMatchingCalendarEvent(
         searchTitle.includes(eventTitle) ||
         eventTitle === searchTitle
       ) {
-        console.log('Matched by title:', event.documentId);
         return event;
       }
     }
 
     // Si pas de match exact, prendre le premier événement meeting du jour
-    console.log('No exact match, using first meeting of the day:', events[0].documentId);
     return events[0];
   } catch (error) {
-    console.error('Error finding matching calendar event:', error);
     return null;
   }
 }
@@ -210,7 +205,6 @@ async function createOrUpdateMeetingNote(
           body: JSON.stringify(noteData),
         }
       );
-      console.log('Updated existing meeting note:', existingNote.documentId);
     } else {
       // Créer une nouvelle note
       response = await fetch(`${STRAPI_URL}/api/meeting-notes`, {
@@ -218,18 +212,15 @@ async function createOrUpdateMeetingNote(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(noteData),
       });
-      console.log('Created new meeting note');
     }
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Failed to save meeting note:', error);
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error('Error creating/updating meeting note:', error);
     return false;
   }
 }
@@ -246,7 +237,6 @@ export async function POST(request: NextRequest) {
     // Vérifier la signature si le secret est configuré
     if (FATHOM_WEBHOOK_SECRET) {
       if (!verifyWebhookSignature(FATHOM_WEBHOOK_SECRET, signature, rawBody)) {
-        console.error('Invalid webhook signature');
         return NextResponse.json(
           { error: 'Invalid signature' },
           { status: 401 }
@@ -257,11 +247,6 @@ export async function POST(request: NextRequest) {
     }
 
     const payload: FathomWebhookPayload = JSON.parse(rawBody);
-    console.log('Received Fathom webhook:', {
-      call_id: payload.call_id,
-      title: payload.title,
-      start_time: payload.start_time,
-    });
 
     // Trouver l'événement calendrier correspondant
     const calendarEvent = await findMatchingCalendarEvent(
@@ -271,14 +256,12 @@ export async function POST(request: NextRequest) {
     );
 
     if (!calendarEvent) {
-      console.log('No matching calendar event found, storing note without link');
     }
 
     // Récupérer l'ID utilisateur depuis l'événement ou utiliser un default
     const userId = calendarEvent?.users?.[0]?.id;
     if (!userId) {
-      console.error('No user found for this meeting');
-      return NextResponse.json(
+        return NextResponse.json(
         { error: 'No user associated with this meeting' },
         { status: 400 }
       );
@@ -306,7 +289,6 @@ export async function POST(request: NextRequest) {
       linked_to_event: !!calendarEvent,
     });
   } catch (error) {
-    console.error('Webhook processing error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

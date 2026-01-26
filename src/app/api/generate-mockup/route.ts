@@ -222,7 +222,6 @@ async function generateMockupImage(
   }
 
   try {
-    console.log('[Mockup] Generating with DALL·E 3...');
 
     const response = await Promise.race([
       openai.images.generate({
@@ -263,7 +262,6 @@ async function generateMockupImage(
  * Fallback generation using Pollinations.ai
  */
 async function generateWithPollinations(prompt: string): Promise<string> {
-  console.log('[Mockup] Generating with Pollinations.ai...');
   
   const encodedPrompt = encodeURIComponent(prompt);
   const seed = Math.floor(Math.random() * 1000000);
@@ -301,7 +299,6 @@ async function generateWithPollinations(prompt: string): Promise<string> {
     const base64 = Buffer.from(arrayBuffer).toString('base64');
     const contentType = response.headers.get('content-type') || 'image/png';
     
-    console.log('[Mockup] Pollinations generation successful');
     return `data:${contentType};base64,${base64}`;
   } catch (error) {
     console.error('[Mockup] Pollinations fetch error:', error);

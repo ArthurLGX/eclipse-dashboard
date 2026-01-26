@@ -236,7 +236,15 @@ const translations = {
     edit_contact: 'Modifier le contact',
     contact_name: 'Nom du contact',
     search_contacts: 'Rechercher...',
-    
+
+    //Emails 
+    compose: 'Rédiger un email',
+    send_regular_email: 'Email classique',
+    send_quote_desc: 'Devis',
+    send_invoice_desc: 'Facture',
+    add_recipient: 'Ajouter un destinataire',
+    new_message: 'Nouveau message',
+   
     // Prospect sources
     source_cold_outreach: 'Prospection froide',
     source_referral: 'Recommandation',
@@ -3400,6 +3408,14 @@ const translations = {
     create_project: 'Create my project',
     creating: 'Creating...',
     onboarding_error: 'Error during setup',
+
+    //Emails 
+    compose: 'Compose',
+    send_regular_email: 'Regular email',
+    send_quote_desc: 'Quote',
+    send_invoice_desc: 'Invoice',
+    add_recipient: 'Add recipient',
+    new_message: 'New message',
     
     // Navigation
     dashboard: 'Dashboard',

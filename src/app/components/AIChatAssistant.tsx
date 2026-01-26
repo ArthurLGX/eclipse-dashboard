@@ -522,6 +522,19 @@ export default function AIChatAssistant() {
     }
   }, [isOpen, initialPrompt, sendMessage, clearInitialPrompt]);
 
+  // Gérer le scroll focus - bloquer le scroll du body quand la modale est ouverte
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
@@ -686,7 +699,8 @@ export default function AIChatAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`fixed bottom-6 left-6 z-[9999] ${panelWidth} ${panelHeight} bg-card border border-default rounded-2xl shadow-2xl flex flex-col overflow-hidden`}
+            className={`fixed bottom-6 left-6 z-[9999] ${panelWidth} ${panelHeight} bg-card border border-default rounded-2xl shadow-2xl flex flex-col overflow-hidden overscroll-contain`}
+            onWheel={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex-shrink-0 px-4 py-3 bg-muted text-primary flex items-center justify-between">
@@ -736,7 +750,10 @@ export default function AIChatAssistant() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-page">
+            <div 
+              className="flex-1 overflow-y-auto p-4 space-y-4 bg-page overscroll-contain"
+              onWheel={(e) => e.stopPropagation()}
+            >
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-4">
                     <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">

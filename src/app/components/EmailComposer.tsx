@@ -103,13 +103,22 @@ export interface EmailComposerProps {
     contactAutocomplete?: boolean;// Autocomplete contacts (compose/invoice)
     draftManagement?: boolean;    // Gestion des brouillons (quote/invoice)
   };
+  
+  /** Email auquel on répond (mode réponse) */
+  replyToEmail?: ReplyToData;
+  
+  /** Callback appelé après envoi réussi */
+  onSuccess?: () => void;
+  
+  /** Mode compact pour fenêtre flottante type Gmail */
+  compact?: boolean;
 }
 
 // ============================================================================
 // COMPOSANT PRINCIPAL
 // ============================================================================
 
-export default function EmailComposer({ type, features }: EmailComposerProps) {
+export default function EmailComposer({ type, features, replyToEmail, onSuccess, compact = false }: EmailComposerProps) {
   const { t } = useLanguage();
   const { user, token } = useAuth();
   const { showGlobalPopup } = usePopup();
@@ -868,6 +877,11 @@ Cordialement`);
         }
 
         setShowSuccessModal(true);
+        
+        // Appeler le callback onSuccess si fourni
+        if (onSuccess) {
+          setTimeout(() => onSuccess(), 1500);
+        }
       }
 
       // Supprimer le brouillon après envoi
@@ -879,7 +893,7 @@ Cordialement`);
     } finally {
       setSending(false);
     }
-  }, [user, token, recipients, subject, message, title, activeFeatures, selectedDocument, includeSignature, signatureData, type, company, attachments, scheduledAt, showGlobalPopup, t, clearDraft]);
+  }, [user, token, recipients, subject, message, title, activeFeatures, selectedDocument, includeSignature, signatureData, type, company, attachments, scheduledAt, showGlobalPopup, t, clearDraft, onSuccess]);
 
   // ============================================================================
   // RENDER HELPERS
@@ -928,27 +942,28 @@ Cordialement`);
   const IconComponent = config.icon;
 
   return (
-    <div className="min-h-screen bg-page">
+    <div className={compact ? 'h-full bg-card flex flex-col' : 'min-h-screen bg-page'}>
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4 p-4">
-            <button
-              onClick={() => router.back()}
-              className="p-2 text-muted hover:text-primary hover:bg-accent-light rounded-lg transition-colors"
-            >
-              <IconArrowLeft className="w-5 h-5" />
-            </button>
+      {!compact && (
+        <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-4 p-4">
+              <button
+                onClick={() => router.back()}
+                className="p-2 text-muted hover:text-primary hover:bg-accent-light rounded-lg transition-colors"
+              >
+                <IconArrowLeft className="w-5 h-5" />
+              </button>
 
-            <h1 className="text-xl font-semibold text-primary flex items-center gap-2">
-              <IconComponent className={`w-6 h-6 text-${config.color}`} />
-              {config.title}
-            </h1>
+              <h1 className="text-xl font-semibold text-primary flex items-center gap-2">
+                <IconComponent className={`w-6 h-6 text-${config.color}`} />
+                {config.title}
+              </h1>
 
-            {(activeFeatures.documentSelector || type === 'invoice') && <SmtpStatusIndicator />}
-          </div>
+              {(activeFeatures.documentSelector || type === 'invoice') && <SmtpStatusIndicator />}
+            </div>
 
-          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(!showPreview)}
               className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
@@ -992,12 +1007,13 @@ Cordialement`);
           </div>
         </div>
       </div>
+      )}
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto p-6">
-        {activeFeatures.documentSelector && <SmtpWarningBanner className="mb-6" />}
+      <div className={compact ? 'flex-1 overflow-y-auto p-4' : 'max-w-4xl mx-auto p-6'}>
+        {!compact && activeFeatures.documentSelector && <SmtpWarningBanner className="mb-6" />}
 
-        <div className="space-y-6">
+        <div className={compact ? 'space-y-3' : 'space-y-6'}>
           {/* Reply-to preview */}
           {activeFeatures.replyTo && replyToData && (
             <motion.div

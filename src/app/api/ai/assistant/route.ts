@@ -88,10 +88,6 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
     );
     const clientsData = await clientsRes.json();
     
-    // Debug: log response
-    if (!clientsData.data) {
-      console.log('[AI Assistant] Clients API response:', JSON.stringify(clientsData).slice(0, 500));
-    }
     
     // Fetch owned projects
     const projectsRes = await fetch(
@@ -114,13 +110,6 @@ async function fetchUserContext(token: string): Promise<UserContext | null> {
     );
     const invoicesData = await invoicesRes.json();
 
-    // Debug: log projects/invoices response if empty
-    if (!projectsData.data || projectsData.data.length === 0) {
-      console.log('[AI Assistant] Projects API response:', JSON.stringify(projectsData).slice(0, 500));
-    }
-    if (!invoicesData.data || invoicesData.data.length === 0) {
-      console.log('[AI Assistant] Invoices API response:', JSON.stringify(invoicesData).slice(0, 500));
-    }
 
     // Transform owned clients
     const ownedClients: ClientSummary[] = (clientsData.data || []).map((c: Record<string, unknown>) => ({
@@ -661,15 +650,7 @@ export async function POST(req: Request) {
     
     // Fetch user context
     const context = token ? await fetchUserContext(token) : null;
-    
-    // Log context status for debugging
-    if (!token) {
-      console.log('[AI Assistant] No auth token provided');
-    } else if (!context) {
-      console.log('[AI Assistant] Failed to fetch user context');
-    } else {
-      console.log(`[AI Assistant] Context loaded: ${context.clients.length} clients, ${context.projects.length} projects, ${context.invoices.length} invoices`);
-    }
+ 
     
     // Build system prompt with context
     const systemPrompt = buildSystemPrompt(context);

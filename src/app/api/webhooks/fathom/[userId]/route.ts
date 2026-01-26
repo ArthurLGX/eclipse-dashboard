@@ -223,7 +223,7 @@ export async function POST(
 
     if (webhookSecret) {
       if (!verifyWebhookSignature(webhookSecret, signature, rawBody)) {
-        console.error('Invalid webhook signature for user:', userId);
+          console.error('Invalid webhook signature for user:', userId);
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
     } else {
@@ -231,10 +231,6 @@ export async function POST(
     }
 
     const payload: FathomWebhookPayload = JSON.parse(rawBody);
-    console.log('Received Fathom webhook for user:', userId, {
-      call_id: payload.call_id,
-      title: payload.title,
-    });
 
     // Trouver l'événement calendrier
     const calendarEvent = await findMatchingCalendarEvent(

@@ -623,11 +623,9 @@ export default function UnifiedOnboardingModal() {
         );
         if (existingClient) {
           client = { id: existingClient.id, documentId: existingClient.documentId, name: existingClient.name };
-          console.log('[Onboarding] Using existing client:', client);
-        }
+         }
       } catch (err) {
-        console.log('[Onboarding] Error checking existing clients:', err);
-      }
+       }
       
       // Create client if not found
       if (!client) {
@@ -647,8 +645,7 @@ export default function UnifiedOnboardingModal() {
         };
         const clientResponse = await addClientUser(user.id, clientData, { skipDuplicateCheck: true }) as { data: { id: number; documentId: string; name: string } };
         client = clientResponse.data;
-        console.log('[Onboarding] Created new client:', client);
-      }
+       }
       setCreatedClient({ id: client.id, documentId: client.documentId, name: client.name });
 
       // 3. Create project
@@ -682,10 +679,8 @@ export default function UnifiedOnboardingModal() {
         client: client.id,
         user: user.id,
       };
-      console.log('[Onboarding] Creating project with data:', projectData);
-      const projectResponse = await createProject(projectData, true);
-      console.log('[Onboarding] Project response:', projectResponse);
-      
+       const projectResponse = await createProject(projectData, true);
+       
       // Handle different response formats
       const project = (projectResponse as { data?: { id: number; documentId: string; title: string }; id?: number; documentId?: string; title?: string }).data 
         || projectResponse as { id: number; documentId: string; title: string };

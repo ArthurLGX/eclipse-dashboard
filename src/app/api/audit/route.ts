@@ -206,7 +206,6 @@ async function fetchWithJsRendering(url: string): Promise<FetchResult> {
   // 1) Try Strapi VPS scrape API (works in production and local)
   try {
     const scrapeUrl = `${strapiUrl}/api/growth-audits/scrape?url=${encodeURIComponent(url)}`;
-    console.log('[Audit] Trying Strapi scrape API...');
     
     const response = await fetch(scrapeUrl, {
       headers: { 
@@ -218,7 +217,6 @@ async function fetchWithJsRendering(url: string): Promise<FetchResult> {
     if (response.ok) {
       const data = await response.json();
       if (data.success && data.data?.html) {
-        console.log(`[Audit] Using Strapi scrape API (${data.duration})`);
         return { html: data.data.html, jsRendered: true };
       }
     } else {
@@ -239,7 +237,6 @@ async function fetchWithJsRendering(url: string): Promise<FetchResult> {
   }
   
   // 3) Fallback to simple fetch (no JS rendering)
-  console.log('[Audit] Falling back to simple fetch (no JS rendering)');
   const response = await fetch(url, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (compatible; EclipseAuditBot/1.0)',
@@ -277,7 +274,6 @@ async function fetchWithPuppeteer(url: string): Promise<FetchResult | null> {
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));
       
       const html = await page.content();
-      console.log('[Audit] Using Puppeteer for JS rendering');
       return { html, jsRendered: true };
     } finally {
       await browser.close();

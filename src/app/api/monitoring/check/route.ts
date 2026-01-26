@@ -306,7 +306,6 @@ async function sendAlert(site: MonitoredSite, result: CheckResult) {
       html: generateAlertEmailTemplate(site, result),
     });
     
-    console.log(`Alert email sent to ${userEmail} for site ${site.name}`);
   } catch (error) {
     console.error('Failed to send alert email:', error);
   }
@@ -330,7 +329,6 @@ export async function GET(request: NextRequest) {
   
   try {
     // Récupérer tous les sites à vérifier
-    console.log(`Fetching monitored sites from ${STRAPI_URL}`);
     
     const response = await fetch(
       `${STRAPI_URL}/api/monitored-sites?populate=users&pagination[pageSize]=100`,
@@ -363,7 +361,6 @@ export async function GET(request: NextRequest) {
         const siteUrl = new URL(site.url);
         const siteHost = siteUrl.hostname;
         if (excludedHosts.some(h => siteHost === h || siteHost.includes(h))) {
-          console.log(`Skipping excluded host: ${site.url}`);
           return false;
         }
       } catch {
@@ -377,8 +374,6 @@ export async function GET(request: NextRequest) {
       const minutesSinceLastCheck = (now.getTime() - lastCheck.getTime()) / 60000;
       return minutesSinceLastCheck >= site.check_interval;
     });
-    
-    console.log(`Checking ${sitesToCheck.length} sites out of ${sites.length}`);
     
     // Vérifier chaque site avec gestion d'erreur individuelle
     const results = await Promise.all(

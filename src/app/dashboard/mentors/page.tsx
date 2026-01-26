@@ -90,8 +90,8 @@ export default function MentorsPage() {
       label: t('actions'),
       render: (_, row) => (
         <TableActions
-          onEdit={() => console.log('Edit mentor:', row.id)}
-          onDelete={() => console.log('Delete mentor:', row.id)}
+          onEdit={() => {}}
+          onDelete={() => {}}
         />
       ),
     },

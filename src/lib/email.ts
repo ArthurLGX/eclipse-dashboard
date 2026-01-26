@@ -146,10 +146,7 @@ export const sendNewsletter = async (options: SendNewsletterOptions): Promise<Em
 
         await transporter.sendMail(mailOptions);
         result.sent++;
-        // Log sans exposer l'email complet
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`Email sent to: ${email.substring(0, 3)}***@${email.split('@')[1]}`);
-        }
+       
         return true;
       } catch (error) {
         result.failed++;
@@ -183,10 +180,6 @@ export const sendNewsletter = async (options: SendNewsletterOptions): Promise<Em
         text: textContent,
         html: htmlContent,
       });
-      // Log uniquement en dev
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Admin copy sent successfully');
-      }
     } catch (error) {
       // Ne pas exposer les détails en production
       if (process.env.NODE_ENV === 'development') {

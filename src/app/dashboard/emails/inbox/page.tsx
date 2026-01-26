@@ -22,7 +22,14 @@ import {
   IconBuilding,
   IconArrowLeft,
    IconArchiveOff,
+  IconPlus,
+  IconChevronDown,
+  IconFileDescription,
+  IconFileInvoice,
+  IconNews,
 } from '@tabler/icons-react';
+import GmailStyleComposer from '@/app/components/GmailStyleComposer';
+import type { EmailComposerType } from '@/app/components/EmailComposer';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -73,6 +80,23 @@ function InboxView() {
   const [totalPages, setTotalPages] = useState(1);
   const [unreadCount, setUnreadCount] = useState(0);
   const pageSize = 25;
+
+  // Gmail-style composer
+  const [showComposer, setShowComposer] = useState(false);
+  const [composerType, setComposerType] = useState<EmailComposerType>('compose');
+  const [replyToEmail, setReplyToEmail] = useState<ReceivedEmail | null>(null);
+  const [showTypeMenu, setShowTypeMenu] = useState(false);
+
+  // Gérer le scroll focus - bloquer le scroll du body pour cette page
+  useEffect(() => {
+    // Bloquer le scroll du body
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      // Restaurer le scroll du body lors du démontage
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   // Load emails
   const loadEmails = useCallback(async () => {
@@ -232,11 +256,17 @@ function InboxView() {
 
   // Reply to email
   const handleReply = (email: ReceivedEmail) => {
-    const replySubject = email.subject?.startsWith('Re:') 
-      ? email.subject 
-      : `Re: ${email.subject || ''}`;
-    
-    router.push(`/dashboard/emails/compose?to=${encodeURIComponent(email.from_email)}&subject=${encodeURIComponent(replySubject)}`);
+    setReplyToEmail(email);
+    setComposerType('compose');
+    setShowComposer(true);
+  };
+
+  // Open new email composer
+  const handleNewEmail = (type: EmailComposerType) => {
+    setReplyToEmail(null);
+    setComposerType(type);
+    setShowComposer(true);
+    setShowTypeMenu(false);
   };
 
   // Format date
@@ -296,6 +326,80 @@ function InboxView() {
             >
               <IconRefresh className={`w-5 h-5 ${syncing ? 'animate-spin' : ''}`} />
             </button>
+          </div>
+
+          {/* Bouton Nouveau message (style Gmail) */}
+          <div className="relative mb-4">
+            <button
+              onClick={() => setShowTypeMenu(!showTypeMenu)}
+              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-accent text-white rounded-2xl hover:shadow-lg shadow-md transition-all hover:scale-[1.02]"
+            >
+              <IconPlus className="w-5 h-5" />
+              <span className="font-semibold">{t('compose') || 'Nouveau'}</span>
+              <IconChevronDown className={`w-4 h-4 transition-transform ${showTypeMenu ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Menu déroulant */}
+            <AnimatePresence>
+              {showTypeMenu && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-[90]" 
+                    onClick={() => setShowTypeMenu(false)}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full left-0 right-0 mt-2 bg-card border border-default rounded-xl shadow-xl overflow-hidden z-[100]"
+                  >
+                    <button
+                      onClick={() => handleNewEmail('compose')}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left group"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
+                        <IconMail className="w-5 h-5 !text-accent" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-primary group-hover:text-accent transition-colors">
+                          {t('classic_email') || 'Email classique'}
+                        </div>
+                        <div className="text-xs text-muted">{t('send_regular_email') || 'Message standard'}</div>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => handleNewEmail('quote')}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left border-t border-default group"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+                        <IconFileDescription className="w-5 h-5 text-blue-500" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-primary group-hover:text-blue-500 transition-colors">
+                          {t('send_quote') || 'Devis'}
+                        </div>
+                        <div className="text-xs text-muted">{t('send_quote_desc') || 'Avec PDF joint'}</div>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => handleNewEmail('invoice')}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left border-t border-default group"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+                        <IconFileInvoice className="w-5 h-5 text-green-500" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-primary group-hover:text-green-500 transition-colors">
+                          {t('send_invoice') || 'Facture'}
+                        </div>
+                        <div className="text-xs text-muted">{t('send_invoice_desc') || 'Avec PDF joint'}</div>
+                      </div>
+                    </button>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
           </div>
           
           {/* Search */}
@@ -358,7 +462,10 @@ function InboxView() {
         </div>
         
         {/* Email List */}
-        <div className="flex-1 overflow-y-auto overscroll-contain">
+        <div 
+          className="flex-1 overflow-y-auto overscroll-contain"
+          onWheel={(e) => e.stopPropagation()}
+        >
           {loading ? (
             <div className="flex items-center justify-center h-40">
               <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
@@ -519,7 +626,10 @@ function InboxView() {
             </div>
             
             {/* Email Content */}
-            <div className="flex-1 overflow-y-auto p-6 bg-card overscroll-contain">
+            <div 
+              className="flex-1 overflow-y-auto p-6 bg-card overscroll-contain"
+              onWheel={(e) => e.stopPropagation()}
+            >
               {loadingEmail ? (
                 <div className="flex items-center justify-center h-40">
                   <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
@@ -628,6 +738,17 @@ function InboxView() {
           </div>
         )}
       </div>
+
+      {/* Gmail-style composer window */}
+      <GmailStyleComposer
+        isOpen={showComposer}
+        onClose={() => {
+          setShowComposer(false);
+          setReplyToEmail(null);
+        }}
+        initialType={composerType}
+        replyToEmail={replyToEmail || undefined}
+      />
     </div>
   );
 }

@@ -45,12 +45,10 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    console.log('GET Fathom config - Strapi raw response:', JSON.stringify(data, null, 2));
     
     const rawEntry = data.data?.[0];
 
     if (!rawEntry) {
-      console.log('GET Fathom config - No config entry found in data.data[0]');
       // Retourner la réponse brute pour debug
       return NextResponse.json({
         config: null,
@@ -59,11 +57,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.log('GET Fathom config - Raw entry:', JSON.stringify(rawEntry, null, 2));
 
     // Gérer les deux structures Strapi (v4 avec attributes wrapper, v5 sans)
     const configEntry = rawEntry.attributes || rawEntry;
-    console.log('GET Fathom config - Config entry (after attributes check):', JSON.stringify(configEntry, null, 2));
 
     // Extraire les valeurs de la config
     const config: FathomConfig = {
@@ -76,7 +72,6 @@ export async function GET(request: NextRequest) {
     };
 
     const connected = !!(config.webhook_secret && config.api_key);
-    console.log('GET Fathom config - Connected:', connected, 'webhook_secret:', !!config.webhook_secret, 'api_key:', !!config.api_key);
 
     return NextResponse.json({
       config,
@@ -119,22 +114,16 @@ export async function POST(request: NextRequest) {
       ...(STRAPI_API_TOKEN && { Authorization: `Bearer ${STRAPI_API_TOKEN}` }),
     };
 
-    console.log('Fathom config save - STRAPI_URL:', STRAPI_URL);
-    console.log('Fathom config save - Token configured:', !!STRAPI_API_TOKEN);
-
     // Chercher si une config existe déjà
     const checkResponse = await fetch(
       `${STRAPI_URL}/api/integration-configs?filters[user][id][$eq]=${userId}&filters[provider][$eq]=fathom`,
       { headers }
     );
 
-    console.log('Check existing config - Status:', checkResponse.status);
-
     let existingId = null;
     if (checkResponse.ok) {
       const checkData = await checkResponse.json();
       existingId = checkData.data?.[0]?.documentId;
-      console.log('Existing config documentId:', existingId);
     } else {
       const checkError = await checkResponse.text();
       console.error('Check config failed:', checkResponse.status, checkError);
@@ -153,12 +142,9 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    console.log('Saving config data:', JSON.stringify(configData, null, 2));
-
     let response;
     if (existingId) {
       // Mettre à jour
-      console.log('Updating existing config:', existingId);
       response = await fetch(`${STRAPI_URL}/api/integration-configs/${existingId}`, {
         method: 'PUT',
         headers,
@@ -166,16 +152,13 @@ export async function POST(request: NextRequest) {
       });
     } else {
       // Créer
-      console.log('Creating new config');
       response = await fetch(`${STRAPI_URL}/api/integration-configs`, {
         method: 'POST',
         headers,
         body: JSON.stringify(configData),
       });
     }
-
-    console.log('Save response status:', response.status);
-
+    
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Strapi save error:', response.status, errorText);

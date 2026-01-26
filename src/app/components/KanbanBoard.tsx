@@ -556,7 +556,7 @@ export default function KanbanBoard({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 overscroll-contain">
       {/* Stats bar */}
       <div className="flex flex-wrap gap-4 p-4 bg-card rounded-lg border border-muted">
         <div className="flex items-center gap-2">
@@ -574,7 +574,16 @@ export default function KanbanBoard({
       </div>
 
       {/* Kanban columns */}
-      <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4">
+      <div 
+        className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 overscroll-x-contain"
+        onWheel={(e) => {
+          // Permettre le scroll horizontal avec la molette
+          if (e.deltaY !== 0 && e.currentTarget.scrollWidth > e.currentTarget.clientWidth) {
+            e.preventDefault();
+            e.currentTarget.scrollLeft += e.deltaY;
+          }
+        }}
+      >
         {PIPELINE_COLUMNS.map((column) => (
           <KanbanColumn
             key={column.id}

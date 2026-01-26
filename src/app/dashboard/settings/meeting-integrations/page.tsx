@@ -86,26 +86,17 @@ export default function MeetingIntegrationsPage() {
   useEffect(() => {
     const loadConfig = async () => {
       if (!user?.id) {
-        console.log('loadConfig: No user ID, skipping');
         setLoading(false);
         return;
       }
       
-      console.log('loadConfig: Fetching config for userId:', user.id);
       
       try {
         const response = await fetch(`/api/integrations/fathom?userId=${user.id}`);
-        console.log('loadConfig: Response status:', response.status);
         
         if (response.ok) {
           const data = await response.json();
-          console.log('loadConfig: API response:', data);
-          if (data.debug) {
-            console.log('loadConfig: DEBUG - Raw Strapi data:', data.debug);
-          }
-          
           if (data.config) {
-            console.log('loadConfig: Config found, connected:', data.connected);
             setConfig(data.config);
             setIsConnected(data.connected);
             setShowTutorial(!data.connected);
@@ -114,13 +105,10 @@ export default function MeetingIntegrationsPage() {
             if (data.config.webhook_secret) setCurrentStep(3);
             if (data.connected) setCurrentStep(4);
           } else {
-            console.log('loadConfig: No config in response');
           }
         } else {
-          console.log('loadConfig: Response not OK');
         }
       } catch (error) {
-        console.error('Error loading Fathom config:', error);
       } finally {
         setLoading(false);
       }
@@ -132,7 +120,6 @@ export default function MeetingIntegrationsPage() {
   // Sauvegarder la config
   const handleSave = async () => {
     if (!user?.id) {
-      console.error('User ID not available');
       showGlobalPopup('Erreur: utilisateur non connecté', 'error');
       return;
     }
@@ -143,7 +130,6 @@ export default function MeetingIntegrationsPage() {
         userId: user.id,
         config,
       };
-      console.log('Saving Fathom config:', payload);
       
       const response = await fetch('/api/integrations/fathom', {
         method: 'POST',

@@ -17,9 +17,6 @@ export default function GoogleRedirectPage() {
       const jwtToken = searchParams.get('access_token');
       const errorParam = searchParams.get('error');
       
-      // Debug: afficher toute l'URL
-      console.log('[Google Redirect] Full URL:', window.location.href);
-      console.log('[Google Redirect] All params:', Array.from(searchParams.entries()));
 
       if (errorParam) {
         setError(errorParam);
@@ -31,9 +28,6 @@ export default function GoogleRedirectPage() {
         return;
       }
 
-      console.log('[Google Redirect] JWT Token received (first 50 chars):', jwtToken.substring(0, 50) + '...');
-      console.log('[Google Redirect] JWT Token length:', jwtToken.length);
-
       try {
         // Vérifier que le token est valide en récupérant les infos utilisateur
         const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me`, {
@@ -42,8 +36,7 @@ export default function GoogleRedirectPage() {
           },
         });
 
-        console.log('[Google Redirect] Response status:', response.status);
-
+ 
         if (!response.ok) {
           const errorData = await response.json();
           console.error('[Google Redirect] Error response:', errorData);

@@ -779,12 +779,7 @@ export default function ExcelImportModal({
         ? excelData.slice(0, 3).map(row => row[titleColIndex] || '(vide)')
         : [];
       
-      console.log('Debug import:', {
-        titleColumnIndex: titleColIndex,
-        headers: headers,
-        sampleTitles,
-        firstRow: excelData[0],
-      });
+  
       
       if (titleColIndex === null) {
         setError(t('excel_title_not_mapped') || 'Veuillez mapper la colonne "Titre" dans les options de mapping ci-dessus');
