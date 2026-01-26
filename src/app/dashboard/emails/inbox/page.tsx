@@ -271,9 +271,9 @@ function InboxView() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] bg-page rounded-xl overflow-hidden border border-default">
+    <div className="flex h-[calc(100vh-80px)] bg-page rounded-xl overflow-hidden border border-default overscroll-contain">
       {/* Email List */}
-      <div className={`${selectedEmail ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-[400px] lg:w-[450px] border-r border-default bg-card`}>
+      <div className={`${selectedEmail ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-[400px] lg:w-[450px] border-r border-default bg-card overscroll-contain`}>
         {/* Header */}
         <div className="p-4 border-b border-default">
           <div className="flex items-center justify-between mb-4">
@@ -358,7 +358,7 @@ function InboxView() {
         </div>
         
         {/* Email List */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overscroll-contain">
           {loading ? (
             <div className="flex items-center justify-center h-40">
               <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
@@ -519,7 +519,7 @@ function InboxView() {
             </div>
             
             {/* Email Content */}
-            <div className="flex-1 overflow-y-auto p-6 bg-card">
+            <div className="flex-1 overflow-y-auto p-6 bg-card overscroll-contain">
               {loadingEmail ? (
                 <div className="flex items-center justify-center h-40">
                   <IconLoader2 className="w-8 h-8 text-accent animate-spin" />

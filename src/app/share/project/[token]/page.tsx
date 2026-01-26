@@ -733,6 +733,18 @@ function PublicGanttView({ tasks, projectName }: {
   const [exportFileName, setExportFileName] = useState(`gantt-${projectName.replace(/\s+/g, '-').toLowerCase()}`);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
+  // Gérer le scroll lock pour la modale d'export
+  useEffect(() => {
+    if (showExportModal) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [showExportModal]);
+
   const normalizeDate = useCallback((date: Date): Date => {
     const normalized = new Date(date);
     normalized.setHours(0, 0, 0, 0);
@@ -1131,8 +1143,14 @@ function PublicGanttView({ tasks, projectName }: {
     <div className="space-y-2">
       {/* Modal d'export avec aperçu */}
       {showExportModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card border border-default rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-hidden overscroll-contain"
+          onWheel={(e) => e.stopPropagation()}
+        >
+          <div 
+            className="bg-card border border-default rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col overscroll-contain"
+            onWheel={(e) => e.stopPropagation()}
+          >
             <div className="p-4 border-b border-default flex items-center justify-between">
               <h3 className="text-lg font-semibold text-primary">
                 {t('export_pdf') || 'Export PDF'}
