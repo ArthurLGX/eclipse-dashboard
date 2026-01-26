@@ -400,6 +400,19 @@ function InboxView() {
     }
   };
 
+  // Type guards
+  const isReceivedEmail = (email: ReceivedEmail | SentEmail | EmailDraft | null): email is ReceivedEmail => {
+    return email !== null && 'from_email' in email && 'received_at' in email;
+  };
+
+  const isSentEmail = (email: ReceivedEmail | SentEmail | EmailDraft | null): email is SentEmail => {
+    return email !== null && 'sent_at' in email && 'recipients' in email && !('from_email' in email);
+  };
+
+  const isEmailDraft = (email: ReceivedEmail | SentEmail | EmailDraft | null): email is EmailDraft => {
+    return email !== null && 'last_modified' in email;
+  };
+
   // Titre de la vue active
   const getViewTitle = (view: EmailView): string => {
     const titles: Record<EmailView, string> = {
@@ -478,7 +491,9 @@ function InboxView() {
         onNewInvoice={() => handleNewEmail('invoice')}
         unreadCounts={{
           inbox: unreadCount,
+          drafts: drafts.length,
         }}
+        labels={labels.map(l => ({ id: l.documentId, name: l.name, color: l.color }))}
       />
       {/* Email List */}
       <div className={`${selectedEmail ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-[400px] lg:w-[450px] border-r border-default bg-card overscroll-contain`}>
@@ -785,7 +800,7 @@ function InboxView() {
       </div>
       
       {/* Email Detail */}
-      <div className={`${selectedEmail ? 'flex' : 'hidden md:flex'} flex-1 flex-col bg-page`}>
+      <div className={`${selectedEmail ? 'flex' : 'hidden md:flex'} flex-1 flex-col bg-page overscroll-contain border-l border-default`}>
         {selectedEmail ? (
           <>
             {/* Detail Header */}
@@ -797,140 +812,151 @@ function InboxView() {
                 <IconArrowLeft className="w-5 h-5" />
               </button>
               
+              {/* Actions selon le type d'email */}
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleReply(selectedEmail)}
-                  className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-colors"
-                >
-                  <IconSend className="w-4 h-4" color="white" />
-                  {t('reply') || 'Répondre'}
-                </button>
-                
-                <button
-                  onClick={(e) => handleArchive(selectedEmail, e)}
-                  className="p-2 text-muted hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
-                  title={selectedEmail.is_archived ? t('unarchive') : t('archive')}
-                >
-                  {selectedEmail.is_archived ? (
-                    <IconArchiveOff className="w-5 h-5" />
-                  ) : (
-                    <IconArchive className="w-5 h-5" />
-                  )}
-                </button>
-                
-                <button
-                  onClick={() => handleDelete(selectedEmail)}
-                  className="p-2 text-muted hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
-                  title={t('delete')}
-                >
-                  <IconTrash className="w-5 h-5" color="red" />
-                </button>
+                {isReceivedEmail(selectedEmail) && (
+                  <>
+                    <button
+                      onClick={() => handleReply(selectedEmail)}
+                      className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90"
+                    >
+                      <IconSend className="w-4 h-4" color="white" />
+                      Répondre
+                    </button>
+                    <button
+                      onClick={(e) => handleArchive(selectedEmail, e)}
+                      className="p-2 text-muted hover:text-accent hover:bg-accent/10 rounded-lg"
+                      title={selectedEmail.is_archived ? 'Désarchiver' : 'Archiver'}
+                    >
+                      {selectedEmail.is_archived ? <IconArchiveOff className="w-5 h-5" /> : <IconArchive className="w-5 h-5" />}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(selectedEmail)}
+                      className="p-2 text-muted hover:text-danger hover:bg-danger/10 rounded-lg"
+                    >
+                      <IconTrash className="w-5 h-5" color="red" />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
             
-            {/* Email Content */}
-            <div 
-              className="flex-1 overflow-y-auto p-6 bg-card overscroll-contain"
-              onWheel={(e) => e.stopPropagation()}
-            >
+            {/* Email Content - Différent selon le type */}
+            <div className="flex-1 overflow-y-auto p-6 bg-card overscroll-contain" onWheel={(e) => e.stopPropagation()}>
               {loadingEmail ? (
                 <div className="flex items-center justify-center h-40">
                   <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
                 </div>
-              ) : (
+              ) : isReceivedEmail(selectedEmail) ? (
+                /* Email reçu */
                 <>
-                  {/* Subject */}
-                  <h2 className="text-2xl font-bold text-primary mb-4">
-                    {selectedEmail.subject || '(Sans objet)'}
-                  </h2>
-                  
-                  {/* Sender Info */}
+                  <h2 className="text-2xl font-bold text-primary mb-4">{selectedEmail.subject || '(Sans objet)'}</h2>
                   <div className="flex items-start gap-4 mb-6 pb-6 border-b border-default">
-                    <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
-                      {selectedEmail.client?.enterprise ? (
-                        <IconBuilding className="w-6 h-6 text-accent" />
-                      ) : (
-                        <IconUser className="w-6 h-6 text-accent" />
-                      )}
+                    <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                      {selectedEmail.client?.enterprise ? <IconBuilding className="w-6 h-6 text-accent" /> : <IconUser className="w-6 h-6 text-accent" />}
                     </div>
-                    
                     <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-primary">
-                          {getSenderName(selectedEmail)}
-                        </span>
-                        {selectedEmail.client?.enterprise && (
-                          <span className="text-sm text-muted">
-                            • {selectedEmail.client.enterprise}
-                          </span>
-                        )}
+                        <span className="font-semibold text-primary">{getSenderName(selectedEmail)}</span>
+                        {selectedEmail.client?.enterprise && <span className="text-sm text-muted">• {selectedEmail.client.enterprise}</span>}
                       </div>
                       <p className="text-sm text-muted">{selectedEmail.from_email}</p>
                       <p className="text-xs text-muted mt-1">
-                        {new Date(selectedEmail.received_at).toLocaleString('fr-FR', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        {new Date(selectedEmail.received_at).toLocaleString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
                       </p>
                     </div>
-                    
-                    <button
-                      onClick={(e) => handleToggleStar(selectedEmail, e)}
-                      className="p-2"
-                    >
-                      {selectedEmail.is_starred ? (
-                        <IconStarFilled className="w-6 h-6 text-amber-500" />
-                      ) : (
-                        <IconStar className="w-6 h-6 text-muted hover:text-amber-500" />
-                      )}
+                    <button onClick={(e) => handleToggleStar(selectedEmail, e)} className="p-2">
+                      {selectedEmail.is_starred ? <IconStarFilled className="w-6 h-6 text-amber-500" /> : <IconStar className="w-6 h-6 text-muted hover:text-amber-500" />}
                     </button>
                   </div>
-                  
-                  {/* Attachments */}
                   {selectedEmail.has_attachments && selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
                     <div className="mb-6 p-4 bg-page border border-default rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <IconPaperclip className="w-4 h-4 text-muted" />
-                        <span className="text-sm font-medium text-primary">
-                          {selectedEmail.attachments.length} {t('attachments') || 'pièce(s) jointe(s)'}
-                        </span>
+                        <span className="text-sm font-medium text-primary">{selectedEmail.attachments.length} pièce(s) jointe(s)</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {selectedEmail.attachments.map((att: { filename: string; contentType: string; size: number }, idx: number) => (
-                          <div
-                            key={idx}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default text-sm"
-                          >
+                        {selectedEmail.attachments.map((att, idx) => (
+                          <div key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default text-sm">
                             <IconPaperclip className="w-3 h-3 text-muted" />
                             <span className="truncate max-w-[150px] text-primary">{att.filename}</span>
-                            <span className="text-xs text-muted">
-                              ({Math.round(att.size / 1024)} Ko)
-                            </span>
+                            <span className="text-xs text-muted">({Math.round(att.size / 1024)} Ko)</span>
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
-                  
-                  {/* Email Body */}
                   <div className="prose prose-sm max-w-none">
                     {selectedEmail.content_html ? (
-                      <div 
-                        dangerouslySetInnerHTML={{ __html: selectedEmail.content_html }}
-                        className="email-content"
-                      />
+                      <div dangerouslySetInnerHTML={{ __html: selectedEmail.content_html }} className="email-content" />
                     ) : (
-                      <pre className="whitespace-pre-wrap font-sans text-primary">
-                        {selectedEmail.content_text || ''}
-                      </pre>
+                      <pre className="whitespace-pre-wrap font-sans text-primary">{selectedEmail.content_text || ''}</pre>
                     )}
                   </div>
                 </>
-              )}
+              ) : isSentEmail(selectedEmail) ? (
+                /* Email envoyé */
+                <>
+                  <h2 className="text-2xl font-bold text-primary mb-4">{selectedEmail.subject}</h2>
+                  <div className="mb-6 pb-6 border-b border-default">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-sm font-medium text-muted">À :</span>
+                      <span className="text-sm text-primary">{selectedEmail.recipients.join(', ')}</span>
+                    </div>
+                    <p className="text-xs text-muted">
+                      Envoyé le {new Date(selectedEmail.sent_at).toLocaleString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
+                    </p>
+                    <span className={`mt-2 inline-block px-2 py-1 text-xs rounded-full ${
+                      selectedEmail.status_mail === 'sent' ? 'bg-green-100 text-green-700' :
+                      selectedEmail.status_mail === 'failed' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
+                    }`}>
+                      {selectedEmail.status_mail === 'sent' ? 'Envoyé' : selectedEmail.status_mail === 'failed' ? 'Échec' : selectedEmail.status_mail === 'pending' ? 'En attente' : 'Planifié'}
+                    </span>
+                  </div>
+                  {selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
+                    <div className="mb-6 p-4 bg-page border border-default rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <IconPaperclip className="w-4 h-4 text-muted" />
+                        <span className="text-sm font-medium text-primary">{selectedEmail.attachments.length} pièce(s) jointe(s)</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedEmail.attachments.map((att, idx) => (
+                          <a key={idx} href={att.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default text-sm hover:bg-hover">
+                            <IconPaperclip className="w-3 h-3 text-muted" />
+                            <span className="truncate max-w-[150px] text-primary">{att.name}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: selectedEmail.content }} />
+                </>
+              ) : isEmailDraft(selectedEmail) ? (
+                /* Brouillon */
+                <>
+                  <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                    <p className="text-sm text-amber-800">
+                      📝 Brouillon • Dernière modification : {new Date(selectedEmail.updatedAt).toLocaleString('fr-FR')}
+                    </p>
+                  </div>
+                  <h2 className="text-2xl font-bold text-primary mb-4">{selectedEmail.subject || '(Sans objet)'}</h2>
+                  {selectedEmail.recipients && selectedEmail.recipients.length > 0 && (
+                    <div className="mb-6 pb-6 border-b border-default">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-muted">À :</span>
+                        <span className="text-sm text-primary">{selectedEmail.recipients.map(r => r.email).join(', ')}</span>
+                      </div>
+                    </div>
+                  )}
+                  {selectedEmail.content && (
+                    <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: selectedEmail.content }} />
+                  )}
+                  <div className="mt-6 flex gap-2">
+                    <button className="px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90">Continuer la rédaction</button>
+                    <button className="px-4 py-2 border border-default rounded-lg hover:bg-hover">Supprimer le brouillon</button>
+                  </div>
+                </>
+              ) : null}
             </div>
           </>
         ) : (
