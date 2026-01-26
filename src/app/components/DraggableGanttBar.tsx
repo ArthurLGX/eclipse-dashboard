@@ -9,8 +9,6 @@ interface DraggableGanttBarProps {
   startOffset: number; // Position de début en jours
   duration: number; // Durée en jours
   dayWidth: number; // Largeur d'un jour en pixels (ex: 32px)
-  startDate: string | null;
-  dueDate: string | null;
   minDate: Date; // Date minimale du Gantt pour calculer les nouvelles dates
   color: string;
   taskStatus?: string;
@@ -27,8 +25,6 @@ export default function DraggableGanttBar({
   startOffset,
   duration,
   dayWidth,
-  startDate,
-  dueDate,
   minDate,
   color,
   taskStatus,

@@ -4166,8 +4166,6 @@ function TaskGanttView({
                                     startOffset={startOffset}
                                     duration={duration}
                                     dayWidth={32}
-                                    startDate={effectiveStartDate}
-                                    dueDate={effectiveEndDate}
                                     minDate={ganttData.minDate}
                                     color={group.color}
                                     taskStatus={task.task_status}
@@ -4240,8 +4238,6 @@ function TaskGanttView({
                                         startOffset={subPos.startOffset}
                                         duration={subPos.duration}
                                         dayWidth={32}
-                                        startDate={subtask.start_date}
-                                        dueDate={subtask.due_date}
                                         minDate={ganttData.minDate}
                                         color={group.color}
                                         taskStatus={subtask.task_status}
