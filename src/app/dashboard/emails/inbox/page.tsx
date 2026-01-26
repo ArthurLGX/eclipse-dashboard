@@ -594,7 +594,7 @@ function InboxView() {
                 ) : (
                   <>
                     <IconStar className="w-4 h-4" />
-                    <span>✨ Catégoriser avec l'IA ({emails.length} emails)</span>
+                    <span>✨ Catégoriser avec l&apos;IA ({emails.length} emails)</span>
                   </>
                 )}
               </button>
