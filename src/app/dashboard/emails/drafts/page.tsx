@@ -20,7 +20,8 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import { fetchEmailDrafts, deleteEmailDraft, type EmailDraft, type EmailCategory } from '@/lib/api';
+import { fetchEmailDrafts, deleteEmailDraft } from '@/lib/api';
+import type { EmailDraft, EmailCategory } from '@/types';
 
 export default function DraftsPage() {
   return (
