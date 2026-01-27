@@ -1008,11 +1008,16 @@ export async function updateQuoteStatusWithSync(
   // Mettre à jour le statut du devis
   await put(`factures/${quoteDocumentId}`, { quote_status: newQuoteStatus });
   
-  // Si on a le client, mettre à jour son statut pipeline
+  // Si on a le client, mettre à jour son statut pipeline et l'estimation
   if (clientDocumentId) {
-    // Récupérer le statut actuel du client
-    const clientResponse = await get<{ data?: { pipeline_status?: string } }>(`clients/${clientDocumentId}`);
+    // Récupérer le statut actuel du client ET le montant du devis
+    const [clientResponse, quoteResponse] = await Promise.all([
+      get<{ data?: { pipeline_status?: string } }>(`clients/${clientDocumentId}`),
+      get<{ data?: { total_ttc?: number; total_ht?: number } }>(`factures/${quoteDocumentId}`)
+    ]);
+    
     const currentStatus = clientResponse?.data?.pipeline_status || 'new';
+    const quoteAmount = quoteResponse?.data?.total_ttc || quoteResponse?.data?.total_ht || 0;
     
     // Ordre de priorité des statuts (index plus élevé = plus avancé)
     const statusPriority: Record<string, number> = {
@@ -1062,7 +1067,17 @@ export async function updateQuoteStatusWithSync(
       }
       
       if (newPriority >= currentPriority || newPipelineStatus === 'lost') {
-        await put(`clients/${clientDocumentId}`, { pipeline_status: newPipelineStatus });
+        // Préparer les données à mettre à jour
+        const updateData: Record<string, unknown> = { 
+          pipeline_status: newPipelineStatus 
+        };
+        
+        // Si le devis est envoyé, mettre à jour l'estimation avec le montant du devis
+        if (newQuoteStatus === 'sent' && quoteAmount > 0) {
+          updateData.estimated_value = quoteAmount;
+        }
+        
+        await put(`clients/${clientDocumentId}`, updateData);
       }
     }
   }
