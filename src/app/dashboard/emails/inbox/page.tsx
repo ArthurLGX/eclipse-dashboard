@@ -248,9 +248,23 @@ function InboxView() {
       } else {
         showGlobalPopup(t('inbox_up_to_date') || 'Boîte de réception à jour', 'info');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Sync error:', error);
-      showGlobalPopup(t('sync_error') || 'Erreur de synchronisation', 'error');
+      
+      // Vérifier si c'est une erreur de configuration IMAP manquante
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const isImapNotConfigured = errorMessage.includes('No SMTP/IMAP configuration') || 
+                                   errorMessage.includes('IMAP configuration not found') ||
+                                   errorMessage.includes('400');
+      
+      if (isImapNotConfigured) {
+        showGlobalPopup(
+          t('imap_not_configured') || 'Configuration IMAP non trouvée. Veuillez configurer votre IMAP dans les paramètres.',
+          'warning'
+        );
+      } else {
+        showGlobalPopup(t('sync_error') || 'Erreur de synchronisation', 'error');
+      }
     } finally {
       setSyncing(false);
     }

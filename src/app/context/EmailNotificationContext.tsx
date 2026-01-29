@@ -31,8 +31,10 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
   const [notifications, setNotifications] = useState<EmailNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [imapConfigured, setImapConfigured] = useState<boolean | null>(null); // null = pas encore vérifié, false = pas configuré, true = configuré
   const lastSyncRef = useRef<number>(0);
   const knownEmailIdsRef = useRef<Set<number>>(new Set());
+  const imapErrorLoggedRef = useRef<boolean>(false); // Pour ne logger l'erreur qu'une seule fois
 
   // Add a notification
   const addNotification = useCallback((email: ReceivedEmail) => {
@@ -65,10 +67,18 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
     // Ne pas faire d'appels API si l'utilisateur n'est pas authentifié
     if (!authenticated || !user?.id || isSyncing) return;
     
+    // Ne pas synchroniser si on sait déjà que l'IMAP n'est pas configuré
+    if (imapConfigured === false) return;
+    
     setIsSyncing(true);
     try {
       // First, sync from IMAP
       await syncInbox();
+      
+      // Si on arrive ici, l'IMAP est configuré et fonctionne
+      if (imapConfigured === null) {
+        setImapConfigured(true);
+      }
       
       // Then fetch recent unread emails
       const response = await fetchInbox({
@@ -96,12 +106,30 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
       }
       
       lastSyncRef.current = Date.now();
-    } catch (error) {
-      console.error('Email sync error:', error);
+    } catch (error: unknown) {
+      // Vérifier si c'est une erreur de configuration IMAP manquante
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const isImapNotConfigured = errorMessage.includes('No SMTP/IMAP configuration') || 
+                                   errorMessage.includes('IMAP configuration not found') ||
+                                   errorMessage.includes('400');
+      
+      if (isImapNotConfigured) {
+        // Marquer l'IMAP comme non configuré pour arrêter les tentatives
+        setImapConfigured(false);
+        
+        // Ne logger qu'une seule fois
+        if (!imapErrorLoggedRef.current) {
+          console.info('ℹ️ Configuration IMAP non trouvée - Synchronisation automatique désactivée. Configurez votre IMAP dans les paramètres pour activer la réception automatique d\'emails.');
+          imapErrorLoggedRef.current = true;
+        }
+      } else {
+        // Autre type d'erreur, logger normalement
+        console.error('Email sync error:', error);
+      }
     } finally {
       setIsSyncing(false);
     }
-  }, [authenticated, user?.id, isSyncing, addNotification]);
+  }, [authenticated, user?.id, isSyncing, imapConfigured, addNotification]);
 
   // Initial sync and periodic sync
   useEffect(() => {
