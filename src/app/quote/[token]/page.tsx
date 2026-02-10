@@ -392,14 +392,14 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
               onClick={() => setSignatureModal('accept')}
               className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors"
             >
-              <IconCheck size={20} />
+              <IconCheck size={15} />
               Accepter le devis
             </button>
             <button
               onClick={() => setSignatureModal('reject')}
               className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-300 transition-colors"
             >
-              <IconX size={20} />
+              <IconX size={15} />
               Refuser le devis
             </button>
           </div>

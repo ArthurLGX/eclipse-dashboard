@@ -369,9 +369,9 @@ function GoogleIntegrationCard() {
         <div className="flex items-center justify-between p-3 bg-muted border border-default rounded-lg">
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
-              <IconCircleCheck size={20} className="text-success flex-shrink-0" />
+              <IconCircleCheck size={15} className="text-success flex-shrink-0" />
             ) : (
-              <IconCircleDashed size={20} className="text-muted flex-shrink-0" />
+              <IconCircleDashed size={15} className="text-muted flex-shrink-0" />
             )}
             <div>
               <p className="font-medium text-primary">{t('google_login') || 'Connexion Google'}</p>
@@ -389,7 +389,7 @@ function GoogleIntegrationCard() {
 
         <div className="flex items-center justify-between p-3 bg-muted border border-default rounded-lg">
           <div className="flex items-center gap-3">
-            <IconCircleCheck size={20} className="text-success flex-shrink-0" />
+            <IconCircleCheck size={15} className="text-success flex-shrink-0" />
             <div>
               <p className="font-medium text-primary">{t('google_sheets') || 'Google Sheets'}</p>
               <p className="text-sm text-muted">{t('google_sheets_desc') || 'Importer des tâches depuis Google Sheets'}</p>
@@ -495,7 +495,7 @@ export default function IntegrationsPage() {
           href="/dashboard/settings"
           className="p-2 hover:bg-hover rounded-lg transition-colors text-secondary"
         >
-          <IconArrowLeft size={20} />
+          <IconArrowLeft size={15} />
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-primary">

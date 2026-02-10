@@ -542,11 +542,11 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
         {/* Header */}
         <div className="flex-shrink-0 bg-card border-b border-default p-4 flex items-center justify-between rounded-t-2xl">
           <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
-            <IconSettings size={20} />
+            <IconSettings size={15} />
             {t('portfolio_settings')}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg transition-colors">
-            <IconX size={20} className="text-muted" />
+            <IconX size={15} className="text-muted" />
           </button>
         </div>
 
@@ -1196,7 +1196,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-default">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-accent-light">
-              <IconDownload size={20} className="!text-accent" />
+              <IconDownload size={15} className="!text-accent" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-primary">
@@ -1208,7 +1208,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
             </div>
           </div>
           <button onClick={handleClose} className="p-2 hover:bg-hover rounded-lg transition-colors">
-            <IconX size={20} className="text-primary" />
+            <IconX size={15} className="text-primary" />
           </button>
         </div>
 
@@ -1881,7 +1881,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
             onClick={onClose}
             className="p-2 rounded-lg hover:bg-hover text-muted hover:text-primary transition-colors"
           >
-            <IconX size={20} />
+            <IconX size={15} />
           </button>
         </div>
 
@@ -2185,7 +2185,7 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
         onClick={onAddProject}
         className="flex items-center gap-2 px-6 py-3 bg-accent text-accent font-medium rounded-xl hover:bg-accent transition-colors"
       >
-        <IconPlus size={20} />
+        <IconPlus size={15} />
         {t('portfolio_add_first')}
       </button>
     </div>

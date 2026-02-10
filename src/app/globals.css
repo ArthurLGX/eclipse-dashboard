@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap&family=Poppins:wght@400..800&display=swap&family=Geist:wght@400..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Racing+Sans+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap');
 
 @import 'tailwindcss';
 
@@ -16,6 +17,7 @@
   --font-dm-sans: 'DM Sans', sans-serif;
   --font-dm-serif-text: 'DM Serif Text', serif;
   --font-racing: 'Racing Sans One', cursive;
+  --font-funnel-display: 'Funnel Display', sans-serif;
   
   /* Highlight color for important buttons */
   --color-highlight: #ff380b;
@@ -79,7 +81,7 @@
   --color-primary-text: #FFFFFF;
   
    --color-success: #7b9603;
-  --color-success-bg: #7b9603;
+  --color-success-bg: #171c00;
   --color-success-border: #242c02;
   --color-success-text: #151a02;
   
@@ -89,7 +91,7 @@
   --color-info-text: #d8d7d7;
   
   --color-warning: #851b03;
-  --color-warning-light: #f57048;
+  --color-warning-light: #160500;
   --color-warning-bg: #f57048;
   --color-warning-border: rgba(255, 56, 11, 0.3);
   --color-warning-text: #310c01 ;
@@ -123,12 +125,12 @@
 :root.light {
   /* Backgrounds - Blanc */
   --bg-page: #FFFFFF;
-  --bg-card: #f7f7f7;
-  --bg-card-hover: #e0e0e0;
-  --bg-input: #f0f0f0;
-  --bg-sidebar: #f0f0f0;
+  --bg-card: #f8f8f8;
+  --bg-card-hover: #f4f4f4;
+  --bg-input: #f8f8f8;
+  --bg-sidebar: #f8f8f8;
   --bg-hover: #e0e0e0;
-  --bg-muted: #f5f4f4;
+  --bg-muted: #ffffff;
   
   /* Borders - Nuances de gris */
   --border-default: #e0e0e0;
@@ -153,7 +155,7 @@
 
   /* Accent colors - Noir et blanc */
   --color-accent: #ff380b;
-  --color-accent-light: #ffb7a7;
+  --color-accent-light: #ffeae5;
   --color-accent-bg: #f8e8e4;
   --color-accent-muted: #ff5c29;
   --color-accent-subtle: #ff380b;
@@ -1263,7 +1265,7 @@ body {
   min-height: 100vh;
   width: 100%;
   color: var(--text-primary);
-  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+  font-family: var(--font-funnel-display), Arial, Helvetica, sans-serif;
   padding: 8px;
   margin: 0;
   overflow-x: hidden;
@@ -1313,7 +1315,7 @@ main {
   justify-content: start;
   width: 100%;
   height: 100%;
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-funnel-display), sans-serif;
 }
 
 /* Mode light - Main blanc avec texte noir */
@@ -1324,7 +1326,7 @@ main {
 
 h1 {
   font-size: 2.5rem;
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-funnel-display);
   text-align: left;
   font-weight: 800;
   line-height: 1.1;
@@ -1335,7 +1337,7 @@ h1 {
 }
 
 h2 {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-funnel-display);
   font-size: 1.75rem;
   font-weight: 400 !important;
   letter-spacing: 0.01em !important;
@@ -1344,7 +1346,7 @@ h2 {
 }
 
 h3 {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-funnel-display);
   font-size: 1rem;
   font-weight: 400 !important;
   letter-spacing: 0.01em;
@@ -1353,7 +1355,7 @@ h3 {
 }
 
 h4 {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-funnel-display);
   font-size: 1rem;
   font-weight: 400 !important;
   letter-spacing: 0.01em !important;
@@ -1362,7 +1364,7 @@ h4 {
 }
 
 p {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-funnel-display);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.6;
@@ -1381,13 +1383,13 @@ p {
 }
 
 button {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-funnel-display);
   font-size: 14px;
   font-weight: 500;
 }
 
 a {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-funnel-display);
   font-size: 14px;
   font-weight: 500;
   color: var(--color-accent);
@@ -1421,7 +1423,7 @@ a.link-highlight:hover {
 }
 
 label {
-    font-family: var(--font-poppins), sans-serif;
+    font-family: var(--font-funnel-display);
   font-weight: 500;
   color: var(--text-secondary);
 }
@@ -1432,14 +1434,14 @@ label {
 }
 
 span {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-funnel-display);
 }
 
 
 
 /* Form elements */
 input, textarea, select {
-    font-family: var(--font-poppins), sans-serif;
+        font-family: var(--font-funnel-display);
   font-size: 14px !important;
   background-color: var(--bg-input);
   border: 1px solid var(--border-input);

@@ -201,19 +201,19 @@ function DashboardLayoutContent({
     {
       id: 'category_activity',
       label: t('category_activity') || 'Activité',
-      icon: <IconActivity size={20} stroke={1} />,
+      icon: <IconActivity size={15} stroke={1} />,
       isCategory: true,
       menuItems: [
         {
           id: 'home',
           label: t('dashboard'),
-          icon: <IconHome size={20} stroke={1} />,
+          icon: <IconHome size={15} stroke={1} />,
           path: '/dashboard',
         },
         {
           id: 'global_revenue_stats',
           label: t('global_revenue_stats'),
-          icon: <IconChartLine size={20} stroke={1} />,
+          icon: <IconChartLine size={15} stroke={1} />,
           path: '/dashboard/revenue',
         },
       ],
@@ -225,33 +225,33 @@ function DashboardLayoutContent({
     {
       id: 'category_relations',
       label: t('category_relations') || 'Relations',
-      icon: <IconUsersGroup size={20} stroke={1} />,
+      icon: <IconUsersGroup size={15} stroke={1} />,
       isCategory: true,
       menuItems: [
         // Contacts unifiés (anciennement Clients + Prospects)
         {
           id: 'contacts',
           label: t('contacts') || 'Contacts',
-          icon: <IconUsers size={20} stroke={1} />,
+          icon: <IconUsers size={15} stroke={1} />,
           path: '/dashboard/clients',
         },
         // Pipeline CRM (vue Kanban des contacts avec filtrage par pipeline_status)
         {
           id: 'pipeline',
           label: t('pipeline') || 'Pipeline CRM',
-          icon: <IconChartBar size={20} stroke={1} />,
+          icon: <IconChartBar size={15} stroke={1} />,
           path: '/dashboard/pipeline',
         },
         {
           id: 'mentors',
           label: t('mentors'),
-          icon: <IconBrain size={20} stroke={1} />,
+          icon: <IconBrain size={15} stroke={1} />,
           path: '/dashboard/mentors',
         },
         {
           id: 'subscriptions',
           label: t('subscriptions') || 'Abonnements',
-          icon: <IconCreditCard size={20} stroke={1} />,
+          icon: <IconCreditCard size={15} stroke={1} />,
           path: '/dashboard/subscriptions',
         },
       ],
@@ -263,7 +263,7 @@ function DashboardLayoutContent({
     {
       id: 'category_management',
       label: t('category_management') || 'Gestion',
-      icon: <IconBriefcase size={20} stroke={1} />,
+      icon: <IconBriefcase size={15} stroke={1} />,
       isCategory: true,
       badgeCount: emailUnreadCount > 0 ? emailUnreadCount : undefined,
       menuItems: [
@@ -271,14 +271,14 @@ function DashboardLayoutContent({
         {
           id: 'factures',
           label: t('invoices_and_quotes') || 'Factures / Devis',
-          icon: <IconFileInvoice size={20} stroke={1} />,
+          icon: <IconFileInvoice size={15} stroke={1} />,
           path: '/dashboard/factures',
         },
         // Projets & Organisation
         {
           id: 'projects',
           label: t('projects'),
-          icon: <IconBuilding size={20} stroke={1} />,
+          icon: <IconBuilding size={15} stroke={1} />,
           path: '/dashboard/projects',
           moduleId: 'projects',
           status: getModuleStatus('projects', moduleStatuses) || undefined,
@@ -286,7 +286,7 @@ function DashboardLayoutContent({
         {
           id: 'calendar',
           label: t('calendar') || 'Calendrier',
-          icon: <IconCalendar size={20} stroke={1} />,
+          icon: <IconCalendar size={15} stroke={1} />,
           path: '/dashboard/calendar',
           moduleId: 'calendar',
           status: getModuleStatus('calendar', moduleStatuses) || undefined,
@@ -294,7 +294,7 @@ function DashboardLayoutContent({
         {
           id: 'time_tracking',
           label: t('time_tracking') || 'Suivi du temps',
-          icon: <IconClock size={20} stroke={1} />,
+          icon: <IconClock size={15} stroke={1} />,
           path: '/dashboard/time-tracking',
           moduleId: 'time_tracking',
           status: getModuleStatus('time_tracking', moduleStatuses) || undefined,
@@ -303,7 +303,7 @@ function DashboardLayoutContent({
         {
           id: 'contracts',
           label: t('contracts') || 'Contrats',
-          icon: <IconFileText size={20} stroke={1} />,
+          icon: <IconFileText size={15} stroke={1} />,
           path: '/dashboard/contracts',
           moduleId: 'contracts',
           status: getModuleStatus('contracts', moduleStatuses) || undefined,
@@ -312,7 +312,7 @@ function DashboardLayoutContent({
         {
           id: 'newsletters',
           label: t('newsletters'),
-          icon: <IconMail size={20} stroke={1} />,
+          icon: <IconMail size={15} stroke={1} />,
           path: '/dashboard/newsletters',
           moduleId: 'newsletters',
           status: getModuleStatus('newsletters', moduleStatuses) || undefined,
@@ -320,7 +320,7 @@ function DashboardLayoutContent({
         {
           id: 'emails',
           label: t('emails') || 'Emails',
-          icon: <IconSend size={20} stroke={1} />,
+          icon: <IconSend size={15} stroke={1} />,
           path: '/dashboard/emails',
           moduleId: 'emails',
           status: getModuleStatus('emails', moduleStatuses) || undefined,
@@ -328,7 +328,7 @@ function DashboardLayoutContent({
         {
           id: 'inbox',
           label: t('inbox') || 'Boîte de réception',
-          icon: <IconInbox size={20} stroke={1} />,
+          icon: <IconInbox size={15} stroke={1} />,
           path: '/dashboard/emails/inbox',
           moduleId: 'emails',
           badgeCount: emailUnreadCount > 0 ? emailUnreadCount : undefined,
@@ -337,7 +337,7 @@ function DashboardLayoutContent({
         {
           id: 'monitoring',
           label: t('monitoring') || 'Monitoring',
-          icon: <IconServer size={20} stroke={1} />,
+          icon: <IconServer size={15} stroke={1} />,
           path: '/dashboard/monitoring',
           moduleId: 'monitoring',
           status: getModuleStatus('monitoring', moduleStatuses) || undefined,
@@ -346,7 +346,7 @@ function DashboardLayoutContent({
         {
           id: 'growth_audit',
           label: t('growth_audit') || 'Growth Audit',
-          icon: <IconTargetArrow size={20} stroke={1} />,
+          icon: <IconTargetArrow size={15} stroke={1} />,
           path: '/dashboard/growth-audit',
           moduleId: 'growth_audit',
           status: getModuleStatus('growth_audit', moduleStatuses) || undefined,
@@ -361,13 +361,13 @@ function DashboardLayoutContent({
     {
       id: 'category_resources',
       label: t('category_resources') || 'Ressources',
-      icon: <IconFolder size={20} stroke={1} />,
+      icon: <IconFolder size={15} stroke={1} />,
       isCategory: true,
       menuItems: [
         {
           id: 'portfolio',
           label: t('portfolio') || 'Portfolio',
-          icon: <IconPalette size={20} stroke={1} />,
+          icon: <IconPalette size={15} stroke={1} />,
           path: '/dashboard/portfolio',
           moduleId: 'portfolio',
           status: getModuleStatus('portfolio', moduleStatuses) || undefined,
@@ -375,13 +375,13 @@ function DashboardLayoutContent({
         {
           id: 'media_library',
           label: t('media_library') || 'Bibliothèque',
-          icon: <IconPhoto size={20} stroke={1} />,
+          icon: <IconPhoto size={15} stroke={1} />,
           path: '/dashboard/newsletters/library',
         },
         {
           id: 'instagram_planner',
           label: t('instagram_planner') || 'Instagram Planner',
-          icon: <IconBrandInstagram size={20} stroke={1} />,
+          icon: <IconBrandInstagram size={15} stroke={1} />,
           path: '/dashboard/instagram',
           status: 'new' as const,
         },
@@ -394,7 +394,7 @@ function DashboardLayoutContent({
     {
       id: 'category_account',
       label: t('category_account') || 'Compte',
-      icon: <IconUserCog size={20} stroke={1} />,
+      icon: <IconUserCog size={15} stroke={1} />,
       isCategory: true,
       menuItems: [
         {
@@ -415,19 +415,19 @@ function DashboardLayoutContent({
         {
           id: 'your_subscription',
           label: t('your_subscription'),
-          icon: <IconCreditCard size={20} stroke={1} />,
+          icon: <IconCreditCard size={15} stroke={1} />,
           path: '/dashboard/profile/your-subscription',
         },
         {
           id: 'your_enterprise',
           label: t('your_enterprise'),
-          icon: <IconBuildings size={20} stroke={1} />,
+          icon: <IconBuildings size={15} stroke={1} />,
           path: '/dashboard/profile/your-company',
         },
         {
           id: 'settings',
           label: t('settings') || 'Paramètres',
-          icon: <IconSettings size={20} stroke={1} />,
+          icon: <IconSettings size={15} stroke={1} />,
           path: '/dashboard/settings',
         },
       ],
@@ -439,7 +439,7 @@ function DashboardLayoutContent({
     ...(isAdmin ? [{
       id: 'admin',
       label: t('admin_dashboard') || 'Administration',
-      icon: <IconShield size={20} stroke={1} />,
+      icon: <IconShield size={15} stroke={1} />,
       path: '/admin',
     }] : []),
 
@@ -449,7 +449,7 @@ function DashboardLayoutContent({
     {
       id: 'logout',
       label: t('logout'),
-      icon: <IconLogout size={20} stroke={1} />,
+      icon: <IconLogout size={15} stroke={1} />,
       onClick: logout,
       path: '/login?type=login',
     },

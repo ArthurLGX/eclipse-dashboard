@@ -120,7 +120,7 @@ export default function DeleteConfirmModal({
                 disabled={isDeleting}
                 className="p-1 text-muted hover:text-primary transition-colors disabled:opacity-50"
               >
-                <IconX size={20} />
+                <IconX size={15} />
               </button>
             </div>
 

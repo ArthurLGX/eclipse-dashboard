@@ -387,7 +387,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
       <div className={`p-4 ${config.bgColor} border-b border-default`}>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <StatusIcon size={20} className={config.color} />
+            <StatusIcon size={15} className={config.color} />
             <span className={`text-sm font-medium ${config.color}`}>
               {t(`task_status_${task.status}`) || task.status}
             </span>

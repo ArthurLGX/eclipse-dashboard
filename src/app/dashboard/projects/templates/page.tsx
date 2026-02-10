@@ -303,7 +303,7 @@ export default function ProjectTemplatesPage() {
             href="/dashboard/projects"
             className="p-2 hover:bg-hover rounded-lg transition-colors"
           >
-            <IconArrowLeft size={20} />
+            <IconArrowLeft size={15} />
           </Link>
           <div className="flex items-center gap-3">
             <IconTemplate size={28} className="!text-accent" />
@@ -339,7 +339,7 @@ export default function ProjectTemplatesPage() {
       {/* Search */}
       <div className="flex gap-3 p-4 bg-card rounded-lg border border-muted">
         <div className="relative flex-1">
-          <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <IconSearch size={10} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={searchTerm}

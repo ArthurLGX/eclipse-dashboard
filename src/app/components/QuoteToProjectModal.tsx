@@ -234,7 +234,7 @@ export default function QuoteToProjectModal({
               
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-lg">
-                  <IconCheck className="w-7 h-7 text-green-500" stroke={2.5} />
+                  <IconCheck className="w-7 h-7 text-green-500" stroke={1} />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">
@@ -579,7 +579,7 @@ export default function QuoteToProjectModal({
                   className="py-8 text-center"
                 >
                   <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <IconCheck className="w-8 h-8 text-green-500" stroke={2.5} />
+                    <IconCheck className="w-8 h-8 text-green-500" stroke={1} />
                   </div>
                   <h3 className="text-lg font-semibold text-primary mb-2">
                     {t('project_created_success') || 'Projet créé avec succès !'}

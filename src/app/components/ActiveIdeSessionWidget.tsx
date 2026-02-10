@@ -103,7 +103,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
       <div className={`bg-card border border-default rounded-xl p-4 ${className}`}>
         <div className="flex items-center gap-3 text-muted">
           <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-            <IconCode size={20} />
+            <IconCode size={15} />
           </div>
           <div>
             <p className="text-sm font-medium text-secondary">

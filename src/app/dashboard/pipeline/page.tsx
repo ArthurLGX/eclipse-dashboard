@@ -122,11 +122,11 @@ function SelectContactModal({
         <div className="sticky top-0 bg-card border-b border-default p-4 rounded-t-xl">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
-              <IconUsers size={20} />
+              <IconUsers size={15} />
               {t('select_existing_contact') || 'Sélectionner un contact'}
             </h2>
             <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
-              <IconX size={20} />
+              <IconX size={15} />
             </button>
           </div>
           
@@ -324,7 +324,7 @@ function ContactModal({
             {contact ? t('edit_contact') || 'Modifier le contact' : t('new_contact') || 'Nouveau contact'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
-            <IconX size={20} />
+            <IconX size={15} />
           </button>
         </div>
 

@@ -206,7 +206,7 @@ export default function ContractsPage() {
             className="p-2 text-muted hover:text-primary hover:bg-hover rounded-lg transition-colors"
             title={t('refresh') || 'Actualiser'}
           >
-            <IconRefresh size={20} />
+            <IconRefresh size={15} />
           </button>
           
           {/* Dropdown for creating contracts */}
@@ -350,7 +350,7 @@ export default function ContractsPage() {
               className="flex items-center gap-2 px-6 py-3 bg-card border border-default text-primary rounded-xl hover:bg-hover transition-all"
               onClick={() => setShowManualCreator(true)}
             >
-              <IconPencil size={20} />
+              <IconPencil size={15} />
               {t('create_manually') || 'Créer manuellement'}
             </button>
             <button 

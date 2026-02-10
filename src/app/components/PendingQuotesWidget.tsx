@@ -92,7 +92,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
         className="bg-card border border-default rounded-xl overflow-hidden"
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-default bg-gradient-to-r from-accent-light to-transparent">
+        <div className="px-6 py-4 border-b border-default bg-accent-light">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-accent-light rounded-lg flex items-center justify-center">
@@ -118,7 +118,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
         </div>
 
         {/* Liste des devis */}
-        <div className="divide-y divide-default max-h-[400px] overflow-y-auto">
+        <div className="border-t border-muted max-h-[400px] overflow-y-auto">
           {pendingQuotes.slice(0, 5).map((quote) => {
             const daysSince = getDaysSinceSent(quote);
             const isUrgent = daysSince >= 7;
@@ -131,7 +131,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
             return (
               <div
                 key={quote.documentId}
-                className={`p-4 hover:bg-hover transition-colors ${isUrgent ? 'bg-warning-light' : ''}`}
+                className={`p-4 hover:bg-hover transition-colors ${isUrgent ? 'bg-card' : ''}`}
               >
                 <div className="flex items-center justify-between gap-4">
                   {/* Infos du devis */}

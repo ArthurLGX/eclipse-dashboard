@@ -391,7 +391,7 @@ function LoginContent() {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
                     >
-                      {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                      {showPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                     </button>
                   </div>
                   {passwordError && !isLogin && (
@@ -426,7 +426,7 @@ function LoginContent() {
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
                       >
-                        {showConfirmPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                        {showConfirmPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                       </button>
                     </div>
                     {confirmPasswordError && (

@@ -600,7 +600,7 @@ export default function ProjectWorkflowView({
 
                       {/* Icon */}
                       <div className={`w-10 h-10 rounded-full ${isGhost ? 'bg-muted' : styles.bg} flex items-center justify-center mb-2`}>
-                        <NodeIcon size={20} className={isGhost ? 'text-muted' : styles.text} />
+                        <NodeIcon size={15} className={isGhost ? 'text-muted' : styles.text} />
                       </div>
 
                       {/* Label */}
@@ -830,7 +830,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
                     }`}>
                       {getStatusLabel(project.project_status)}
                     </span>
-                    <IconChevronRight size={20} className="text-muted" />
+                    <IconChevronRight size={15} className="text-muted" />
                   </div>
                 </div>
               </motion.button>

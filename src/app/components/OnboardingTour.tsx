@@ -300,7 +300,7 @@ export default function OnboardingTour({
             <div className="px-6 pt-5 pb-3 flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-                  <IconSparkles size={20} className="!text-accent" />
+                  <IconSparkles size={15} className="!text-accent" />
                 </div>
                 <span className="text-sm text-secondary font-medium">
                   {currentStep + 1} / {steps.length}

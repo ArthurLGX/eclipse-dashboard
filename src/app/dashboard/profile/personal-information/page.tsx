@@ -359,7 +359,7 @@ export default function PersonalInformationPage() {
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
                 >
-                  {showCurrentPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                  {showCurrentPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                 </button>
               </div>
             </div>
@@ -383,7 +383,7 @@ export default function PersonalInformationPage() {
                   onClick={() => setShowNewPassword(!showNewPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
                 >
-                  {showNewPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                  {showNewPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                 </button>
               </div>
               <p className="text-xs text-muted">{t('password_min_chars')}</p>
@@ -408,7 +408,7 @@ export default function PersonalInformationPage() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
                 >
-                  {showConfirmPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                  {showConfirmPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                 </button>
               </div>
             </div>

@@ -370,7 +370,7 @@ export default function SEOAuditPage() {
           {result.opportunities.length > 0 && (
             <div className="bg-card border border-muted rounded-xl p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <IconRocket size={20} className="text-amber-500" />
+                <IconRocket size={15} className="text-amber-500" />
                 Opportunités d&apos;amélioration
               </h2>
               <div className="space-y-3">
@@ -397,7 +397,7 @@ export default function SEOAuditPage() {
           {result.diagnostics.length > 0 && (
             <div className="bg-card border border-muted rounded-xl p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <IconAlertTriangle size={20} className="text-amber-500" />
+                <IconAlertTriangle size={15} className="text-amber-500" />
                 Diagnostics
               </h2>
               <div className="space-y-3">

@@ -355,7 +355,7 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
           onClick={onClose}
           className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 hover:bg-white transition-colors"
         >
-          <IconX size={20} />
+          <IconX size={15} />
         </button>
 
         <div className="flex flex-col lg:flex-row h-full">
@@ -382,13 +382,13 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
                   onClick={prevMedia}
                   className="absolute left-4 p-2 rounded-full bg-white/90 hover:bg-white transition-colors"
                 >
-                  <IconChevronLeft size={20} />
+                  <IconChevronLeft size={15} />
                 </button>
                 <button
                   onClick={nextMedia}
                   className="absolute right-4 p-2 rounded-full bg-white/90 hover:bg-white transition-colors"
                 >
-                  <IconChevronRight size={20} />
+                  <IconChevronRight size={15} />
                 </button>
 
                 {/* Dots */}

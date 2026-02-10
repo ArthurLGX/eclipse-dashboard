@@ -92,7 +92,7 @@ export default function MobileDrawer({
                   onClick={onClose}
                   className="w-9 h-9 flex items-center justify-center rounded-xl bg-muted hover:bg-muted transition-colors active:scale-95"
                 >
-                  <IconX size={20} className="text-primary" />
+                  <IconX size={15} className="text-primary" />
                 </button>
               </div>
 

@@ -34,19 +34,19 @@ const BOTTOM_NAV_ITEMS: BottomNavItem[] = [
 const ICONS: Record<string, { normal: React.ReactNode; active: React.ReactNode }> = {
   home: {
     normal: <IconHome size={22} stroke={1} />,
-    active: <IconHome size={22} stroke={1.5} />,
+    active: <IconHome size={22} stroke={1} />,
   },
   contacts: {
     normal: <IconUsers size={22} stroke={1} />,
-    active: <IconUsers size={22} stroke={1.5} />,
+    active: <IconUsers size={22} stroke={1} />,
   },
   projects: {
       normal: <IconBuilding size={22} stroke={1} />,
-    active: <IconBuilding size={22} stroke={1.5} />,
+    active: <IconBuilding size={22} stroke={1} />,
   },
   factures: {
     normal: <IconFileInvoice size={22} stroke={1} />,
-    active: <IconFileInvoice size={22} stroke={1.5} />,
+    active: <IconFileInvoice size={22} stroke={1} />,
   },
 };
 
@@ -105,7 +105,7 @@ export default function MobileBottomNav({
           className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px] rounded-xl !shadow-none transition-all active:scale-95"
         >
           <span className="mobile-nav-icon">
-            <IconLayoutGrid size={22} stroke={1.5} />
+            <IconLayoutGrid size={22} stroke={1} />
           </span>
           <span className="mobile-nav-label text-[10px] mt-1 font-medium">
             Plus

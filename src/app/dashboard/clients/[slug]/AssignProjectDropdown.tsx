@@ -100,9 +100,9 @@ export default function AssignProjectDropdown({
         className="btn-primary px-4 py-2.5 rounded-lg font-semibold flex items-center gap-2 disabled:opacity-50"
       >
         {loading ? (
-          <IconLoader2 size={20} className="animate-spin" />
+          <IconLoader2 size={15} className="animate-spin" />
         ) : (
-          <IconFolderPlus size={20} className="!text-white" />
+          <IconFolderPlus size={15} className="!text-white" />
         )}
         {t('assign_project') || 'Assigner un projet'}
         <IconChevronDown 

@@ -204,7 +204,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium text-slate-700 flex items-center gap-2">
-                <IconProgress size={20} className="text-accent-subtle" />
+                <IconProgress size={15} className="text-accent-subtle" />
                 Progression du projet
               </span>
               <span className="text-lg font-bold text-accent-subtle">{data.project.progress}%</span>
@@ -222,7 +222,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
         {data.show_tasks && data.project.tasks && data.project.tasks.length > 0 && (
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
             <h2 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-              <IconCheck size={20} className="text-accent-subtle" />
+              <IconCheck size={15} className="text-accent-subtle" />
               Avancement des tâches
             </h2>
             <div className="space-y-3">
@@ -257,7 +257,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
           <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
             <div className="p-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="font-semibold text-slate-800 flex items-center gap-2">
-                <IconPhoto size={20} className="text-accent-subtle" />
+                <IconPhoto size={15} className="text-accent-subtle" />
                 Maquettes à valider ({data.mockups.length})
               </h2>
               {data.validation_status !== 'pending' && (
@@ -289,14 +289,14 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                         disabled={currentMockupIndex === 0}
                         className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 rounded-full shadow-lg hover:bg-white disabled:opacity-30"
                       >
-                        <IconArrowLeft size={20} />
+                        <IconArrowLeft size={15} />
                       </button>
                       <button
                         onClick={() => setCurrentMockupIndex(Math.min(data.mockups.length - 1, currentMockupIndex + 1))}
                         disabled={currentMockupIndex === data.mockups.length - 1}
                         className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 rounded-full shadow-lg hover:bg-white disabled:opacity-30"
                       >
-                        <IconArrowRight size={20} />
+                        <IconArrowRight size={15} />
                       </button>
                     </>
                   )}
@@ -356,14 +356,14 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                 onClick={() => { setValidationAction('approve'); setValidationModal(true); }}
                 className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-subtle text-accent-text rounded-xl font-semibold hover:bg-accent-bg transition-colors"
               >
-                <IconCheck size={20} />
+                <IconCheck size={15} />
                 Valider les maquettes
               </button>
               <button
                 onClick={() => { setValidationAction('request_changes'); setValidationModal(true); }}
                 className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-bg text-accent-subtle rounded-xl font-semibold hover:bg-accent-bg transition-colors"
               >
-                <IconMessageCircle size={20} />
+                <IconMessageCircle size={15} />
                 Demander des modifications
               </button>
             </div>

@@ -65,17 +65,17 @@ const PopupMessage = ({
       >
         {type === 'success' ? (
           <IconCheck
-            size={20}
+            size={15}
             className="!text-success-text  rounded-full bg-success-light p-1"
           />
         ) : type === 'error' ? (
           <IconX
-            size={20}
+            size={15}
             className="!text-danger-text rounded-full bg-danger-light p-1"
           />
         ) : (
           <IconAlertCircle
-            size={20}
+            size={15}
             className="!text-warning-text rounded-full bg-warning-light p-1"
           />
         )}

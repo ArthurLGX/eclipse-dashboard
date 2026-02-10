@@ -113,7 +113,7 @@ export default function EmailSentSuccessModal({
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.4, type: 'spring', damping: 15 }}
                   >
-                    <IconCheck className={`w-10 h-10 ${config.textColor}`} stroke={2.5} />
+                    <IconCheck className={`w-10 h-10 ${config.textColor}`} stroke={1} />
                   </motion.div>
                 </motion.div>
 

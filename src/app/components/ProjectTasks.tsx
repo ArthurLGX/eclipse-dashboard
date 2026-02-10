@@ -4088,13 +4088,13 @@ function TaskGanttView({
             <thead className="sticky top-0 z-20">
               <tr>
                 {/* Colonnes fixes */}
-                <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-[var(--color-card)] border-b border-muted/30">
+                <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
                   {t('task_name') || 'Task Name'}
                 </th>
-                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-[var(--color-card)] border-b border-muted/30">
+                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
                   {t('due_range') || 'Due Range'}
                 </th>
-                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-[var(--color-card)] border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
                   {t('duration') || 'Duration'}
                 </th>
                 {/* Timeline header - Mois */}
@@ -4109,9 +4109,9 @@ function TaskGanttView({
                 ))}
               </tr>
               <tr>
-                <th className="sticky left-0 z-30 bg-[var(--color-card)] h-7 border-b border-muted" />
-                <th className="sticky left-[260px] z-30 bg-[var(--color-card)] border-b border-muted" />
-                <th className="sticky left-[350px] z-30 bg-[var(--color-card)] border-b border-muted shadow-[2px_0_4px_rgba(0,0,0,0.1)]" />
+                <th className="sticky left-0 z-30 bg-card h-7 border-b border-muted" />
+                <th className="sticky left-[260px] z-30 bg-card border-b border-muted" />
+                <th className="sticky left-[350px] z-30 bg-card border-b border-muted shadow-[2px_0_4px_rgba(0,0,0,0.1)]" />
                 {/* Timeline header - Jours */}
                 {dayHeaders.map((day, j) => (
                   <th 
@@ -4144,7 +4144,7 @@ function TaskGanttView({
                       className="cursor-pointer hover:bg-muted transition-colors"
                       onClick={() => toggleGroup(group.color)}
                     >
-                      <td className="py-2.5 px-4 sticky left-0 z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                      <td className="py-2.5 px-4 sticky left-0 z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                         <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
                           <span className="font-medium text-primary text-sm">{groupName}</span>
@@ -4152,8 +4152,8 @@ function TaskGanttView({
                           {isExpanded ? <IconChevronUp className="w-4 h-4 text-muted ml-auto" /> : <IconChevronDown className="w-4 h-4 text-muted ml-auto" />}
                         </div>
                       </td>
-                      <td className="sticky left-[260px] z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
-                      <td className="sticky left-[350px] z-20 bg-[var(--color-card)] shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
+                      <td className="sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
+                      <td className="sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
                       {/* Barre de span du groupe */}
                       <td colSpan={dayHeaders.length} className="h-[40px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                         <div className="relative w-full h-full">
@@ -4305,7 +4305,7 @@ function TaskGanttView({
                                   className="hover:bg-muted cursor-pointer h-[34px]"
                                 onClick={() => onEdit(task)}
                               >
-                                <td className="py-1 !pl-10 !pr-4 sticky left-0 z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                <td className="py-1 !pl-10 !pr-4 sticky left-0 z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <div className="flex items-center gap-2">
                                     <div 
                                       className="w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
@@ -4322,10 +4322,10 @@ function TaskGanttView({
                                     {subtask.assigned_to && <UserAvatar user={subtask.assigned_to} size="sm" className="ml-auto" />}
                                   </div>
                                 </td>
-                                <td className="py-1 px-1 text-center sticky left-[260px] z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                <td className="py-1 px-1 text-center sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <span className="text-[9px] text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
                                 </td>
-                                <td className="py-1 px-1 text-center sticky left-[350px] z-20 bg-[var(--color-card)] shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                                <td className="py-1 px-1 text-center sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
                                   <span className="text-[9px] text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
                                 </td>
                                 <td colSpan={dayHeaders.length} className="h-[34px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
@@ -4365,7 +4365,7 @@ function TaskGanttView({
                           {taskIndex === group.tasks.length - 1 && (
                             <tr className="h-[30px]">
                               <td 
-                                className="py-1 px-4 sticky left-0 z-20 bg-[var(--color-card)] hover:bg-muted/5 cursor-pointer transition-colors"
+                                className="py-1 px-4 sticky left-0 z-20 bg-card hover:bg-muted/5 cursor-pointer transition-colors"
                                 onClick={(e) => { e.stopPropagation(); onAddSubtask(task); }}
                                 style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}
                               >
@@ -4374,8 +4374,8 @@ function TaskGanttView({
                                   <span className="text-xs">{t('add_task') || 'Add task...'}</span>
                                 </div>
                               </td>
-                              <td className="sticky left-[260px] z-20 bg-[var(--color-card)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
-                              <td className="sticky left-[350px] z-20 bg-[var(--color-card)] shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
+                              <td className="sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
+                              <td className="sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
                               <td colSpan={dayHeaders.length} className="h-[30px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                 <div className="relative w-full h-full">
                                   <div className="absolute inset-0 flex">

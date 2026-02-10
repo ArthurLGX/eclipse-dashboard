@@ -271,7 +271,7 @@ function TemplateModal({
             {template ? t('edit_template') || 'Modifier le template' : t('new_template') || 'Nouveau template'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
-            <IconX size={20} />
+            <IconX size={15} />
           </button>
         </div>
 
