@@ -280,10 +280,16 @@ export default function SmtpConfigSection() {
       if (existingConfig && !formData.smtp_password) {
         delete (dataToSave as Partial<CreateSmtpConfigData>).smtp_password;
       }
+      // If editing and IMAP password is empty, don't send it (keep existing)
+      if (existingConfig && !formData.imap_password) {
+        delete (dataToSave as Partial<CreateSmtpConfigData>).imap_password;
+      }
 
       // Passer is_verified basé sur le résultat du test
       const isVerified = testResult?.success === true;
-      await saveSmtpConfig(user.id, dataToSave as CreateSmtpConfigData, isVerified);
+      // Passer imap_verified basé sur le résultat du test IMAP (seulement si IMAP activé)
+      const imapVerified = formData.imap_enabled && imapTestResult?.success === true;
+      await saveSmtpConfig(user.id, dataToSave as CreateSmtpConfigData, isVerified, imapVerified);
       showGlobalPopup(t('smtp_saved_success') || 'Configuration SMTP enregistrée', 'success');
       await loadConfig();
     } catch (error) {

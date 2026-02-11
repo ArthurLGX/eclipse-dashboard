@@ -2367,23 +2367,24 @@ export const fetchSmtpConfig = async (userId: number): Promise<SmtpConfig | null
 export const saveSmtpConfig = async (
   userId: number,
   data: CreateSmtpConfigData,
-  isVerified: boolean = false
+  isVerified: boolean = false,
+  imapVerified: boolean = false
 ): Promise<SmtpConfig> => {
   // Vérifier si une config existe déjà
   const existing = await fetchSmtpConfig(userId);
   
   if (existing) {
-    // Mise à jour - inclure is_verified
+    // Mise à jour - inclure is_verified et imap_verified
     const response = await put<ApiResponse<SmtpConfig>>(
       `smtp-configs/${existing.documentId}`,
-      { ...data, is_verified: isVerified }
+      { ...data, is_verified: isVerified, imap_verified: imapVerified }
     );
     return response.data;
   } else {
     // Création - utiliser connect pour la relation Strapi v5
     const response = await post<ApiResponse<SmtpConfig>>(
       'smtp-configs',
-      { ...data, is_verified: isVerified, users: { connect: [{ id: userId }] } }
+      { ...data, is_verified: isVerified, imap_verified: imapVerified, users: { connect: [{ id: userId }] } }
     );
     return response.data;
   }
