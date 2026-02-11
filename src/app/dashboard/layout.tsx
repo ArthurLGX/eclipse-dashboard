@@ -333,6 +333,15 @@ function DashboardLayoutContent({
           moduleId: 'emails',
           badgeCount: emailUnreadCount > 0 ? emailUnreadCount : undefined,
         },
+        // Smart Follow-Up Engine
+        {
+          id: 'smart_follow_up',
+          label: t('smart_follow_up') || 'Smart Follow-Up',
+          icon: <IconTargetArrow size={15} stroke={1} />,
+          path: '/dashboard/smart-follow-up',
+          moduleId: 'smart_follow_up',
+          status: 'new' as const,
+        },
         // Technique
         {
           id: 'monitoring',
