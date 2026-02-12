@@ -322,6 +322,34 @@ export default function NotificationBell() {
 
             {/* Notifications List */}
             <div className="max-h-96 overflow-y-auto">
+              {/* Emails non lus */}
+              {emailUnreadCount > 0 && (
+                <div className="p-4 bg-info-light border-b border-default">
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      router.push('/dashboard/emails/inbox');
+                    }}
+                    className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
+                        <IconBell className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm font-medium text-primary">
+                          {emailUnreadCount} {emailUnreadCount > 1 ? 'nouveaux emails' : 'nouvel email'}
+                        </p>
+                        <p className="text-xs text-muted">
+                          Cliquez pour voir votre boîte de réception
+                        </p>
+                      </div>
+                    </div>
+                    <IconArrowRight className="w-4 h-4 text-muted" />
+                  </button>
+                </div>
+              )}
+              
               {/* Alertes de quota */}
               {visibleQuotaAlerts.length > 0 && (
                 <div >
