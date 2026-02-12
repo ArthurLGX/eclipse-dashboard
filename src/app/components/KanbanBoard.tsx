@@ -149,7 +149,7 @@ function ContactCard({
             />
           ) : (
             <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-medium !text-accent">{getInitials(contact.name)}</span>
+              <span className="!text-xs font-medium !text-accent">{getInitials(contact.name)}</span>
             </div>
           )}
           
@@ -247,7 +247,7 @@ function ContactCard({
 
       {/* Entreprise */}
       {contact.enterprise && (
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
+        <div className="flex items-center gap-1.5 !text-xs text-muted-foreground mb-2">
           <IconBuilding size={12} />
           <span className="truncate">{contact.enterprise}</span>
         </div>
@@ -259,7 +259,7 @@ function ContactCard({
           <a 
             href={`mailto:${contact.email}`} 
             onClick={(e) => e.stopPropagation()}
-            className="text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
+            className="!text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
           >
             <IconMail size={12} />
           </a>
@@ -268,7 +268,7 @@ function ContactCard({
           <a 
             href={`tel:${contact.phone}`}
             onClick={(e) => e.stopPropagation()}
-            className="text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
+            className="!text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
           >
             <IconPhone size={12} />
           </a>
@@ -279,7 +279,7 @@ function ContactCard({
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
+            className="!text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
           >
             <IconWorld size={12} />
           </a>
@@ -290,13 +290,13 @@ function ContactCard({
       <div className="flex items-center justify-between gap-2 pt-2 border-t border-muted">
         <div className="flex items-center gap-2">
           {contact.estimated_value && (
-            <span className="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-0.5">
+            <span className="!text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-0.5">
               <IconCurrencyEuro size={12} />
               {formatCurrency(contact.estimated_value)?.replace('€', '')}
             </span>
           )}
           {contact.next_action_date && (
-            <span className="text-xs text-muted-foreground flex items-center gap-0.5">
+            <span className="!text-xs text-muted-foreground flex items-center gap-0.5">
               <IconCalendar size={12} />
               {formatDate(contact.next_action_date)}
             </span>
@@ -312,7 +312,7 @@ function ContactCard({
 
       {/* Next action reminder */}
       {contact.next_action && (
-        <div className="mt-2 p-2 bg-warning-light text-warning-text rounded text-xs truncate">
+        <div className="mt-2 p-2 bg-warning-light text-warning-text rounded !text-xs truncate">
           📌 {contact.next_action}
         </div>
       )}
@@ -396,7 +396,7 @@ function KanbanColumn({
             <h3 className={`font-semibold text-sm ${column.color}`}>
               {t(column.title) || column.title}
             </h3>
-            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${column.bgColor} ${column.color} border ${column.borderColor}`}>
+            <span className={`px-2 py-0.5 rounded-full !text-xs font-medium ${column.bgColor} ${column.color} border ${column.borderColor}`}>
               {contacts.length}
             </span>
           </div>
@@ -434,7 +434,7 @@ function KanbanColumn({
         
         {contacts.length === 0 && (
           <div className="h-full min-h-[100px] flex items-center justify-center">
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="!text-xs text-muted-foreground text-center">
               {t('pipeline_empty_column') || 'Glissez un contact ici'}
             </p>
           </div>

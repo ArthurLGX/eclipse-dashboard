@@ -356,7 +356,7 @@ function EmailsDashboard() {
                     </p>
                   </div>
                   
-                  <span className="text-xs text-muted whitespace-nowrap">
+                  <span className="!text-xs text-muted whitespace-nowrap">
                     {formatDate(draft.updatedAt)}
                   </span>
                   

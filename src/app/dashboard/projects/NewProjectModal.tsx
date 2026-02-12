@@ -163,7 +163,7 @@ export default function NewProjectModal({
         {/* Titre, Type et Client - 3 colonnes */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
               <IconFolder size={14} className="text-muted" />
               {t('title') || 'Titre'} <span className="!text-accent">*</span>
             </label>
@@ -179,7 +179,7 @@ export default function NewProjectModal({
           </div>
 
           <div>
-            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
               <IconCode size={14} className="text-muted" />
               {t('type') || 'Type'} <span className="!text-accent">*</span>
             </label>
@@ -196,7 +196,7 @@ export default function NewProjectModal({
           </div>
 
           <div>
-            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
               <IconUsers size={14} className="text-muted" />
               {t('client') || 'Client'} <span className="text-muted">(optionnel)</span>
             </label>
@@ -215,7 +215,7 @@ export default function NewProjectModal({
 
         {/* Description - compact */}
         <div>
-          <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+          <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
             <IconFileDescription size={14} className="text-muted" />
             {t('description') || 'Description'} <span className="!text-accent">*</span>
           </label>
@@ -232,7 +232,7 @@ export default function NewProjectModal({
         {/* Statut et Dates - 3 colonnes compact */}
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className="text-secondary text-xs mb-1.5 font-medium block">
+            <label className="text-secondary !text-xs mb-1.5 font-medium block">
               {t('status') || 'Statut'} <span className="!text-accent">*</span>
             </label>
             <select
@@ -248,7 +248,7 @@ export default function NewProjectModal({
           </div>
 
           <div>
-            <label className="flex items-center gap-1 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1 text-secondary !text-xs mb-1.5 font-medium">
               <IconCalendar size={12} className="text-muted" />
               Début <span className="!text-accent">*</span>
             </label>
@@ -262,7 +262,7 @@ export default function NewProjectModal({
           </div>
 
           <div>
-            <label className="flex items-center gap-1 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1 text-secondary !text-xs mb-1.5 font-medium">
               <IconCalendar size={12} className="text-muted" />
               Fin <span className="!text-accent">*</span>
             </label>
@@ -279,7 +279,7 @@ export default function NewProjectModal({
 
         {/* Technologies - compact */}
         <div className="p-3 bg-muted rounded-lg border border-default">
-          <label className="flex items-center gap-1.5 text-secondary text-xs mb-2 font-medium">
+          <label className="flex items-center gap-1.5 text-secondary !text-xs mb-2 font-medium">
             <IconCode size={14} className="text-muted" />
             {t('technologies') || 'Technologies'} 
             <span className="text-muted">(optionnel)</span>
@@ -290,7 +290,7 @@ export default function NewProjectModal({
                 key={tech}
                 type="button"
                 onClick={() => toggleTechnology(tech)}
-                className={`px-2 py-1 rounded text-xs font-medium transition-colors
+                className={`px-2 py-1 rounded !text-xs font-medium transition-colors
                   ${technologies.includes(tech)
                     ? 'bg-accent text-accent'
                     : 'bg-hover text-secondary hover:bg-card hover:text-primary'
@@ -304,7 +304,7 @@ export default function NewProjectModal({
 
         {/* Notes - compact */}
         <div>
-          <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+          <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
             <IconNote size={14} className="text-muted" />
             {t('notes') || 'Notes'} <span className="text-muted">(optionnel)</span>
           </label>

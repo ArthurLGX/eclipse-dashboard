@@ -112,7 +112,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                     transition={{ duration: 0.3 }}
                   />
                 </div>
-                <p className="text-xs text-muted text-center mt-2">
+                <p className="!text-xs text-muted text-center mt-2">
                   Analyse des nouveaux messages...
                 </p>
               </div>
@@ -126,14 +126,14 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                   <div className="p-4 rounded-xl bg-success-light border border-success/20">
                     <div className="flex items-center gap-2 mb-1">
                       <IconMail className="w-4 h-4 text-success" />
-                      <span className="text-xs font-medium text-success-text">Nouveaux</span>
+                      <span className="!text-xs font-medium text-success-text">Nouveaux</span>
                     </div>
                     <p className="text-2xl font-bold text-success-text">{result.synced}</p>
                   </div>
                   <div className="p-4 rounded-xl bg-secondary border border-default">
                     <div className="flex items-center gap-2 mb-1">
                       <IconCheck className="w-4 h-4 text-muted" />
-                      <span className="text-xs font-medium text-muted">Ignorés</span>
+                      <span className="!text-xs font-medium text-muted">Ignorés</span>
                     </div>
                     <p className="text-2xl font-bold text-primary">{result.skipped}</p>
                   </div>
@@ -150,12 +150,12 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                     </div>
                     <div className="space-y-1 max-h-32 overflow-y-auto">
                       {result.errors.slice(0, 3).map((error, idx) => (
-                        <p key={idx} className="text-xs text-warning-text opacity-80">
+                        <p key={idx} className="!text-xs text-warning-text opacity-80">
                           • {error}
                         </p>
                       ))}
                       {result.errors.length > 3 && (
-                        <p className="text-xs text-warning-text opacity-60">
+                        <p className="!text-xs text-warning-text opacity-60">
                           ... et {result.errors.length - 3} autre(s)
                         </p>
                       )}
@@ -172,16 +172,16 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                         Expéditeurs inconnus ({result.unknownSenders.length})
                       </span>
                     </div>
-                    <p className="text-xs text-info-text opacity-80 mb-3">
+                    <p className="!text-xs text-info-text opacity-80 mb-3">
                       Ces emails proviennent de contacts non enregistrés. Voulez-vous les ajouter ?
                     </p>
                     <div className="space-y-2 max-h-32 overflow-y-auto">
                       {result.unknownSenders.slice(0, 3).map((sender, idx) => (
-                        <div key={idx} className="flex items-center justify-between text-xs">
+                        <div key={idx} className="flex items-center justify-between !text-xs">
                           <span className="text-info-text font-medium">
                             {sender.name || sender.email}
                           </span>
-                          <button className="px-2 py-1 bg-info text-white rounded-lg text-xs hover:opacity-90">
+                          <button className="px-2 py-1 bg-info text-white rounded-lg !text-xs hover:opacity-90">
                             Ajouter
                           </button>
                         </div>

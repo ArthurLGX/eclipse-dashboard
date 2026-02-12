@@ -231,7 +231,7 @@ export default function PersonalInformationPage() {
                 disabled={!editing}
               />
               {editing && (
-                <p className="text-xs text-muted text-center">
+                <p className="!text-xs text-muted text-center">
                   {t('click_to_change_photo') || 'Cliquez pour changer la photo'}
                 </p>
               )}
@@ -386,7 +386,7 @@ export default function PersonalInformationPage() {
                   {showNewPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                 </button>
               </div>
-              <p className="text-xs text-muted">{t('password_min_chars')}</p>
+              <p className="!text-xs text-muted">{t('password_min_chars')}</p>
             </div>
 
             {/* Confirm Password */}

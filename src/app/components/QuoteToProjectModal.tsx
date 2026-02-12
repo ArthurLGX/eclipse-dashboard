@@ -319,7 +319,7 @@ export default function QuoteToProjectModal({
                             <IconListCheck className="w-4 h-4 text-violet-400" />
                             {t('import_tasks_from_lines') || 'Importer les prestations comme tâches'}
                           </div>
-                          <p className="text-xs text-muted mt-0.5">
+                          <p className="!text-xs text-muted mt-0.5">
                             {invoiceLines.length} {t('tasks_will_be_created') || 'tâches seront créées'}
                           </p>
                         </div>
@@ -447,7 +447,7 @@ export default function QuoteToProjectModal({
                       <IconClock className="w-4 h-4" />
                       {t('timing_scope') || 'Périmètre temporel'} *
                     </div>
-                    <p className="text-xs text-muted">
+                    <p className="!text-xs text-muted">
                       {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
@@ -476,7 +476,7 @@ export default function QuoteToProjectModal({
                     {timingMode === 'duration' ? (
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="block text-xs text-muted mb-1">
+                          <label className="block !text-xs text-muted mb-1">
                             {t('duration') || 'Durée'}
                           </label>
                           <select
@@ -490,7 +490,7 @@ export default function QuoteToProjectModal({
                           </select>
                         </div>
                         <div>
-                          <label className="block text-xs text-muted mb-1">
+                          <label className="block !text-xs text-muted mb-1">
                             {t('end_date_preview') || 'Date de fin estimée'}
                           </label>
                           <div className="input w-full bg-muted/50 text-secondary">
@@ -500,7 +500,7 @@ export default function QuoteToProjectModal({
                       </div>
                     ) : (
                       <div>
-                        <label className="block text-xs text-muted mb-1">
+                        <label className="block !text-xs text-muted mb-1">
                           {t('end_date') || 'Date de fin'}
                         </label>
                         <input
@@ -523,12 +523,12 @@ export default function QuoteToProjectModal({
                       <div className="bg-hover rounded-lg p-3 max-h-40 overflow-y-auto space-y-2">
                         {invoiceLines.map((line, index) => (
                           <div key={index} className="flex items-center gap-2 text-sm">
-                            <div className="w-5 h-5 rounded bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-xs font-medium text-violet-600">
+                            <div className="w-5 h-5 rounded bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center !text-xs font-medium text-violet-600">
                               {index + 1}
                             </div>
                             <span className="flex-1 text-primary truncate">{line.description}</span>
                             {estimateHours(line) > 0 && (
-                              <span className="flex items-center gap-1 text-xs text-muted">
+                              <span className="flex items-center gap-1 !text-xs text-muted">
                                 <IconClock className="w-3 h-3" />
                                 {estimateHours(line)}h
                               </span>

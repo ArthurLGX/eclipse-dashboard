@@ -338,7 +338,7 @@ export default function AIInvoiceGenerator({
 
                 {/* Examples */}
                 <div className="space-y-2">
-                  <p className="text-xs text-muted font-medium uppercase tracking-wider">
+                  <p className="!text-xs text-muted font-medium uppercase tracking-wider">
                     {t('ai_examples') || 'Exemples de prompts'}
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -352,7 +352,7 @@ export default function AIInvoiceGenerator({
                       <button
                         key={i}
                         onClick={() => setPrompt(example)}
-                        className="px-3 py-1.5 text-xs bg-muted text-secondary rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
+                        className="px-3 py-1.5 !text-xs bg-muted text-secondary rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
                       >
                         {example}
                       </button>
@@ -391,7 +391,7 @@ export default function AIInvoiceGenerator({
                       {t('ai_confidence') || 'Confiance IA'}: {Math.round(generatedData.confidence * 100)}%
                     </p>
                     {generatedData.reasoning && (
-                      <p className="text-xs text-muted">{generatedData.reasoning}</p>
+                      <p className="!text-xs text-muted">{generatedData.reasoning}</p>
                     )}
                   </div>
                 </div>
@@ -401,19 +401,19 @@ export default function AIInvoiceGenerator({
                   <div className="grid grid-cols-2 gap-4">
                     {generatedData.client && (
                       <div className="p-4 bg-muted rounded-xl">
-                        <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <p className="!text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
                           <IconUser className="w-3.5 h-3.5" />
                           {t('client') || 'Client'}
                         </p>
                         <p className="text-sm font-medium text-primary">{generatedData.client.name}</p>
                         {generatedData.client.enterprise && (
-                          <p className="text-xs text-secondary">{generatedData.client.enterprise}</p>
+                          <p className="!text-xs text-secondary">{generatedData.client.enterprise}</p>
                         )}
                       </div>
                     )}
                     {generatedData.project && (
                       <div className="p-4 bg-muted rounded-xl">
-                        <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <p className="!text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
                           <IconFileInvoice className="w-3.5 h-3.5" />
                           {t('project') || 'Projet'}
                         </p>
@@ -431,7 +431,7 @@ export default function AIInvoiceGenerator({
                     </p>
                     <button
                       onClick={addLine}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent-light !text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 !text-xs bg-accent-light !text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
                     >
                       <IconPlus className="w-3.5 h-3.5" color="white" />
                       {t('add_line') || 'Ajouter'}
@@ -458,7 +458,7 @@ export default function AIInvoiceGenerator({
                         </div>
                         <div className="grid grid-cols-4 gap-3">
                           <div>
-                            <label className="text-xs text-muted">{t('quantity') || 'Qté'}</label>
+                            <label className="!text-xs text-muted">{t('quantity') || 'Qté'}</label>
                             <input
                               type="number"
                               value={line.quantity}
@@ -469,7 +469,7 @@ export default function AIInvoiceGenerator({
                             />
                           </div>
                           <div>
-                            <label className="text-xs text-muted">{t('unit') || 'Unité'}</label>
+                            <label className="!text-xs text-muted">{t('unit') || 'Unité'}</label>
                             <input
                               type="text"
                               value={line.unit || 'unité'}
@@ -478,7 +478,7 @@ export default function AIInvoiceGenerator({
                             />
                           </div>
                           <div>
-                            <label className="text-xs text-muted">{t('unit_price') || 'P.U. HT'}</label>
+                            <label className="!text-xs text-muted">{t('unit_price') || 'P.U. HT'}</label>
                             <input
                               type="number"
                               value={line.unit_price}
@@ -489,7 +489,7 @@ export default function AIInvoiceGenerator({
                             />
                           </div>
                           <div>
-                            <label className="text-xs text-muted">{t('total') || 'Total HT'}</label>
+                            <label className="!text-xs text-muted">{t('total') || 'Total HT'}</label>
                             <p className="px-3 py-2 bg-input rounded-lg text-sm font-medium text-primary">
                               {(line.quantity * line.unit_price).toLocaleString('fr-FR')} €
                             </p>
@@ -521,7 +521,7 @@ export default function AIInvoiceGenerator({
                 {/* Notes */}
                 {generatedData.notes && (
                   <div className="p-4 bg-muted rounded-xl">
-                    <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2">
+                    <p className="!text-xs text-muted font-medium uppercase tracking-wider mb-2">
                       {t('notes') || 'Notes'}
                     </p>
                     <p className="text-sm text-secondary">{generatedData.notes}</p>

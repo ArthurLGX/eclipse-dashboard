@@ -342,7 +342,7 @@ export default function TimeTrackingPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{formatDuration(stats.totalTime)}</p>
-                <p className="text-xs text-muted">{t('total_time') || 'Temps total'}</p>
+                <p className="!text-xs text-muted">{t('total_time') || 'Temps total'}</p>
               </div>
             </div>
           </div>
@@ -353,7 +353,7 @@ export default function TimeTrackingPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold !text-success-text -text">{formatDuration(stats.billableTime)}</p>
-                <p className="text-xs text-muted">{t('billable_time') || 'Temps facturable'}</p>
+                <p className="!text-xs text-muted">{t('billable_time') || 'Temps facturable'}</p>
               </div>
             </div>
           </div>
@@ -364,7 +364,7 @@ export default function TimeTrackingPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-warning">{formatCurrency(stats.billableAmount)}</p>
-                <p className="text-xs text-muted">{t('to_invoice') || 'À facturer'}</p>
+                <p className="!text-xs text-muted">{t('to_invoice') || 'À facturer'}</p>
               </div>
             </div>
           </div>
@@ -458,12 +458,12 @@ export default function TimeTrackingPage() {
                             <div className="flex-1 min-w-0">
                               <p className="font-medium text-primary truncate flex items-center gap-2">
                                 {entry.description || t('no_description') || 'Sans description'}
-                                {isRunning && <span className="text-xs text-warning-text font-normal">({t('running') || 'en cours'})</span>}
+                                {isRunning && <span className="!text-xs text-warning-text font-normal">({t('running') || 'en cours'})</span>}
                                 {entry.source && entry.source !== 'manual' && (
                                   <TimeSourceBadge source={entry.source as TimeEntrySource} />
                                 )}
                               </p>
-                              <p className="text-xs text-muted flex items-center gap-1">
+                              <p className="!text-xs text-muted flex items-center gap-1">
                                 {new Date(entry.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                                 {isRunning && entry.estimated_duration ? (
                                   ` - ${new Date(new Date(entry.start_time).getTime() + entry.estimated_duration * 60000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
@@ -495,7 +495,7 @@ export default function TimeTrackingPage() {
                               )}
                             </div>
                             {entry.billable && entry.hourly_rate && (
-                              <span className="text-xs !text-success-text -text">
+                              <span className="!text-xs !text-success-text -text">
                                 {formatCurrency(actualDuration / 60 * entry.hourly_rate)}
                               </span>
                             )}
@@ -756,7 +756,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
                       key={mins}
                       type="button"
                       onClick={() => setEstimatedDuration(mins)}
-                      className={`px-2 py-1 text-xs rounded transition-colors ${
+                      className={`px-2 py-1 !text-xs rounded transition-colors ${
                         estimatedDuration === mins 
                           ? 'bg-accent text-white' 
                           : 'bg-hover text-muted hover:text-primary hover:bg-hover'

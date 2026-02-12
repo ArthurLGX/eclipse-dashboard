@@ -172,7 +172,7 @@ export default function TrialExpiredModal({
                             {plan.price_monthly.toFixed(2)}
                             {language === 'fr' ? '€' : ''}
                           </div>
-                          <div className="text-secondary text-xs">
+                          <div className="text-secondary !text-xs">
                             {t('per_month')}
                           </div>
                         </div>
@@ -183,10 +183,10 @@ export default function TrialExpiredModal({
                       </p>
 
                       <div className="flex items-center justify-between">
-                        <span className="text-accent text-xs font-medium">
+                        <span className="text-accent !text-xs font-medium">
                           {t('select_plan')}
                         </span>
-                        <div className="text-accent text-xs">→</div>
+                        <div className="text-accent !text-xs">→</div>
                       </div>
                     </motion.button>
                   ))}

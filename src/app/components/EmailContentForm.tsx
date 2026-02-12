@@ -75,7 +75,7 @@ export default function EmailContentForm({
               className="input w-full text-lg"
             />
             {l.titleHint && (
-              <p className="text-xs text-muted mt-1">{l.titleHint}</p>
+              <p className="!text-xs text-muted mt-1">{l.titleHint}</p>
             )}
           </div>
         )}

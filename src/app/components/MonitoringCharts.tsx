@@ -299,10 +299,10 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           >
             <div className="flex items-center gap-2 mb-1">
               <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-              <span className="text-xs text-muted">{kpi.label}</span>
+              <span className="!text-xs text-muted">{kpi.label}</span>
             </div>
             <p className={`text-xl font-bold ${kpi.color}`}>{kpi.value}</p>
-            {kpi.subvalue && <p className="text-xs text-muted">{kpi.subvalue}</p>}
+            {kpi.subvalue && <p className="!text-xs text-muted">{kpi.subvalue}</p>}
           </motion.div>
         ))}
       </div>
@@ -322,7 +322,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
             className="card p-4"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-muted">Uptime {item.period}</span>
+              <span className="!text-xs text-muted">Uptime {item.period}</span>
               <span className={`text-sm font-bold ${
                 item.value >= 99.9 ? 'text-success' : item.value >= 95 ? 'text-warning' : 'text-danger'
               }`}>{item.value}%</span>
@@ -495,7 +495,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
             </ResponsiveContainer>
             <div className="flex flex-col gap-1.5">
               {statusDistribution.map((item) => (
-                <div key={item.name} className="flex items-center gap-2 text-xs">
+                <div key={item.name} className="flex items-center gap-2 !text-xs">
                   <div 
                     className="w-2 h-2 rounded-full" 
                     style={{ backgroundColor: item.color }}
@@ -568,7 +568,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           <div className="flex items-center gap-2 mb-3">
             <IconX className="w-4 h-4 text-danger" />
             <span className="text-sm font-medium text-primary">{t('recent_incidents') || 'Incidents récents'}</span>
-            <span className="text-xs text-muted">({recentIncidents.length})</span>
+            <span className="!text-xs text-muted">({recentIncidents.length})</span>
           </div>
           <div className="space-y-2">
             {recentIncidents.map((incident, index) => (
@@ -579,12 +579,12 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                 <div className="flex items-center gap-2">
                   <IconAlertTriangle className="w-4 h-4 text-danger" />
                   <div>
-                    <p className="text-xs text-primary">{incident.message}</p>
-                    <p className="text-xs text-muted">{incident.time}</p>
+                    <p className="!text-xs text-primary">{incident.message}</p>
+                    <p className="!text-xs text-muted">{incident.time}</p>
                   </div>
                 </div>
                 {incident.statusCode && (
-                  <span className="px-1.5 py-0.5 bg-danger-light text-danger text-xs font-mono rounded">
+                  <span className="px-1.5 py-0.5 bg-danger-light text-danger !text-xs font-mono rounded">
                     HTTP {incident.statusCode}
                   </span>
                 )}

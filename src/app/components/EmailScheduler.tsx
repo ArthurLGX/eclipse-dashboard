@@ -151,7 +151,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
                   type="button"
                   onClick={() => applyQuickSchedule(option)}
                   disabled={disabled}
-                  className="px-3 py-1.5 text-xs bg-muted text-secondary rounded-lg hover:bg-hover hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-default"
+                  className="px-3 py-1.5 !text-xs bg-muted text-secondary rounded-lg hover:bg-hover hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-default"
                 >
                   {option.label}
                 </button>

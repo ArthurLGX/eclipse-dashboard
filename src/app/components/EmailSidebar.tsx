@@ -285,7 +285,7 @@ export default function EmailSidebar({
 
       {/* Footer avec quota de stockage (optionnel) */}
       <div className="p-4 border-t border-default">
-        <div className="text-xs text-muted">
+        <div className="!text-xs text-muted">
           <div className="flex items-center justify-between mb-1">
             <span>Stockage</span>
             <span>15 GB utilisés</span>

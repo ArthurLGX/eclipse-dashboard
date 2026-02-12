@@ -353,7 +353,7 @@ export default function PublicContractSignPage() {
                 <h1 className="font-bold text-slate-900 text-sm sm:text-base truncate">
                   {content.title}
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 truncate">
+                <p className="!text-xs sm:text-sm text-slate-500 truncate">
                   {t.from} {content.parties.provider.name}
                 </p>
               </div>
@@ -368,7 +368,7 @@ export default function PublicContractSignPage() {
                 title={language === 'fr' ? 'Switch to English' : 'Passer en français'}
               >
                 <IconLanguage className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="text-xs sm:text-sm font-medium uppercase">{language}</span>
+                <span className="!text-xs sm:text-sm font-medium uppercase">{language}</span>
               </button>
               
               {/* Sign Button */}
@@ -431,7 +431,7 @@ export default function PublicContractSignPage() {
                   <p className="text-sm text-slate-600 whitespace-pre-line mt-3 leading-relaxed">
                     {content.parties.client.details}
                   </p>
-                  <p className="text-xs text-violet-600 mt-3 font-medium">{t.thatsYou}</p>
+                  <p className="!text-xs text-violet-600 mt-3 font-medium">{t.thatsYou}</p>
                 </div>
               </div>
 
@@ -482,7 +482,7 @@ export default function PublicContractSignPage() {
                       height={80}
                       className="max-h-20 mx-auto object-contain"
                     />
-                    <p className="text-xs text-green-600 mt-3 font-medium">
+                    <p className="!text-xs text-green-600 mt-3 font-medium">
                       ✓ {t.signedOn} {formatDate(contract.provider_signed_at || new Date().toISOString(), language)}
                     </p>
                   </div>
@@ -505,7 +505,7 @@ export default function PublicContractSignPage() {
                       height={80}
                       className="max-h-20 mx-auto object-contain"
                     />
-                    <p className="text-xs text-violet-600 mt-3 font-medium">{t.yourSignature}</p>
+                    <p className="!text-xs text-violet-600 mt-3 font-medium">{t.yourSignature}</p>
                   </div>
                 ) : (
                   <button
@@ -594,7 +594,7 @@ export default function PublicContractSignPage() {
 
             {/* Legal notice */}
             <div className="p-4 bg-amber-50 border-t border-amber-200">
-              <p className="text-xs text-amber-800">
+              <p className="!text-xs text-amber-800">
                 {t.legalNotice}
               </p>
             </div>

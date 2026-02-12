@@ -390,7 +390,7 @@ export default function CreateProjectModal({
                       </p>
                       
                       {!isCustom && (
-                        <div className="flex flex-wrap gap-3 text-xs text-secondary">
+                        <div className="flex flex-wrap gap-3 !text-xs text-secondary">
                           <span className="flex items-center gap-1">
                             <IconClock className="w-3 h-3" />
                             {template.estimated_duration_days} {t('days') || 'jours'}
@@ -410,13 +410,13 @@ export default function CreateProjectModal({
                           {phases.slice(0, 4).map((phase) => (
                             <span
                               key={phase}
-                              className="px-2 py-0.5 text-xs rounded-full bg-muted text-secondary"
+                              className="px-2 py-0.5 !text-xs rounded-full bg-muted text-secondary"
                             >
                               {phase}
                             </span>
                           ))}
                           {phases.length > 4 && (
-                            <span className="px-2 py-0.5 text-xs text-muted">
+                            <span className="px-2 py-0.5 !text-xs text-muted">
                               +{phases.length - 4}
                             </span>
                           )}
@@ -518,7 +518,7 @@ export default function CreateProjectModal({
                       
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs text-muted mb-1">
+                          <label className="block !text-xs text-muted mb-1">
                             {t('name') || 'Nom'} *
                           </label>
                           <input
@@ -530,7 +530,7 @@ export default function CreateProjectModal({
                           />
                         </div>
                         <div>
-                          <label className="block text-xs text-muted mb-1">
+                          <label className="block !text-xs text-muted mb-1">
                             {t('email') || 'Email'}
                           </label>
                           <input
@@ -579,7 +579,7 @@ export default function CreateProjectModal({
                     <IconClock className="w-4 h-4" />
                     {t('timing_scope') || 'Périmètre temporel'} *
                   </div>
-                  <p className="text-xs text-muted">
+                  <p className="!text-xs text-muted">
                     {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                   </p>
                   <div className="grid grid-cols-2 gap-3">
@@ -608,7 +608,7 @@ export default function CreateProjectModal({
                   {timingMode === 'duration' ? (
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs text-muted mb-1">
+                        <label className="block !text-xs text-muted mb-1">
                           {t('duration') || 'Durée'}
                         </label>
                         <select
@@ -622,7 +622,7 @@ export default function CreateProjectModal({
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs text-muted mb-1">
+                        <label className="block !text-xs text-muted mb-1">
                           {t('end_date_preview') || 'Date de fin estimée'}
                         </label>
                         <div className="input w-full bg-muted/50 text-secondary">
@@ -632,7 +632,7 @@ export default function CreateProjectModal({
                     </div>
                   ) : (
                     <div>
-                      <label className="block text-xs text-muted mb-1">
+                      <label className="block !text-xs text-muted mb-1">
                         {t('end_date') || 'Date de fin'}
                       </label>
                       <input

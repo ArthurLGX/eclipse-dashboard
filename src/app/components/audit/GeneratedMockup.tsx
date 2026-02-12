@@ -224,7 +224,7 @@ export default function GeneratedMockup({
               <h4 className="font-semibold text-primary text-sm">
                 {t('ai_mockup') || 'Maquette IA'}
               </h4>
-              <p className="text-xs text-muted">
+              <p className="!text-xs text-muted">
                 {t('ai_mockup_desc') || 'Généré par DALL-E 3'}
               </p>
             </div>
@@ -280,7 +280,7 @@ export default function GeneratedMockup({
                 <IconSparkles className="w-5 h-5" />
                 {t('generate_with_ai') || 'Générer avec l\'IA'}
               </button>
-              <p className="text-xs text-muted mt-3">
+              <p className="!text-xs text-muted mt-3">
                 {t('generation_time') || 'Génération en ~15-20 secondes'}
               </p>
             </div>
@@ -358,7 +358,7 @@ export default function GeneratedMockup({
                   {/* Current */}
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="px-2 py-1 bg-danger-light text-danger text-xs font-medium rounded-full">
+                      <span className="px-2 py-1 bg-danger-light text-danger !text-xs font-medium rounded-full">
                         {t('current') || 'Actuel'}
                       </span>
                     </div>
@@ -381,11 +381,11 @@ export default function GeneratedMockup({
                   {/* Ideal */}
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="px-2 py-1 bg-success-light !text-success-text -text text-xs font-medium rounded-full">
+                      <span className="px-2 py-1 bg-success-light !text-success-text -text !text-xs font-medium rounded-full">
                         {t('ideal') || 'Idéal'}
                       </span>
                       {mockup?.fromCache && (
-                        <span className="text-xs text-muted">({t('cached') || 'cache'})</span>
+                        <span className="!text-xs text-muted">({t('cached') || 'cache'})</span>
                       )}
                     </div>
                     <div className="rounded-lg overflow-hidden border border-success">
@@ -438,10 +438,10 @@ export default function GeneratedMockup({
                   </div>
                   
                   {/* Labels */}
-                  <div className="absolute top-3 left-3 px-2 py-1 bg-danger text-white text-xs font-medium rounded z-10">
+                  <div className="absolute top-3 left-3 px-2 py-1 bg-danger text-white !text-xs font-medium rounded z-10">
                     {t('current') || 'Actuel'}
                   </div>
-                  <div className="absolute top-3 right-3 px-2 py-1 bg-success text-white text-xs font-medium rounded z-10">
+                  <div className="absolute top-3 right-3 px-2 py-1 bg-success text-white !text-xs font-medium rounded z-10">
                     {t('ideal') || 'Idéal'}
                   </div>
                 </div>

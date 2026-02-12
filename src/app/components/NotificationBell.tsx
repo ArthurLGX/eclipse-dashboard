@@ -233,7 +233,7 @@ export default function NotificationBell() {
         .toUpperCase()
         .slice(0, 2);
       return (
-        <span className="text-xs font-bold !text-accent">
+        <span className="!text-xs font-bold !text-accent">
           {initials}
         </span>
       );
@@ -287,7 +287,7 @@ export default function NotificationBell() {
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-danger text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
+              className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-danger text-white !text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
             >
               {(unreadCount + visibleQuotaAlerts.length + emailUnreadCount) > 99 ? '99+' : (unreadCount + visibleQuotaAlerts.length + emailUnreadCount)}
             </motion.span>
@@ -312,7 +312,7 @@ export default function NotificationBell() {
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="text-xs !text-accent hover:text-accent-light flex items-center gap-1"
+                  className="!text-xs !text-accent hover:text-accent-light flex items-center gap-1"
                 >
                   <IconCheckbox className="w-3 h-3" />
                   {t('mark_all_read') || 'Tout marquer comme lu'}
@@ -340,7 +340,7 @@ export default function NotificationBell() {
                         <p className="text-sm font-medium text-primary">
                           {emailUnreadCount} {emailUnreadCount > 1 ? 'nouveaux emails' : 'nouvel email'}
                         </p>
-                        <p className="text-xs text-muted">
+                        <p className="!text-xs text-muted">
                           Cliquez pour voir votre boîte de réception
                         </p>
                       </div>
@@ -381,14 +381,14 @@ export default function NotificationBell() {
                           <div className="flex gap-2 mt-2">
                             <button
                               onClick={handleUpgrade}
-                              className="btn-primary py-1 px-3 text-xs font-medium rounded-lg flex items-center gap-1"
+                              className="btn-primary py-1 px-3 !text-xs font-medium rounded-lg flex items-center gap-1"
                             >
                               {t('upgrade') || 'Mettre à niveau'}
                               <IconArrowRight className="w-3 h-3" />
                             </button>
                             <button
                               onClick={() => handleDismissQuotaAlert(alert.id)}
-                              className="btn-ghost py-1 px-2 text-xs"
+                              className="btn-ghost py-1 px-2 !text-xs"
                             >
                               <IconX className="w-3 h-3" />
                             </button>
@@ -429,7 +429,7 @@ export default function NotificationBell() {
                             <p className="text-sm font-medium text-primary">
                               {notification.title}
                             </p>
-                            <span className="text-xs text-muted whitespace-nowrap">
+                            <span className="!text-xs text-muted whitespace-nowrap">
                               {formatTimeAgo(notification.createdAt)}
                             </span>
                           </div>
@@ -442,14 +442,14 @@ export default function NotificationBell() {
                             <div className="flex gap-2 mt-3">
                               <button
                                 onClick={() => handleAcceptInvitation(notification)}
-                                className="btn-primary flex-1 py-2 px-3 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                                className="btn-primary flex-1 py-2 px-3 !text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
                               >
                                 <IconCheck className="w-4 h-4" />
                                 {t('accept') || 'Accepter'}
                               </button>
                               <button
                                 onClick={() => handleRejectInvitation(notification)}
-                                className="btn-ghost flex-1 py-2 px-3 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                                className="btn-ghost flex-1 py-2 px-3 !text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
                               >
                                 <IconX className="w-4 h-4" />
                                 {t('reject') || 'Refuser'}
@@ -462,7 +462,7 @@ export default function NotificationBell() {
                             <div className="flex gap-2 mt-3">
                               <button
                                 onClick={() => handleContractAction(notification)}
-                                className="btn-primary flex-1 py-2 px-3 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                                className="btn-primary flex-1 py-2 px-3 !text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
                               >
                                 <IconFileCheck className="w-4 h-4" />
                                 {t('view_contract') || 'Voir le contrat'}
@@ -475,7 +475,7 @@ export default function NotificationBell() {
                             <div className="flex gap-2 mt-2">
                               <button
                                 onClick={() => handleDelete(notification.documentId)}
-                                className="text-xs text-muted hover:text-danger flex items-center gap-1"
+                                className="!text-xs text-muted hover:text-danger flex items-center gap-1"
                               >
                                 <IconTrash className="w-3 h-3" />
                                 {t('delete') || 'Supprimer'}

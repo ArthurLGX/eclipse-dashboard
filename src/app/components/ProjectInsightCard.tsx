@@ -245,7 +245,7 @@ export default function ProjectInsightCard({
             {/* Key Metric - inline layout */}
             {insight.key_metric && (
               <div className="flex items-center justify-between gap-3 p-2.5 bg-muted rounded-lg">
-                <span className="text-xs text-muted whitespace-nowrap">{insight.key_metric.label}</span>
+                <span className="!text-xs text-muted whitespace-nowrap">{insight.key_metric.label}</span>
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm font-bold text-primary whitespace-nowrap">
                     {insight.key_metric.value}
@@ -257,7 +257,7 @@ export default function ProjectInsightCard({
 
             {/* Actionable Tip */}
             <div className="pt-2 border-t border-default">
-              <p className="text-xs text-secondary leading-relaxed flex items-start gap-1.5">
+              <p className="!text-xs text-secondary leading-relaxed flex items-start gap-1.5">
                 <span className="flex-shrink-0">💡</span>
                 <span>{insight.actionable_tip}</span>
               </p>

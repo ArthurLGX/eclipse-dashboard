@@ -191,7 +191,7 @@ function SelectContactModal({
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 !text-xs text-muted-foreground">
                       {contact.enterprise && <span className="truncate">{contact.enterprise}</span>}
                       {contact.enterprise && contact.email && <span>•</span>}
                       {contact.email && <span className="truncate">{contact.email}</span>}
@@ -205,7 +205,7 @@ function SelectContactModal({
 
         {/* Footer */}
         <div className="border-t border-default p-3">
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="!text-xs text-muted-foreground text-center">
             {availableContacts.length} {t('contacts_available') || 'contact(s) disponible(s)'}
           </p>
         </div>
@@ -942,7 +942,7 @@ export default function PipelinePage() {
             <p className="text-sm text-muted">
               {t('pipeline_description') || 'Vue globale de vos opportunités'}
             </p>
-            <p className="text-xs text-muted/70 mt-0.5">
+            <p className="!text-xs text-muted/70 mt-0.5">
               {t('pipeline_subtitle') || 'Priorisez, relancez et estimez votre CA'}
             </p>
           </div>
@@ -957,7 +957,7 @@ export default function PipelinePage() {
               title={t('replay_tutorial') || 'Revoir le tutoriel'}
             >
               <IconPlayerPlay size={16} />
-              <span className="text-xs hidden md:inline">{t('tutorial') || 'Tutoriel'}</span>
+              <span className="!text-xs hidden md:inline">{t('tutorial') || 'Tutoriel'}</span>
             </button>
           )}
           <button
@@ -991,12 +991,12 @@ export default function PipelinePage() {
             <div className="bg-card border border-default rounded-xl p-4">
               <div className="flex items-center gap-2 text-muted mb-2">
                 <IconReceipt size={16} />
-                <span className="text-xs font-medium">{t('kpi_potential_revenue') || 'CA Potentiel'}</span>
+                <span className="!text-xs font-medium">{t('kpi_potential_revenue') || 'CA Potentiel'}</span>
               </div>
               <p className="text-xl font-bold text-violet-500">
                 {formatCurrency(kpis.potentialValue)}
               </p>
-              <p className="text-xs text-muted mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {kpis.quotesSentCount + kpis.quotesAcceptedCount} {t('kpi_active_quotes') || 'devis actifs'}
               </p>
             </div>
@@ -1005,12 +1005,12 @@ export default function PipelinePage() {
             <div className="bg-card border border-default rounded-xl p-4">
               <div className="flex items-center gap-2 text-muted mb-2">
                 <IconCheck size={16} />
-                <span className="text-xs font-medium">{t('kpi_won_revenue') || 'CA Gagné'}</span>
+                <span className="!text-xs font-medium">{t('kpi_won_revenue') || 'CA Gagné'}</span>
               </div>
               <p className="text-xl font-bold !text-success-text -text">
                 {formatCurrency(kpis.wonValue)}
               </p>
-              <p className="text-xs text-muted mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {kpis.quotesAcceptedCount} {t('kpi_quotes_accepted') || 'devis acceptés'}
               </p>
             </div>
@@ -1019,12 +1019,12 @@ export default function PipelinePage() {
             <div className="bg-card border border-default rounded-xl p-4">
               <div className="flex items-center gap-2 text-muted mb-2">
                 <IconTrendingUp size={16} />
-                <span className="text-xs font-medium">{t('conversion_rate') || 'Conversion'}</span>
+                <span className="!text-xs font-medium">{t('conversion_rate') || 'Conversion'}</span>
               </div>
               <p className="text-xl font-bold !text-accent">
                 {kpis.conversionRate.toFixed(1)}%
               </p>
-              <p className="text-xs text-muted mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {t('kpi_quotes_to_deals') || 'devis → clients'}
               </p>
             </div>
@@ -1033,12 +1033,12 @@ export default function PipelinePage() {
             <div className="bg-card border border-default rounded-xl p-4">
               <div className="flex items-center gap-2 text-muted mb-2">
                 <IconUsers size={16} />
-                <span className="text-xs font-medium">{t('total_contacts') || 'Total contacts'}</span>
+                <span className="!text-xs font-medium">{t('total_contacts') || 'Total contacts'}</span>
               </div>
               <p className="text-xl font-bold text-primary">
                 {kpis.totalContacts}
               </p>
-              <p className="text-xs text-muted mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {kpis.newContacts} {t('kpi_new_this_month') || 'nouveaux'}
               </p>
             </div>
@@ -1047,12 +1047,12 @@ export default function PipelinePage() {
             <div className="bg-card border border-default rounded-xl p-4">
               <div className="flex items-center gap-2 text-muted mb-2">
                 <IconClock size={16} />
-                <span className="text-xs font-medium">{t('in_progress') || 'En cours'}</span>
+                <span className="!text-xs font-medium">{t('in_progress') || 'En cours'}</span>
               </div>
               <p className="text-xl font-bold text-warning">
                 {kpis.inProgressCount}
               </p>
-              <p className="text-xs text-muted mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {t('active_projects') || 'projets actifs'}
               </p>
             </div>
@@ -1061,12 +1061,12 @@ export default function PipelinePage() {
             <div className="bg-card border border-default rounded-xl p-4">
               <div className="flex items-center gap-2 text-muted mb-2">
                 <IconCheck size={16} />
-                <span className="text-xs font-medium">{t('won') || 'Gagnés'}</span>
+                <span className="!text-xs font-medium">{t('won') || 'Gagnés'}</span>
               </div>
               <p className="text-xl font-bold !text-success-text -text">
                 {kpis.wonCount}
               </p>
-              <p className="text-xs text-muted mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {kpis.lostCount} {t('lost') || 'perdus'}
               </p>
             </div>

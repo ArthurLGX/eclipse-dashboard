@@ -296,7 +296,7 @@ export default function AdminOverviewPage() {
           <div className="p-4 rounded-xl bg-muted/5 border border-muted">
             <div className="flex items-center gap-2 text-muted mb-1">
               <IconDatabase className="w-4 h-4" />
-              <span className="text-xs">{t('database') || 'Base de données'}</span>
+              <span className="!text-xs">{t('database') || 'Base de données'}</span>
             </div>
             <p className={`text-sm font-medium ${
               serverHealth.database === 'connected' ? 'text-success-text' : 'text-danger'
@@ -308,7 +308,7 @@ export default function AdminOverviewPage() {
           <div className="p-4 rounded-xl bg-muted/5 border border-muted">
             <div className="flex items-center gap-2 text-muted mb-1">
               <IconClock className="w-4 h-4" />
-              <span className="text-xs">{t('response_time') || 'Temps de réponse'}</span>
+              <span className="!text-xs">{t('response_time') || 'Temps de réponse'}</span>
             </div>
             <p className={`text-sm font-medium ${
               (serverHealth.responseTime || 0) < 200 ? 'text-success-text' : 
@@ -321,7 +321,7 @@ export default function AdminOverviewPage() {
           <div className="p-4 rounded-xl bg-muted/5 border border-muted">
             <div className="flex items-center gap-2 text-muted mb-1">
               <IconServer className="w-4 h-4" />
-              <span className="text-xs">{t('strapi_version') || 'Version Strapi'}</span>
+              <span className="!text-xs">{t('strapi_version') || 'Version Strapi'}</span>
             </div>
             <p className="text-sm font-medium text-primary">
               {serverHealth.version || '-'}
@@ -331,7 +331,7 @@ export default function AdminOverviewPage() {
           <div className="p-4 rounded-xl bg-muted/5 border border-muted">
             <div className="flex items-center gap-2 text-muted mb-1">
               <IconClock className="w-4 h-4" />
-              <span className="text-xs">{t('last_check') || 'Dernière vérification'}</span>
+              <span className="!text-xs">{t('last_check') || 'Dernière vérification'}</span>
             </div>
             <p className="text-sm font-medium text-primary">
               {serverHealth.timestamp
@@ -395,7 +395,7 @@ export default function AdminOverviewPage() {
                 <div className={`p-2.5 rounded-xl ${stat.bgColor}`}>
                   <Icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
-                <div className={`flex items-center gap-1 text-xs font-medium ${
+                <div className={`flex items-center gap-1 !text-xs font-medium ${
                   stat.trendUp ? 'text-success-text' : 'text-danger'
                 }`}>
                   {stat.trendUp ? (
@@ -443,10 +443,10 @@ export default function AdminOverviewPage() {
                       {activity.message}
                     </p>
                     {activity.user && (
-                      <p className="text-xs text-muted truncate">{activity.user}</p>
+                      <p className="!text-xs text-muted truncate">{activity.user}</p>
                     )}
                   </div>
-                  <span className="text-xs text-muted whitespace-nowrap">
+                  <span className="!text-xs text-muted whitespace-nowrap">
                     {new Date(activity.timestamp).toLocaleTimeString('fr-FR', {
                       hour: '2-digit',
                       minute: '2-digit',

@@ -1462,7 +1462,7 @@ export default function FacturePage() {
               <label htmlFor="updateClientStatus" className="text-sm font-medium text-primary cursor-pointer">
                 {t('update_client_status') || 'Mettre à jour le statut du client'}
               </label>
-              <p className="text-xs text-muted mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {t('update_client_status_desc') || 'Passer le client en "Devis accepté" dans le pipeline'}
               </p>
             </div>

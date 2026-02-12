@@ -290,7 +290,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-muted mt-2">
+              <p className="!text-xs text-muted mt-2">
                 {t('current_theme') || 'Actuel'}: {
                   themeStyle === 'brutalist' ? (t('theme_brutalist') || 'Brutaliste') : (t('theme_default') || 'Défaut')
                 } - {
@@ -378,7 +378,7 @@ export default function SettingsPage() {
                     onClick={() => updateFormat({ dateFormat: fmt.value })}
                   >
                     <span>{fmt.label}</span>
-                    <span className="text-muted text-xs ml-1">({fmt.example})</span>
+                    <span className="text-muted !text-xs ml-1">({fmt.example})</span>
                   </OptionButton>
                 ))}
               </div>
@@ -600,7 +600,7 @@ export default function SettingsPage() {
                   className="input px-3 py-2 text-sm w-32"
                   placeholder="FAC-"
                 />
-                <p className="text-xs text-muted mt-1">
+                <p className="!text-xs text-muted mt-1">
                   {t('example') || 'Exemple'}: {preferences.invoice.invoicePrefix}2025-XXXX
                 </p>
               </SettingsRow>
@@ -616,7 +616,7 @@ export default function SettingsPage() {
                   className="input px-3 py-2 text-sm w-32"
                   placeholder="DEV-"
                 />
-                <p className="text-xs text-muted mt-1">
+                <p className="!text-xs text-muted mt-1">
                   {t('example') || 'Exemple'}: {preferences.invoice.quotePrefix}2025-XXXX
                 </p>
               </SettingsRow>
@@ -863,7 +863,7 @@ export default function SettingsPage() {
                 {sidebarCategories.map((category) => (
                   <div key={category.id} className="space-y-2">
                     {/* Titre de catégorie */}
-                    <div className="flex items-center gap-2 text-xs font-semibold text-muted uppercase tracking-wider">
+                    <div className="flex items-center gap-2 !text-xs font-semibold text-muted uppercase tracking-wider">
                       {category.icon}
                       <span>{category.label}</span>
                     </div>
@@ -881,7 +881,7 @@ export default function SettingsPage() {
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-muted mt-4">
+              <p className="!text-xs text-muted mt-4">
                 {visibleLinks.length}/{CONFIGURABLE_LINKS.length} {t('links_visible') || 'liens affichés'}
               </p>
             </SettingsRow>
@@ -964,7 +964,7 @@ export default function SettingsPage() {
         )}
 
         {/* Footer info */}
-        <div className="pt-4 border-t border-default text-xs text-muted flex items-center gap-2">
+        <div className="pt-4 border-t border-default !text-xs text-muted flex items-center gap-2">
           <span className="text-info">💡</span>
           {t('settings_saved_locally') || 'Vos préférences sont enregistrées automatiquement.'}
         </div>
@@ -979,7 +979,7 @@ function SettingsRow({ title, description, children }: { title: string; descript
     <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 pb-6 border-b border-default last:border-0">
       <div className="md:w-48 flex-shrink-0">
         <h3 className="text-sm font-medium text-primary">{title}</h3>
-        <p className="text-xs text-muted mt-0.5">{description}</p>
+        <p className="!text-xs text-muted mt-0.5">{description}</p>
       </div>
       <div className="flex-1">{children}</div>
     </div>

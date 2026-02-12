@@ -228,7 +228,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <motion.div
           className="sidebar hidden lg:flex fixed left-0 top-0 backdrop-blur-sm flex-col items-start justify-start gap-3 h-screen z-[1000] overflow-hidden transition-colors duration-300"
           animate={{
-            width: isExpanded || isPinned ? 300 : 64,
+            width: isExpanded || isPinned ? 200 : 64,
           }}
           transition={{ duration: 0.2, ease: 'easeInOut' }}
           onMouseEnter={handleMouseEnter}
@@ -243,7 +243,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               {isExpanded || isPinned ? (
                 <div className="flex items-center gap-3">
                   <SidebarLogo />
-                  <span className="text-xs font-medium text-white bg-accent px-2 py-1 rounded-full">
+                  <span className="!text-xs font-medium text-white bg-accent px-2 py-1 rounded-full">
                     Admin
                   </span>
                 </div>

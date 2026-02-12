@@ -174,7 +174,7 @@ export default function TableFilters({
             <IconAdjustments className="w-5 h-5" />
             <span className="hidden sm:inline">{t('advanced_filters') || 'Filtres avancés'}</span>
             {activeFiltersCount > 0 && (
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-accent text-white text-xs font-bold">
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-accent text-white !text-xs font-bold">
                 {activeFiltersCount}
               </span>
             )}
@@ -252,7 +252,7 @@ export default function TableFilters({
                   {t('filter_by') || 'Filtrer par'}
                 </span>
                 {activeFiltersCount > 0 && (
-                  <span className="ml-auto px-2 py-0.5 rounded-full bg-accent-light !text-accent text-xs font-medium">
+                  <span className="ml-auto px-2 py-0.5 rounded-full bg-accent-light !text-accent !text-xs font-medium">
                     {activeFiltersCount} actif{activeFiltersCount > 1 ? 's' : ''}
                   </span>
                 )}
@@ -332,7 +332,7 @@ export default function TableFilters({
                                     </div>
                                     <span className="truncate">{opt.label}</span>
                                     {opt.count !== undefined && (
-                                      <span className="ml-auto text-xs text-muted">({opt.count})</span>
+                                      <span className="ml-auto !text-xs text-muted">({opt.count})</span>
                                     )}
                                   </button>
                                 );

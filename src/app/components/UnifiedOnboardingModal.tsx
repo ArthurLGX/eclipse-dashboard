@@ -831,7 +831,7 @@ export default function UnifiedOnboardingModal() {
                         }`}
                       >
                         <div className={`
-                          w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium
+                          w-6 h-6 rounded-full flex items-center justify-center !text-xs font-medium
                           ${stepIndex > i ? 'bg-success text-white' : 
                             stepIndex === i ? 'bg-accent text-white' : 'bg-muted text-muted-foreground'}
                         `}>
@@ -985,7 +985,7 @@ export default function UnifiedOnboardingModal() {
                             </p>
                           </div>
                           {stats && (
-                            <div className="flex items-center gap-3 text-xs text-muted mt-2">
+                            <div className="flex items-center gap-3 !text-xs text-muted mt-2">
                               <span className="flex items-center gap-1">
                                 <IconTemplate className="w-3 h-3" />
                                 {stats.taskCount} {t('onboarding_tasks') || 'tâches'}
@@ -1103,7 +1103,7 @@ export default function UnifiedOnboardingModal() {
                             {estimatedValue.toLocaleString('fr-FR')} €
                           </span>
                         </div>
-                        <p className="text-xs text-muted mt-1">
+                        <p className="!text-xs text-muted mt-1">
                           {templateStats.totalHours}h × {hourlyRate}€/h
                         </p>
                       </div>
@@ -1115,7 +1115,7 @@ export default function UnifiedOnboardingModal() {
                           {templateStats.phases.map((phase) => (
                             <span 
                               key={phase}
-                              className="px-3 py-1 bg-accent-light border border-accent !text-accent text-xs rounded-full"
+                              className="px-3 py-1 bg-accent-light border border-accent !text-accent !text-xs rounded-full"
                             >
                               {phase}
                             </span>

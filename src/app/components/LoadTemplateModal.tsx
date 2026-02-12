@@ -146,7 +146,7 @@ export default function LoadTemplateModal({
                   >
                     {/* Default badge */}
                     {template.is_default && (
-                      <div className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                      <div className="absolute -top-2 -right-2 bg-yellow-500 text-white !text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                         <IconStarFilled className="w-3 h-3" />
                         {t('default') || 'Défaut'}
                       </div>
@@ -199,7 +199,7 @@ export default function LoadTemplateModal({
                     )}
                     
                     {/* Font */}
-                    <p className="text-xs text-secondary mt-2">
+                    <p className="!text-xs text-secondary mt-2">
                       <span style={{ fontFamily: template.font_family }}>
                         {template.font_family.split(',')[0]}
                       </span>
@@ -214,7 +214,7 @@ export default function LoadTemplateModal({
                           handleSetDefault(template.documentId);
                         }}
                         disabled={template.is_default || settingDefault === template.documentId}
-                        className={`flex-1 py-1.5 text-xs rounded-lg transition-colors flex items-center justify-center gap-1 ${
+                        className={`flex-1 py-1.5 !text-xs rounded-lg transition-colors flex items-center justify-center gap-1 ${
                           template.is_default
                             ? 'text-yellow-500 cursor-default'
                             : 'text-secondary hover:text-yellow-500 hover:bg-yellow-500/10'

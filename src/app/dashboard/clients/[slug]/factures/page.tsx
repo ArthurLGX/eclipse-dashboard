@@ -165,7 +165,7 @@ export default function ClientFacturesPage() {
                 <button
                   type="button"
                   title={t('view_invoice') || 'Voir la facture'}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-muted text-info border border-default hover:bg-hover hover:text-primary transition-colors text-xs font-semibold"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-muted text-info border border-default hover:bg-hover hover:text-primary transition-colors !text-xs font-semibold"
                   onClick={() => {
                     setPdfToShow(pdfUrl);
                     setShowPdfModal(true);
@@ -177,14 +177,14 @@ export default function ClientFacturesPage() {
                   href={pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-success-light !text-success-text -text border border-success hover:opacity-80 transition-colors text-xs font-semibold"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-success-light !text-success-text -text border border-success hover:opacity-80 transition-colors !text-xs font-semibold"
                   download
                 >
                   <IconDownload className="w-4 h-4" />
                 </a>
               </>
             )}
-            {!pdfUrl && <span className="text-muted text-xs">-</span>}
+            {!pdfUrl && <span className="text-muted !text-xs">-</span>}
           </div>
         );
       },

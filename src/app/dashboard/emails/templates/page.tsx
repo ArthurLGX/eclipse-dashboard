@@ -623,7 +623,7 @@ export default function EmailTemplatesPage() {
                 <strong>{t('subject') || 'Objet'}:</strong> {template.subject}
               </p>
               
-              <p className="text-xs text-muted-foreground line-clamp-3">
+              <p className="!text-xs text-muted-foreground line-clamp-3">
                 {template.body.substring(0, 150)}...
               </p>
             </div>

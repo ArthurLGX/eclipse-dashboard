@@ -127,7 +127,7 @@ export default function AssignProjectDropdown({
               <p className="text-sm font-medium text-primary">
                 {t('choose_project') || 'Choisir un projet'}
               </p>
-              <p className="text-xs text-muted mt-0.5">
+              <p className="!text-xs text-muted mt-0.5">
                 {unassignedProjects.length} {t('projects_available') || 'projet(s) disponible(s)'}
               </p>
             </div>
@@ -189,7 +189,7 @@ export default function AssignProjectDropdown({
                   <p className="text-accent font-medium text-sm">
                     {t('create_new_project') || 'Créer un nouveau projet'}
                   </p>
-                  <p className="text-muted text-xs">
+                  <p className="text-muted !text-xs">
                     {t('go_to_projects_page') || 'Aller à la page projets'}
                   </p>
                 </div>

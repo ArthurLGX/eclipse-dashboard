@@ -689,7 +689,7 @@ function DashboardLayoutContent({
                                 <motion.button
                                   key={menuItem.id}
                                   onClick={() => handleItemClick(menuItem)}
-                                  className={`nav-item w-full text-xs ${activeItem === menuItem.id ? 'active' : ''}`}
+                                  className={`nav-item w-full !text-xs ${activeItem === menuItem.id ? 'active' : ''}`}
                                 >
                                   <div className="flex-shrink-0">{menuItem.icon}</div>
                                   <span className="!text-xs font-medium whitespace-nowrap">

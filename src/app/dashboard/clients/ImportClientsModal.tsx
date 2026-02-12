@@ -484,7 +484,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                     >
                       {option.icon}
                       <span className="font-medium text-sm">{option.label}</span>
-                      <span className="text-xs opacity-70">{option.description}</span>
+                      <span className="!text-xs opacity-70">{option.description}</span>
                     </button>
                   ))}
                 </div>
@@ -545,7 +545,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                     placeholder={t('import_email_placeholder') || 'jean@example.com, marie@example.com\nou un email par ligne...'}
                     className="w-full h-40 p-4 rounded-xl bg-page border border-default focus:border-accent focus:outline-none resize-none text-primary placeholder:text-secondary/50"
                   />
-                  <p className="text-xs text-secondary">
+                  <p className="!text-xs text-secondary">
                     {t('import_email_hint') || 'Séparez les emails par des virgules, points-virgules ou retours à la ligne'}
                   </p>
                 </div>
@@ -565,7 +565,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                 <p className="text-sm text-secondary mb-2">
                   {t('import_list') || 'Format JSON attendu :'}
                 </p>
-                <pre className="text-xs text-secondary bg-page p-3 rounded-lg overflow-x-auto">
+                <pre className="!text-xs text-secondary bg-page p-3 rounded-lg overflow-x-auto">
 {`[
   {
     "name": "John Doe",
@@ -583,12 +583,12 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                 <p className="text-sm text-secondary mb-2">
                   {t('import_csv_format') || 'Format CSV attendu :'}
                 </p>
-                <pre className="text-xs text-secondary bg-page p-3 rounded-lg overflow-x-auto">
+                <pre className="!text-xs text-secondary bg-page p-3 rounded-lg overflow-x-auto">
 {`email,name,company,website
 john@example.com,John Doe,Acme Inc,www.acme.com
 marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 </pre>
-                <p className="text-xs text-secondary mt-2">
+                <p className="!text-xs text-secondary mt-2">
                   {t('import_csv_compatible') || 'Compatible avec les exports Mailchimp, HubSpot, Gmail, etc.'}
                 </p>
               </div>
@@ -628,34 +628,34 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                   <table className="w-full">
                     <thead className="bg-card-hover">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
                           <div className="flex items-center gap-2">
                             <IconUser className="w-4 h-4" />
                             {t('name')}
                           </div>
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
                           <div className="flex items-center gap-2">
                             <IconMail className="w-4 h-4" />
                             {t('email')}
                           </div>
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
                           <div className="flex items-center gap-2">
                             <IconBuilding className="w-4 h-4" />
                             {t('enterprise')}
                           </div>
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
                           <div className="flex items-center gap-2">
                             <IconWorld className="w-4 h-4" />
                             {t('website')}
                           </div>
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
                           {t('status')}
                         </th>
-                        <th className="px-4 py-3 text-center text-xs font-semibold text-secondary uppercase tracking-wider w-20">
+                        <th className="px-4 py-3 text-center !text-xs font-semibold text-secondary uppercase tracking-wider w-20">
                           {t('actions')}
                         </th>
                       </tr>
@@ -700,7 +700,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="badge badge-success text-xs">
+                            <span className="badge badge-success !text-xs">
                               {client.processStatus || 'client'}
                             </span>
                           </td>
@@ -779,7 +779,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                               </span>
                             )}
                           </p>
-                          <p className="text-xs text-secondary mt-0.5">{option.description}</p>
+                          <p className="!text-xs text-secondary mt-0.5">{option.description}</p>
                         </div>
                       </label>
                     ))}
@@ -825,7 +825,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                               </span>
                             )}
                           </p>
-                          <p className="text-xs text-secondary mt-0.5">{option.description}</p>
+                          <p className="!text-xs text-secondary mt-0.5">{option.description}</p>
                         </div>
                       </label>
                     ))}

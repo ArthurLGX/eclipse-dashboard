@@ -205,7 +205,7 @@ function ModuleCard({ moduleId, label, isSelected, isCore, onToggle }: ModuleCar
           {label}
         </span>
         {isCore && (
-          <span className="ml-2 text-xs !text-success-text -text">
+          <span className="ml-2 !text-xs !text-success-text -text">
             ({t('included') || 'inclus'})
           </span>
         )}

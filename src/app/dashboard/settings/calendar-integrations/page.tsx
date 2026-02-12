@@ -192,7 +192,7 @@ export default function CalendarIntegrationsPage() {
               <p className="text-secondary mb-3">
                 {t('oauth_setup_info') || 'Pour connecter vos calendriers, vous devez configurer les identifiants OAuth dans votre fichier .env.local:'}
               </p>
-              <div className="bg-card p-3 rounded-lg font-mono text-xs space-y-1 overflow-x-auto">
+              <div className="bg-card p-3 rounded-lg font-mono !text-xs space-y-1 overflow-x-auto">
                 <p className="text-muted"># Google Calendar</p>
                 <p>GOOGLE_CLIENT_ID=votre_client_id</p>
                 <p>GOOGLE_CLIENT_SECRET=votre_client_secret</p>
@@ -227,7 +227,7 @@ export default function CalendarIntegrationsPage() {
                     <h3 className="font-semibold text-primary flex items-center gap-2">
                       {provider.name}
                       {provider.connected && (
-                        <span className="flex items-center gap-1 text-xs !text-success-text -text bg-success-light px-2 py-0.5 rounded-full">
+                        <span className="flex items-center gap-1 !text-xs !text-success-text -text bg-success-light px-2 py-0.5 rounded-full">
                           <IconCheck className="w-3 h-3" />
                           {t('connected') || 'Connecté'}
                         </span>
@@ -237,7 +237,7 @@ export default function CalendarIntegrationsPage() {
                       {provider.description}
                     </p>
                     {provider.connected && provider.email && (
-                      <p className="text-xs text-secondary mt-2">
+                      <p className="!text-xs text-secondary mt-2">
                         {provider.email}
                         {provider.lastSync && (
                           <span className="text-muted ml-2">
@@ -316,7 +316,7 @@ export default function CalendarIntegrationsPage() {
               <IconBrandGoogle className="w-5 h-5 text-[#4285F4]" />
               <div>
                 <p className="font-medium text-primary text-sm">Google Cloud Console</p>
-                <p className="text-xs text-muted">Créer les identifiants OAuth</p>
+                <p className="!text-xs text-muted">Créer les identifiants OAuth</p>
               </div>
               <IconExternalLink className="w-4 h-4 text-muted ml-auto" />
             </a>
@@ -329,7 +329,7 @@ export default function CalendarIntegrationsPage() {
               <IconBrandWindows className="w-5 h-5 text-[#0078D4]" />
               <div>
                 <p className="font-medium text-primary text-sm">Azure Portal</p>
-                <p className="text-xs text-muted">Enregistrer une application</p>
+                <p className="!text-xs text-muted">Enregistrer une application</p>
               </div>
               <IconExternalLink className="w-4 h-4 text-muted ml-auto" />
             </a>

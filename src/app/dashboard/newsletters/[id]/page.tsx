@@ -69,7 +69,7 @@ function InfoCard({
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-muted uppercase tracking-wider mb-1">{label}</p>
+        <p className="!text-xs text-muted uppercase tracking-wider mb-1">{label}</p>
         <div className="text-primary font-medium">{value}</div>
       </div>
     </div>

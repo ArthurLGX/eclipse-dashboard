@@ -160,7 +160,7 @@ export default function GlobalScoreDisplay({
             >
               {score}
             </motion.span>
-            <span className="text-xs text-muted">/100</span>
+            <span className="!text-xs text-muted">/100</span>
           </div>
         </div>
 
@@ -182,7 +182,7 @@ export default function GlobalScoreDisplay({
           </p>
 
           {/* Meta info */}
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs text-muted">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 !text-xs text-muted">
             <span className="px-2 py-1 bg-muted rounded-full">
               {t(pageType === 'landing' ? 'landing_page' : pageType === 'homepage' ? 'homepage' : 'product_page')}
             </span>

@@ -159,23 +159,23 @@ const ToolResultCard: React.FC<{
       {/* Email Result */}
       {toolName === 'generateRelanceEmail' && result.email && (
         <div className="space-y-2">
-          <div className="text-xs text-muted">
+          <div className="!text-xs text-muted">
             <strong>Objet:</strong> {result.email.subject}
           </div>
-          <div className="text-xs text-secondary bg-card p-2 rounded border border-default max-h-32 overflow-y-auto whitespace-pre-wrap">
+          <div className="!text-xs text-secondary bg-card p-2 rounded border border-default max-h-32 overflow-y-auto whitespace-pre-wrap">
             {result.email.body}
           </div>
           <div className="flex gap-2">
             <button 
               onClick={() => handleCopy(`Objet: ${result.email!.subject}\n\n${result.email!.body}`)}
-              className="text-xs text-accent hover:underline flex items-center gap-1 px-2 py-1 rounded bg-accent-light"
+              className="!text-xs text-accent hover:underline flex items-center gap-1 px-2 py-1 rounded bg-accent-light"
             >
               {copied ? <IconCheck size={12} /> : <IconCopy size={12} />}
               {copied ? 'Copié !' : (t('copy_email') || 'Copier l\'email')}
             </button>
             <button 
               onClick={() => onAction?.('openEmail', result)}
-              className="text-xs text-info hover:underline flex items-center gap-1 px-2 py-1 rounded bg-info-light"
+              className="!text-xs text-info hover:underline flex items-center gap-1 px-2 py-1 rounded bg-info-light"
             >
               <IconExternalLink size={12} />
               {t('open_in_editor') || 'Ouvrir dans l\'éditeur'}
@@ -187,21 +187,21 @@ const ToolResultCard: React.FC<{
       {/* Task Result */}
       {toolName === 'createTask' && result.task && (
         <div className="space-y-2">
-          <div className="text-xs text-secondary">
+          <div className="!text-xs text-secondary">
             <p><strong>Tâche:</strong> {result.task.title}</p>
             {result.task.dueDate && (
               <p><strong>Échéance:</strong> {new Date(result.task.dueDate).toLocaleDateString('fr-FR')}</p>
             )}
           </div>
           {result.task.created ? (
-            <p className="text-xs !text-success-text -text flex items-center gap-1">
+            <p className="!text-xs !text-success-text -text flex items-center gap-1">
               <IconCheck size={12} />
               {t('task_created_success') || 'Tâche créée avec succès'}
             </p>
           ) : (
             <button 
               onClick={() => onAction?.('confirmTask', result)}
-              className="w-full text-xs !text-white bg-success hover:bg-success-light hover:!text-success flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full !text-xs !text-white bg-success hover:bg-success-light hover:!text-success flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
             >
               <IconCheck size={14} />
               {t('confirm_create_task') || 'Confirmer la création'}
@@ -213,7 +213,7 @@ const ToolResultCard: React.FC<{
       {/* Quote Result */}
       {toolName === 'createQuote' && result.quote && (
         <div className="space-y-2">
-          <div className="text-xs text-secondary">
+          <div className="!text-xs text-secondary">
             <p><strong>Client:</strong> {result.quote.clientName}</p>
             {result.quote.amount && (
               <p><strong>Montant estimé:</strong> {result.quote.amount.toLocaleString('fr-FR')} €</p>
@@ -221,14 +221,14 @@ const ToolResultCard: React.FC<{
           </div>
           {result.quote.created ? (
             <div className="space-y-2">
-              <p className="text-xs !text-success-text -text flex items-center gap-1">
+              <p className="!text-xs !text-success-text -text flex items-center gap-1">
                 <IconCheck size={12} />
                 {t('quote_created_success') || 'Devis créé avec succès'}
               </p>
               {result.actionUrl && (
                 <button 
                   onClick={() => onAction?.('navigateToQuote', result)}
-                  className="w-full text-xs !text-accent bg-accent-light hover:bg-accent hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+                  className="w-full !text-xs !text-accent bg-accent-light hover:bg-accent hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
                 >
                   <IconExternalLink size={14} />
                   {t('view_quote') || 'Voir le devis'}
@@ -238,7 +238,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmQuote', result)}
-              className="w-full text-xs text-white bg-accent hover:bg-accent-light hover:!text-accent flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full !text-xs text-white bg-accent hover:bg-accent-light hover:!text-accent flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
             >
               <IconFileInvoice size={14} />
               {t('create_quote_now') || 'Créer le devis maintenant'}
@@ -250,7 +250,7 @@ const ToolResultCard: React.FC<{
       {/* Contract Result */}
       {toolName === 'createContract' && result.contract && (
         <div className="space-y-2">
-          <div className="text-xs text-secondary">
+          <div className="!text-xs text-secondary">
             <p><strong>Contrat:</strong> {result.contract.title}</p>
             <p><strong>Client:</strong> {result.contract.clientName}</p>
             {result.contract.projectName && (
@@ -259,14 +259,14 @@ const ToolResultCard: React.FC<{
           </div>
           {result.contract.created ? (
             <div className="space-y-2">
-              <p className="text-xs !text-success-text -text flex items-center gap-1">
+              <p className="!text-xs !text-success-text -text flex items-center gap-1">
                 <IconCheck size={12} />
                 {t('contract_created_success') || 'Contrat créé avec succès'}
               </p>
               {result.actionUrl && (
                 <button 
                   onClick={() => onAction?.('navigateToContract', result)}
-                  className="w-full text-xs !text-warning-text bg-warning-light hover:bg-warning hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+                  className="w-full !text-xs !text-warning-text bg-warning-light hover:bg-warning hover:text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
                 >
                   <IconExternalLink size={14} />
                   {t('view_contract') || 'Voir le contrat'}
@@ -276,7 +276,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmContract', result)}
-              className="w-full text-xs text-white bg-warning hover:bg-warning-light hover:!text-warning-text flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full !text-xs text-white bg-warning hover:bg-warning-light hover:!text-warning-text flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
             >
               <IconFileText size={14} />
               {t('create_contract_now') || 'Créer le contrat maintenant'}
@@ -287,7 +287,7 @@ const ToolResultCard: React.FC<{
 
       {/* Next Steps Result */}
       {toolName === 'suggestNextSteps' && result.steps && (
-        <ul className="text-xs text-secondary space-y-1.5">
+        <ul className="!text-xs text-secondary space-y-1.5">
           {result.steps.map((step: string, i: number) => (
             <li key={i} className="flex items-start gap-2 p-1.5 rounded hover:bg-card cursor-pointer transition-colors">
               <span className="text-accent font-bold min-w-[16px]">{i + 1}.</span>
@@ -441,7 +441,7 @@ const KeyboardShortcutHint: React.FC = () => {
   const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
   
   return (
-    <div className="flex items-center gap-1 text-xs text-muted">
+    <div className="flex items-center gap-1 !text-xs text-muted">
       <kbd className="px-1.5 py-0.5 rounded bg-card border border-default font-mono text-[10px]">
         {isMac ? '⌘' : 'Ctrl'}
       </kbd>
@@ -714,7 +714,7 @@ export default function AIChatAssistant() {
                 />
                 <div>
                   <h3 className="font-semibold text-sm text-primary">Eclipse Copilot</h3>
-                  <p className="text-xs text-muted flex items-center gap-2">
+                  <p className="!text-xs text-muted flex items-center gap-2">
                     {t('ai_assistant_subtitle') || 'Votre assistant business'}
                     <span className="hidden sm:flex items-center gap-1 bg-muted text-muted px-1.5 py-0.5 rounded text-[10px]">
                       <IconCommand size={10} />K
@@ -778,7 +778,7 @@ export default function AIChatAssistant() {
                           <p className="text-sm font-medium text-primary group-hover:text-muted">
                             {t('ai_action_blocked') || 'Je suis bloqué'}
                           </p>
-                          <p className="text-xs text-muted">
+                          <p className="!text-xs text-muted">
                             {t('ai_action_blocked_desc') || 'Analyser un blocage projet'}
                           </p>
                         </div>
@@ -795,7 +795,7 @@ export default function AIChatAssistant() {
                           <p className="text-sm font-medium text-primary group-hover:text-muted">
                             {t('ai_action_relance') || 'Relances prioritaires'}
                           </p>
-                          <p className="text-xs text-muted">
+                          <p className="!text-xs text-muted">
                             {t('ai_action_relance_desc') || 'Voir les clients à relancer'}
                           </p>
                         </div>
@@ -812,7 +812,7 @@ export default function AIChatAssistant() {
                           <p className="text-sm font-medium text-primary group-hover:text-muted">
                             {t('ai_action_next') || 'Quoi faire maintenant ?'}
                           </p>
-                          <p className="text-xs text-muted">
+                          <p className="!text-xs text-muted">
                             {t('ai_action_next_desc') || 'Prochaines étapes recommandées'}
                           </p>
                         </div>

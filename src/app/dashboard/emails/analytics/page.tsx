@@ -279,11 +279,11 @@ function EmailAnalytics() {
                     {new URL(link.url).hostname}
                     <IconExternalLink className="w-3 h-3 shrink-0" />
                   </a>
-                  <p className="text-xs text-muted truncate">{link.url}</p>
+                  <p className="!text-xs text-muted truncate">{link.url}</p>
                 </div>
                 <div className="text-right">
                   <div className="text-lg font-bold text-primary">{link.count}</div>
-                  <div className="text-xs text-muted">clics</div>
+                  <div className="!text-xs text-muted">clics</div>
                 </div>
               </div>
             ))}
@@ -360,13 +360,13 @@ function EmailRow({ email, onClick }: { email: SentEmail; onClick?: () => void }
         <h3 className="font-medium text-primary truncate flex items-center gap-2">
           {email.subject}
           {hasReplies && (
-            <span className="px-1.5 py-0.5 bg-blue-500/10 text-blue-500 text-xs rounded-full flex items-center gap-1">
+            <span className="px-1.5 py-0.5 bg-blue-500/10 text-blue-500 !text-xs rounded-full flex items-center gap-1">
               <IconMessageCircle className="w-3 h-3" />
               {email.replies?.length}
             </span>
           )}
         </h3>
-        <div className="flex items-center gap-3 text-xs text-muted mt-1">
+        <div className="flex items-center gap-3 !text-xs text-muted mt-1">
           <span className="flex items-center gap-1">
             <IconCalendar className="w-3 h-3" />
             {new Date(email.sent_at).toLocaleDateString()}
@@ -375,7 +375,7 @@ function EmailRow({ email, onClick }: { email: SentEmail; onClick?: () => void }
             <IconUsers className="w-3 h-3" />
             {email.recipients?.length || 0}
           </span>
-          <span className={`px-2 py-0.5 rounded-full text-xs ${
+          <span className={`px-2 py-0.5 rounded-full !text-xs ${
             email.category === 'newsletter' 
               ? 'bg-purple-500/10 text-purple-500'
               : email.category === 'invoice'
@@ -393,7 +393,7 @@ function EmailRow({ email, onClick }: { email: SentEmail; onClick?: () => void }
             <IconEye className="w-4 h-4" />
             <span className="font-medium">{email.opens_count || 0}</span>
           </div>
-          <div className="text-xs text-muted">{openRate.toFixed(0)}%</div>
+          <div className="!text-xs text-muted">{openRate.toFixed(0)}%</div>
         </div>
         <div className="text-center">
           <div className="flex items-center gap-1 text-orange-500">
@@ -493,7 +493,7 @@ function EmailDetailModal({
                       minute: '2-digit',
                     })}
                   </span>
-                  <span className={`px-2 py-0.5 rounded-full text-xs ${
+                  <span className={`px-2 py-0.5 rounded-full !text-xs ${
                     email.category === 'newsletter' 
                       ? 'bg-purple-500/10 text-purple-500'
                       : email.category === 'invoice'
@@ -519,28 +519,28 @@ function EmailDetailModal({
                   <IconSend className="w-4 h-4" />
                   <span className="font-bold">{email.recipients.length}</span>
                 </div>
-                <div className="text-xs text-muted">{t('recipients') || 'Destinataires'}</div>
+                <div className="!text-xs text-muted">{t('recipients') || 'Destinataires'}</div>
               </div>
               <div className="text-center p-3 bg-page rounded-lg">
                 <div className="flex items-center justify-center gap-1 text-green-500 mb-1">
                   <IconEye className="w-4 h-4" />
                   <span className="font-bold">{openedCount}</span>
                 </div>
-                <div className="text-xs text-muted">{t('opened') || 'Ouvert'}</div>
+                <div className="!text-xs text-muted">{t('opened') || 'Ouvert'}</div>
               </div>
               <div className="text-center p-3 bg-page rounded-lg">
                 <div className="flex items-center justify-center gap-1 text-orange-500 mb-1">
                   <IconClick className="w-4 h-4" />
                   <span className="font-bold">{clickedCount}</span>
                 </div>
-                <div className="text-xs text-muted">{t('clicked') || 'Cliqué'}</div>
+                <div className="!text-xs text-muted">{t('clicked') || 'Cliqué'}</div>
               </div>
               <div className="text-center p-3 bg-page rounded-lg">
                 <div className="flex items-center justify-center gap-1 text-purple-500 mb-1">
                   <IconMessageCircle className="w-4 h-4" />
                   <span className="font-bold">{replies.length}</span>
                 </div>
-                <div className="text-xs text-muted">{t('replies') || 'Réponses'}</div>
+                <div className="!text-xs text-muted">{t('replies') || 'Réponses'}</div>
               </div>
             </div>
           </div>
@@ -606,7 +606,7 @@ function EmailDetailModal({
                       <div className="font-medium text-primary truncate">
                         {recipient.email}
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-muted mt-1">
+                      <div className="flex items-center gap-3 !text-xs text-muted mt-1">
                         <span className="flex items-center gap-1">
                           <IconClock className="w-3 h-3" />
                           {t('delivered') || 'Délivré'}: {formatDateTime(recipient.delivered_at)}
@@ -616,7 +616,7 @@ function EmailDetailModal({
 
                     <div className="flex items-center gap-3">
                       {/* Indicateur ouverture */}
-                      <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+                      <div className={`flex items-center gap-1 px-2 py-1 rounded-full !text-xs ${
                         recipient.opened
                           ? 'bg-green-500/10 text-green-500'
                           : 'bg-gray-500/10 text-info '
@@ -635,7 +635,7 @@ function EmailDetailModal({
                       </div>
 
                       {/* Indicateur clic */}
-                      <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+                      <div className={`flex items-center gap-1 px-2 py-1 rounded-full !text-xs ${
                         recipient.clicked
                           ? 'bg-orange-500/10 text-orange-500'
                           : 'bg-gray-500/10 text-info '
@@ -690,12 +690,12 @@ function EmailDetailModal({
                           })()}
                           <IconExternalLink className="w-3 h-3 shrink-0" />
                         </a>
-                        <p className="text-xs text-muted truncate mt-1">{click.url}</p>
+                        <p className="!text-xs text-muted truncate mt-1">{click.url}</p>
                       </div>
 
                       <div className="text-right">
                         <div className="text-xl font-bold text-primary">{click.count}</div>
-                        <div className="text-xs text-muted">{t('clicks') || 'clics'}</div>
+                        <div className="!text-xs text-muted">{t('clicks') || 'clics'}</div>
                       </div>
                     </div>
                   ))
@@ -703,7 +703,7 @@ function EmailDetailModal({
                   <div className="text-center py-12">
                     <IconClick className="w-12 h-12 mx-auto text-muted opacity-30 mb-3" />
                     <p className="text-muted">{t('no_clicks_recorded') || 'Aucun clic enregistré'}</p>
-                    <p className="text-xs text-muted mt-1">
+                    <p className="!text-xs text-muted mt-1">
                       {t('clicks_info') || 'Les clics sont enregistrés quand les destinataires cliquent sur les liens de votre email'}
                     </p>
                   </div>
@@ -736,7 +736,7 @@ function EmailDetailModal({
                         </div>
 
                         <div className="text-right flex items-center gap-2">
-                          <div className="text-xs text-muted">
+                          <div className="!text-xs text-muted">
                             {formatDateTime(reply.received_at)}
                           </div>
                           {expandedReply === index ? (
@@ -757,7 +757,7 @@ function EmailDetailModal({
                             className="border-t border-default"
                           >
                             <div className="p-4 bg-card">
-                              <div className="text-xs text-muted mb-2">
+                              <div className="!text-xs text-muted mb-2">
                                 <strong>{t('subject') || 'Sujet'}:</strong> {reply.subject}
                               </div>
                               <div className="text-sm text-primary whitespace-pre-wrap">
@@ -773,7 +773,7 @@ function EmailDetailModal({
                   <div className="text-center py-12">
                     <IconMessageCircle className="w-12 h-12 mx-auto text-muted opacity-30 mb-3" />
                     <p className="text-muted">{t('no_replies_yet') || 'Aucune réponse reçue'}</p>
-                    <p className="text-xs text-muted mt-2 max-w-md mx-auto">
+                    <p className="!text-xs text-muted mt-2 max-w-md mx-auto">
                       {t('replies_info') || 'Les réponses seront affichées ici lorsque vos destinataires répondront à cet email. Cette fonctionnalité nécessite une intégration avec votre service email.'}
                     </p>
                   </div>

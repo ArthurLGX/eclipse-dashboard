@@ -166,7 +166,7 @@ export default function DeleteConfirmModal({
                 spellCheck="false"
               />
               {confirmText && !isConfirmValid && (
-                <p className="mt-1.5 text-xs text-danger">
+                <p className="mt-1.5 !text-xs text-danger">
                   Le texte ne correspond pas
                 </p>
               )}

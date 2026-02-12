@@ -130,7 +130,7 @@ export default function AuditScoreCard({
 
       {/* Description */}
       {description && (
-        <p className="text-xs text-muted text-center">{description}</p>
+        <p className="!text-xs text-muted text-center">{description}</p>
       )}
     </motion.div>
   );

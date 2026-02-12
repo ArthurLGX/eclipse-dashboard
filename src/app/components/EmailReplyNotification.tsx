@@ -146,7 +146,7 @@ export default function EmailReplyNotification({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <IconMail className="w-4 h-4 text-accent" />
-                  <span className="text-xs text-accent font-medium">
+                  <span className="!text-xs text-accent font-medium">
                     {t('new_reply') || 'Nouvelle réponse'}
                   </span>
                 </div>
@@ -156,7 +156,7 @@ export default function EmailReplyNotification({
                 <p className="text-sm text-muted truncate">
                   {notification.email.subject || '(Sans objet)'}
                 </p>
-                <p className="text-xs text-muted mt-1 line-clamp-2">
+                <p className="!text-xs text-muted mt-1 line-clamp-2">
                   {notification.email.snippet || ''}
                 </p>
               </div>
@@ -201,7 +201,7 @@ export default function EmailReplyNotification({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           onClick={onDismissAll}
-          className="text-xs text-muted hover:text-primary text-center py-2"
+          className="!text-xs text-muted hover:text-primary text-center py-2"
         >
           {t('dismiss_all') || 'Tout fermer'} ({notifications.length})
         </motion.button>

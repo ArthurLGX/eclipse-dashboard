@@ -263,7 +263,7 @@ export default function AdminSubscriptionsPage() {
             <div className="p-2 rounded-lg bg-accent-light">
               <IconTrendingUp className="w-6 h-6 !text-accent" />
             </div>
-            <span className="text-xs !text-accent bg-accent-light px-2 py-1 rounded-full font-medium">MRR</span>
+            <span className="!text-xs !text-accent bg-accent-light px-2 py-1 rounded-full font-medium">MRR</span>
           </div>
           <p className="text-3xl font-bold text-primary">{totalMRR.toLocaleString()}€</p>
           <p className="text-sm text-muted">{t('monthly_recurring_revenue') || 'Revenu mensuel récurrent'}</p>
@@ -281,7 +281,7 @@ export default function AdminSubscriptionsPage() {
               <div className={`p-2 rounded-lg bg-muted ${stat.color}`}>
                 {stat.icon}
               </div>
-              <span className="text-xs text-muted">{stat.count} users</span>
+              <span className="!text-xs text-muted">{stat.count} users</span>
             </div>
             <p className="text-xl font-bold text-primary">{stat.planName}</p>
             <p className="text-sm text-muted">{stat.revenue.toLocaleString()}€/{t('month') || 'mois'}</p>
@@ -317,7 +317,7 @@ export default function AdminSubscriptionsPage() {
                   {plan.price_yearly}€/{t('year') || 'an'}
                 </p>
               )}
-              <p className="text-xs text-muted mt-2">
+              <p className="!text-xs text-muted mt-2">
                 {subscriptions.filter(s => s.plan?.id === plan.id).length} {t('plan_subscribers') || 'abonnés'}
               </p>
             </div>
@@ -370,22 +370,22 @@ export default function AdminSubscriptionsPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-muted">
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('user') || 'Utilisateur'}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('plan') || 'Plan'}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('status') || 'Statut'}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('start_date') || 'Date de début'}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('expiration') || 'Expiration'}
                 </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-right !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('actions') || 'Actions'}
                 </th>
               </tr>
@@ -408,7 +408,7 @@ export default function AdminSubscriptionsPage() {
                         </div>
                         <div>
                           <p className="font-medium text-primary text-sm">{sub.users[0].username}</p>
-                          <p className="text-xs text-muted">{sub.users[0].email}</p>
+                          <p className="!text-xs text-muted">{sub.users[0].email}</p>
                         </div>
                       </div>
                     ) : (
@@ -421,14 +421,14 @@ export default function AdminSubscriptionsPage() {
                       <span className="font-medium text-primary text-sm">{sub.plan?.name || t('no_plan') || 'Sans plan'}</span>
                     </div>
                     {sub.plan?.price_monthly !== undefined && (
-                      <p className="text-xs text-muted mt-0.5">{sub.plan.price_monthly}€/{t('month') || 'mois'}</p>
+                      <p className="!text-xs text-muted mt-0.5">{sub.plan.price_monthly}€/{t('month') || 'mois'}</p>
                     )}
                   </td>
                   <td className="px-4 py-4">
                     {(() => {
                       const status = getSubStatus(sub).toLowerCase();
                       return (
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full !text-xs font-medium ${
                           status === 'active' ? 'bg-success-light !text-success-text ' :
                           status === 'trial' ? 'bg-info-light text-info' :
                           status === 'canceled' ? 'bg-danger-light text-danger' :
@@ -604,7 +604,7 @@ export default function AdminSubscriptionsPage() {
                         ))}
                       </div>
                     </div>
-                    <p className="text-xs text-muted mt-2">
+                    <p className="!text-xs text-muted mt-2">
                       💡 {t('features_help') || '0 = illimité pour les quotas numériques'}
                     </p>
                   </div>

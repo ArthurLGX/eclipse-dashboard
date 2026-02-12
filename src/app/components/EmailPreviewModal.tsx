@@ -179,7 +179,7 @@ export default function EmailPreviewModal({
                   <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium">
                     <IconInbox className="w-5 h-5" />
                     <span className="hidden md:inline">{t.inbox}</span>
-                    <span className="hidden md:inline ml-auto bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full">1</span>
+                    <span className="hidden md:inline ml-auto bg-blue-500 text-white !text-xs px-2 py-0.5 rounded-full">1</span>
                   </button>
                   <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
                     <IconStar className="w-5 h-5" />
@@ -240,12 +240,12 @@ export default function EmailPreviewModal({
                           <span className="font-semibold text-gray-900 truncate">
                             {senderInfo.firstName} {senderInfo.lastName}
                           </span>
-                          <span className="text-xs text-info  flex-shrink-0 ml-2">{t.now}</span>
+                          <span className="!text-xs text-info  flex-shrink-0 ml-2">{t.now}</span>
                         </div>
                         <p className="font-medium text-gray-800 text-sm truncate mb-0.5">
                           {emailData.subject || 'Objet de l\'email'}
                         </p>
-                        <p className="text-info text-xs truncate">
+                        <p className="text-info !text-xs truncate">
                           {emailData.title || emailData.content?.substring(0, 50) || 'Votre contenu apparaîtra ici...'}
                         </p>
                       </div>
@@ -269,7 +269,7 @@ export default function EmailPreviewModal({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium text-gray-700 truncate">{email.from}</span>
-                            <span className="text-xs text-gray-400 flex-shrink-0 ml-2">{email.time}</span>
+                            <span className="!text-xs text-gray-400 flex-shrink-0 ml-2">{email.time}</span>
                           </div>
                           <p className="text-gray-600 text-sm truncate">{email.subject}</p>
                         </div>

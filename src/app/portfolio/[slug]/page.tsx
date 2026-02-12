@@ -440,7 +440,7 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs"
+                    className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 !text-xs"
                   >
                     {tag}
                   </span>

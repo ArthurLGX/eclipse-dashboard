@@ -533,7 +533,7 @@ function InboxView() {
                 {getViewTitle(activeView)}
               </h1>
               {activeView === 'inbox' && unreadCount > 0 && (
-                <span className="px-2 py-0.5 text-xs font-semibold bg-accent text-white rounded-full">
+                <span className="px-2 py-0.5 !text-xs font-semibold bg-accent text-white rounded-full">
                   {unreadCount}
                 </span>
               )}
@@ -565,7 +565,7 @@ function InboxView() {
             <div className="flex gap-2 overflow-x-auto pb-1">
               <button
                 onClick={() => { setShowUnreadOnly(false); setShowStarredOnly(false); setShowArchived(false); }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                className={`px-3 py-1.5 !text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                   !showUnreadOnly && !showStarredOnly && !showArchived
                     ? 'bg-accent text-white'
                     : 'bg-page border border-default text-muted hover:border-accent'
@@ -575,7 +575,7 @@ function InboxView() {
               </button>
               <button
                 onClick={() => { setShowUnreadOnly(true); setShowStarredOnly(false); setShowArchived(false); }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                className={`px-3 py-1.5 !text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                   showUnreadOnly
                     ? 'bg-accent text-white'
                     : 'bg-page border border-default text-muted hover:border-accent'
@@ -585,7 +585,7 @@ function InboxView() {
               </button>
               <button
                 onClick={() => { setShowStarredOnly(true); setShowUnreadOnly(false); setShowArchived(false); }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                className={`px-3 py-1.5 !text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                   showStarredOnly
                     ? 'bg-amber-500 text-white'
                     : 'bg-page border border-default text-muted hover:border-amber-500'
@@ -596,7 +596,7 @@ function InboxView() {
               </button>
               <button
                 onClick={() => { setShowArchived(true); setShowUnreadOnly(false); setShowStarredOnly(false); }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                className={`px-3 py-1.5 !text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                   showArchived
                     ? 'bg-gray-500 text-white'
                     : 'bg-page border border-default text-muted hover:border-gray-500'
@@ -612,7 +612,7 @@ function InboxView() {
               <button
                 onClick={handleCategorizeAllWithAI}
                 disabled={categorizingAI}
-                className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white !text-xs font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
                 {categorizingAI ? (
                   <>
@@ -665,12 +665,12 @@ function InboxView() {
                         <span className="text-sm font-medium text-primary truncate">
                           À : {email.recipients.join(', ')}
                         </span>
-                        <span className="text-xs text-muted whitespace-nowrap ml-2">
+                        <span className="!text-xs text-muted whitespace-nowrap ml-2">
                           {formatDate(email.sent_at)}
                         </span>
                       </div>
                       <div className="text-sm font-medium text-primary mb-1 truncate">{email.subject}</div>
-                      <div className="text-xs text-muted line-clamp-2">{email.content.replace(/<[^>]*>/g, '')}</div>
+                      <div className="!text-xs text-muted line-clamp-2">{email.content.replace(/<[^>]*>/g, '')}</div>
                     </div>
                   </motion.div>
                 ))}
@@ -702,12 +702,12 @@ function InboxView() {
                         <span className="text-sm font-medium text-primary truncate">
                           Brouillon {draft.name ? `- ${draft.name}` : ''}
                         </span>
-                        <span className="text-xs text-muted whitespace-nowrap ml-2">
+                        <span className="!text-xs text-muted whitespace-nowrap ml-2">
                           {formatDate(draft.updatedAt)}
                         </span>
                       </div>
                       <div className="text-sm font-medium text-primary mb-1 truncate">{draft.subject || '(Sans objet)'}</div>
-                      <div className="text-xs text-muted line-clamp-2">{draft.content || ''}</div>
+                      <div className="!text-xs text-muted line-clamp-2">{draft.content || ''}</div>
                     </div>
                   </motion.div>
                 ))}
@@ -758,7 +758,7 @@ function InboxView() {
                       <span className={`font-medium truncate ${email.is_read ? 'text-primary' : 'text-primary font-semibold'}`}>
                         {getSenderName(email)}
                       </span>
-                      <span className="text-xs text-muted whitespace-nowrap">
+                      <span className="!text-xs text-muted whitespace-nowrap">
                         {formatDate(email.received_at)}
                       </span>
                     </div>
@@ -767,14 +767,14 @@ function InboxView() {
                       {email.subject || '(Sans objet)'}
                     </p>
                     
-                    <p className="text-xs text-muted truncate mt-0.5">
+                    <p className="!text-xs text-muted truncate mt-0.5">
                       {email.snippet || ''}
                     </p>
                     
                     {/* Tags */}
                     <div className="flex items-center gap-2 mt-1">
                       {email.client?.enterprise && (
-                        <span className="flex items-center gap-1 text-xs text-muted">
+                        <span className="flex items-center gap-1 !text-xs text-muted">
                           <IconBuilding className="w-3 h-3" />
                           {email.client.enterprise}
                         </span>
@@ -888,7 +888,7 @@ function InboxView() {
                         {selectedEmail.client?.enterprise && <span className="text-sm text-muted">• {selectedEmail.client.enterprise}</span>}
                       </div>
                       <p className="text-sm text-muted">{selectedEmail.from_email}</p>
-                      <p className="text-xs text-muted mt-1">
+                      <p className="!text-xs text-muted mt-1">
                         {new Date(selectedEmail.received_at).toLocaleString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
                       </p>
                     </div>
@@ -907,7 +907,7 @@ function InboxView() {
                           <div key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default text-sm">
                             <IconPaperclip className="w-3 h-3 text-muted" />
                             <span className="truncate max-w-[150px] text-primary">{att.filename}</span>
-                            <span className="text-xs text-muted">({Math.round(att.size / 1024)} Ko)</span>
+                            <span className="!text-xs text-muted">({Math.round(att.size / 1024)} Ko)</span>
                           </div>
                         ))}
                       </div>
@@ -930,10 +930,10 @@ function InboxView() {
                       <span className="text-sm font-medium text-muted">À :</span>
                       <span className="text-sm text-primary">{selectedEmail.recipients.join(', ')}</span>
                     </div>
-                    <p className="text-xs text-muted">
+                    <p className="!text-xs text-muted">
                       Envoyé le {new Date(selectedEmail.sent_at).toLocaleString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
                     </p>
-                    <span className={`mt-2 inline-block px-2 py-1 text-xs rounded-full ${
+                    <span className={`mt-2 inline-block px-2 py-1 !text-xs rounded-full ${
                       selectedEmail.status_mail === 'sent' ? 'bg-green-100 text-green-700' :
                       selectedEmail.status_mail === 'failed' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
                     }`}>

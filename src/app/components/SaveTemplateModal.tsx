@@ -124,7 +124,7 @@ export default function SaveTemplateModal({
           <div className="p-4 space-y-4">
             {/* Aperçu du template */}
             <div className="p-4 rounded-xl border border-default bg-muted/30">
-              <p className="text-xs text-muted mb-3 uppercase tracking-wide">
+              <p className="!text-xs text-muted mb-3 uppercase tracking-wide">
                 {t('template_preview') || 'Aperçu du thème'}
               </p>
               <div className="flex items-center gap-4">
@@ -169,7 +169,7 @@ export default function SaveTemplateModal({
               </div>
               {/* Images indicators */}
               {(templateData.headerBackgroundUrl || templateData.bannerUrl) && (
-                <div className="flex gap-2 mt-3 text-xs text-muted">
+                <div className="flex gap-2 mt-3 !text-xs text-muted">
                   {templateData.headerBackgroundUrl && (
                     <span className="px-2 py-1 bg-accent-light !text-accent rounded">
                       {t('header_image_included') || '+ Image en-tête'}
@@ -237,7 +237,7 @@ export default function SaveTemplateModal({
                 <p className={`font-medium ${isDefault ? 'text-yellow-500' : 'text-primary'}`}>
                   {t('set_as_default') || 'Définir comme thème par défaut'}
                 </p>
-                <p className="text-xs text-muted">
+                <p className="!text-xs text-muted">
                   {t('default_template_hint') || 'Ce thème sera pré-sélectionné pour vos nouvelles newsletters'}
                 </p>
               </div>

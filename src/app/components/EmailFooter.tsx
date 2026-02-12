@@ -316,7 +316,7 @@ export default function EmailFooter({
         {/* Legal & Unsubscribe - Séparateur fin */}
         {(finalLegalText || unsubscribeUrl) && (
           <div 
-            className="text-center text-xs mt-4 pt-4 border-t border-gray-100"
+            className="text-center !text-xs mt-4 pt-4 border-t border-gray-100"
             style={{ color: secondaryColor, opacity: 0.7 }}
           >
             {finalLegalText && <p className="mb-1">{finalLegalText}</p>}

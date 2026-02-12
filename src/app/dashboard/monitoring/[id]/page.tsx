@@ -158,7 +158,7 @@ export default function MonitoringDetailPage() {
             <div>
               <h1 className="text-xl font-bold text-primary flex items-center gap-2">
                 {site.name}
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full !text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
                   {statusConfig.icon}
                   {t(statusConfig.labelKey) || statusConfig.labelKey}
                 </span>
@@ -216,7 +216,7 @@ export default function MonitoringDetailPage() {
             >
               <div className="flex items-center gap-2 mb-1">
                 <span className={item.color}>{item.icon}</span>
-                <span className="text-xs text-muted">{item.label}</span>
+                <span className="!text-xs text-muted">{item.label}</span>
               </div>
               <p className={`text-lg font-bold ${item.color}`}>{item.value}</p>
             </motion.div>
@@ -238,20 +238,20 @@ export default function MonitoringDetailPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {site.hosting_provider && (
                 <div>
-                  <p className="text-xs text-muted">{t('hosting_provider') || 'Hébergeur'}</p>
+                  <p className="!text-xs text-muted">{t('hosting_provider') || 'Hébergeur'}</p>
                   <p className="text-sm text-primary font-medium capitalize">{site.hosting_provider}</p>
                 </div>
               )}
               {site.server_ip && (
                 <div>
-                  <p className="text-xs text-muted">{t('server_ip') || 'IP Serveur'}</p>
+                  <p className="!text-xs text-muted">{t('server_ip') || 'IP Serveur'}</p>
                   <p className="text-sm text-primary font-mono">{site.server_ip}</p>
                 </div>
               )}
             </div>
             {site.server_notes && (
               <div className="mt-3 pt-3 border-t border-default">
-                <p className="text-xs text-muted mb-1">{t('notes') || 'Notes'}</p>
+                <p className="!text-xs text-muted mb-1">{t('notes') || 'Notes'}</p>
                 <p className="text-sm text-secondary whitespace-pre-wrap">{site.server_notes}</p>
               </div>
             )}
@@ -266,7 +266,7 @@ export default function MonitoringDetailPage() {
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                className={`px-3 py-1 !text-xs rounded-md transition-colors ${
                   timeRange === range
                     ? 'bg-accent text-white'
                     : 'text-muted hover:text-primary'

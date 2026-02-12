@@ -763,7 +763,7 @@ export default function EmailSignatureSection() {
                       onChange={(e) => updateField('logo_size', parseInt(e.target.value))}
                       className="w-full h-2 bg-muted/20 rounded-lg appearance-none cursor-pointer accent-accent"
                     />
-                    <div className="flex justify-between text-xs text-muted mt-1">
+                    <div className="flex justify-between !text-xs text-muted mt-1">
                       <span>40px</span>
                       <span>150px</span>
                     </div>
@@ -859,7 +859,7 @@ export default function EmailSignatureSection() {
                         </optgroup>
                       ))}
                     </select>
-                    <p className="text-xs text-muted mt-1">
+                    <p className="!text-xs text-muted mt-1">
                       {t('google_fonts_note') || 'Note : Les Google Fonts peuvent ne pas s\'afficher sur tous les clients email (Outlook, etc.)'}
                     </p>
                   </div>
@@ -893,7 +893,7 @@ export default function EmailSignatureSection() {
                 <IconPhoto className="w-4 h-4 !text-accent" />
                 {t('promotional_banner') || 'Bannière promotionnelle'}
               </h4>
-              <p className="text-xs text-muted mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {t('banner_desc') || 'Optionnel : ajoutez une bannière sous votre signature'}
               </p>
             </div>
@@ -901,7 +901,7 @@ export default function EmailSignatureSection() {
           
           {/* Banner size recommendations */}
           <div className="mb-4 p-3 rounded-lg bg-muted border border-info">
-            <p className="text-xs text-info">
+            <p className="!text-xs text-info">
               <strong>{t('recommended_sizes') || 'Tailles recommandées'}</strong>:
               <br />• Desktop : 600×150 px (max)
               <br />• Mobile : 320×100 px (min)
@@ -961,7 +961,7 @@ export default function EmailSignatureSection() {
                 placeholder="https://example.com/promo"
                 className="input w-full"
               />
-              <p className="text-xs text-muted mt-1">
+              <p className="!text-xs text-muted mt-1">
                 {t('banner_link_desc') || 'URL vers laquelle rediriger au clic sur la bannière'}
               </p>
             </div>

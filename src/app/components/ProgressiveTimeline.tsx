@@ -233,7 +233,7 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
                     }}
                   />
                   <div className="relative w-20 h-20 rounded-full backdrop-blur-xl border-2 border-accent bg-card flex items-center justify-center shadow-lg">
-                    <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                    <span className="!text-xs font-bold text-primary uppercase tracking-wider">
                       Client
                     </span>
                   </div>
@@ -537,7 +537,7 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 className="w-3 h-3 border-2 border-accent border-t-transparent rounded-full"
               />
-              <span className="text-xs text-secondary">{t('flux_in_progress') || 'Flux en cours...'}</span>
+              <span className="!text-xs text-secondary">{t('flux_in_progress') || 'Flux en cours...'}</span>
             </div>
           </motion.div>
         )}

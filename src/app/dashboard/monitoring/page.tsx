@@ -191,7 +191,7 @@ export default function MonitoringPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.total}</p>
-                <p className="text-xs text-muted">{t('total_sites') || 'Sites surveillés'}</p>
+                <p className="!text-xs text-muted">{t('total_sites') || 'Sites surveillés'}</p>
               </div>
             </div>
           </div>
@@ -202,7 +202,7 @@ export default function MonitoringPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold !text-success-text -text">{stats.up}</p>
-                <p className="text-xs text-muted">{t('sites_up') || 'En ligne'}</p>
+                <p className="!text-xs text-muted">{t('sites_up') || 'En ligne'}</p>
               </div>
             </div>
           </div>
@@ -213,7 +213,7 @@ export default function MonitoringPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-error">{stats.down}</p>
-                <p className="text-xs text-muted">{t('sites_down') || 'Hors ligne'}</p>
+                <p className="!text-xs text-muted">{t('sites_down') || 'Hors ligne'}</p>
               </div>
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function MonitoringPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-warning">{stats.slow}</p>
-                <p className="text-xs text-muted">{t('sites_slow') || 'Lent'}</p>
+                <p className="!text-xs text-muted">{t('sites_slow') || 'Lent'}</p>
               </div>
             </div>
           </div>
@@ -279,28 +279,28 @@ export default function MonitoringPage() {
               <table className="w-full">
                 <thead className="bg-hover">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
                       {t('site') || 'Site'}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
                       {t('type') || 'Type'}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
                       {t('status') || 'Statut'}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
                       {t('uptime') || 'Uptime'}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
                       {t('response_time') || 'Réponse'}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
                       SSL
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
                       {t('last_check') || 'Dernière vérif.'}
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 text-right !text-xs font-medium text-muted uppercase">
                       {t('actions') || 'Actions'}
                     </th>
                   </tr>
@@ -330,7 +330,7 @@ export default function MonitoringPage() {
                                 href={site.url} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-xs !text-accent hover:underline flex items-center gap-1"
+                                className="!text-xs !text-accent hover:underline flex items-center gap-1"
                               >
                                 {site.url}
                                 <IconExternalLink className="w-3 h-3" />
@@ -342,7 +342,7 @@ export default function MonitoringPage() {
                           {(() => {
                             const type = site.site_type || 'frontend';
                             return (
-                              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full !text-xs font-medium ${
                                 type === 'frontend' ? 'bg-info-light text-info' :
                                 type === 'backend' ? 'bg-accent-light !text-accent' :
                                 type === 'api' ? 'bg-warning-light text-warning' :
@@ -358,7 +358,7 @@ export default function MonitoringPage() {
                           })()}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium badge border ${statusConfig.bg} ${statusConfig.text}-text border-${statusConfig.bg}`}>
+                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full !text-xs font-medium badge border ${statusConfig.bg} ${statusConfig.text}-text border-${statusConfig.bg}`}>
                             {statusConfig.icon}
                             {site.site_status.toUpperCase()}
                           </span>
@@ -378,18 +378,18 @@ export default function MonitoringPage() {
                         </td>
                         <td className="px-4 py-3">
                           {sslDays !== null ? (
-                            <span className={`inline-flex items-center gap-1 text-xs ${
+                            <span className={`inline-flex items-center gap-1 !text-xs ${
                               sslDays > 30 ? 'text-success-text' : sslDays > 7 ? 'text-warning-text' : 'text-error-text'
                             }`}>
                               <IconLock className="w-3 h-3" />
                               {sslDays}j
                             </span>
                           ) : (
-                            <span className="text-muted text-xs">---</span>
+                            <span className="text-muted !text-xs">---</span>
                           )}
                         </td>
                         <td className="px-4 py-3">
-                          <span className="text-xs text-muted">
+                          <span className="!text-xs text-muted">
                             {site.last_check 
                               ? new Date(site.last_check).toLocaleString('fr-FR', { 
                                   hour: '2-digit', 
@@ -749,7 +749,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
               </div>
 
               <div className="p-3 bg-warning-light border border-warning rounded-lg">
-                <p className="text-xs text-warning-text flex items-center gap-2">
+                <p className="!text-xs text-warning-text flex items-center gap-2">
                   <IconKey className="w-4 h-4" />
                   {t('credentials_info') || 'Les identifiants de connexion seront gérés dans une section sécurisée séparée.'}
                 </p>

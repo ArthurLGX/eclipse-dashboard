@@ -134,7 +134,7 @@ function CompatibilityInfo({
       
       {showTooltip && (
         <div 
-          className="absolute top-full left-0 mt-2 w-80 p-4 bg-card border border-default rounded-xl shadow-2xl text-xs"
+          className="absolute top-full left-0 mt-2 w-80 p-4 bg-card border border-default rounded-xl shadow-2xl !text-xs"
           style={{ zIndex: 9999 }}
         >
           {/* Arrow pointing up */}
@@ -276,7 +276,7 @@ export default function ThemeCustomizer({
           </label>
           <CompatibilityInfo feature="fonts" t={t} />
         </div>
-        <p className="text-xs text-muted">
+        <p className="!text-xs text-muted">
           {t('font_family_desc') || 'Google Fonts (peut ne pas s\'afficher sur tous les clients email)'}
         </p>
         <div className={`grid ${compact ? 'grid-cols-3 gap-1.5' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2'}`}>
@@ -287,7 +287,7 @@ export default function ThemeCustomizer({
                 key={font.name}
                 type="button"
                 onClick={() => setCustomColors(prev => ({ ...prev, fontFamily: font.name }))}
-                className={`px-2 py-1.5 rounded-lg text-xs transition-all border ${
+                className={`px-2 py-1.5 rounded-lg !text-xs transition-all border ${
                   customColors.fontFamily === font.name
                     ? 'bg-accent text-white border-accent'
                     : 'bg-card border-default hover:border-accent text-primary'
@@ -438,7 +438,7 @@ export default function ThemeCustomizer({
           </label>
           <CompatibilityInfo feature="backgroundImages" t={t} />
         </div>
-        <p className="text-xs text-muted mb-3">
+        <p className="!text-xs text-muted mb-3">
           {t('header_background_image_desc') || 'Optionnel : ajouter une image en plus de la couleur du thème'}
         </p>
         
@@ -506,7 +506,7 @@ export default function ThemeCustomizer({
           <label className="block text-sm font-medium text-secondary mb-2">
             {t('header_title_color') || 'Couleur du titre'}
           </label>
-          <p className="text-xs text-muted mb-2">
+          <p className="!text-xs text-muted mb-2">
             {t('header_title_color_desc') || 'Ajuster pour le contraste sur le fond'}
           </p>
           <div className="flex items-center gap-3">
@@ -531,7 +531,7 @@ export default function ThemeCustomizer({
           <label className="block text-sm font-medium text-secondary mb-2">
             {t('button_color') || 'Couleur des boutons'}
           </label>
-          <p className="text-xs text-muted mb-2">
+          <p className="!text-xs text-muted mb-2">
             {t('button_color_desc') || 'Fond des boutons CTA'}
           </p>
           <div className="flex items-center gap-3">
@@ -556,7 +556,7 @@ export default function ThemeCustomizer({
           <label className="block text-sm font-medium text-secondary mb-2">
             {t('button_text_color') || 'Texte du bouton'}
           </label>
-          <p className="text-xs text-muted mb-2">
+          <p className="!text-xs text-muted mb-2">
             {t('button_text_color_desc') || 'Contraste sur le fond du bouton'}
           </p>
           <div className="flex items-center gap-3">

@@ -186,7 +186,7 @@ export default function TemplatePickerModal({
                       <h3 className="font-medium text-primary text-sm">
                         {template.name}
                       </h3>
-                      <p className="text-xs text-muted line-clamp-1">
+                      <p className="!text-xs text-muted line-clamp-1">
                         {template.description}
                       </p>
                     </div>
@@ -221,7 +221,7 @@ export default function TemplatePickerModal({
 
           {/* Footer */}
           <div className="px-6 py-4 border-t border-default bg-secondary/5 shrink-0">
-            <p className="text-xs text-muted text-center">
+            <p className="!text-xs text-muted text-center">
               {t('template_customizable') || 'Tous les templates sont personnalisables après sélection'}
             </p>
           </div>

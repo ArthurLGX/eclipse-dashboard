@@ -776,7 +776,7 @@ export default function ClientWorkflowMapView({
               <motion.div 
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center !text-xs font-bold ${
                   satellite.status === 'done' ? 'bg-success text-white' :
                   satellite.status === 'blocked' ? 'bg-danger text-white' :
                   satellite.status === 'current' ? 'bg-warning text-white' :
@@ -808,7 +808,7 @@ export default function ClientWorkflowMapView({
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-card border border-default rounded-lg shadow-lg text-xs text-secondary whitespace-nowrap z-30"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-card border border-default rounded-lg shadow-lg !text-xs text-secondary whitespace-nowrap z-30"
               >
                 {satellite.hoverTip}
               </motion.div>
@@ -858,7 +858,7 @@ export default function ClientWorkflowMapView({
                   >
                     <motion.div 
                       whileHover={{ scale: 1.05 }}
-                      className="px-3 py-2 bg-card border border-default rounded-xl shadow-lg text-xs hover:shadow-xl cursor-pointer transition-colors min-w-[100px]"
+                      className="px-3 py-2 bg-card border border-default rounded-xl shadow-lg !text-xs hover:shadow-xl cursor-pointer transition-colors min-w-[100px]"
                       onClick={(e) => {
                         e.stopPropagation();
                         if (dragMovedRef.current || isPanning) return;
@@ -1012,7 +1012,7 @@ export default function ClientWorkflowMapView({
 
       {/* Mode indicator */}
       {guidedMode && viewMode === 'radial' && (
-        <div className="absolute top-4 left-4 z-20 px-3 py-1.5 bg-accent-light border border-accent rounded-full text-xs !text-accent flex items-center gap-2">
+        <div className="absolute top-4 left-4 z-20 px-3 py-1.5 bg-accent-light border border-accent rounded-full !text-xs !text-accent flex items-center gap-2">
           <IconCompass className="w-3.5 h-3.5" />
           {t('workflow_guided_mode') || 'Mode guidé activé'}
         </div>
@@ -1261,7 +1261,7 @@ export default function ClientWorkflowMapView({
                 return (
                   <div
                     key={stage.id}
-                    className="absolute flex items-center gap-2 text-xs text-muted uppercase tracking-wider"
+                    className="absolute flex items-center gap-2 !text-xs text-muted uppercase tracking-wider"
                     style={{ left: x, top: 40 }}
                   >
                     <Icon className="w-4 h-4" />
@@ -1281,7 +1281,7 @@ export default function ClientWorkflowMapView({
                       className="absolute w-[160px] !pl-6"
                       style={{ top: 0, transform: 'translateY(-50%)' }}
                     >
-                      <div className="text-xs text-muted mb-2">{client.enterprise || client.email}</div>
+                      <div className="!text-xs text-muted mb-2">{client.enterprise || client.email}</div>
                       <div className="text-sm font-semibold text-primary">{client.name}</div>
                     </div>
 
@@ -1587,7 +1587,7 @@ export default function ClientWorkflowMapView({
                                 <motion.div 
                                   initial={{ scale: 0 }}
                                   animate={{ scale: 1 }}
-                                  className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                  className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center !text-xs font-bold ${
                                     sat.status === 'done' ? 'bg-success text-white' :
                                     sat.status === 'blocked' ? 'bg-danger text-white' :
                                     sat.status === 'current' ? 'bg-warning text-white' :
@@ -1755,7 +1755,7 @@ export default function ClientWorkflowMapView({
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-primary">{createModal.label}</h3>
-                  <p className="text-xs text-muted">{t('workflow_create_for_client') || 'Création pour'} {radialClient.name}</p>
+                  <p className="!text-xs text-muted">{t('workflow_create_for_client') || 'Création pour'} {radialClient.name}</p>
                 </div>
               </div>
               <button
@@ -1803,7 +1803,7 @@ export default function ClientWorkflowMapView({
           <div className="bg-card border border-default rounded-xl shadow-2xl w-full max-w-lg mx-4">
             <div className="flex items-center justify-between p-5 border-b border-default">
               <div>
-                <p className="text-xs text-muted">{t('workflow_node_details') || 'Détails du node'}</p>
+                <p className="!text-xs text-muted">{t('workflow_node_details') || 'Détails du node'}</p>
                 <h3 className="text-lg font-semibold text-primary">{activeNode.stageLabel}</h3>
               </div>
               <button
@@ -1827,7 +1827,7 @@ export default function ClientWorkflowMapView({
               ].map(item => (
                 <div key={item.label} className="flex items-center justify-between">
                   <span className="text-sm text-muted">{item.label}</span>
-                  <span className={`text-sm font-medium ${item.value ? 'text-primary' : 'text-primary opacity-50 italic text-xs !font-light'}`}>
+                  <span className={`text-sm font-medium ${item.value ? 'text-primary' : 'text-primary opacity-50 italic !text-xs !font-light'}`}>
                     {item.value || (t('not_specified') || 'Non renseigné')}
                   </span>
                 </div>

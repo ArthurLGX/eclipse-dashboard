@@ -527,7 +527,7 @@ export default function RevenuePage() {
             className="h-2 bg-warning rounded-full"
           />
         </div>
-        <span className="text-xs text-muted whitespace-nowrap">
+        <span className="!text-xs text-muted whitespace-nowrap">
           {formatCurrency(totalCA)} / {formatCurrency(maxCA)} ({progress.toFixed(0)}%)
         </span>
       </div>
@@ -549,10 +549,10 @@ export default function RevenuePage() {
           >
             <div className="flex items-center gap-2 mb-1">
               <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-              <span className="text-xs text-muted">{kpi.label}</span>
+              <span className="!text-xs text-muted">{kpi.label}</span>
             </div>
             <p className={`text-xl font-bold ${kpi.color}`}>{kpi.value}</p>
-            {kpi.subvalue && <p className="text-xs text-muted">{kpi.subvalue}</p>}
+            {kpi.subvalue && <p className="!text-xs text-muted">{kpi.subvalue}</p>}
           </motion.div>
         ))}
       </div>
@@ -624,7 +624,7 @@ export default function RevenuePage() {
         <div className="flex items-center gap-2 mb-3">
           <IconReceipt className="w-4 h-4 text-info" />
           <span className="text-sm font-medium text-primary">{t('invoices')}</span>
-          <span className="text-xs text-muted">({factures.length})</span>
+          <span className="!text-xs text-muted">({factures.length})</span>
         </div>
         <DataTable
           columns={columns}

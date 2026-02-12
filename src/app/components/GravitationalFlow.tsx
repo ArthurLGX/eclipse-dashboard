@@ -188,7 +188,7 @@ const GravitationalFlow: React.FC<GravitationalFlowProps> = ({
                 }}
               >
                 {showLabels && (
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                  <span className="!text-xs font-semibold text-primary uppercase tracking-wider">
                     Client
                   </span>
                 )}

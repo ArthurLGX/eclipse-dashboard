@@ -694,7 +694,7 @@ export default function NotificationsPage() {
               <div key={groupName}>
                 {/* En-tête du groupe */}
                 <div className="px-4 py-2 bg-muted border-b border-default">
-                  <span className="text-xs font-semibold text-muted uppercase tracking-wider">
+                  <span className="!text-xs font-semibold text-muted uppercase tracking-wider">
                     {groupName}
                   </span>
                 </div>
@@ -739,7 +739,7 @@ export default function NotificationsPage() {
                             <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />
                           )}
                         </div>
-                        <span className="text-xs text-muted whitespace-nowrap">
+                        <span className="!text-xs text-muted whitespace-nowrap">
                           {formatDate(notification.createdAt)}
                         </span>
                       </div>

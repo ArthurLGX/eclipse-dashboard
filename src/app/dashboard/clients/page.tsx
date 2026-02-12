@@ -725,7 +725,7 @@ export default function ClientsPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => router.push(`/dashboard/projects/${firstProject.slug}`)}
-                className="text-xs !text-accent hover:underline"
+                className="!text-xs !text-accent hover:underline"
                 title={`${t('collaborative_via_project') || 'Via projet'}: ${row._collaborativeProjects.map(p => p.title).join(', ')}`}
               >
                 {t('view_project') || 'Voir projet'}

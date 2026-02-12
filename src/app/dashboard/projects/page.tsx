@@ -334,7 +334,7 @@ export default function ProjectsPage() {
           <div className="flex items-start gap-2">
             <h4 className="text-primary font-medium">{value as string}</h4>
             {taskCounts[row.documentId] > 0 && (
-              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-accent rounded-full">
+              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 !text-xs font-bold text-white bg-accent rounded-full">
                 {taskCounts[row.documentId]}
               </span>
             )}
@@ -579,7 +579,7 @@ export default function ProjectsPage() {
         >
           <IconBuilding className={`w-4 h-4 ${activeTab === 'active' ? '!text-white' : '!text-accent'}`} />
           {t('active_projects') || 'Projets actifs'}
-          <span className={`ml-1 px-2 py-0.5 text-xs rounded-full ${
+          <span className={`ml-1 px-2 py-0.5 !text-xs rounded-full ${
             activeTab === 'active' ? 'bg-white/20' : 'bg-muted'
           }`}>
             {activeProjects.length}
@@ -595,7 +595,7 @@ export default function ProjectsPage() {
         >
           <IconArchive className={`w-4 h-4 ${activeTab === 'archived' ? '!text-white' : '!text-warning'}`} />
           {t('archived_projects') || 'Archives'}
-          <span className={`ml-1 px-2 py-0.5 text-xs rounded-full ${
+          <span className={`ml-1 px-2 py-0.5 !text-xs rounded-full ${
             activeTab === 'archived' ? 'bg-white/20' : 'bg-warning-light text-warning'
           }`}>
             {archivedProjects.length}

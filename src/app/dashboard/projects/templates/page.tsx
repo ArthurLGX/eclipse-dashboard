@@ -371,7 +371,7 @@ export default function ProjectTemplatesPage() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h3 className="font-semibold">{template.name}</h3>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-accent-light !text-accent">
+                    <span className="!text-xs px-2 py-0.5 rounded-full bg-accent-light !text-accent">
                       {PROJECT_TYPE_LABELS[template.project_type] || template.project_type}
                     </span>
                   </div>
@@ -420,10 +420,10 @@ export default function ProjectTemplatesPage() {
               
               {/* Tasks preview */}
               <div className="p-3 bg-muted/30 max-h-40 overflow-y-auto">
-                <p className="text-xs font-medium text-muted-foreground mb-2 uppercase">Aperçu des tâches</p>
+                <p className="!text-xs font-medium text-muted-foreground mb-2 uppercase">Aperçu des tâches</p>
                 <div className="space-y-1">
                   {(template.tasks || []).slice(0, 5).map((task, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-xs">
+                    <div key={idx} className="flex items-center gap-2 !text-xs">
                       <div className="w-4 h-4 rounded bg-accent-light flex items-center justify-center !text-accent font-medium">
                         {idx + 1}
                       </div>
@@ -434,7 +434,7 @@ export default function ProjectTemplatesPage() {
                     </div>
                   ))}
                   {(template.tasks?.length || 0) > 5 && (
-                    <p className="text-xs text-muted-foreground text-center pt-1">
+                    <p className="!text-xs text-muted-foreground text-center pt-1">
                       +{(template.tasks?.length || 0) - 5} autres tâches...
                     </p>
                   )}

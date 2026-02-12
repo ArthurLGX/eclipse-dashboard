@@ -235,7 +235,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                         ? 'bg-amber-100 text-amber-600'
                         : 'bg-slate-100 text-slate-400'
                   }`}>
-                    {task.status === 'completed' ? <IconCheck size={14} /> : <span className="text-xs">{idx + 1}</span>}
+                    {task.status === 'completed' ? <IconCheck size={14} /> : <span className="!text-xs">{idx + 1}</span>}
                   </div>
                   <span className={`flex-1 ${task.status === 'completed' ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
                     {task.title}

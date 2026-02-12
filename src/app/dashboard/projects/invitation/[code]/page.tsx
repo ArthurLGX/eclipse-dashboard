@@ -84,7 +84,7 @@ function ProjectsBackground({ userProjects }: { userProjects: Project[] }) {
                 style={{ width: `${project.progress}%` }}
               />
             </div>
-            <span className="text-xs text-muted">{project.progress}%</span>
+            <span className="!text-xs text-muted">{project.progress}%</span>
           </motion.div>
         ))}
       </div>
@@ -335,7 +335,7 @@ export default function InvitationPage() {
             {getDescriptionPreview(invitation.project?.description)}
           </p>
           
-          <div className="flex items-center gap-4 text-xs text-muted">
+          <div className="flex items-center gap-4 !text-xs text-muted">
             <span className="flex items-center gap-1">
               <IconUser className="w-3.5 h-3.5" />
               {t('permission') || 'Permission'}: {' '}
@@ -355,7 +355,7 @@ export default function InvitationPage() {
         </div>
 
         {/* Note */}
-        <p className="text-xs text-muted text-center mb-6">
+        <p className="!text-xs text-muted text-center mb-6">
           {t('collaborator_note') || 'En tant que collaborateur, vous ne pourrez pas supprimer ce projet.'}
         </p>
 
@@ -392,7 +392,7 @@ export default function InvitationPage() {
         </div>
 
         {/* Expiration */}
-        <p className="text-xs text-muted text-center mt-4">
+        <p className="!text-xs text-muted text-center mt-4">
           {t('expires_on') || 'Expire le'}: {' '}
           {new Date(invitation.expires_at).toLocaleDateString('fr-FR', {
             day: 'numeric',

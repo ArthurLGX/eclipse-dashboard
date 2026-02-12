@@ -310,7 +310,7 @@ export default function ProjectProfitabilityAI({
               
               {/* Badge de risque inline */}
               {!isCompleted && alert && alert.risk !== 'low' && (
-                <span className={`px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${getRiskBgColor(alert.risk)} ${getRiskColor(alert.risk)}`}>
+                <span className={`px-2 py-0.5 rounded-full !text-xs font-medium whitespace-nowrap ${getRiskBgColor(alert.risk)} ${getRiskColor(alert.risk)}`}>
                   {alert.risk === 'high' ? '⚠️ Attention' : '⏳ Vigilance'}
                 </span>
               )}
@@ -359,14 +359,14 @@ export default function ProjectProfitabilityAI({
                 <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
                   <div className="flex items-center gap-1.5 text-muted">
                     <IconClock className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="text-xs">{t('estimated') || 'Estimé'}</span>
+                    <span className="!text-xs">{t('estimated') || 'Estimé'}</span>
                   </div>
                   <span className="font-bold text-primary text-lg">{estimatedHours}h</span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
                   <div className="flex items-center gap-1.5 text-muted">
                     <IconClock className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="text-xs">{t('actual') || 'Réel'}</span>
+                    <span className="!text-xs">{t('actual') || 'Réel'}</span>
                   </div>
                   <span className={`font-bold text-lg ${actualHours > estimatedHours ? 'text-danger' : 'text-success'}`}>
                     {actualHours}h
@@ -375,14 +375,14 @@ export default function ProjectProfitabilityAI({
                 <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
                   <div className="flex items-center gap-1.5 text-muted">
                     <IconCurrencyEuro className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="text-xs truncate">{t('planned_rate') || 'Taux prévu'}</span>
+                    <span className="!text-xs truncate">{t('planned_rate') || 'Taux prévu'}</span>
                   </div>
                   <span className="font-bold text-primary text-lg">{hourlyRate}€</span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
                   <div className="flex items-center gap-1.5 text-muted">
                     <IconCurrencyEuro className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="text-xs truncate">{t('effective_rate') || 'Taux effectif'}</span>
+                    <span className="!text-xs truncate">{t('effective_rate') || 'Taux effectif'}</span>
                   </div>
                   <span className={`font-bold text-lg ${
                     (profitability?.effective_hourly_rate || 0) >= hourlyRate ? 'text-success' : 'text-danger'
@@ -403,7 +403,7 @@ export default function ProjectProfitabilityAI({
                       <p className={`font-medium ${getRiskColor(alert.risk)}`}>{alert.reason}</p>
                       <p className="text-sm text-secondary mt-1">{alert.recommendation}</p>
                       {alert.tasks_at_risk.length > 0 && (
-                        <p className="text-xs text-muted mt-2">
+                        <p className="!text-xs text-muted mt-2">
                           Tâches concernées : {alert.tasks_at_risk.join(', ')}
                         </p>
                       )}
@@ -459,7 +459,7 @@ export default function ProjectProfitabilityAI({
                     }
                   }}
                   disabled={isLoading}
-                  className="flex items-center gap-1 text-xs text-muted hover:text-primary transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1 !text-xs text-muted hover:text-primary transition-colors disabled:opacity-50"
                 >
                   <IconRefresh className={`w-3 h-3 ${isLoading ? 'animate-spin' : ''}`} />
                   {t('refresh_analysis') || 'Actualiser'}
@@ -468,7 +468,7 @@ export default function ProjectProfitabilityAI({
 
               {/* Message d'erreur discret */}
               {error && (
-                <p className="text-xs text-muted text-center">{error}</p>
+                <p className="!text-xs text-muted text-center">{error}</p>
               )}
             </div>
           </motion.div>

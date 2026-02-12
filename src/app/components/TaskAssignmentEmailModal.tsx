@@ -222,11 +222,11 @@ export default function TaskAssignmentEmailModal({
                       key={idx}
                       className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full"
                     >
-                      <div className="w-6 h-6 rounded-full bg-accent-light flex items-center justify-center !text-accent text-xs font-medium">
+                      <div className="w-6 h-6 rounded-full bg-accent-light flex items-center justify-center !text-accent !text-xs font-medium">
                         {user.username.charAt(0).toUpperCase()}
                       </div>
                       <span className="text-sm text-primary">{user.username}</span>
-                      <span className="text-xs text-muted">({user.tasks.length})</span>
+                      <span className="!text-xs text-muted">({user.tasks.length})</span>
                       <button
                         onClick={() => openPreview(user)}
                         className="p-1 hover:bg-hover rounded text-muted hover:text-accent"
@@ -276,7 +276,7 @@ export default function TaskAssignmentEmailModal({
                       <p className="text-sm font-medium text-primary">
                         {t('include_task_list') || 'Inclure la liste des tâches'}
                       </p>
-                      <p className="text-xs text-muted">
+                      <p className="!text-xs text-muted">
                         {t('include_task_list_hint') || 'Afficher le tableau des tâches assignées dans l\'email'}
                       </p>
                     </div>

@@ -358,8 +358,8 @@ export default function MediaLibraryPage() {
                     {file.name}
                   </p>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="text-xs text-muted">{formatSize(file.size)}</span>
-                    <span className="text-xs text-muted">{formatDate(file.createdAt)}</span>
+                    <span className="!text-xs text-muted">{formatSize(file.size)}</span>
+                    <span className="!text-xs text-muted">{formatDate(file.createdAt)}</span>
                   </div>
                 </div>
 

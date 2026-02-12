@@ -379,7 +379,7 @@ export default function QuickProjectModal({
                         <h3 className="font-semibold text-primary">
                           {t('duplicate_existing') || 'Repartir d\'un projet existant'}
                         </h3>
-                        <span className="px-2 py-0.5 text-xs font-medium bg-accent text-white rounded-full">
+                        <span className="px-2 py-0.5 !text-xs font-medium bg-accent text-white rounded-full">
                           {t('recommended') || 'Recommandé'}
                         </span>
                       </div>
@@ -484,7 +484,7 @@ export default function QuickProjectModal({
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center gap-3 text-xs text-muted mt-1">
+                            <div className="flex items-center gap-3 !text-xs text-muted mt-1">
                               {project.client?.name && (
                                 <span className="flex items-center gap-1">
                                   <IconUser className="w-3 h-3" />
@@ -533,7 +533,7 @@ export default function QuickProjectModal({
                       <h3 className="font-semibold text-primary text-sm">
                         {language === 'en' ? template.nameEn : template.name}
                       </h3>
-                      <div className="flex items-center gap-2 text-xs text-muted mt-2">
+                      <div className="flex items-center gap-2 !text-xs text-muted mt-2">
                         <span className="flex items-center gap-1">
                           <IconClock className="w-3 h-3" />
                           {template.duration}j
@@ -575,12 +575,12 @@ export default function QuickProjectModal({
                       </span>
                     </div>
                     {loadingTasks ? (
-                      <div className="flex items-center gap-2 text-xs text-muted mt-2">
+                      <div className="flex items-center gap-2 !text-xs text-muted mt-2">
                         <IconLoader2 className="w-3 h-3 animate-spin" />
                         {t('loading_tasks') || 'Chargement des tâches...'}
                       </div>
                     ) : (
-                      <div className="text-xs text-muted mt-2">
+                      <div className="!text-xs text-muted mt-2">
                         {sourceTasks.length} {t('tasks_will_be_copied') || 'tâches seront copiées (sans temps réel)'}
                       </div>
                     )}
@@ -595,7 +595,7 @@ export default function QuickProjectModal({
                         {t('template') || 'Template'} : {language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
                       </span>
                     </div>
-                    <div className="text-xs text-muted mt-2">
+                    <div className="!text-xs text-muted mt-2">
                       {selectedTemplate.tasks.length} {t('tasks_included') || 'tâches incluses'}
                     </div>
                   </div>
@@ -655,7 +655,7 @@ export default function QuickProjectModal({
                       <IconClock className="w-4 h-4" />
                       {t('timing_scope') || 'Périmètre temporel'} *
                     </div>
-                    <p className="text-xs text-muted">
+                    <p className="!text-xs text-muted">
                       {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
@@ -684,7 +684,7 @@ export default function QuickProjectModal({
                     {timingMode === 'duration' ? (
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="block text-xs text-muted mb-1">
+                          <label className="block !text-xs text-muted mb-1">
                             {t('duration') || 'Durée'}
                           </label>
                           <select
@@ -698,7 +698,7 @@ export default function QuickProjectModal({
                           </select>
                         </div>
                         <div>
-                          <label className="block text-xs text-muted mb-1">
+                          <label className="block !text-xs text-muted mb-1">
                             {t('end_date_preview') || 'Date de fin estimée'}
                           </label>
                           <div className="input w-full bg-muted/50 text-secondary">
@@ -708,7 +708,7 @@ export default function QuickProjectModal({
                       </div>
                     ) : (
                       <div>
-                        <label className="block text-xs text-muted mb-1">
+                        <label className="block !text-xs text-muted mb-1">
                           {t('end_date') || 'Date de fin'}
                         </label>
                         <input

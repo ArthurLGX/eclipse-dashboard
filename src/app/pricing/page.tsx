@@ -238,7 +238,7 @@ export default function Plans() {
         </span>
 
         <span
-          className={`ml-2 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+          className={`ml-2 px-3 py-1 rounded-full !text-xs font-medium transition-colors ${
             togglePlan
               ? 'bg-accent-light !text-accent'
               : 'bg-muted text-secondary'
@@ -315,7 +315,7 @@ export default function Plans() {
                 >
                   {plan.name === 'pro' && (
                     <div className="absolute top-4 right-1/2 translate-x-1/2 flex mb-4 mx-auto">
-                      <span className="text-xs font-medium !text-accent bg-accent-light rounded-full px-3 py-1">
+                      <span className="!text-xs font-medium !text-accent bg-accent-light rounded-full px-3 py-1">
                         {t('most_popular')}
                       </span>
                     </div>
@@ -348,7 +348,7 @@ export default function Plans() {
                           {(plan.price_yearly * 0.8 * 12).toFixed(2)}
                           {language === 'fr' ? '€' : ''}
                         </span>
-                        <span className="text-accent text-xs font-medium">
+                        <span className="text-accent !text-xs font-medium">
                           {t('save_20_percent')}
                         </span>
                       </div>
@@ -368,7 +368,7 @@ export default function Plans() {
                 
                 {currentUserPlan === plan.name && (
                   <div className="flex my-4 mx-auto justify-center items-center">
-                    <span className="text-xs font-medium text-muted bg-muted/20 rounded-full px-3 py-1 border border-default">
+                    <span className="!text-xs font-medium text-muted bg-muted/20 rounded-full px-3 py-1 border border-default">
                       {t('your_current_plan')}
                     </span>
                   </div>

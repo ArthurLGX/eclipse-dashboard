@@ -627,7 +627,7 @@ function InstagramPlanner() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.total}</p>
-                <p className="text-xs text-muted">{t('total_posts') || 'Posts total'}</p>
+                <p className="!text-xs text-muted">{t('total_posts') || 'Posts total'}</p>
               </div>
             </div>
           </div>
@@ -638,7 +638,7 @@ function InstagramPlanner() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.scheduled}</p>
-                <p className="text-xs text-muted">{t('scheduled') || 'Planifiés'}</p>
+                <p className="!text-xs text-muted">{t('scheduled') || 'Planifiés'}</p>
               </div>
             </div>
           </div>
@@ -649,7 +649,7 @@ function InstagramPlanner() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.totalLikes}</p>
-                <p className="text-xs text-muted">{t('total_likes') || 'Likes total'}</p>
+                <p className="!text-xs text-muted">{t('total_likes') || 'Likes total'}</p>
               </div>
             </div>
           </div>
@@ -660,7 +660,7 @@ function InstagramPlanner() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.totalComments}</p>
-                <p className="text-xs text-muted">{t('total_comments') || 'Commentaires'}</p>
+                <p className="!text-xs text-muted">{t('total_comments') || 'Commentaires'}</p>
               </div>
             </div>
           </div>
@@ -742,7 +742,7 @@ function InstagramPlanner() {
 
                     {/* Status badge */}
                     {post.status !== 'published' && (
-                      <div className={`absolute top-2 left-2 px-2 py-0.5 rounded text-xs font-medium ${
+                      <div className={`absolute top-2 left-2 px-2 py-0.5 rounded !text-xs font-medium ${
                         post.status === 'draft' ? 'bg-gray-500 text-white' : 'bg-amber-500 text-white'
                       }`}>
                         {post.status === 'draft' ? 'Brouillon' : 'Planifié'}
@@ -814,7 +814,7 @@ function InstagramPlanner() {
                   <div className="w-16 h-16 rounded-full border-2 border-dashed border-accent flex items-center justify-center">
                     <IconPlus className="w-6 h-6 text-accent" />
                   </div>
-                  <span className="text-xs text-muted">Ajouter</span>
+                  <span className="!text-xs text-muted">Ajouter</span>
                 </button>
 
                 {/* Story items */}
@@ -835,7 +835,7 @@ function InstagramPlanner() {
                         <div className="w-full h-full rounded-full bg-muted" />
                       )}
                     </div>
-                    <span className="text-xs text-muted truncate max-w-[64px]">
+                    <span className="!text-xs text-muted truncate max-w-[64px]">
                       {story.status === 'scheduled' ? 'Planifié' : 'Story'}
                     </span>
                   </button>
@@ -868,7 +868,7 @@ function InstagramPlanner() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-primary truncate">{post.caption || 'Sans légende'}</p>
-                      <p className="text-xs text-muted flex items-center gap-1">
+                      <p className="!text-xs text-muted flex items-center gap-1">
                         <IconCalendar className="w-3 h-3" />
                         {post.scheduledAt?.toLocaleDateString('fr-FR', { 
                           day: 'numeric', 
@@ -926,11 +926,11 @@ function InstagramPlanner() {
                       <p className="font-medium text-primary truncate">
                         @{instagramConfig.instagram_username}
                       </p>
-                      <p className="text-xs text-muted">
+                      <p className="!text-xs text-muted">
                         {instagramConfig.instagram_account_type}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 px-2 py-1 bg-success-light !text-success-text -text text-xs rounded-full">
+                    <div className="flex items-center gap-1 px-2 py-1 bg-success-light !text-success-text -text !text-xs rounded-full">
                       <IconCheck className="w-3 h-3" />
                       Connecté
                     </div>
@@ -940,7 +940,7 @@ function InstagramPlanner() {
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div className="p-2 bg-muted rounded-lg">
                       <p className="text-lg font-bold text-primary">{instagramConfig.media_count}</p>
-                      <p className="text-xs text-muted">Posts</p>
+                      <p className="!text-xs text-muted">Posts</p>
                     </div>
                     <div className="p-2 bg-muted rounded-lg">
                       <p className="text-lg font-bold text-primary">
@@ -948,11 +948,11 @@ function InstagramPlanner() {
                           ? `${(instagramConfig.followers_count / 1000).toFixed(1)}k` 
                           : instagramConfig.followers_count}
                       </p>
-                      <p className="text-xs text-muted">Followers</p>
+                      <p className="!text-xs text-muted">Followers</p>
                     </div>
                     <div className="p-2 bg-muted rounded-lg">
                       <p className="text-lg font-bold text-primary">{instagramConfig.following_count}</p>
-                      <p className="text-xs text-muted">Suivis</p>
+                      <p className="!text-xs text-muted">Suivis</p>
                     </div>
                   </div>
 
@@ -992,7 +992,7 @@ function InstagramPlanner() {
                     Connecter Instagram
                   </button>
 
-                  <div className="text-xs text-muted space-y-1">
+                  <div className="!text-xs text-muted space-y-1">
                     <p>⚠️ Prérequis :</p>
                     <ul className="list-disc list-inside space-y-0.5 ml-2">
                       <li>Compte Instagram Business ou Creator</li>
@@ -1089,7 +1089,7 @@ function InstagramPlanner() {
                         className="aspect-square border-2 border-dashed border-default rounded-lg flex flex-col items-center justify-center gap-1 text-muted hover:border-accent hover:text-accent transition-colors"
                       >
                         <IconUpload className="w-6 h-6" />
-                        <span className="text-xs">Ajouter</span>
+                        <span className="!text-xs">Ajouter</span>
                       </button>
                     )}
                   </div>
@@ -1154,7 +1154,7 @@ function InstagramPlanner() {
                       className="input w-full h-32 resize-none"
                       maxLength={2200}
                     />
-                    <p className="text-xs text-muted mt-1 text-right">
+                    <p className="!text-xs text-muted mt-1 text-right">
                       {editingPost.caption?.length || 0}/2200
                     </p>
                   </div>
@@ -1187,7 +1187,7 @@ function InstagramPlanner() {
                         <button
                           key={tag}
                           onClick={() => addHashtag(tag)}
-                          className="px-2 py-1 text-xs !text-muted bg-muted rounded-full hover:bg-accent-light hover:!text-accent transition-colors"
+                          className="px-2 py-1 !text-xs !text-muted bg-muted rounded-full hover:bg-accent-light hover:!text-accent transition-colors"
                         >
                           #{tag}
                         </button>
@@ -1211,7 +1211,7 @@ function InstagramPlanner() {
                             </div>
                             <div>
                               <p className="font-medium text-primary text-sm">{editingPost.music.title}</p>
-                              <p className="text-xs text-muted">{editingPost.music.artist}</p>
+                              <p className="!text-xs text-muted">{editingPost.music.artist}</p>
                             </div>
                           </div>
                           <button
@@ -1231,8 +1231,8 @@ function InstagramPlanner() {
                             >
                               <IconMusic className="w-4 h-4 text-accent" />
                               <div className="min-w-0">
-                                <p className="text-xs font-medium text-primary truncate">{music.title}</p>
-                                <p className="text-xs text-muted truncate">{music.artist}</p>
+                                <p className="!text-xs font-medium text-primary truncate">{music.title}</p>
+                                <p className="!text-xs text-muted truncate">{music.artist}</p>
                               </div>
                             </button>
                           ))}
@@ -1445,7 +1445,7 @@ function CalendarView({
       {/* Week days header */}
       <div className="grid grid-cols-7 border-b border-default">
         {weekDays.map(day => (
-          <div key={day} className="p-2 text-center text-xs font-medium text-muted">
+          <div key={day} className="p-2 text-center !text-xs font-medium text-muted">
             {day}
           </div>
         ))}
@@ -1487,7 +1487,7 @@ function CalendarView({
                   <button
                     key={post.documentId || post.id}
                     onClick={() => onSelectPost(post)}
-                    className={`w-full flex items-center gap-1 p-1 rounded text-xs truncate ${
+                    className={`w-full flex items-center gap-1 p-1 rounded !text-xs truncate ${
                       post.status === 'published' 
                         ? 'bg-success-light !text-success-text ' 
                         : post.status === 'scheduled'
@@ -1506,7 +1506,7 @@ function CalendarView({
                   </button>
                 ))}
                 {dayPosts.length > 3 && (
-                  <span className="text-xs text-muted">+{dayPosts.length - 3} autres</span>
+                  <span className="!text-xs text-muted">+{dayPosts.length - 3} autres</span>
                 )}
               </div>
             </div>
@@ -1576,7 +1576,7 @@ function PostPreviewModal({
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500" />
                     <span className="text-white text-sm font-medium">{username}</span>
-                    <span className="text-white/60 text-xs">2h</span>
+                    <span className="text-white/60 !text-xs">2h</span>
                   </div>
                 </div>
 
@@ -1584,7 +1584,7 @@ function PostPreviewModal({
                 {post.music && (
                   <div className="absolute bottom-20 left-4 flex items-center gap-2 bg-black/30 backdrop-blur px-3 py-2 rounded-full">
                     <IconMusic className="w-4 h-4 text-white" />
-                    <span className="text-white text-xs">{post.music.title} - {post.music.artist}</span>
+                    <span className="text-white !text-xs">{post.music.title} - {post.music.artist}</span>
                   </div>
                 )}
 

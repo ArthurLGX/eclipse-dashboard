@@ -425,7 +425,7 @@ export default function SmtpConfigSection() {
                 <p className="text-sm !font-bold text-warning-text font-medium mb-1">
                   {t('smtp_app_password_title') || 'Mot de passe d\'application requis'}
                 </p>
-                <p className="text-xs text-warning-text mb-4">
+                <p className="!text-xs text-warning-text mb-4">
                   {t('smtp_app_password_desc') || 'Pour des raisons de sécurité, la plupart des fournisseurs exigent un mot de passe d\'application au lieu de votre mot de passe habituel.'}
                 </p>
                 <a
@@ -512,7 +512,7 @@ export default function SmtpConfigSection() {
             </button>
           </div>
           {existingConfig && (
-            <p className="text-xs text-secondary">
+            <p className="!text-xs text-secondary">
               {t('smtp_password_hint') || 'Laissez vide pour conserver le mot de passe actuel'}
             </p>
           )}
@@ -530,7 +530,7 @@ export default function SmtpConfigSection() {
             placeholder="Mon Entreprise"
             className="input w-full"
           />
-          <p className="text-xs text-secondary">
+          <p className="!text-xs text-secondary">
             {t('smtp_from_name_hint') || 'Le nom qui apparaîtra comme expéditeur'}
           </p>
         </div>
@@ -603,7 +603,7 @@ export default function SmtpConfigSection() {
           </div>
           <div className="flex items-center gap-3">
             {existingConfig?.imap_verified && (
-              <span className="px-2 py-1 rounded-full bg-success-light !text-success-text -text text-xs flex items-center gap-1">
+              <span className="px-2 py-1 rounded-full bg-success-light !text-success-text -text !text-xs flex items-center gap-1">
                 <IconCheck className="w-3 h-3" />
                 {t('verified') || 'Vérifié'}
               </span>
@@ -690,7 +690,7 @@ export default function SmtpConfigSection() {
                           placeholder="imap.gmail.com"
                           className="input w-full"
                         />
-                        <p className="text-xs text-muted">
+                        <p className="!text-xs text-muted">
                           {t('imap_host_hint') || 'Gmail: imap.gmail.com, Outlook: outlook.office365.com'}
                         </p>
                       </div>
@@ -722,7 +722,7 @@ export default function SmtpConfigSection() {
                           placeholder={formData.smtp_user || 'votre@email.com'}
                           className="input w-full"
                         />
-                        <p className="text-xs text-muted">
+                        <p className="!text-xs text-muted">
                           {t('imap_user_hint') || 'Laissez vide pour utiliser l\'email SMTP'}
                         </p>
                       </div>
@@ -749,7 +749,7 @@ export default function SmtpConfigSection() {
                             {showImapPassword ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
                           </button>
                         </div>
-                        <p className="text-xs text-muted">
+                        <p className="!text-xs text-muted">
                           {t('imap_password_hint') || 'Laissez vide pour utiliser le mot de passe SMTP'}
                         </p>
                       </div>

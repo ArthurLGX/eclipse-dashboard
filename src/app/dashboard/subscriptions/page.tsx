@@ -518,7 +518,7 @@ export default function SubscriptionsPage() {
                         </p>
                       )}
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}>
+                    <span className={`px-2 py-1 rounded-full !text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}>
                       {statusStyle.label}
                     </span>
                   </div>

@@ -327,7 +327,7 @@ function EmailHistory() {
                             <h4 className="font-medium text-primary truncate">
                               {email.subject}
                             </h4>
-                            <div className="flex items-center gap-2 text-xs text-muted flex-shrink-0">
+                            <div className="flex items-center gap-2 !text-xs text-muted flex-shrink-0">
                               {getStatusIcon(email.status_mail)}
                               <span>{formatDate(email.sent_at)}</span>
                             </div>
@@ -347,7 +347,7 @@ function EmailHistory() {
                           
                           {/* Attachments indicator */}
                           {email.attachments && email.attachments.length > 0 && (
-                            <div className="flex items-center gap-1 mt-2 text-xs text-muted">
+                            <div className="flex items-center gap-1 mt-2 !text-xs text-muted">
                               <IconPaperclip className="w-3.5 h-3.5" />
                               <span>{email.attachments.length} {t('attachments') || 'pièce(s) jointe(s)'}</span>
                             </div>
@@ -445,7 +445,7 @@ function EmailHistory() {
                           href={att.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2 py-0.5 bg-accent-light !text-accent rounded-full text-xs hover:bg-accent-light transition-colors"
+                          className="px-2 py-0.5 bg-accent-light !text-accent rounded-full !text-xs hover:bg-accent-light transition-colors"
                         >
                           {att.name}
                         </a>

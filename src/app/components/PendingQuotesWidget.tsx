@@ -141,7 +141,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {quote.reference}
                       </span>
                       {isUrgent && (
-                        <span className="flex items-center gap-1 text-xs text-warning-text bg-warning-light px-2 py-0.5 rounded-full">
+                        <span className="flex items-center gap-1 !text-xs text-warning-text bg-warning-light px-2 py-0.5 rounded-full">
                           <IconAlertTriangle className="w-3 h-3" />
                           {t('urgent') || 'Urgent'}
                         </span>
@@ -155,7 +155,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                           .format(quote.number || 0)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-muted mt-1">
+                    <div className="flex items-center gap-1 !text-xs text-muted mt-1">
                       <IconClock className="w-3 h-3" />
                       {t('sent_days_ago', { days: daysSince })}
                     </div>

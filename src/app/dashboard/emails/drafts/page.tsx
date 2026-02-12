@@ -263,7 +263,7 @@ function DraftsContent() {
                           {draft.name || draft.subject || t('untitled_draft') || 'Sans titre'}
                         </h4>
                         <span 
-                          className="px-2 py-0.5 text-xs rounded-full shrink-0"
+                          className="px-2 py-0.5 !text-xs rounded-full shrink-0"
                           style={{ backgroundColor: `${color}15`, color }}
                         >
                           {getCategoryLabel(draft.category)}
@@ -272,7 +272,7 @@ function DraftsContent() {
                       <p className="text-sm text-muted truncate mb-1">
                         {draft.subject || t('no_subject') || 'Sans objet'}
                       </p>
-                      <p className="text-xs text-muted">
+                      <p className="!text-xs text-muted">
                         {draft.recipients && draft.recipients.length > 0 
                           ? `${draft.recipients.length} destinataire(s): ${draft.recipients.map(r => r.email).join(', ')}`
                           : t('no_recipients') || 'Aucun destinataire'

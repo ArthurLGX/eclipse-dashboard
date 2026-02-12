@@ -1257,7 +1257,7 @@ export default function RichTextEditor({
           />
           <select
             onChange={(e) => execCommand('fontName', e.target.value)}
-            className="px-2 py-1 text-xs bg-input border border-input rounded text-muted"
+            className="px-2 py-1 !text-xs bg-input border border-input rounded text-muted"
             defaultValue=""
             title={t('toolbar_font') || 'Police'}
           >
@@ -1273,7 +1273,7 @@ export default function RichTextEditor({
                 e.target.value = ''; // Reset select
               }
             }}
-            className="px-2 py-1 text-xs bg-input border border-input rounded text-muted"
+            className="px-2 py-1 !text-xs bg-input border border-input rounded text-muted"
             defaultValue=""
             title={t('toolbar_font_size') || 'Taille'}
           >
@@ -1366,10 +1366,10 @@ export default function RichTextEditor({
             
             <div className="w-px h-5 bg-gray-600 mx-1" />
             
-            <button type="button" onClick={() => setMediaSize('small')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white text-xs font-medium">S</button>
-            <button type="button" onClick={() => setMediaSize('medium')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white text-xs font-medium">M</button>
-            <button type="button" onClick={() => setMediaSize('large')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white text-xs font-medium">L</button>
-            <button type="button" onClick={() => setMediaSize('full')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white text-xs font-medium">100%</button>
+            <button type="button" onClick={() => setMediaSize('small')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white !text-xs font-medium">S</button>
+            <button type="button" onClick={() => setMediaSize('medium')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white !text-xs font-medium">M</button>
+            <button type="button" onClick={() => setMediaSize('large')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white !text-xs font-medium">L</button>
+            <button type="button" onClick={() => setMediaSize('full')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white !text-xs font-medium">100%</button>
             
             <div className="w-px h-5 bg-gray-600 mx-1" />
             
@@ -1462,7 +1462,7 @@ export default function RichTextEditor({
               left: Math.max(0, Math.min(emojiPickerPosition.left, 200)),
             }}
           >
-            <div className="text-xs text-muted px-2 py-1 mb-1 flex items-center gap-2">
+            <div className="!text-xs text-muted px-2 py-1 mb-1 flex items-center gap-2">
               <span>:{emojiSearch}</span>
               <span className="text-muted/50">• ↑↓ naviguez • ↵ sélectionner</span>
             </div>

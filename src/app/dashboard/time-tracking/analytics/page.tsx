@@ -525,7 +525,7 @@ export default function TimeTrackingAnalyticsPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-primary">{formatDuration(analytics.totalTime)}</p>
-                    <p className="text-xs text-muted">{t('total_tracked') || 'Temps total suivi'}</p>
+                    <p className="!text-xs text-muted">{t('total_tracked') || 'Temps total suivi'}</p>
                   </div>
                 </div>
               </div>
@@ -537,7 +537,7 @@ export default function TimeTrackingAnalyticsPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-warning">{formatDuration(analytics.totalEstimated)}</p>
-                    <p className="text-xs text-muted">{t('total_estimated') || 'Temps estimé total'}</p>
+                    <p className="!text-xs text-muted">{t('total_estimated') || 'Temps estimé total'}</p>
                   </div>
                 </div>
               </div>
@@ -560,7 +560,7 @@ export default function TimeTrackingAnalyticsPage() {
                     }`}>
                       {Math.round(analytics.avgAccuracy)}%
                     </p>
-                    <p className="text-xs text-muted">{t('avg_accuracy') || 'Précision moyenne'}</p>
+                    <p className="!text-xs text-muted">{t('avg_accuracy') || 'Précision moyenne'}</p>
                   </div>
                 </div>
               </div>
@@ -572,7 +572,7 @@ export default function TimeTrackingAnalyticsPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold !text-success-text -text">{analytics.completedTasks}</p>
-                    <p className="text-xs text-muted">{t('tasks_completed') || 'Tâches terminées'}</p>
+                    <p className="!text-xs text-muted">{t('tasks_completed') || 'Tâches terminées'}</p>
                   </div>
                 </div>
               </div>
@@ -620,15 +620,15 @@ export default function TimeTrackingAnalyticsPage() {
                 <div className="mt-4 grid grid-cols-3 gap-2 text-center">
                   <div>
                     <p className="text-lg font-bold text-danger">{analytics.underestimatedCount}</p>
-                    <p className="text-xs text-muted">{t('underestimated') || 'Sous-estimées'}</p>
+                    <p className="!text-xs text-muted">{t('underestimated') || 'Sous-estimées'}</p>
                   </div>
                   <div>
                     <p className="text-lg font-bold !text-success-text -text">{analytics.accurateCount}</p>
-                    <p className="text-xs text-muted">{t('accurate') || 'Précises'}</p>
+                    <p className="!text-xs text-muted">{t('accurate') || 'Précises'}</p>
                   </div>
                   <div>
                     <p className="text-lg font-bold text-info">{analytics.overestimatedCount}</p>
-                    <p className="text-xs text-muted">{t('overestimated') || 'Sur-estimées'}</p>
+                    <p className="!text-xs text-muted">{t('overestimated') || 'Sur-estimées'}</p>
                   </div>
                 </div>
               </div>
@@ -663,7 +663,7 @@ export default function TimeTrackingAnalyticsPage() {
                               {item.taskName || item.projectName || t('no_description')}
                             </p>
                             {item.projectName && item.taskName && (
-                              <p className="text-xs text-muted flex items-center gap-1 truncate">
+                              <p className="!text-xs text-muted flex items-center gap-1 truncate">
                                 <IconBriefcase className="w-3 h-3 flex-shrink-0" />
                                 <span className="truncate">{item.projectName}</span>
                                 {item.entryCount > 1 && (
@@ -672,7 +672,7 @@ export default function TimeTrackingAnalyticsPage() {
                               </p>
                             )}
                             {!item.projectName && item.entryCount > 1 && (
-                              <p className="text-xs text-muted">({item.entryCount} entrées)</p>
+                              <p className="!text-xs text-muted">({item.entryCount} entrées)</p>
                             )}
                           </div>
                         </div>
@@ -702,7 +702,7 @@ export default function TimeTrackingAnalyticsPage() {
                       <p className="text-sm font-medium text-primary">
                         {t('underestimating_time') || 'Vous sous-estimez vos tâches'}
                       </p>
-                      <p className="text-xs text-muted mt-1">
+                      <p className="!text-xs text-muted mt-1">
                         {t('underestimating_advice') || 'Essayez d\'augmenter vos estimations de 20-30%'}
                       </p>
                     </div>
@@ -715,7 +715,7 @@ export default function TimeTrackingAnalyticsPage() {
                       <p className="text-sm font-medium text-primary">
                         {t('overestimating_time') || 'Vous surestimez vos tâches'}
                       </p>
-                      <p className="text-xs text-muted mt-1">
+                      <p className="!text-xs text-muted mt-1">
                         {t('overestimating_advice') || 'Vous pouvez réduire vos estimations de 15-20%'}
                       </p>
                     </div>
@@ -728,7 +728,7 @@ export default function TimeTrackingAnalyticsPage() {
                       <p className="text-sm font-medium text-primary">
                         {t('good_estimation') || 'Excellente précision !'}
                       </p>
-                      <p className="text-xs text-muted mt-1">
+                      <p className="!text-xs text-muted mt-1">
                         {t('good_estimation_advice') || 'Vos estimations sont fiables, continuez ainsi'}
                       </p>
                     </div>
@@ -741,7 +741,7 @@ export default function TimeTrackingAnalyticsPage() {
                       <p className="text-sm font-medium text-primary">
                         {t('many_exceeded') || 'Beaucoup de dépassements'}
                       </p>
-                      <p className="text-xs text-muted mt-1">
+                      <p className="!text-xs text-muted mt-1">
                         {t('many_exceeded_advice') || 'Prévoyez plus de marge dans vos planifications'}
                       </p>
                     </div>

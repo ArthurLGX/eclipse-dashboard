@@ -314,7 +314,7 @@ export default function DailySuggestionsModal() {
                                   {suggestion.title}
                                 </h3>
                                 {suggestion.priority === 'high' && (
-                                  <span className="px-2 py-0.5 text-xs font-medium bg-danger-light text-danger rounded-full">
+                                  <span className="px-2 py-0.5 !text-xs font-medium bg-danger-light text-danger rounded-full">
                                     {t('urgent') || 'Urgent'}
                                   </span>
                                 )}
@@ -325,7 +325,7 @@ export default function DailySuggestionsModal() {
                               
                               {/* Metadata */}
                               {suggestion.metadata && (
-                                <div className="flex items-center gap-3 mt-2 text-xs text-muted">
+                                <div className="flex items-center gap-3 mt-2 !text-xs text-muted">
                                   {suggestion.metadata.clientName && (
                                     <span>👤 {suggestion.metadata.clientName}</span>
                                   )}
@@ -383,7 +383,7 @@ export default function DailySuggestionsModal() {
 
           {/* Footer */}
           <div className="p-4 border-t border-muted bg-muted flex items-center justify-between">
-            <p className="text-xs text-muted">
+            <p className="!text-xs text-muted">
               {t('powered_by_eclipse') || 'Propulsé par Eclipse Assistant'}
             </p>
             <button

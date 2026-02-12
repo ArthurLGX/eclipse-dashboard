@@ -411,7 +411,7 @@ export default function SharedProjectPage() {
                           {option.icon}
                         </span>
                         {option.label}
-                        <span className={`px-1.5 py-0.5 rounded text-xs ${
+                        <span className={`px-1.5 py-0.5 rounded !text-xs ${
                           isActive ? 'bg-white/20' : 'bg-page'
                         }`}>
                           {count}
@@ -638,7 +638,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
               {task.title}
             </h4>
             <IconFlag className={`w-4 h-4 ${getPriorityStyle()}`} />
-            <span className={`px-2 py-0.5 text-xs rounded-full border ${getStatusStyle()}`}>
+            <span className={`px-2 py-0.5 !text-xs rounded-full border ${getStatusStyle()}`}>
               {statusConfig.label}
             </span>
           </div>
@@ -662,7 +662,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
               />
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1 text-xs !text-accent hover:text-accent/80 mt-1 transition-colors"
+                className="flex items-center gap-1 !text-xs !text-accent hover:text-accent/80 mt-1 transition-colors"
               >
                 {isExpanded ? (
                   <>
@@ -679,7 +679,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
             </div>
           )}
           
-          <div className="flex items-center gap-4 mt-2 text-xs text-muted">
+          <div className="flex items-center gap-4 mt-2 !text-xs text-muted">
             {task.due_date && (
               <span className={`flex items-center gap-1 ${isOverdue ? 'text-danger' : ''}`}>
                 <IconCalendar className="w-3.5 h-3.5" />
@@ -700,7 +700,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
               style={{ width: `${task.progress || 0}%` }}
             />
           </div>
-          <span className="text-xs text-muted mt-1 block text-center">{task.progress || 0}%</span>
+          <span className="!text-xs text-muted mt-1 block text-center">{task.progress || 0}%</span>
         </div>
       </div>
     </div>
@@ -1197,7 +1197,7 @@ function PublicGanttView({ tasks, projectName }: {
                         <div className="w-6 h-6 rounded bg-white border border-gray-300 flex items-center justify-center">
                           <div className="w-3 h-0.5 bg-gray-800 rounded"></div>
                         </div>
-                        <span className="text-xs font-medium text-primary">{t('light') || 'Clair'}</span>
+                        <span className="!text-xs font-medium text-primary">{t('light') || 'Clair'}</span>
                       </div>
                     </button>
                     <button
@@ -1212,7 +1212,7 @@ function PublicGanttView({ tasks, projectName }: {
                         <div className="w-6 h-6 rounded bg-gray-800 border border-gray-600 flex items-center justify-center">
                           <div className="w-3 h-0.5 bg-gray-100 rounded"></div>
                         </div>
-                        <span className="text-xs font-medium text-primary">{t('dark') || 'Sombre'}</span>
+                        <span className="!text-xs font-medium text-primary">{t('dark') || 'Sombre'}</span>
                       </div>
                     </button>
                   </div>
@@ -1281,13 +1281,13 @@ function PublicGanttView({ tasks, projectName }: {
             <thead className="sticky top-0 z-20">
               <tr>
                 {/* Colonnes fixes */}
-                <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
+                <th className="text-left py-3 px-4 !text-xs font-semibold text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
                   {t('task_name') || 'Tâche'}
                 </th>
-                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
+                <th className="text-center py-3 px-2 !text-xs font-semibold text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
                   {t('due_range') || 'Échéance'}
                 </th>
-                <th className="text-center py-3 px-2 text-xs font-semibold text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                <th className="text-center py-3 px-2 !text-xs font-semibold text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
                   {t('duration') || 'Durée'}
                 </th>
                 {/* Timeline header - Mois */}
@@ -1295,7 +1295,7 @@ function PublicGanttView({ tasks, projectName }: {
                   <th 
                     key={i}
                     colSpan={month.days}
-                    className="text-center py-2 text-xs font-semibold text-primary bg-muted/10 border-b border-muted/30"
+                    className="text-center py-2 !text-xs font-semibold text-primary bg-muted/10 border-b border-muted/30"
                   >
                     {month.label}
                   </th>
@@ -1339,7 +1339,7 @@ function PublicGanttView({ tasks, projectName }: {
                         <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
                           <span className="font-medium text-primary text-sm">{groupName}</span>
-                          <span className="text-xs text-muted">({group.tasks.length})</span>
+                          <span className="!text-xs text-muted">({group.tasks.length})</span>
                           {isExpanded ? <IconChevronUp className="w-4 h-4 text-muted ml-auto" /> : <IconChevronDown className="w-4 h-4 text-muted ml-auto" />}
                         </div>
                       </td>
@@ -1425,7 +1425,7 @@ function PublicGanttView({ tasks, projectName }: {
                             </td>
                             {/* Duration - utilise les dates effectives */}
                             <td className="py-2 px-1 text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted/5 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
-                              <span className="text-xs text-muted whitespace-nowrap">
+                              <span className="!text-xs text-muted whitespace-nowrap">
                                 {getDurationDays(effectiveStartDate, effectiveEndDate)} {t('days_short') || 'j'}
                               </span>
                             </td>
@@ -1538,7 +1538,7 @@ function PublicGanttView({ tasks, projectName }: {
       </div>
 
       {/* Légende */}
-      <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-muted">
+      <div className="flex flex-wrap items-center gap-4 mt-4 !text-xs text-muted">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-500" />
           <span>{t('today') || "Aujourd'hui"}</span>

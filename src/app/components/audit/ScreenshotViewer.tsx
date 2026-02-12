@@ -133,7 +133,7 @@ export default function ScreenshotViewer({
                 {t('page_screenshot') || 'Capture de la page'}
               </h4>
               {capturedAt && (
-                <p className="text-xs text-muted">
+                <p className="!text-xs text-muted">
                   {new Date(capturedAt).toLocaleString()}
                 </p>
               )}
@@ -146,7 +146,7 @@ export default function ScreenshotViewer({
               <div className="flex bg-card rounded-lg p-1 border border-default">
                 <button
                   onClick={() => setActiveView('viewport')}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
                     activeView === 'viewport'
                       ? 'bg-accent text-white'
                       : 'text-muted hover:text-primary'
@@ -156,7 +156,7 @@ export default function ScreenshotViewer({
                 </button>
                 <button
                   onClick={() => setActiveView('fullPage')}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors flex items-center gap-1 ${
+                  className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors flex items-center gap-1 ${
                     activeView === 'fullPage'
                       ? 'bg-accent text-white'
                       : 'text-muted hover:text-primary'
@@ -208,7 +208,7 @@ export default function ScreenshotViewer({
 
         {/* URL info */}
         <div className="px-4 py-2 border-t border-default">
-          <p className="text-xs text-muted truncate" title={url}>
+          <p className="!text-xs text-muted truncate" title={url}>
             {url}
           </p>
         </div>
@@ -231,7 +231,7 @@ export default function ScreenshotViewer({
                   <div className="flex bg-white/10 rounded-lg p-1">
                     <button
                       onClick={() => { setActiveView('viewport'); handleResetZoom(); }}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                      className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
                         activeView === 'viewport'
                           ? 'bg-accent text-white'
                           : 'text-white/70 hover:text-white'
@@ -241,7 +241,7 @@ export default function ScreenshotViewer({
                     </button>
                     <button
                       onClick={() => { setActiveView('fullPage'); handleResetZoom(); }}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                      className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
                         activeView === 'fullPage'
                           ? 'bg-accent text-white'
                           : 'text-white/70 hover:text-white'

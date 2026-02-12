@@ -455,7 +455,7 @@ export default function ProjectWorkflowView({
             </Link>
             <IconChevronRight size={14} className="text-muted" />
             <span className="font-medium text-primary">{project.title}</span>
-            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
+            <span className={`ml-2 px-2 py-0.5 rounded-full !text-xs font-medium ${
               project.project_status === 'completed' ? 'bg-success-light !text-success-text ' :
               project.project_status === 'in_progress' ? 'bg-warning-light text-warning' :
               project.project_status === 'archived' ? 'bg-muted text-secondary' :
@@ -491,7 +491,7 @@ export default function ProjectWorkflowView({
             <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom -">
               <IconZoomOut size={18} />
             </button>
-            <span className="text-xs text-muted w-12 text-center">{Math.round(scale * 100)}%</span>
+            <span className="!text-xs text-muted w-12 text-center">{Math.round(scale * 100)}%</span>
             <button onClick={handleZoomIn} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom +">
               <IconZoomIn size={18} />
             </button>
@@ -505,7 +505,7 @@ export default function ProjectWorkflowView({
         </div>
         
         {/* Hint text */}
-        <p className="text-xs text-muted mt-1">
+        <p className="!text-xs text-muted mt-1">
           {t('workflow_project_hint') || 'Cette vue montre l\'exécution concrète de ce projet. Les nodes gris indiquent ce qui peut être créé.'}
         </p>
       </div>
@@ -610,14 +610,14 @@ export default function ProjectWorkflowView({
 
                       {/* Count badge */}
                       {node.count !== undefined && node.count > 0 && (
-                        <span data-onboarding="count-badge" className={`mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${styles.bg} ${styles.text}`}>
+                        <span data-onboarding="count-badge" className={`mt-1 px-2 py-0.5 rounded-full !text-xs font-medium ${styles.bg} ${styles.text}`}>
                           {node.count}
                         </span>
                       )}
 
                       {/* Ghost hint */}
                       {isGhost && (
-                        <span className="mt-1 text-xs text-muted flex items-center gap-1">
+                        <span className="mt-1 !text-xs text-muted flex items-center gap-1">
                           <IconPlus size={12} /> Créer
                         </span>
                       )}
@@ -639,7 +639,7 @@ export default function ProjectWorkflowView({
                               className="flex items-center justify-between p-2 rounded-lg hover:bg-hover text-sm"
                             >
                               <span className="text-primary truncate">{item.label}</span>
-                              <span className={`px-1.5 py-0.5 rounded text-xs ${
+                              <span className={`px-1.5 py-0.5 rounded !text-xs ${
                                 item.status === 'paid' || item.status === 'accepted' || item.status === 'signed' 
                                   ? 'bg-success-light !text-success-text '
                                   : item.status === 'overdue' || item.status === 'rejected'
@@ -702,7 +702,7 @@ export default function ProjectWorkflowView({
                             
                             {/* Tooltip au hover */}
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-card border border-accent rounded-lg shadow-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50">
-                              <span className="text-xs text-primary font-medium">{secondary.label}</span>
+                              <span className="!text-xs text-primary font-medium">{secondary.label}</span>
                               <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
                                 <div className="border-4 border-transparent border-t-accent"></div>
                               </div>
@@ -719,7 +719,7 @@ export default function ProjectWorkflowView({
         </div>
 
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 bg-card border border-default rounded-lg p-3 text-xs space-y-1.5">
+        <div className="absolute bottom-4 left-4 bg-card border border-default rounded-lg p-3 !text-xs space-y-1.5">
           <div className="font-medium text-primary mb-2">{t('legend') || 'Légende'}</div>
           <div className="flex items-center gap-2">
             <IconCheck size={14} className="text-success-text" />
@@ -822,7 +822,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
                     )}
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                    <span className={`px-2.5 py-1 rounded-full !text-xs font-medium whitespace-nowrap ${
                       project.project_status === 'completed' ? 'bg-success-light !text-success-text ' :
                       project.project_status === 'in_progress' ? 'bg-warning-light text-warning' :
                       project.project_status === 'archived' ? 'bg-muted text-secondary' :
@@ -839,7 +839,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
         </div>
 
         {/* Info message */}
-        <p className="text-center text-xs text-muted mt-6">
+        <p className="text-center !text-xs text-muted mt-6">
           {t('workflow_project_info') || '👉 Un workflow représente l\'exécution concrète d\'un projet, pas la relation client globale.'}
         </p>
       </div>

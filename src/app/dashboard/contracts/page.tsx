@@ -241,7 +241,7 @@ export default function ContractsPage() {
                     </div>
                     <div>
                       <p className="font-medium text-primary">{t('create_manually') || 'Créer manuellement'}</p>
-                      <p className="text-xs text-muted">{t('create_manually_desc') || 'Partir de zéro'}</p>
+                      <p className="!text-xs text-muted">{t('create_manually_desc') || 'Partir de zéro'}</p>
                     </div>
                   </button>
                   <div className="border-t border-default" />
@@ -262,7 +262,7 @@ export default function ContractsPage() {
                     </div>
                     <div>
                       <p className="font-medium text-primary">{t('generate_with_ai') || 'Générer avec IA'}</p>
-                      <p className="text-xs text-muted">{t('generate_with_ai_desc') || 'Eclipse Assistant'}</p>
+                      <p className="!text-xs text-muted">{t('generate_with_ai_desc') || 'Eclipse Assistant'}</p>
                     </div>
                   </button>
                 </motion.div>
@@ -411,7 +411,7 @@ export default function ContractsPage() {
                       </div>
                       
                       {/* Meta info */}
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
+                      <div className="flex flex-wrap items-center gap-3 !text-xs text-muted">
                         <span className={`px-2 py-1 rounded-full ${statusConfig?.bgColor || 'bg-hover'} ${statusConfig?.color || 'text-muted'}`}>
                           {statusConfig?.label || contract.status || 'Inconnu'}
                         </span>

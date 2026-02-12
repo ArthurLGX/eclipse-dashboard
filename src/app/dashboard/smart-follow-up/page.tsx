@@ -96,7 +96,7 @@ export default function SmartFollowUpPage() {
       render: (_value, row: AutomationAction) => {
         const score = (row.confidence_score * 100).toFixed(0);
         return (
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+          <span className={`px-2 py-1 rounded-full !text-xs font-medium ${
             row.confidence_score >= 0.8 
               ? 'bg-success-light text-success-text' 
               : row.confidence_score >= 0.6
@@ -171,7 +171,7 @@ export default function SmartFollowUpPage() {
         };
         const priority = priorityLabels[row.priority] || priorityLabels['medium'];
         return (
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${priority.className}`}>
+          <span className={`px-2 py-1 rounded-full !text-xs font-medium ${priority.className}`}>
             {priority.label}
           </span>
         );
@@ -199,7 +199,7 @@ export default function SmartFollowUpPage() {
         };
         const status = statusLabels[row.status_follow_up] || statusLabels['pending'];
         return (
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${status.className}`}>
+          <span className={`px-2 py-1 rounded-full !text-xs font-medium ${status.className}`}>
             {status.label}
           </span>
         );

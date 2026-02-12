@@ -568,7 +568,7 @@ export default function CalendarPage() {
             {/* Days of week */}
             <div className="grid grid-cols-7 mb-2">
               {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((day) => (
-                <div key={day} className="text-center text-xs font-medium text-muted py-2">
+                <div key={day} className="text-center !text-xs font-medium text-muted py-2">
                   {day}
                 </div>
               ))}
@@ -601,7 +601,7 @@ export default function CalendarPage() {
                       {dayEvents.slice(0, 3).map((event) => (
                         <div
                           key={event.documentId}
-                          className="relative text-xs px-1 py-0.5 rounded truncate !pr-5"
+                          className="relative !text-xs px-1 py-0.5 rounded truncate !pr-5"
                           style={{ 
                             backgroundColor: `${event.color || EVENT_COLORS[event.event_type]}20`,
                             color: event.color || EVENT_COLORS[event.event_type],
@@ -628,7 +628,7 @@ export default function CalendarPage() {
                         </div>
                       ))}
                       {dayEvents.length > 3 && (
-                        <div className="text-xs text-muted">
+                        <div className="!text-xs text-muted">
                           +{dayEvents.length - 3} {t('more_items') || 'plus'}
                         </div>
                       )}
@@ -667,7 +667,7 @@ export default function CalendarPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-primary text-sm truncate">{event.title}</p>
-                          <p className="text-xs text-muted">
+                          <p className="!text-xs text-muted">
                             {new Date(event.start_date).toLocaleDateString('fr-FR', {
                               weekday: 'short',
                               day: 'numeric',
@@ -676,7 +676,7 @@ export default function CalendarPage() {
                             {!event.all_day && ` ${formatTime(event.start_date)}`}
                           </p>
                           {event.location && (
-                            <p className="text-xs text-muted flex items-center gap-1 mt-1">
+                            <p className="!text-xs text-muted flex items-center gap-1 mt-1">
                               <IconMapPin className="w-3 h-3" />
                               {event.location}
                             </p>
@@ -784,7 +784,7 @@ export default function CalendarPage() {
                             </button>
                           </div>
                         </div>
-                        <p className="text-xs text-muted">
+                        <p className="!text-xs text-muted">
                           {event.all_day ? (t('all_day') || 'Toute la journée') : formatTime(event.start_date)}
                         </p>
                       </div>
@@ -1275,7 +1275,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
               placeholder="https://meet.google.com/... ou https://zoom.us/j/..."
               className="input w-full"
             />
-            <p className="text-xs text-muted mt-1">
+            <p className="!text-xs text-muted mt-1">
               {t('location_hint') || 'Ajoutez le lien Google Meet ou Zoom pour le matching Fathom'}
             </p>
           </div>
@@ -1390,7 +1390,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
               <label className="block text-sm font-medium text-secondary mb-1">
                 {t('project') || 'Projet'}
                 {clientId && filteredProjects.length === 0 && (
-                  <span className="text-xs text-muted ml-1">({t('no_projects_for_client') || 'aucun projet'})</span>
+                  <span className="!text-xs text-muted ml-1">({t('no_projects_for_client') || 'aucun projet'})</span>
                 )}
               </label>
               <select
@@ -1432,7 +1432,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                     </span>
                     {noteMode === 'manual' && <IconCheck className="w-4 h-4 !text-accent ml-auto" />}
                   </div>
-                  <p className="text-xs text-muted mt-1">
+                  <p className="!text-xs text-muted mt-1">
                     {t('manual_notes_desc') || 'Prendre des notes après la réunion'}
                   </p>
                 </button>
@@ -1472,7 +1472,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                     </span>
                     {noteMode === 'fathom' && fathomConfigured && <IconCheck className="w-4 h-4 !text-success-text -text ml-auto" />}
                   </div>
-                  <p className="text-xs text-muted mt-1">
+                  <p className="!text-xs text-muted mt-1">
                     {noteMode === 'fathom' && fathomConfigured
                       ? (t('fathom_ready') || 'Fathom enregistrera cette réunion')
                       : (t('fathom_notes_desc') || 'Transcription automatique avec IA')
@@ -1509,7 +1509,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
 
           {/* Conseils pour le matching Fathom */}
           <div className="p-4 rounded-xl border border-default bg-muted/30 mt-4">
-            <p className="text-xs text-muted leading-relaxed">
+            <p className="!text-xs text-muted leading-relaxed">
               <span className="font-medium text-secondary">💡 {t('tips_title') || 'Conseils pour le matching Fathom'} :</span><br />
               • {t('tip_meeting_link') || 'Mets le lien Google Meet/Zoom dans le champ "Lieu"'}<br />
               • {t('tip_similar_title') || 'Utilise des titres similaires entre Eclipse et la réunion réelle'}<br />

@@ -454,7 +454,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
             {task.startDate && (
               <div className="flex items-center gap-1">
                 <IconCalendar size={14} className="text-muted" />
-                <span className="text-xs text-secondary">
+                <span className="!text-xs text-secondary">
                   {t('start') || 'Début'}: {new Date(task.startDate).toLocaleDateString('fr-FR')}
                 </span>
               </div>
@@ -462,7 +462,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
             {task.endDate && (
               <div className="flex items-center gap-1">
                 <IconCalendar size={14} className="text-muted" />
-                <span className="text-xs text-secondary">
+                <span className="!text-xs text-secondary">
                   {t('end') || 'Fin'}: {new Date(task.endDate).toLocaleDateString('fr-FR')}
                 </span>
               </div>
@@ -478,7 +478,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
                 {t('subtasks') || 'Sous-tâches'} ({task.subtasks.length})
               </span>
               {subtaskProgress !== null && (
-                <span className="text-xs text-muted">{subtaskProgress}% {t('completed_short') || 'terminé'}</span>
+                <span className="!text-xs text-muted">{subtaskProgress}% {t('completed_short') || 'terminé'}</span>
               )}
             </div>
             <div className="space-y-2">
@@ -887,7 +887,7 @@ export default function TaskWorkflowView({
             </h3>
             {/* Overall progress with visual bar */}
             <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-muted">
-              <span className="text-xs text-secondary">{t('progress') || 'Progression'}:</span>
+              <span className="!text-xs text-secondary">{t('progress') || 'Progression'}:</span>
               <div className="flex items-center gap-2">
                 <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
                   <div 
@@ -899,7 +899,7 @@ export default function TaskWorkflowView({
               </div>
             </div>
             {/* Task count */}
-            <span className="text-xs text-muted ">
+            <span className="!text-xs text-muted ">
               {localTasks.length} {t('tasks') || 'tâches'}
             </span>
           </div>
@@ -919,7 +919,7 @@ export default function TaskWorkflowView({
             <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom -">
               <IconZoomOut size={18} />
             </button>
-            <span className="text-xs text-muted w-12 text-center">{Math.round(scale * 100)}%</span>
+            <span className="!text-xs text-muted w-12 text-center">{Math.round(scale * 100)}%</span>
             <button onClick={handleZoomIn} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom +">
               <IconZoomIn size={18} />
             </button>
@@ -1028,7 +1028,7 @@ export default function TaskWorkflowView({
         </div>
 
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 bg-card border border-default rounded-lg p-3 text-xs space-y-1.5">
+        <div className="absolute bottom-4 left-4 bg-card border border-default rounded-lg p-3 !text-xs space-y-1.5">
           <div className="font-medium text-primary mb-2">{t('legend') || 'Légende'}</div>
           {Object.entries(STATUS_CONFIG).map(([status, config]) => {
             const StatusIcon = config.icon;
@@ -1135,7 +1135,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
                       <span className={`text-xs font-bold ${config.color}`}>{task.progress}%</span>
                     </div>
                     {task.endDate && (
-                      <span className="text-xs text-muted flex items-center gap-1 mt-0.5">
+                      <span className="!text-xs text-muted flex items-center gap-1 mt-0.5">
                         <IconCalendar size={12} />
                         {t('due') || 'Échéance'}: {new Date(task.endDate).toLocaleDateString('fr-FR')}
                       </span>

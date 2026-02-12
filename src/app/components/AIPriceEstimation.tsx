@@ -160,7 +160,7 @@ export default function AIPriceEstimation({
             <p className="text-sm font-medium text-primary">
               {t('ai_price_estimation') || 'Estimation IA du prix'}
             </p>
-            <p className="text-xs text-muted">
+            <p className="!text-xs text-muted">
               {t('ai_price_estimation_desc') || 'Basée sur vos projets similaires'}
             </p>
           </div>
@@ -236,7 +236,7 @@ export default function AIPriceEstimation({
                           {t(`confidence_${estimation.confidence}`) || estimation.confidence}
                         </span>
                       </div>
-                      <p className="text-xs text-muted mt-1">
+                      <p className="!text-xs text-muted mt-1">
                         {t('based_on') || 'Basé sur'} {estimation.similar_projects_count} {t('similar_projects') || 'projets similaires'}
                       </p>
                     </div>
@@ -285,7 +285,7 @@ export default function AIPriceEstimation({
                         <IconBulb className="w-4 h-4" />
                         {t('recommendations') || 'Recommandations'}
                       </p>
-                      <ul className="text-xs text-muted space-y-1">
+                      <ul className="!text-xs text-muted space-y-1">
                         {estimation.recommendations.map((rec, i) => (
                           <li key={i}>• {rec}</li>
                         ))}

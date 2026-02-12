@@ -505,7 +505,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
           <button
             type="button"
             onClick={() => onChange('')}
-            className="px-2 py-2 text-xs text-muted hover:text-primary border border-default rounded-lg hover:bg-hover transition-colors"
+            className="px-2 py-2 !text-xs text-muted hover:text-primary border border-default rounded-lg hover:bg-hover transition-colors"
             title="Utiliser le thème par défaut"
           >
             Reset
@@ -513,7 +513,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
         )}
       </div>
       {!value && (
-        <p className="text-xs text-muted mt-1">✓ Utilise la couleur du thème</p>
+        <p className="!text-xs text-muted mt-1">✓ Utilise la couleur du thème</p>
       )}
     </div>
   );
@@ -621,7 +621,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
               </h4>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">
+                  <label className="block !text-xs font-medium text-secondary mb-1">
                     Nom de la police
                   </label>
                   <input
@@ -633,7 +633,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">
+                  <label className="block !text-xs font-medium text-secondary mb-1">
                     URL du fichier (Google Fonts ou @font-face)
                   </label>
                   <input
@@ -644,7 +644,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
                   />
                 </div>
-                <p className="text-xs text-muted">
+                <p className="!text-xs text-muted">
                   💡 Collez l&apos;URL d&apos;import Google Fonts ou le lien vers un fichier .woff2
                 </p>
               </div>
@@ -687,7 +687,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
           <>
             {/* Font Search */}
             <div className="bg-muted/30 rounded-lg p-3 border border-default">
-              <label className="block text-xs font-medium text-secondary mb-2">{t('portfolio_search_font')}</label>
+              <label className="block !text-xs font-medium text-secondary mb-2">{t('portfolio_search_font')}</label>
               <div className="relative">
                 <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
                 <input
@@ -706,7 +706,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   </button>
                 )}
               </div>
-              <p className="text-xs text-muted mt-2">
+              <p className="!text-xs text-muted mt-2">
                 {fontsLoading ? t('portfolio_loading_fonts') : `${allFonts.length} ${t('portfolio_fonts_available')}`}
               </p>
             </div>
@@ -722,7 +722,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
+                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
                   <select
                     value={settings.titleFontWeight}
                     onChange={(e) => updateSetting('titleFontWeight', Number(e.target.value))}
@@ -734,7 +734,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_size')}</label>
+                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_size')}</label>
                   <select
                     value={settings.titleSize}
                     onChange={(e) => updateSetting('titleSize', e.target.value)}
@@ -749,7 +749,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_letter_spacing')}</label>
+                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_letter_spacing')}</label>
                   <select
                     value={settings.titleLetterSpacing}
                     onChange={(e) => updateSetting('titleLetterSpacing', e.target.value)}
@@ -761,7 +761,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_case')}</label>
+                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_case')}</label>
                   <select
                     value={settings.titleTransform}
                     onChange={(e) => updateSetting('titleTransform', e.target.value as PortfolioSettings['titleTransform'])}
@@ -789,7 +789,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
+                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
                   <select
                     value={settings.subtitleFontWeight}
                     onChange={(e) => updateSetting('subtitleFontWeight', Number(e.target.value))}
@@ -801,7 +801,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_size')}</label>
+                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_size')}</label>
                   <select
                     value={settings.subtitleSize}
                     onChange={(e) => updateSetting('subtitleSize', e.target.value)}
@@ -827,7 +827,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
               {renderFontSelector(settings.projectTitleFont, (f) => updateSetting('projectTitleFont', f), t('portfolio_font'))}
 
               <div>
-                <label className="block text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
+                <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
                 <select
                   value={settings.projectTitleFontWeight}
                   onChange={(e) => updateSetting('projectTitleFontWeight', Number(e.target.value))}
@@ -934,7 +934,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   {t('portfolio_public')}
                 </span>
               </label>
-              <p className="text-xs text-muted mt-1 ml-8">
+              <p className="!text-xs text-muted mt-1 ml-8">
                 {settings.isPublic
                   ? t('portfolio_public_desc')
                   : t('portfolio_private_desc')}
@@ -1255,7 +1255,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               {error && (
                 <div className="p-4 bg-danger-light border border-danger rounded-lg space-y-3">
                   <p className="text-danger text-sm font-medium">{error}</p>
-                  <div className="text-xs text-secondary space-y-1">
+                  <div className="!text-xs text-secondary space-y-1">
                     <p>Conseils :</p>
                     <ul className="list-disc list-inside space-y-0.5">
                       <li>{t('portfolio_tips_url')}</li>
@@ -1267,12 +1267,12 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                     <div className="mt-2">
                       <button
                         onClick={() => setShowDebug(!showDebug)}
-                        className="text-xs !text-accent hover:underline"
+                        className="!text-xs !text-accent hover:underline"
                       >
                         {showDebug ? t('portfolio_hide_debug') : t('portfolio_show_debug')}
                       </button>
                       {showDebug && (
-                        <pre className="mt-2 p-2 bg-card rounded text-xs text-muted overflow-auto max-h-32">
+                        <pre className="mt-2 p-2 bg-card rounded !text-xs text-muted overflow-auto max-h-32">
                           {debugInfo.join('\n')}
                         </pre>
                       )}
@@ -1296,7 +1296,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                 <p className="text-sm text-secondary">
                   {t('portfolio_import_supported_desc')}
                 </p>
-                <p className="text-xs text-muted mt-2">
+                <p className="!text-xs text-muted mt-2">
                   {t('portfolio_import_js_note')}
                 </p>
               </div>
@@ -1355,9 +1355,9 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
 
                     {/* Title */}
                     <div className="p-2 bg-card">
-                      <p className="text-xs font-medium text-primary truncate">{project.title}</p>
+                      <p className="!text-xs font-medium text-primary truncate">{project.title}</p>
                       {project.category && (
-                        <p className="text-xs text-secondary truncate">{project.category}</p>
+                        <p className="!text-xs text-secondary truncate">{project.category}</p>
                       )}
                     </div>
                   </div>
@@ -1505,7 +1505,7 @@ function ProjectCard({ project, settings, onClick, onEdit, onDelete, index, allF
                 <IconTrash size={16} />
               </button>
               {project.media.length > 1 && (
-                <span className="px-2.5 py-1.5 rounded-full bg-page text-primary text-xs flex items-center gap-1">
+                <span className="px-2.5 py-1.5 rounded-full bg-page text-primary !text-xs flex items-center gap-1">
                   <IconPhoto size={12} />
                   {project.media.length}
                 </span>
@@ -1662,7 +1662,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
               {project.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 text-xs font-medium rounded-full bg-accent-light !text-accent"
+                  className="px-3 py-1 !text-xs font-medium rounded-full bg-accent-light !text-accent"
                 >
                   {tag}
                 </span>
@@ -1919,7 +1919,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                 className="aspect-square rounded-lg border-2 border-dashed border-default flex flex-col items-center justify-center text-muted hover:text-accent hover:border-accent transition-colors"
               >
                 <IconPlus size={24} />
-                <span className="text-xs mt-1">Ajouter</span>
+                <span className="!text-xs mt-1">Ajouter</span>
               </button>
             </div>
           </div>
@@ -2004,7 +2004,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                       <div className="flex flex-col items-center justify-center h-48 text-muted">
                         <IconPhoto className="w-12 h-12 mb-4 opacity-50" />
                         <p>Aucune image dans la bibliothèque</p>
-                        <p className="text-xs mt-1">Importez votre première image ci-dessus</p>
+                        <p className="!text-xs mt-1">Importez votre première image ci-dessus</p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-4 gap-3">
@@ -2076,7 +2076,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
               className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-placeholder focus:outline-none focus:border-accent resize-none"
               placeholder="Décrivez votre projet..."
             />
-            <p className="text-xs text-muted mt-1">
+            <p className="!text-xs text-muted mt-1">
               💡 L&apos;éditeur de texte riche sera bientôt disponible
             </p>
           </div>

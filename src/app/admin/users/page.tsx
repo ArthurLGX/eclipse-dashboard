@@ -383,22 +383,22 @@ export default function AdminUsersPage() {
                     className="w-4 h-4 rounded border-muted"
                   />
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('user') || 'Utilisateur'}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('email') || 'Email'}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('role') || 'Rôle'}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('status') || 'Statut'}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('registration') || 'Inscription'}
                 </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 text-right !text-xs font-medium text-muted uppercase tracking-wider">
                   {t('actions') || 'Actions'}
                 </th>
               </tr>
@@ -428,7 +428,7 @@ export default function AdminUsersPage() {
                       </div>
                       <div>
                         <p className="font-medium text-primary text-sm">{user.username}</p>
-                        <p className="text-xs text-muted">ID: {user.id}</p>
+                        <p className="!text-xs text-muted">ID: {user.id}</p>
                       </div>
                     </div>
                   </td>
@@ -444,7 +444,7 @@ export default function AdminUsersPage() {
                   <td className="px-4 py-4">
                     <button
                       onClick={() => openRoleModal(user)}
-                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity ${
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full !text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity ${
                         user.role?.name === 'Admin' 
                           ? 'bg-accent-light !text-accent' 
                           : 'bg-info-light text-info'
@@ -456,7 +456,7 @@ export default function AdminUsersPage() {
                     </button>
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full !text-xs font-medium ${
                       user.blocked 
                         ? 'bg-danger-light text-danger' 
                         : 'bg-success-light !text-success-text '
@@ -595,33 +595,33 @@ export default function AdminUsersPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-muted">
                       <div>
-                        <p className="text-xs text-muted">ID</p>
+                        <p className="!text-xs text-muted">ID</p>
                         <p className="text-sm font-medium text-primary">{modalData.user.id}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted">{t('role') || 'Rôle'}</p>
+                        <p className="!text-xs text-muted">{t('role') || 'Rôle'}</p>
                         <p className="text-sm font-medium text-primary">{modalData.user.role?.name || 'N/A'}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted">{t('status') || 'Statut'}</p>
+                        <p className="!text-xs text-muted">{t('status') || 'Statut'}</p>
                         <p className={`text-sm font-medium ${modalData.user.blocked ? 'text-danger' : 'text-success'}`}>
                           {modalData.user.blocked ? t('blocked') || 'Bloqué' : t('active') || 'Actif'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted">{t('email_confirmed') || 'Email confirmé'}</p>
+                        <p className="!text-xs text-muted">{t('email_confirmed') || 'Email confirmé'}</p>
                         <p className={`text-sm font-medium ${modalData.user.confirmed ? 'text-success' : 'text-warning'}`}>
                           {modalData.user.confirmed ? t('yes') || 'Oui' : t('no') || 'Non'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted">{t('registration') || 'Inscription'}</p>
+                        <p className="!text-xs text-muted">{t('registration') || 'Inscription'}</p>
                         <p className="text-sm font-medium text-primary">
                           {new Date(modalData.user.createdAt).toLocaleDateString('fr-FR')}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted">{t('last_update') || 'Dernière mise à jour'}</p>
+                        <p className="!text-xs text-muted">{t('last_update') || 'Dernière mise à jour'}</p>
                         <p className="text-sm font-medium text-primary">
                           {new Date(modalData.user.updatedAt).toLocaleDateString('fr-FR')}
                         </p>
@@ -682,7 +682,7 @@ export default function AdminUsersPage() {
                             </div>
                             <div className="text-left">
                               <p className="font-medium text-primary">{role.name}</p>
-                              <p className="text-xs text-muted">{role.type}</p>
+                              <p className="!text-xs text-muted">{role.type}</p>
                             </div>
                             {selectedRole === role.id && (
                               <IconCheck className="w-5 h-5 !text-accent ml-auto" />

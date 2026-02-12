@@ -269,7 +269,7 @@ export default function TaskNotificationEmailModal({
                   className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                   placeholder="Votre message..."
                 />
-                <p className="text-xs text-muted mt-1">
+                <p className="!text-xs text-muted mt-1">
                   {t('email_message_hint') || 'Ce message sera affiché avant la liste des tâches'}
                 </p>
               </div>
@@ -288,11 +288,11 @@ export default function TaskNotificationEmailModal({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-primary">{recipient.username}</p>
-                          <p className="text-xs text-muted">{recipient.email}</p>
+                          <p className="!text-xs text-muted">{recipient.email}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs bg-accent-light !text-accent px-2 py-1 rounded-full flex items-center gap-1">
+                        <span className="!text-xs bg-accent-light !text-accent px-2 py-1 rounded-full flex items-center gap-1">
                           <IconClipboardList className="w-3 h-3" />
                           {recipient.tasks.length}
                         </span>

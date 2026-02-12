@@ -467,7 +467,7 @@ export default function DataTable<T = unknown>({
               {statusValue !== null && statusValue !== undefined && (
                 <div className="flex-shrink-0">
                   {statusCol?.render ? statusCol.render(statusValue, row) : (
-                    <span className="px-2.5 py-1 rounded-full bg-success-light !text-success-text text-xs font-medium">
+                    <span className="px-2.5 py-1 rounded-full bg-success-light !text-success-text !text-xs font-medium">
                       {String(statusValue)}
                     </span>
                   )}
@@ -571,7 +571,7 @@ export default function DataTable<T = unknown>({
                 {statusValue !== null && statusValue !== undefined && (
                   <div className="absolute top-2 right-2">
                     {statusCol?.render ? statusCol.render(statusValue, row) : (
-                      <span className="px-2 py-1 rounded-lg bg-card/90 backdrop-blur text-xs font-medium text-primary shadow-sm">
+                      <span className="px-2 py-1 rounded-lg bg-card/90 backdrop-blur !text-xs font-medium text-primary shadow-sm">
                         {String(statusValue)}
                       </span>
                     )}
@@ -605,7 +605,7 @@ export default function DataTable<T = unknown>({
                       {titleCol?.render ? titleCol.render(titleValue, row) : String(titleValue || '')}
                     </h3>
                     {subtitleValue !== undefined && subtitleValue !== null && subtitleValue !== '' && (
-                      <div className="text-xs text-muted truncate mt-0.5">
+                      <div className="!text-xs text-muted truncate mt-0.5">
                         {subtitleCol?.render ? subtitleCol.render(subtitleValue, row) : String(subtitleValue)}
                       </div>
                     )}

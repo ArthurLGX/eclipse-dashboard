@@ -542,7 +542,7 @@ export default function AITaskGenerator({
 
                 {/* Project context */}
                 <div className="p-4 bg-muted rounded-xl">
-                  <p className="text-xs text-muted font-medium uppercase tracking-wider mb-2">
+                  <p className="!text-xs text-muted font-medium uppercase tracking-wider mb-2">
                     {t('project_context') || 'Contexte du projet'}
                   </p>
                   <p className="text-sm font-medium text-primary">{projectTitle}</p>
@@ -553,7 +553,7 @@ export default function AITaskGenerator({
                     />
                   )}
                   {existingTasks && existingTasks.length > 0 && (
-                    <p className="text-xs text-muted mt-2">
+                    <p className="!text-xs text-muted mt-2">
                       {existingTasks.length} {t('existing_tasks') || 'tâches existantes'}
                     </p>
                   )}
@@ -587,7 +587,7 @@ export default function AITaskGenerator({
                   </div>
                   <button
                     onClick={addTask}
-                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs bg-muted !text-muted rounded-lg hover:bg-muted hover:text-primary transition-colors"
+                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 !text-xs bg-muted !text-muted rounded-lg hover:bg-muted hover:text-primary transition-colors"
                   >
                     <IconPlus className="w-3.5 h-3.5"  />
                     {t('add_task') || 'Ajouter'}
@@ -645,13 +645,13 @@ export default function AITaskGenerator({
                                 min="0"
                                 step="0.5"
                               />
-                              <span className="text-xs text-muted">h</span>
+                              <span className="!text-xs text-muted">h</span>
                             </div>
                             
                             <select
                               value={task.priority}
                               onChange={e => updateTaskField(taskIndex, 'priority', e.target.value)}
-                              className={`px-3 py-1 rounded-lg text-xs font-medium ${getPriorityColor(task.priority)}`}
+                              className={`px-3 py-1 rounded-lg !text-xs font-medium ${getPriorityColor(task.priority)}`}
                             >
                               <option value="low">{t('low') || 'Faible'}</option>
                               <option value="medium">{t('medium') || 'Moyen'}</option>
@@ -660,12 +660,12 @@ export default function AITaskGenerator({
                             </select>
                             
                             {task.phase && (
-                              <span className="px-2 py-1 bg-muted text-muted rounded text-xs">
+                              <span className="px-2 py-1 bg-muted text-muted rounded !text-xs">
                                 {task.phase}
                               </span>
                             )}
                             {formatDateRange(task.start_date, task.due_date) && (
-                              <span className="px-2 py-1 bg-muted text-muted rounded text-xs">
+                              <span className="px-2 py-1 bg-muted text-muted rounded !text-xs">
                                 {formatDateRange(task.start_date, task.due_date)}
                               </span>
                             )}
@@ -699,14 +699,14 @@ export default function AITaskGenerator({
                               <IconSubtask className="w-4 h-4 text-muted" />
                               <span className="flex-1 text-sm text-primary">{subtask.title}</span>
                               {subtask.estimated_hours && (
-                                <span className="text-xs text-muted">{subtask.estimated_hours}h</span>
+                                <span className="!text-xs text-muted">{subtask.estimated_hours}h</span>
                               )}
                               {formatDateRange(subtask.start_date, subtask.due_date) && (
-                                <span className="text-xs text-muted">
+                                <span className="!text-xs text-muted">
                                   {formatDateRange(subtask.start_date, subtask.due_date)}
                                 </span>
                               )}
-                              <span className={`px-2 py-0.5 rounded text-xs ${getPriorityColor(subtask.priority)}`}>
+                              <span className={`px-2 py-0.5 rounded !text-xs ${getPriorityColor(subtask.priority)}`}>
                                 {subtask.priority}
                               </span>
                             </div>

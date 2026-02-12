@@ -486,7 +486,7 @@ export default function MeetingIntegrationsPage() {
                   <item.icon className="w-6 h-6 !text-accent" />
                 </div>
                 <h3 className="font-medium text-primary text-sm mb-1">{item.title}</h3>
-                <p className="text-xs text-muted">{item.desc}</p>
+                <p className="!text-xs text-muted">{item.desc}</p>
               </div>
             ))}
           </div>

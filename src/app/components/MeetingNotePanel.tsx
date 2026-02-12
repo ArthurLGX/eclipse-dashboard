@@ -229,7 +229,7 @@ export default function MeetingNotePanel({
             {t('meeting_notes') || 'Notes de réunion'}
           </span>
           {note && (
-            <span className="px-2 py-0.5 bg-success-light !text-success-text -text text-xs rounded-full">
+            <span className="px-2 py-0.5 bg-success-light !text-success-text -text !text-xs rounded-full">
               {t('saved') || 'Enregistré'}
             </span>
           )}
@@ -341,7 +341,7 @@ export default function MeetingNotePanel({
                         {attendees.map((attendee, index) => (
                           <span
                             key={index}
-                            className="px-2 py-1 bg-info-light text-info text-xs rounded-full"
+                            className="px-2 py-1 bg-info-light text-info !text-xs rounded-full"
                           >
                             {attendee.name}
                           </span>
@@ -366,7 +366,7 @@ export default function MeetingNotePanel({
                   )}
 
                   {/* Metadata */}
-                  <div className="flex flex-wrap gap-4 text-xs text-muted">
+                  <div className="flex flex-wrap gap-4 !text-xs text-muted">
                     {durationMinutes && (
                       <div className="flex items-center gap-1">
                         <IconClock className="w-3 h-3" />
@@ -462,7 +462,7 @@ export default function MeetingNotePanel({
                       {attendees.map((attendee, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center gap-1 px-2 py-1 bg-info-light text-info text-xs rounded-full"
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-info-light text-info !text-xs rounded-full"
                         >
                           {attendee.name}
                           <button
@@ -530,7 +530,7 @@ export default function MeetingNotePanel({
                       value={transcription}
                       onChange={(e) => setTranscription(e.target.value)}
                       placeholder={t('transcription_placeholder') || 'Collez ici la transcription de la réunion...'}
-                      className="input w-full h-32 resize-none font-mono text-xs"
+                      className="input w-full h-32 resize-none font-mono !text-xs"
                     />
                   </div>
 
@@ -572,7 +572,7 @@ export default function MeetingNotePanel({
                   <p className="text-sm text-muted">
                     {t('no_meeting_notes') || 'Aucune note pour cette réunion'}
                   </p>
-                  <p className="text-xs text-muted mt-1">
+                  <p className="!text-xs text-muted mt-1">
                     {t('meeting_notes_hint') || 'Ajoutez des notes, un résumé ou des actions à faire'}
                   </p>
                 </div>

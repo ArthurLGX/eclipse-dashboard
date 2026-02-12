@@ -215,23 +215,23 @@ export default function AdminServerPage() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div className="p-4 bg-card rounded-lg border border-muted">
-              <p className="text-xs text-muted mb-1">{t('uptime') || 'Uptime'}</p>
+              <p className="!text-xs text-muted mb-1">{t('uptime') || 'Uptime'}</p>
               <p className={`text-2xl font-bold ${uptime >= 99 ? 'text-success' : uptime >= 95 ? 'text-warning' : 'text-danger'}`}>
                 {uptime.toFixed(1)}%
               </p>
             </div>
             <div className="p-4 bg-card rounded-lg border border-muted">
-              <p className="text-xs text-muted mb-1">{t('avg_response') || 'Réponse moy.'}</p>
+              <p className="!text-xs text-muted mb-1">{t('avg_response') || 'Réponse moy.'}</p>
               <p className={`text-2xl font-bold ${getResponseTimeColor(avgResponseTime)}`}>
                 {avgResponseTime}ms
               </p>
             </div>
             <div className="p-4 bg-card rounded-lg border border-muted">
-              <p className="text-xs text-muted mb-1">{t('checks') || 'Checks'}</p>
+              <p className="!text-xs text-muted mb-1">{t('checks') || 'Checks'}</p>
               <p className="text-2xl font-bold text-primary">{healthHistory.length}</p>
             </div>
             <div className="p-4 bg-card rounded-lg border border-muted">
-              <p className="text-xs text-muted mb-1">{t('errors') || 'Erreurs'}</p>
+              <p className="!text-xs text-muted mb-1">{t('errors') || 'Erreurs'}</p>
               <p className={`text-2xl font-bold ${
                 healthHistory.filter(h => h.status === 'error').length > 0 ? 'text-danger' : 'text-success'
               }`}>
@@ -291,7 +291,7 @@ export default function AdminServerPage() {
                     service.status === 'ok' ? 'text-success' : 'text-danger'
                   }`} />
                 </div>
-                <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
+                <span className={`flex items-center gap-1 !text-xs font-medium px-2 py-1 rounded-full ${
                   service.status === 'ok' ? 'bg-success-light !text-success-text ' : 'bg-danger-light text-danger'
                 }`}>
                   {service.status === 'ok' ? (
@@ -344,7 +344,7 @@ export default function AdminServerPage() {
                     style={{ height: `${Math.max(height, 4)}%` }}
                   />
                   <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block">
-                    <div className="bg-card border border-muted rounded px-2 py-1 text-xs whitespace-nowrap shadow-lg">
+                    <div className="bg-card border border-muted rounded px-2 py-1 !text-xs whitespace-nowrap shadow-lg">
                       <p className="font-medium">{h.responseTime}ms</p>
                       <p className="text-muted">
                         {new Date(h.timestamp).toLocaleTimeString('fr-FR', {
@@ -364,7 +364,7 @@ export default function AdminServerPage() {
           </div>
         )}
 
-        <div className="flex items-center justify-center gap-6 mt-4 text-xs text-muted">
+        <div className="flex items-center justify-center gap-6 mt-4 !text-xs text-muted">
           <span className="flex items-center gap-1">
             <div className="w-3 h-3 rounded bg-success" /> &lt;200ms
           </span>
@@ -402,7 +402,7 @@ export default function AdminServerPage() {
                 <span className={`text-sm font-medium ${getResponseTimeColor(h.responseTime)}`}>
                   {h.responseTime}ms
                 </span>
-                <span className="text-xs text-muted">
+                <span className="!text-xs text-muted">
                   {new Date(h.timestamp).toLocaleTimeString('fr-FR')}
                 </span>
               </div>
@@ -420,12 +420,12 @@ export default function AdminServerPage() {
           </code>
           <button
             onClick={() => navigator.clipboard.writeText(`${API_URL}/api/health`)}
-            className="px-3 py-1 text-xs bg-accent text-white rounded hover:bg-[var(--color-accent)]"
+            className="px-3 py-1 !text-xs bg-accent text-white rounded hover:bg-[var(--color-accent)]"
           >
             {t('copy') || 'Copier'}
           </button>
         </div>
-        <p className="text-xs text-muted mt-2">
+        <p className="!text-xs text-muted mt-2">
           {t('use_endpoint_for_monitoring') || 'Utilisez cet endpoint pour configurer votre monitoring externe (UptimeRobot, Pingdom, etc.)'}
         </p>
       </div>

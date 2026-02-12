@@ -204,7 +204,7 @@ export default function ImportProgressModal({
                   }`}>
                     {item.name}
                   </p>
-                  <p className="text-xs text-secondary truncate">{item.email}</p>
+                  <p className="!text-xs text-secondary truncate">{item.email}</p>
                 </div>
 
                 {/* Status text */}
@@ -221,7 +221,7 @@ export default function ImportProgressModal({
                     {getStatusText(item.status)}
                   </p>
                   {item.error && (
-                      <p className="text-xs text-danger max-w-[200px] truncate" title={item.error}>
+                      <p className="!text-xs text-danger max-w-[200px] truncate" title={item.error}>
                       {item.error}
                     </p>
                   )}

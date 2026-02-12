@@ -31,7 +31,7 @@ interface StatusBadgeProps {
 function BaseBadge({ label, tooltip, icon, bgColor, textColor, borderColor }: StatusBadgeProps) {
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border select-none ${bgColor} ${textColor} ${borderColor}`}
+      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full !text-xs font-medium border select-none ${bgColor} ${textColor} ${borderColor}`}
       style={{ height: '22px' }}
       title={tooltip}
     >

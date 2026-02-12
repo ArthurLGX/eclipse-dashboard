@@ -170,13 +170,13 @@ export default function QuotaExceededModal<T>({
             <div className="flex items-center gap-2">
               <button
                 onClick={selectAll}
-                className="text-xs px-2 py-1 rounded bg-accent-light !text-accent hover:bg-accent-light transition-colors"
+                className="!text-xs px-2 py-1 rounded bg-accent-light !text-accent hover:bg-accent-light transition-colors"
               >
                 {t('select_first') || `Sélectionner les ${quota} premiers`}
               </button>
               <button
                 onClick={deselectAll}
-                className="text-xs px-2 py-1 rounded bg-muted/20 text-muted hover:bg-muted/30 transition-colors"
+                className="!text-xs px-2 py-1 rounded bg-muted/20 text-muted hover:bg-muted/30 transition-colors"
               >
                 {t('deselect_all') || 'Tout désélectionner'}
               </button>
@@ -241,7 +241,7 @@ export default function QuotaExceededModal<T>({
                       {getItemName(item)}
                     </p>
                     {getItemSubtitle && (
-                      <p className="text-xs text-muted truncate">
+                      <p className="!text-xs text-muted truncate">
                         {getItemSubtitle(item)}
                       </p>
                     )}
@@ -249,7 +249,7 @@ export default function QuotaExceededModal<T>({
 
                   {/* Status indicator */}
                   {!isSelected && (
-                    <div className="flex items-center gap-1 text-xs text-danger">
+                    <div className="flex items-center gap-1 !text-xs text-danger">
                       <IconTrash className="w-4 h-4" />
                       <span>{t('will_be_deactivated') || 'Sera désactivé'}</span>
                     </div>

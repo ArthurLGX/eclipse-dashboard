@@ -330,12 +330,12 @@ export default function AdminLogsPage() {
                       </span>
                     </div>
                     {log.details && (
-                      <p className="text-xs text-muted mt-2 truncate">{log.details}</p>
+                      <p className="!text-xs text-muted mt-2 truncate">{log.details}</p>
                     )}
                   </div>
 
                   {/* Type Badge */}
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${getTypeColor(log.type)}`}>
+                  <span className={`px-2 py-1 rounded !text-xs font-medium ${getTypeColor(log.type)}`}>
                     {log.type}
                   </span>
                 </div>

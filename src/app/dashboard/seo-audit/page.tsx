@@ -294,7 +294,7 @@ export default function SEOAuditPage() {
           </div>
         </div>
         
-        <p className="mt-4 text-xs text-muted-foreground flex items-center gap-1">
+        <p className="mt-4 !text-xs text-muted-foreground flex items-center gap-1">
           <IconBrandGoogle size={14} />
           Propulsé par Google PageSpeed Insights API
         </p>

@@ -327,10 +327,10 @@ export default function ClientDetailsPage() {
             )}
           </div>
           <div className="flex gap-4 mt-2">
-            <span className="bg-accent-light flex items-center gap-2 !text-accent-text px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+            <span className="bg-accent-light flex items-center gap-2 !text-accent-text px-3 py-1 rounded-full !text-xs font-semibold uppercase tracking-wider">
               {client.processStatus}
             </span>
-            <span className="bg-muted px-3 flex items-center gap-2 py-1 rounded-full text-xs text-primary">
+            <span className="bg-muted px-3 flex items-center gap-2 py-1 rounded-full !text-xs text-primary">
               Créé le {new Date(client.createdAt).toLocaleDateString('fr-FR')}
             </span>
           </div>
@@ -371,7 +371,7 @@ export default function ClientDetailsPage() {
             <IconFileInvoice className="w-4 h-4" />
             {t('invoices')}
             {(client.factures?.length || 0) > 0 && (
-              <span className="absolute -top-2 -right-2 bg-success-light !text-success-text -text text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-success-light !text-success-text -text !text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                 {client.factures?.length}
               </span>
             )}
@@ -452,7 +452,7 @@ export default function ClientDetailsPage() {
       
       {/* Contextual description */}
       {activeTab === 'workflow' && (
-        <p className="text-xs text-muted mb-4 -mt-2">
+        <p className="!text-xs text-muted mb-4 -mt-2">
           {t('client_journey_description') || 'Vue détaillée des éléments liés à ce client'} — {t('workflow_explains_what') || 'Ce qui existe / manque'}
         </p>
       )}

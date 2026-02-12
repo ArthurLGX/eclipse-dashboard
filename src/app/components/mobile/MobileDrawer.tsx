@@ -182,7 +182,7 @@ export default function MobileDrawer({
 
               {/* Footer */}
               <div className="p-4 border-t border-default">
-                <p className="text-xs text-muted text-center">
+                <p className="!text-xs text-muted text-center">
                   Eclipse Dashboard © 2026
                 </p>
               </div>

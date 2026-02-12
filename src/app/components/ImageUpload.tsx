@@ -484,7 +484,7 @@ export default function ImageUpload({
         {placeholder === 'user' ? (
           <IconUser size={size === 'sm' ? 24 : size === 'md' ? 32 : 48} stroke={1} />
         ) : (
-          <span className="text-xs text-center px-2">Logo</span>
+          <span className="!text-xs text-center px-2">Logo</span>
         )}
       </div>
     );
@@ -534,7 +534,7 @@ export default function ImageUpload({
               {/* Message si mode lecture */}
               {disabled && (
                 <div className="px-4 py-3 bg-muted border-b border-default text-center">
-                  <p className="text-warning-text text-xs font-medium">
+                  <p className="text-warning-text !text-xs font-medium">
                     ⚠️ Passez en mode édition pour modifier l&apos;image
                   </p>
                 </div>
@@ -566,7 +566,7 @@ export default function ImageUpload({
                   </div>
                   <div>
                     <p className="text-primary font-medium text-sm">Utiliser le favicon</p>
-                    <p className="text-muted text-xs truncate max-w-[160px]">
+                    <p className="text-muted !text-xs truncate max-w-[160px]">
                       {extractDomain(website)}
                     </p>
                   </div>
@@ -586,7 +586,7 @@ export default function ImageUpload({
                 </div>
                 <div>
                   <p className="text-primary font-medium text-sm">Depuis l&apos;ordinateur</p>
-                  <p className="text-muted text-xs">Importer un fichier</p>
+                  <p className="text-muted !text-xs">Importer un fichier</p>
                 </div>
               </button>
 
@@ -603,7 +603,7 @@ export default function ImageUpload({
                 </div>
                 <div>
                   <p className="text-primary font-medium text-sm">Depuis la bibliothèque</p>
-                  <p className="text-muted text-xs">Images déjà uploadées</p>
+                  <p className="text-muted !text-xs">Images déjà uploadées</p>
                 </div>
               </button>
 
@@ -620,14 +620,14 @@ export default function ImageUpload({
                 </div>
                 <div>
                   <p className="text-primary font-medium text-sm">Depuis une URL</p>
-                  <p className="text-muted text-xs">Lien vers une image</p>
+                  <p className="text-muted !text-xs">Lien vers une image</p>
                 </div>
               </button>
               
               {/* Bouton fermer */}
               <button
                 onClick={() => setShowMenu(false)}
-                className="w-full px-4 py-2 text-muted text-xs hover:bg-hover transition-colors text-center border-t border-default"
+                className="w-full px-4 py-2 text-muted !text-xs hover:bg-hover transition-colors text-center border-t border-default"
               >
                 Fermer
               </button>
@@ -738,7 +738,7 @@ export default function ImageUpload({
                   <span className="text-sm text-muted w-12 text-right">{rotation}°</span>
                   <button
                     onClick={() => setRotation(0)}
-                    className="px-2 py-1 text-xs text-secondary hover:text-primary border border-default rounded hover:bg-hover transition-colors"
+                    className="px-2 py-1 !text-xs text-secondary hover:text-primary border border-default rounded hover:bg-hover transition-colors"
                   >
                     Reset
                   </button>
@@ -938,7 +938,7 @@ export default function ImageUpload({
                   )}
                 </button>
 
-                <p className="text-xs text-muted text-center">
+                <p className="!text-xs text-muted text-center">
                   L&apos;image sera téléchargée et uploadée sur le serveur
                 </p>
               </div>

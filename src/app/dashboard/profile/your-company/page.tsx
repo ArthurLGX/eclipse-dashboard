@@ -319,7 +319,7 @@ export default function YourCompanyPage() {
                         className={`input w-full p-3 ${emailError ? '!border-danger' : ''}`}
                       />
                       {emailError && (
-                        <p className="text-danger text-xs mt-1">
+                        <p className="text-danger !text-xs mt-1">
                           {emailError}
                         </p>
                       )}

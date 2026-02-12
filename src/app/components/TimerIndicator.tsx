@@ -406,12 +406,12 @@ export default function TimerIndicator() {
                 {isPaused ? formatSeconds(pauseTimeLeft) : formatSeconds(runningTime)}
               </motion.span>
               {!isPaused && runningEntry.estimated_duration && (
-                <span className="text-xs text-warning/80 font-medium">
+                <span className="!text-xs text-warning/80 font-medium">
                   / {formatMinutes(runningEntry.estimated_duration)}
                 </span>
               )}
               {isPaused && (
-                <span className="text-xs !text-accent/80 font-medium">
+                <span className="!text-xs !text-accent/80 font-medium">
                   {isIndefinitePause 
                     ? (t('elapsed') || 'écoulé')
                     : (t('remaining') || 'restant')
@@ -564,7 +564,7 @@ export default function TimerIndicator() {
                     <IconClock className="w-5 h-5 text-warning-text group-hover:text-white flex-shrink-0" />
                     <div>
                       <p className="font-medium text-primary group-hover:text-white">{t('continue_task') || 'Continuer la tâche'}</p>
-                      <p className="text-xs text-muted group-hover:text-white/80">{t('continue_task_desc') || 'Rallonger le temps de travail'}</p>
+                      <p className="!text-xs text-muted group-hover:text-white/80">{t('continue_task_desc') || 'Rallonger le temps de travail'}</p>
                     </div>
                   </button>
 
@@ -577,7 +577,7 @@ export default function TimerIndicator() {
                     <IconCheck className="w-5 h-5 !text-success-text -text group-hover:text-white flex-shrink-0" />
                     <div>
                       <p className="font-medium text-primary group-hover:text-white">{t('objectives_completed') || 'Objectifs atteints'}</p>
-                      <p className="text-xs text-muted group-hover:text-white/80">{t('objectives_completed_desc') || 'La tâche est terminée avec succès'}</p>
+                      <p className="!text-xs text-muted group-hover:text-white/80">{t('objectives_completed_desc') || 'La tâche est terminée avec succès'}</p>
                     </div>
                   </button>
 
@@ -590,7 +590,7 @@ export default function TimerIndicator() {
                     <IconX className="w-5 h-5 text-danger group-hover:text-white flex-shrink-0" />
                     <div>
                       <p className="font-medium text-primary group-hover:text-white">{t('objectives_not_completed') || 'Objectifs non atteints'}</p>
-                      <p className="text-xs text-muted group-hover:text-white/80">{t('objectives_not_completed_desc') || 'Arrêter et marquer comme incomplet'}</p>
+                      <p className="!text-xs text-muted group-hover:text-white/80">{t('objectives_not_completed_desc') || 'Arrêter et marquer comme incomplet'}</p>
                     </div>
                   </button>
                 </div>
@@ -655,7 +655,7 @@ export default function TimerIndicator() {
                 {/* Divider */}
                 <div className="flex items-center gap-3 py-2">
                   <div className="flex-1 h-px bg-border" />
-                  <span className="text-xs text-muted uppercase">{t('or') || 'ou'}</span>
+                  <span className="!text-xs text-muted uppercase">{t('or') || 'ou'}</span>
                   <div className="flex-1 h-px bg-border" />
                 </div>
 
@@ -668,7 +668,7 @@ export default function TimerIndicator() {
                 >
                   <IconPlayerPlay className="w-4 h-4" />
                   {t('indefinite_pause') || 'Pause libre'}
-                  <span className="text-xs text-muted ml-1">
+                  <span className="!text-xs text-muted ml-1">
                     ({t('resume_manually') || 'reprendre manuellement'})
                   </span>
                 </motion.button>

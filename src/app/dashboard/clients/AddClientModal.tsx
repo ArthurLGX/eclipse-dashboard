@@ -116,7 +116,7 @@ export default function AddClientModal({
         {/* Ligne 1: Nom et Email (requis) */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
               <IconUser size={14} className="text-muted" />
               {t('name')} <span className="!text-accent">*</span>
             </label>
@@ -131,7 +131,7 @@ export default function AddClientModal({
             />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
               <IconMail size={14} className="text-muted" />
               {t('email')}
             </label>
@@ -148,7 +148,7 @@ export default function AddClientModal({
         {/* Ligne 2: Téléphone et Entreprise */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
               <IconPhone size={14} className="text-muted" />
               {t('phone')}
             </label>
@@ -161,7 +161,7 @@ export default function AddClientModal({
             />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
               <IconBuilding size={14} className="text-muted" />
               {t('enterprise')}
             </label>
@@ -178,7 +178,7 @@ export default function AddClientModal({
         {/* Ligne 3: Adresse et Site web */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
               <IconMapPin size={14} className="text-muted" />
               {t('address')}
             </label>
@@ -191,7 +191,7 @@ export default function AddClientModal({
             />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-secondary text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
               <IconWorld size={14} className="text-muted" />
               {t('website')}
             </label>
@@ -209,14 +209,14 @@ export default function AddClientModal({
         <div className="flex items-center gap-4 p-3 bg-muted rounded-lg border border-default">
           {/* Sélecteur de statut */}
           <div className="flex-1">
-            <label className="text-secondary text-xs mb-2 font-medium block">
+            <label className="text-secondary !text-xs mb-2 font-medium block">
               {t('status')}
             </label>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setProcessStatus('client')}
-                className={`flex-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+                className={`flex-1 px-3 py-1.5 rounded !text-xs font-medium transition-colors ${
                   processStatus === 'client'
                     ? 'bg-success-light !text-success-text '
                     : 'bg-hover text-secondary hover:bg-card'
@@ -227,7 +227,7 @@ export default function AddClientModal({
               <button
                 type="button"
                 onClick={() => setProcessStatus('prospect')}
-                className={`flex-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+                className={`flex-1 px-3 py-1.5 rounded !text-xs font-medium transition-colors ${
                   processStatus === 'prospect'
                     ? 'bg-info-light text-info'
                     : 'bg-hover text-secondary hover:bg-card'

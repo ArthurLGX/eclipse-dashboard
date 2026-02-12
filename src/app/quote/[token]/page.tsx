@@ -269,7 +269,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
                     </p>
                   )}
                   {quote.provider.siret && (
-                    <p className="text-xs text-slate-500">SIRET: {quote.provider.siret}</p>
+                    <p className="!text-xs text-slate-500">SIRET: {quote.provider.siret}</p>
                   )}
                 </div>
               </div>

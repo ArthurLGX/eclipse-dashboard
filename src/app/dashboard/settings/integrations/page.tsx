@@ -63,7 +63,7 @@ function IntegrationCard({ title, description, icon, status, children }: Integra
             <p className="text-sm text-muted">{description}</p>
           </div>
         </div>
-        <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[status]}`}>
+        <span className={`px-2 py-1 !text-xs font-medium rounded-full ${statusColors[status]}`}>
           {statusLabels[status]}
         </span>
       </div>
@@ -92,7 +92,7 @@ function CopyableField({ label, value }: { label: string; value: string }) {
 
   return (
     <div className="space-y-1">
-      <label className="text-xs font-medium text-muted">{label}</label>
+      <label className="!text-xs font-medium text-muted">{label}</label>
       <div className="flex items-center gap-2">
         <code className="flex-1 px-3 py-2 bg-muted border border-default rounded-lg text-sm font-mono truncate text-primary">
           {value}
@@ -302,7 +302,7 @@ function ApiTokensSection() {
               >
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-primary truncate">{token.name}</p>
-                  <div className="flex items-center gap-3 text-xs text-muted">
+                  <div className="flex items-center gap-3 !text-xs text-muted">
                     <code className="font-mono">{token.token_preview}</code>
                     {token.last_used_at && (
                       <span className="flex items-center gap-1">
@@ -378,7 +378,7 @@ function GoogleIntegrationCard() {
               <p className="text-sm text-muted">{t('google_login_desc') || 'Se connecter avec votre compte Google'}</p>
             </div>
           </div>
-          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+          <span className={`px-2 py-1 !text-xs font-medium rounded-full ${
             isAuthenticated 
               ? 'bg-success-light !text-success-text ' 
               : 'bg-muted text-secondary'
@@ -395,12 +395,12 @@ function GoogleIntegrationCard() {
               <p className="text-sm text-muted">{t('google_sheets_desc') || 'Importer des tâches depuis Google Sheets'}</p>
             </div>
           </div>
-          <span className="px-2 py-1 text-xs font-medium rounded-full bg-success-light !text-success-text -text">
+          <span className="px-2 py-1 !text-xs font-medium rounded-full bg-success-light !text-success-text -text">
             {t('integration_available') || 'Disponible'}
           </span>
         </div>
         
-        <p className="text-xs text-muted">
+        <p className="!text-xs text-muted">
           {t('google_integration_note') || 'L\'import Google Sheets est disponible dans les pages Projets et Clients.'}
         </p>
       </div>

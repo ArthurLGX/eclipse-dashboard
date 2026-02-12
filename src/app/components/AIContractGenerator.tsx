@@ -835,7 +835,7 @@ ${user?.username || 'L\'équipe'}`;
                     step === s ? 'text-secondary' : 
                     ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'text-success' : 'text-muted'
                   }`}>
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium ${
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center !text-xs font-medium ${
                       step === s ? 'bg-secondary text-white' : 
                       ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'bg-success text-white' : 'bg-hover'
                     }`}>
@@ -918,7 +918,7 @@ ${user?.username || 'L\'équipe'}`;
                       <IconChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
                     </div>
                     {!selectedClientId && (
-                      <p className="text-xs text-muted mt-1">{t('select_client_first') || 'Sélectionnez d\'abord un client'}</p>
+                      <p className="!text-xs text-muted mt-1">{t('select_client_first') || 'Sélectionnez d\'abord un client'}</p>
                     )}
                   </div>
                 </div>
@@ -940,7 +940,7 @@ ${user?.username || 'L\'équipe'}`;
                         }`}
                       >
                         <p className="font-medium text-primary">{type.label}</p>
-                        <p className="text-xs text-muted mt-1">{type.description}</p>
+                        <p className="!text-xs text-muted mt-1">{type.description}</p>
                       </button>
                     ))}
                   </div>
@@ -1024,7 +1024,7 @@ ${user?.username || 'L\'équipe'}`;
                       <p><strong>Projet:</strong> {selectedProject.title}</p>
                       {selectedProject.description && (
                         <div 
-                          className="text-xs line-clamp-2 prose prose-sm prose-slate max-w-none"
+                          className="!text-xs line-clamp-2 prose prose-sm prose-slate max-w-none"
                           dangerouslySetInnerHTML={{ __html: selectedProject.description }}
                         />
                       )}
@@ -1087,7 +1087,7 @@ ${user?.username || 'L\'équipe'}`;
                     <p className="text-sm font-medium text-warning">
                       {t('contract_warning_title') || 'Important'}
                     </p>
-                    <p className="text-xs text-warning-light mt-1">
+                    <p className="!text-xs text-warning-light mt-1">
                       {t('contract_warning_text') || 'Ce contrat est généré à titre indicatif. Faites-le relire par un professionnel du droit avant utilisation.'}
                     </p>
                   </div>
@@ -1128,7 +1128,7 @@ ${user?.username || 'L\'équipe'}`;
                             </li>
                           ))}
                         </ul>
-                        <p className="text-xs text-muted mt-3">
+                        <p className="!text-xs text-muted mt-3">
                           {contractLanguage === 'fr' 
                             ? 'Vous pouvez modifier les dates en passant en mode Édition.' 
                             : 'You can modify dates by switching to Edit mode.'}
@@ -1224,7 +1224,7 @@ ${user?.username || 'L\'équipe'}`;
                             {signatures.provider ? (
                               <Image src={signatures.provider} alt="Signature prestataire" width={150} height={60} className="max-h-16 object-contain" />
                             ) : (
-                              <span className="text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
+                              <span className="!text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
                             )}
                           </div>
                         </div>
@@ -1234,7 +1234,7 @@ ${user?.username || 'L\'équipe'}`;
                             {signatures.client ? (
                               <Image src={signatures.client} alt="Signature client" width={150} height={60} className="max-h-16 object-contain" />
                             ) : (
-                              <span className="text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
+                              <span className="!text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
                             )}
                           </div>
                         </div>
@@ -1275,7 +1275,7 @@ ${user?.username || 'L\'équipe'}`;
                       <IconBulb className="w-4 h-4" />
                       {t('tips') || 'Conseils'}
                     </p>
-                    <ul className="text-xs text-info-light space-y-1">
+                    <ul className="!text-xs text-info-light space-y-1">
                       {generatedContract.tips.map((tip, i) => (
                         <li key={i}>• {tip}</li>
                       ))}
@@ -1289,7 +1289,7 @@ ${user?.username || 'L\'équipe'}`;
                       <IconAlertTriangle className="w-4 h-4" />
                       {t('warnings') || 'Points d\'attention'}
                     </p>
-                    <ul className="text-xs text-accent space-y-1">
+                    <ul className="!text-xs text-accent space-y-1">
                       {generatedContract.warnings.map((warning, i) => (
                         <li key={i}>• {warning}</li>
                       ))}
@@ -1313,7 +1313,7 @@ ${user?.username || 'L\'équipe'}`;
                       {signatures.provider && (
                         <button
                           onClick={() => setSignatures(prev => ({ ...prev, provider: null }))}
-                          className="text-danger hover:opacity-80 text-xs flex items-center gap-1"
+                          className="text-danger hover:opacity-80 !text-xs flex items-center gap-1"
                         >
                           <IconTrash className="w-3 h-3" />
                           {t('delete') || 'Supprimer'}
@@ -1505,7 +1505,7 @@ ${user?.username || 'L\'équipe'}`;
                         <IconCopy className="w-4 h-4" />
                       </button>
                     </div>
-                    <p className="text-xs text-muted mt-2">
+                    <p className="!text-xs text-muted mt-2">
                       {t('link_valid_30_days') || 'Ce lien est valide pendant 30 jours.'}
                     </p>
                   </div>
@@ -1522,11 +1522,11 @@ ${user?.username || 'L\'équipe'}`;
                   <div className="border border-muted rounded-lg overflow-hidden bg-white">
                     {/* Email header */}
                     <div className="p-3 bg-slate-50 border-b border-slate-200">
-                      <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                      <div className="flex items-center gap-2 !text-xs text-slate-500 mb-1">
                         <span className="font-medium">À:</span>
                         <span className="text-slate-700">{selectedClient?.email || 'client@email.com'}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <div className="flex items-center gap-2 !text-xs text-slate-500">
                         <span className="font-medium">Objet:</span>
                         <span className="text-slate-700">Contrat à signer - {generatedContract?.title}</span>
                       </div>
@@ -1544,7 +1544,7 @@ ${user?.username || 'L\'équipe'}`;
                       
                       {/* Automatic signature link info */}
                       <div className="mt-4 pt-4 border-t border-slate-200">
-                        <p className="text-xs text-slate-500 italic">
+                        <p className="!text-xs text-slate-500 italic">
                           {t('email_auto_link_info') || '↳ Un bouton "Signer le contrat" sera automatiquement ajouté à l\'email.'}
                         </p>
                       </div>

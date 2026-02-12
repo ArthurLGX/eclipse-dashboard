@@ -579,25 +579,25 @@ export default function GrowthAuditPage() {
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div className="p-2 bg-card rounded">
                           <p className="text-lg font-bold text-primary">{result.seo.images.total}</p>
-                          <p className="text-xs text-muted">{t('total') || 'Total'}</p>
+                          <p className="!text-xs text-muted">{t('total') || 'Total'}</p>
                         </div>
                         <div className="p-2 bg-success-light rounded">
                           <p className="text-lg font-bold !text-success-text -text">{result.seo.images.withAlt}</p>
-                          <p className="text-xs text-muted">{t('with_alt') || 'Avec alt'}</p>
+                          <p className="!text-xs text-muted">{t('with_alt') || 'Avec alt'}</p>
                         </div>
                         <div className={`p-2 rounded ${result.seo.images.withoutAlt > 0 ? 'bg-danger-light' : 'bg-success-light'}`}>
                           <p className={`text-lg font-bold ${result.seo.images.withoutAlt > 0 ? 'text-danger' : 'text-success'}`}>
                             {result.seo.images.withoutAlt}
                           </p>
-                          <p className="text-xs text-muted">{t('missing_alt') || 'Sans alt'}</p>
+                          <p className="!text-xs text-muted">{t('missing_alt') || 'Sans alt'}</p>
                         </div>
                       </div>
                       {result.seo.images.withoutAlt > 0 && result.seo.images.missingAltList?.length > 0 && (
                         <details className="mt-2">
-                          <summary className="text-xs text-muted cursor-pointer hover:text-primary">
+                          <summary className="!text-xs text-muted cursor-pointer hover:text-primary">
                             {t('show_images_without_alt') || 'Voir les images sans alt'}
                           </summary>
-                          <div className="mt-2 max-h-32 overflow-y-auto text-xs text-muted space-y-1">
+                          <div className="mt-2 max-h-32 overflow-y-auto !text-xs text-muted space-y-1">
                             {result.seo.images.missingAltList.map((src, i) => (
                               <div key={i} className="truncate">• {src}</div>
                             ))}
@@ -619,14 +619,14 @@ export default function GrowthAuditPage() {
                           <IconLink className="w-4 h-4 text-accent" />
                           <div>
                             <p className="text-lg font-bold text-primary">{result.seo.links.internal}</p>
-                            <p className="text-xs text-muted">{t('internal_links') || 'Internes'}</p>
+                            <p className="!text-xs text-muted">{t('internal_links') || 'Internes'}</p>
                           </div>
                         </div>
                         <div className="p-2 bg-card rounded flex items-center justify-center gap-2">
                           <IconExternalLink className="w-4 h-4 text-muted" />
                           <div>
                             <p className="text-lg font-bold text-primary">{result.seo.links.external}</p>
-                            <p className="text-xs text-muted">{t('external_links') || 'Externes'}</p>
+                            <p className="!text-xs text-muted">{t('external_links') || 'Externes'}</p>
                           </div>
                         </div>
                       </div>
@@ -642,7 +642,7 @@ export default function GrowthAuditPage() {
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {result.seo.structuredDataTypes.map((type, i) => (
-                          <span key={i} className="px-2 py-0.5 bg-success text-white text-xs rounded">
+                          <span key={i} className="px-2 py-0.5 bg-success text-white !text-xs rounded">
                             {type}
                           </span>
                         ))}
@@ -656,13 +656,13 @@ export default function GrowthAuditPage() {
                       <span className="text-sm text-secondary flex items-center gap-2">
                         <IconRobot className="w-4 h-4" /> Robots
                       </span>
-                      <code className="text-xs bg-card px-2 py-1 rounded">{result.seo.robotsMeta}</code>
+                      <code className="!text-xs bg-card px-2 py-1 rounded">{result.seo.robotsMeta}</code>
                     </div>
                   )}
 
                   {/* JS Rendering Status */}
                   {result.jsRendered !== undefined && (
-                    <div className={`p-2 rounded-lg text-xs flex items-center gap-2 ${result.jsRendered ? 'bg-success-light !text-success-text ' : 'bg-warning-light text-warning'}`}>
+                    <div className={`p-2 rounded-lg !text-xs flex items-center gap-2 ${result.jsRendered ? 'bg-success-light !text-success-text ' : 'bg-warning-light text-warning'}`}>
                       <IconCode className="w-4 h-4" />
                       {result.jsRendered 
                         ? (t('js_rendered') || 'DOM rendu avec JavaScript') 
@@ -688,7 +688,7 @@ export default function GrowthAuditPage() {
                         return (
                           <span
                             key={section}
-                            className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 ${
+                            className={`px-3 py-1.5 rounded-full !text-xs font-medium flex items-center gap-1 ${
                               detected
                                 ? 'bg-success-light !text-success-text '
                                 : 'bg-danger-light text-danger'
@@ -725,11 +725,11 @@ export default function GrowthAuditPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-3 bg-muted rounded-lg text-center">
                       <p className="text-2xl font-bold text-primary">{result.message.benefitWordCount}</p>
-                      <p className="text-xs text-muted">Mots bénéfices</p>
+                      <p className="!text-xs text-muted">Mots bénéfices</p>
                     </div>
                     <div className="p-3 bg-muted rounded-lg text-center">
                       <p className="text-2xl font-bold text-primary">{result.message.featureWordCount}</p>
-                      <p className="text-xs text-muted">Mots features</p>
+                      <p className="!text-xs text-muted">Mots features</p>
                     </div>
                   </div>
 
@@ -752,7 +752,7 @@ export default function GrowthAuditPage() {
                       </p>
                       <div className="flex flex-wrap gap-1">
                         {result.message.jargonWords.map((word, i) => (
-                          <span key={i} className="px-2 py-0.5 bg-warning-light text-warning-text text-xs rounded">
+                          <span key={i} className="px-2 py-0.5 bg-warning-light text-warning-text !text-xs rounded">
                             {word}
                           </span>
                         ))}

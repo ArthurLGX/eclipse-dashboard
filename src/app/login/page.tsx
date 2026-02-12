@@ -214,7 +214,7 @@ function LoginContent() {
                   <h1 className=" uppercase text-primary mb-2 !text-right">
                     {isLogin ? t('welcome_to_eclipse') : t('join_eclipse')}
                   </h1>
-                  <p className="text-xs text-muted !text-right">
+                  <p className="!text-xs text-muted !text-right">
                     {isLogin ? t('better_project_reviews_for_developers') : t('create_your_account')}
                   </p>
                 </div>
@@ -243,7 +243,7 @@ function LoginContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.35 }}
-                className="!text-left text-xs text-muted mb-3"
+                className="!text-left !text-xs text-muted mb-3"
               >
                 {isLogin 
                   ? t('continue_with_oauth') || 'Continuez avec votre compte' 
@@ -300,7 +300,7 @@ function LoginContent() {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-default"></div>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
+                <div className="relative flex justify-center !text-xs uppercase">
                   <span className="bg-card px-2 text-muted">{t('or')}</span>
                 </div>
               </motion.div>
@@ -367,7 +367,7 @@ function LoginContent() {
                     {isLogin && (
                       <a
                         href="/forgot-password"
-                        className="text-xs text-muted hover:text-accent transition-colors"
+                        className="!text-xs text-muted hover:text-accent transition-colors"
                       >
                         {t('forgot_password')}
                       </a>
@@ -395,7 +395,7 @@ function LoginContent() {
                     </button>
                   </div>
                   {passwordError && !isLogin && (
-                    <p className="text-danger text-xs">{passwordError}</p>
+                    <p className="text-danger !text-xs">{passwordError}</p>
                   )}
                 </div>
 
@@ -430,7 +430,7 @@ function LoginContent() {
                       </button>
                     </div>
                     {confirmPasswordError && (
-                      <p className="text-danger text-xs">{confirmPasswordError}</p>
+                      <p className="text-danger !text-xs">{confirmPasswordError}</p>
                     )}
                   </motion.div>
                 )}
@@ -445,7 +445,7 @@ function LoginContent() {
 
                 {/* Terms */}
                 {!isLogin && (
-                  <p className="text-xs text-center text-muted">
+                  <p className="!text-xs text-center text-muted">
                     {t('by_signing_up_you_agree_to_eclipse_s_terms_of_service')}
                     <a href="#" className="text-accent hover:underline">
                       {t('terms_of_service')}

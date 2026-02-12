@@ -771,31 +771,31 @@ const PROJECT_TYPES = [
             {/* Row 3: Quick Stats Cards */}
             <div className="flex gap-3 flex-wrap md:flex-nowrap mt-2">
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
-                <div className="flex items-center gap-2 text-muted text-xs mb-1">
+                <div className="flex items-center gap-2 text-muted !text-xs mb-1">
                   <IconCurrencyEuro className="w-3.5 h-3.5" />
                   {t('billed') || 'Facturé'}
                 </div>
                 <p className="text-xl font-bold text-primary">
                   {totalFactures.toLocaleString('fr-FR')} €
                 </p>
-                <p className="text-xs !text-success-text -text">
+                <p className="!text-xs !text-success-text -text">
                   {paidFactures.toLocaleString('fr-FR')} € {t('paid') || 'payé'}
                 </p>
               </div>
               
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
-                <div className="flex items-center gap-2 text-muted text-xs mb-1">
+                <div className="flex items-center gap-2 text-muted !text-xs mb-1">
                   <IconFileInvoice className="w-3.5 h-3.5" />
                   {t('invoices') || 'Factures'}
                 </div>
                 <p className="text-xl font-bold text-primary">{factures.length}</p>
-                <p className="text-xs text-muted">
+                <p className="!text-xs text-muted">
                   {factures.filter(f => f.facture_status === 'paid').length} {t('paid') || 'payées'}
                 </p>
               </div>
 
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
-                <div className="flex items-center gap-2 text-muted text-xs mb-1">
+                <div className="flex items-center gap-2 text-muted !text-xs mb-1">
                   <IconListCheck className="w-3.5 h-3.5" />
                   {t('tasks')}
                 </div>
@@ -804,20 +804,20 @@ const PROJECT_TYPES = [
                     <p className="text-xl font-bold text-warning">{pendingTasks} {t('tasks_pending')}</p>
                   )}
                 </div>
-                <p className="text-xs !text-success-text -text">
+                <p className="!text-xs !text-success-text -text">
                   {completedTasks} {t('tasks_completed')} • {tasksProgress}% {t('progress')}
                 </p>
               </div>
               
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
-                <div className="flex items-center gap-2 text-muted text-xs mb-1">
+                <div className="flex items-center gap-2 text-muted !text-xs mb-1">
                   <IconCalendarEvent className="w-3.5 h-3.5" />
                   {t('due_date')}
                 </div>
                 <p className={`text-xl font-bold ${daysRemaining !== null && daysRemaining < 0 ? 'text-danger' : daysRemaining !== null && daysRemaining < 7 ? 'text-warning' : 'text-primary'}`}>
                   {daysRemaining !== null ? (daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : `${daysRemaining}j`) : t('no_date') || 'Aucune date' || '—'}
                 </p>
-                <p className="text-xs text-muted">
+                <p className="!text-xs text-muted">
                   {daysRemaining !== null && daysRemaining < 0 ? t('overdue') || 'En retard' : t('remaining') || 'Restant'}
                 </p> 
               </div>
@@ -845,7 +845,7 @@ const PROJECT_TYPES = [
                 <tab.icon className="w-4 h-4" />
                 {tab.label}
                 {tab.count !== undefined && tab.count > 0 && (
-                  <span className={`px-1.5 py-0.5 text-xs rounded-full font-bold ${
+                  <span className={`px-1.5 py-0.5 !text-xs rounded-full font-bold ${
                     tab.isOrange 
                       ? 'bg-warning-light text-warning' 
                       : activeTab === tab.id 
@@ -1087,7 +1087,7 @@ const PROJECT_TYPES = [
                                     {note.title}
                                   </h3>
                                   {note.source === 'phantom_ai' && (
-                                    <span className="px-2 py-0.5 text-xs rounded-full bg-accent-light !text-accent font-medium">
+                                    <span className="px-2 py-0.5 !text-xs rounded-full bg-accent-light !text-accent font-medium">
                                       Fathom AI
                                     </span>
                                   )}
@@ -1186,7 +1186,7 @@ const PROJECT_TYPES = [
                                           {item.text}
                                         </p>
                                         {item.assignee && (
-                                          <p className="text-xs text-muted mt-0.5">
+                                          <p className="!text-xs text-muted mt-0.5">
                                             Assigné à : {item.assignee}
                                           </p>
                                         )}
@@ -1328,7 +1328,7 @@ const PROJECT_TYPES = [
 
             {/* Dates Card */}
             <div className="card p-5">
-              <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
+              <h3 className="!text-xs font-semibold text-muted uppercase tracking-wider mb-4">
                 {t('due_dates')}
               </h3>
               <div className="space-y-4">
@@ -1337,7 +1337,7 @@ const PROJECT_TYPES = [
                     <IconCalendar className="w-4 h-4 !text-success-text -text" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-muted mb-0.5">{t('start_date')}</p>
+                    <p className="!text-xs text-muted mb-0.5">{t('start_date')}</p>
                     {isEditMode ? (
                       <input
                         type="date"
@@ -1359,7 +1359,7 @@ const PROJECT_TYPES = [
                     <IconCalendar className="w-4 h-4 text-danger" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-muted mb-0.5">{t('due_date')}</p>
+                    <p className="!text-xs text-muted mb-0.5">{t('due_date')}</p>
                     {isEditMode ? (
                       <input
                         type="date"
@@ -1381,7 +1381,7 @@ const PROJECT_TYPES = [
 
             {/* Client Card */}
             <div className="card p-5">
-              <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
+              <h3 className="!text-xs font-semibold text-muted uppercase tracking-wider mb-4">
                 {t('client')}
               </h3>
               {isEditMode ? (
@@ -1412,7 +1412,7 @@ const PROJECT_TYPES = [
                       {project.client.name}
                     </p>
                     {project.client.email && (
-                      <p className="text-xs text-muted truncate">{project.client.email}</p>
+                      <p className="!text-xs text-muted truncate">{project.client.email}</p>
                     )}
                   </div>
                   <IconExternalLink className="w-4 h-4 text-muted group-hover:text-accent transition-colors" />
@@ -1425,12 +1425,12 @@ const PROJECT_TYPES = [
             {/* Team Card */}
             <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold text-muted uppercase tracking-wider">
+                <h3 className="!text-xs font-semibold text-muted uppercase tracking-wider">
                   {t('team')}
                 </h3>
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="text-xs !text-accent hover:opacity-80 transition-colors"
+                  className="!text-xs !text-accent hover:opacity-80 transition-colors"
                 >
                   {t('manage')}
                 </button>
@@ -1445,7 +1445,7 @@ const PROJECT_TYPES = [
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-primary truncate">{project.user?.username}</p>
-                    <p className="text-xs text-warning">{t('owner')}</p>
+                    <p className="!text-xs text-warning">{t('owner')}</p>
                   </div>
                 </div>
                 
@@ -1459,7 +1459,7 @@ const PROJECT_TYPES = [
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-primary truncate">{collab.user?.username}</p>
-                      <p className="text-xs text-muted">
+                      <p className="!text-xs text-muted">
                         {collab.permission === 'edit' ? t('editor') : t('reader')}
                       </p>
                     </div>
@@ -1467,7 +1467,7 @@ const PROJECT_TYPES = [
                 ))}
                 
                 {collaborators.filter(c => !c.is_owner).length === 0 && (
-                  <p className="text-xs text-muted text-center py-2">
+                  <p className="!text-xs text-muted text-center py-2">
                     {t('no_collaborators')}
                   </p>
                 )}
@@ -1476,7 +1476,7 @@ const PROJECT_TYPES = [
 
             {/* Meta Card */}
             <div className="card p-5">
-              <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
+              <h3 className="!text-xs font-semibold text-muted uppercase tracking-wider mb-4">
                 {t('information')}
               </h3>
               <div className="space-y-3 text-sm">

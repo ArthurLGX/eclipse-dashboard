@@ -422,7 +422,7 @@ export default function MediaPickerModal({
                               ) : (
                                 <IconFileText className="w-8 h-8 text-blue-400" />
                               )}
-                              <span className="text-xs text-zinc-400 text-center truncate w-full px-1">
+                              <span className="!text-xs text-zinc-400 text-center truncate w-full px-1">
                                 {media.name || 'Document'}
                               </span>
                             </div>
@@ -497,7 +497,7 @@ export default function MediaPickerModal({
                     {t('insert') || 'Insérer'}
                   </button>
 
-                  <p className="text-xs text-muted text-center">
+                  <p className="!text-xs text-muted text-center">
                     {t('url_direct_link_hint') || 'Entrez l\'URL directe vers le fichier média'}
                   </p>
                 </div>
