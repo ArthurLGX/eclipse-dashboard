@@ -960,6 +960,7 @@ button {
 
 .table td {
   padding: 0.75rem 1rem;
+  font-size: 12px !important;
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-default);
 }
@@ -1494,6 +1495,7 @@ th {
 }
 
 td {
+  font-size: 12px !important;
   color: var(--text-primary);
   border-color: var(--border-default);
 }
@@ -1523,6 +1525,7 @@ tbody tr:hover {
 }
 
 :root.light td {
+  font-size: 12px !important;
   color: #474747;
   border-color: rgba(0, 0, 0, 0.1);
 }
