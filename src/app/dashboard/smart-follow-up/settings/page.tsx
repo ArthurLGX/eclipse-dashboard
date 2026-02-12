@@ -11,11 +11,13 @@ import {
   IconPlus,
   IconArrowLeft,
   IconDeviceFloppy,
+  IconFilter,
 } from '@tabler/icons-react';
 import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
 import { updateAutomationSettings, createAutomationSettings } from '@/lib/smart-follow-up-api';
 import { useAuth } from '@/app/context/AuthContext';
-import type { AutomationSettings } from '@/types/smart-follow-up';
+import RuleManagementModal from '@/app/components/RuleManagementModal';
+import type { AutomationSettings, FilterRule } from '@/types/smart-follow-up';
 
 export default function SmartFollowUpSettingsPage() {
   const router = useRouter();
@@ -25,6 +27,8 @@ export default function SmartFollowUpSettingsPage() {
   const [loading, setLoading] = useState(false);
   const [newDomain, setNewDomain] = useState('');
   const [newKeyword, setNewKeyword] = useState('');
+  const [showRulesModal, setShowRulesModal] = useState(false);
+  const [customRules, setCustomRules] = useState<FilterRule[]>([]);
   
   // États pour les paramètres modifiables
   const [enabled, setEnabled] = useState(true);
@@ -60,6 +64,7 @@ export default function SmartFollowUpSettingsPage() {
       setDelaySettings(settings.delay_settings);
       setWorkHours(settings.work_hours);
       setNotificationPreferences(settings.notification_preferences);
+      setCustomRules(settings.custom_rules || []);
     }
   }, [settings]);
 
@@ -76,6 +81,7 @@ export default function SmartFollowUpSettingsPage() {
         delay_settings: delaySettings,
         work_hours: workHours,
         notification_preferences: notificationPreferences,
+        custom_rules: customRules,
       };
 
       if (settings?.documentId) {
@@ -451,6 +457,58 @@ export default function SmartFollowUpSettingsPage() {
         </div>
       </div>
 
+      {/* Section Règles personnalisées */}
+      <div className="bg-card border border-default rounded-xl p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+              <IconFilter className="w-6 h-6 text-accent" />
+              Règles de filtrage personnalisées
+            </h2>
+            <p className="text-sm text-muted mt-2">
+              Définissez des règles avancées pour contrôler précisément comment les emails sont traités
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-secondary rounded-lg">
+            <div>
+              <h3 className="font-semibold text-primary">
+                {customRules.length} règle{customRules.length > 1 ? 's' : ''} configurée{customRules.length > 1 ? 's' : ''}
+              </h3>
+              <p className="text-sm text-muted">
+                {customRules.filter(r => r.enabled).length} active{customRules.filter(r => r.enabled).length > 1 ? 's' : ''} sur {customRules.length}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowRulesModal(true)}
+              className="px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+            >
+              <IconFilter className="w-5 h-5" />
+              Gérer les règles
+            </button>
+          </div>
+
+          {customRules.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-muted">Règles actives :</h4>
+              {customRules.filter(r => r.enabled).map(rule => (
+                <div key={rule.id} className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
+                  <span className="text-sm text-primary font-medium">{rule.name}</span>
+                  <span className="px-2 py-1 text-xs bg-accent/10 text-accent rounded">
+                    Priorité {rule.priority}
+                  </span>
+                </div>
+              ))}
+              {customRules.filter(r => r.enabled).length === 0 && (
+                <p className="text-sm text-muted italic">Aucune règle active</p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Section Notifications */}
       <div className="bg-card border border-default rounded-xl p-6 mb-6">
         <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
@@ -517,6 +575,17 @@ export default function SmartFollowUpSettingsPage() {
           </div>
         </div>
       </div>
+
+      {/* Rule Management Modal */}
+      <RuleManagementModal
+        isOpen={showRulesModal}
+        onClose={() => setShowRulesModal(false)}
+        rules={customRules}
+        onSaveRules={(newRules) => {
+          setCustomRules(newRules);
+          setShowRulesModal(false);
+        }}
+      />
     </div>
   );
 }

@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { IconSettings, IconPlayerPause, IconPlayerPlay, IconAlertCircle } from '@tabler/icons-react';
+import { IconSettings, IconPlayerPause, IconPlayerPlay, IconAlertCircle, IconFilter } from '@tabler/icons-react';
 import DataTable, { Column } from '@/app/components/DataTable';
 import AutomationActionDetailModal from '@/app/components/AutomationActionDetailModal';
+import RuleManagementModal from '@/app/components/RuleManagementModal';
 import { 
   useSmartFollowUpStats, 
   useFollowUpTasks, 
@@ -42,6 +43,7 @@ export default function SmartFollowUpPage() {
   const [selectedAction, setSelectedAction] = useState<AutomationAction | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [togglingPause, setTogglingPause] = useState(false);
+  const [showRulesModal, setShowRulesModal] = useState(false);
 
   const handleRowClick = (action: AutomationAction) => {
     setSelectedAction(action);
@@ -288,6 +290,20 @@ export default function SmartFollowUpPage() {
 
         <div className="flex gap-3">
           <button
+            onClick={() => setShowRulesModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 text-purple-600 rounded-xl hover:bg-purple-500/20 transition-colors border border-purple-500/20"
+            title="Gérer les règles de filtrage"
+          >
+            <IconFilter className="w-5 h-5" />
+            Règles
+            {settings?.custom_rules && settings.custom_rules.length > 0 && (
+              <span className="px-2 py-0.5 text-xs bg-purple-500 text-white rounded-full">
+                {settings.custom_rules.filter(r => r.enabled).length}
+              </span>
+            )}
+          </button>
+
+          <button
             onClick={handleToggleSystem}
             disabled={togglingPause}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
@@ -418,6 +434,26 @@ export default function SmartFollowUpPage() {
           emptyMessage="Aucune tâche planifiée"
         />
       )}
+
+      {/* Rule Management Modal */}
+      <RuleManagementModal
+        isOpen={showRulesModal}
+        onClose={() => setShowRulesModal(false)}
+        rules={settings?.custom_rules || []}
+        onSaveRules={async (newRules) => {
+          if (settings?.documentId) {
+            try {
+              await updateAutomationSettings(settings.documentId, { custom_rules: newRules });
+              mutateSettings();
+              setShowRulesModal(false);
+              alert('✓ Règles enregistrées avec succès !');
+            } catch (error) {
+              console.error('Erreur lors de la sauvegarde des règles:', error);
+              alert('❌ Erreur lors de la sauvegarde des règles');
+            }
+          }
+        }}
+      />
     </div>
   );
 }
