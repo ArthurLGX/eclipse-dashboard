@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import DataTable, { Column } from '@/app/components/DataTable';
+import AutomationActionDetailModal from '@/app/components/AutomationActionDetailModal';
 import { useSmartFollowUpStats, useFollowUpTasks, useAutomationActions } from '@/hooks/useSmartFollowUp';
 import { approveAutomationAction, rejectAutomationAction, updateFollowUpTask } from '@/lib/smart-follow-up-api';
 import type { AutomationAction, FollowUpTask } from '@/types/smart-follow-up';
@@ -24,12 +25,19 @@ export default function SmartFollowUpPage() {
   const { data: actions, mutate: mutateActions } = useAutomationActions('pending');
   
   const [activeTab, setActiveTab] = useState<'actions' | 'tasks'>('actions');
+  const [selectedAction, setSelectedAction] = useState<AutomationAction | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+
+  const handleRowClick = (action: AutomationAction) => {
+    setSelectedAction(action);
+    setShowDetailModal(true);
+  };
 
   const handleApprove = async (actionId: number, documentId: string) => {
     try {
       await approveAutomationAction(documentId);
       mutateActions();
-      alert('Action approuvée avec succès');
+      alert('✓ Action approuvée ! L\'email sera envoyé automatiquement dans les prochaines minutes.');
     } catch (error) {
       console.error('Erreur lors de l\'approbation:', error);
       alert('Erreur lors de l\'approbation');
@@ -289,8 +297,21 @@ export default function SmartFollowUpPage() {
           data={actions || []}
           columns={actionColumns}
           emptyMessage="Aucune action en attente"
+          onRowClick={handleRowClick}
         />
       )}
+
+      {/* Action Detail Modal */}
+      <AutomationActionDetailModal
+        action={selectedAction}
+        isOpen={showDetailModal}
+        onClose={() => {
+          setShowDetailModal(false);
+          setSelectedAction(null);
+        }}
+        onApprove={handleApprove}
+        onReject={handleReject}
+      />
 
       {/* Tasks Table */}
       {activeTab === 'tasks' && (
