@@ -7,13 +7,14 @@ import {
   IconUser,
   IconMail,
   IconCalendar,
-   IconBan,
+  IconBan,
   IconEdit,
   IconSend,
   IconLoader2,
   IconBrain,
   IconAlertCircle,
 } from '@tabler/icons-react';
+import { useLanguage } from '@/app/context/LanguageContext';
 import type { AutomationAction } from '@/types/smart-follow-up';
 
 interface AutomationActionDetailModalProps {
@@ -31,6 +32,7 @@ export default function AutomationActionDetailModal({
   onApprove,
   onReject,
 }: AutomationActionDetailModalProps) {
+  const { t } = useLanguage();
   const [aiSummary, setAiSummary] = useState<string>('');
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [editedContent, setEditedContent] = useState<string>('');
@@ -146,7 +148,9 @@ export default function AutomationActionDetailModal({
                   <IconBrain className="w-6 h-6 text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-primary">Détails de l&apos;action</h2>
+                  <h2 className="text-xl font-bold text-primary">
+                    {t('action_details') || 'Détails de l\'action'}
+                  </h2>
                   <p className="text-sm text-muted">
                     {getTaskTypeLabel(action.follow_up_task?.task_type || 'custom')}
                   </p>
@@ -166,12 +170,16 @@ export default function AutomationActionDetailModal({
               <div className="bg-gradient-to-br from-purple-500/5 to-accent/5 border border-purple-500/20 rounded-xl p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <IconBrain className="w-5 h-5 text-purple-500" />
-                  <h3 className="font-semibold text-primary">Résumé par IA</h3>
+                  <h3 className="font-semibold text-primary">
+                    {t('ai_summary') || 'Résumé par IA'}
+                  </h3>
                 </div>
                 {loadingSummary ? (
                   <div className="flex items-center gap-2 text-muted">
                     <IconLoader2 className="w-4 h-4 animate-spin" />
-                    <span className="text-sm">Génération du résumé en cours...</span>
+                    <span className="text-sm">
+                      {t('generating_summary') || 'Génération du résumé en cours...'}
+                    </span>
                   </div>
                 ) : (
                   <p className="text-sm text-secondary leading-relaxed whitespace-pre-line">
@@ -215,7 +223,9 @@ export default function AutomationActionDetailModal({
               {/* Confidence Score */}
               <div className="flex items-center gap-3 p-4 bg-secondary rounded-xl">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted">Score de confiance :</span>
+                  <span className="text-sm text-muted">
+                    {t('confidence_score') || 'Score de confiance'} :
+                  </span>
                   <span className={`px-3 py-1 rounded-full text-sm font-bold ${
                     action.confidence_score >= 0.8 
                       ? 'bg-success-light text-success-text' 
@@ -229,7 +239,7 @@ export default function AutomationActionDetailModal({
                 {action.confidence_score < 0.7 && (
                   <div className="flex items-center gap-2 text-warning text-sm">
                     <IconAlertCircle className="w-4 h-4" />
-                    <span>Score faible - Vérifiez le contenu avant d&apos;envoyer</span>
+                    <span>{t('low_confidence_warning') || 'Score faible - Vérifiez le contenu avant d\'envoyer'}</span>
                   </div>
                 )}
               </div>
@@ -239,7 +249,7 @@ export default function AutomationActionDetailModal({
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-primary flex items-center gap-2">
                     <IconMail className="w-5 h-5 text-accent" />
-                    Email proposé
+                    {t('proposed_email') || 'Email proposé'}
                   </h3>
                   {!isEditing && (
                     <button
@@ -247,14 +257,16 @@ export default function AutomationActionDetailModal({
                       className="text-sm text-accent hover:text-accent-light flex items-center gap-1"
                     >
                       <IconEdit className="w-4 h-4" />
-                      Modifier
+                      {t('edit_content') || 'Modifier'}
                     </button>
                   )}
                 </div>
 
                 {/* Subject */}
                 <div className="space-y-2">
-                  <label className="text-xs text-muted uppercase tracking-wide">Objet</label>
+                  <label className="text-xs text-muted uppercase tracking-wide">
+                    {t('email_subject') || 'Objet'}
+                  </label>
                   <div className="p-3 bg-secondary border border-default rounded-lg">
                     <p className="text-sm text-primary font-medium">
                       {action.proposed_content.subject}
@@ -264,7 +276,9 @@ export default function AutomationActionDetailModal({
 
                 {/* Body */}
                 <div className="space-y-2">
-                  <label className="text-xs text-muted uppercase tracking-wide">Message</label>
+                  <label className="text-xs text-muted uppercase tracking-wide">
+                    {t('email_body') || 'Message'}
+                  </label>
                   {isEditing ? (
                     <div className="space-y-2">
                       <textarea
@@ -281,13 +295,13 @@ export default function AutomationActionDetailModal({
                           }}
                           className="px-4 py-2 text-sm text-muted hover:text-primary"
                         >
-                          Annuler
+                          {t('cancel_edit') || 'Annuler'}
                         </button>
                         <button
                           onClick={() => setIsEditing(false)}
                           className="px-4 py-2 text-sm bg-accent text-white rounded-lg hover:opacity-90"
                         >
-                          Enregistrer les modifications
+                          {t('save_changes') || 'Enregistrer les modifications'}
                         </button>
                       </div>
                     </div>
@@ -311,7 +325,7 @@ export default function AutomationActionDetailModal({
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-error/10 text-error rounded-xl hover:bg-error/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <IconBan className="w-5 h-5" />
-                  Rejeter
+                  {t('reject_action') || 'Rejeter'}
                 </button>
                 <button
                   onClick={handleApproveAndSend}
@@ -321,18 +335,18 @@ export default function AutomationActionDetailModal({
                   {processing ? (
                     <>
                       <IconLoader2 className="w-5 h-5 animate-spin" />
-                      Traitement en cours...
+                      {t('processing_action') || 'Traitement en cours...'}
                     </>
                   ) : (
                     <>
                       <IconSend className="w-5 h-5" />
-                      Approuver et envoyer
+                      {t('approve_and_send') || 'Approuver et envoyer'}
                     </>
                   )}
                 </button>
               </div>
               <p className="text-xs text-muted text-center mt-3">
-                L&apos;email sera envoyé automatiquement par le système dans les minutes suivant l&apos;approbation
+                {t('email_will_be_sent') || 'L\'email sera envoyé automatiquement par le système dans les minutes suivant l\'approbation'}
               </p>
             </div>
           </motion.div>
