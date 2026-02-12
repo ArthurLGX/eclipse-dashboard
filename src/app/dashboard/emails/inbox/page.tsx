@@ -24,6 +24,7 @@ import {
 } from '@tabler/icons-react';
 import EmailSidebar, { type EmailView } from '@/app/components/EmailSidebar';
 import GmailStyleComposer from '@/app/components/GmailStyleComposer';
+import EmailSyncModal from '@/app/components/EmailSyncModal';
 import type { EmailComposerType } from '@/app/components/EmailComposer';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -74,6 +75,10 @@ function InboxView() {
   const [selectedEmail, setSelectedEmail] = useState<ReceivedEmail | SentEmail | EmailDraft | null>(null);
   const [loadingEmail, setLoadingEmail] = useState(false);
   const [categorizingAI, setCategorizingAI] = useState(false);
+  
+  // Sync modal
+  const [showSyncModal, setShowSyncModal] = useState(false);
+  const [syncResult, setSyncResult] = useState<{ synced: number; skipped: number; errors: string[] } | null>(null);
   
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -235,18 +240,16 @@ function InboxView() {
   // Sync inbox
   const handleSync = async () => {
     setSyncing(true);
+    setShowSyncModal(true);
+    setSyncResult(null);
+    
     try {
       const result = await syncInbox();
+      setSyncResult(result);
+      
+      // Recharger les emails après une synchro réussie
       if (result.synced > 0) {
-        showGlobalPopup(
-          `${result.synced} ${t('emails_synced') || 'email(s) synchronisé(s)'}`,
-          'success'
-        );
         loadEmails();
-      } else if (result.errors.length > 0) {
-        showGlobalPopup(result.errors[0], 'error');
-      } else {
-        showGlobalPopup(t('inbox_up_to_date') || 'Boîte de réception à jour', 'info');
       }
     } catch (error: unknown) {
       console.error('Sync error:', error);
@@ -258,16 +261,27 @@ function InboxView() {
                                    errorMessage.includes('400');
       
       if (isImapNotConfigured) {
+        setShowSyncModal(false);
         showGlobalPopup(
           t('imap_not_configured') || 'Configuration IMAP non trouvée. Veuillez configurer votre IMAP dans les paramètres.',
           'warning'
         );
       } else {
-        showGlobalPopup(t('sync_error') || 'Erreur de synchronisation', 'error');
+        // Afficher l'erreur dans la modale
+        setSyncResult({
+          synced: 0,
+          skipped: 0,
+          errors: [errorMessage],
+        });
       }
     } finally {
       setSyncing(false);
     }
+  };
+  
+  const handleCloseSyncModal = () => {
+    setShowSyncModal(false);
+    setSyncResult(null);
   };
 
   // Open email detail
@@ -990,6 +1004,14 @@ function InboxView() {
         }}
         initialType={composerType}
         replyToEmail={replyToEmail || undefined}
+      />
+
+      {/* Email Sync Modal */}
+      <EmailSyncModal
+        isOpen={showSyncModal}
+        onClose={handleCloseSyncModal}
+        result={syncResult}
+        isLoading={syncing}
       />
     </div>
   );
