@@ -1,10 +1,22 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { IconSettings, IconPlayerPause, IconPlayerPlay, IconAlertCircle } from '@tabler/icons-react';
 import DataTable, { Column } from '@/app/components/DataTable';
 import AutomationActionDetailModal from '@/app/components/AutomationActionDetailModal';
-import { useSmartFollowUpStats, useFollowUpTasks, useAutomationActions } from '@/hooks/useSmartFollowUp';
-import { approveAutomationAction, rejectAutomationAction, updateFollowUpTask } from '@/lib/smart-follow-up-api';
+import { 
+  useSmartFollowUpStats, 
+  useFollowUpTasks, 
+  useAutomationActions,
+  useAutomationSettings 
+} from '@/hooks/useSmartFollowUp';
+import { 
+  approveAutomationAction, 
+  rejectAutomationAction, 
+  updateFollowUpTask,
+  updateAutomationSettings 
+} from '@/lib/smart-follow-up-api';
 import type { AutomationAction, FollowUpTask } from '@/types/smart-follow-up';
 
 // Helper pour formater les dates relativement
@@ -20,13 +32,16 @@ function formatRelativeTime(date: Date): string {
 }
 
 export default function SmartFollowUpPage() {
+  const router = useRouter();
   const { data: stats, isLoading: statsLoading } = useSmartFollowUpStats();
   const { data: tasks, mutate: mutateTasks } = useFollowUpTasks();
   const { data: actions, mutate: mutateActions } = useAutomationActions('pending');
+  const { data: settings, mutate: mutateSettings } = useAutomationSettings();
   
   const [activeTab, setActiveTab] = useState<'actions' | 'tasks'>('actions');
   const [selectedAction, setSelectedAction] = useState<AutomationAction | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [togglingPause, setTogglingPause] = useState(false);
 
   const handleRowClick = (action: AutomationAction) => {
     setSelectedAction(action);
@@ -63,6 +78,27 @@ export default function SmartFollowUpPage() {
     } catch (error) {
       console.error('Erreur lors de la mise en pause:', error);
       alert('Erreur lors de la mise en pause');
+    }
+  };
+
+  const handleToggleSystem = async () => {
+    if (!settings?.documentId) {
+      alert('⚠️ Veuillez d\'abord configurer le système dans les paramètres');
+      router.push('/dashboard/smart-follow-up/settings');
+      return;
+    }
+
+    setTogglingPause(true);
+    try {
+      const newEnabled = !settings.enabled;
+      await updateAutomationSettings(settings.documentId, { enabled: newEnabled });
+      mutateSettings();
+      alert(newEnabled ? '✓ Smart Follow-Up activé !' : '⏸️ Smart Follow-Up mis en pause');
+    } catch (error) {
+      console.error('Erreur lors du changement d\'état:', error);
+      alert('Erreur lors du changement d\'état');
+    } finally {
+      setTogglingPause(false);
     }
   };
 
@@ -228,13 +264,74 @@ export default function SmartFollowUpPage() {
     },
   ];
 
+  const isSystemEnabled = settings?.enabled ?? true;
+
   return (
     <div className="w-full max-w-full">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-primary mb-2">Smart Follow-Up</h1>
-        <p className="text-muted">Gestion automatisée des relances clients</p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-3xl font-bold text-primary">Smart Follow-Up</h1>
+            {settings && (
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                isSystemEnabled 
+                  ? 'bg-success-light text-success-text' 
+                  : 'bg-warning-light text-warning-text'
+              }`}>
+                {isSystemEnabled ? '● Actif' : '⏸ En pause'}
+              </span>
+            )}
+          </div>
+          <p className="text-muted">Gestion automatisée des relances clients</p>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={handleToggleSystem}
+            disabled={togglingPause}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
+              isSystemEnabled
+                ? 'bg-warning/10 text-warning border border-warning/20 hover:bg-warning/20'
+                : 'bg-success/10 text-success border border-success/20 hover:bg-success/20'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {isSystemEnabled ? (
+              <>
+                <IconPlayerPause className="w-5 h-5" />
+                Mettre en pause
+              </>
+            ) : (
+              <>
+                <IconPlayerPlay className="w-5 h-5" />
+                Activer
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={() => router.push('/dashboard/smart-follow-up/settings')}
+            className="flex items-center gap-2 px-4 py-2 bg-secondary text-primary rounded-xl hover:bg-hover transition-colors border border-default"
+          >
+            <IconSettings className="w-5 h-5" />
+            Paramètres
+          </button>
+        </div>
       </div>
+
+      {/* Warning si système désactivé */}
+      {!isSystemEnabled && (
+        <div className="mb-6 p-4 bg-warning/10 border border-warning/20 rounded-xl flex items-start gap-3">
+          <IconAlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className="font-semibold text-warning mb-1">Système en pause</h3>
+            <p className="text-sm text-warning/80">
+              Le Smart Follow-Up est actuellement désactivé. Aucune nouvelle action ne sera créée.
+              Les actions existantes restent disponibles.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
