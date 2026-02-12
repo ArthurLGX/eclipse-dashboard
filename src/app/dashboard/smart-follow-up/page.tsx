@@ -126,7 +126,7 @@ export default function SmartFollowUpPage() {
           </button>
           <button
             onClick={() => handleReject(row.id, row.documentId)}
-            className="px-3 py-1 bg-error text-white rounded-lg text-sm hover:opacity-90 transition-opacity"
+            className="px-3 py-1 bg-error text-primary rounded-lg text-sm hover:opacity-90 transition-opacity"
           >
             Rejeter
           </button>
