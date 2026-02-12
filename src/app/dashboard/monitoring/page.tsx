@@ -36,11 +36,11 @@ import { getFaviconUrl } from '@/lib/favicon';
 import type { MonitoredSite, SiteStatus, SiteType, HostingProvider } from '@/types';
 import useSWR from 'swr';
 
-const STATUS_COLORS: Record<SiteStatus, { bg: string; text: string; icon: React.ReactNode }> = {
-  up: { bg: 'bg-success-light', text: 'text-success', icon: <IconCheck className="w-4 h-4" /> },
-  down: { bg: 'bg-error-light', text: 'text-error', icon: <IconX className="w-4 h-4" /> },
-  slow: { bg: 'bg-warning-light', text: 'text-warning', icon: <IconClock className="w-4 h-4" /> },
-  unknown: { bg: 'bg-muted-light', text: 'text-muted', icon: <IconAlertTriangle className="w-4 h-4" /> },
+    const STATUS_COLORS: Record<SiteStatus, { badge: string; icon: React.ReactNode }> = {
+  up: { badge: 'badge-success', icon: <IconCheck className="w-4 h-4" /> },
+  down: { badge: 'badge-error', icon: <IconX className="w-4 h-4" /> },
+  slow: { badge: 'badge-warning', icon: <IconClock className="w-4 h-4" /> },
+  unknown: { badge: 'badge-muted', icon: <IconAlertTriangle className="w-4 h-4" /> },
 };
 
 export default function MonitoringPage() {
@@ -342,11 +342,11 @@ export default function MonitoringPage() {
                           {(() => {
                             const type = site.site_type || 'frontend';
                             return (
-                              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full !text-xs font-medium ${
-                                type === 'frontend' ? 'bg-info-light text-info' :
-                                type === 'backend' ? 'bg-accent-light !text-accent' :
-                                type === 'api' ? 'bg-warning-light text-warning' :
-                                'bg-muted-light text-muted'
+                              <span className={`badge font-medium ${
+                                type === 'frontend' ? 'badge-info' :
+                                type === 'backend' ? 'badge-accent' :
+                                type === 'api' ? 'badge-warning' :
+                                'badge-muted'
                               }`}>
                                 {type === 'frontend' && <IconDeviceDesktop className="w-3 h-3" />}
                                 {type === 'backend' && <IconServer className="w-3 h-3" />}
@@ -358,7 +358,7 @@ export default function MonitoringPage() {
                           })()}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full !text-xs font-medium badge border ${statusConfig.bg} ${statusConfig.text}-text border-${statusConfig.bg}`}>
+                          <span className={`badge font-medium ${statusConfig.badge}`}>
                             {statusConfig.icon}
                             {site.site_status.toUpperCase()}
                           </span>

@@ -616,10 +616,10 @@ function EmailDetailModal({
 
                     <div className="flex items-center gap-3">
                       {/* Indicateur ouverture */}
-                      <div className={`flex items-center gap-1 px-2 py-1 rounded-full !text-xs ${
+                      <div className={`badge font-medium ${
                         recipient.opened
-                          ? 'bg-green-500/10 text-green-500'
-                          : 'bg-gray-500/10 text-info '
+                          ? 'badge-success'
+                          : 'badge-info'
                       }`}>
                         <IconEye className="w-3 h-3" />
                         {recipient.opened ? (
@@ -635,10 +635,10 @@ function EmailDetailModal({
                       </div>
 
                       {/* Indicateur clic */}
-                      <div className={`flex items-center gap-1 px-2 py-1 rounded-full !text-xs ${
+                      <div className={`badge font-medium ${
                         recipient.clicked
-                          ? 'bg-orange-500/10 text-orange-500'
-                          : 'bg-gray-500/10 text-info '
+                          ? 'badge-warning'
+                          : 'badge-info'
                       }`}>
                         <IconClick className="w-3 h-3" />
                         {recipient.clicked ? (

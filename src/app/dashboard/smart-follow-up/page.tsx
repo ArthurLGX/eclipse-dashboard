@@ -104,12 +104,12 @@ export default function SmartFollowUpPage() {
       render: (_value, row: AutomationAction) => {
         const score = (row.confidence_score * 100).toFixed(0);
         return (
-          <span className={`px-2 py-1 rounded-full !text-xs font-medium ${
+          <span className={`badge font-medium ${
             row.confidence_score >= 0.8 
-              ? 'bg-success-light text-success-text' 
+              ? 'badge-success' 
               : row.confidence_score >= 0.6
-                ? 'bg-warning-light text-warning-text'
-                : 'bg-error-light text-error-text'
+                ? 'badge-warning'
+                : 'badge-error'
           }`}>
             {score}%
           </span>
@@ -171,15 +171,15 @@ export default function SmartFollowUpPage() {
       key: 'priority', 
       label: 'Priorité',
       render: (_value, row: FollowUpTask) => {
-        const priorityLabels: Record<string, { label: string; className: string }> = {
-          'urgent': { label: 'Urgent', className: 'bg-error-light text-error-text' },
-          'high': { label: 'Haute', className: 'bg-warning-light text-warning-text' },
-          'medium': { label: 'Moyenne', className: 'bg-info-light text-info-text' },
-          'low': { label: 'Basse', className: 'bg-muted text-secondary' },
+        const priorityLabels: Record<string, { label: string; badge: string }> = {
+          'urgent': { label: 'Urgent', badge: 'badge-danger' },
+          'high': { label: 'Haute', badge: 'badge-warning' },
+          'medium': { label: 'Moyenne', badge: 'badge-info' },
+          'low': { label: 'Basse', badge: 'badge-muted' },
         };
         const priority = priorityLabels[row.priority] || priorityLabels['medium'];
         return (
-          <span className={`px-2 py-1 rounded-full !text-xs font-medium ${priority.className}`}>
+          <span className={`badge font-medium ${priority.badge}`}>
             {priority.label}
           </span>
         );
@@ -198,16 +198,16 @@ export default function SmartFollowUpPage() {
       key: 'status', 
       label: 'Statut',
       render: (_value, row: FollowUpTask) => {
-        const statusLabels: Record<string, { label: string; className: string }> = {
-          'pending': { label: 'En attente', className: 'bg-info-light text-info-text' },
-          'in_progress': { label: 'En cours', className: 'bg-warning-light text-warning-text' },
-          'completed': { label: 'Terminé', className: 'bg-success-light text-success-text' },
-          'cancelled': { label: 'Annulé', className: 'bg-muted text-secondary' },
-          'failed': { label: 'Échoué', className: 'bg-error-light text-error-text' },
+        const statusLabels: Record<string, { label: string; badge: string }> = {
+          'pending': { label: 'En attente', badge: 'badge-info' },
+          'in_progress': { label: 'En cours', badge: 'badge-warning' },
+          'completed': { label: 'Terminé', badge: 'badge-success' },
+          'cancelled': { label: 'Annulé', badge: 'badge-muted' },
+          'failed': { label: 'Échoué', badge: 'badge-error' },
         };
         const status = statusLabels[row.status_follow_up] || statusLabels['pending'];
         return (
-          <span className={`px-2 py-1 rounded-full !text-xs font-medium ${status.className}`}>
+          <span className={`badge font-medium ${status.badge}`}>
             {status.label}
           </span>
         );

@@ -56,12 +56,12 @@ interface SubscriptionFormData {
   services_included: string[];
 }
 
-const STATUS_COLORS: Record<string, { bg: string; text: string; label: string }> = {
-  active: { bg: 'bg-success-light', text: 'text-success', label: 'Actif' },
-  pending: { bg: 'bg-warning-light', text: 'text-warning', label: 'En attente' },
-  cancelled: { bg: 'bg-danger-light', text: 'text-danger', label: 'Annulé' },
-  expired: { bg: 'bg-hover', text: 'text-muted', label: 'Expiré' },
-  paused: { bg: 'bg-info-light', text: 'text-info', label: 'Pausé' },
+const STATUS_COLORS: Record<string, { badge: string; label: string }> = {
+  active: { badge: 'badge-success', label: 'Actif' },
+  pending: { badge: 'badge-warning', label: 'En attente' },
+  cancelled: { badge: 'badge-danger', label: 'Annulé' },
+  expired: { badge: 'badge-muted', label: 'Expiré' },
+  paused: { badge: 'badge-info', label: 'Pausé' },
 };
 
 function formatCurrency(amount: number, currency: string = 'EUR') {
@@ -518,7 +518,7 @@ export default function SubscriptionsPage() {
                         </p>
                       )}
                     </div>
-                    <span className={`px-2 py-1 rounded-full !text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}>
+                    <span className={`badge font-medium ${statusStyle.badge}`}>
                       {statusStyle.label}
                     </span>
                   </div>
