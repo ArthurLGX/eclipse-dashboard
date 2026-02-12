@@ -49,7 +49,6 @@ Sois direct, professionnel et utile. Réponds en français.`;
       model: openai('gpt-4o'),
       prompt,
       temperature: 0.7,
-      maxCompletionTokens: 300,
     });
 
     return NextResponse.json({ summary: text });
