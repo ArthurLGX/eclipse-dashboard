@@ -172,11 +172,11 @@ export default function CalendarIntegrationsPage() {
       >
         {/* Header */}
         <div className="pb-4">
-          <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
+          <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
             <IconCalendar className="w-7 h-7 !text-accent" />
             {t('calendar_integrations') || 'Intégrations calendrier'}
           </h1>
-          <p className="text-muted text-sm mt-1">
+          <p className="text-muted !text-sm mt-1">
             {t('calendar_integrations_desc') || 'Connectez vos calendriers externes pour synchroniser vos événements'}
           </p>
         </div>
@@ -184,9 +184,9 @@ export default function CalendarIntegrationsPage() {
         {/* Setup Instructions */}
         <div className="card p-4 bg-info-light border-info">
           <div className="flex items-start gap-3">
-            <IconAlertCircle className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
+            <IconAlertCircle className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
             <div className="text-sm">
-              <p className="font-medium text-info mb-2">
+              <p className="font-medium !text-info mb-2">
                 {t('setup_required') || 'Configuration requise'}
               </p>
               <p className="text-secondary mb-3">
@@ -224,7 +224,7 @@ export default function CalendarIntegrationsPage() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-primary flex items-center gap-2">
+                    <h3 className="font-semibold !text-primary flex items-center gap-2">
                       {provider.name}
                       {provider.connected && (
                         <span className="flex items-center gap-1 !text-xs !text-success-text -text bg-success-light px-2 py-0.5 rounded-full">
@@ -233,11 +233,11 @@ export default function CalendarIntegrationsPage() {
                         </span>
                       )}
                     </h3>
-                    <p className="text-sm text-muted mt-0.5">
+                    <p className="text-sm !text-muted mt-0.5">
                       {provider.description}
                     </p>
                     {provider.connected && provider.email && (
-                      <p className="!text-xs text-secondary mt-2">
+                      <p className="!text-xs !text-secondary mt-2">
                         {provider.email}
                         {provider.lastSync && (
                           <span className="text-muted ml-2">
@@ -255,7 +255,7 @@ export default function CalendarIntegrationsPage() {
                       href={provider.setupUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-ghost px-3 py-2 text-sm flex items-center gap-1"
+                      className="btn-ghost px-3 py-2 !text-sm flex items-center gap-1"
                     >
                       <IconExternalLink className="w-4 h-4" />
                       {t('setup') || 'Config'}
@@ -267,7 +267,7 @@ export default function CalendarIntegrationsPage() {
                       <button
                         onClick={() => handleSync(provider.id)}
                         disabled={loading === provider.id}
-                        className="btn-ghost px-3 py-2 text-sm flex items-center gap-1"
+                        className="btn-ghost px-3 py-2 !text-sm flex items-center gap-1"
                       >
                         <IconRefresh className={`w-4 h-4 ${loading === provider.id ? 'animate-spin' : ''}`} />
                         {t('sync') || 'Sync'}
@@ -275,7 +275,7 @@ export default function CalendarIntegrationsPage() {
                       <button
                         onClick={() => handleDisconnect(provider.id)}
                         disabled={loading === provider.id}
-                        className="btn-ghost px-3 py-2 text-sm flex items-center gap-1 text-error hover:bg-error/10"
+                        className="btn-ghost px-3 py-2 !text-sm flex items-center gap-1 !text-error hover:bg-error/10"
                       >
                         <IconUnlink className="w-4 h-4" />
                         {t('disconnect') || 'Déconnecter'}
@@ -285,7 +285,7 @@ export default function CalendarIntegrationsPage() {
                     <button
                       onClick={() => handleConnect(provider.id)}
                       disabled={loading === provider.id}
-                      className="btn-primary px-4 py-2 text-sm flex items-center gap-2 rounded-lg"
+                      className="btn-primary px-4 py-2 !text-sm flex items-center gap-2 rounded-lg"
                     >
                       {loading === provider.id ? (
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -303,7 +303,7 @@ export default function CalendarIntegrationsPage() {
 
         {/* Documentation Links */}
         <div className="card p-5">
-          <h3 className="font-semibold text-primary mb-4">
+          <h3 className="font-semibold !text-primary mb-4">
             {t('setup_guides') || 'Guides de configuration'}
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
@@ -313,12 +313,12 @@ export default function CalendarIntegrationsPage() {
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors"
             >
-              <IconBrandGoogle className="w-5 h-5 text-[#4285F4]" />
+              <IconBrandGoogle className="w-5 h-5 !text-[#4285F4]" />
               <div>
-                <p className="font-medium text-primary text-sm">Google Cloud Console</p>
-                <p className="!text-xs text-muted">Créer les identifiants OAuth</p>
+                <p className="font-medium !text-primary !text-sm">Google Cloud Console</p>
+                <p className="!text-xs !text-muted">Créer les identifiants OAuth</p>
               </div>
-              <IconExternalLink className="w-4 h-4 text-muted ml-auto" />
+              <IconExternalLink className="w-4 h-4 !text-muted ml-auto" />
             </a>
             <a
               href="https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade"
@@ -326,12 +326,12 @@ export default function CalendarIntegrationsPage() {
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors"
             >
-              <IconBrandWindows className="w-5 h-5 text-[#0078D4]" />
+              <IconBrandWindows className="w-5 h-5 !text-[#0078D4]" />
               <div>
-                <p className="font-medium text-primary text-sm">Azure Portal</p>
-                <p className="!text-xs text-muted">Enregistrer une application</p>
+                <p className="font-medium !text-primary !text-sm">Azure Portal</p>
+                <p className="!text-xs !text-muted">Enregistrer une application</p>
               </div>
-              <IconExternalLink className="w-4 h-4 text-muted ml-auto" />
+              <IconExternalLink className="w-4 h-4 !text-muted ml-auto" />
             </a>
           </div>
         </div>

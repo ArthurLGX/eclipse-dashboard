@@ -103,9 +103,9 @@ export default function AIPriceEstimation({
       case 'above':
         return <IconTrendingUp className="w-4 h-4 !text-success-text -text" />;
       case 'below':
-        return <IconTrendingDown className="w-4 h-4 text-danger" />;
+        return <IconTrendingDown className="w-4 h-4 !text-danger" />;
       default:
-        return <IconMinus className="w-4 h-4 text-info" />;
+        return <IconMinus className="w-4 h-4 !text-info" />;
     }
   };
 
@@ -157,10 +157,10 @@ export default function AIPriceEstimation({
             />
           </div>
           <div className="text-left">
-            <p className="text-sm font-medium text-primary">
+            <p className="text-sm font-medium !text-primary">
               {t('ai_price_estimation') || 'Estimation IA du prix'}
             </p>
-            <p className="!text-xs text-muted">
+            <p className="!text-xs !text-muted">
               {t('ai_price_estimation_desc') || 'Basée sur vos projets similaires'}
             </p>
           </div>
@@ -173,9 +173,9 @@ export default function AIPriceEstimation({
             </span>
           )}
           {isExpanded ? (
-            <IconChevronUp className="w-5 h-5 text-muted" />
+            <IconChevronUp className="w-5 h-5 !text-muted" />
           ) : (
-            <IconChevronDown className="w-5 h-5 text-muted" />
+            <IconChevronDown className="w-5 h-5 !text-muted" />
           )}
         </div>
       </button>
@@ -195,7 +195,7 @@ export default function AIPriceEstimation({
                 <div className="flex items-center justify-center py-6">
                   <div className="text-center">
                     <IconLoader2 className="w-8 h-8 !text-muted animate-spin mx-auto mb-2" />
-                    <p className="text-sm text-muted">
+                    <p className="text-sm !text-muted">
                       {t('analyzing_prices') || 'Analyse des prix en cours...'}
                     </p>
                   </div>
@@ -204,10 +204,10 @@ export default function AIPriceEstimation({
 
               {error && (
                 <div className="text-center py-4">
-                  <p className="text-sm text-danger">{error}</p>
+                  <p className="text-sm !text-danger">{error}</p>
                   <button
                     onClick={() => { setHasFetched(false); fetchEstimation(); }}
-                    className="mt-2 text-sm !text-muted hover:underline"
+                    className="mt-2 !text-sm !text-muted hover:underline"
                   >
                     {t('retry') || 'Réessayer'}
                   </button>
@@ -221,10 +221,10 @@ export default function AIPriceEstimation({
                     <div className="flex items-center gap-3">
                       <IconSparkles className="w-5 h-5 !text-muted" />
                       <div>
-                        <p className="text-sm text-muted">
+                        <p className="text-sm !text-muted">
                           {t('suggested_price') || 'Prix suggéré'}
                         </p>
-                        <p className="text-xl font-bold text-primary">
+                        <p className="text-xl font-bold !text-primary">
                           {estimation.suggested_price.toLocaleString()}€
                         </p>
                       </div>
@@ -236,7 +236,7 @@ export default function AIPriceEstimation({
                           {t(`confidence_${estimation.confidence}`) || estimation.confidence}
                         </span>
                       </div>
-                      <p className="!text-xs text-muted mt-1">
+                      <p className="!text-xs !text-muted mt-1">
                         {t('based_on') || 'Basé sur'} {estimation.similar_projects_count} {t('similar_projects') || 'projets similaires'}
                       </p>
                     </div>
@@ -265,16 +265,16 @@ export default function AIPriceEstimation({
 
                   {/* Average hourly rate */}
                   {estimation.avg_hourly_rate > 0 && (
-                    <div className="text-sm text-muted">
+                    <div className="text-sm !text-muted">
                       <span>{t('avg_hourly_rate') || 'Taux horaire moyen'}:</span>
-                      <span className="font-medium text-muted ml-2">
+                      <span className="font-medium !text-muted ml-2">
                         {estimation.avg_hourly_rate}€/h
                       </span>
                     </div>
                   )}
 
                   {/* Reasoning */}
-                  <div className="text-sm text-muted">
+                  <div className="text-sm !text-muted">
                     <p>{estimation.reasoning}</p>
                   </div>
 
@@ -285,7 +285,7 @@ export default function AIPriceEstimation({
                         <IconBulb className="w-4 h-4" />
                         {t('recommendations') || 'Recommandations'}
                       </p>
-                      <ul className="!text-xs text-muted space-y-1">
+                      <ul className="!text-xs !text-muted space-y-1">
                         {estimation.recommendations.map((rec, i) => (
                           <li key={i}>• {rec}</li>
                         ))}
@@ -297,7 +297,7 @@ export default function AIPriceEstimation({
                   {onSuggestionApply && estimation.suggested_price !== currentTotal && (
                     <button
                       onClick={() => onSuggestionApply(estimation.suggested_price)}
-                        className="w-full py-2 bg-muted text-primary rounded-lg text-sm font-medium hover:opacity-90 transition-colors"
+                        className="w-full py-2 bg-muted !text-primary rounded-lg !text-sm font-medium hover:opacity-90 transition-colors"
                     >
                       {t('apply_suggested_price') || 'Appliquer ce prix'}
                     </button>

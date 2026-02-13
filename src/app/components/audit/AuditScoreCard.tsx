@@ -114,7 +114,7 @@ export default function AuditScoreCard({
             {icon}
           </span>
         )}
-        <span className="text-sm font-medium text-primary">{label}</span>
+        <span className="text-sm font-medium !text-primary">{label}</span>
         {trend && (
           <span className={`${
             trend === 'up' ? 'text-success' :
@@ -130,7 +130,7 @@ export default function AuditScoreCard({
 
       {/* Description */}
       {description && (
-        <p className="!text-xs text-muted text-center">{description}</p>
+        <p className="!text-xs !text-muted !text-center">{description}</p>
       )}
     </motion.div>
   );

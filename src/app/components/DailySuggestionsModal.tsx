@@ -114,9 +114,9 @@ export default function DailySuggestionsModal() {
 
   const getTimeOfDayIcon = () => {
     const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) return <IconSunrise className="w-5 h-5 text-amber-400" />;
+    if (hour >= 5 && hour < 12) return <IconSunrise className="w-5 h-5 !text-amber-400" />;
     if (hour >= 12 && hour < 18) return <IconSun stroke={'#ffd700'} className="!text-warning-text w-5 h-5" />;
-    return <IconMoon className="w-5 h-5 text-indigo-400" />;
+    return <IconMoon className="w-5 h-5 !text-indigo-400" />;
   };
 
   const getSuggestionIcon = (type: Suggestion['type']) => {
@@ -143,13 +143,13 @@ export default function DailySuggestionsModal() {
   const getPriorityColor = (priority: Suggestion['priority']) => {
     switch (priority) {
       case 'high':
-        return 'bg-danger-light text-danger border-danger';
+        return 'bg-danger-light !text-danger border-danger';
       case 'medium':
-        return 'bg-warning-light text-warning-text border-warning';
+        return 'bg-warning-light !text-warning-text border-warning';
       case 'low':
-        return 'bg-info-light text-info border-info';
+        return 'bg-info-light !text-info border-info';
       default:
-        return 'bg-hover text-primary border-muted';
+        return 'bg-hover !text-primary border-muted';
     }
   };
 
@@ -212,11 +212,11 @@ export default function DailySuggestionsModal() {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     {getTimeOfDayIcon()}
-                    <h2 className="text-xl font-bold text-primary">
+                    <h2 className="text-xl font-bold !text-primary">
                       {loading ? (t('loading') || 'Chargement...') : data?.greeting}
                     </h2>
                   </div>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm !text-muted">
                     {loading 
                       ? (t('analyzing_data') || 'Analyse de vos données en cours...')
                       : data?.summary
@@ -228,7 +228,7 @@ export default function DailySuggestionsModal() {
                 onClick={handleClose}
                 className="p-2 hover:bg-hover rounded-lg transition-colors"
               >
-                <IconX className="w-5 h-5 text-muted" />
+                <IconX className="w-5 h-5 !text-muted" />
               </button>
             </div>
           </div>
@@ -248,19 +248,19 @@ export default function DailySuggestionsModal() {
                     transition={{ duration: 1.5, repeat: Infinity }}
                   />
                 </div>
-                <p className="mt-4 text-sm text-muted">
+                <p className="mt-4 !text-sm !text-muted">
                   {t('ai_analyzing') || 'Eclipse Assistant analyse vos projets...'}
                 </p>
               </div>
             )}
 
             {error && (
-              <div className="p-4 bg-danger-light rounded-xl text-center">
-                <IconAlertTriangle className="w-8 h-8 text-danger mx-auto mb-2" />
-                <p className="text-sm text-danger">{error}</p>
+              <div className="p-4 bg-danger-light rounded-xl !text-center">
+                <IconAlertTriangle className="w-8 h-8 !text-danger mx-auto mb-2" />
+                <p className="text-sm !text-danger">{error}</p>
                 <button
                   onClick={fetchSuggestions}
-                  className="mt-3 px-4 py-2 bg-danger text-white rounded-lg text-sm hover:opacity-90"
+                  className="mt-3 px-4 py-2 bg-danger !text-white rounded-lg !text-sm hover:opacity-90"
                 >
                   {t('retry') || 'Réessayer'}
                 </button>
@@ -274,16 +274,16 @@ export default function DailySuggestionsModal() {
                     <div className="w-16 h-16 rounded-full bg-success-light flex items-center justify-center mx-auto mb-4">
                       <IconSparkles className="w-8 h-8 !text-success-text -text" />
                     </div>
-                    <p className="text-lg font-medium text-primary mb-2">
+                    <p className="text-lg font-medium !text-primary mb-2">
                       {t('all_caught_up') || 'Tout est à jour !'}
                     </p>
-                    <p className="text-sm text-muted">
+                    <p className="text-sm !text-muted">
                       {t('no_urgent_tasks') || 'Aucune tâche urgente pour le moment.'}
                     </p>
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm font-medium text-primary mb-3">
+                    <p className="text-sm font-medium !text-primary mb-3">
                       {t('suggested_actions') || 'Actions suggérées pour aujourd\'hui'}
                     </p>
                     
@@ -310,22 +310,22 @@ export default function DailySuggestionsModal() {
                             {/* Content */}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-medium text-primary truncate">
+                                <h3 className="font-medium !text-primary truncate">
                                   {suggestion.title}
                                 </h3>
                                 {suggestion.priority === 'high' && (
-                                  <span className="px-2 py-0.5 !text-xs font-medium bg-danger-light text-danger rounded-full">
+                                  <span className="px-2 py-0.5 !text-xs font-medium bg-danger-light !text-danger rounded-full">
                                     {t('urgent') || 'Urgent'}
                                   </span>
                                 )}
                               </div>
-                              <p className="text-sm text-muted line-clamp-2">
+                              <p className="text-sm !text-muted line-clamp-2">
                                 {suggestion.description}
                               </p>
                               
                               {/* Metadata */}
                               {suggestion.metadata && (
-                                <div className="flex items-center gap-3 mt-2 !text-xs text-muted">
+                                <div className="flex items-center gap-3 mt-2 !text-xs !text-muted">
                                   {suggestion.metadata.clientName && (
                                     <span>👤 {suggestion.metadata.clientName}</span>
                                   )}
@@ -367,10 +367,10 @@ export default function DailySuggestionsModal() {
                     <div className="flex items-start gap-3">
                       <span className="text-2xl">💡</span>
                       <div>
-                        <p className="text-sm font-medium text-primary mb-1">
+                        <p className="text-sm font-medium !text-primary mb-1">
                           {t('tip_of_the_day') || 'Conseil du jour'}
                         </p>
-                        <p className="text-sm text-muted">
+                        <p className="text-sm !text-muted">
                           {data.motivational_tip}
                         </p>
                       </div>
@@ -383,12 +383,12 @@ export default function DailySuggestionsModal() {
 
           {/* Footer */}
           <div className="p-4 border-t border-muted bg-muted flex items-center justify-between">
-            <p className="!text-xs text-muted">
+            <p className="!text-xs !text-muted">
               {t('powered_by_eclipse') || 'Propulsé par Eclipse Assistant'}
             </p>
             <button
               onClick={handleClose}
-              className="px-4 py-2 bg-muted text-primary rounded-lg text-sm hover:opacity-90 transition-colors"
+              className="px-4 py-2 bg-muted !text-primary rounded-lg !text-sm hover:opacity-90 transition-colors"
             >
               {t('start_day') || 'Commencer ma journée'}
             </button>

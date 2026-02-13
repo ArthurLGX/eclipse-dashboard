@@ -658,7 +658,7 @@ export default function ClientsPage() {
             <p className="text-primary font-medium">{value as string}</p>
             {row._isCollaborative && row._collaborativeProjects && (
               <span 
-                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-accent-light !text-accent border border-accent"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md !text-[10px] font-semibold bg-accent-light !text-accent border border-accent"
                 title={`Via projet${row._collaborativeProjects.length > 1 ? 's' : ''}: ${row._collaborativeProjects.map(p => p.title).join(', ')}`}
               >
                 <IconUsersGroup className="w-3 h-3 !text-accent" />
@@ -796,13 +796,13 @@ export default function ClientsPage() {
             label: t('clients') || 'Clients',
             value: stats.active,
             colorClass: 'text-info',
-            icon: <IconUserCheck className="w-6 h-6 text-info" />,
+            icon: <IconUserCheck className="w-6 h-6 !text-info" />,
           },
           {
             label: t('prospects') || 'Prospects',
             value: prospectsCount,
             colorClass: 'text-warning',
-            icon: <IconUserPlus className="w-6 h-6 text-warning" />,
+            icon: <IconUserPlus className="w-6 h-6 !text-warning" />,
           },
           ...(stats.collaborative > 0 ? [{
             label: t('collaborative_clients') || 'Collaboratifs',

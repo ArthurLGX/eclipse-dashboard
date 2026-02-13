@@ -461,19 +461,19 @@ function InboxView() {
   // Icône de la vue active
   const getViewIcon = (view: EmailView) => {
     const icons: Record<EmailView, React.ReactNode> = {
-      inbox: <IconInbox className="w-6 h-6 text-accent" />,
-      starred: <IconStarFilled className="w-6 h-6 text-amber-500" />,
-      waiting: <IconArchive className="w-6 h-6 text-muted" />,
-      important: <IconMail className="w-6 h-6 text-red-500" />,
-      sent: <IconSend className="w-6 h-6 text-blue-500" />,
-      drafts: <IconMailOpened className="w-6 h-6 text-gray-500" />,
-      purchases: <IconInbox className="w-6 h-6 text-green-500" />,
-      social: <IconInbox className="w-6 h-6 text-purple-500" />,
-      notifications: <IconInbox className="w-6 h-6 text-orange-500" />,
-      forums: <IconInbox className="w-6 h-6 text-teal-500" />,
-      promotions: <IconInbox className="w-6 h-6 text-pink-500" />,
+      inbox: <IconInbox className="w-6 h-6 !text-accent" />,
+      starred: <IconStarFilled className="w-6 h-6 !text-amber-500" />,
+      waiting: <IconArchive className="w-6 h-6 !text-muted" />,
+      important: <IconMail className="w-6 h-6 !text-red-500" />,
+      sent: <IconSend className="w-6 h-6 !text-blue-500" />,
+      drafts: <IconMailOpened className="w-6 h-6 !text-gray-500" />,
+      purchases: <IconInbox className="w-6 h-6 !text-green-500" />,
+      social: <IconInbox className="w-6 h-6 !text-purple-500" />,
+      notifications: <IconInbox className="w-6 h-6 !text-orange-500" />,
+      forums: <IconInbox className="w-6 h-6 !text-teal-500" />,
+      promotions: <IconInbox className="w-6 h-6 !text-pink-500" />,
     };
-    return icons[view] || <IconInbox className="w-6 h-6 text-accent" />;
+    return icons[view] || <IconInbox className="w-6 h-6 !text-accent" />;
   };
 
   // Format date
@@ -529,11 +529,11 @@ function InboxView() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               {getViewIcon(activeView)}
-              <h1 className="text-xl font-bold text-primary">
+              <h1 className="text-xl font-bold !text-primary">
                 {getViewTitle(activeView)}
               </h1>
               {activeView === 'inbox' && unreadCount > 0 && (
-                <span className="px-2 py-0.5 !text-xs font-semibold bg-accent text-white rounded-full">
+                <span className="px-2 py-0.5 !text-xs font-semibold bg-accent !text-white rounded-full">
                   {unreadCount}
                 </span>
               )}
@@ -541,7 +541,7 @@ function InboxView() {
             <button
               onClick={handleSync}
               disabled={syncing}
-              className="p-2 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors disabled:opacity-50"
+              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors disabled:opacity-50"
               title={t('sync_inbox') || 'Synchroniser'}
             >
               <IconRefresh className={`w-5 h-5 ${syncing ? 'animate-spin' : ''}`} />
@@ -550,13 +550,13 @@ function InboxView() {
 
           {/* Search */}
           <div className="relative">
-            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('search_emails') || 'Rechercher...'}
-              className="w-full !pl-10 !pr-4 py-2 bg-page border border-default rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
+              className="w-full !pl-10 !pr-4 py-2 bg-page border border-default rounded-lg !text-sm !text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
             />
           </div>
           
@@ -567,8 +567,8 @@ function InboxView() {
                 onClick={() => { setShowUnreadOnly(false); setShowStarredOnly(false); setShowArchived(false); }}
                 className={`px-3 py-1.5 !text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                   !showUnreadOnly && !showStarredOnly && !showArchived
-                    ? 'bg-accent text-white'
-                    : 'bg-page border border-default text-muted hover:border-accent'
+                    ? 'bg-accent !text-white'
+                    : 'bg-page border border-default !text-muted hover:border-accent'
                 }`}
               >
                 {t('all') || 'Tous'}
@@ -577,8 +577,8 @@ function InboxView() {
                 onClick={() => { setShowUnreadOnly(true); setShowStarredOnly(false); setShowArchived(false); }}
                 className={`px-3 py-1.5 !text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                   showUnreadOnly
-                    ? 'bg-accent text-white'
-                    : 'bg-page border border-default text-muted hover:border-accent'
+                    ? 'bg-accent !text-white'
+                    : 'bg-page border border-default !text-muted hover:border-accent'
                 }`}
               >
                 {t('unread') || 'Non lus'}
@@ -587,8 +587,8 @@ function InboxView() {
                 onClick={() => { setShowStarredOnly(true); setShowUnreadOnly(false); setShowArchived(false); }}
                 className={`px-3 py-1.5 !text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                   showStarredOnly
-                    ? 'bg-amber-500 text-white'
-                    : 'bg-page border border-default text-muted hover:border-amber-500'
+                    ? 'bg-amber-500 !text-white'
+                    : 'bg-page border border-default !text-muted hover:border-amber-500'
                 }`}
               >
                 <IconStarFilled className="w-3 h-3 inline mr-1" />
@@ -598,8 +598,8 @@ function InboxView() {
                 onClick={() => { setShowArchived(true); setShowUnreadOnly(false); setShowStarredOnly(false); }}
                 className={`px-3 py-1.5 !text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
                   showArchived
-                    ? 'bg-gray-500 text-white'
-                    : 'bg-page border border-default text-muted hover:border-gray-500'
+                    ? 'bg-gray-500 !text-white'
+                    : 'bg-page border border-default !text-muted hover:border-gray-500'
                 }`}
               >
                 <IconArchive className="w-3 h-3 inline mr-1" />
@@ -612,7 +612,7 @@ function InboxView() {
               <button
                 onClick={handleCategorizeAllWithAI}
                 disabled={categorizingAI}
-                className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white !text-xs font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 !text-white !text-xs font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
                 {categorizingAI ? (
                   <>
@@ -637,12 +637,12 @@ function InboxView() {
         >
           {loading ? (
             <div className="flex items-center justify-center h-40">
-              <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+              <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
             </div>
           ) : activeView === 'sent' ? (
             // Liste des emails envoyés
             sentEmails.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-40 text-muted">
+              <div className="flex flex-col items-center justify-center h-40 !text-muted">
                 <IconSend className="w-12 h-12 mb-2 opacity-50" />
                 <p>Aucun email envoyé</p>
               </div>
@@ -659,18 +659,18 @@ function InboxView() {
                       selectedEmail?.id === email.id ? 'bg-accent/10 border-l-2 border-l-accent' : ''
                     }`}
                   >
-                    <IconSend className="w-5 h-5 text-blue-500 mt-1" />
+                    <IconSend className="w-5 h-5 !text-blue-500 mt-1" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium text-primary truncate">
+                        <span className="text-sm font-medium !text-primary truncate">
                           À : {email.recipients.join(', ')}
                         </span>
-                        <span className="!text-xs text-muted whitespace-nowrap ml-2">
+                        <span className="!text-xs !text-muted whitespace-nowrap ml-2">
                           {formatDate(email.sent_at)}
                         </span>
                       </div>
-                      <div className="text-sm font-medium text-primary mb-1 truncate">{email.subject}</div>
-                      <div className="!text-xs text-muted line-clamp-2">{email.content.replace(/<[^>]*>/g, '')}</div>
+                      <div className="text-sm font-medium !text-primary mb-1 truncate">{email.subject}</div>
+                      <div className="!text-xs !text-muted line-clamp-2">{email.content.replace(/<[^>]*>/g, '')}</div>
                     </div>
                   </motion.div>
                 ))}
@@ -679,7 +679,7 @@ function InboxView() {
           ) : activeView === 'drafts' ? (
             // Liste des brouillons
             drafts.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-40 text-muted">
+              <div className="flex flex-col items-center justify-center h-40 !text-muted">
                 <IconMailOpened className="w-12 h-12 mb-2 opacity-50" />
                 <p>Aucun brouillon</p>
               </div>
@@ -696,18 +696,18 @@ function InboxView() {
                       selectedEmail?.id === draft.id ? 'bg-accent/10 border-l-2 border-l-accent' : ''
                     }`}
                   >
-                    <IconMailOpened className="w-5 h-5 text-gray-500 mt-1" />
+                    <IconMailOpened className="w-5 h-5 !text-gray-500 mt-1" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium text-primary truncate">
+                        <span className="text-sm font-medium !text-primary truncate">
                           Brouillon {draft.name ? `- ${draft.name}` : ''}
                         </span>
-                        <span className="!text-xs text-muted whitespace-nowrap ml-2">
+                        <span className="!text-xs !text-muted whitespace-nowrap ml-2">
                           {formatDate(draft.updatedAt)}
                         </span>
                       </div>
-                      <div className="text-sm font-medium text-primary mb-1 truncate">{draft.subject || '(Sans objet)'}</div>
-                      <div className="!text-xs text-muted line-clamp-2">{draft.content || ''}</div>
+                      <div className="text-sm font-medium !text-primary mb-1 truncate">{draft.subject || '(Sans objet)'}</div>
+                      <div className="!text-xs !text-muted line-clamp-2">{draft.content || ''}</div>
                     </div>
                   </motion.div>
                 ))}
@@ -715,12 +715,12 @@ function InboxView() {
             )
           ) : emails.length === 0 ? (
             // Aucun email reçu
-            <div className="flex flex-col items-center justify-center h-40 text-muted">
+            <div className="flex flex-col items-center justify-center h-40 !text-muted">
               <IconInbox className="w-12 h-12 mb-2 opacity-50" />
               <p>{t('no_emails') || 'Aucun email'}</p>
               <button
                 onClick={handleSync}
-                className="mt-2 text-accent hover:underline text-sm"
+                className="mt-2 !text-accent hover:underline !text-sm"
               >
                 {t('sync_now') || 'Synchroniser maintenant'}
               </button>
@@ -746,9 +746,9 @@ function InboxView() {
                     title={email.is_read ? t('mark_unread') : t('mark_read')}
                   >
                     {email.is_read ? (
-                      <IconMailOpened className="w-5 h-5 text-muted hover:text-accent" />
+                      <IconMailOpened className="w-5 h-5 !text-muted hover:!text-accent" />
                     ) : (
-                      <IconMail className="w-5 h-5 text-accent" />
+                      <IconMail className="w-5 h-5 !text-accent" />
                     )}
                   </button>
                   
@@ -758,7 +758,7 @@ function InboxView() {
                       <span className={`font-medium truncate ${email.is_read ? 'text-primary' : 'text-primary font-semibold'}`}>
                         {getSenderName(email)}
                       </span>
-                      <span className="!text-xs text-muted whitespace-nowrap">
+                      <span className="!text-xs !text-muted whitespace-nowrap">
                         {formatDate(email.received_at)}
                       </span>
                     </div>
@@ -767,20 +767,20 @@ function InboxView() {
                       {email.subject || '(Sans objet)'}
                     </p>
                     
-                    <p className="!text-xs text-muted truncate mt-0.5">
+                    <p className="!text-xs !text-muted truncate mt-0.5">
                       {email.snippet || ''}
                     </p>
                     
                     {/* Tags */}
                     <div className="flex items-center gap-2 mt-1">
                       {email.client?.enterprise && (
-                        <span className="flex items-center gap-1 !text-xs text-muted">
+                        <span className="flex items-center gap-1 !text-xs !text-muted">
                           <IconBuilding className="w-3 h-3" />
                           {email.client.enterprise}
                         </span>
                       )}
                       {email.has_attachments && (
-                        <IconPaperclip className="w-3 h-3 text-muted" />
+                        <IconPaperclip className="w-3 h-3 !text-muted" />
                       )}
                     </div>
                   </div>
@@ -791,9 +791,9 @@ function InboxView() {
                     className="mt-1 flex-shrink-0"
                   >
                     {email.is_starred ? (
-                      <IconStarFilled className="w-5 h-5 text-amber-500" />
+                      <IconStarFilled className="w-5 h-5 !text-amber-500" />
                     ) : (
-                      <IconStar className="w-5 h-5 text-muted hover:text-amber-500" />
+                      <IconStar className="w-5 h-5 !text-muted hover:!text-amber-500" />
                     )}
                   </button>
                 </motion.div>
@@ -808,17 +808,17 @@ function InboxView() {
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="p-1.5 text-muted hover:text-accent disabled:opacity-50"
+              className="p-1.5 !text-muted hover:!text-accent disabled:opacity-50"
             >
               <IconChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-sm text-muted">
+            <span className="text-sm !text-muted">
               {page} / {totalPages}
             </span>
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="p-1.5 text-muted hover:text-accent disabled:opacity-50"
+              className="p-1.5 !text-muted hover:!text-accent disabled:opacity-50"
             >
               <IconChevronRight className="w-5 h-5" />
             </button>
@@ -834,7 +834,7 @@ function InboxView() {
             <div className="flex items-center justify-between p-4 border-b border-default bg-card">
               <button
                 onClick={() => setSelectedEmail(null)}
-                className="md:hidden p-2 text-muted hover:text-accent rounded-lg"
+                className="md:hidden p-2 !text-muted hover:!text-accent rounded-lg"
               >
                 <IconArrowLeft className="w-5 h-5" />
               </button>
@@ -845,21 +845,21 @@ function InboxView() {
                   <>
                     <button
                       onClick={() => handleReply(selectedEmail)}
-                      className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90"
+                      className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90"
                     >
                       <IconSend className="w-4 h-4" color="white" />
                       Répondre
                     </button>
                     <button
                       onClick={(e) => handleArchive(selectedEmail, e)}
-                      className="p-2 text-muted hover:text-accent hover:bg-accent/10 rounded-lg"
+                      className="p-2 !text-muted hover:!text-accent hover:bg-accent/10 rounded-lg"
                       title={selectedEmail.is_archived ? 'Désarchiver' : 'Archiver'}
                     >
                       {selectedEmail.is_archived ? <IconArchiveOff className="w-5 h-5" /> : <IconArchive className="w-5 h-5" />}
                     </button>
                     <button
                       onClick={() => handleDelete(selectedEmail)}
-                      className="p-2 text-muted hover:text-danger hover:bg-danger/10 rounded-lg"
+                      className="p-2 !text-muted hover:!text-danger hover:bg-danger/10 rounded-lg"
                     >
                       <IconTrash className="w-5 h-5" color="red" />
                     </button>
@@ -872,42 +872,42 @@ function InboxView() {
             <div className="flex-1 overflow-y-auto p-6 bg-card overscroll-contain" onWheel={(e) => e.stopPropagation()}>
               {loadingEmail ? (
                 <div className="flex items-center justify-center h-40">
-                  <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+                  <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
                 </div>
               ) : isReceivedEmail(selectedEmail) ? (
                 /* Email reçu */
                 <>
-                  <h2 className="text-2xl font-bold text-primary mb-4">{selectedEmail.subject || '(Sans objet)'}</h2>
+                  <h2 className="text-2xl font-bold !text-primary mb-4">{selectedEmail.subject || '(Sans objet)'}</h2>
                   <div className="flex items-start gap-4 mb-6 pb-6 border-b border-default">
                     <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
-                      {selectedEmail.client?.enterprise ? <IconBuilding className="w-6 h-6 text-accent" /> : <IconUser className="w-6 h-6 text-accent" />}
+                      {selectedEmail.client?.enterprise ? <IconBuilding className="w-6 h-6 !text-accent" /> : <IconUser className="w-6 h-6 !text-accent" />}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-primary">{getSenderName(selectedEmail)}</span>
-                        {selectedEmail.client?.enterprise && <span className="text-sm text-muted">• {selectedEmail.client.enterprise}</span>}
+                        <span className="font-semibold !text-primary">{getSenderName(selectedEmail)}</span>
+                        {selectedEmail.client?.enterprise && <span className="text-sm !text-muted">• {selectedEmail.client.enterprise}</span>}
                       </div>
-                      <p className="text-sm text-muted">{selectedEmail.from_email}</p>
-                      <p className="!text-xs text-muted mt-1">
+                      <p className="text-sm !text-muted">{selectedEmail.from_email}</p>
+                      <p className="!text-xs !text-muted mt-1">
                         {new Date(selectedEmail.received_at).toLocaleString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
                       </p>
                     </div>
                     <button onClick={(e) => handleToggleStar(selectedEmail, e)} className="p-2">
-                      {selectedEmail.is_starred ? <IconStarFilled className="w-6 h-6 text-amber-500" /> : <IconStar className="w-6 h-6 text-muted hover:text-amber-500" />}
+                      {selectedEmail.is_starred ? <IconStarFilled className="w-6 h-6 !text-amber-500" /> : <IconStar className="w-6 h-6 !text-muted hover:!text-amber-500" />}
                     </button>
                   </div>
                   {selectedEmail.has_attachments && selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
                     <div className="mb-6 p-4 bg-page border border-default rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <IconPaperclip className="w-4 h-4 text-muted" />
-                        <span className="text-sm font-medium text-primary">{selectedEmail.attachments.length} pièce(s) jointe(s)</span>
+                        <IconPaperclip className="w-4 h-4 !text-muted" />
+                        <span className="text-sm font-medium !text-primary">{selectedEmail.attachments.length} pièce(s) jointe(s)</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {selectedEmail.attachments.map((att, idx) => (
-                          <div key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default text-sm">
-                            <IconPaperclip className="w-3 h-3 text-muted" />
-                            <span className="truncate max-w-[150px] text-primary">{att.filename}</span>
-                            <span className="!text-xs text-muted">({Math.round(att.size / 1024)} Ko)</span>
+                          <div key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default !text-sm">
+                            <IconPaperclip className="w-3 h-3 !text-muted" />
+                            <span className="truncate max-w-[150px] !text-primary">{att.filename}</span>
+                            <span className="!text-xs !text-muted">({Math.round(att.size / 1024)} Ko)</span>
                           </div>
                         ))}
                       </div>
@@ -917,25 +917,25 @@ function InboxView() {
                     {selectedEmail.content_html ? (
                       <div dangerouslySetInnerHTML={{ __html: selectedEmail.content_html }} className="email-content" />
                     ) : (
-                      <pre className="whitespace-pre-wrap font-sans text-primary">{selectedEmail.content_text || ''}</pre>
+                      <pre className="whitespace-pre-wrap font-sans !text-primary">{selectedEmail.content_text || ''}</pre>
                     )}
                   </div>
                 </>
               ) : isSentEmail(selectedEmail) ? (
                 /* Email envoyé */
                 <>
-                  <h2 className="text-2xl font-bold text-primary mb-4">{selectedEmail.subject}</h2>
+                  <h2 className="text-2xl font-bold !text-primary mb-4">{selectedEmail.subject}</h2>
                   <div className="mb-6 pb-6 border-b border-default">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-sm font-medium text-muted">À :</span>
-                      <span className="text-sm text-primary">{selectedEmail.recipients.join(', ')}</span>
+                      <span className="text-sm font-medium !text-muted">À :</span>
+                      <span className="text-sm !text-primary">{selectedEmail.recipients.join(', ')}</span>
                     </div>
-                    <p className="!text-xs text-muted">
+                    <p className="!text-xs !text-muted">
                       Envoyé le {new Date(selectedEmail.sent_at).toLocaleString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
                     </p>
                     <span className={`mt-2 inline-block px-2 py-1 !text-xs rounded-full ${
-                      selectedEmail.status_mail === 'sent' ? 'bg-green-100 text-green-700' :
-                      selectedEmail.status_mail === 'failed' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
+                      selectedEmail.status_mail === 'sent' ? 'bg-green-100 !text-green-700' :
+                      selectedEmail.status_mail === 'failed' ? 'bg-red-100 !text-red-700' : 'bg-blue-100 !text-blue-700'
                     }`}>
                       {selectedEmail.status_mail === 'sent' ? 'Envoyé' : selectedEmail.status_mail === 'failed' ? 'Échec' : selectedEmail.status_mail === 'pending' ? 'En attente' : 'Planifié'}
                     </span>
@@ -943,14 +943,14 @@ function InboxView() {
                   {selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
                     <div className="mb-6 p-4 bg-page border border-default rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <IconPaperclip className="w-4 h-4 text-muted" />
-                        <span className="text-sm font-medium text-primary">{selectedEmail.attachments.length} pièce(s) jointe(s)</span>
+                        <IconPaperclip className="w-4 h-4 !text-muted" />
+                        <span className="text-sm font-medium !text-primary">{selectedEmail.attachments.length} pièce(s) jointe(s)</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {selectedEmail.attachments.map((att, idx) => (
-                          <a key={idx} href={att.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default text-sm hover:bg-hover">
-                            <IconPaperclip className="w-3 h-3 text-muted" />
-                            <span className="truncate max-w-[150px] text-primary">{att.name}</span>
+                          <a key={idx} href={att.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-card rounded border border-default !text-sm hover:bg-hover">
+                            <IconPaperclip className="w-3 h-3 !text-muted" />
+                            <span className="truncate max-w-[150px] !text-primary">{att.name}</span>
                           </a>
                         ))}
                       </div>
@@ -962,16 +962,16 @@ function InboxView() {
                 /* Brouillon */
                 <>
                   <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                    <p className="text-sm text-amber-800">
+                    <p className="text-sm !text-amber-800">
                       📝 Brouillon • Dernière modification : {new Date(selectedEmail.updatedAt).toLocaleString('fr-FR')}
                     </p>
                   </div>
-                  <h2 className="text-2xl font-bold text-primary mb-4">{selectedEmail.subject || '(Sans objet)'}</h2>
+                  <h2 className="text-2xl font-bold !text-primary mb-4">{selectedEmail.subject || '(Sans objet)'}</h2>
                   {selectedEmail.recipients && selectedEmail.recipients.length > 0 && (
                     <div className="mb-6 pb-6 border-b border-default">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-muted">À :</span>
-                        <span className="text-sm text-primary">{selectedEmail.recipients.map(r => r.email).join(', ')}</span>
+                        <span className="text-sm font-medium !text-muted">À :</span>
+                        <span className="text-sm !text-primary">{selectedEmail.recipients.map(r => r.email).join(', ')}</span>
                       </div>
                     </div>
                   )}
@@ -979,7 +979,7 @@ function InboxView() {
                     <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: selectedEmail.content }} />
                   )}
                   <div className="mt-6 flex gap-2">
-                    <button className="px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90">Continuer la rédaction</button>
+                    <button className="px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90">Continuer la rédaction</button>
                     <button className="px-4 py-2 border border-default rounded-lg hover:bg-hover">Supprimer le brouillon</button>
                   </div>
                 </>
@@ -987,7 +987,7 @@ function InboxView() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-muted">
+          <div className="flex-1 flex flex-col items-center justify-center !text-muted">
             <IconMail className="w-16 h-16 mb-4 opacity-30" />
             <p className="text-lg">{t('select_email') || 'Sélectionnez un email'}</p>
             <p className="text-sm">{t('click_to_read') || 'Cliquez sur un email pour le lire'}</p>

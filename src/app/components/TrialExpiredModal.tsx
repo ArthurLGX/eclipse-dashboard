@@ -136,17 +136,17 @@ export default function TrialExpiredModal({
               <div className="w-16 h-16 bg-danger-light rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">⏰</span>
               </div>
-              <h2 className="text-2xl font-bold text-primary mb-2">
+              <h2 className="text-2xl font-bold !text-primary mb-2">
                 {t('trial_expired_title')}
               </h2>
-              <p className="text-secondary text-sm leading-relaxed">
+              <p className="text-secondary !text-sm leading-relaxed">
                 {t('trial_expired_message')}
               </p>
             </div>
 
             {/* Plans disponibles */}
             <div className="space-y-4 mb-6">
-              <h3 className="text-lg font-semibold text-primary text-center">
+              <h3 className="text-lg font-semibold !text-primary !text-center">
                 {t('choose_plan_to_continue')}
               </h3>
 
@@ -160,10 +160,10 @@ export default function TrialExpiredModal({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
                       onClick={() => handleChoosePlan(plan)}
-                      className="bg-hover border border-default rounded-lg p-4 hover:border-accent hover:bg-hover transition-all duration-200 text-left group"
+                      className="bg-hover border border-default rounded-lg p-4 hover:border-accent hover:bg-hover transition-all duration-200 !text-left group"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-primary font-semibold capitalize group-hover:text-accent transition-colors">
+                        <h4 className="text-primary font-semibold capitalize group-hover:!text-accent transition-colors">
                           {plan.name}
                         </h4>
                         <div className="text-right">
@@ -178,7 +178,7 @@ export default function TrialExpiredModal({
                         </div>
                       </div>
 
-                      <p className="text-secondary text-sm mb-3 line-clamp-2">
+                      <p className="text-secondary !text-sm mb-3 line-clamp-2">
                         {plan.description}
                       </p>
 
@@ -197,13 +197,13 @@ export default function TrialExpiredModal({
             <div className="flex gap-3">
               <button
                 onClick={handleClose}
-                className="flex-1 bg-muted text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
+                className="flex-1 bg-muted !text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
               >
                 {t('cancel')}
               </button>
               <button
                 onClick={() => router.push('/pricing')}
-                className="flex-1 bg-accent text-white px-4 py-3 rounded-lg hover:bg-[var(--color-accent)] transition-colors font-semibold"
+                className="flex-1 bg-accent !text-white px-4 py-3 rounded-lg hover:bg-[var(--color-accent)] transition-colors font-semibold"
               >
                 {t('view_all_plans')}
               </button>

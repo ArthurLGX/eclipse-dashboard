@@ -107,18 +107,18 @@ export default function DeleteConfirmModal({
             {/* Header */}
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-12 h-12 rounded-full bg-danger-light flex items-center justify-center">
-                <IconAlertTriangle className="w-6 h-6 text-danger" />
+                <IconAlertTriangle className="w-6 h-6 !text-danger" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-semibold text-primary">{title}</h3>
-                <p className="mt-1 text-sm text-muted">
+                <h3 className="text-lg font-semibold !text-primary">{title}</h3>
+                <p className="mt-1 !text-sm !text-muted">
                   Cette action est irréversible. Êtes-vous sûr de vouloir supprimer {typeInfo.article} {typeInfo.fr} ?
                 </p>
               </div>
               <button
                 onClick={handleClose}
                 disabled={isDeleting}
-                className="p-1 text-muted hover:text-primary transition-colors disabled:opacity-50"
+                className="p-1 !text-muted hover:!text-primary transition-colors disabled:opacity-50"
               >
                 <IconX size={15} />
               </button>
@@ -134,15 +134,15 @@ export default function DeleteConfirmModal({
             {/* Warning */}
             {warningMessage && (
               <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg">
-                <p className="text-warning-text text-sm">{warningMessage}</p>
+                <p className="text-warning-text !text-sm">{warningMessage}</p>
               </div>
             )}
 
             {/* Confirmation Input - Style GitHub */}
             <div className="mt-5">
-              <label className="block text-sm text-muted mb-2">
+              <label className="block !text-sm !text-muted mb-2">
                 Pour confirmer, tapez{' '}
-                <span className="font-mono text-danger bg-danger-light px-1.5 py-0.5 rounded">
+                <span className="font-mono !text-danger bg-danger-light px-1.5 py-0.5 rounded">
                   {confirmPhrase}
                 </span>{' '}
                 ci-dessous :
@@ -166,7 +166,7 @@ export default function DeleteConfirmModal({
                 spellCheck="false"
               />
               {confirmText && !isConfirmValid && (
-                <p className="mt-1.5 !text-xs text-danger">
+                <p className="mt-1.5 !text-xs !text-danger">
                   Le texte ne correspond pas
                 </p>
               )}
@@ -179,7 +179,7 @@ export default function DeleteConfirmModal({
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-4 p-3 bg-danger-light border border-danger rounded-lg"
               >
-                <p className="text-danger text-sm">{error}</p>
+                <p className="text-danger !text-sm">{error}</p>
               </motion.div>
             )}
 
@@ -188,7 +188,7 @@ export default function DeleteConfirmModal({
               <button
                 onClick={handleClose}
                 disabled={isDeleting}
-                className="btn-ghost flex-1 px-4 py-2.5 text-sm font-medium disabled:opacity-50"
+                className="btn-ghost flex-1 px-4 py-2.5 !text-sm font-medium disabled:opacity-50"
               >
                 Annuler
               </button>
@@ -196,7 +196,7 @@ export default function DeleteConfirmModal({
                 onClick={handleConfirm}
                 disabled={isDeleting || !isConfirmValid}
                 className={`
-                  flex-1 px-4 py-2.5 text-sm font-medium rounded-lg transition-all
+                  flex-1 px-4 py-2.5 !text-sm font-medium rounded-lg transition-all
                   flex items-center justify-center gap-2
                   ${isConfirmValid
                     ? 'btn-danger'

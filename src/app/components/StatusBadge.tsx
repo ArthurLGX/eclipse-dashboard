@@ -55,7 +55,7 @@ export function TimeSourceBadge({ source }: TimeSourceBadgeProps) {
       tooltip: t('time_source_auto_tooltip') || 'Temps collecté automatiquement',
       icon: <IconBolt size={12} />,
       bgColor: 'bg-violet-100 dark:bg-violet-900/30',
-      textColor: 'text-violet-700 dark:text-violet-300',
+      textColor: 'text-violet-700 dark:!text-violet-300',
       borderColor: 'border-violet-200 dark:border-violet-700',
     },
     ide: {
@@ -63,7 +63,7 @@ export function TimeSourceBadge({ source }: TimeSourceBadgeProps) {
       tooltip: t('time_source_ide_tooltip') || 'Temps collecté automatiquement depuis l\'IDE',
       icon: <IconBolt size={12} />,
       bgColor: 'bg-violet-100 dark:bg-violet-900/30',
-      textColor: 'text-violet-700 dark:text-violet-300',
+      textColor: 'text-violet-700 dark:!text-violet-300',
       borderColor: 'border-violet-200 dark:border-violet-700',
     },
     manual: {
@@ -71,7 +71,7 @@ export function TimeSourceBadge({ source }: TimeSourceBadgeProps) {
       tooltip: t('time_source_manual_tooltip') || 'Temps saisi manuellement',
       icon: <IconEdit size={12} />,
       bgColor: 'bg-gray-100 dark:bg-gray-800',
-      textColor: 'text-gray-600 dark:text-gray-400',
+      textColor: 'text-gray-600 dark:!text-gray-400',
       borderColor: 'border-gray-200 dark:border-gray-700',
     },
     mixed: {
@@ -79,7 +79,7 @@ export function TimeSourceBadge({ source }: TimeSourceBadgeProps) {
       tooltip: t('time_source_mixed_tooltip') || 'Combinaison de temps automatique et manuel',
       icon: <IconBlendMode size={12} />,
       bgColor: 'bg-slate-100 dark:bg-slate-800',
-      textColor: 'text-slate-600 dark:text-slate-400',
+      textColor: 'text-slate-600 dark:!text-slate-400',
       borderColor: 'border-slate-200 dark:border-slate-700',
     },
   };
@@ -102,7 +102,7 @@ export function TrackingStateBadge({ state }: TrackingStateBadgeProps) {
       tooltip: t('tracking_active_tooltip') || 'Le temps est actuellement suivi sur ce projet',
       icon: <IconClock size={12} className="animate-pulse" />,
       bgColor: 'bg-green-100 dark:bg-green-900/30',
-      textColor: 'text-green-700 dark:text-green-300',
+      textColor: 'text-green-700 dark:!text-green-300',
       borderColor: 'border-green-200 dark:border-green-700',
     },
   };
@@ -125,7 +125,7 @@ export function ProfitabilityBadge({ status }: ProfitabilityBadgeProps) {
       tooltip: t('profitability_on_track_tooltip') || 'Le projet respecte les estimations',
       icon: <IconTrendingUp size={12} />,
       bgColor: 'bg-emerald-100 dark:bg-emerald-900/30',
-      textColor: 'text-emerald-700 dark:text-emerald-300',
+      textColor: 'text-emerald-700 dark:!text-emerald-300',
       borderColor: 'border-emerald-200 dark:border-emerald-700',
     },
     warning: {
@@ -133,7 +133,7 @@ export function ProfitabilityBadge({ status }: ProfitabilityBadgeProps) {
       tooltip: t('profitability_warning_tooltip') || 'Le temps consommé approche des estimations',
       icon: <IconAlertTriangle size={12} />,
       bgColor: 'bg-amber-100 dark:bg-amber-900/30',
-      textColor: 'text-amber-700 dark:text-amber-300',
+      textColor: 'text-amber-700 dark:!text-amber-300',
       borderColor: 'border-amber-200 dark:border-amber-700',
     },
     exceeded: {
@@ -141,7 +141,7 @@ export function ProfitabilityBadge({ status }: ProfitabilityBadgeProps) {
       tooltip: t('profitability_exceeded_tooltip') || 'Le temps consommé dépasse les estimations',
       icon: <IconChartLine size={12} />,
       bgColor: 'bg-red-100 dark:bg-red-900/30',
-      textColor: 'text-red-700 dark:text-red-300',
+      textColor: 'text-red-700 dark:!text-red-300',
       borderColor: 'border-red-200 dark:border-red-700',
     },
   };

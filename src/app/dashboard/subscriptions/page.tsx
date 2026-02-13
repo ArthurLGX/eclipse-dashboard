@@ -160,7 +160,7 @@ function SubscriptionModal({
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Nom de l&apos;abonnement *</label>
+            <label className="block !text-sm font-medium mb-1">Nom de l&apos;abonnement *</label>
             <input
               type="text"
               value={formData.name}
@@ -173,7 +173,7 @@ function SubscriptionModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Client</label>
+              <label className="block !text-sm font-medium mb-1">Client</label>
               <select
                 value={formData.client}
                 onChange={(e) => setFormData({ ...formData, client: e.target.value })}
@@ -186,7 +186,7 @@ function SubscriptionModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Projet lié</label>
+              <label className="block !text-sm font-medium mb-1">Projet lié</label>
               <select
                 value={formData.project}
                 onChange={(e) => setFormData({ ...formData, project: e.target.value })}
@@ -202,7 +202,7 @@ function SubscriptionModal({
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Montant/mois *</label>
+              <label className="block !text-sm font-medium mb-1">Montant/mois *</label>
               <div className="relative">
                 <input
                   type="number"
@@ -211,11 +211,11 @@ function SubscriptionModal({
                   className="w-full px-3 py-2 bg-page border border-muted rounded-lg !pr-8"
                   required
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 !text-muted-foreground">€</span>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Jour facturation</label>
+              <label className="block !text-sm font-medium mb-1">Jour facturation</label>
               <input
                 type="number"
                 min="1"
@@ -226,7 +226,7 @@ function SubscriptionModal({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Statut</label>
+              <label className="block !text-sm font-medium mb-1">Statut</label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as ClientSubscription['status'] })}
@@ -241,7 +241,7 @@ function SubscriptionModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Date de début *</label>
+            <label className="block !text-sm font-medium mb-1">Date de début *</label>
             <input
               type="date"
               value={formData.start_date}
@@ -252,7 +252,7 @@ function SubscriptionModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Description</label>
+            <label className="block !text-sm font-medium mb-1">Description</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -279,7 +279,7 @@ function SubscriptionModal({
             <button
               type="submit"
               disabled={loading || !formData.name}
-              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent disabled:opacity-50"
+              className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent disabled:opacity-50"
             >
               {loading ? '...' : (subscription ? 'Enregistrer' : 'Créer')}
             </button>
@@ -428,7 +428,7 @@ export default function SubscriptionsPage() {
           <IconCreditCard size={28} className="!text-accent" />
           <div>
             <h1 className="text-2xl font-bold">{t('subscriptions') || 'Abonnements clients'}</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm !text-muted-foreground">
               Gérez vos abonnements de maintenance et accompagnement
             </p>
           </div>
@@ -436,7 +436,7 @@ export default function SubscriptionsPage() {
 
         <button
           onClick={() => { setEditingSubscription(null); setModalOpen(true); }}
-          className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent"
+          className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent"
         >
           <IconPlus size={18} />
           Nouvel abonnement
@@ -446,19 +446,19 @@ export default function SubscriptionsPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card border border-muted rounded-xl p-4">
-          <p className="text-sm text-muted-foreground">Total abonnements</p>
+          <p className="text-sm !text-muted-foreground">Total abonnements</p>
           <p className="text-2xl font-bold">{stats.total}</p>
         </div>
         <div className="bg-card border border-muted rounded-xl p-4">
-          <p className="text-sm text-muted-foreground">Actifs</p>
-          <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+          <p className="text-sm !text-muted-foreground">Actifs</p>
+          <p className="text-2xl font-bold !text-green-600">{stats.active}</p>
         </div>
         <div className="bg-card border border-muted rounded-xl p-4">
-          <p className="text-sm text-muted-foreground">Revenu mensuel</p>
+          <p className="text-sm !text-muted-foreground">Revenu mensuel</p>
           <p className="text-2xl font-bold !text-accent">{formatCurrency(stats.monthlyRevenue)}</p>
         </div>
         <div className="bg-card border border-muted rounded-xl p-4">
-          <p className="text-sm text-muted-foreground">Revenu annuel</p>
+          <p className="text-sm !text-muted-foreground">Revenu annuel</p>
           <p className="text-2xl font-bold">{formatCurrency(stats.yearlyRevenue)}</p>
         </div>
       </div>
@@ -466,7 +466,7 @@ export default function SubscriptionsPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3 p-4 bg-card rounded-lg border border-muted">
         <div className="relative flex-1 min-w-[200px]">
-          <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground" />
           <input
             type="text"
             value={searchTerm}
@@ -494,7 +494,7 @@ export default function SubscriptionsPage() {
           <div className="animate-spin h-8 w-8 border-2 border-accent border-t-transparent rounded-full" />
         </div>
       ) : filteredSubscriptions.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">
+        <div className="text-center py-12 !text-muted-foreground">
           <IconCreditCard size={48} className="mx-auto mb-4 opacity-30" />
           <p>Aucun abonnement trouvé</p>
         </div>
@@ -512,7 +512,7 @@ export default function SubscriptionsPage() {
                     <div>
                       <h3 className="font-semibold">{sub.name}</h3>
                       {sub.client && (
-                        <p className="text-sm text-muted-foreground flex items-center gap-1">
+                        <p className="text-sm !text-muted-foreground flex items-center gap-1">
                           <IconBuilding size={12} />
                           {sub.client.name || sub.client.enterprise}
                         </p>
@@ -525,7 +525,7 @@ export default function SubscriptionsPage() {
                   
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-bold !text-accent">
-                      {formatCurrency(sub.monthly_amount)}<span className="text-sm font-normal text-muted-foreground">/mois</span>
+                      {formatCurrency(sub.monthly_amount)}<span className="text-sm font-normal !text-muted-foreground">/mois</span>
                     </span>
                     <div className="flex gap-1">
                       <button
@@ -537,7 +537,7 @@ export default function SubscriptionsPage() {
                       </button>
                       <button
                         onClick={() => handleDeleteSubscription(sub)}
-                        className="p-1.5 hover:bg-hover rounded text-red-500"
+                        className="p-1.5 hover:bg-hover rounded !text-red-500"
                         title="Supprimer"
                       >
                         <IconTrash size={16} />
@@ -546,7 +546,7 @@ export default function SubscriptionsPage() {
                   </div>
                 </div>
 
-                <div className="p-3 bg-muted/30 text-sm space-y-2">
+                <div className="p-3 bg-muted/30 !text-sm space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-1">
                       <IconCalendar size={14} />

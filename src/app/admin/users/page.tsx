@@ -281,11 +281,11 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
+          <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
             <IconUsers className="w-7 h-7 !text-accent" />
             {t('users_management') || 'Gestion des utilisateurs'}
           </h1>
-          <p className="text-sm text-muted">{totalUsers} {t('users_total') || 'utilisateurs au total'}</p>
+          <p className="text-sm !text-muted">{totalUsers} {t('users_total') || 'utilisateurs au total'}</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -309,7 +309,7 @@ export default function AdminUsersPage() {
       <div className="card p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
             <input
               type="text"
               placeholder={t('search_by_name_or_email') || 'Rechercher par nom ou email'}
@@ -353,15 +353,15 @@ export default function AdminUsersPage() {
             {selectedUsers.length} {t('users_selected') || 'utilisateur(s) sélectionné(s)'}
           </span>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-1.5 text-sm bg-warning-light text-warning-text rounded-lg hover:bg-warning-light">
+            <button className="px-3 py-1.5 !text-sm bg-warning-light !text-warning-text rounded-lg hover:bg-warning-light">
               {t('block') || 'Bloquer'}
             </button>
-            <button className="px-3 py-1.5 text-sm bg-danger-light text-danger rounded-lg hover:bg-danger-light">
+            <button className="px-3 py-1.5 !text-sm bg-danger-light !text-danger rounded-lg hover:bg-danger-light">
               {t('delete') || 'Supprimer'}
             </button>
             <button
               onClick={() => setSelectedUsers([])}
-              className="px-3 py-1.5 text-sm bg-card text-muted rounded-lg hover:bg-hover transition-colors ease-in-out duration-300"
+              className="px-3 py-1.5 !text-sm bg-card !text-muted rounded-lg hover:bg-hover transition-colors ease-in-out duration-300"
             >
               {t('cancel') || 'Annuler'}
             </button>
@@ -375,7 +375,7 @@ export default function AdminUsersPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-muted">
-                <th className="px-4 py-3 text-left">
+                <th className="px-4 py-3 !text-left">
                   <input
                     type="checkbox"
                     checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
@@ -383,22 +383,22 @@ export default function AdminUsersPage() {
                     className="w-4 h-4 rounded border-muted"
                   />
                 </th>
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('user') || 'Utilisateur'}
                 </th>
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('email') || 'Email'}
                 </th>
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('role') || 'Rôle'}
                 </th>
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('status') || 'Statut'}
                 </th>
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('registration') || 'Inscription'}
                 </th>
-                <th className="px-4 py-3 text-right !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-right !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('actions') || 'Actions'}
                 </th>
               </tr>
@@ -422,20 +422,20 @@ export default function AdminUsersPage() {
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center">
-                        <span className="text-accent font-medium text-sm">
+                        <span className="text-accent font-medium !text-sm">
                           {user.username?.charAt(0).toUpperCase() || '?'}
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium text-primary text-sm">{user.username}</p>
-                        <p className="!text-xs text-muted">ID: {user.id}</p>
+                        <p className="font-medium !text-primary !text-sm">{user.username}</p>
+                        <p className="!text-xs !text-muted">ID: {user.id}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
-                      <IconMail className="w-4 h-4 text-muted" />
-                      <span className="text-sm text-secondary">{user.email}</span>
+                      <IconMail className="w-4 h-4 !text-muted" />
+                      <span className="text-sm !text-secondary">{user.email}</span>
                       {user.confirmed && (
                         <IconCheck className="w-4 h-4 !text-success-text -text" title={t('email_confirmed') || 'Email confirmé'} />
                       )}
@@ -447,7 +447,7 @@ export default function AdminUsersPage() {
                       className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full !text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity ${
                         user.role?.name === 'Admin' 
                           ? 'bg-accent-light !text-accent' 
-                          : 'bg-info-light text-info'
+                          : 'bg-info-light !text-info'
                       }`}
                       title={t('click_to_change_role') || 'Cliquer pour changer le rôle'}
                     >
@@ -458,7 +458,7 @@ export default function AdminUsersPage() {
                   <td className="px-4 py-4">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full !text-xs font-medium ${
                       user.blocked 
-                        ? 'bg-danger-light text-danger' 
+                        ? 'bg-danger-light !text-danger' 
                         : 'bg-success-light !text-success-text '
                     }`}>
                       {user.blocked ? (
@@ -474,7 +474,7 @@ export default function AdminUsersPage() {
                       )}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-sm text-secondary">
+                  <td className="px-4 py-4 !text-sm !text-secondary">
                     {new Date(user.createdAt).toLocaleDateString('fr-FR', {
                       day: '2-digit',
                       month: 'short',
@@ -488,14 +488,14 @@ export default function AdminUsersPage() {
                         className="p-2 rounded-lg hover:bg-hover transition-colors"
                         title={t('view_details') || 'Voir détails'}
                       >
-                        <IconEye className="w-4 h-4 text-muted" />
+                        <IconEye className="w-4 h-4 !text-muted" />
                       </button>
                       <button
                         onClick={() => openRoleModal(user)}
                         className="p-2 rounded-lg hover:bg-hover transition-colors"
                         title={t('change_role') || 'Changer le rôle'}
                       >
-                        <IconShield className="w-4 h-4 text-muted" />
+                        <IconShield className="w-4 h-4 !text-muted" />
                       </button>
                       <button
                         onClick={() => setModalData({ user, action: 'block' })}
@@ -509,7 +509,7 @@ export default function AdminUsersPage() {
                         className="p-2 rounded-lg hover:bg-danger-light transition-colors"
                         title={t('delete') || 'Supprimer'}
                       >
-                        <IconTrash className="w-4 h-4 text-danger" />
+                        <IconTrash className="w-4 h-4 !text-danger" />
                       </button>
                     </div>
                   </td>
@@ -521,7 +521,7 @@ export default function AdminUsersPage() {
 
         {filteredUsers.length === 0 && (
           <div className="text-center py-12">
-            <IconUsers className="w-12 h-12 text-muted mx-auto mb-4" />
+            <IconUsers className="w-12 h-12 !text-muted mx-auto mb-4" />
             <p className="text-muted">{t('no_users_found') || 'Aucun utilisateur trouvé'}</p>
           </div>
         )}
@@ -529,7 +529,7 @@ export default function AdminUsersPage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-muted">
-            <p className="text-sm text-muted">
+            <p className="text-sm !text-muted">
               {t('page') || 'Page'} {currentPage} {t('of') || 'sur'} {totalPages}
             </p>
             <div className="flex items-center gap-2">
@@ -573,7 +573,7 @@ export default function AdminUsersPage() {
               {modalData.action === 'view' && (
                 <>
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold text-primary">{t('user_details') || 'Détails utilisateur'}</h3>
+                    <h3 className="text-lg font-semibold !text-primary">{t('user_details') || 'Détails utilisateur'}</h3>
                     <button
                       onClick={() => setModalData({ user: null, action: null })}
                       className="p-2 rounded-lg hover:bg-hover"
@@ -589,40 +589,40 @@ export default function AdminUsersPage() {
                         </span>
                       </div>
                       <div>
-                        <p className="text-xl font-semibold text-primary">{modalData.user.username}</p>
-                        <p className="text-sm text-muted">{modalData.user.email}</p>
+                        <p className="text-xl font-semibold !text-primary">{modalData.user.username}</p>
+                        <p className="text-sm !text-muted">{modalData.user.email}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-muted">
                       <div>
-                        <p className="!text-xs text-muted">ID</p>
-                        <p className="text-sm font-medium text-primary">{modalData.user.id}</p>
+                        <p className="!text-xs !text-muted">ID</p>
+                        <p className="text-sm font-medium !text-primary">{modalData.user.id}</p>
                       </div>
                       <div>
-                        <p className="!text-xs text-muted">{t('role') || 'Rôle'}</p>
-                        <p className="text-sm font-medium text-primary">{modalData.user.role?.name || 'N/A'}</p>
+                        <p className="!text-xs !text-muted">{t('role') || 'Rôle'}</p>
+                        <p className="text-sm font-medium !text-primary">{modalData.user.role?.name || 'N/A'}</p>
                       </div>
                       <div>
-                        <p className="!text-xs text-muted">{t('status') || 'Statut'}</p>
+                        <p className="!text-xs !text-muted">{t('status') || 'Statut'}</p>
                         <p className={`text-sm font-medium ${modalData.user.blocked ? 'text-danger' : 'text-success'}`}>
                           {modalData.user.blocked ? t('blocked') || 'Bloqué' : t('active') || 'Actif'}
                         </p>
                       </div>
                       <div>
-                        <p className="!text-xs text-muted">{t('email_confirmed') || 'Email confirmé'}</p>
+                        <p className="!text-xs !text-muted">{t('email_confirmed') || 'Email confirmé'}</p>
                         <p className={`text-sm font-medium ${modalData.user.confirmed ? 'text-success' : 'text-warning'}`}>
                           {modalData.user.confirmed ? t('yes') || 'Oui' : t('no') || 'Non'}
                         </p>
                       </div>
                       <div>
-                        <p className="!text-xs text-muted">{t('registration') || 'Inscription'}</p>
-                        <p className="text-sm font-medium text-primary">
+                        <p className="!text-xs !text-muted">{t('registration') || 'Inscription'}</p>
+                        <p className="text-sm font-medium !text-primary">
                           {new Date(modalData.user.createdAt).toLocaleDateString('fr-FR')}
                         </p>
                       </div>
                       <div>
-                        <p className="!text-xs text-muted">{t('last_update') || 'Dernière mise à jour'}</p>
-                        <p className="text-sm font-medium text-primary">
+                        <p className="!text-xs !text-muted">{t('last_update') || 'Dernière mise à jour'}</p>
+                        <p className="text-sm font-medium !text-primary">
                           {new Date(modalData.user.updatedAt).toLocaleDateString('fr-FR')}
                         </p>
                       </div>
@@ -635,7 +635,7 @@ export default function AdminUsersPage() {
               {modalData.action === 'role' && (
                 <>
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold text-primary">{t('change_role') || 'Changer le rôle'}</h3>
+                    <h3 className="text-lg font-semibold !text-primary">{t('change_role') || 'Changer le rôle'}</h3>
                     <button
                       onClick={() => setModalData({ user: null, action: null })}
                       className="p-2 rounded-lg hover:bg-hover"
@@ -651,13 +651,13 @@ export default function AdminUsersPage() {
                         </span>
                       </div>
                       <div>
-                        <p className="font-semibold text-primary">{modalData.user.username}</p>
-                        <p className="text-sm text-muted">{modalData.user.email}</p>
+                        <p className="font-semibold !text-primary">{modalData.user.username}</p>
+                        <p className="text-sm !text-muted">{modalData.user.email}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-primary mb-2">
+                      <label className="block !text-sm font-medium !text-primary mb-2">
                         {t('select_new_role') || 'Sélectionner le nouveau rôle'}
                       </label>
                       <div className="space-y-2">
@@ -677,12 +677,12 @@ export default function AdminUsersPage() {
                               {role.name === 'Admin' ? (
                                 <IconCrown className="w-4 h-4 !text-accent" />
                               ) : (
-                                <IconShield className="w-4 h-4 text-info" />
+                                <IconShield className="w-4 h-4 !text-info" />
                               )}
                             </div>
                             <div className="text-left">
-                              <p className="font-medium text-primary">{role.name}</p>
-                              <p className="!text-xs text-muted">{role.type}</p>
+                              <p className="font-medium !text-primary">{role.name}</p>
+                              <p className="!text-xs !text-muted">{role.type}</p>
                             </div>
                             {selectedRole === role.id && (
                               <IconCheck className="w-5 h-5 !text-accent ml-auto" />
@@ -702,7 +702,7 @@ export default function AdminUsersPage() {
                       <button
                         onClick={() => selectedRole && handleChangeRole(modalData.user!, selectedRole)}
                         disabled={actionLoading || !selectedRole || selectedRole === modalData.user.role?.id}
-                        className="flex-1 px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] disabled:opacity-50"
+                        className="flex-1 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] disabled:opacity-50"
                       >
                         {actionLoading ? t('loading') || 'Chargement...' : t('validate') || 'Valider'}
                       </button>
@@ -716,14 +716,14 @@ export default function AdminUsersPage() {
                 <>
                   <div className="text-center mb-6">
                     <div className="w-16 h-16 rounded-full bg-warning-light flex items-center justify-center mx-auto mb-4">
-                      <IconBan className="w-8 h-8 text-warning" />
+                      <IconBan className="w-8 h-8 !text-warning" />
                     </div>
-                    <h3 className="text-lg font-semibold text-primary">
+                    <h3 className="text-lg font-semibold !text-primary">
                       {modalData.user.blocked 
                         ? t('unblock_user') || 'Débloquer cet utilisateur' 
                         : t('block_user') || 'Bloquer cet utilisateur'}
                     </h3>
-                    <p className="text-sm text-muted mt-2">
+                    <p className="text-sm !text-muted mt-2">
                       {modalData.user.blocked
                         ? `${modalData.user.username} ${t('will_be_able_to_login') || 'pourra de nouveau se connecter.'}`
                         : `${modalData.user.username} ${t('will_not_be_able_to_login') || 'ne pourra plus se connecter.'}`
@@ -740,7 +740,7 @@ export default function AdminUsersPage() {
                     <button
                       onClick={() => handleBlockUser(modalData.user!)}
                       disabled={actionLoading}
-                      className="flex-1 px-4 py-2 bg-warning text-white rounded-lg hover:bg-[var(--color-warning)] disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-warning !text-white rounded-lg hover:bg-[var(--color-warning)] disabled:opacity-50"
                     >
                       {actionLoading 
                         ? t('loading') || 'Chargement...' 
@@ -757,12 +757,12 @@ export default function AdminUsersPage() {
                 <>
                   <div className="text-center mb-6">
                     <div className="w-16 h-16 rounded-full bg-danger-light flex items-center justify-center mx-auto mb-4">
-                      <IconTrash className="w-8 h-8 text-danger" />
+                      <IconTrash className="w-8 h-8 !text-danger" />
                     </div>
-                    <h3 className="text-lg font-semibold text-primary">
+                    <h3 className="text-lg font-semibold !text-primary">
                       {t('delete_user') || 'Supprimer cet utilisateur'} ?
                     </h3>
-                    <p className="text-sm text-muted mt-2">
+                    <p className="text-sm !text-muted mt-2">
                       {t('delete_user_warning') || 'Cette action est irréversible. Toutes les données de'} {modalData.user.username} {t('will_be_deleted') || 'seront supprimées.'}
                     </p>
                   </div>
@@ -776,7 +776,7 @@ export default function AdminUsersPage() {
                     <button
                       onClick={() => handleDeleteUser(modalData.user!)}
                       disabled={actionLoading}
-                      className="flex-1 px-4 py-2 bg-danger text-white rounded-lg hover:bg-[var(--color-danger)] disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-danger !text-white rounded-lg hover:bg-[var(--color-danger)] disabled:opacity-50"
                     >
                       {actionLoading ? t('deleting') || 'Suppression...' : t('delete') || 'Supprimer'}
                     </button>

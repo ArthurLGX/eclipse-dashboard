@@ -231,10 +231,10 @@ export default function AdminOverviewPage() {
   const getActivityIcon = (type: string) => {
     switch (type) {
       case 'user_registered': return <IconUserPlus className="w-4 h-4 !text-success-text -text" />;
-      case 'subscription_changed': return <IconCreditCard className="w-4 h-4 text-info" />;
+      case 'subscription_changed': return <IconCreditCard className="w-4 h-4 !text-info" />;
       case 'email_sent': return <IconMail className="w-4 h-4 !text-accent" />;
-      case 'error': return <IconAlertTriangle className="w-4 h-4 text-danger" />;
-      default: return <IconActivity className="w-4 h-4 text-muted" />;
+      case 'error': return <IconAlertTriangle className="w-4 h-4 !text-danger" />;
+      default: return <IconActivity className="w-4 h-4 !text-muted" />;
     }
   };
 
@@ -255,8 +255,8 @@ export default function AdminOverviewPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold text-primary">{t('admin_dashboard') || 'Dashboard Admin'}</h1>
-          <p className="text-sm text-muted">{t('platform_overview') || 'Vue d\'ensemble de votre plateforme'}</p>
+          <h1 className="text-2xl font-bold !text-primary">{t('admin_dashboard') || 'Dashboard Admin'}</h1>
+          <p className="text-sm !text-muted">{t('platform_overview') || 'Vue d\'ensemble de votre plateforme'}</p>
         </div>
         <button
           onClick={refreshData}
@@ -276,7 +276,7 @@ export default function AdminOverviewPage() {
         className="card p-6"
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+          <h2 className="text-lg font-semibold !text-primary flex items-center gap-2">
             <IconServer className="w-5 h-5 !text-accent" />
             {t('server_health') || 'Santé du Serveur'}
           </h2>
@@ -294,7 +294,7 @@ export default function AdminOverviewPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 rounded-xl bg-muted/5 border border-muted">
-            <div className="flex items-center gap-2 text-muted mb-1">
+            <div className="flex items-center gap-2 !text-muted mb-1">
               <IconDatabase className="w-4 h-4" />
               <span className="!text-xs">{t('database') || 'Base de données'}</span>
             </div>
@@ -306,7 +306,7 @@ export default function AdminOverviewPage() {
           </div>
 
           <div className="p-4 rounded-xl bg-muted/5 border border-muted">
-            <div className="flex items-center gap-2 text-muted mb-1">
+            <div className="flex items-center gap-2 !text-muted mb-1">
               <IconClock className="w-4 h-4" />
               <span className="!text-xs">{t('response_time') || 'Temps de réponse'}</span>
             </div>
@@ -319,21 +319,21 @@ export default function AdminOverviewPage() {
           </div>
 
           <div className="p-4 rounded-xl bg-muted/5 border border-muted">
-            <div className="flex items-center gap-2 text-muted mb-1">
+            <div className="flex items-center gap-2 !text-muted mb-1">
               <IconServer className="w-4 h-4" />
               <span className="!text-xs">{t('strapi_version') || 'Version Strapi'}</span>
             </div>
-            <p className="text-sm font-medium text-primary">
+            <p className="text-sm font-medium !text-primary">
               {serverHealth.version || '-'}
             </p>
           </div>
 
           <div className="p-4 rounded-xl bg-muted/5 border border-muted">
-            <div className="flex items-center gap-2 text-muted mb-1">
+            <div className="flex items-center gap-2 !text-muted mb-1">
               <IconClock className="w-4 h-4" />
               <span className="!text-xs">{t('last_check') || 'Dernière vérification'}</span>
             </div>
-            <p className="text-sm font-medium text-primary">
+            <p className="text-sm font-medium !text-primary">
               {serverHealth.timestamp
                 ? new Date(serverHealth.timestamp).toLocaleTimeString('fr-FR')
                 : '-'}
@@ -406,10 +406,10 @@ export default function AdminOverviewPage() {
                   <span>{stat.trend}</span>
                 </div>
               </div>
-              <p className="text-2xl font-bold text-primary mb-1">
+              <p className="text-2xl font-bold !text-primary mb-1">
                 {stat.value.toLocaleString()}
               </p>
-              <p className="text-sm text-muted">{stat.label}</p>
+              <p className="text-sm !text-muted">{stat.label}</p>
             </motion.div>
           );
         })}
@@ -424,7 +424,7 @@ export default function AdminOverviewPage() {
           transition={{ delay: 0.6 }}
           className="card p-6"
         >
-          <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconActivity className="w-5 h-5 !text-accent" />
             {t('recent_activity') || 'Activité récente'}
           </h2>
@@ -439,14 +439,14 @@ export default function AdminOverviewPage() {
                     {getActivityIcon(activity.type)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-primary">
+                    <p className="text-sm font-medium !text-primary">
                       {activity.message}
                     </p>
                     {activity.user && (
-                      <p className="!text-xs text-muted truncate">{activity.user}</p>
+                      <p className="!text-xs !text-muted truncate">{activity.user}</p>
                     )}
                   </div>
-                  <span className="!text-xs text-muted whitespace-nowrap">
+                  <span className="!text-xs !text-muted whitespace-nowrap">
                     {new Date(activity.timestamp).toLocaleTimeString('fr-FR', {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -455,7 +455,7 @@ export default function AdminOverviewPage() {
                 </div>
               ))
             ) : (
-              <p className="text-center text-muted py-8">{t('no_recent_activity') || 'Aucune activité récente'}</p>
+              <p className="text-center !text-muted py-8">{t('no_recent_activity') || 'Aucune activité récente'}</p>
             )}
           </div>
         </motion.div>
@@ -467,7 +467,7 @@ export default function AdminOverviewPage() {
           transition={{ delay: 0.7 }}
           className="card p-6"
         >
-          <h2 className="text-lg font-semibold text-primary mb-4">{t('quick_actions') || 'Actions rapides'}</h2>
+          <h2 className="text-lg font-semibold !text-primary mb-4">{t('quick_actions') || 'Actions rapides'}</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: t('view_all_users') || 'Voir tous les utilisateurs', href: '/admin/users', icon: IconUsers },
@@ -482,8 +482,8 @@ export default function AdminOverviewPage() {
                   href={action.href}
                   className="flex items-center gap-3 p-4 rounded-xl bg-muted/5 border border-muted hover:border-accent-light hover:bg-accent-light transition-all group"
                 >
-                  <Icon className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
-                  <span className="text-sm font-medium text-primary group-hover:text-accent transition-colors">
+                  <Icon className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
+                  <span className="text-sm font-medium !text-primary group-hover:!text-accent transition-colors">
                     {action.label}
                   </span>
                 </a>

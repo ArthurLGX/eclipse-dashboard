@@ -124,7 +124,7 @@ export default function DashboardPageTemplate<T>({
     >
       {/* Header */}
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="text-3xl !uppercase font-extrabold text-left text-primary">
+        <h1 className="text-3xl !uppercase font-extrabold !text-left !text-primary">
           {title}
         </h1>
         <div className="flex flex-wrap gap-3 lg:w-fit w-full">
@@ -134,7 +134,7 @@ export default function DashboardPageTemplate<T>({
               key={index}
               className={`flex items-center justify-center gap-2 rounded-lg px-4 py-2 transition-all duration-300 cursor-pointer lg:w-fit w-full ${
                 action.variant === 'outline' 
-                  ? 'btn-outline border border-default text-primary hover:bg-card-hover' 
+                  ? 'btn-outline border border-default !text-primary hover:bg-card-hover' 
                   : action.variant === 'primary'
                     ? 'btn-primary'
                     : 'btn-secondary'
@@ -175,7 +175,7 @@ export default function DashboardPageTemplate<T>({
                   tabIndex={stat.onClick ? 0 : undefined}
                   onKeyDown={stat.onClick ? (e) => e.key === 'Enter' && stat.onClick?.() : undefined}
                 >
-                  <h3 className="text-lg font-semibold text-primary mb-2 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold !text-primary mb-2 flex items-center gap-2">
                     {stat.icon && (
                       <span className="w-6 h-6 flex items-center justify-center">
                         {stat.icon}

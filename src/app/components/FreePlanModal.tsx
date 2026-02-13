@@ -115,7 +115,7 @@ export default function FreePlanModal({
               <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="!text-2xl">🎉</span>
               </div>
-              <h2 className="!text-xl font-bold text-primary mb-2">
+              <h2 className="!text-xl font-bold !text-primary mb-2">
                 {t('activate_free_plan')}
               </h2>
               <p className="text-secondary !text-sm">
@@ -137,7 +137,7 @@ export default function FreePlanModal({
             {/* Barre de progression du trial */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="!text-sm text-secondary">
+                <span className="!text-sm !text-secondary">
                   {t('trial_period')}
                 </span>
                 <span className="!text-sm !text-accent font-medium">
@@ -152,7 +152,7 @@ export default function FreePlanModal({
                   className="h-2 bg-gradient-to-r from-accent to-accent/80 rounded-full"
                 />
               </div>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {t('trial_progress_description')}
               </p>
             </div>
@@ -162,14 +162,14 @@ export default function FreePlanModal({
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="flex-1 bg-muted text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                className="flex-1 bg-muted !text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors disabled:opacity-50"
               >
                 {t('cancel')}
               </button>
               <button
                 onClick={handleConfirm}
                 disabled={loading}
-                className="flex-1 bg-accent text-white px-4 py-2 rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 font-semibold"
+                className="flex-1 bg-accent !text-white px-4 py-2 rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 font-semibold"
               >
                 {loading ? t('activating') : t('activate_plan')}
               </button>

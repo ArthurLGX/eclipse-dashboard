@@ -799,10 +799,10 @@ export default function UnifiedOnboardingModal() {
           <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent via-accent-lightto-transparent">
             <div className="flex items-center gap-4 mb-6">
               <div className="p-3 bg-accent rounded-xl">
-                <IconSparkles className="w-8 h-8 text-white" />
+                <IconSparkles className="w-8 h-8 !text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-primary">
+                <h2 className="text-2xl font-bold !text-primary">
                   {step === 'success' 
                     ? (t('onboarding_success_title') || '🎉 Votre espace est prêt !')
                     : (t('unified_onboarding_title') || 'Bienvenue sur Eclipse !')
@@ -820,7 +820,7 @@ export default function UnifiedOnboardingModal() {
             {/* Progress bar */}
             {step !== 'success' && (
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between !text-sm">
                   <div className="flex items-center gap-4">
                     {['business', 'objective', 'project'].map((s, i) => (
                       <div 
@@ -832,8 +832,8 @@ export default function UnifiedOnboardingModal() {
                       >
                         <div className={`
                           w-6 h-6 rounded-full flex items-center justify-center !text-xs font-medium
-                          ${stepIndex > i ? 'bg-success text-white' : 
-                            stepIndex === i ? 'bg-accent text-white' : 'bg-muted text-muted-foreground'}
+                          ${stepIndex > i ? 'bg-success !text-white' : 
+                            stepIndex === i ? 'bg-accent !text-white' : 'bg-muted !text-muted-foreground'}
                         `}>
                           {stepIndex > i ? <IconCheck className="w-4 h-4" /> : i + 1}
                         </div>
@@ -871,7 +871,7 @@ export default function UnifiedOnboardingModal() {
                   className="space-y-6"
                 >
                   <div className="text-center">
-                    <h3 className="text-xl font-bold text-primary">
+                    <h3 className="text-xl font-bold !text-primary">
                       {t('what_is_your_business') || 'Quel est votre métier ?'}
                     </h3>
                     <p className="text-muted mt-2">
@@ -903,16 +903,16 @@ export default function UnifiedOnboardingModal() {
                               animate={{ scale: 1 }}
                               className="absolute top-2 right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center"
                             >
-                              <IconCheck className="w-4 h-4 text-white" />
+                              <IconCheck className="w-4 h-4 !text-white" />
                             </motion.div>
                           )}
                           <div className={`
                             p-3 rounded-xl transition-colors
-                            ${isSelected ? 'bg-accent text-white' : 'bg-muted text-muted-foreground'}
+                            ${isSelected ? 'bg-accent !text-white' : 'bg-muted !text-muted-foreground'}
                           `}>
                             {BUSINESS_ICONS[type]}
                           </div>
-                          <span className={`font-medium text-center text-sm ${isSelected ? 'text-accent' : 'text-primary'}`}>
+                          <span className={`font-medium !text-center !text-sm ${isSelected ? 'text-accent' : 'text-primary'}`}>
                             {getBusinessLabel(type)}
                           </span>
                         </motion.button>
@@ -932,7 +932,7 @@ export default function UnifiedOnboardingModal() {
                   className="space-y-6"
                 >
                   <div className="text-center">
-                    <h3 className="text-xl font-bold text-primary">
+                    <h3 className="text-xl font-bold !text-primary">
                       {t('what_is_your_objective') || 'Quel est votre objectif ?'}
                     </h3>
                     <p className="text-muted mt-2">
@@ -954,7 +954,7 @@ export default function UnifiedOnboardingModal() {
                           transition={{ delay: index * 0.1 }}
                           onClick={() => setSelectedObjective(objective)}
                           className={`
-                            relative flex flex-col items-start gap-3 p-5 rounded-xl border-2 transition-all cursor-pointer text-left
+                            relative flex flex-col items-start gap-3 p-5 rounded-xl border-2 transition-all cursor-pointer !text-left
                             ${isSelected 
                               ? 'border-accent bg-accent-light !text-accent shadow-lg' 
                               : 'border-default bg-card hover:border-accent hover:bg-accent-light'
@@ -967,12 +967,12 @@ export default function UnifiedOnboardingModal() {
                               animate={{ scale: 1 }}
                               className="absolute top-3 right-3 w-6 h-6 bg-accent rounded-full flex items-center justify-center"
                             >
-                              <IconCheck className="w-4 h-4 text-white" />
+                              <IconCheck className="w-4 h-4 !text-white" />
                             </motion.div>
                           )}
                           <div className={`
                             p-3 rounded-xl transition-colors
-                            ${isSelected ? 'bg-accent text-white' : 'bg-muted text-muted-foreground'}
+                            ${isSelected ? 'bg-accent !text-white' : 'bg-muted !text-muted-foreground'}
                           `}>
                             {objective.icon}
                           </div>
@@ -980,12 +980,12 @@ export default function UnifiedOnboardingModal() {
                             <h4 className={`font-semibold ${isSelected ? 'text-accent' : 'text-primary'}`}>
                               {language === 'en' ? objective.labelEn : objective.label}
                             </h4>
-                            <p className="text-sm text-muted mt-1">
+                            <p className="text-sm !text-muted mt-1">
                               {language === 'en' ? objective.descriptionEn : objective.description}
                             </p>
                           </div>
                           {stats && (
-                            <div className="flex items-center gap-3 !text-xs text-muted mt-2">
+                            <div className="flex items-center gap-3 !text-xs !text-muted mt-2">
                               <span className="flex items-center gap-1">
                                 <IconTemplate className="w-3 h-3" />
                                 {stats.taskCount} {t('onboarding_tasks') || 'tâches'}
@@ -1013,7 +1013,7 @@ export default function UnifiedOnboardingModal() {
                   className="space-y-6"
                 >
                   <div className="text-center">
-                    <h3 className="text-xl font-bold text-primary">
+                    <h3 className="text-xl font-bold !text-primary">
                       {t('create_first_project') || 'Créez votre premier projet'}
                     </h3>
                     <p className="text-muted mt-2">
@@ -1025,7 +1025,7 @@ export default function UnifiedOnboardingModal() {
                     {/* Left: Form */}
                     <div className="space-y-5">
                       <div>
-                        <label className="block text-sm font-medium text-primary mb-2">
+                        <label className="block !text-sm font-medium !text-primary mb-2">
                           <IconUser className="w-4 h-4 inline mr-2" />
                           {t('client_name') || 'Nom du client'}
                         </label>
@@ -1039,7 +1039,7 @@ export default function UnifiedOnboardingModal() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-primary mb-2">
+                        <label className="block !text-sm font-medium !text-primary mb-2">
                           <IconBriefcase className="w-4 h-4 inline mr-2" />
                           {t('onboarding_project_name') || 'Nom du projet'}
                         </label>
@@ -1053,7 +1053,7 @@ export default function UnifiedOnboardingModal() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-primary mb-2">
+                        <label className="block !text-sm font-medium !text-primary mb-2">
                           <IconCurrencyEuro className="w-4 h-4 inline mr-2" />
                           {t('onboarding_hourly_rate') || 'Taux horaire (€/h)'}
                         </label>
@@ -1069,7 +1069,7 @@ export default function UnifiedOnboardingModal() {
 
                     {/* Right: Template Preview */}
                     <div className="bg-muted-light rounded-xl p-6 space-y-4">
-                      <h4 className="font-semibold text-primary flex items-center gap-2">
+                      <h4 className="font-semibold !text-primary flex items-center gap-2">
                         <IconTemplate className="w-5 h-5 !text-accent" />
                         {t('onboarding_template_preview') || 'Aperçu du template'}
                       </h4>
@@ -1077,19 +1077,19 @@ export default function UnifiedOnboardingModal() {
                       <div className="space-y-3">
                         <div className="flex items-center justify-between py-2 border-b border-default">
                           <span className="text-muted">{t('onboarding_tasks') || 'Tâches'}</span>
-                          <span className="font-medium text-primary">{templateStats.taskCount}</span>
+                          <span className="font-medium !text-primary">{templateStats.taskCount}</span>
                         </div>
                         <div className="flex items-center justify-between py-2 border-b border-default">
                           <span className="text-muted">{t('onboarding_estimated_time') || 'Temps estimé'}</span>
-                          <span className="font-medium text-primary">{templateStats.totalHours}h</span>
+                          <span className="font-medium !text-primary">{templateStats.totalHours}h</span>
                         </div>
                         <div className="flex items-center justify-between py-2 border-b border-default">
                           <span className="text-muted">{t('onboarding_duration') || 'Durée'}</span>
-                          <span className="font-medium text-primary">{selectedTemplate.estimated_duration_days} {t('onboarding_days') || 'jours'}</span>
+                          <span className="font-medium !text-primary">{selectedTemplate.estimated_duration_days} {t('onboarding_days') || 'jours'}</span>
                         </div>
                         <div className="flex items-center justify-between py-2 border-b border-default">
                           <span className="text-muted">{t('onboarding_phases') || 'Phases'}</span>
-                          <span className="font-medium text-primary">{templateStats.phases.length}</span>
+                          <span className="font-medium !text-primary">{templateStats.phases.length}</span>
                         </div>
                       </div>
 
@@ -1103,14 +1103,14 @@ export default function UnifiedOnboardingModal() {
                             {estimatedValue.toLocaleString('fr-FR')} €
                           </span>
                         </div>
-                        <p className="!text-xs text-muted mt-1">
+                        <p className="!text-xs !text-muted mt-1">
                           {templateStats.totalHours}h × {hourlyRate}€/h
                         </p>
                       </div>
 
                       {/* Phases */}
                       <div className="mt-4">
-                        <p className="text-sm text-muted mb-2">{t('onboarding_phases') || 'Phases'} :</p>
+                        <p className="text-sm !text-muted mb-2">{t('onboarding_phases') || 'Phases'} :</p>
                         <div className="flex flex-wrap gap-2">
                           {templateStats.phases.map((phase) => (
                             <span 
@@ -1141,11 +1141,11 @@ export default function UnifiedOnboardingModal() {
                     transition={{ delay: 0.2, type: 'spring' }}
                     className="w-24 h-24 mx-auto bg-success rounded-full flex items-center justify-center"
                   >
-                    <IconCheck className="w-12 h-12 text-white" />
+                    <IconCheck className="w-12 h-12 !text-white" />
                   </motion.div>
 
                   <div>
-                    <h3 className="text-2xl font-bold text-primary mb-2">
+                    <h3 className="text-2xl font-bold !text-primary mb-2">
                       {t('onboarding_complete') || 'Configuration terminée !'}
                     </h3>
                     <p className="text-muted">
@@ -1157,18 +1157,18 @@ export default function UnifiedOnboardingModal() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
                     <div className="p-5 bg-success-light !text-success-text -text border border-success rounded-xl">
                       <IconUser className="w-8 h-8 !text-success-text -text mx-auto mb-2" />
-                      <p className="font-semibold text-primary">{createdClient?.name || 'Client'}</p>
-                      <p className="text-sm text-muted">{t('client_created') || 'Client créé'}</p>
+                      <p className="font-semibold !text-primary">{createdClient?.name || 'Client'}</p>
+                      <p className="text-sm !text-muted">{t('client_created') || 'Client créé'}</p>
                     </div>
                     <div className="p-5 bg-accent-light border border-accent rounded-xl">
                       <IconBriefcase className="w-8 h-8 !text-accent mx-auto mb-2" />
-                      <p className="font-semibold text-primary truncate">{createdProject?.title || 'Projet'}</p>
-                      <p className="text-sm text-muted">{t('project_created') || 'Projet créé'}</p>
+                      <p className="font-semibold !text-primary truncate">{createdProject?.title || 'Projet'}</p>
+                      <p className="text-sm !text-muted">{t('project_created') || 'Projet créé'}</p>
                     </div>
                     <div className="p-5 bg-info-light border border-info rounded-xl">
-                      <IconTemplate className="w-8 h-8 text-info mx-auto mb-2" />
-                      <p className="font-semibold text-primary">{createdTasksCount} {t('onboarding_tasks') || 'tâches'}</p>
-                      <p className="text-sm text-muted">{t('tasks_created') || 'Tâches créées'}</p>
+                      <IconTemplate className="w-8 h-8 !text-info mx-auto mb-2" />
+                      <p className="font-semibold !text-primary">{createdTasksCount} {t('onboarding_tasks') || 'tâches'}</p>
+                      <p className="text-sm !text-muted">{t('tasks_created') || 'Tâches créées'}</p>
                     </div>
                   </div>
 
@@ -1179,7 +1179,7 @@ export default function UnifiedOnboardingModal() {
                       <p className="text-4xl font-bold !text-accent">
                         {estimatedValue.toLocaleString('fr-FR')} €
                       </p>
-                      <p className="text-sm text-muted mt-2">
+                      <p className="text-sm !text-muted mt-2">
                         {templateStats.totalHours}h estimées × {hourlyRate}€/h
                       </p>
                     </div>
@@ -1189,14 +1189,14 @@ export default function UnifiedOnboardingModal() {
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                     <button
                       onClick={handleGoToProject}
-                      className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl font-medium hover:bg-accent transition-colors"
+                      className="flex items-center gap-2 px-6 py-3 bg-accent !text-white rounded-xl font-medium hover:bg-accent transition-colors"
                     >
                       <IconRocket className="w-5 h-5" />
                       {t('go_to_project') || 'Voir mon projet'}
                     </button>
                     <button
                       onClick={handleExploreDashboard}
-                      className="flex items-center gap-2 px-6 py-3 bg-muted text-primary rounded-xl font-medium hover:bg-hover transition-colors"
+                      className="flex items-center gap-2 px-6 py-3 bg-muted !text-primary rounded-xl font-medium hover:bg-hover transition-colors"
                     >
                       {t('explore_dashboard') || 'Explorer le dashboard'}
                       <IconArrowRight className="w-5 h-5" />
@@ -1216,7 +1216,7 @@ export default function UnifiedOnboardingModal() {
                   <button
                     onClick={handleSkip}
                     disabled={isSaving}
-                    className="px-4 py-2 text-muted hover:text-primary transition-colors underline"
+                    className="px-4 py-2 !text-muted hover:!text-primary transition-colors underline"
                   >
                     {t('skip_onboarding') || 'Configurer plus tard'}
                   </button>
@@ -1224,7 +1224,7 @@ export default function UnifiedOnboardingModal() {
                   <button
                     onClick={handleBack}
                     disabled={isSaving}
-                    className="flex items-center gap-2 px-4 py-2 text-muted hover:text-primary transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 !text-muted hover:!text-primary transition-colors"
                   >
                     <IconArrowLeft className="w-4 h-4" />
                     {t('back') || 'Retour'}
@@ -1244,8 +1244,8 @@ export default function UnifiedOnboardingModal() {
                   ${(step === 'business' && selectedBusinessType) ||
                     (step === 'objective' && selectedObjective) ||
                     step === 'project'
-                    ? 'bg-accent text-white hover:bg-accent'
-                    : 'bg-muted text-muted-foreground cursor-not-allowed'
+                    ? 'bg-accent !text-white hover:bg-accent'
+                    : 'bg-muted !text-muted-foreground cursor-not-allowed'
                   }
                 `}
               >

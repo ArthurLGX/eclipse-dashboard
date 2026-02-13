@@ -141,15 +141,15 @@ export default function MobileDrawer({
                                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-all active:scale-98 ${
                                       activeItem === subItem.id || pathname === subItem.path
                                         ? 'bg-accent-muted !text-accent font-medium'
-                                        : 'text-secondary hover:bg-hover hover:text-primary'
+                                        : 'text-secondary hover:bg-hover hover:!text-primary'
                                     }`}
                                   >
                                     <span className="text-current opacity-80">{subItem.icon}</span>
                                     <span className="text-sm">{subItem.label}</span>
                                     {subItem.status && (
-                                      <span className={`ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                                      <span className={`ml-auto !text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                         subItem.status === 'beta'
-                                          ? 'bg-warning-light text-warning-text border border-warning'
+                                          ? 'bg-warning-light !text-warning-text border border-warning'
                                           : 'bg-success-light !text-success-text -text border border-success'
                                       }`}>
                                         {subItem.status === 'beta' ? 'Beta' : 'New'}
@@ -169,7 +169,7 @@ export default function MobileDrawer({
                         className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all active:scale-98 ${
                           activeItem === item.id
                             ? 'bg-accent-muted !text-accent font-medium'
-                            : 'text-secondary hover:bg-hover hover:text-primary'
+                            : 'text-secondary hover:bg-hover hover:!text-primary'
                         }`}
                       >
                         <span className="text-current">{item.icon}</span>
@@ -182,7 +182,7 @@ export default function MobileDrawer({
 
               {/* Footer */}
               <div className="p-4 border-t border-default">
-                <p className="!text-xs text-muted text-center">
+                <p className="!text-xs !text-muted !text-center">
                   Eclipse Dashboard © 2026
                 </p>
               </div>

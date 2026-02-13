@@ -309,7 +309,7 @@ export default function ProjectTemplatesPage() {
             <IconTemplate size={28} className="!text-accent" />
             <div>
               <h1 className="text-2xl font-bold">{t('project_templates') || 'Templates de projet'}</h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm !text-muted-foreground">
                 {t('project_templates_desc') || 'Tâches pré-définies pour démarrer rapidement vos projets'}
               </p>
             </div>
@@ -328,7 +328,7 @@ export default function ProjectTemplatesPage() {
           )}
           <button
             onClick={() => { setEditingTemplate(null); setModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent"
+            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent"
           >
             <IconPlus size={18} />
             {t('new_template') || 'Nouveau template'}
@@ -339,7 +339,7 @@ export default function ProjectTemplatesPage() {
       {/* Search */}
       <div className="flex gap-3 p-4 bg-card rounded-lg border border-muted">
         <div className="relative flex-1">
-          <IconSearch size={10} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <IconSearch size={10} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground" />
           <input
             type="text"
             value={searchTerm}
@@ -356,7 +356,7 @@ export default function ProjectTemplatesPage() {
           <div className="animate-spin h-8 w-8 border-2 border-accent border-t-transparent rounded-full" />
         </div>
       ) : filteredTemplates.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">
+        <div className="text-center py-12 !text-muted-foreground">
           <IconTemplate size={48} className="mx-auto mb-4 opacity-30" />
           <p>Aucun template trouvé</p>
         </div>
@@ -392,7 +392,7 @@ export default function ProjectTemplatesPage() {
                     </button>
                     <button
                       onClick={() => handleDeleteTemplate(template)}
-                      className="p-1.5 hover:bg-hover rounded text-red-500"
+                      className="p-1.5 hover:bg-hover rounded !text-red-500"
                       title="Supprimer"
                     >
                       <IconTrash size={16} />
@@ -401,12 +401,12 @@ export default function ProjectTemplatesPage() {
                 </div>
                 
                 {template.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                  <p className="text-sm !text-muted-foreground line-clamp-2 mb-2">
                     {template.description}
                   </p>
                 )}
 
-                <div className="flex gap-4 text-sm text-muted-foreground">
+                <div className="flex gap-4 !text-sm !text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <IconClock size={14} />
                     {template.estimated_duration_days}j
@@ -420,21 +420,21 @@ export default function ProjectTemplatesPage() {
               
               {/* Tasks preview */}
               <div className="p-3 bg-muted/30 max-h-40 overflow-y-auto">
-                <p className="!text-xs font-medium text-muted-foreground mb-2 uppercase">Aperçu des tâches</p>
+                <p className="!text-xs font-medium !text-muted-foreground mb-2 uppercase">Aperçu des tâches</p>
                 <div className="space-y-1">
                   {(template.tasks || []).slice(0, 5).map((task, idx) => (
                     <div key={idx} className="flex items-center gap-2 !text-xs">
                       <div className="w-4 h-4 rounded bg-accent-light flex items-center justify-center !text-accent font-medium">
                         {idx + 1}
                       </div>
-                      <span className="truncate text-foreground">{task.title}</span>
+                      <span className="truncate !text-foreground">{task.title}</span>
                       {task.estimated_hours && (
                         <span className="text-muted-foreground ml-auto">{task.estimated_hours}h</span>
                       )}
                     </div>
                   ))}
                   {(template.tasks?.length || 0) > 5 && (
-                    <p className="!text-xs text-muted-foreground text-center pt-1">
+                    <p className="!text-xs !text-muted-foreground !text-center pt-1">
                       +{(template.tasks?.length || 0) - 5} autres tâches...
                     </p>
                   )}

@@ -287,7 +287,7 @@ export default function PublicContractSignPage() {
     return (
       <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
-          <IconLoader2 className="w-12 h-12 text-violet-600 animate-spin mx-auto mb-4" />
+          <IconLoader2 className="w-12 h-12 !text-violet-600 animate-spin mx-auto mb-4" />
           <p className="text-slate-600">{t.loading}</p>
         </div>
       </div>
@@ -297,11 +297,11 @@ export default function PublicContractSignPage() {
   if (error) {
     return (
       <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <IconAlertTriangle className="w-8 h-8 text-red-500" />
+            <IconAlertTriangle className="w-8 h-8 !text-red-500" />
           </div>
-          <h1 className="text-xl font-bold text-slate-900 mb-2">{t.error}</h1>
+          <h1 className="text-xl font-bold !text-slate-900 mb-2">{t.error}</h1>
           <p className="text-slate-600">{error}</p>
         </div>
       </div>
@@ -314,20 +314,20 @@ export default function PublicContractSignPage() {
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center"
+          className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center"
         >
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <IconCheck className="w-10 h-10 text-emerald-500" />
+            <IconCheck className="w-10 h-10 !text-emerald-500" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">
+          <h1 className="text-2xl font-bold !text-slate-900 mb-2">
             {t.successTitle}
           </h1>
           <p className="text-slate-600 mb-6">
             {t.successMessage}
           </p>
-          <div className="p-4 bg-slate-50 rounded-xl text-left">
-            <p className="text-sm text-slate-500 mb-1">{t.contract}</p>
-            <p className="font-medium text-slate-900">{contract?.title}</p>
+          <div className="p-4 bg-slate-50 rounded-xl !text-left">
+            <p className="text-sm !text-slate-500 mb-1">{t.contract}</p>
+            <p className="font-medium !text-slate-900">{contract?.title}</p>
           </div>
         </motion.div>
       </div>
@@ -347,13 +347,13 @@ export default function PublicContractSignPage() {
             {/* Left: Contract info */}
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <div className="p-2 bg-violet-100 rounded-xl flex-shrink-0">
-                <IconFileText className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
+                <IconFileText className="w-5 h-5 sm:w-6 sm:h-6 !text-violet-600" />
               </div>
               <div className="min-w-0">
-                <h1 className="font-bold text-slate-900 text-sm sm:text-base truncate">
+                <h1 className="font-bold !text-slate-900 !text-sm sm:!text-base truncate">
                   {content.title}
                 </h1>
-                <p className="!text-xs sm:text-sm text-slate-500 truncate">
+                <p className="!text-xs sm:!text-sm !text-slate-500 truncate">
                   {t.from} {content.parties.provider.name}
                 </p>
               </div>
@@ -364,18 +364,18 @@ export default function PublicContractSignPage() {
               {/* Language Toggle */}
               <button
                 onClick={toggleLanguage}
-                className="flex items-center gap-1.5 px-2 sm:px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                className="flex items-center gap-1.5 px-2 sm:px-3 py-2 !text-slate-600 hover:!text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                 title={language === 'fr' ? 'Switch to English' : 'Passer en français'}
               >
                 <IconLanguage className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="!text-xs sm:text-sm font-medium uppercase">{language}</span>
+                <span className="!text-xs sm:!text-sm font-medium uppercase">{language}</span>
               </button>
               
               {/* Sign Button */}
               {!showSignaturePad && (
                 <button
                   onClick={() => setShowSignaturePad(true)}
-                  className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition-colors text-sm sm:text-base font-medium whitespace-nowrap"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-violet-600 !text-white rounded-xl hover:bg-violet-700 transition-colors !text-sm sm:!text-base font-medium whitespace-nowrap"
                 >
                   <IconSignature className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">{t.signContract}</span>
@@ -395,12 +395,12 @@ export default function PublicContractSignPage() {
             /* Display cleaned HTML content */
             <div 
               className="contract-content prose prose-slate max-w-none 
-                prose-headings:text-slate-900 prose-headings:font-bold prose-headings:mt-8 prose-headings:mb-4
-                prose-h1:text-2xl prose-h1:text-center prose-h1:uppercase prose-h1:tracking-wide prose-h1:mb-8
-                prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4
-                prose-h3:text-lg prose-h3:mt-8 prose-h3:mb-3
-                prose-p:text-slate-600 prose-p:leading-relaxed prose-p:mb-4
-                prose-strong:text-slate-900 prose-strong:font-semibold
+                prose-headings:!text-slate-900 prose-headings:font-bold prose-headings:mt-8 prose-headings:mb-4
+                prose-h1:!text-2xl prose-h1:!text-center prose-h1:uppercase prose-h1:tracking-wide prose-h1:mb-8
+                prose-h2:!text-xl prose-h2:mt-10 prose-h2:mb-4
+                prose-h3:!text-lg prose-h3:mt-8 prose-h3:mb-3
+                prose-p:!text-slate-600 prose-p:leading-relaxed prose-p:mb-4
+                prose-strong:!text-slate-900 prose-strong:font-semibold
                 prose-ul:my-4 prose-li:my-1
                 [&_hr]:my-8 [&_hr]:border-slate-200"
               dangerouslySetInnerHTML={{ __html: cleanedHtml }}
@@ -409,35 +409,35 @@ export default function PublicContractSignPage() {
             /* Display structured content */
             <>
               {/* Title */}
-              <h2 className="text-xl sm:text-2xl font-bold text-center text-slate-900 mb-8 pb-4 border-b-2 border-violet-200 uppercase tracking-wide">
+              <h2 className="text-xl sm:!text-2xl font-bold !text-center !text-slate-900 mb-8 pb-4 border-b-2 border-violet-200 uppercase tracking-wide">
                 {content.title}
               </h2>
 
               {/* Parties */}
               <div className="mb-10">
-                <h3 className="font-bold text-slate-900 mb-4 text-lg">{t.betweenParties}</h3>
+                <h3 className="font-bold !text-slate-900 mb-4 !text-lg">{t.betweenParties}</h3>
                 
                 <div className="p-4 sm:p-5 bg-slate-50 rounded-xl mb-4">
-                  <p className="font-semibold text-slate-900 text-base sm:text-lg">{content.parties.provider.name}</p>
-                  <p className="text-sm text-slate-600 whitespace-pre-line mt-3 leading-relaxed">
+                  <p className="font-semibold !text-slate-900 !text-base sm:!text-lg">{content.parties.provider.name}</p>
+                  <p className="text-sm !text-slate-600 whitespace-pre-line mt-3 leading-relaxed">
                     {content.parties.provider.details}
                   </p>
                 </div>
                 
-                <p className="text-center text-slate-400 my-4 font-medium">{t.and}</p>
+                <p className="text-center !text-slate-400 my-4 font-medium">{t.and}</p>
                 
                 <div className="p-4 sm:p-5 bg-violet-50 rounded-xl border-2 border-violet-200">
-                  <p className="font-semibold text-slate-900 text-base sm:text-lg">{content.parties.client.name}</p>
-                  <p className="text-sm text-slate-600 whitespace-pre-line mt-3 leading-relaxed">
+                  <p className="font-semibold !text-slate-900 !text-base sm:!text-lg">{content.parties.client.name}</p>
+                  <p className="text-sm !text-slate-600 whitespace-pre-line mt-3 leading-relaxed">
                     {content.parties.client.details}
                   </p>
-                  <p className="!text-xs text-violet-600 mt-3 font-medium">{t.thatsYou}</p>
+                  <p className="!text-xs !text-violet-600 mt-3 font-medium">{t.thatsYou}</p>
                 </div>
               </div>
 
               {/* Preamble */}
               <div className="mb-10">
-                <h3 className="font-bold text-slate-900 mb-4 text-lg">{t.preamble}</h3>
+                <h3 className="font-bold !text-slate-900 mb-4 !text-lg">{t.preamble}</h3>
                 <p className="text-slate-600 whitespace-pre-line leading-relaxed">
                   {content.preamble}
                 </p>
@@ -445,12 +445,12 @@ export default function PublicContractSignPage() {
 
               {/* Articles */}
               <div className="mb-10">
-                <h3 className="font-bold text-slate-900 mb-6 text-lg">{t.agreedTerms}</h3>
+                <h3 className="font-bold !text-slate-900 mb-6 !text-lg">{t.agreedTerms}</h3>
                 
                 <div className="space-y-8">
                   {content.articles.map((article: { number: number; title: string; content: string }) => (
                     <div key={article.number} className="border-l-4 border-violet-200 !pl-4 sm:pl-6">
-                      <h4 className="font-semibold text-slate-900 mb-3 text-base">
+                      <h4 className="font-semibold !text-slate-900 mb-3 !text-base">
                         {t.article} {article.number} - {article.title}
                       </h4>
                       <p className="text-slate-600 whitespace-pre-line leading-relaxed">
@@ -465,14 +465,14 @@ export default function PublicContractSignPage() {
 
           {/* Signatures Section - Always shown */}
           <div className="mt-12 pt-8 border-t-2 border-slate-200">
-            <p className="text-center text-slate-600 mb-8">
+            <p className="text-center !text-slate-600 mb-8">
               {t.madeAt} {content.signatures?.location || contract.signature_location}, {t.on} {formatDate(content.signatures?.date || contract.signature_date, language)}
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
               {/* Provider Signature */}
               <div className="text-center">
-                <p className="font-semibold text-slate-900 mb-4">{t.provider}</p>
+                <p className="font-semibold !text-slate-900 mb-4">{t.provider}</p>
                 {contract.provider_signature ? (
                   <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
                     <Image
@@ -482,12 +482,12 @@ export default function PublicContractSignPage() {
                       height={80}
                       className="max-h-20 mx-auto object-contain"
                     />
-                    <p className="!text-xs text-green-600 mt-3 font-medium">
+                    <p className="!text-xs !text-green-600 mt-3 font-medium">
                       ✓ {t.signedOn} {formatDate(contract.provider_signed_at || new Date().toISOString(), language)}
                     </p>
                   </div>
                 ) : (
-                  <div className="border border-dashed border-slate-300 rounded-xl p-6 sm:p-8 text-slate-400">
+                  <div className="border border-dashed border-slate-300 rounded-xl p-6 sm:p-8 !text-slate-400">
                     {t.pending}
                   </div>
                 )}
@@ -495,7 +495,7 @@ export default function PublicContractSignPage() {
 
               {/* Client Signature */}
               <div className="text-center">
-                <p className="font-semibold text-slate-900 mb-4">{t.client}</p>
+                <p className="font-semibold !text-slate-900 mb-4">{t.client}</p>
                 {signatureData ? (
                   <div className="border-2 border-violet-200 rounded-xl p-4 bg-violet-50">
                     <Image
@@ -505,12 +505,12 @@ export default function PublicContractSignPage() {
                       height={80}
                       className="max-h-20 mx-auto object-contain"
                     />
-                    <p className="!text-xs text-violet-600 mt-3 font-medium">{t.yourSignature}</p>
+                    <p className="!text-xs !text-violet-600 mt-3 font-medium">{t.yourSignature}</p>
                   </div>
                 ) : (
                   <button
                     onClick={() => setShowSignaturePad(true)}
-                    className="w-full border-2 border-dashed border-violet-300 rounded-xl p-6 sm:p-8 text-violet-500 hover:border-violet-500 hover:bg-violet-50 transition-colors"
+                    className="w-full border-2 border-dashed border-violet-300 rounded-xl p-6 sm:p-8 !text-violet-500 hover:border-violet-500 hover:bg-violet-50 transition-colors"
                   >
                     <IconSignature className="w-8 h-8 mx-auto mb-2" />
                     <span className="block">{t.clickToSign}</span>
@@ -531,10 +531,10 @@ export default function PublicContractSignPage() {
             className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
           >
             <div className="p-5 sm:p-6 border-b border-slate-200">
-              <h3 className="text-lg font-bold text-slate-900">
+              <h3 className="text-lg font-bold !text-slate-900">
                 {t.signContractModal}
               </h3>
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="text-sm !text-slate-500 mt-1">
                 {t.drawSignature}
               </p>
             </div>
@@ -559,7 +559,7 @@ export default function PublicContractSignPage() {
               <div className="flex items-center justify-between mt-4 gap-2">
                 <button
                   onClick={clearCanvas}
-                  className="flex items-center gap-2 px-3 sm:px-4 py-2 text-slate-600 hover:text-slate-900 text-sm"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 !text-slate-600 hover:!text-slate-900 !text-sm"
                 >
                   <IconTrash className="w-4 h-4" />
                   {t.clear}
@@ -567,14 +567,14 @@ export default function PublicContractSignPage() {
                 <div className="flex items-center gap-2 sm:gap-3">
                   <button
                     onClick={() => setShowSignaturePad(false)}
-                    className="px-3 sm:px-4 py-2 text-slate-600 hover:text-slate-900 text-sm"
+                    className="px-3 sm:px-4 py-2 !text-slate-600 hover:!text-slate-900 !text-sm"
                   >
                     {t.cancel}
                   </button>
                   <button
                     onClick={handleSign}
                     disabled={signing}
-                    className="flex items-center gap-2 px-4 sm:px-6 py-2 bg-violet-600 text-white rounded-xl hover:bg-violet-700 disabled:opacity-50 transition-colors text-sm sm:text-base"
+                    className="flex items-center gap-2 px-4 sm:px-6 py-2 bg-violet-600 !text-white rounded-xl hover:bg-violet-700 disabled:opacity-50 transition-colors !text-sm sm:!text-base"
                   >
                     {signing ? (
                       <>
@@ -594,7 +594,7 @@ export default function PublicContractSignPage() {
 
             {/* Legal notice */}
             <div className="p-4 bg-amber-50 border-t border-amber-200">
-              <p className="!text-xs text-amber-800">
+              <p className="!text-xs !text-amber-800">
                 {t.legalNotice}
               </p>
             </div>

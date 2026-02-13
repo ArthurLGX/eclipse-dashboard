@@ -278,7 +278,7 @@ function TemplateModal({
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="block text-sm font-medium mb-1">{t('template_name') || 'Nom du template'}</label>
+              <label className="block !text-sm font-medium mb-1">{t('template_name') || 'Nom du template'}</label>
               <input
                 type="text"
                 value={formData.name}
@@ -289,7 +289,7 @@ function TemplateModal({
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-1">{t('pipeline_stage') || 'Étape pipeline'}</label>
+              <label className="block !text-sm font-medium mb-1">{t('pipeline_stage') || 'Étape pipeline'}</label>
               <select
                 value={formData.pipeline_stage}
                 onChange={(e) => setFormData({ ...formData, pipeline_stage: e.target.value as ProspectStatus })}
@@ -302,7 +302,7 @@ function TemplateModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">{t('category') || 'Catégorie'}</label>
+              <label className="block !text-sm font-medium mb-1">{t('category') || 'Catégorie'}</label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -320,7 +320,7 @@ function TemplateModal({
             </div>
 
             <div className="col-span-2">
-              <label className="block text-sm font-medium mb-1">{t('email_subject') || 'Objet'}</label>
+              <label className="block !text-sm font-medium mb-1">{t('email_subject') || 'Objet'}</label>
               <input
                 type="text"
                 value={formData.subject}
@@ -332,11 +332,11 @@ function TemplateModal({
             </div>
 
             <div className="col-span-2">
-              <label className="block text-sm font-medium mb-1">{t('email_body') || 'Corps du message'}</label>
+              <label className="block !text-sm font-medium mb-1">{t('email_body') || 'Corps du message'}</label>
               <textarea
                 value={formData.body}
                 onChange={(e) => setFormData({ ...formData, body: e.target.value })}
-                className="w-full px-3 py-2 bg-page border border-muted rounded-lg font-mono text-sm"
+                className="w-full px-3 py-2 bg-page border border-muted rounded-lg font-mono !text-sm"
                 rows={15}
                 placeholder="Utilisez {{variable}} pour les champs dynamiques"
                 required
@@ -345,7 +345,7 @@ function TemplateModal({
           </div>
 
           <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-            <p className="text-sm text-blue-700 dark:text-blue-400">
+            <p className="text-sm !text-blue-700 dark:!text-blue-400">
               <strong>Variables disponibles :</strong> {'{{prospect_name}}'}, {'{{company_name}}'}, {'{{sender_name}}'}, {'{{quote_number}}'}, {'{{quote_amount}}'}, {'{{quote_link}}'}, etc.
             </p>
           </div>
@@ -357,7 +357,7 @@ function TemplateModal({
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent disabled:opacity-50"
+              className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent disabled:opacity-50"
             >
               {loading ? '...' : (template ? t('save') || 'Enregistrer' : t('create') || 'Créer')}
             </button>
@@ -520,7 +520,7 @@ export default function EmailTemplatesPage() {
           <IconTemplate size={28} className="!text-accent" />
           <div>
             <h1 className="text-2xl font-bold">{t('email_templates') || 'Templates d\'emails'}</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm !text-muted-foreground">
               {t('email_templates_desc') || 'Emails pré-écrits pour chaque étape du pipeline'}
             </p>
           </div>
@@ -538,7 +538,7 @@ export default function EmailTemplatesPage() {
           )}
           <button
             onClick={() => { setEditingTemplate(null); setModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent"
+            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent"
           >
             <IconPlus size={18} />
             {t('new_template') || 'Nouveau template'}
@@ -549,7 +549,7 @@ export default function EmailTemplatesPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3 p-4 bg-card rounded-lg border border-muted">
         <div className="relative flex-1 min-w-[200px]">
-          <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground" />
           <input
             type="text"
             value={searchTerm}
@@ -576,7 +576,7 @@ export default function EmailTemplatesPage() {
           <div className="animate-spin h-8 w-8 border-2 border-accent border-t-transparent rounded-full" />
         </div>
       ) : filteredTemplates.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">
+        <div className="text-center py-12 !text-muted-foreground">
           <IconTemplate size={48} className="mx-auto mb-4 opacity-30" />
           <p>{t('no_templates') || 'Aucun template trouvé'}</p>
         </div>
@@ -611,7 +611,7 @@ export default function EmailTemplatesPage() {
                   </button>
                   <button
                     onClick={() => handleDeleteTemplate(template)}
-                    className="p-1.5 hover:bg-hover rounded text-red-500"
+                    className="p-1.5 hover:bg-hover rounded !text-red-500"
                     title={t('delete') || 'Supprimer'}
                   >
                     <IconTrash size={16} />
@@ -619,11 +619,11 @@ export default function EmailTemplatesPage() {
                 </div>
               </div>
               
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm !text-muted-foreground mb-2">
                 <strong>{t('subject') || 'Objet'}:</strong> {template.subject}
               </p>
               
-              <p className="!text-xs text-muted-foreground line-clamp-3">
+              <p className="!text-xs !text-muted-foreground line-clamp-3">
                 {template.body.substring(0, 150)}...
               </p>
             </div>

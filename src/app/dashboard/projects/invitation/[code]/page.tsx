@@ -76,7 +76,7 @@ function ProjectsBackground({ userProjects }: { userProjects: Project[] }) {
           >
             <div className="flex items-center gap-2 mb-3">
               <IconFolder className="w-4 h-4 !text-accent" />
-              <span className="text-sm font-medium text-primary truncate">{project.title}</span>
+              <span className="text-sm font-medium !text-primary truncate">{project.title}</span>
             </div>
             <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-2">
               <div 
@@ -84,7 +84,7 @@ function ProjectsBackground({ userProjects }: { userProjects: Project[] }) {
                 style={{ width: `${project.progress}%` }}
               />
             </div>
-            <span className="!text-xs text-muted">{project.progress}%</span>
+            <span className="!text-xs !text-muted">{project.progress}%</span>
           </motion.div>
         ))}
       </div>
@@ -249,18 +249,18 @@ export default function InvitationPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-card border border-default rounded-2xl p-8 max-w-md w-full text-center relative z-10 shadow-xl"
+          className="bg-card border border-default rounded-2xl p-8 max-w-md w-full !text-center relative z-10 shadow-xl"
         >
           <div className="w-16 h-16 rounded-full bg-danger-light flex items-center justify-center mx-auto mb-6">
-            <IconAlertTriangle className="w-8 h-8 text-danger" />
+            <IconAlertTriangle className="w-8 h-8 !text-danger" />
           </div>
-          <h1 className="text-xl font-semibold text-primary mb-2">
+          <h1 className="text-xl font-semibold !text-primary mb-2">
             {t('invitation_error') || 'Erreur d\'invitation'}
           </h1>
           <p className="text-secondary mb-6">{error}</p>
           <button
             onClick={() => router.push('/dashboard/projects')}
-            className="px-6 py-3 bg-muted hover:bg-muted text-primary rounded-xl transition-colors"
+            className="px-6 py-3 bg-muted hover:bg-muted !text-primary rounded-xl transition-colors"
           >
             {t('back_to_projects') || 'Retour aux projets'}
           </button>
@@ -307,12 +307,12 @@ export default function InvitationPage() {
         </div>
 
         {/* Titre */}
-        <h1 className="text-2xl font-bold !text-accent text-center mb-2">
+        <h1 className="text-2xl font-bold !text-accent !text-center mb-2">
           {t('project_invitation') || 'Invitation À Collaborer'}
         </h1>
 
         {/* Message */}
-        <p className="text-secondary text-center mb-6">
+        <p className="text-secondary !text-center mb-6">
           <span className="text-accent font-medium">
             {invitation.sender?.username || 'Un utilisateur'}
           </span>{' '}
@@ -324,18 +324,18 @@ export default function InvitationPage() {
           <h2 className="text-lg font-semibold !text-accent mb-1">
             {invitation.project?.title || 'Projet'}
           </h2>
-          <p className="text-xl font-bold text-primary mb-3 uppercase tracking-wide">
+          <p className="text-xl font-bold !text-primary mb-3 uppercase tracking-wide">
             {invitation.project?.type === 'development' ? t('development') : 
              invitation.project?.type === 'design' ? t('design') : 
              invitation.project?.type || 'DASHBOARD'}
           </p>
           
           {/* Description rendue proprement */}
-          <p className="text-sm text-secondary line-clamp-2 mb-4">
+          <p className="text-sm !text-secondary line-clamp-2 mb-4">
             {getDescriptionPreview(invitation.project?.description)}
           </p>
           
-          <div className="flex items-center gap-4 !text-xs text-muted">
+          <div className="flex items-center gap-4 !text-xs !text-muted">
             <span className="flex items-center gap-1">
               <IconUser className="w-3.5 h-3.5" />
               {t('permission') || 'Permission'}: {' '}
@@ -355,7 +355,7 @@ export default function InvitationPage() {
         </div>
 
         {/* Note */}
-        <p className="!text-xs text-muted text-center mb-6">
+        <p className="!text-xs !text-muted !text-center mb-6">
           {t('collaborator_note') || 'En tant que collaborateur, vous ne pourrez pas supprimer ce projet.'}
         </p>
 
@@ -364,7 +364,7 @@ export default function InvitationPage() {
           <button
             onClick={handleReject}
             disabled={processing}
-            className="flex-1 py-3 px-4 bg-muted hover:bg-muted disabled:opacity-50 text-primary rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 px-4 bg-muted hover:bg-muted disabled:opacity-50 !text-primary rounded-xl transition-colors flex items-center justify-center gap-2"
           >
             {processing ? (
               <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -378,7 +378,7 @@ export default function InvitationPage() {
           <button
             onClick={handleAccept}
             disabled={processing}
-            className="flex-1 py-3 px-4 bg-accent hover:bg-[var(--color-accent)] disabled:opacity-50 text-white rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 px-4 bg-accent hover:bg-[var(--color-accent)] disabled:opacity-50 !text-white rounded-xl transition-colors flex items-center justify-center gap-2"
           >
             {processing ? (
               <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -392,7 +392,7 @@ export default function InvitationPage() {
         </div>
 
         {/* Expiration */}
-        <p className="!text-xs text-muted text-center mt-4">
+        <p className="!text-xs !text-muted !text-center mt-4">
           {t('expires_on') || 'Expire le'}: {' '}
           {new Date(invitation.expires_at).toLocaleDateString('fr-FR', {
             day: 'numeric',

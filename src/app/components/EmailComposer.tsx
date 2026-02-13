@@ -740,7 +740,7 @@ Cordialement`);
             p { margin: 0 0 12px; }
             ul, ol { margin: 0 0 12px; padding-left: 24px; }
             li { margin: 0 0 4px; }
-            a { color: #3b82f6; text-decoration: underline; }
+            a { color: #3b82f6; !text-decoration: underline; }
             img { max-width: 100%; height: auto; border-radius: 8px; margin: 12px 0; }
           </style>
           ${cleanedMessage}
@@ -759,7 +759,7 @@ Cordialement`);
 
         htmlContent += `
           <div style="margin: 20px; padding: 20px; background: ${docBgColor}; border-radius: 8px; border-left: 4px solid ${docColor};">
-            <div style="font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 8px;">${docLabel}</div>
+            <div style="font-size: 12px; color: #666; !text-transform: uppercase; margin-bottom: 8px;">${docLabel}</div>
             <div style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 4px;">${selectedDocument.reference}</div>
             <div style="font-size: 24px; font-weight: bold; color: ${docColor};">${formatAmount(calculateTotal(selectedDocument), selectedDocument.currency)}</div>
             <div style="margin-top: 12px; font-size: 13px; color: #666;">
@@ -950,13 +950,13 @@ Cordialement`);
             <div className="flex items-center gap-4 p-4">
               <button
                 onClick={() => router.back()}
-                className="p-2 text-muted hover:text-primary hover:bg-accent-light rounded-lg transition-colors"
+                className="p-2 !text-muted hover:!text-primary hover:bg-accent-light rounded-lg transition-colors"
               >
                 <IconArrowLeft className="w-5 h-5" />
               </button>
 
-              <h1 className="text-xl font-semibold text-primary flex items-center gap-2">
-                <IconComponent className={`w-6 h-6 text-${config.color}`} />
+              <h1 className="text-xl font-semibold !text-primary flex items-center gap-2">
+                <IconComponent className={`w-6 h-6 !text-${config.color}`} />
                 {config.title}
               </h1>
 
@@ -966,7 +966,7 @@ Cordialement`);
             <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 !text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:!text-white rounded-lg transition-colors"
             >
               {showPreview ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
               {showPreview ? (t('edit') || 'Éditer') : (t('preview') || 'Aperçu')}
@@ -976,7 +976,7 @@ Cordialement`);
               <button
                 onClick={handleSaveDraft}
                 disabled={savingDraft}
-                className="flex items-center gap-2 px-4 py-2 text-sm border border-default text-secondary hover:bg-hover rounded-lg transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 !text-sm border border-default !text-secondary hover:bg-hover rounded-lg transition-colors disabled:opacity-50"
               >
                 {savingDraft ? (
                   <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -990,7 +990,7 @@ Cordialement`);
             <button
               onClick={handleSend}
               disabled={sending || recipients.length === 0 || !subject.trim() || (activeFeatures.documentSelector && !selectedDocument)}
-              className={`flex items-center gap-2 px-5 py-2 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${config.buttonColor} ${config.hoverColor}`}
+              className={`flex items-center gap-2 px-5 py-2 !text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${config.buttonColor} ${config.hoverColor}`}
             >
               {sending ? (
                 <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -1023,41 +1023,41 @@ Cordialement`);
             >
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
-                  <IconCornerUpLeft className="w-5 h-5 text-accent" />
+                  <IconCornerUpLeft className="w-5 h-5 !text-accent" />
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="!text-xs font-medium text-accent uppercase tracking-wide">
+                    <span className="!text-xs font-medium !text-accent uppercase tracking-wide">
                       {t('replying_to') || 'Réponse à'}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-semibold text-primary">
+                    <span className="font-semibold !text-primary">
                       {replyToData.name || replyToData.email}
                     </span>
                     {replyToData.enterprise && (
-                      <span className="flex items-center gap-1 !text-xs text-muted bg-page px-2 py-0.5 rounded">
+                      <span className="flex items-center gap-1 !text-xs !text-muted bg-page px-2 py-0.5 rounded">
                         <IconBuilding className="w-3 h-3" />
                         {replyToData.enterprise}
                       </span>
                     )}
                   </div>
 
-                  <p className="text-sm text-muted mt-0.5">{replyToData.email}</p>
+                  <p className="text-sm !text-muted mt-0.5">{replyToData.email}</p>
 
                   <div className="mt-3 p-3 bg-page rounded-lg">
-                    <p className="text-sm font-medium text-primary mb-1">{replyToData.subject}</p>
+                    <p className="text-sm font-medium !text-primary mb-1">{replyToData.subject}</p>
                     {replyToData.snippet && (
-                      <p className="text-sm text-muted line-clamp-3">{replyToData.snippet}</p>
+                      <p className="text-sm !text-muted line-clamp-3">{replyToData.snippet}</p>
                     )}
                   </div>
                 </div>
 
                 <button
                   onClick={() => setReplyToData(null)}
-                  className="p-1.5 text-muted hover:text-primary hover:bg-page rounded-lg transition-colors"
+                  className="p-1.5 !text-muted hover:!text-primary hover:bg-page rounded-lg transition-colors"
                 >
                   <IconX className="w-4 h-4" />
                 </button>
@@ -1068,8 +1068,8 @@ Cordialement`);
           {/* Document selector (quote/invoice) */}
           {activeFeatures.documentSelector && (
             <div className="bg-card border border-default rounded-xl p-6">
-              <label className="block text-sm font-medium text-secondary mb-3 flex items-center gap-2">
-                <IconFileText className={`w-4 h-4 text-${config.color}`} />
+              <label className="block !text-sm font-medium !text-secondary mb-3 flex items-center gap-2">
+                <IconFileText className={`w-4 h-4 !text-${config.color}`} />
                 {t(type === 'quote' ? 'select_quote' : 'select_invoice') || `Sélectionner un ${type === 'quote' ? 'devis' : 'facture'}`}
               </label>
 
@@ -1077,18 +1077,18 @@ Cordialement`);
                 <div className={`flex items-center justify-between p-4 bg-${config.color.replace('500', '50')} border border-${config.color.replace('500', '200')} rounded-lg`}>
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 ${config.buttonColor} rounded-lg flex items-center justify-center`}>
-                      <IconComponent className="w-6 h-6 text-white" />
+                      <IconComponent className="w-6 h-6 !text-white" />
                     </div>
                     <div>
-                      <div className="font-semibold text-primary">{selectedDocument.reference}</div>
-                      <div className="text-sm text-muted">
+                      <div className="font-semibold !text-primary">{selectedDocument.reference}</div>
+                      <div className="text-sm !text-muted">
                         {selectedDocument.client_id?.name || selectedDocument.client?.name || 'Client'} • {formatAmount(calculateTotal(selectedDocument), selectedDocument.currency)}
                       </div>
                     </div>
                   </div>
                   <button
                     onClick={() => setShowDocumentSelector(true)}
-                    className={`px-3 py-1.5 text-sm text-${config.color} hover:bg-${config.color.replace('500', '100')} rounded-lg transition-colors`}
+                    className={`px-3 py-1.5 !text-sm !text-${config.color} hover:bg-${config.color.replace('500', '100')} rounded-lg transition-colors`}
                   >
                     {t('change') || 'Changer'}
                   </button>
@@ -1096,7 +1096,7 @@ Cordialement`);
               ) : (
                 <button
                   onClick={() => setShowDocumentSelector(true)}
-                  className={`w-full p-6 border-2 border-dashed border-default rounded-lg text-center text-muted hover:border-${config.color} hover:text-${config.color} transition-colors`}
+                  className={`w-full p-6 border-2 border-dashed border-default rounded-lg !text-center !text-muted hover:border-${config.color} hover:!text-${config.color} transition-colors`}
                 >
                   <IconComponent className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <span>{t('click_to_select') || 'Cliquez pour sélectionner'}</span>
@@ -1122,13 +1122,13 @@ Cordialement`);
                     >
                       <div className="p-4 border-b border-default">
                         <div className="flex items-center gap-3">
-                          <IconSearch className="w-5 h-5 text-muted" />
+                          <IconSearch className="w-5 h-5 !text-muted" />
                           <input
                             type="text"
                             value={documentSearch}
                             onChange={e => setDocumentSearch(e.target.value)}
                             placeholder={t('search') || 'Rechercher...'}
-                            className="flex-1 bg-transparent border-none outline-none text-primary"
+                            className="flex-1 bg-transparent border-none outline-none !text-primary"
                             autoFocus
                           />
                         </div>
@@ -1137,10 +1137,10 @@ Cordialement`);
                       <div className="max-h-[50vh] overflow-y-auto p-2">
                         {loadingDocuments ? (
                           <div className="flex items-center justify-center py-12">
-                            <IconLoader2 className="w-8 h-8 text-accent animate-spin" />
+                            <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
                           </div>
                         ) : filteredDocuments.length === 0 ? (
-                          <div className="text-center py-12 text-muted">
+                          <div className="text-center py-12 !text-muted">
                             <IconComponent className="w-12 h-12 mx-auto mb-4 opacity-30" />
                             <p>{t('no_documents') || 'Aucun document trouvé'}</p>
                           </div>
@@ -1149,19 +1149,19 @@ Cordialement`);
                             <button
                               key={doc.documentId}
                               onClick={() => handleSelectDocument(doc)}
-                              className="w-full p-3 flex items-center gap-4 hover:bg-accent-light rounded-lg transition-colors text-left"
+                              className="w-full p-3 flex items-center gap-4 hover:bg-accent-light rounded-lg transition-colors !text-left"
                             >
                               <div className={`w-10 h-10 bg-${config.color.replace('500', '100')} rounded-lg flex items-center justify-center`}>
-                                <IconComponent className={`w-5 h-5 text-${config.color}`} />
+                                <IconComponent className={`w-5 h-5 !text-${config.color}`} />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="font-medium text-primary truncate">{doc.reference}</div>
-                                <div className="text-sm text-muted truncate">
+                                <div className="font-medium !text-primary truncate">{doc.reference}</div>
+                                <div className="text-sm !text-muted truncate">
                                   {doc.client_id?.name || doc.client?.name || 'Client'} • {formatDate(doc.date)}
                                 </div>
                               </div>
                               <div className="text-right">
-                                <div className={`font-semibold text-${config.color}`}>
+                                <div className={`font-semibold !text-${config.color}`}>
                                   {formatAmount(calculateTotal(doc), doc.currency)}
                                 </div>
                               </div>
@@ -1178,7 +1178,7 @@ Cordialement`);
 
           {/* Recipients */}
           <div className="bg-card border border-default rounded-xl p-6">
-            <label className="block text-sm font-medium text-secondary mb-3 flex items-center gap-2">
+            <label className="block !text-sm font-medium !text-secondary mb-3 flex items-center gap-2">
               <IconUser className="w-4 h-4" />
               {t('recipients') || 'Destinataires'}
             </label>
@@ -1192,9 +1192,9 @@ Cordialement`);
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.8, opacity: 0 }}
-                      className="flex items-center gap-2 px-3 py-2 bg-accent-light rounded-lg text-sm group"
+                      className="flex items-center gap-2 px-3 py-2 bg-accent-light rounded-lg !text-sm group"
                     >
-                      <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white !text-xs font-semibold flex-shrink-0">
+                      <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center !text-white !text-xs font-semibold flex-shrink-0">
                         {recipient.name
                           ? recipient.name.charAt(0).toUpperCase()
                           : recipient.email.charAt(0).toUpperCase()
@@ -1203,7 +1203,7 @@ Cordialement`);
 
                       <div className="flex flex-col min-w-0">
                         {recipient.name && (
-                          <span className="font-medium text-primary text-sm leading-tight truncate">
+                          <span className="font-medium !text-primary !text-sm leading-tight truncate">
                             {recipient.name}
                           </span>
                         )}
@@ -1213,7 +1213,7 @@ Cordialement`);
                       </div>
 
                       {recipient.enterprise && (
-                        <span className="flex items-center gap-1 !text-xs text-muted bg-page px-1.5 py-0.5 rounded">
+                        <span className="flex items-center gap-1 !text-xs !text-muted bg-page px-1.5 py-0.5 rounded">
                           <IconBuilding className="w-3 h-3" />
                           <span className="truncate max-w-[80px]">{recipient.enterprise}</span>
                         </span>
@@ -1221,7 +1221,7 @@ Cordialement`);
 
                       <button
                         onClick={() => removeRecipient(recipient.id)}
-                        className="p-1 text-muted hover:text-danger hover:bg-danger-light rounded transition-colors opacity-0 group-hover:opacity-100"
+                        className="p-1 !text-muted hover:!text-danger hover:bg-danger-light rounded transition-colors opacity-0 group-hover:opacity-100"
                       >
                         <IconX className="w-3.5 h-3.5" />
                       </button>
@@ -1259,7 +1259,7 @@ Cordialement`);
                     addRecipientManual(input.value);
                     input.value = '';
                   }}
-                  className="px-4 py-2 bg-muted text-primary rounded-lg hover:bg-muted transition-colors"
+                  className="px-4 py-2 bg-muted !text-primary rounded-lg hover:bg-muted transition-colors"
                 >
                   <IconPlus className="w-5 h-5" />
                 </button>
@@ -1271,7 +1271,7 @@ Cordialement`);
           <div className="bg-card border border-default rounded-xl p-6 space-y-4">
             {activeFeatures.title && (
               <div>
-                <label className="block text-sm font-medium text-secondary mb-2">
+                <label className="block !text-sm font-medium !text-secondary mb-2">
                   <IconHeading className="w-4 h-4 inline mr-1.5 !text-accent" />
                   {t('email_title') || 'Titre de l\'email'}
                   <span className="text-muted font-normal ml-2">({t('optional') || 'optionnel'})</span>
@@ -1281,13 +1281,13 @@ Cordialement`);
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder={t('email_title_placeholder') || 'Ex: Bienvenue dans notre newsletter'}
-                  className="input w-full text-lg"
+                  className="input w-full !text-lg"
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 <IconMail className="w-4 h-4 inline mr-1.5 !text-accent" />
                 {t('subject') || 'Objet'} *
               </label>
@@ -1304,7 +1304,7 @@ Cordialement`);
           {/* Message */}
           <div className="bg-card border border-default rounded-xl p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-muted">
+              <label className="text-sm font-medium !text-muted">
                 {t('message') || 'Message'} *
               </label>
 
@@ -1359,7 +1359,7 @@ Cordialement`);
           {/* Attachments (compose only) */}
           {activeFeatures.attachments && (
             <div className="bg-card border border-default rounded-xl p-6">
-              <label className="block text-sm font-medium text-secondary mb-3 flex items-center gap-2">
+              <label className="block !text-sm font-medium !text-secondary mb-3 flex items-center gap-2">
                 <IconPaperclip className="w-4 h-4" />
                 {t('attachments') || 'Pièces jointes'}
               </label>
@@ -1372,15 +1372,15 @@ Cordialement`);
                       className="flex items-center justify-between p-3 bg-page rounded-lg"
                     >
                       <div className="flex items-center gap-3">
-                        <IconPaperclip className="w-5 h-5 text-muted" />
+                        <IconPaperclip className="w-5 h-5 !text-muted" />
                         <div>
-                          <div className="text-sm font-medium text-primary">{att.name}</div>
-                          <div className="!text-xs text-muted">{formatFileSize(att.size)}</div>
+                          <div className="text-sm font-medium !text-primary">{att.name}</div>
+                          <div className="!text-xs !text-muted">{formatFileSize(att.size)}</div>
                         </div>
                       </div>
                       <button
                         onClick={() => removeAttachment(att.id)}
-                        className="p-2 text-danger hover:bg-danger-light rounded-lg transition-colors"
+                        className="p-2 !text-danger hover:bg-danger-light rounded-lg transition-colors"
                       >
                         <IconTrash className="w-4 h-4" />
                       </button>
@@ -1400,7 +1400,7 @@ Cordialement`);
                     }}
                     className="hidden"
                   />
-                  <div className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-default rounded-lg text-muted hover:border-accent hover:text-accent cursor-pointer transition-colors">
+                  <div className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-default rounded-lg !text-muted hover:border-accent hover:!text-accent cursor-pointer transition-colors">
                     {uploadingAttachment ? (
                       <IconLoader2 className="w-5 h-5 animate-spin" />
                     ) : (
@@ -1414,7 +1414,7 @@ Cordialement`);
 
                 <button
                   onClick={() => setShowMediaPicker(true)}
-                  className="px-4 py-3 border border-default rounded-lg text-muted hover:border-accent hover:text-accent transition-colors"
+                  className="px-4 py-3 border border-default rounded-lg !text-muted hover:border-accent hover:!text-accent transition-colors"
                 >
                   {t('from_library') || 'Depuis la bibliothèque'}
                 </button>
@@ -1428,10 +1428,10 @@ Cordialement`);
               <div className="flex items-center gap-3">
                 <IconSignature className="w-5 h-5 !text-accent" />
                 <div>
-                  <div className="font-medium text-primary">
+                  <div className="font-medium !text-primary">
                     {t('include_signature') || 'Inclure la signature'}
                   </div>
-                  <div className="text-sm text-muted">
+                  <div className="text-sm !text-muted">
                     {t('include_signature_desc') || 'Ajoute votre signature email à la fin du message'}
                   </div>
                 </div>
@@ -1454,7 +1454,7 @@ Cordialement`);
             {signatureData && (
               <Link
                 href="/dashboard/settings?tab=email"
-                className="mt-3 inline-flex items-center gap-1.5 text-sm !text-accent hover:text-accent/80 transition-colors"
+                className="mt-3 inline-flex items-center gap-1.5 !text-sm !text-accent hover:!text-accent/80 transition-colors"
               >
                 <IconPencil className="w-3.5 h-3.5" />
                 {t('edit_signature') || 'Modifier la signature'}
@@ -1463,8 +1463,8 @@ Cordialement`);
 
             {!signatureData && !loadingSignature && (
               <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg flex items-start gap-2">
-                <IconAlertCircle className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
-                <div className="text-sm text-warning-text flex items-center gap-2 flex-wrap">
+                <IconAlertCircle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
+                <div className="text-sm !text-warning-text flex items-center gap-2 flex-wrap">
                   {t('no_signature_configured') || 'Aucune signature configurée. '}
                   <a
                     href="/dashboard/settings?tab=email"
@@ -1615,7 +1615,7 @@ function renderSignatureHtml(data: CreateEmailSignatureData): string {
 
   html += `<div style="font-size: 13px; color: ${secondaryColor};">`;
   if (data.phone) html += `<div>📞 ${data.phone}</div>`;
-  if (data.website) html += `<div>🌐 <a href="${data.website}" style="color: ${primaryColor}; text-decoration: none;">${data.website.replace(/^https?:\/\//, '')}</a></div>`;
+  if (data.website) html += `<div>🌐 <a href="${data.website}" style="color: ${primaryColor}; !text-decoration: none;">${data.website.replace(/^https?:\/\//, '')}</a></div>`;
   if (data.address) html += `<div>📍 ${data.address}</div>`;
   html += '</div>';
 
@@ -1626,7 +1626,7 @@ function renderSignatureHtml(data: CreateEmailSignatureData): string {
         const platform = SOCIAL_PLATFORM_LABELS[link.platform] || SOCIAL_PLATFORM_LABELS.custom;
         const label = ('label' in link && link.label) ? link.label : platform;
         const color = link.color || primaryColor;
-        html += `<a href="${link.url}" style="color: ${color}; margin-right: 8px; text-decoration: none; font-weight: 500;">${label}</a>`;
+        html += `<a href="${link.url}" style="color: ${color}; margin-right: 8px; !text-decoration: none; font-weight: 500;">${label}</a>`;
       }
     });
     html += '</div>';

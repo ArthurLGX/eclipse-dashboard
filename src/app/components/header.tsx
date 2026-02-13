@@ -95,7 +95,7 @@ export const Header = () => {
                 width={40}
                 height={40}
               />
-              <span className="sm:flex hidden !text-xs text-muted w-full !font-normal">
+              <span className="sm:flex hidden !text-xs !text-muted w-full !font-normal">
                 Eclipse Studio Dashboard
               </span>
             </Link>
@@ -178,7 +178,7 @@ export const Header = () => {
                 </div>
                 <IconLogout
                   onClick={handleLogout}
-                  className="cursor-pointer hover:scale-[1.1] text-primary hover:text-secondary transition-all ease-in-out duration-300"
+                  className="cursor-pointer hover:scale-[1.1] !text-primary hover:!text-secondary transition-all ease-in-out duration-300"
                   size={24}
                 />
               </div>
@@ -189,7 +189,7 @@ export const Header = () => {
           <div className="lg:hidden">
             <button
               onClick={toggleMenu}
-              className="p-2 text-primary hover:text-secondary transition-colors"
+              className="p-2 !text-primary hover:!text-secondary transition-colors"
             >
               {isMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
             </button>
@@ -232,7 +232,7 @@ export const Header = () => {
                 <div className="absolute top-4 right-4">
                   <button
                     onClick={closeMenu}
-                    className="p-2 text-muted hover:text-primary transition-colors"
+                    className="p-2 !text-muted hover:!text-primary transition-colors"
                   >
                     <IconX size={24} />
                   </button>

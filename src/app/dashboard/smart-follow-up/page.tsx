@@ -166,13 +166,13 @@ export default function SmartFollowUpPage() {
         <div className="flex gap-2">
           <button
             onClick={() => handleApprove(row.id, row.documentId)}
-            className="px-3 py-1 bg-accent text-white rounded-lg text-sm hover:opacity-90 transition-opacity"
+            className="px-3 py-1 bg-accent !text-white rounded-lg !text-sm hover:opacity-90 transition-opacity"
           >
             Approuver
           </button>
           <button
             onClick={() => handleReject(row.id, row.documentId)}
-            className="px-3 py-1 bg-error text-primary rounded-lg text-sm hover:opacity-90 transition-opacity"
+            className="px-3 py-1 bg-error !text-primary rounded-lg !text-sm hover:opacity-90 transition-opacity"
           >
             Rejeter
           </button>
@@ -257,7 +257,7 @@ export default function SmartFollowUpPage() {
       render: (_value, row: FollowUpTask) => (
         <button
           onClick={() => handlePauseTask(row.id, row.documentId)}
-          className="px-3 py-1 bg-muted text-primary rounded-lg text-sm hover:bg-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 bg-muted !text-primary rounded-lg !text-sm hover:bg-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={row.status_follow_up === 'cancelled' || row.status_follow_up === 'completed'}
         >
           Mettre en pause
@@ -274,12 +274,12 @@ export default function SmartFollowUpPage() {
       <div className="mb-8 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold text-primary">Smart Follow-Up</h1>
+            <h1 className="text-3xl font-bold !text-primary">Smart Follow-Up</h1>
             {settings && (
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+              <span className={`px-3 py-1 rounded-full !text-sm font-medium ${
                 isSystemEnabled 
-                  ? 'bg-success-light text-success-text' 
-                  : 'bg-warning-light text-warning-text'
+                  ? 'bg-success-light !text-success-text' 
+                  : 'bg-warning-light !text-warning-text'
               }`}>
                 {isSystemEnabled ? '● Actif' : '⏸ En pause'}
               </span>
@@ -291,13 +291,13 @@ export default function SmartFollowUpPage() {
         <div className="flex gap-3">
           <button
             onClick={() => setShowRulesModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 text-purple-600 rounded-xl hover:bg-purple-500/20 transition-colors border border-purple-500/20"
+            className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 !text-purple-600 rounded-xl hover:bg-purple-500/20 transition-colors border border-purple-500/20"
             title="Gérer les règles de filtrage"
           >
             <IconFilter className="w-5 h-5" />
             Règles
             {settings?.custom_rules && settings.custom_rules.length > 0 && (
-              <span className="px-2 py-0.5 text-xs bg-purple-500 text-white rounded-full">
+              <span className="px-2 py-0.5 !text-xs bg-purple-500 !text-white rounded-full">
                 {settings.custom_rules.filter(r => r.enabled).length}
               </span>
             )}
@@ -308,8 +308,8 @@ export default function SmartFollowUpPage() {
             disabled={togglingPause}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
               isSystemEnabled
-                ? 'bg-warning/10 text-warning border border-warning/20 hover:bg-warning/20'
-                : 'bg-success/10 text-success border border-success/20 hover:bg-success/20'
+                ? 'bg-warning/10 !text-warning border border-warning/20 hover:bg-warning/20'
+                : 'bg-success/10 !text-success border border-success/20 hover:bg-success/20'
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {isSystemEnabled ? (
@@ -327,7 +327,7 @@ export default function SmartFollowUpPage() {
 
           <button
             onClick={() => router.push('/dashboard/smart-follow-up/settings')}
-            className="flex items-center gap-2 px-4 py-2 bg-secondary text-primary rounded-xl hover:bg-hover transition-colors border border-default"
+            className="flex items-center gap-2 px-4 py-2 bg-secondary !text-primary rounded-xl hover:bg-hover transition-colors border border-default"
           >
             <IconSettings className="w-5 h-5" />
             Paramètres
@@ -338,10 +338,10 @@ export default function SmartFollowUpPage() {
       {/* Warning si système désactivé */}
       {!isSystemEnabled && (
         <div className="mb-6 p-4 bg-warning/10 border border-warning/20 rounded-xl flex items-start gap-3">
-          <IconAlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+          <IconAlertCircle className="w-5 h-5 !text-warning flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-warning mb-1">Système en pause</h3>
-            <p className="text-sm text-warning/80">
+            <h3 className="font-semibold !text-warning mb-1">Système en pause</h3>
+            <p className="text-sm !text-warning/80">
               Le Smart Follow-Up est actuellement désactivé. Aucune nouvelle action ne sera créée.
               Les actions existantes restent disponibles.
             </p>
@@ -352,29 +352,29 @@ export default function SmartFollowUpPage() {
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div className="bg-card border border-default rounded-xl p-6">
-          <div className="text-sm text-muted mb-2">Actions en attente</div>
-          <div className="text-3xl font-bold text-primary">
+          <div className="text-sm !text-muted mb-2">Actions en attente</div>
+          <div className="text-3xl font-bold !text-primary">
             {statsLoading ? '...' : stats?.activeActions || 0}
           </div>
         </div>
         
         <div className="bg-card border border-default rounded-xl p-6">
-          <div className="text-sm text-muted mb-2">À traiter aujourd&apos;hui</div>
-          <div className="text-3xl font-bold text-accent">
+          <div className="text-sm !text-muted mb-2">À traiter aujourd&apos;hui</div>
+          <div className="text-3xl font-bold !text-accent">
             {statsLoading ? '...' : stats?.dueToday || 0}
           </div>
         </div>
         
         <div className="bg-card border border-default rounded-xl p-6">
-          <div className="text-sm text-muted mb-2">Envoyés (7 jours)</div>
-          <div className="text-3xl font-bold text-success">
+          <div className="text-sm !text-muted mb-2">Envoyés (7 jours)</div>
+          <div className="text-3xl font-bold !text-success">
             {statsLoading ? '...' : stats?.sentThisWeek || 0}
           </div>
         </div>
         
         <div className="bg-card border border-default rounded-xl p-6">
-          <div className="text-sm text-muted mb-2">Taux de succès</div>
-          <div className="text-3xl font-bold text-primary">
+          <div className="text-sm !text-muted mb-2">Taux de succès</div>
+          <div className="text-3xl font-bold !text-primary">
             {statsLoading ? '...' : `${stats?.successRate.toFixed(0) || 0}%`}
           </div>
         </div>
@@ -386,7 +386,7 @@ export default function SmartFollowUpPage() {
           className={`pb-3 px-2 font-medium transition-colors ${
             activeTab === 'actions'
               ? 'text-accent border-b-2 border-accent'
-              : 'text-muted hover:text-primary'
+              : 'text-muted hover:!text-primary'
           }`}
           onClick={() => setActiveTab('actions')}
         >
@@ -396,7 +396,7 @@ export default function SmartFollowUpPage() {
           className={`pb-3 px-2 font-medium transition-colors ${
             activeTab === 'tasks'
               ? 'text-accent border-b-2 border-accent'
-              : 'text-muted hover:text-primary'
+              : 'text-muted hover:!text-primary'
           }`}
           onClick={() => setActiveTab('tasks')}
         >

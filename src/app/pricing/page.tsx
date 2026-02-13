@@ -170,7 +170,7 @@ export default function Plans() {
         title: 'text-primary',
         description: 'text-secondary',
         price: 'text-accent',
-        button: 'bg-accent hover:bg-[var(--color-accent)] text-white border-accent',
+        button: 'bg-accent hover:bg-[var(--color-accent)] !text-white border-accent',
       };
     }
     if (planName === 'free') {
@@ -179,7 +179,7 @@ export default function Plans() {
         title: 'text-primary',
         description: 'text-secondary',
         price: 'text-accent',
-        button: 'bg-card hover:bg-hover text-primary border-default',
+        button: 'bg-card hover:bg-hover !text-primary border-default',
       };
     }
     return {
@@ -187,7 +187,7 @@ export default function Plans() {
       title: 'text-primary',
       description: 'text-secondary',
       price: 'text-accent',
-      button: 'bg-primary hover:bg-primary/80 text-white border-transparent',
+      button: 'bg-primary hover:bg-primary/80 !text-white border-transparent',
     };
   };
 
@@ -196,7 +196,7 @@ export default function Plans() {
       <motion.h1 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-4xl font-bold text-center lg:max-w-2xl text-primary mb-10"
+        className="text-4xl font-bold !text-center lg:max-w-2xl !text-primary mb-10"
       >
         {t('pricing_page_title')}
       </motion.h1>
@@ -241,7 +241,7 @@ export default function Plans() {
           className={`ml-2 px-3 py-1 rounded-full !text-xs font-medium transition-colors ${
             togglePlan
               ? 'bg-accent-light !text-accent'
-              : 'bg-muted text-secondary'
+              : 'bg-muted !text-secondary'
           }`}
         >
           {t('save_20_percent')}
@@ -337,7 +337,7 @@ export default function Plans() {
                         {togglePlan ? plan.price_yearly : plan.price_monthly}
                         {language === 'fr' ? '€' : ''}
                       </span>
-                      <span className="text-muted text-sm ml-2">
+                      <span className="text-muted !text-sm ml-2">
                         {t('per_month')}
                       </span>
                     </div>
@@ -368,7 +368,7 @@ export default function Plans() {
                 
                 {currentUserPlan === plan.name && (
                   <div className="flex my-4 mx-auto justify-center items-center">
-                    <span className="!text-xs font-medium text-muted bg-muted/20 rounded-full px-3 py-1 border border-default">
+                    <span className="!text-xs font-medium !text-muted bg-muted/20 rounded-full px-3 py-1 border border-default">
                       {t('your_current_plan')}
                     </span>
                   </div>
@@ -377,8 +377,8 @@ export default function Plans() {
             );
           })
         ) : (
-          <div className="col-span-full text-center py-12">
-            <div className="text-secondary text-lg">
+          <div className="col-span-full !text-center py-12">
+            <div className="text-secondary !text-lg">
               {plans.length === 0
                 ? t('no_plans_available')
                 : t('loading_plans')}
@@ -402,7 +402,7 @@ export default function Plans() {
             transition={{ delay: 0.3 }}
             className="w-full max-w-6xl px-4 mt-16"
           >
-            <h2 className="text-2xl font-bold text-center text-primary mb-8">
+            <h2 className="text-2xl font-bold !text-center !text-primary mb-8">
               {t('compare_plans')}
             </h2>
             <div
@@ -413,13 +413,13 @@ export default function Plans() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-default">
-                      <th className="p-4 text-left text-muted font-medium capitalize w-1/3">
+                      <th className="p-4 !text-left !text-muted font-medium capitalize w-1/3">
                         {t('features')}
                       </th>
                       {plans.map(plan => (
                         <th
                           key={plan.id}
-                          className={`p-4 text-center text-primary font-semibold transition-all duration-500 w-1/6 ${
+                          className={`p-4 !text-center !text-primary font-semibold transition-all duration-500 w-1/6 ${
                             highlightedPlan === plan.name
                               ? 'bg-accent-light'
                               : ''
@@ -486,7 +486,7 @@ export default function Plans() {
                             <tr className="bg-hover">
                               <td
                                 colSpan={plans.length + 1}
-                                className="p-3 text-primary font-semibold text-center"
+                                className="p-3 !text-primary font-semibold !text-center"
                               >
                                 {sectionName}
                               </td>
@@ -498,7 +498,7 @@ export default function Plans() {
                                 key={featureKey}
                                 className="border-b border-default hover:bg-hover transition-colors"
                               >
-                                <td className="p-4 text-secondary font-medium">
+                                <td className="p-4 !text-secondary font-medium">
                                   {(() => {
                                     const labels = {
                                       max_active_projects: t(
@@ -547,7 +547,7 @@ export default function Plans() {
                                 {plans.map(plan => (
                                   <td
                                     key={plan.id}
-                                    className={`p-4 text-center transition-all duration-500 ${
+                                    className={`p-4 !text-center transition-all duration-500 ${
                                       highlightedPlan === plan.name
                                         ? 'bg-accent-light'
                                         : ''
@@ -573,7 +573,7 @@ export default function Plans() {
                                           return value ? (
                                             <IconCheck className="w-5 h-5 !text-success-text -text mx-auto" />
                                           ) : (
-                                            <IconX className="w-5 h-5 text-muted mx-auto" />
+                                            <IconX className="w-5 h-5 !text-muted mx-auto" />
                                           );
                                         } else if (typeof value === 'number') {
                                           if (featureKey === 'storage') {
@@ -594,7 +594,7 @@ export default function Plans() {
                                           );
                                         } else if (typeof value === 'string') {
                                           return (
-                                            <span className="text-primary text-sm">
+                                            <span className="text-primary !text-sm">
                                               {value}
                                             </span>
                                           );

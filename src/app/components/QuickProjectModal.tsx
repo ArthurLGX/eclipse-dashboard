@@ -334,7 +334,7 @@ export default function QuickProjectModal({
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-default flex-shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-primary">
+            <h2 className="text-lg font-bold !text-primary">
               {step === 'choice' && (t('how_to_start') || 'Comment veux-tu démarrer ce projet ?')}
               {step === 'duplicate' && (t('duplicate_project') || 'Dupliquer un projet')}
               {step === 'template' && (t('use_template') || 'Utiliser un template')}
@@ -368,29 +368,29 @@ export default function QuickProjectModal({
                 {/* Option 1: Dupliquer (mise en avant) */}
                 <button
                   onClick={() => setStep('duplicate')}
-                  className="w-full p-4 rounded-xl border-2 border-accent bg-accent-light hover:bg-accent-light text-left transition-all group"
+                  className="w-full p-4 rounded-xl border-2 border-accent bg-accent-light hover:bg-accent-light !text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-accent text-white">
+                    <div className="p-3 rounded-xl bg-accent !text-white">
                       <IconCopy className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-primary">
+                        <h3 className="font-semibold !text-primary">
                           {t('duplicate_existing') || 'Repartir d\'un projet existant'}
                         </h3>
-                        <span className="px-2 py-0.5 !text-xs font-medium bg-accent text-white rounded-full">
+                        <span className="px-2 py-0.5 !text-xs font-medium bg-accent !text-white rounded-full">
                           {t('recommended') || 'Recommandé'}
                         </span>
                       </div>
-                      <p className="text-sm text-muted mt-0.5">
+                      <p className="text-sm !text-muted mt-0.5">
                         {t('duplicate_desc') || 'Dupliquer phases, tâches et estimations'}
                       </p>
                     </div>
                     <IconChevronRight className="w-5 h-5 !text-accent" />
                   </div>
                   {lastProject && (
-                    <div className="mt-3 pt-3 border-t border-accent flex items-center gap-2 text-sm !text-accent">
+                    <div className="mt-3 pt-3 border-t border-accent flex items-center gap-2 !text-sm !text-accent">
                       <IconBriefcase className="w-4 h-4" />
                       <span>{t('last_used') || 'Dernier utilisé'} : <strong>{lastProject.title}</strong></span>
                     </div>
@@ -400,42 +400,42 @@ export default function QuickProjectModal({
                 {/* Option 2: Template */}
                 <button
                   onClick={() => setStep('template')}
-                  className="w-full p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover text-left transition-all group"
+                  className="w-full p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-muted text-secondary group-hover:bg-accent-light group-hover:text-accent transition-colors">
+                    <div className="p-3 rounded-xl bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent transition-colors">
                       <IconTemplate className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-primary">
+                      <h3 className="font-semibold !text-primary">
                         {t('use_template') || 'Utiliser un template'}
                       </h3>
-                      <p className="text-sm text-muted mt-0.5">
+                      <p className="text-sm !text-muted mt-0.5">
                         {t('template_desc') || 'Démarrer avec un modèle prédéfini'}
                       </p>
                     </div>
-                    <IconChevronRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
+                    <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
                   </div>
                 </button>
 
                 {/* Option 3: Vide */}
                 <button
                   onClick={handleEmptyProject}
-                  className="w-full p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover text-left transition-all group"
+                  className="w-full p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-muted text-secondary group-hover:bg-accent-light group-hover:text-accent transition-colors">
+                    <div className="p-3 rounded-xl bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent transition-colors">
                       <IconFolderPlus className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-primary">
+                      <h3 className="font-semibold !text-primary">
                         {t('empty_project') || 'Projet vide'}
                       </h3>
-                      <p className="text-sm text-muted mt-0.5">
+                      <p className="text-sm !text-muted mt-0.5">
                         {t('empty_project_desc') || 'Commencer de zéro'}
                       </p>
                     </div>
-                    <IconChevronRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
+                    <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
                   </div>
                 </button>
               </motion.div>
@@ -452,12 +452,12 @@ export default function QuickProjectModal({
               >
                 <button
                   onClick={() => setStep('choice')}
-                  className="text-sm text-muted hover:text-primary flex items-center gap-1 mb-2"
+                  className="text-sm !text-muted hover:!text-primary flex items-center gap-1 mb-2"
                 >
                   ← {t('back') || 'Retour'}
                 </button>
                 
-                <p className="text-sm text-muted mb-3">
+                <p className="text-sm !text-muted mb-3">
                   {t('select_project_to_duplicate') || 'Sélectionne le projet à dupliquer :'}
                 </p>
                 
@@ -468,7 +468,7 @@ export default function QuickProjectModal({
                       <button
                         key={project.documentId}
                         onClick={() => handleSelectSourceProject(project)}
-                        className={`w-full p-3 rounded-lg border text-left transition-all ${
+                        className={`w-full p-3 rounded-lg border !text-left transition-all ${
                           isLast 
                             ? 'border-accent bg-accent-light hover:bg-accent-light' 
                             : 'border-default hover:border-accent bg-card hover:bg-hover'
@@ -477,14 +477,14 @@ export default function QuickProjectModal({
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-medium text-primary">{project.title}</span>
+                              <span className="font-medium !text-primary">{project.title}</span>
                               {isLast && (
-                                <span className="px-1.5 py-0.5 text-[10px] font-medium bg-accent text-white rounded">
+                                <span className="px-1.5 py-0.5 !text-[10px] font-medium bg-accent !text-white rounded">
                                   {t('recent') || 'Récent'}
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center gap-3 !text-xs text-muted mt-1">
+                            <div className="flex items-center gap-3 !text-xs !text-muted mt-1">
                               {project.client?.name && (
                                 <span className="flex items-center gap-1">
                                   <IconUser className="w-3 h-3" />
@@ -497,7 +497,7 @@ export default function QuickProjectModal({
                               </span>
                             </div>
                           </div>
-                          <IconChevronRight className="w-4 h-4 text-muted" />
+                          <IconChevronRight className="w-4 h-4 !text-muted" />
                         </div>
                       </button>
                     );
@@ -517,7 +517,7 @@ export default function QuickProjectModal({
               >
                 <button
                   onClick={() => setStep('choice')}
-                  className="text-sm text-muted hover:text-primary flex items-center gap-1 mb-2"
+                  className="text-sm !text-muted hover:!text-primary flex items-center gap-1 mb-2"
                 >
                   ← {t('back') || 'Retour'}
                 </button>
@@ -527,13 +527,13 @@ export default function QuickProjectModal({
                     <button
                       key={template.id}
                       onClick={() => handleSelectTemplate(template)}
-                      className="p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover text-left transition-all group"
+                      className="p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                     >
                       <div className="text-2xl mb-2">{template.icon}</div>
-                      <h3 className="font-semibold text-primary text-sm">
+                      <h3 className="font-semibold !text-primary !text-sm">
                         {language === 'en' ? template.nameEn : template.name}
                       </h3>
-                      <div className="flex items-center gap-2 !text-xs text-muted mt-2">
+                      <div className="flex items-center gap-2 !text-xs !text-muted mt-2">
                         <span className="flex items-center gap-1">
                           <IconClock className="w-3 h-3" />
                           {template.duration}j
@@ -560,7 +560,7 @@ export default function QuickProjectModal({
               >
                 <button
                   onClick={() => setStep(selectedSourceProject ? 'duplicate' : selectedTemplate ? 'template' : 'choice')}
-                  className="text-sm text-muted hover:text-primary flex items-center gap-1 mb-2"
+                  className="text-sm !text-muted hover:!text-primary flex items-center gap-1 mb-2"
                 >
                   ← {t('back') || 'Retour'}
                 </button>
@@ -568,19 +568,19 @@ export default function QuickProjectModal({
                 {/* Résumé de la source */}
                 {selectedSourceProject && (
                   <div className="p-3 rounded-lg bg-accent-light border border-accent">
-                    <div className="flex items-center gap-2 text-sm">
+                    <div className="flex items-center gap-2 !text-sm">
                       <IconCopy className="w-4 h-4 !text-accent" />
                       <span className="text-accent font-medium">
                         {t('duplicating_from') || 'Duplication de'} : {selectedSourceProject.title}
                       </span>
                     </div>
                     {loadingTasks ? (
-                      <div className="flex items-center gap-2 !text-xs text-muted mt-2">
+                      <div className="flex items-center gap-2 !text-xs !text-muted mt-2">
                         <IconLoader2 className="w-3 h-3 animate-spin" />
                         {t('loading_tasks') || 'Chargement des tâches...'}
                       </div>
                     ) : (
-                      <div className="!text-xs text-muted mt-2">
+                      <div className="!text-xs !text-muted mt-2">
                         {sourceTasks.length} {t('tasks_will_be_copied') || 'tâches seront copiées (sans temps réel)'}
                       </div>
                     )}
@@ -589,13 +589,13 @@ export default function QuickProjectModal({
 
                 {selectedTemplate && (
                   <div className="p-3 rounded-lg bg-accent-light border border-accent">
-                    <div className="flex items-center gap-2 text-sm">
+                    <div className="flex items-center gap-2 !text-sm">
                       <IconTemplate className="w-4 h-4 !text-accent" />
                       <span className="text-accent font-medium">
                         {t('template') || 'Template'} : {language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
                       </span>
                     </div>
-                    <div className="!text-xs text-muted mt-2">
+                    <div className="!text-xs !text-muted mt-2">
                       {selectedTemplate.tasks.length} {t('tasks_included') || 'tâches incluses'}
                     </div>
                   </div>
@@ -604,7 +604,7 @@ export default function QuickProjectModal({
                 {/* Formulaire */}
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-1.5">
+                    <label className="block !text-sm font-medium !text-secondary mb-1.5">
                       {t('project_name') || 'Nom du projet'} *
                     </label>
                     <input
@@ -619,7 +619,7 @@ export default function QuickProjectModal({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-secondary mb-1.5">
+                      <label className="block !text-sm font-medium !text-secondary mb-1.5">
                         {t('client') || 'Client'}
                       </label>
                       <select
@@ -637,7 +637,7 @@ export default function QuickProjectModal({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-secondary mb-1.5">
+                      <label className="block !text-sm font-medium !text-secondary mb-1.5">
                         {t('start_date') || 'Date de début'}
                       </label>
                       <input
@@ -651,15 +651,15 @@ export default function QuickProjectModal({
 
                   {/* Timing scope */}
                   <div className="p-3 rounded-lg border border-default bg-muted space-y-3">
-                    <div className="flex items-center gap-2 text-sm font-medium text-secondary">
+                    <div className="flex items-center gap-2 !text-sm font-medium !text-secondary">
                       <IconClock className="w-4 h-4" />
                       {t('timing_scope') || 'Périmètre temporel'} *
                     </div>
-                    <p className="!text-xs text-muted">
+                    <p className="!text-xs !text-muted">
                       {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
-                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default text-secondary'}`}>
+                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                         <input
                           type="radio"
                           name="timing_mode_quick"
@@ -669,7 +669,7 @@ export default function QuickProjectModal({
                         />
                         {t('timing_scope_duration') || 'Durée'}
                       </label>
-                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default text-secondary'}`}>
+                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                         <input
                           type="radio"
                           name="timing_mode_quick"
@@ -684,7 +684,7 @@ export default function QuickProjectModal({
                     {timingMode === 'duration' ? (
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="block !text-xs text-muted mb-1">
+                          <label className="block !text-xs !text-muted mb-1">
                             {t('duration') || 'Durée'}
                           </label>
                           <select
@@ -698,17 +698,17 @@ export default function QuickProjectModal({
                           </select>
                         </div>
                         <div>
-                          <label className="block !text-xs text-muted mb-1">
+                          <label className="block !text-xs !text-muted mb-1">
                             {t('end_date_preview') || 'Date de fin estimée'}
                           </label>
-                          <div className="input w-full bg-muted/50 text-secondary">
+                          <div className="input w-full bg-muted/50 !text-secondary">
                             {computedEndDate || '—'}
                           </div>
                         </div>
                       </div>
                     ) : (
                       <div>
-                        <label className="block !text-xs text-muted mb-1">
+                        <label className="block !text-xs !text-muted mb-1">
                           {t('end_date') || 'Date de fin'}
                         </label>
                         <input

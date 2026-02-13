@@ -438,28 +438,28 @@ export default function ProjectWorkflowView({
       {/* Breadcrumb contextuel */}
       <div className="flex-shrink-0 px-4 py-3 bg-card border-b border-default">
         <div className="flex items-center justify-between">
-          <div data-onboarding="breadcrumb" className="flex items-center gap-2 text-sm">
+          <div data-onboarding="breadcrumb" className="flex items-center gap-2 !text-sm">
             {onBack && (
               <button
                 onClick={onBack}
-                className="p-1.5 rounded-lg hover:bg-hover text-muted hover:text-primary transition-colors"
+                className="p-1.5 rounded-lg hover:bg-hover !text-muted hover:!text-primary transition-colors"
               >
                 <IconArrowRight className="rotate-180" size={18} />
               </button>
             )}
             <Link 
               href={`/dashboard/clients/${client.documentId}`}
-              className="text-muted hover:text-accent transition-colors"
+              className="text-muted hover:!text-accent transition-colors"
             >
               {client.name}
             </Link>
             <IconChevronRight size={14} className="text-muted" />
-            <span className="font-medium text-primary">{project.title}</span>
+            <span className="font-medium !text-primary">{project.title}</span>
             <span className={`ml-2 px-2 py-0.5 rounded-full !text-xs font-medium ${
               project.project_status === 'completed' ? 'bg-success-light !text-success-text ' :
-              project.project_status === 'in_progress' ? 'bg-warning-light text-warning' :
-              project.project_status === 'archived' ? 'bg-muted text-secondary' :
-              'bg-info-light text-info'
+              project.project_status === 'in_progress' ? 'bg-warning-light !text-warning' :
+              project.project_status === 'archived' ? 'bg-muted !text-secondary' :
+              'bg-info-light !text-info'
             }`}>
               {
                 project.project_status === 'planning' ? (t('project_status_planning') || 'Planification') :
@@ -481,31 +481,31 @@ export default function ProjectWorkflowView({
                   resetOnboarding();
                   setShowOnboarding(true);
                 }}
-                className="p-1.5 rounded-lg hover:bg-hover text-muted hover:text-accent transition-colors flex items-center gap-1"
+                className="p-1.5 rounded-lg hover:bg-hover !text-muted hover:!text-accent transition-colors flex items-center gap-1"
                 title={t('replay_tutorial') || 'Revoir le tutoriel'}
               >
                 <IconHelpCircle size={18} />
               </button>
             )}
             <div className="w-px h-4 bg-default mx-1" />
-            <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom -">
+            <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Zoom -">
               <IconZoomOut size={18} />
             </button>
-            <span className="!text-xs text-muted w-12 text-center">{Math.round(scale * 100)}%</span>
-            <button onClick={handleZoomIn} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom +">
+            <span className="!text-xs !text-muted w-12 !text-center">{Math.round(scale * 100)}%</span>
+            <button onClick={handleZoomIn} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Zoom +">
               <IconZoomIn size={18} />
             </button>
-            <button onClick={handleReset} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Reset">
+            <button onClick={handleReset} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Reset">
               <IconFocus2 size={18} />
             </button>
-            <button onClick={toggleFullscreen} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Fullscreen">
+            <button onClick={toggleFullscreen} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Fullscreen">
               {isFullscreen ? <IconMinimize size={18} /> : <IconMaximize size={18} />}
             </button>
           </div>
         </div>
         
         {/* Hint text */}
-        <p className="!text-xs text-muted mt-1">
+        <p className="!text-xs !text-muted mt-1">
           {t('workflow_project_hint') || 'Cette vue montre l\'exécution concrète de ce projet. Les nodes gris indiquent ce qui peut être créé.'}
         </p>
       </div>
@@ -617,7 +617,7 @@ export default function ProjectWorkflowView({
 
                       {/* Ghost hint */}
                       {isGhost && (
-                        <span className="mt-1 !text-xs text-muted flex items-center gap-1">
+                        <span className="mt-1 !text-xs !text-muted flex items-center gap-1">
                           <IconPlus size={12} /> Créer
                         </span>
                       )}
@@ -636,15 +636,15 @@ export default function ProjectWorkflowView({
                             <Link
                               key={item.id}
                               href={item.href || '#'}
-                              className="flex items-center justify-between p-2 rounded-lg hover:bg-hover text-sm"
+                              className="flex items-center justify-between p-2 rounded-lg hover:bg-hover !text-sm"
                             >
                               <span className="text-primary truncate">{item.label}</span>
                               <span className={`px-1.5 py-0.5 rounded !text-xs ${
                                 item.status === 'paid' || item.status === 'accepted' || item.status === 'signed' 
                                   ? 'bg-success-light !text-success-text '
                                   : item.status === 'overdue' || item.status === 'rejected'
-                                    ? 'bg-danger-light text-danger'
-                                    : 'bg-warning-light text-warning'
+                                    ? 'bg-danger-light !text-danger'
+                                    : 'bg-warning-light !text-warning'
                               }`}>
                                 {item.status}
                               </span>
@@ -654,7 +654,7 @@ export default function ProjectWorkflowView({
                           {/* Add new button */}
                           <button
                             onClick={() => handleNodeClick({ ...node, status: 'ghost' })}
-                            className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-accent-light text-accent text-sm mt-1 border-t border-default pt-2"
+                            className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-accent-light !text-accent !text-sm mt-1 border-t border-default pt-2"
                           >
                             <IconPlus size={14} />
                             Ajouter
@@ -702,7 +702,7 @@ export default function ProjectWorkflowView({
                             
                             {/* Tooltip au hover */}
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-card border border-accent rounded-lg shadow-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50">
-                              <span className="!text-xs text-primary font-medium">{secondary.label}</span>
+                              <span className="!text-xs !text-primary font-medium">{secondary.label}</span>
                               <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
                                 <div className="border-4 border-transparent border-t-accent"></div>
                               </div>
@@ -720,7 +720,7 @@ export default function ProjectWorkflowView({
 
         {/* Legend */}
         <div className="absolute bottom-4 left-4 bg-card border border-default rounded-lg p-3 !text-xs space-y-1.5">
-          <div className="font-medium text-primary mb-2">{t('legend') || 'Légende'}</div>
+          <div className="font-medium !text-primary mb-2">{t('legend') || 'Légende'}</div>
           <div className="flex items-center gap-2">
             <IconCheck size={14} className="text-success-text" />
             <span className="text-primary">{t('status_done') || 'Fait'}</span>
@@ -790,7 +790,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
       <div className="max-w-2xl w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-primary mb-2">
+          <h2 className="text-2xl font-bold !text-primary mb-2">
             {t('select_project_title') || 'Sélectionnez un projet'}
           </h2>
           <p className="text-primary">
@@ -809,13 +809,13 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => onSelectProject(project)}
-                className="w-full p-4 bg-card border border-default rounded-xl hover:border-accent hover:shadow-lg transition-all text-left"
+                className="w-full p-4 bg-card border border-default rounded-xl hover:border-accent hover:shadow-lg transition-all !text-left"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0 !pr-4">
-                    <h3 className="font-semibold text-primary">{project.title}</h3>
+                    <h3 className="font-semibold !text-primary">{project.title}</h3>
                     {cleanDescription && (
-                      <p className="text-sm text-secondary mt-1 truncate">
+                      <p className="text-sm !text-secondary mt-1 truncate">
                         {cleanDescription.slice(0, 100)}
                         {cleanDescription.length > 100 ? '...' : ''}
                       </p>
@@ -824,9 +824,9 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
                   <div className="flex items-center gap-3 flex-shrink-0">
                     <span className={`px-2.5 py-1 rounded-full !text-xs font-medium whitespace-nowrap ${
                       project.project_status === 'completed' ? 'bg-success-light !text-success-text ' :
-                      project.project_status === 'in_progress' ? 'bg-warning-light text-warning' :
-                      project.project_status === 'archived' ? 'bg-muted text-secondary' :
-                      'bg-info-light text-info'
+                      project.project_status === 'in_progress' ? 'bg-warning-light !text-warning' :
+                      project.project_status === 'archived' ? 'bg-muted !text-secondary' :
+                      'bg-info-light !text-info'
                     }`}>
                       {getStatusLabel(project.project_status)}
                     </span>
@@ -839,7 +839,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
         </div>
 
         {/* Info message */}
-        <p className="text-center !text-xs text-muted mt-6">
+        <p className="text-center !text-xs !text-muted mt-6">
           {t('workflow_project_info') || '👉 Un workflow représente l\'exécution concrète d\'un projet, pas la relation client globale.'}
         </p>
       </div>

@@ -344,20 +344,20 @@ export default function NotificationsPage() {
           .slice(0, 2);
         return (
           <div className="w-10 h-10 rounded-full bg-warning-light flex items-center justify-center">
-            <span className="text-sm font-bold text-warning">{initials}</span>
+            <span className="text-sm font-bold !text-warning">{initials}</span>
           </div>
         );
       }
       return (
         <div className="w-10 h-10 rounded-full bg-warning-light flex items-center justify-center">
-          <IconUsers className="w-5 h-5 text-warning" />
+          <IconUsers className="w-5 h-5 !text-warning" />
         </div>
       );
     }
     
     return (
       <div className="w-10 h-10 rounded-full bg-info-light flex items-center justify-center">
-        <IconBell className="w-5 h-5 text-info" />
+        <IconBell className="w-5 h-5 !text-info" />
       </div>
     );
   };
@@ -415,7 +415,7 @@ export default function NotificationsPage() {
                       {alert.message}
                     </p>
                     {alert.type !== 'trial_ending' && (
-                      <p className="text-secondary text-sm mt-1">
+                      <p className="text-secondary !text-sm mt-1">
                         {t('upgrade_to_unlock') || 'Passez à un plan supérieur pour débloquer.'}
                       </p>
                     )}
@@ -424,7 +424,7 @@ export default function NotificationsPage() {
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
                     onClick={handleUpgrade}
-                    className="btn-primary px-4 py-2 flex items-center gap-2 text-sm"
+                    className="btn-primary px-4 py-2 flex items-center gap-2 !text-sm"
                   >
                     {t('upgrade') || 'Mettre à niveau'}
                     <IconArrowRight size={16} />
@@ -447,7 +447,7 @@ export default function NotificationsPage() {
       <div className="mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-primary mb-2">
+            <h1 className="text-3xl font-bold !text-primary mb-2">
               {t('notifications') || 'Notifications'}
             </h1>
             <p className="text-primary">
@@ -489,11 +489,11 @@ export default function NotificationsPage() {
         >
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-info">
-              <IconBell className="w-5 h-5 text-white" />
+              <IconBell className="w-5 h-5 !text-white" />
             </div>
             <div>
-              <p className="text-sm text-secondary">{t('total') || 'Total'}</p>
-              <p className="text-2xl font-bold text-primary">{stats.total}</p>
+              <p className="text-sm !text-secondary">{t('total') || 'Total'}</p>
+              <p className="text-2xl font-bold !text-primary">{stats.total}</p>
             </div>
           </div>
         </motion.div>
@@ -506,11 +506,11 @@ export default function NotificationsPage() {
         >
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-warning">
-              <IconBellOff className="w-5 h-5 text-white" />
+              <IconBellOff className="w-5 h-5 !text-white" />
             </div>
             <div>
-              <p className="text-sm text-secondary">{t('unread') || 'Non lues'}</p>
-              <p className="text-2xl font-bold text-primary">{stats.unread}</p>
+              <p className="text-sm !text-secondary">{t('unread') || 'Non lues'}</p>
+              <p className="text-2xl font-bold !text-primary">{stats.unread}</p>
             </div>
           </div>
         </motion.div>
@@ -523,11 +523,11 @@ export default function NotificationsPage() {
         >
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-accent">
-              <IconUsers className="w-5 h-5 text-white" />
+              <IconUsers className="w-5 h-5 !text-white" />
             </div>
             <div>
-              <p className="text-sm text-secondary">{t('invitations') || 'Invitations'}</p>
-              <p className="text-2xl font-bold text-primary">{stats.invitations}</p>
+              <p className="text-sm !text-secondary">{t('invitations') || 'Invitations'}</p>
+              <p className="text-2xl font-bold !text-primary">{stats.invitations}</p>
             </div>
           </div>
         </motion.div>
@@ -541,11 +541,11 @@ export default function NotificationsPage() {
           >
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-danger">
-                <IconAlertTriangle className="w-5 h-5 text-white" />
+                <IconAlertTriangle className="w-5 h-5 !text-white" />
               </div>
               <div>
-                <p className="text-sm text-secondary">{t('alerts') || 'Alertes'}</p>
-                <p className="text-2xl font-bold text-danger">{stats.quotaAlerts}</p>
+                <p className="text-sm !text-secondary">{t('alerts') || 'Alertes'}</p>
+                <p className="text-2xl font-bold !text-danger">{stats.quotaAlerts}</p>
               </div>
             </div>
           </motion.div>
@@ -575,10 +575,10 @@ export default function NotificationsPage() {
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-md !text-sm font-medium transition-colors ${
                   filterStatus === status
-                    ? 'bg-accent text-white'
-                    : 'text-secondary hover:text-primary'
+                    ? 'bg-accent !text-white'
+                    : 'text-secondary hover:!text-primary'
                 }`}
               >
                 {status === 'all' && (t('all') || 'Toutes')}
@@ -596,19 +596,19 @@ export default function NotificationsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex items-center gap-2"
           >
-            <span className="text-sm text-secondary">
+            <span className="text-sm !text-secondary">
               {selectedNotifications.size} {t('selected') || 'sélectionnée(s)'}
             </span>
             <button
               onClick={handleMarkSelectedAsRead}
-              className="btn-secondary px-3 py-1.5 text-sm"
+              className="btn-secondary px-3 py-1.5 !text-sm"
             >
               <IconCheck className="w-4 h-4" />
               {t('mark_read') || 'Marquer lu'}
             </button>
             <button
               onClick={handleDeleteSelected}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-danger-light text-danger hover:opacity-80 text-sm transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-danger-light !text-danger hover:opacity-80 !text-sm transition-colors"
             >
               <IconTrash className="w-4 h-4" />
               {t('delete') || 'Supprimer'}
@@ -629,13 +629,13 @@ export default function NotificationsPage() {
             <div className="card p-4">
               <div className="flex flex-wrap gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">
+                  <label className="block !text-sm font-medium !text-secondary mb-2">
                     {t('notification_type') || 'Type de notification'}
                   </label>
                   <select
                     value={filterType}
                     onChange={(e) => setFilterType(e.target.value as NotificationTypeFilter)}
-                    className="input px-3 py-2 text-sm"
+                    className="input px-3 py-2 !text-sm"
                   >
                     <option value="all">{t('all_types') || 'Tous les types'}</option>
                     <option value="project_invitation">{t('invitations') || 'Invitations'}</option>
@@ -664,10 +664,10 @@ export default function NotificationsPage() {
               }`}
             >
               {selectedNotifications.size === filteredNotifications.length && filteredNotifications.length > 0 && (
-                <IconCheck className="w-3 h-3 text-white" />
+                <IconCheck className="w-3 h-3 !text-white" />
               )}
             </button>
-            <span className="text-sm text-secondary">
+            <span className="text-sm !text-secondary">
               {filteredNotifications.length} {t('notifications') || 'notification(s)'}
             </span>
           </div>
@@ -680,11 +680,11 @@ export default function NotificationsPage() {
           </div>
         ) : filteredNotifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
-            <IconInbox className="w-16 h-16 text-muted mb-4" />
-            <h3 className="text-lg font-medium text-secondary mb-2">
+            <IconInbox className="w-16 h-16 !text-muted mb-4" />
+            <h3 className="text-lg font-medium !text-secondary mb-2">
               {t('no_notifications') || 'Aucune notification'}
             </h3>
-            <p className="text-sm text-muted text-center">
+            <p className="text-sm !text-muted !text-center">
               {t('no_notifications_desc') || 'Vous n\'avez aucune notification pour le moment.'}
             </p>
           </div>
@@ -694,7 +694,7 @@ export default function NotificationsPage() {
               <div key={groupName}>
                 {/* En-tête du groupe */}
                 <div className="px-4 py-2 bg-muted border-b border-default">
-                  <span className="!text-xs font-semibold text-muted uppercase tracking-wider">
+                  <span className="!text-xs font-semibold !text-muted uppercase tracking-wider">
                     {groupName}
                   </span>
                 </div>
@@ -719,7 +719,7 @@ export default function NotificationsPage() {
                       }`}
                     >
                       {selectedNotifications.has(notification.documentId) && (
-                        <IconCheck className="w-3 h-3 text-white" />
+                        <IconCheck className="w-3 h-3 !text-white" />
                       )}
                     </button>
 
@@ -739,22 +739,22 @@ export default function NotificationsPage() {
                             <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />
                           )}
                         </div>
-                        <span className="!text-xs text-muted whitespace-nowrap">
+                        <span className="!text-xs !text-muted whitespace-nowrap">
                           {formatDate(notification.createdAt)}
                         </span>
                       </div>
 
-                      <p className="text-sm text-secondary mb-2">
+                      <p className="text-sm !text-secondary mb-2">
                         {notification.message}
                       </p>
 
                       <div className="flex items-center gap-2">
                         <span className={`text-xs px-2 py-0.5 rounded-full ${
                           notification.type === 'project_invitation' 
-                            ? 'bg-accent text-accent'
+                            ? 'bg-accent !text-accent'
                             : notification.type === 'project_update'
                             ? 'bg-infotext-accent'
-                            : 'bg-muted text-secondary'
+                            : 'bg-muted !text-secondary'
                         }`}>
                           {getTypeLabel(notification.type)}
                         </span>
@@ -765,14 +765,14 @@ export default function NotificationsPage() {
                         <div className="flex gap-2 mt-3">
                           <button
                             onClick={() => handleAcceptInvitation(notification)}
-                            className="btn-primary px-4 py-2 text-sm font-medium"
+                            className="btn-primary px-4 py-2 !text-sm font-medium"
                           >
                             <IconCheck className="w-4 h-4" />
                             {t('accept') || 'Accepter'}
                           </button>
                           <button
                             onClick={() => handleRejectInvitation(notification)}
-                            className="btn-ghost px-4 py-2 text-sm font-medium"
+                            className="btn-ghost px-4 py-2 !text-sm font-medium"
                           >
                             <IconX className="w-4 h-4" />
                             {t('reject') || 'Refuser'}
@@ -785,14 +785,14 @@ export default function NotificationsPage() {
                         <div className="flex gap-2 mt-3">
                           <button
                             onClick={() => handleApproveCollaborationRequest(notification)}
-                            className="btn-primary px-4 py-2 text-sm font-medium"
+                            className="btn-primary px-4 py-2 !text-sm font-medium"
                           >
                             <IconCheck className="w-4 h-4" />
                             {t('approve_request') || 'Approuver'}
                           </button>
                           <button
                             onClick={() => handleRejectCollaborationRequest(notification)}
-                            className="btn-ghost px-4 py-2 text-sm font-medium"
+                            className="btn-ghost px-4 py-2 !text-sm font-medium"
                           >
                             <IconX className="w-4 h-4" />
                             {t('reject_request') || 'Refuser'}
@@ -814,7 +814,7 @@ export default function NotificationsPage() {
                       )}
                       <button
                         onClick={() => handleDelete(notification.documentId)}
-                        className="p-2 rounded-lg text-secondary hover:text-danger hover:bg-hover transition-colors"
+                        className="p-2 rounded-lg !text-secondary hover:!text-danger hover:bg-hover transition-colors"
                         title={t('delete') || 'Supprimer'}
                       >
                         <IconTrash className="w-4 h-4" />

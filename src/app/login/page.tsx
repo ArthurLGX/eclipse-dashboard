@@ -211,10 +211,10 @@ function LoginContent() {
               >
                
                 <div>
-                  <h1 className=" uppercase text-primary mb-2 !text-right">
+                  <h1 className=" uppercase !text-primary mb-2 !text-right">
                     {isLogin ? t('welcome_to_eclipse') : t('join_eclipse')}
                   </h1>
-                  <p className="!text-xs text-muted !text-right">
+                  <p className="!text-xs !text-muted !text-right">
                     {isLogin ? t('better_project_reviews_for_developers') : t('create_your_account')}
                   </p>
                 </div>
@@ -227,12 +227,12 @@ function LoginContent() {
                 transition={{ delay: 0.3 }}
                 className="flex items-center gap-2 mb-6"
               >
-                <span className="text-sm text-muted">
+                <span className="text-sm !text-muted">
                   {isLogin ? t("don_t_have_an_account") : t("already_have_an_account")}
                 </span>
                 <button
                   onClick={toggleMode}
-                  className="text-sm text-accent hover:text-accent/80 font-medium transition-colors underline"
+                  className="text-sm !text-accent hover:!text-accent/80 font-medium transition-colors underline"
                 >
                   {isLogin ? t('sign_up') : t('login')}
                 </button>
@@ -243,7 +243,7 @@ function LoginContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.35 }}
-                className="!text-left !text-xs text-muted mb-3"
+                className="!text-left !text-xs !text-muted mb-3"
               >
                 {isLogin 
                   ? t('continue_with_oauth') || 'Continuez avec votre compte' 
@@ -264,7 +264,7 @@ function LoginContent() {
                   {isGoogleLoading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                      <span className="text-sm font-medium text-secondary">Loading...</span>
+                      <span className="text-sm font-medium !text-secondary">Loading...</span>
                     </>
                   ) : (
                     <>
@@ -275,7 +275,7 @@ function LoginContent() {
                         height={20}
                         className="w-5 h-5"
                       />
-                      <span className="text-sm font-medium text-secondary group-hover:text-primary">{t('google')}</span>
+                      <span className="text-sm font-medium !text-secondary group-hover:!text-primary">{t('google')}</span>
                     </>
                   )}
                 </button>
@@ -285,8 +285,8 @@ function LoginContent() {
                   disabled
                   title={t('coming_soon') || 'Prochainement'}
                 >
-                  <IconBrandGithub className="w-5 h-5 text-secondary" />
-                  <span className="text-sm font-medium text-secondary">{t('github')}</span>
+                  <IconBrandGithub className="w-5 h-5 !text-secondary" />
+                  <span className="text-sm font-medium !text-secondary">{t('github')}</span>
                 </button>
               </motion.div>
 
@@ -301,7 +301,7 @@ function LoginContent() {
                   <div className="w-full border-t border-default"></div>
                 </div>
                 <div className="relative flex justify-center !text-xs uppercase">
-                  <span className="bg-card px-2 text-muted">{t('or')}</span>
+                  <span className="bg-card px-2 !text-muted">{t('or')}</span>
                 </div>
               </motion.div>
 
@@ -319,13 +319,13 @@ function LoginContent() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="p-3 bg-danger-bg border border-danger rounded-xl"
                   >
-                    <p className="text-sm text-danger text-center">{error}</p>
+                    <p className="text-sm !text-danger !text-center">{error}</p>
                   </motion.div>
                 )}
 
                 {/* Email/Username */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-secondary">
+                  <label className="text-sm font-medium !text-secondary">
                     {isLogin ? t('username') : t('email')}
                   </label>
                   <input
@@ -335,7 +335,7 @@ function LoginContent() {
                     required
                     autoComplete={isLogin ? 'username' : 'email'}
                     onChange={e => isLogin ? setUsername(e.target.value) : setEmail(e.target.value)}
-                    className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                    className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                   />
                 </div>
 
@@ -347,7 +347,7 @@ function LoginContent() {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2"
                   >
-                    <label className="text-sm font-medium text-secondary">{t('username')}</label>
+                    <label className="text-sm font-medium !text-secondary">{t('username')}</label>
                     <input
                       type="text"
                       placeholder={t('choose_a_username')}
@@ -355,7 +355,7 @@ function LoginContent() {
                       required={!isLogin}
                       autoComplete="username"
                       onChange={e => setUsername(e.target.value)}
-                      className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                     />
                   </motion.div>
                 )}
@@ -363,11 +363,11 @@ function LoginContent() {
                 {/* Password */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium text-secondary">{t('password')}</label>
+                      <label className="text-sm font-medium !text-secondary">{t('password')}</label>
                     {isLogin && (
                       <a
                         href="/forgot-password"
-                        className="!text-xs text-muted hover:text-accent transition-colors"
+                        className="!text-xs !text-muted hover:!text-accent transition-colors"
                       >
                         {t('forgot_password')}
                       </a>
@@ -384,12 +384,12 @@ function LoginContent() {
                         setPassword(e.target.value);
                         if (!isLogin) setPasswordError(validatePassword(e.target.value));
                       }}
-                      className="w-full px-4 py-3 pr-12 bg-input border border-input rounded-xl text-primary placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      className="w-full px-4 py-3 pr-12 bg-input border border-input rounded-xl !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 !text-muted hover:!text-primary transition-colors"
                     >
                       {showPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                     </button>
@@ -407,7 +407,7 @@ function LoginContent() {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2"
                   >
-                    <label className="text-sm font-medium text-secondary">{t('confirm_password')}</label>
+                    <label className="text-sm font-medium !text-secondary">{t('confirm_password')}</label>
                     <div className="relative">
                       <input
                         type={showConfirmPassword ? 'text' : 'password'}
@@ -419,12 +419,12 @@ function LoginContent() {
                           setConfirmPassword(e.target.value);
                           checkPassword(e.target.value);
                         }}
-                        className="w-full px-4 py-3 pr-12 bg-input border border-input rounded-xl text-primary placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                        className="w-full px-4 py-3 pr-12 bg-input border border-input rounded-xl !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 !text-muted hover:!text-primary transition-colors"
                       >
                         {showConfirmPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                       </button>
@@ -438,14 +438,14 @@ function LoginContent() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-highlight hover:bg-highlight-hover text-highlight-text font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="w-full bg-highlight hover:bg-highlight-hover !text-highlight-text font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
                   {isLogin ? t('sign_in') : t('sign_up')}
                 </button>
 
                 {/* Terms */}
                 {!isLogin && (
-                  <p className="!text-xs text-center text-muted">
+                  <p className="!text-xs !text-center !text-muted">
                     {t('by_signing_up_you_agree_to_eclipse_s_terms_of_service')}
                     <a href="#" className="text-accent hover:underline">
                       {t('terms_of_service')}

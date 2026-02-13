@@ -69,15 +69,15 @@ export default function GoogleRedirectPage() {
           className="text-center p-8 rounded-xl bg-card border-default min-w-md"
         >
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-            <IconAlertCircle className="w-8 h-8 text-red-500" />
+            <IconAlertCircle className="w-8 h-8 !text-red-500" />
           </div>
-          <h1 className="text-xl font-bold text-center text-primary mb-2">
+          <h1 className="text-xl font-bold !text-center !text-primary mb-2">
             {t('error_connecting')}
           </h1>
-            <p className="text-center text-primary mb-6">{error}</p>
+            <p className="text-center !text-primary mb-6">{error}</p>
           <button
             onClick={() => router.push('/login')}
-            className="px-6 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-opacity"
+            className="px-6 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-opacity"
           > 
             {t('back_to_login')}
           </button>
@@ -100,10 +100,10 @@ export default function GoogleRedirectPage() {
             className="absolute inset-0 rounded-full border-4 border-default border-t-accent"
           />
           <div className="absolute inset-0 flex items-center justify-center">
-            <IconBrandGoogle className="w-8 h-8 text-primary" />
+            <IconBrandGoogle className="w-8 h-8 !text-primary" />
           </div>
         </div>
-        <h1 className="text-xl font-semibold text-primary mb-2">
+        <h1 className="text-xl font-semibold !text-primary mb-2">
           {t('connecting')}...
         </h1>
         <p className="text-primary">

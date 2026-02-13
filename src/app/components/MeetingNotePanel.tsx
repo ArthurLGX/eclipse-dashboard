@@ -225,7 +225,7 @@ export default function MeetingNotePanel({
       >
         <div className="flex items-center gap-2">
           <IconNotes className="w-5 h-5 !text-accent" />
-          <span className="font-medium text-primary">
+          <span className="font-medium !text-primary">
             {t('meeting_notes') || 'Notes de réunion'}
           </span>
           {note && (
@@ -235,9 +235,9 @@ export default function MeetingNotePanel({
           )}
         </div>
         {isExpanded ? (
-          <IconChevronUp className="w-4 h-4 text-muted" />
+          <IconChevronUp className="w-4 h-4 !text-muted" />
         ) : (
-          <IconChevronDown className="w-4 h-4 text-muted" />
+          <IconChevronDown className="w-4 h-4 !text-muted" />
         )}
       </button>
 
@@ -257,14 +257,14 @@ export default function MeetingNotePanel({
                   <>
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="btn-tertiary px-3 py-1.5 text-sm rounded-lg flex items-center gap-1"
+                      className="btn-tertiary px-3 py-1.5 !text-sm rounded-lg flex items-center gap-1"
                     >
                       <IconEdit className="w-4 h-4" />
                       {t('edit') || 'Modifier'}
                     </button>
                     <button
                       onClick={handleDelete}
-                      className="btn-tertiary px-3 py-1.5 text-sm rounded-lg text-error flex items-center gap-1"
+                      className="btn-tertiary px-3 py-1.5 !text-sm rounded-lg !text-error flex items-center gap-1"
                     >
                       <IconTrash className="w-4 h-4" />
                     </button>
@@ -273,7 +273,7 @@ export default function MeetingNotePanel({
                 {!isEditing && !hasContent && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="btn-primary px-3 py-1.5 text-sm rounded-lg flex items-center gap-1"
+                    className="btn-primary px-3 py-1.5 !text-sm rounded-lg flex items-center gap-1"
                   >
                     <IconPlus className="w-4 h-4" />
                     {t('add_notes') || 'Ajouter des notes'}
@@ -293,7 +293,7 @@ export default function MeetingNotePanel({
                           {t('summary') || 'Résumé'}
                         </span>
                       </div>
-                      <p className="text-sm text-primary whitespace-pre-wrap">{summary}</p>
+                      <p className="text-sm !text-primary whitespace-pre-wrap">{summary}</p>
                     </div>
                   )}
 
@@ -302,7 +302,7 @@ export default function MeetingNotePanel({
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <IconListCheck className="w-4 h-4 !text-success-text -text" />
-                        <span className="text-sm font-medium text-primary">
+                        <span className="text-sm font-medium !text-primary">
                           {t('action_items') || 'Actions à faire'} ({actionItems.filter(i => !i.completed).length}/{actionItems.length})
                         </span>
                       </div>
@@ -332,8 +332,8 @@ export default function MeetingNotePanel({
                   {attendees.length > 0 && (
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <IconUsers className="w-4 h-4 text-info" />
-                        <span className="text-sm font-medium text-primary">
+                        <IconUsers className="w-4 h-4 !text-info" />
+                        <span className="text-sm font-medium !text-primary">
                           {t('attendees') || 'Participants'} ({attendees.length})
                         </span>
                       </div>
@@ -341,7 +341,7 @@ export default function MeetingNotePanel({
                         {attendees.map((attendee, index) => (
                           <span
                             key={index}
-                            className="px-2 py-1 bg-info-light text-info !text-xs rounded-full"
+                            className="px-2 py-1 bg-info-light !text-info !text-xs rounded-full"
                           >
                             {attendee.name}
                           </span>
@@ -354,19 +354,19 @@ export default function MeetingNotePanel({
                   {transcription && (
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <IconFileText className="w-4 h-4 text-muted" />
-                        <span className="text-sm font-medium text-primary">
+                        <IconFileText className="w-4 h-4 !text-muted" />
+                        <span className="text-sm font-medium !text-primary">
                           {t('transcription') || 'Transcription'}
                         </span>
                       </div>
                       <div className="p-3 bg-muted rounded-lg max-h-40 overflow-y-auto">
-                        <p className="text-sm text-secondary whitespace-pre-wrap">{transcription}</p>
+                        <p className="text-sm !text-secondary whitespace-pre-wrap">{transcription}</p>
                       </div>
                     </div>
                   )}
 
                   {/* Metadata */}
-                  <div className="flex flex-wrap gap-4 !text-xs text-muted">
+                  <div className="flex flex-wrap gap-4 !text-xs !text-muted">
                     {durationMinutes && (
                       <div className="flex items-center gap-1">
                         <IconClock className="w-3 h-3" />
@@ -393,7 +393,7 @@ export default function MeetingNotePanel({
                 <div className="space-y-4">
                   {/* Summary */}
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-1">
+                    <label className="block !text-sm font-medium !text-secondary mb-1">
                       {t('summary') || 'Résumé'}
                     </label>
                     <textarea
@@ -406,7 +406,7 @@ export default function MeetingNotePanel({
 
                   {/* Action Items */}
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-1">
+                    <label className="block !text-sm font-medium !text-secondary mb-1">
                       {t('action_items') || 'Actions à faire'}
                     </label>
                     <div className="space-y-2">
@@ -415,19 +415,19 @@ export default function MeetingNotePanel({
                           <button
                             onClick={() => toggleActionItem(item.id)}
                             className={`p-1 rounded ${
-                              item.completed ? 'bg-success text-white' : 'bg-hover text-muted'
+                              item.completed ? 'bg-success !text-white' : 'bg-hover !text-muted'
                             }`}
                           >
                             <IconCheck className="w-4 h-4" />
                           </button>
-                          <span className={`flex-1 text-sm ${
-                            item.completed ? 'line-through text-muted' : 'text-primary'
+                          <span className={`flex-1 !text-sm ${
+                            item.completed ? 'line-through !text-muted' : 'text-primary'
                           }`}>
                             {item.text}
                           </span>
                           <button
                             onClick={() => removeActionItem(item.id)}
-                            className="p-1 text-error hover:bg-error-light rounded"
+                            className="p-1 !text-error hover:bg-error-light rounded"
                           >
                             <IconTrash className="w-4 h-4" />
                           </button>
@@ -455,19 +455,19 @@ export default function MeetingNotePanel({
 
                   {/* Attendees */}
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-1">
+                    <label className="block !text-sm font-medium !text-secondary mb-1">
                       {t('attendees') || 'Participants'}
                     </label>
                     <div className="flex flex-wrap gap-2 mb-2">
                       {attendees.map((attendee, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center gap-1 px-2 py-1 bg-info-light text-info !text-xs rounded-full"
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-info-light !text-info !text-xs rounded-full"
                         >
                           {attendee.name}
                           <button
                             onClick={() => removeAttendee(index)}
-                            className="hover:text-error"
+                            className="hover:!text-error"
                           >
                             <IconTrash className="w-3 h-3" />
                           </button>
@@ -496,7 +496,7 @@ export default function MeetingNotePanel({
                   {/* Duration & Recording */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-secondary mb-1">
+                      <label className="block !text-sm font-medium !text-secondary mb-1">
                         {t('duration') || 'Durée'} (min)
                       </label>
                       <input
@@ -508,7 +508,7 @@ export default function MeetingNotePanel({
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-secondary mb-1">
+                      <label className="block !text-sm font-medium !text-secondary mb-1">
                         {t('recording_url') || 'Lien enregistrement'}
                       </label>
                       <input
@@ -523,7 +523,7 @@ export default function MeetingNotePanel({
 
                   {/* Transcription */}
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-1">
+                    <label className="block !text-sm font-medium !text-secondary mb-1">
                       {t('transcription') || 'Transcription'}
                     </label>
                     <textarea
@@ -568,11 +568,11 @@ export default function MeetingNotePanel({
               {/* Empty State */}
               {!isEditing && !hasContent && (
                 <div className="text-center py-6">
-                  <IconNotes className="w-10 h-10 text-muted mx-auto mb-2 opacity-50" />
-                  <p className="text-sm text-muted">
+                  <IconNotes className="w-10 h-10 !text-muted mx-auto mb-2 opacity-50" />
+                  <p className="text-sm !text-muted">
                     {t('no_meeting_notes') || 'Aucune note pour cette réunion'}
                   </p>
-                  <p className="!text-xs text-muted mt-1">
+                  <p className="!text-xs !text-muted mt-1">
                     {t('meeting_notes_hint') || 'Ajoutez des notes, un résumé ou des actions à faire'}
                   </p>
                 </div>

@@ -267,8 +267,8 @@ export default function ProjectProfitabilityAI({
     if (!profitability) return <IconChartLine className="w-5 h-5" />;
     switch (profitability.profitability) {
       case 'positive': return <IconTrendingUp className="w-5 h-5 !text-success-text -text" />;
-      case 'negative': return <IconTrendingDown className="w-5 h-5 text-danger" />;
-      default: return <IconChartLine className="w-5 h-5 text-warning" />;
+      case 'negative': return <IconTrendingDown className="w-5 h-5 !text-danger" />;
+      default: return <IconChartLine className="w-5 h-5 !text-warning" />;
     }
   };
 
@@ -304,7 +304,7 @@ export default function ProjectProfitabilityAI({
           {/* Title & Summary */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center flex-wrap gap-x-2 gap-y-1">
-              <h3 className="font-semibold text-primary whitespace-nowrap">
+              <h3 className="font-semibold !text-primary whitespace-nowrap">
                 {t('profitability_analysis') || 'Analyse de rentabilité'}
               </h3>
               
@@ -335,9 +335,9 @@ export default function ProjectProfitabilityAI({
           {/* Chevron */}
           <div className="flex-shrink-0">
             {isExpanded ? (
-              <IconChevronUp className="w-5 h-5 text-muted" />
+              <IconChevronUp className="w-5 h-5 !text-muted" />
             ) : (
-              <IconChevronDown className="w-5 h-5 text-muted" />
+              <IconChevronDown className="w-5 h-5 !text-muted" />
             )}
           </div>
         </div>
@@ -357,34 +357,34 @@ export default function ProjectProfitabilityAI({
               {/* Stats rapides - centré vertical pour éviter débordement */}
               <div className="grid grid-cols-2 gap-2 pt-4">
                 <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
-                  <div className="flex items-center gap-1.5 text-muted">
+                  <div className="flex items-center gap-1.5 !text-muted">
                     <IconClock className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="!text-xs">{t('estimated') || 'Estimé'}</span>
                   </div>
-                  <span className="font-bold text-primary text-lg">{estimatedHours}h</span>
+                  <span className="font-bold !text-primary !text-lg">{estimatedHours}h</span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
-                  <div className="flex items-center gap-1.5 text-muted">
+                  <div className="flex items-center gap-1.5 !text-muted">
                     <IconClock className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="!text-xs">{t('actual') || 'Réel'}</span>
                   </div>
-                  <span className={`font-bold text-lg ${actualHours > estimatedHours ? 'text-danger' : 'text-success'}`}>
+                  <span className={`font-bold !text-lg ${actualHours > estimatedHours ? 'text-danger' : 'text-success'}`}>
                     {actualHours}h
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
-                  <div className="flex items-center gap-1.5 text-muted">
+                  <div className="flex items-center gap-1.5 !text-muted">
                     <IconCurrencyEuro className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="!text-xs truncate">{t('planned_rate') || 'Taux prévu'}</span>
                   </div>
-                  <span className="font-bold text-primary text-lg">{hourlyRate}€</span>
+                  <span className="font-bold !text-primary !text-lg">{hourlyRate}€</span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
-                  <div className="flex items-center gap-1.5 text-muted">
+                  <div className="flex items-center gap-1.5 !text-muted">
                     <IconCurrencyEuro className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="!text-xs truncate">{t('effective_rate') || 'Taux effectif'}</span>
                   </div>
-                  <span className={`font-bold text-lg ${
+                  <span className={`font-bold !text-lg ${
                     (profitability?.effective_hourly_rate || 0) >= hourlyRate ? 'text-success' : 'text-danger'
                   }`}>
                     {profitability?.effective_hourly_rate || '--'}€
@@ -401,9 +401,9 @@ export default function ProjectProfitabilityAI({
                     <IconAlertTriangle className={`w-5 h-5 ${getRiskColor(alert.risk)} flex-shrink-0 mt-0.5`} />
                     <div>
                       <p className={`font-medium ${getRiskColor(alert.risk)}`}>{alert.reason}</p>
-                      <p className="text-sm text-secondary mt-1">{alert.recommendation}</p>
+                      <p className="text-sm !text-secondary mt-1">{alert.recommendation}</p>
                       {alert.tasks_at_risk.length > 0 && (
-                        <p className="!text-xs text-muted mt-2">
+                        <p className="!text-xs !text-muted mt-2">
                           Tâches concernées : {alert.tasks_at_risk.join(', ')}
                         </p>
                       )}
@@ -415,12 +415,12 @@ export default function ProjectProfitabilityAI({
               {/* Causes principales (projet terminé) */}
               {isCompleted && profitability && profitability.main_causes.length > 0 && (
                 <div>
-                  <p className="text-sm font-medium text-primary mb-2">
+                  <p className="text-sm font-medium !text-primary mb-2">
                     {t('main_causes') || 'Causes principales'}
                   </p>
                   <ul className="space-y-1">
                     {profitability.main_causes.map((cause, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-secondary">
+                      <li key={i} className="flex items-start gap-2 !text-sm !text-secondary">
                         <span className="text-danger">•</span>
                         {cause}
                       </li>
@@ -432,13 +432,13 @@ export default function ProjectProfitabilityAI({
               {/* Recommandations */}
               {profitability && profitability.recommendations.length > 0 && (
                 <div>
-                  <p className="text-sm font-medium text-primary mb-2 flex items-center gap-1">
-                    <IconBulb className="w-4 h-4 text-warning" />
+                  <p className="text-sm font-medium !text-primary mb-2 flex items-center gap-1">
+                    <IconBulb className="w-4 h-4 !text-warning" />
                     {t('recommendations') || 'Recommandations'}
                   </p>
                   <ul className="space-y-1">
                     {profitability.recommendations.map((rec, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-secondary">
+                      <li key={i} className="flex items-start gap-2 !text-sm !text-secondary">
                         <IconCheck className="w-4 h-4 !text-success-text -text flex-shrink-0 mt-0.5" />
                         {rec}
                       </li>
@@ -459,7 +459,7 @@ export default function ProjectProfitabilityAI({
                     }
                   }}
                   disabled={isLoading}
-                  className="flex items-center gap-1 !text-xs text-muted hover:text-primary transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1 !text-xs !text-muted hover:!text-primary transition-colors disabled:opacity-50"
                 >
                   <IconRefresh className={`w-3 h-3 ${isLoading ? 'animate-spin' : ''}`} />
                   {t('refresh_analysis') || 'Actualiser'}
@@ -468,7 +468,7 @@ export default function ProjectProfitabilityAI({
 
               {/* Message d'erreur discret */}
               {error && (
-                <p className="!text-xs text-muted text-center">{error}</p>
+                <p className="!text-xs !text-muted !text-center">{error}</p>
               )}
             </div>
           </motion.div>

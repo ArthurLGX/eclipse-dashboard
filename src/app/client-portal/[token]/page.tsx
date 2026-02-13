@@ -152,9 +152,9 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
   if (error || !data) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
-          <IconAlertTriangle size={64} className="mx-auto text-accent-subtle mb-4" />
-          <h1 className="text-2xl font-bold text-slate-800 mb-2">Lien invalide</h1>
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center">
+          <IconAlertTriangle size={64} className="mx-auto !text-accent-subtle mb-4" />
+          <h1 className="text-2xl font-bold !text-slate-800 mb-2">Lien invalide</h1>
           <p className="text-slate-600">{error || 'Ce lien de partage est invalide ou a expiré.'}</p>
         </div>
       </div>
@@ -164,9 +164,9 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
   if (validationSuccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
-          <IconCircleCheck size={64} className="mx-auto text-green-500 mb-4" />
-          <h1 className="text-2xl font-bold text-slate-800 mb-2">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center">
+          <IconCircleCheck size={64} className="mx-auto !text-green-500 mb-4" />
+          <h1 className="text-2xl font-bold !text-slate-800 mb-2">
             {validationAction === 'approve' ? 'Maquettes validées !' : 'Modifications demandées'}
           </h1>
           <p className="text-slate-600 mb-4">
@@ -187,9 +187,9 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
       <header className="bg-white shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-slate-800">{data.project.title}</h1>
+            <h1 className="text-xl font-bold !text-slate-800">{data.project.title}</h1>
             {data.project.client && (
-              <p className="text-sm text-slate-600">Client: {data.project.client.name}</p>
+              <p className="text-sm !text-slate-600">Client: {data.project.client.name}</p>
             )}
           </div>
           {data.provider?.logo && (
@@ -203,11 +203,11 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
         {data.show_progress && data.project.progress !== undefined && (
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-medium text-slate-700 flex items-center gap-2">
+              <span className="font-medium !text-slate-700 flex items-center gap-2">
                 <IconProgress size={15} className="text-accent-subtle" />
                 Progression du projet
               </span>
-              <span className="text-lg font-bold text-accent-subtle">{data.project.progress}%</span>
+              <span className="text-lg font-bold !text-accent-subtle">{data.project.progress}%</span>
             </div>
             <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
               <div 
@@ -221,7 +221,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
         {/* Tasks */}
         {data.show_tasks && data.project.tasks && data.project.tasks.length > 0 && (
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <h2 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <h2 className="font-semibold !text-slate-800 mb-4 flex items-center gap-2">
               <IconCheck size={15} className="text-accent-subtle" />
               Avancement des tâches
             </h2>
@@ -230,10 +230,10 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                 <div key={idx} className="flex items-center gap-3">
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                     task.status === 'completed' 
-                      ? 'bg-accent-bg text-accent-subtle' 
+                      ? 'bg-accent-bg !text-accent-subtle' 
                       : task.status === 'in_progress'
-                        ? 'bg-amber-100 text-amber-600'
-                        : 'bg-slate-100 text-slate-400'
+                        ? 'bg-amber-100 !text-amber-600'
+                        : 'bg-slate-100 !text-slate-400'
                   }`}>
                     {task.status === 'completed' ? <IconCheck size={14} /> : <span className="!text-xs">{idx + 1}</span>}
                   </div>
@@ -256,15 +256,15 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
         {data.show_mockups && data.mockups && data.mockups.length > 0 && (
           <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
             <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="font-semibold text-slate-800 flex items-center gap-2">
+              <h2 className="font-semibold !text-slate-800 flex items-center gap-2">
                 <IconPhoto size={15} className="text-accent-subtle" />
                 Maquettes à valider ({data.mockups.length})
               </h2>
               {data.validation_status !== 'pending' && (
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                <span className={`px-3 py-1 rounded-full !text-sm font-medium ${
                   data.validation_status === 'approved' 
-                    ? 'bg-accent-bg text-accent-subtle'
-                    : 'bg-accent-bg text-accent-subtle'
+                    ? 'bg-accent-bg !text-accent-subtle'
+                    : 'bg-accent-bg !text-accent-subtle'
                 }`}>
                   {data.validation_status === 'approved' ? 'Validé' : 'Modifications demandées'}
                 </span>
@@ -306,12 +306,12 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                 <div className="p-4 bg-slate-50 border-t border-slate-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-medium text-slate-800">{currentMockup.title}</h3>
+                      <h3 className="font-medium !text-slate-800">{currentMockup.title}</h3>
                       {currentMockup.description && (
-                        <p className="text-sm text-slate-600">{currentMockup.description}</p>
+                        <p className="text-sm !text-slate-600">{currentMockup.description}</p>
                       )}
                     </div>
-                    <span className="text-sm text-slate-500">
+                    <span className="text-sm !text-slate-500">
                       {currentMockupIndex + 1} / {data.mockups.length}
                     </span>
                   </div>
@@ -347,21 +347,21 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
         {/* Validation buttons */}
         {data.allow_validation && data.validation_status === 'pending' && (
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="font-semibold text-slate-800 mb-4">Votre décision</h2>
+            <h2 className="font-semibold !text-slate-800 mb-4">Votre décision</h2>
             <p className="text-slate-600 mb-6">
               Après avoir examiné les maquettes, veuillez valider ou demander des modifications.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={() => { setValidationAction('approve'); setValidationModal(true); }}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-subtle text-accent-text rounded-xl font-semibold hover:bg-accent-bg transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-subtle !text-accent-text rounded-xl font-semibold hover:bg-accent-bg transition-colors"
               >
                 <IconCheck size={15} />
                 Valider les maquettes
               </button>
               <button
                 onClick={() => { setValidationAction('request_changes'); setValidationModal(true); }}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-bg text-accent-subtle rounded-xl font-semibold hover:bg-accent-bg transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-bg !text-accent-subtle rounded-xl font-semibold hover:bg-accent-bg transition-colors"
               >
                 <IconMessageCircle size={15} />
                 Demander des modifications
@@ -372,9 +372,9 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
 
         {/* Already validated */}
         {data.validation_status !== 'pending' && (
-          <div className="bg-white rounded-xl shadow-sm p-6 text-center">
-            <IconCircleCheck size={48} className="mx-auto text-accent-subtle mb-4" />
-            <h2 className="text-lg font-semibold text-slate-800 mb-2">
+          <div className="bg-white rounded-xl shadow-sm p-6 !text-center">
+            <IconCircleCheck size={48} className="mx-auto !text-accent-subtle mb-4" />
+            <h2 className="text-lg font-semibold !text-slate-800 mb-2">
               {data.validation_status === 'approved' ? 'Maquettes validées' : 'Modifications demandées'}
             </h2>
             {data.validated_by_name && (
@@ -391,13 +391,13 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50" onClick={() => setValidationModal(false)} />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-            <h3 className="text-xl font-bold text-slate-800 mb-4">
+            <h3 className="text-xl font-bold !text-slate-800 mb-4">
               {validationAction === 'approve' ? 'Valider les maquettes' : 'Demander des modifications'}
             </h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Votre nom *</label>
+                <label className="block !text-sm font-medium !text-slate-700 mb-1">Votre nom *</label>
                 <input
                   type="text"
                   value={clientName}
@@ -407,7 +407,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Votre email *</label>
+                <label className="block !text-sm font-medium !text-slate-700 mb-1">Votre email *</label>
                 <input
                   type="email"
                   value={clientEmail}
@@ -419,7 +419,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
               
               {validationAction === 'request_changes' && (
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Vos retours et demandes</label>
+                  <label className="block !text-sm font-medium !text-slate-700 mb-1">Vos retours et demandes</label>
                   <textarea
                     value={comments}
                     onChange={(e) => setComments(e.target.value)}
@@ -442,8 +442,8 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                   disabled={validating || !clientName || !clientEmail}
                   className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 ${
                     validationAction === 'approve'
-                      ? 'bg-accent-subtle text-accent-text hover:bg-accent-subtle'
-                      : 'bg-accent-bg text-accent-subtle hover:bg-accent-subtle'
+                      ? 'bg-accent-subtle !text-accent-text hover:bg-accent-subtle'
+                      : 'bg-accent-bg !text-accent-subtle hover:bg-accent-subtle'
                   }`}
                 >
                   {validating ? '...' : 'Confirmer'}

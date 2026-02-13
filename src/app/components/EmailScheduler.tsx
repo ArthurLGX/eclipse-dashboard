@@ -112,11 +112,11 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-warning-light flex items-center justify-center">
-            <IconClock className="w-5 h-5 text-warning" />
+            <IconClock className="w-5 h-5 !text-warning" />
           </div>
           <div>
             <h3 className="text-primary font-medium">Planifier l&apos;envoi</h3>
-            <p className="text-muted text-sm">Programmer l&apos;envoi pour plus tard</p>
+            <p className="text-muted !text-sm">Programmer l&apos;envoi pour plus tard</p>
           </div>
         </div>
         
@@ -151,7 +151,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
                   type="button"
                   onClick={() => applyQuickSchedule(option)}
                   disabled={disabled}
-                  className="px-3 py-1.5 !text-xs bg-muted text-secondary rounded-lg hover:bg-hover hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-default"
+                  className="px-3 py-1.5 !text-xs bg-muted !text-secondary rounded-lg hover:bg-hover hover:!text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-default"
                 >
                   {option.label}
                 </button>
@@ -161,7 +161,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
             {/* Date/Time inputs */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm text-muted mb-1">Date</label>
+                <label className="block !text-sm !text-muted mb-1">Date</label>
                 <input
                   type="date"
                   value={scheduledDate}
@@ -172,7 +172,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
                 />
               </div>
               <div>
-                <label className="block text-sm text-muted mb-1">Heure</label>
+                <label className="block !text-sm !text-muted mb-1">Heure</label>
                 <input
                   type="time"
                   value={scheduledTime}
@@ -192,7 +192,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
                 className="flex items-center gap-2 p-3 bg-success-light border border success rounded-lg"
               >
                 <IconCheck className="w-5 h-5 !text-success-text -text" />
-                <span className="text-success text-sm">
+                <span className="text-success !text-sm">
                   Envoi programmé le{' '}
                   <strong>
                     {new Date(`${scheduledDate}T${scheduledTime}`).toLocaleDateString('fr-FR', {
@@ -215,8 +215,8 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-2 p-3 bg-danger-light border border-danger rounded-lg"
               >
-                <IconAlertTriangle className="w-5 h-5 text-danger" />
-                <span className="text-danger text-sm">
+                <IconAlertTriangle className="w-5 h-5 !text-danger" />
+                <span className="text-danger !text-sm">
                   La date/heure doit être dans le futur
                 </span>
               </motion.div>

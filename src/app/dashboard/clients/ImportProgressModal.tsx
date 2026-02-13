@@ -62,15 +62,15 @@ export default function ImportProgressModal({
       case 'pending':
         return <div className="w-5 h-5 rounded-full border-2 border-zinc-500" />;
       case 'uploading_image':
-        return <IconLoader2 className="w-5 h-5 text-blue-400 animate-spin" />;
+        return <IconLoader2 className="w-5 h-5 !text-blue-400 animate-spin" />;
       case 'creating':
         return <IconLoader2 className="w-5 h-5 !text-accent animate-spin" />;
       case 'success':
         return <IconCheck className="w-5 h-5 !text-success-text -text" />;
       case 'error':
-        return <IconX className="w-5 h-5 text-danger" />;
+        return <IconX className="w-5 h-5 !text-danger" />;
       case 'skipped':
-        return <IconPlayerSkipForward className="w-5 h-5 text-warning" />;
+        return <IconPlayerSkipForward className="w-5 h-5 !text-warning" />;
     }
   };
 
@@ -101,7 +101,7 @@ export default function ImportProgressModal({
         {/* Header */}
         <div className="p-6 border-b border-default">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-primary flex items-center gap-3">
+            <h2 className="text-xl font-bold !text-primary flex items-center gap-3">
               {t('import_progress_title') || 'Import en cours...'}
             </h2>
             {isComplete && (
@@ -109,14 +109,14 @@ export default function ImportProgressModal({
                 onClick={onClose}
                 className="p-2 rounded-lg hover:bg-card-hover transition-colors"
               >
-                <IconX className="w-5 h-5 text-secondary" />
+                <IconX className="w-5 h-5 !text-secondary" />
               </button>
             )}
           </div>
 
           {/* Progress bar */}
           <div className="space-y-2">
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between !text-sm">
               <span className="text-primary">
                 {currentIndex} / {totalCount} {t('clients') || 'clients'}
               </span>
@@ -134,18 +134,18 @@ export default function ImportProgressModal({
 
           {/* Stats */}
           <div className="flex flex-wrap gap-3 mt-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light !text-success-text -text text-sm">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light !text-success-text -text !text-sm">
               <IconCheck className="w-4 h-4" />
               {successCount} {t('import_success_count') || 'ajouté(s)'}
             </div>
             {skippedCount > 0 && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-warning-light text-warning-text text-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-warning-light !text-warning-text !text-sm">
                 <IconPlayerSkipForward className="w-4 h-4" />
                 {skippedCount} {t('import_skipped_count') || 'ignoré(s)'}
               </div>
             )}
             {errorCount > 0 && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-danger-light text-danger text-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-danger-light !text-danger !text-sm">
                 <IconAlertCircle className="w-4 h-4" />
                 {errorCount} {t('import_error_count') || 'erreur(s)'}
               </div>
@@ -204,7 +204,7 @@ export default function ImportProgressModal({
                   }`}>
                     {item.name}
                   </p>
-                  <p className="!text-xs text-secondary truncate">{item.email}</p>
+                  <p className="!text-xs !text-secondary truncate">{item.email}</p>
                 </div>
 
                 {/* Status text */}
@@ -221,7 +221,7 @@ export default function ImportProgressModal({
                     {getStatusText(item.status)}
                   </p>
                   {item.error && (
-                      <p className="!text-xs text-danger max-w-[200px] truncate" title={item.error}>
+                      <p className="!text-xs !text-danger max-w-[200px] truncate" title={item.error}>
                       {item.error}
                     </p>
                   )}
@@ -232,7 +232,7 @@ export default function ImportProgressModal({
 
           {/* Empty state while waiting */}
           {items.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-secondary">
+            <div className="flex flex-col items-center justify-center h-full !text-secondary">
               <IconLoader2 className="w-8 h-8 animate-spin mb-2" />
               <p>{t('import_starting') || 'Démarrage de l\'import...'}</p>
             </div>
@@ -251,7 +251,7 @@ export default function ImportProgressModal({
                 <p className="text-primary font-medium">
                   {t('import_complete') || 'Import terminé !'}
                 </p>
-                <p className="text-sm text-secondary">
+                <p className="text-sm !text-secondary">
                   <span className="text-success-text">{successCount} {t('import_clients_added') || 'ajouté(s)'}</span>
                   {skippedCount > 0 && (
                     <span className="text-warning">, {skippedCount} {t('import_clients_skipped') || 'ignoré(s)'}</span>

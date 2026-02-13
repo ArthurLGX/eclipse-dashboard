@@ -123,7 +123,7 @@ export default function BusinessSetupModal() {
             <button
               onClick={handleSkip}
               disabled={isSaving}
-              className="absolute top-4 right-4 p-2 text-muted hover:text-primary rounded-lg hover:bg-muted transition-colors"
+              className="absolute top-4 right-4 p-2 !text-muted hover:!text-primary rounded-lg hover:bg-muted transition-colors"
               title={t('skip') || 'Passer'}
             >
               <IconX className="w-5 h-5" />
@@ -134,7 +134,7 @@ export default function BusinessSetupModal() {
                 <IconSparkles className="w-8 h-8 !text-accent" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-primary">
+                <h2 className="text-2xl font-bold !text-primary">
                   {t('setup_welcome') || 'Configurez votre espace'}
                 </h2>
                 <p className="text-muted">
@@ -145,15 +145,15 @@ export default function BusinessSetupModal() {
 
             {/* Progress indicator */}
             <div className="flex items-center gap-4 mt-4">
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                step === 'business' ? 'bg-accent text-white' : 'bg-success text-white'
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-full !text-sm font-medium transition-all ${
+                step === 'business' ? 'bg-accent !text-white' : 'bg-success !text-white'
               }`}>
                 {step === 'modules' ? '✓' : '1'}
                 <span>{t('your_business') || 'Votre métier'}</span>
               </div>
               <div className="w-8 h-0.5 bg-muted" />
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                step === 'modules' ? 'bg-accent text-white' : 'bg-hover text-muted'
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-full !text-sm font-medium transition-all ${
+                step === 'modules' ? 'bg-accent !text-white' : 'bg-hover !text-muted'
               }`}>
                 <span>2</span>
                 <span>{t('your_tools') || 'Vos outils'}</span>
@@ -166,7 +166,7 @@ export default function BusinessSetupModal() {
             {step === 'business' ? (
               <div className="space-y-6">
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-primary">
+                  <h3 className="text-xl font-bold !text-primary">
                     {t('what_is_your_business') || 'Quel est votre métier ?'}
                   </h3>
                   <p className="text-muted mt-2">
@@ -181,7 +181,7 @@ export default function BusinessSetupModal() {
             ) : (
               <div className="space-y-6">
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-primary">
+                  <h3 className="text-xl font-bold !text-primary">
                     {t('select_your_modules') || 'Sélectionnez vos modules'}
                   </h3>
                   <p className="text-muted mt-2">
@@ -206,7 +206,7 @@ export default function BusinessSetupModal() {
                 <button
                   onClick={handleBack}
                   disabled={isSaving}
-                  className="px-4 py-2 text-muted hover:text-primary transition-colors"
+                  className="px-4 py-2 !text-muted hover:!text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
@@ -214,7 +214,7 @@ export default function BusinessSetupModal() {
                 <button
                   onClick={handleSkip}
                   disabled={isSaving}
-                  className="px-4 py-2 text-muted hover:text-primary transition-colors underline"
+                  className="px-4 py-2 !text-muted hover:!text-primary transition-colors underline"
                 >
                   {t('skip_setup') || 'Configurer plus tard'}
                 </button>
@@ -227,8 +227,8 @@ export default function BusinessSetupModal() {
                 disabled={!selectedType}
                 className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
                   selectedType
-                    ? 'bg-accent text-white hover:bg-[var(--color-accent)]'
-                    : 'bg-muted text-muted cursor-not-allowed'
+                    ? 'bg-accent !text-white hover:bg-[var(--color-accent)]'
+                    : 'bg-muted !text-muted cursor-not-allowed'
                 }`}
               >
                 {t('continue') || 'Continuer'}
@@ -237,7 +237,7 @@ export default function BusinessSetupModal() {
               <button
                 onClick={handleComplete}
                 disabled={isSaving || !selectedType}
-                className="px-6 py-2.5 rounded-xl font-medium bg-accent text-white hover:bg-[var(--color-accent)] transition-all flex items-center gap-2"
+                className="px-6 py-2.5 rounded-xl font-medium bg-accent !text-white hover:bg-[var(--color-accent)] transition-all flex items-center gap-2"
               >
                 {isSaving ? (
                   <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />

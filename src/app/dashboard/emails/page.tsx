@@ -172,7 +172,7 @@ function EmailsDashboard() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
+        <h1 className="text-3xl font-bold !text-primary flex items-center gap-3">
           <IconMail className="w-8 h-8 !text-accent" />
           {t('emails') || 'Emails'}
         </h1>
@@ -199,15 +199,15 @@ function EmailsDashboard() {
               <type.icon className="w-7 h-7" style={{ color: type.color }} />
             </div>
             
-            <h3 className="text-lg font-semibold text-primary mb-2 group-hover:text-accent transition-colors">
+            <h3 className="text-lg font-semibold !text-primary mb-2 group-hover:!text-accent transition-colors">
               {type.title}
             </h3>
             
-            <p className="text-sm text-muted mb-4">
+            <p className="text-sm !text-muted mb-4">
               {type.description}
             </p>
             
-            <div className="flex items-center gap-2 text-sm !text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-2 !text-sm !text-accent opacity-0 group-hover:opacity-100 transition-opacity">
               <span>{t('create') || 'Créer'}</span>
               <IconArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
             </div>
@@ -230,10 +230,10 @@ function EmailsDashboard() {
               <IconChartBar className="w-7 h-7 !text-accent" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-primary group-hover:text-accent transition-colors">
+              <h3 className="text-lg font-semibold !text-primary group-hover:!text-accent transition-colors">
                 {t('email_analytics') || 'Analytics'}
               </h3>
-              <p className="text-sm text-muted">
+              <p className="text-sm !text-muted">
                 {t('email_analytics_desc') || 'Suivez les ouvertures et clics de vos emails'}
               </p>
             </div>
@@ -251,13 +251,13 @@ function EmailsDashboard() {
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl bg-info-light flex items-center justify-center">
-              <IconHistory className="w-7 h-7 text-info" />
+              <IconHistory className="w-7 h-7 !text-info" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-primary group-hover:text-accent transition-colors">
+              <h3 className="text-lg font-semibold !text-primary group-hover:!text-accent transition-colors">
                 {t('email_history') || 'Historique'}
               </h3>
-              <p className="text-sm text-muted">
+              <p className="text-sm !text-muted">
                 {t('email_history_desc') || 'Consultez tous vos emails envoyés'}
               </p>
             </div>
@@ -276,13 +276,13 @@ function EmailsDashboard() {
       >
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-xl bg-warning-light flex items-center justify-center">
-            <IconClock className="w-7 h-7 text-warning" />
+            <IconClock className="w-7 h-7 !text-warning" />
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-primary group-hover:text-accent transition-colors">
+            <h3 className="text-lg font-semibold !text-primary group-hover:!text-accent transition-colors">
               {t('scheduled_emails') || 'Emails planifiés'}
             </h3>
-            <p className="text-sm text-muted">
+            <p className="text-sm !text-muted">
               {t('scheduled_emails_desc') || 'Gérez vos emails programmés pour plus tard'}
             </p>
           </div>
@@ -300,13 +300,13 @@ function EmailsDashboard() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <IconDeviceFloppy className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              <IconDeviceFloppy className="w-5 h-5 !text-gray-600 dark:!text-gray-400" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-primary">
+              <h3 className="text-lg font-semibold !text-primary">
                 {t('drafts') || 'Brouillons'}
               </h3>
-              <p className="text-sm text-muted">
+              <p className="text-sm !text-muted">
                 {drafts.length > 0 
                   ? `${drafts.length} ${t('drafts_count') || 'brouillon(s) enregistré(s)'}`
                   : t('no_drafts') || 'Aucun brouillon'
@@ -321,7 +321,7 @@ function EmailsDashboard() {
             <IconLoader2 className="w-6 h-6 !text-accent animate-spin" />
           </div>
         ) : drafts.length === 0 ? (
-          <div className="text-center py-8 text-muted">
+          <div className="text-center py-8 !text-muted">
             <IconDeviceFloppy className="w-12 h-12 mx-auto mb-3 opacity-30" />
             <p>{t('no_drafts_message') || 'Vos brouillons apparaîtront ici'}</p>
           </div>
@@ -345,10 +345,10 @@ function EmailsDashboard() {
                   </div>
                   
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-primary truncate group-hover:text-accent transition-colors">
+                    <h4 className="font-medium !text-primary truncate group-hover:!text-accent transition-colors">
                       {draft.name || draft.subject || t('untitled_draft') || 'Sans titre'}
                     </h4>
-                    <p className="text-sm text-muted truncate">
+                    <p className="text-sm !text-muted truncate">
                       {draft.recipients && draft.recipients.length > 0 
                         ? draft.recipients.map(r => r.email).join(', ')
                         : t('no_recipients') || 'Aucun destinataire'
@@ -356,14 +356,14 @@ function EmailsDashboard() {
                     </p>
                   </div>
                   
-                  <span className="!text-xs text-muted whitespace-nowrap">
+                  <span className="!text-xs !text-muted whitespace-nowrap">
                     {formatDate(draft.updatedAt)}
                   </span>
                   
                   <button
                     onClick={(e) => handleDeleteDraft(e, draft.documentId)}
                     disabled={deletingDraftId === draft.documentId}
-                    className="p-2 text-muted hover:text-error rounded-lg hover:bg-error-light transition-colors opacity-0 group-hover:opacity-100"
+                    className="p-2 !text-muted hover:!text-error rounded-lg hover:bg-error-light transition-colors opacity-0 group-hover:opacity-100"
                   >
                     {deletingDraftId === draft.documentId ? (
                       <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -378,7 +378,7 @@ function EmailsDashboard() {
             {drafts.length > 5 && (
               <button
                 onClick={() => router.push('/dashboard/emails/drafts')}
-                className="w-full py-3 text-sm !text-accent hover:underline"
+                className="w-full py-3 !text-sm !text-accent hover:underline"
               >
                 {t('view_all_drafts') || `Voir tous les brouillons (${drafts.length})`}
               </button>

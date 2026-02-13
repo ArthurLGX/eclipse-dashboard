@@ -233,7 +233,7 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
                     }}
                   />
                   <div className="relative w-20 h-20 rounded-full backdrop-blur-xl border-2 border-accent bg-card flex items-center justify-center shadow-lg">
-                    <span className="!text-xs font-bold text-primary uppercase tracking-wider">
+                    <span className="!text-xs font-bold !text-primary uppercase tracking-wider">
                       Client
                     </span>
                   </div>
@@ -348,7 +348,7 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
                               initial={{ opacity: 1 }}
                               exit={{ opacity: 0, height: 0 }}
                               transition={{ duration: 0.6 }}
-                              className="text-sm font-medium text-primary text-center"
+                              className="text-sm font-medium !text-primary !text-center"
                             >
                               {step.label}
                             </motion.span>
@@ -468,7 +468,7 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
                           }}
                           className="px-3 py-1.5 rounded-full backdrop-blur-xl border border-accent bg-accent-light"
                         >
-                          <span className="text-[10px] font-medium text-primary whitespace-nowrap">
+                          <span className="text-[10px] font-medium !text-primary whitespace-nowrap">
                             ⚡ {step.automationLabel}
                           </span>
                         </motion.div>
@@ -502,13 +502,13 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
               delay: 1,
               ease: fluentEasing
             }}
-            className="absolute bottom-12 text-center space-y-2"
+            className="absolute bottom-12 !text-center space-y-2"
           >
             <motion.p 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.8, duration: 1 }}
-              className=" font-extralight text-lg tracking-wide"
+              className=" font-extralight !text-lg tracking-wide"
             >
               Tout votre business <motion.span
                 initial={{ opacity: 0 }}
@@ -537,7 +537,7 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 className="w-3 h-3 border-2 border-accent border-t-transparent rounded-full"
               />
-              <span className="!text-xs text-secondary">{t('flux_in_progress') || 'Flux en cours...'}</span>
+              <span className="!text-xs !text-secondary">{t('flux_in_progress') || 'Flux en cours...'}</span>
             </div>
           </motion.div>
         )}

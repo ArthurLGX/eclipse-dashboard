@@ -92,7 +92,7 @@ export default function MobileBottomNav({
               </span>
               
               {/* Label - couleurs gérées via CSS */}
-              <span className={`mobile-nav-label relative z-10 text-[10px] mt-1 font-medium transition-all ${active ? 'active' : ''}`}>
+              <span className={`mobile-nav-label relative z-10 !text-[10px] mt-1 font-medium transition-all ${active ? 'active' : ''}`}>
                 {item.label}
               </span>
             </button>
@@ -107,7 +107,7 @@ export default function MobileBottomNav({
           <span className="mobile-nav-icon">
             <IconLayoutGrid size={22} stroke={1} />
           </span>
-          <span className="mobile-nav-label text-[10px] mt-1 font-medium">
+          <span className="mobile-nav-label !text-[10px] mt-1 font-medium">
             Plus
           </span>
         </button>

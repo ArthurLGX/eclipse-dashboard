@@ -82,7 +82,7 @@ export default function AdminModulesPage() {
     <div className="max-w-7xl mx-auto p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-primary flex items-center gap-3">
+        <h1 className="text-2xl font-bold !text-primary flex items-center gap-3">
           <IconSettings className="w-7 h-7 !text-accent" />
           {language === 'fr' ? 'Gestion des Modules' : 'Module Management'}
         </h1>
@@ -100,7 +100,7 @@ export default function AdminModulesPage() {
         className="card flex flex-col gap-2 p-4"
       >
         <div className="p-4 border-b border-default">
-          <h2 className="font-semibold text-primary">
+          <h2 className="font-semibold !text-primary">
             {language === 'fr' ? 'Statut des modules' : 'Module Status'}
           </h2>
         </div>
@@ -116,15 +116,15 @@ export default function AdminModulesPage() {
               >
                 <div className="flex items-center justify-start w-full  gap-3">
                   <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
-                    <span className="text-accent text-lg">
+                    <span className="text-accent !text-lg">
                       {module.icon === 'IconTargetArrow' ? '🎯' : '📦'}
                     </span>
                   </div>
                   <div>
-                    <p className="font-medium text-primary">
+                    <p className="font-medium !text-primary">
                       {language === 'fr' ? module.label : module.labelEn}
                     </p>
-                    <p className="text-sm text-muted">
+                    <p className="text-sm !text-muted">
                       {module.path}
                     </p>
                   </div>
@@ -134,9 +134,9 @@ export default function AdminModulesPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleStatusChange(module.id, null)}
-                    className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                    className={`px-3 py-1.5 !text-sm rounded-lg transition-colors ${
                       currentStatus === null
-                        ? 'bg-accent border border-accent text-white font-medium'
+                        ? 'bg-accent border border-accent !text-white font-medium'
                         : 'text-muted bg-muted'
                     }`}
                   >
@@ -144,9 +144,9 @@ export default function AdminModulesPage() {
                   </button>
                   <button
                     onClick={() => handleStatusChange(module.id, 'beta')}
-                    className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
+                    className={`px-3 py-1.5 !text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
                       currentStatus === 'beta'
-                        ? 'bg-warning-light text-warning-text font-medium border border-warning'
+                        ? 'bg-warning-light !text-warning-text font-medium border border-warning'
                         : 'text-muted bg-muted'
                     }`}
                   >
@@ -155,7 +155,7 @@ export default function AdminModulesPage() {
                   </button>
                   <button
                     onClick={() => handleStatusChange(module.id, 'new')}
-                    className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
+                    className={`px-3 py-1.5 !text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
                       currentStatus === 'new'
                         ? 'bg-success-light !text-success-text font-medium border border-success'
                         : 'text-muted hover:bg-hover'
@@ -172,7 +172,7 @@ export default function AdminModulesPage() {
 
         {/* Save button */}
         <div className="p-4 border-t border-default bg-muted flex items-center justify-between">
-          <p className="text-sm text-muted">
+          <p className="text-sm !text-muted">
             {language === 'fr' 
               ? 'Les changements seront visibles après rechargement de la page'
               : 'Changes will be visible after page reload'}
@@ -204,15 +204,15 @@ export default function AdminModulesPage() {
         <h3 className="font-semibold !text-accent mb-2">
           {language === 'fr' ? 'Comment ça marche ?' : 'How does it work?'}
         </h3>
-        <ul className="text-sm text-primary space-y-1">
+        <ul className="text-sm !text-primary space-y-1">
           <li className="flex items-center gap-2">
-            <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-warning-light text-warning-text border border-warning rounded-full">Beta</span>
+            <span className="px-1.5 py-0.5 !text-[10px] font-semibold bg-warning-light !text-warning-text border border-warning rounded-full">Beta</span>
             {language === 'fr' 
               ? 'Module en cours de développement, peut contenir des bugs'
               : 'Module under development, may contain bugs'}
           </li>
           <li className="flex items-center gap-2">
-            <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-success-light !text-success-text -text border border-success rounded-full">New</span>
+            <span className="px-1.5 py-0.5 !text-[10px] font-semibold bg-success-light !text-success-text -text border border-success rounded-full">New</span>
             {language === 'fr' 
               ? 'Nouveau module récemment ajouté'
               : 'New module recently added'}

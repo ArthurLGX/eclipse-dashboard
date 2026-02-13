@@ -236,11 +236,11 @@ export default function AdminSubscriptionsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
+          <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
             <IconCreditCard className="w-7 h-7 !text-accent" />
             {t('subscriptions_management') || 'Gestion des Abonnements'}
           </h1>
-          <p className="text-sm text-muted">{subscriptions.length} {t('subscriptions_total') || 'abonnements au total'}</p>
+          <p className="text-sm !text-muted">{subscriptions.length} {t('subscriptions_total') || 'abonnements au total'}</p>
         </div>
         <button
           onClick={fetchData}
@@ -265,8 +265,8 @@ export default function AdminSubscriptionsPage() {
             </div>
             <span className="!text-xs !text-accent bg-accent-light px-2 py-1 rounded-full font-medium">MRR</span>
           </div>
-          <p className="text-3xl font-bold text-primary">{totalMRR.toLocaleString()}€</p>
-          <p className="text-sm text-muted">{t('monthly_recurring_revenue') || 'Revenu mensuel récurrent'}</p>
+          <p className="text-3xl font-bold !text-primary">{totalMRR.toLocaleString()}€</p>
+          <p className="text-sm !text-muted">{t('monthly_recurring_revenue') || 'Revenu mensuel récurrent'}</p>
         </motion.div>
 
         {planStats.slice(0, 3).map((stat, index) => (
@@ -281,17 +281,17 @@ export default function AdminSubscriptionsPage() {
               <div className={`p-2 rounded-lg bg-muted ${stat.color}`}>
                 {stat.icon}
               </div>
-              <span className="!text-xs text-muted">{stat.count} users</span>
+              <span className="!text-xs !text-muted">{stat.count} users</span>
             </div>
-            <p className="text-xl font-bold text-primary">{stat.planName}</p>
-            <p className="text-sm text-muted">{stat.revenue.toLocaleString()}€/{t('month') || 'mois'}</p>
+            <p className="text-xl font-bold !text-primary">{stat.planName}</p>
+            <p className="text-sm !text-muted">{stat.revenue.toLocaleString()}€/{t('month') || 'mois'}</p>
           </motion.div>
         ))}
       </div>
 
       {/* Plans Overview */}
       <div className="card p-6">
-        <h2 className="text-lg font-semibold text-primary mb-4">{t('available_plans') || 'Plans disponibles'}</h2>
+        <h2 className="text-lg font-semibold !text-primary mb-4">{t('available_plans') || 'Plans disponibles'}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {plans.map((plan) => (
             <div
@@ -299,25 +299,25 @@ export default function AdminSubscriptionsPage() {
               className="p-4 rounded-xl bg-muted border border-muted hover:bg-accent-light transition-all"
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="font-semibold text-primary">{plan.name}</span>
+                <span className="font-semibold !text-primary">{plan.name}</span>
                 <button 
                   onClick={() => setEditingPlan({ ...plan })}
                   className="p-1.5 rounded-lg hover:bg-hover transition-colors"
                   title={t('edit_plan') || 'Modifier le plan'}
                 >
-                  <IconEdit className="w-4 h-4 text-muted hover:text-accent" />
+                  <IconEdit className="w-4 h-4 !text-muted hover:!text-accent" />
                 </button>
               </div>
               <p className="text-2xl font-bold !text-accent">
                 {plan.price_monthly || 0}€
-                <span className="text-sm font-normal text-muted">/{t('month') || 'mois'}</span>
+                <span className="text-sm font-normal !text-muted">/{t('month') || 'mois'}</span>
               </p>
               {plan.price_yearly !== undefined && plan.price_yearly > 0 && (
-                <p className="text-sm text-muted">
+                <p className="text-sm !text-muted">
                   {plan.price_yearly}€/{t('year') || 'an'}
                 </p>
               )}
-              <p className="!text-xs text-muted mt-2">
+              <p className="!text-xs !text-muted mt-2">
                 {subscriptions.filter(s => s.plan?.id === plan.id).length} {t('plan_subscribers') || 'abonnés'}
               </p>
             </div>
@@ -329,7 +329,7 @@ export default function AdminSubscriptionsPage() {
       <div className="card p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
             <input
               type="text"
               placeholder={t('search_user') || 'Rechercher un utilisateur...'}
@@ -370,22 +370,22 @@ export default function AdminSubscriptionsPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-muted">
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('user') || 'Utilisateur'}
                 </th>
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('plan') || 'Plan'}
                 </th>
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('status') || 'Statut'}
                 </th>
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('start_date') || 'Date de début'}
                 </th>
-                <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('expiration') || 'Expiration'}
                 </th>
-                <th className="px-4 py-3 text-right !text-xs font-medium text-muted uppercase tracking-wider">
+                <th className="px-4 py-3 !text-right !text-xs font-medium !text-muted uppercase tracking-wider">
                   {t('actions') || 'Actions'}
                 </th>
               </tr>
@@ -402,13 +402,13 @@ export default function AdminSubscriptionsPage() {
                     {sub.users && sub.users.length > 0 ? (
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center">
-                          <span className="text-accent font-medium text-sm">
+                          <span className="text-accent font-medium !text-sm">
                             {sub.users[0].username?.charAt(0).toUpperCase()}
                           </span>
                         </div>
                         <div>
-                          <p className="font-medium text-primary text-sm">{sub.users[0].username}</p>
-                          <p className="!text-xs text-muted">{sub.users[0].email}</p>
+                          <p className="font-medium !text-primary !text-sm">{sub.users[0].username}</p>
+                          <p className="!text-xs !text-muted">{sub.users[0].email}</p>
                         </div>
                       </div>
                     ) : (
@@ -418,10 +418,10 @@ export default function AdminSubscriptionsPage() {
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <IconCrown className="w-4 h-4 !text-accent" />
-                      <span className="font-medium text-primary text-sm">{sub.plan?.name || t('no_plan') || 'Sans plan'}</span>
+                      <span className="font-medium !text-primary !text-sm">{sub.plan?.name || t('no_plan') || 'Sans plan'}</span>
                     </div>
                     {sub.plan?.price_monthly !== undefined && (
-                      <p className="!text-xs text-muted mt-0.5">{sub.plan.price_monthly}€/{t('month') || 'mois'}</p>
+                      <p className="!text-xs !text-muted mt-0.5">{sub.plan.price_monthly}€/{t('month') || 'mois'}</p>
                     )}
                   </td>
                   <td className="px-4 py-4">
@@ -430,9 +430,9 @@ export default function AdminSubscriptionsPage() {
                       return (
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full !text-xs font-medium ${
                           status === 'active' ? 'bg-success-light !text-success-text ' :
-                          status === 'trial' ? 'bg-info-light text-info' :
-                          status === 'canceled' ? 'bg-danger-light text-danger' :
-                          'bg-warning-light text-warning'
+                          status === 'trial' ? 'bg-info-light !text-info' :
+                          status === 'canceled' ? 'bg-danger-light !text-danger' :
+                          'bg-warning-light !text-warning'
                         }`}>
                           {status === 'active' ? t('active') || 'Actif' :
                            status === 'trial' ? t('trial') || 'Essai' :
@@ -442,12 +442,12 @@ export default function AdminSubscriptionsPage() {
                       );
                     })()}
                   </td>
-                  <td className="px-4 py-4 text-sm text-secondary">
+                  <td className="px-4 py-4 !text-sm !text-secondary">
                     {sub.start_date
                       ? new Date(sub.start_date).toLocaleDateString('fr-FR')
                       : '-'}
                   </td>
-                  <td className="px-4 py-4 text-sm text-secondary">
+                  <td className="px-4 py-4 !text-sm !text-secondary">
                     {sub.end_date
                       ? new Date(sub.end_date).toLocaleDateString('fr-FR')
                       : t('unlimited') || 'Illimité'}
@@ -455,7 +455,7 @@ export default function AdminSubscriptionsPage() {
                   <td className="px-4 py-4">
                     <div className="flex items-center justify-end">
                       <button className="p-2 rounded-lg hover:bg-hover transition-colors">
-                        <IconChevronRight className="w-4 h-4 text-muted" />
+                        <IconChevronRight className="w-4 h-4 !text-muted" />
                       </button>
                     </div>
                   </td>
@@ -467,7 +467,7 @@ export default function AdminSubscriptionsPage() {
 
         {filteredSubscriptions.length === 0 && (
           <div className="text-center py-12">
-            <IconCreditCard className="w-12 h-12 text-muted mx-auto mb-4 opacity-50" />
+            <IconCreditCard className="w-12 h-12 !text-muted mx-auto mb-4 opacity-50" />
             <p className="text-muted">{t('no_subscription_found') || 'Aucun abonnement trouvé'}</p>
           </div>
         )}
@@ -491,7 +491,7 @@ export default function AdminSubscriptionsPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+                <h2 className="text-xl font-bold !text-primary flex items-center gap-2">
                   <IconEdit className="w-5 h-5 !text-accent" />
                   {t('edit_plan') || 'Modifier le plan'}
                 </h2>
@@ -499,13 +499,13 @@ export default function AdminSubscriptionsPage() {
                   onClick={() => setEditingPlan(null)}
                   className="p-2 rounded-lg hover:bg-hover transition-colors"
                 >
-                  <IconX className="w-5 h-5 text-muted" />
+                  <IconX className="w-5 h-5 !text-muted" />
                 </button>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">
+                  <label className="block !text-sm font-medium !text-secondary mb-1">
                     {t('plan_name') || 'Nom du plan'}
                   </label>
                   <input
@@ -518,7 +518,7 @@ export default function AdminSubscriptionsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-1">
+                    <label className="block !text-sm font-medium !text-secondary mb-1">
                       {t('price_monthly') || 'Prix mensuel'} (€)
                     </label>
                     <input
@@ -531,7 +531,7 @@ export default function AdminSubscriptionsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-1">
+                    <label className="block !text-sm font-medium !text-secondary mb-1">
                       {t('price_yearly') || 'Prix annuel'} (€)
                     </label>
                     <input
@@ -546,7 +546,7 @@ export default function AdminSubscriptionsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">
+                  <label className="block !text-sm font-medium !text-secondary mb-1">
                     {t('description') || 'Description'}
                   </label>
                   <textarea
@@ -560,14 +560,14 @@ export default function AdminSubscriptionsPage() {
                 {/* Features Editor */}
                 {editingPlan.features && Object.keys(editingPlan.features).length > 0 && (
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">
+                    <label className="block !text-sm font-medium !text-secondary mb-2">
                       {t('features') || 'Fonctionnalités'}
                     </label>
                     <div className="bg-muted rounded-lg p-3 max-h-60 overflow-y-auto">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {Object.entries(editingPlan.features).map(([key, value]) => (
                           <div key={key} className="flex items-center justify-between p-2 rounded-lg bg-card border border-default">
-                            <span className="text-sm text-primary truncate capitalize" title={key}>
+                            <span className="text-sm !text-primary truncate capitalize" title={key}>
                               {key.replace(/_/g, ' ')}
                             </span>
                             {typeof value === 'boolean' ? (
@@ -596,7 +596,7 @@ export default function AdminSubscriptionsPage() {
                                   const newFeatures = { ...editingPlan.features, [key]: newValue };
                                   setEditingPlan({ ...editingPlan, features: newFeatures });
                                 }}
-                                className="input w-20 text-right text-sm py-1 px-2"
+                                className="input w-20 !text-right !text-sm py-1 px-2"
                                 min="0"
                               />
                             )}
@@ -604,7 +604,7 @@ export default function AdminSubscriptionsPage() {
                         ))}
                       </div>
                     </div>
-                    <p className="!text-xs text-muted mt-2">
+                    <p className="!text-xs !text-muted mt-2">
                       💡 {t('features_help') || '0 = illimité pour les quotas numériques'}
                     </p>
                   </div>
@@ -621,7 +621,7 @@ export default function AdminSubscriptionsPage() {
                 <button
                   onClick={handleSavePlan}
                   disabled={savingPlan}
-                  className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
                 >
                   {savingPlan ? (
                     <IconRefresh className="w-4 h-4 animate-spin" />

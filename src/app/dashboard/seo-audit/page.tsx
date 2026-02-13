@@ -48,9 +48,9 @@ interface AuditResult {
 }
 
 const SCORE_COLORS = {
-  good: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400', ring: 'ring-green-500' },
-  average: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', ring: 'ring-amber-500' },
-  poor: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-400', ring: 'ring-red-500' },
+  good: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:!text-green-400', ring: 'ring-green-500' },
+  average: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:!text-amber-400', ring: 'ring-amber-500' },
+  poor: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:!text-red-400', ring: 'ring-red-500' },
 };
 
 function getScoreColor(score: number) {
@@ -72,7 +72,7 @@ function ScoreCircle({ score, label, size = 'md' }: { score: number; label: stri
       <div className={`${sizes[size].outer} rounded-full ${color.bg} flex items-center justify-center ring-4 ${color.ring}`}>
         <span className={`${sizes[size].inner} font-bold ${color.text}`}>{score}</span>
       </div>
-      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className="text-sm !text-muted-foreground">{label}</span>
     </div>
   );
 }
@@ -221,7 +221,7 @@ export default function SEOAuditPage() {
         <IconRocket size={28} className="!text-accent" />
         <div>
           <h1 className="text-2xl font-bold">{t('seo_audit') || 'Audit SEO & Performance'}</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm !text-muted-foreground">
             {t('seo_audit_desc') || 'Analysez les performances de n&apos;importe quel site web'}
           </p>
         </div>
@@ -231,9 +231,9 @@ export default function SEOAuditPage() {
       <div className="bg-card border border-muted rounded-xl p-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
-            <label className="block text-sm font-medium mb-2">{t('website_url') || 'URL du site'}</label>
+            <label className="block !text-sm font-medium mb-2">{t('website_url') || 'URL du site'}</label>
             <div className="relative">
-              <IconSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <IconSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground" />
               <input
                 type="url"
                 value={url}
@@ -246,13 +246,13 @@ export default function SEOAuditPage() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium mb-2">{t('device') || 'Appareil'}</label>
+            <label className="block !text-sm font-medium mb-2">{t('device') || 'Appareil'}</label>
             <div className="flex gap-2">
               <button
                 onClick={() => setStrategy('mobile')}
                 className={`flex items-center gap-2 px-4 py-3 rounded-lg border transition-colors ${
                   strategy === 'mobile' 
-                    ? 'bg-accent text-white border-accent' 
+                    ? 'bg-accent !text-white border-accent' 
                     : 'border-muted hover:bg-hover'
                 }`}
               >
@@ -263,7 +263,7 @@ export default function SEOAuditPage() {
                 onClick={() => setStrategy('desktop')}
                 className={`flex items-center gap-2 px-4 py-3 rounded-lg border transition-colors ${
                   strategy === 'desktop' 
-                    ? 'bg-accent text-white border-accent' 
+                    ? 'bg-accent !text-white border-accent' 
                     : 'border-muted hover:bg-hover'
                 }`}
               >
@@ -277,7 +277,7 @@ export default function SEOAuditPage() {
             <button
               onClick={runAudit}
               disabled={!url || loading}
-              className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-lg hover:bg-accent disabled:opacity-50 transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-accent !text-white rounded-lg hover:bg-accent disabled:opacity-50 transition-colors"
             >
               {loading ? (
                 <>
@@ -294,7 +294,7 @@ export default function SEOAuditPage() {
           </div>
         </div>
         
-        <p className="mt-4 !text-xs text-muted-foreground flex items-center gap-1">
+        <p className="mt-4 !text-xs !text-muted-foreground flex items-center gap-1">
           <IconBrandGoogle size={14} />
           Propulsé par Google PageSpeed Insights API
         </p>
@@ -308,7 +308,7 @@ export default function SEOAuditPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-semibold">{result.url}</h2>
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <p className="text-sm !text-muted-foreground flex items-center gap-2">
                   <IconClock size={14} />
                   {new Date(result.fetchTime).toLocaleString('fr-FR')}
                   <span>•</span>
@@ -320,7 +320,7 @@ export default function SEOAuditPage() {
                 href={`https://pagespeed.web.dev/report?url=${encodeURIComponent(result.url)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm !text-accent hover:underline"
+                className="flex items-center gap-1 !text-sm !text-accent hover:underline"
               >
                 Voir sur PageSpeed <IconExternalLink size={14} />
               </a>
@@ -382,7 +382,7 @@ export default function SEOAuditPage() {
                     <div className="flex-1">
                       <p className="font-medium">{opp.title}</p>
                       {opp.savings && (
-                        <p className="text-sm text-green-600 dark:text-green-400">
+                        <p className="text-sm !text-green-600 dark:!text-green-400">
                           Économie potentielle : {opp.savings}
                         </p>
                       )}

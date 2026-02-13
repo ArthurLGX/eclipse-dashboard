@@ -193,7 +193,7 @@ export default function ContractsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-primary">
+          <h1 className="text-2xl font-bold !text-primary">
             {t('contracts') || 'Contrats'}
           </h1>
           <p className="text-secondary mt-1">
@@ -203,7 +203,7 @@ export default function ContractsPage() {
         <div className="flex items-center gap-3">
           <button 
             onClick={loadContracts}
-            className="p-2 text-muted hover:text-primary hover:bg-hover rounded-lg transition-colors"
+            className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
             title={t('refresh') || 'Actualiser'}
           >
             <IconRefresh size={15} />
@@ -212,7 +212,7 @@ export default function ContractsPage() {
           {/* Dropdown for creating contracts */}
           <div className="relative" ref={dropdownRef}>
             <button 
-              className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-all"
               onClick={() => setShowCreateDropdown(!showCreateDropdown)}
             >
               <IconPlus size={18} />
@@ -234,14 +234,14 @@ export default function ContractsPage() {
                       setShowManualCreator(true);
                       setShowCreateDropdown(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-hover transition-colors"
+                    className="w-full flex items-center gap-3 px-4 py-3 !text-left hover:bg-hover transition-colors"
                   >
                     <div className="p-2 bg-info-light rounded-lg">
                       <IconPencil size={18} className="text-info" />
                     </div>
                     <div>
-                      <p className="font-medium text-primary">{t('create_manually') || 'Créer manuellement'}</p>
-                      <p className="!text-xs text-muted">{t('create_manually_desc') || 'Partir de zéro'}</p>
+                      <p className="font-medium !text-primary">{t('create_manually') || 'Créer manuellement'}</p>
+                      <p className="!text-xs !text-muted">{t('create_manually_desc') || 'Partir de zéro'}</p>
                     </div>
                   </button>
                   <div className="border-t border-default" />
@@ -250,7 +250,7 @@ export default function ContractsPage() {
                       setShowAIGenerator(true);
                       setShowCreateDropdown(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-hover transition-colors"
+                    className="w-full flex items-center gap-3 px-4 py-3 !text-left hover:bg-hover transition-colors"
                   >
                     <div className="p-2 bg-muted rounded-lg">
                       <Image 
@@ -261,8 +261,8 @@ export default function ContractsPage() {
                       />
                     </div>
                     <div>
-                      <p className="font-medium text-primary">{t('generate_with_ai') || 'Générer avec IA'}</p>
-                      <p className="!text-xs text-muted">{t('generate_with_ai_desc') || 'Eclipse Assistant'}</p>
+                      <p className="font-medium !text-primary">{t('generate_with_ai') || 'Générer avec IA'}</p>
+                      <p className="!text-xs !text-muted">{t('generate_with_ai_desc') || 'Eclipse Assistant'}</p>
                     </div>
                   </button>
                 </motion.div>
@@ -275,20 +275,20 @@ export default function ContractsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="p-4 bg-card rounded-xl border border-default">
-          <p className="text-sm text-muted">{t('total') || 'Total'}</p>
-          <p className="text-2xl font-bold text-primary mt-1">{stats.total}</p>
+          <p className="text-sm !text-muted">{t('total') || 'Total'}</p>
+          <p className="text-2xl font-bold !text-primary mt-1">{stats.total}</p>
         </div>
         <div className="p-4 bg-success-light rounded-xl">
           <p className="text-sm !text-success-text -text">{t('contract_signed') || 'Signés'}</p>
           <p className="text-2xl font-bold !text-success-text -text mt-1">{stats.signed}</p>
         </div>
         <div className="p-4 bg-warning-light rounded-xl">
-          <p className="text-sm text-warning">{t('pending') || 'En attente'}</p>
-          <p className="text-2xl font-bold text-warning-text mt-1">{stats.pending}</p>
+          <p className="text-sm !text-warning">{t('pending') || 'En attente'}</p>
+          <p className="text-2xl font-bold !text-warning-text mt-1">{stats.pending}</p>
         </div>
         <div className="p-4 bg-muted rounded-xl">
-          <p className="text-sm text-muted">{t('contract_drafts') || 'Brouillons'}</p>
-          <p className="text-2xl font-bold text-secondary mt-1">{stats.draft}</p>
+          <p className="text-sm !text-muted">{t('contract_drafts') || 'Brouillons'}</p>
+          <p className="text-2xl font-bold !text-secondary mt-1">{stats.draft}</p>
         </div>
       </div>
 
@@ -296,7 +296,7 @@ export default function ContractsPage() {
       <div className="flex flex-col sm:flex-row gap-4">
         {/* Search */}
         <div className="relative flex-1">
-          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" size={18} />
+          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted" size={18} />
           <input
             type="text"
             placeholder={t('search') || 'Rechercher...'}
@@ -337,24 +337,24 @@ export default function ContractsPage() {
           <div className="w-20 h-20 bg-info-light rounded-full flex items-center justify-center mb-6">
             <IconFileText size={40} className="text-info" />
           </div>
-          <h3 className="text-xl font-semibold text-primary mb-2">
+          <h3 className="text-xl font-semibold !text-primary mb-2">
             {t('no_contracts') || 'Aucun contrat'}
           </h3>
-          <p className="text-secondary text-center max-w-md mb-8">
+          <p className="text-secondary !text-center max-w-md mb-8">
             {t('no_contracts_description') || 'Créez votre premier contrat manuellement ou avec l\'aide de l\'IA'}
           </p>
           
           {/* Two options */}
           <div className="flex flex-col sm:flex-row gap-4">
             <button 
-              className="flex items-center gap-2 px-6 py-3 bg-card border border-default text-primary rounded-xl hover:bg-hover transition-all"
+              className="flex items-center gap-2 px-6 py-3 bg-card border border-default !text-primary rounded-xl hover:bg-hover transition-all"
               onClick={() => setShowManualCreator(true)}
             >
               <IconPencil size={15} />
               {t('create_manually') || 'Créer manuellement'}
             </button>
             <button 
-              className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl hover:opacity-90 transition-all"
+              className="flex items-center gap-2 px-6 py-3 bg-accent !text-white rounded-xl hover:opacity-90 transition-all"
               onClick={() => setShowAIGenerator(true)}
             >
               <Image 
@@ -396,14 +396,14 @@ export default function ContractsPage() {
                           {StatusIcon ? (
                             <StatusIcon className={`w-5 h-5 ${statusConfig?.color || 'text-muted'}`} />
                           ) : (
-                            <IconFileText className="w-5 h-5 text-muted" />
+                            <IconFileText className="w-5 h-5 !text-muted" />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="font-medium text-primary truncate">
+                          <h3 className="font-medium !text-primary truncate">
                             {contract.title || contract.content?.title || t('untitled_contract') || 'Contrat sans titre'}
                           </h3>
-                          <p className="text-sm text-muted">
+                          <p className="text-sm !text-muted">
                             {contract.client?.name || t('no_client') || 'Sans client'}
                             {contract.project?.title && ` • ${contract.project.title}`}
                           </p>
@@ -411,7 +411,7 @@ export default function ContractsPage() {
                       </div>
                       
                       {/* Meta info */}
-                      <div className="flex flex-wrap items-center gap-3 !text-xs text-muted">
+                      <div className="flex flex-wrap items-center gap-3 !text-xs !text-muted">
                         <span className={`px-2 py-1 rounded-full ${statusConfig?.bgColor || 'bg-hover'} ${statusConfig?.color || 'text-muted'}`}>
                           {statusConfig?.label || contract.status || 'Inconnu'}
                         </span>
@@ -430,7 +430,7 @@ export default function ContractsPage() {
                         <Link
                           href={`/sign/contract/${contract.signature_token}`}
                           target="_blank"
-                          className="p-2 text-info hover:bg-info-light rounded-lg transition-colors"
+                          className="p-2 !text-info hover:bg-info-light rounded-lg transition-colors"
                           title={t('view_contract') || 'Voir le contrat'}
                         >
                           <IconEye className="w-5 h-5" />
@@ -440,7 +440,7 @@ export default function ContractsPage() {
                       {/* Download PDF */}
                       <button
                         onClick={() => handleDownloadPDF(contract)}
-                        className="p-2 text-muted hover:text-primary hover:bg-hover rounded-lg transition-colors"
+                        className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
                         title={t('download_pdf') || 'Télécharger PDF'}
                       >
                         <IconDownload className="w-5 h-5" />
@@ -450,7 +450,7 @@ export default function ContractsPage() {
                       <button
                         onClick={() => handleDeleteContract(contract.documentId)}
                         disabled={deletingId === contract.documentId}
-                        className="p-2 text-danger hover:bg-danger-light rounded-lg transition-colors disabled:opacity-50"
+                        className="p-2 !text-danger hover:bg-danger-light rounded-lg transition-colors disabled:opacity-50"
                         title={t('delete') || 'Supprimer'}
                       >
                         {deletingId === contract.documentId ? (
@@ -471,7 +471,7 @@ export default function ContractsPage() {
       {/* No results after filter */}
       {!loading && contracts.length > 0 && filteredContracts.length === 0 && (
         <div className="text-center py-12">
-          <IconSearch className="w-12 h-12 text-muted mx-auto mb-4" />
+          <IconSearch className="w-12 h-12 !text-muted mx-auto mb-4" />
           <p className="text-primary">
             {t('no_contracts_match') || 'Aucun contrat ne correspond à votre recherche'}
           </p>

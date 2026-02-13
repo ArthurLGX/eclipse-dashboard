@@ -107,7 +107,7 @@ export default function SaveTemplateModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
-            <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+            <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
               <IconDeviceFloppy className="w-5 h-5 !text-accent" />
               {t('save_template') || 'Sauvegarder le thème'}
             </h3>
@@ -116,7 +116,7 @@ export default function SaveTemplateModal({
               disabled={saving}
               className="p-2 rounded-lg hover:bg-hover transition-colors disabled:opacity-50"
             >
-              <IconX className="w-5 h-5 text-secondary" />
+              <IconX className="w-5 h-5 !text-secondary" />
             </button>
           </div>
 
@@ -124,7 +124,7 @@ export default function SaveTemplateModal({
           <div className="p-4 space-y-4">
             {/* Aperçu du template */}
             <div className="p-4 rounded-xl border border-default bg-muted/30">
-              <p className="!text-xs text-muted mb-3 uppercase tracking-wide">
+              <p className="!text-xs !text-muted mb-3 uppercase tracking-wide">
                 {t('template_preview') || 'Aperçu du thème'}
               </p>
               <div className="flex items-center gap-4">
@@ -161,7 +161,7 @@ export default function SaveTemplateModal({
                   />
                 </div>
                 {/* Font */}
-                <div className="text-sm text-secondary">
+                <div className="text-sm !text-secondary">
                   <span style={{ fontFamily: templateData.fontFamily }}>
                     {templateData.fontFamily.split(',')[0]}
                   </span>
@@ -169,7 +169,7 @@ export default function SaveTemplateModal({
               </div>
               {/* Images indicators */}
               {(templateData.headerBackgroundUrl || templateData.bannerUrl) && (
-                <div className="flex gap-2 mt-3 !text-xs text-muted">
+                <div className="flex gap-2 mt-3 !text-xs !text-muted">
                   {templateData.headerBackgroundUrl && (
                     <span className="px-2 py-1 bg-accent-light !text-accent rounded">
                       {t('header_image_included') || '+ Image en-tête'}
@@ -186,7 +186,7 @@ export default function SaveTemplateModal({
 
             {/* Nom du template */}
             <div>
-              <label className="block text-sm font-medium text-primary mb-2">
+              <label className="block !text-sm font-medium !text-primary mb-2">
                 {t('template_name') || 'Nom du thème'} *
               </label>
               <input
@@ -197,14 +197,14 @@ export default function SaveTemplateModal({
                   setError('');
                 }}
                 placeholder={t('template_name_placeholder') || 'Ex: Mon thème corporate'}
-                className="w-full px-4 py-3 bg-input border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
                 disabled={saving}
               />
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-primary mb-2">
+              <label className="block !text-sm font-medium !text-primary mb-2">
                 {t('template_description') || 'Description'} ({t('optional') || 'optionnel'})
               </label>
               <textarea
@@ -212,7 +212,7 @@ export default function SaveTemplateModal({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={t('template_description_placeholder') || 'Décrivez l\'utilisation de ce thème...'}
                 rows={2}
-                className="w-full px-4 py-3 bg-input border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent resize-none"
+                className="w-full px-4 py-3 bg-input border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent resize-none"
                 disabled={saving}
               />
             </div>
@@ -229,15 +229,15 @@ export default function SaveTemplateModal({
               }`}
             >
               {isDefault ? (
-                <IconStarFilled className="w-5 h-5 text-yellow-500" />
+                <IconStarFilled className="w-5 h-5 !text-yellow-500" />
               ) : (
-                <IconStar className="w-5 h-5 text-secondary" />
+                <IconStar className="w-5 h-5 !text-secondary" />
               )}
               <div className="text-left">
                 <p className={`font-medium ${isDefault ? 'text-yellow-500' : 'text-primary'}`}>
                   {t('set_as_default') || 'Définir comme thème par défaut'}
                 </p>
-                <p className="!text-xs text-muted">
+                <p className="!text-xs !text-muted">
                   {t('default_template_hint') || 'Ce thème sera pré-sélectionné pour vos nouvelles newsletters'}
                 </p>
               </div>
@@ -245,7 +245,7 @@ export default function SaveTemplateModal({
 
             {/* Error */}
             {error && (
-              <p className="text-sm text-red-400 text-center">{error}</p>
+              <p className="text-sm !text-red-400 !text-center">{error}</p>
             )}
           </div>
 
@@ -254,14 +254,14 @@ export default function SaveTemplateModal({
             <button
               onClick={handleClose}
               disabled={saving}
-              className="px-4 py-2 text-secondary hover:text-primary transition-colors disabled:opacity-50"
+              className="px-4 py-2 !text-secondary hover:!text-primary transition-colors disabled:opacity-50"
             >
               {t('cancel') || 'Annuler'}
             </button>
             <button
               onClick={handleSave}
               disabled={saving || !name.trim()}
-              className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {saving ? (
                 <>

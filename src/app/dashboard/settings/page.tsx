@@ -201,7 +201,7 @@ export default function SettingsPage() {
 
   const Toggle = ({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) => (
     <label className="flex items-center justify-between cursor-pointer group">
-      <span className="text-sm text-secondary group-hover:text-primary transition-colors">{label}</span>
+      <span className="text-sm !text-secondary group-hover:!text-primary transition-colors">{label}</span>
       <button
         type="button"
         onClick={() => onChange(!checked)}
@@ -221,10 +221,10 @@ export default function SettingsPage() {
     >
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-primary">
+        <h1 className="text-2xl font-semibold !text-primary">
           {t('settings') || 'Paramètres'}
         </h1>
-        <p className="text-sm text-muted mt-1">
+        <p className="text-sm !text-muted mt-1">
           {t('settings_description') || 'Gérez vos préférences et personnalisez votre expérience'}
         </p>
       </div>
@@ -236,10 +236,10 @@ export default function SettingsPage() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`
-              flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all
+              flex items-center gap-2 px-3 py-2 rounded-lg !text-sm font-medium transition-all
               ${activeTab === tab.id
-                ? 'bg-accent text-white'
-                : 'bg-muted text-primary hover:text-primary hover:bg-hover'
+                ? 'bg-accent !text-white'
+                : 'bg-muted !text-primary hover:!text-primary hover:bg-hover'
               }
             `}
           >
@@ -261,7 +261,7 @@ export default function SettingsPage() {
               <div className="space-y-4">
                 {/* Style de thème */}
                 <div>
-                  <p className="text-sm text-secondary mb-2">{t('theme_style') || 'Style'}</p>
+                  <p className="text-sm !text-secondary mb-2">{t('theme_style') || 'Style'}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
                       { value: 'default', icon: <IconSettings className="w-4 h-4" />, label: t('theme_default') || 'Défaut' },
@@ -276,7 +276,7 @@ export default function SettingsPage() {
                 
                 {/* Mode clair/sombre */}
                 <div>
-                  <p className="text-sm text-secondary mb-2">{t('theme_mode') || 'Mode'}</p>
+                  <p className="text-sm !text-secondary mb-2">{t('theme_mode') || 'Mode'}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
                       { value: 'light', icon: <IconSun stroke={'#ffd700'} className="!text-warning-text w-4 h-4" />, label: t('theme_light') || 'Clair' },
@@ -290,7 +290,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
-              <p className="!text-xs text-muted mt-2">
+              <p className="!text-xs !text-muted mt-2">
                 {t('current_theme') || 'Actuel'}: {
                   themeStyle === 'brutalist' ? (t('theme_brutalist') || 'Brutaliste') : (t('theme_default') || 'Défaut')
                 } - {
@@ -406,7 +406,7 @@ export default function SettingsPage() {
               title={t('timezone') || 'Fuseau horaire'} 
               description={t('timezone_desc') || 'Votre fuseau horaire actuel'}
             >
-              <p className="text-sm text-primary bg-muted px-3 py-2 rounded-lg inline-block">
+              <p className="text-sm !text-primary bg-muted px-3 py-2 rounded-lg inline-block">
                 🌍 {preferences.format.timezone}
               </p>
             </SettingsRow>
@@ -418,7 +418,7 @@ export default function SettingsPage() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
             {/* Section: Type de facturation */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('billing_type_section') || 'Type de facturation'}
               </h3>
               
@@ -453,7 +453,7 @@ export default function SettingsPage() {
                     type="number"
                     value={preferences.invoice.hourlyRate}
                     onChange={(e) => updateInvoice({ hourlyRate: parseFloat(e.target.value) || 0 })}
-                    className="input px-3 py-2 text-sm w-24"
+                    className="input px-3 py-2 !text-sm w-24"
                     min="0"
                     step="1"
                   />
@@ -470,7 +470,7 @@ export default function SettingsPage() {
                     type="number"
                     value={preferences.invoice.dailyRate}
                     onChange={(e) => updateInvoice({ dailyRate: parseFloat(e.target.value) || 0 })}
-                    className="input px-3 py-2 text-sm w-24"
+                    className="input px-3 py-2 !text-sm w-24"
                     min="0"
                     step="1"
                   />
@@ -485,7 +485,7 @@ export default function SettingsPage() {
                 <select
                   value={preferences.invoice.defaultUnit}
                   onChange={(e) => updateInvoice({ defaultUnit: e.target.value as 'hour' | 'day' | 'unit' | 'fixed' | 'project' })}
-                  className="input px-3 py-2 text-sm"
+                  className="input px-3 py-2 !text-sm"
                 >
                   <option value="hour">{t('unit_hour') || 'Heure'}</option>
                   <option value="day">{t('unit_day') || 'Jour'}</option>
@@ -498,7 +498,7 @@ export default function SettingsPage() {
 
             {/* Section: TVA */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('vat_section') || 'TVA'}
               </h3>
 
@@ -533,7 +533,7 @@ export default function SettingsPage() {
 
             {/* Section: Délais */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('deadlines_section') || 'Délais'}
               </h3>
 
@@ -574,7 +574,7 @@ export default function SettingsPage() {
 
             {/* Section: Numérotation */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('numbering_section') || 'Numérotation'}
               </h3>
 
@@ -597,10 +597,10 @@ export default function SettingsPage() {
                   type="text"
                   value={preferences.invoice.invoicePrefix}
                   onChange={(e) => updateInvoice({ invoicePrefix: e.target.value })}
-                  className="input px-3 py-2 text-sm w-32"
+                  className="input px-3 py-2 !text-sm w-32"
                   placeholder="FAC-"
                 />
-                <p className="!text-xs text-muted mt-1">
+                <p className="!text-xs !text-muted mt-1">
                   {t('example') || 'Exemple'}: {preferences.invoice.invoicePrefix}2025-XXXX
                 </p>
               </SettingsRow>
@@ -613,10 +613,10 @@ export default function SettingsPage() {
                   type="text"
                   value={preferences.invoice.quotePrefix}
                   onChange={(e) => updateInvoice({ quotePrefix: e.target.value })}
-                  className="input px-3 py-2 text-sm w-32"
+                  className="input px-3 py-2 !text-sm w-32"
                   placeholder="DEV-"
                 />
-                <p className="!text-xs text-muted mt-1">
+                <p className="!text-xs !text-muted mt-1">
                   {t('example') || 'Exemple'}: {preferences.invoice.quotePrefix}2025-XXXX
                 </p>
               </SettingsRow>
@@ -624,7 +624,7 @@ export default function SettingsPage() {
 
             {/* Section: Informations légales */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('legal_info_section') || 'Informations légales'}
               </h3>
 
@@ -637,7 +637,7 @@ export default function SettingsPage() {
                     type="text"
                     value={preferences.invoice.siret}
                     onChange={(e) => updateInvoice({ siret: e.target.value })}
-                    className="input px-3 py-2 text-sm w-full"
+                    className="input px-3 py-2 !text-sm w-full"
                     placeholder="123 456 789 00012"
                     maxLength={17}
                   />
@@ -651,7 +651,7 @@ export default function SettingsPage() {
                     type="text"
                     value={preferences.invoice.vatNumber}
                     onChange={(e) => updateInvoice({ vatNumber: e.target.value })}
-                    className="input px-3 py-2 text-sm w-full"
+                    className="input px-3 py-2 !text-sm w-full"
                     placeholder="FR12345678901"
                   />
                 </SettingsRow>
@@ -664,7 +664,7 @@ export default function SettingsPage() {
                     type="text"
                     value={preferences.invoice.rcs}
                     onChange={(e) => updateInvoice({ rcs: e.target.value })}
-                    className="input px-3 py-2 text-sm w-full"
+                    className="input px-3 py-2 !text-sm w-full"
                     placeholder="Paris B 123 456 789"
                   />
                 </SettingsRow>
@@ -678,7 +678,7 @@ export default function SettingsPage() {
                       type="text"
                       value={preferences.invoice.capital}
                       onChange={(e) => updateInvoice({ capital: e.target.value })}
-                      className="input px-3 py-2 text-sm w-full"
+                      className="input px-3 py-2 !text-sm w-full"
                       placeholder="10 000"
                     />
                     <span className="text-muted">€</span>
@@ -693,7 +693,7 @@ export default function SettingsPage() {
                     type="text"
                     value={preferences.invoice.apeCode}
                     onChange={(e) => updateInvoice({ apeCode: e.target.value })}
-                    className="input px-3 py-2 text-sm w-32"
+                    className="input px-3 py-2 !text-sm w-32"
                     placeholder="6201Z"
                     maxLength={6}
                   />
@@ -703,7 +703,7 @@ export default function SettingsPage() {
 
             {/* Section: Mentions */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-primary border-b border-default pb-2">
+              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('mentions_section') || 'Mentions'}
               </h3>
 
@@ -714,7 +714,7 @@ export default function SettingsPage() {
                 <textarea
                   value={preferences.invoice.paymentTerms}
                   onChange={(e) => updateInvoice({ paymentTerms: e.target.value })}
-                  className="input w-full px-3 py-2 text-sm resize-y"
+                  className="input w-full px-3 py-2 !text-sm resize-y"
                   rows={3}
                   placeholder={t('payment_terms_placeholder') || 'Ex: Paiement à 30 jours. En cas de retard de paiement, une pénalité de 3 fois le taux d\'intérêt légal sera appliquée...'}
                 />
@@ -727,7 +727,7 @@ export default function SettingsPage() {
                 <textarea
                   value={preferences.invoice.legalMentions}
                   onChange={(e) => updateInvoice({ legalMentions: e.target.value })}
-                  className="input w-full px-3 py-2 text-sm resize-y"
+                  className="input w-full px-3 py-2 !text-sm resize-y"
                   rows={4}
                   placeholder={t('legal_mentions_placeholder') || 'Ex: TVA non applicable, art. 293 B du CGI...'}
                 />
@@ -756,10 +756,10 @@ export default function SettingsPage() {
                 {/* Section : Type de métier */}
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-primary">
+                    <h3 className="text-lg font-semibold !text-primary">
                       {t('your_business') || 'Votre métier'}
                     </h3>
-                    <p className="text-sm text-muted mt-1">
+                    <p className="text-sm !text-muted mt-1">
                       {t('business_type_desc') || 'Nous adapterons votre interface en conséquence'}
                     </p>
                   </div>
@@ -773,10 +773,10 @@ export default function SettingsPage() {
                 {localBusinessType && (
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-primary">
+                      <h3 className="text-lg font-semibold !text-primary">
                         {t('enabled_modules') || 'Modules activés'}
                       </h3>
-                      <p className="text-sm text-muted mt-1">
+                      <p className="text-sm !text-muted mt-1">
                         {t('modules_desc') || 'Sélectionnez les fonctionnalités que vous souhaitez utiliser'}
                       </p>
                     </div>
@@ -822,10 +822,10 @@ export default function SettingsPage() {
                 {/* Section : Relancer l'onboarding */}
                 <div className="space-y-4 pt-6 border-t border-default">
                   <div>
-                    <h3 className="text-lg font-semibold text-primary">
+                    <h3 className="text-lg font-semibold !text-primary">
                       {t('restart_onboarding') || 'Relancer l\'onboarding'}
                     </h3>
-                    <p className="text-sm text-muted mt-1">
+                    <p className="text-sm !text-muted mt-1">
                       {t('restart_onboarding_desc') || 'Reconfigurer votre profil et créer un nouveau projet guidé'}
                     </p>
                   </div>
@@ -863,7 +863,7 @@ export default function SettingsPage() {
                 {sidebarCategories.map((category) => (
                   <div key={category.id} className="space-y-2">
                     {/* Titre de catégorie */}
-                    <div className="flex items-center gap-2 !text-xs font-semibold text-muted uppercase tracking-wider">
+                    <div className="flex items-center gap-2 !text-xs font-semibold !text-muted uppercase tracking-wider">
                       {category.icon}
                       <span>{category.label}</span>
                     </div>
@@ -881,7 +881,7 @@ export default function SettingsPage() {
                   </div>
                 ))}
               </div>
-              <p className="!text-xs text-muted mt-4">
+              <p className="!text-xs !text-muted mt-4">
                 {visibleLinks.length}/{CONFIGURABLE_LINKS.length} {t('links_visible') || 'liens affichés'}
               </p>
             </SettingsRow>
@@ -889,7 +889,7 @@ export default function SettingsPage() {
             <SettingsRow title={t('reset') || 'Réinitialiser'} description={t('reset_desc') || 'Restaurer les valeurs par défaut'}>
               <button
                 onClick={resetToDefault}
-                className="btn-ghost px-4 py-2 text-sm flex items-center gap-2"
+                className="btn-ghost px-4 py-2 !text-sm flex items-center gap-2"
               >
                 <IconRefresh className="w-4 h-4" />
                 {t('reset_sidebar') || 'Afficher tous les liens'}
@@ -901,7 +901,7 @@ export default function SettingsPage() {
         {/* INTÉGRATIONS */}
         {activeTab === 'integrations' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <div className="text-sm text-muted mb-4">
+            <div className="text-sm !text-muted mb-4">
               {t('integrations_desc') || 'Connectez des services externes pour automatiser votre workflow.'}
             </div>
             
@@ -912,17 +912,17 @@ export default function SettingsPage() {
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-accent-hover flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <IconPlugConnected className="w-6 h-6 text-primary" />
+                  <IconPlugConnected className="w-6 h-6 !text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-primary group-hover:text-accent transition-colors">
+                  <h3 className="font-semibold !text-primary group-hover:!text-accent transition-colors">
                     {t('api_tokens') || 'API Tokens & Webhooks'}
                   </h3>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm !text-muted">
                     {t('api_tokens_integration_desc') || 'Connectez VS Code, Cursor et Typeform à Eclipse'}
                   </p>
                 </div>
-                <IconChevronRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
+                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
               </div>
             </Link>
             
@@ -943,20 +943,20 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-primary group-hover:text-accent transition-colors">
+                  <h3 className="font-semibold !text-primary group-hover:!text-accent transition-colors">
                     Fathom AI
                   </h3>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm !text-muted">
                     {t('fathom_integration_desc') || 'Notes de réunion automatiques - Transcriptions, résumés et actions'}
                   </p>
                 </div>
-                <IconChevronRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
+                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
               </div>
             </Link>
 
             {/* Future integrations placeholder */}
-            <div className="p-4 rounded-xl border border-dashed border-default text-center">
-              <p className="text-sm text-muted">
+            <div className="p-4 rounded-xl border border-dashed border-default !text-center">
+              <p className="text-sm !text-muted">
                 {t('more_integrations_soon') || 'D\'autres intégrations arrivent bientôt...'}
               </p>
             </div>
@@ -964,7 +964,7 @@ export default function SettingsPage() {
         )}
 
         {/* Footer info */}
-        <div className="pt-4 border-t border-default !text-xs text-muted flex items-center gap-2">
+        <div className="pt-4 border-t border-default !text-xs !text-muted flex items-center gap-2">
           <span className="text-info">💡</span>
           {t('settings_saved_locally') || 'Vos préférences sont enregistrées automatiquement.'}
         </div>
@@ -978,8 +978,8 @@ function SettingsRow({ title, description, children }: { title: string; descript
   return (
     <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 pb-6 border-b border-default last:border-0">
       <div className="md:w-48 flex-shrink-0">
-        <h3 className="text-sm font-medium text-primary">{title}</h3>
-        <p className="!text-xs text-muted mt-0.5">{description}</p>
+        <h3 className="text-sm font-medium !text-primary">{title}</h3>
+        <p className="!text-xs !text-muted mt-0.5">{description}</p>
       </div>
       <div className="flex-1">{children}</div>
     </div>
@@ -992,10 +992,10 @@ function OptionButton({ children, selected, onClick }: { children: React.ReactNo
     <button
       onClick={onClick}
       className={`
-        flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all
+        flex items-center gap-2 px-3 py-2 rounded-lg border !text-sm transition-all
         ${selected
-          ? 'border-accent bg-accent text-white'
-            : 'border-default text-primary hover:border-muted hover:text-secondary'
+          ? 'border-accent bg-accent !text-white'
+            : 'border-default !text-primary hover:border-muted hover:!text-secondary'
         }
       `}
     >

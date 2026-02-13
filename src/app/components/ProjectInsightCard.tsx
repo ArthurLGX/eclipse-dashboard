@@ -155,14 +155,14 @@ export default function ProjectInsightCard({
         return {
           bg: 'bg-warning-light',
           border: 'border-warning',
-          icon: <IconAlertTriangle className="w-5 h-5 text-warning" />,
+          icon: <IconAlertTriangle className="w-5 h-5 !text-warning" />,
           iconBg: 'bg-warning-light',
         };
       case 'danger':
         return {
           bg: 'bg-danger-light',
           border: 'border-danger',
-          icon: <IconAlertTriangle className="w-5 h-5 text-danger" />,
+          icon: <IconAlertTriangle className="w-5 h-5 !text-danger" />,
           iconBg: 'bg-danger-light',
         };
     }
@@ -173,9 +173,9 @@ export default function ProjectInsightCard({
       case 'up':
         return <IconTrendingUp className="w-4 h-4 !text-success-text -text" />;
       case 'down':
-        return <IconTrendingDown className="w-4 h-4 text-danger" />;
+        return <IconTrendingDown className="w-4 h-4 !text-danger" />;
       case 'stable':
-        return <IconMinus className="w-4 h-4 text-muted" />;
+        return <IconMinus className="w-4 h-4 !text-muted" />;
     }
   };
 
@@ -200,7 +200,7 @@ export default function ProjectInsightCard({
             height={18}
             className="w-4.5 h-4.5"
           />
-          <span className="text-sm font-medium text-primary">
+          <span className="text-sm font-medium !text-primary">
             Eclipse Insight
           </span>
         </div>
@@ -210,21 +210,21 @@ export default function ProjectInsightCard({
           className="p-1.5 hover:bg-muted rounded-lg transition-colors disabled:opacity-50"
           title={t('refresh') || 'Actualiser'}
         >
-          <IconRefresh className={`w-4 h-4 text-muted ${loading ? 'animate-spin' : ''}`} />
+          <IconRefresh className={`w-4 h-4 !text-muted ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
 
       {/* Content */}
       <div className="p-4">
         {loading && !insight && (
-          <div className="flex items-center gap-3 text-sm text-muted">
+          <div className="flex items-center gap-3 !text-sm !text-muted">
             <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
             Analyse en cours...
           </div>
         )}
 
         {error && (
-          <div className="flex items-center gap-2 text-sm text-danger">
+          <div className="flex items-center gap-2 !text-sm !text-danger">
             <IconInfoCircle className="w-4 h-4" />
             {error}
           </div>
@@ -237,7 +237,7 @@ export default function ProjectInsightCard({
               <div className={`p-1.5 rounded-lg flex-shrink-0 ${getStatusStyles(insight.status).iconBg}`}>
                 {getStatusStyles(insight.status).icon}
               </div>
-              <p className="text-sm text-primary leading-snug flex-1">
+              <p className="text-sm !text-primary leading-snug flex-1">
                 {insight.summary}
               </p>
             </div>
@@ -245,9 +245,9 @@ export default function ProjectInsightCard({
             {/* Key Metric - inline layout */}
             {insight.key_metric && (
               <div className="flex items-center justify-between gap-3 p-2.5 bg-muted rounded-lg">
-                <span className="!text-xs text-muted whitespace-nowrap">{insight.key_metric.label}</span>
+                <span className="!text-xs !text-muted whitespace-nowrap">{insight.key_metric.label}</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-bold text-primary whitespace-nowrap">
+                  <span className="text-sm font-bold !text-primary whitespace-nowrap">
                     {insight.key_metric.value}
                   </span>
                   {getTrendIcon(insight.key_metric.trend)}
@@ -257,7 +257,7 @@ export default function ProjectInsightCard({
 
             {/* Actionable Tip */}
             <div className="pt-2 border-t border-default">
-              <p className="!text-xs text-secondary leading-relaxed flex items-start gap-1.5">
+              <p className="!text-xs !text-secondary leading-relaxed flex items-start gap-1.5">
                 <span className="flex-shrink-0">💡</span>
                 <span>{insight.actionable_tip}</span>
               </p>
@@ -266,7 +266,7 @@ export default function ProjectInsightCard({
         )}
 
         {!loading && !error && !insight && (
-          <div className="text-sm text-muted text-center py-2">
+          <div className="text-sm !text-muted !text-center py-2">
             Aucune analyse disponible
           </div>
         )}

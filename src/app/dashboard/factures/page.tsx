@@ -346,9 +346,9 @@ export default function FacturesPage() {
           >
             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isQuoteMode ? 'bg-violet-100 dark:bg-violet-900/30' : 'bg-amber-100 dark:bg-amber-900/30'}`}>
               {isQuoteMode ? (
-                <IconFileDescription className="w-4 h-4 text-violet-500" />
+                <IconFileDescription className="w-4 h-4 !text-violet-500" />
               ) : (
-                <IconFileInvoice className="w-4 h-4 text-amber-500" />
+                <IconFileInvoice className="w-4 h-4 !text-amber-500" />
               )}
             </div>
             <p className="text-primary font-medium">{value as string}</p>
@@ -595,7 +595,7 @@ export default function FacturesPage() {
           label: t('total_quotes') || 'Total des devis',
           value: stats.total,
           colorClass: 'text-violet-500',
-          icon: <IconFileDescription className="w-6 h-6 text-violet-500" />,
+          icon: <IconFileDescription className="w-6 h-6 !text-violet-500" />,
         },
         {
           label: t('accepted_quotes') || 'Devis acceptés',
@@ -607,13 +607,13 @@ export default function FacturesPage() {
           label: t('pending_quotes') || 'En attente',
           value: stats.pending || 0,
           colorClass: 'text-info',
-          icon: <IconHourglass className="w-6 h-6 text-info" />,
+          icon: <IconHourglass className="w-6 h-6 !text-info" />,
         },
         {
           label: t('new_quotes_this_month') || 'Nouveaux ce mois',
           value: stats.newThisMonth,
           colorClass: 'text-violet-500',
-          icon: <IconCalendar className="w-6 h-6 text-violet-500" />,
+          icon: <IconCalendar className="w-6 h-6 !text-violet-500" />,
         },
       ];
     } else {
@@ -622,7 +622,7 @@ export default function FacturesPage() {
           label: t('total_invoices'),
           value: stats.total,
           colorClass: 'text-amber-500',
-          icon: <IconFileInvoice className="w-6 h-6 text-amber-500" />,
+          icon: <IconFileInvoice className="w-6 h-6 !text-amber-500" />,
         },
         {
           label: t('active_factures'),
@@ -640,7 +640,7 @@ export default function FacturesPage() {
           label: t('new_factures_this_month'),
           value: stats.newThisMonth,
           colorClass: 'text-amber-500',
-          icon: <IconCalendar className="w-6 h-6 text-amber-500" />,
+          icon: <IconCalendar className="w-6 h-6 !text-amber-500" />,
         },
       ];
     }
@@ -651,10 +651,10 @@ export default function FacturesPage() {
     <div className="flex w-fit gap-1 p-1 bg-muted rounded-lg mb-6">
       <button
         onClick={() => router.push('/dashboard/factures')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+        className={`flex items-center gap-2 px-4 py-2 rounded-md !text-sm font-medium transition-all ${
           !isQuoteMode
-            ? 'bg-card text-amber-600 dark:text-amber-400 shadow-sm'
-            : 'text-muted hover:text-primary'
+            ? 'bg-card !text-amber-600 dark:!text-amber-400 shadow-sm'
+            : 'text-muted hover:!text-primary'
         }`}
       >
         <IconFileInvoice className="w-4 h-4" />
@@ -662,10 +662,10 @@ export default function FacturesPage() {
       </button>
       <button
         onClick={() => router.push('/dashboard/factures?type=quote')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+        className={`flex items-center gap-2 px-4 py-2 rounded-md !text-sm font-medium transition-all ${
           isQuoteMode
             ? 'bg-card !text-secondary shadow-sm'
-            : 'text-muted hover:text-primary'
+            : 'text-muted hover:!text-primary'
         }`}
       >
         <IconFileDescription className="w-4 h-4" />
@@ -715,13 +715,13 @@ export default function FacturesPage() {
         <div className="p-6 space-y-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
-              <IconFileInvoice className="w-6 h-6 text-green-500" />
+              <IconFileInvoice className="w-6 h-6 !text-green-500" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-primary">
+              <h3 className="text-lg font-semibold !text-primary">
                 {t('convert_quote_to_invoice') || 'Convertir ce devis en facture'}
               </h3>
-              <p className="text-sm text-muted">
+              <p className="text-sm !text-muted">
                 {convertModal.quote?.reference}
               </p>
             </div>
@@ -741,10 +741,10 @@ export default function FacturesPage() {
               className="mt-1 w-4 h-4 rounded border-default !text-accent focus:ring-accent"
             />
             <div>
-              <label htmlFor="updateClientStatusTable" className="text-sm font-medium text-primary cursor-pointer">
+              <label htmlFor="updateClientStatusTable" className="text-sm font-medium !text-primary cursor-pointer">
                 {t('update_client_status') || 'Mettre à jour le statut du client'}
               </label>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {t('update_client_status_desc') || 'Passer le client en "Devis accepté" dans le pipeline'}
               </p>
             </div>
@@ -754,14 +754,14 @@ export default function FacturesPage() {
             <button
               onClick={() => setConvertModal({ isOpen: false, quote: null })}
               disabled={isConverting}
-              className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+              className="px-4 py-2 !text-secondary hover:!text-primary transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>
             <button
               onClick={handleConvertQuote}
               disabled={isConverting}
-              className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-green-500 !text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
             >
               {isConverting ? (
                 <>

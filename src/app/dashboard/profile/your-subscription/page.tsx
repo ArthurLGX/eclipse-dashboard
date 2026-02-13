@@ -199,7 +199,7 @@ export default function YourSubscriptionPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-primary">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-primary">
           {t('your_subscription')}
         </h1>
       </div>
@@ -208,7 +208,7 @@ export default function YourSubscriptionPage() {
         {/* Section Informations de l'abonnement */}
         <div className="lg:col-span-2">
           <div className="card lg:!p-6 !p-4 space-y-6">
-            <h2 className="!text-xl font-semibold text-primary mb-4">
+            <h2 className="!text-xl font-semibold !text-primary mb-4">
               {t('subscription_details')}
             </h2>
 
@@ -228,7 +228,7 @@ export default function YourSubscriptionPage() {
                         <div
                           className={`w-3 h-3 rounded-full ${subscription.trial ? 'bg-warning' : 'bg-success'}`}
                         ></div>
-                        <h3 className="!text-lg font-semibold text-primary capitalize">
+                        <h3 className="!text-lg font-semibold !text-primary capitalize">
                           {subscription.plan?.name || 'Plan'}
                         </h3>
                         {subscription.trial && (
@@ -241,7 +241,7 @@ export default function YourSubscriptionPage() {
                         <div className="!text-2xl font-bold !text-success-text">
                           €{subscription.plan?.price_monthly || 0}
                         </div>
-                        <div className="!text-sm text-secondary">
+                        <div className="!text-sm !text-secondary">
                           {t('per_month')}
                         </div>
                       </div>
@@ -402,7 +402,7 @@ export default function YourSubscriptionPage() {
         {/* Section Actions rapides */}
         <div className="lg:col-span-1">
           <div className="card p-6 space-y-6 relative overflow-visible">
-            <h2 className="!text-xl font-semibold text-primary mb-4">
+            <h2 className="!text-xl font-semibold !text-primary mb-4">
               {t('quick_actions')}
             </h2>
 
@@ -444,10 +444,10 @@ export default function YourSubscriptionPage() {
 
             {/* Informations supplémentaires */}
             <div className="pt-6 border-t border-default">
-              <h3 className="!text-sm font-semibold text-primary mb-3">
+              <h3 className="!text-sm font-semibold !text-primary mb-3">
                 {t('need_help')}
               </h3>
-              <p className="!text-sm text-secondary mb-4">
+              <p className="!text-sm !text-secondary mb-4">
                 {t('contact_support_message')}
               </p>
               <SupportDropdown

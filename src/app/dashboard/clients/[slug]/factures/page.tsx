@@ -66,7 +66,7 @@ export default function ClientFacturesPage() {
       label: t('reference'),
       render: (v, row) => (
         <span
-          className="text-primary font-medium cursor-pointer hover:text-accent transition-colors"
+          className="text-primary font-medium cursor-pointer hover:!text-accent transition-colors"
           onClick={() => router.push(`/dashboard/factures/${getFactureSlug(row)}`)}
         >
           {v as string}
@@ -98,13 +98,13 @@ export default function ClientFacturesPage() {
               case 'accepted':
                 return { icon: <IconCheck className="w-4 h-4 !text-success-text -text" />, label: t('accepted') || 'Accepté' };
               case 'sent':
-                return { icon: <IconCheck className="w-4 h-4 text-info" />, label: t('sent') || 'Envoyé' };
+                return { icon: <IconCheck className="w-4 h-4 !text-info" />, label: t('sent') || 'Envoyé' };
               case 'rejected':
-                return { icon: <IconX className="w-4 h-4 text-danger" />, label: t('rejected') || 'Refusé' };
+                return { icon: <IconX className="w-4 h-4 !text-danger" />, label: t('rejected') || 'Refusé' };
               case 'expired':
-                return { icon: <IconX className="w-4 h-4 text-warning" />, label: t('expired') || 'Expiré' };
+                return { icon: <IconX className="w-4 h-4 !text-warning" />, label: t('expired') || 'Expiré' };
               default:
-                return { icon: <IconX className="w-4 h-4 text-muted" />, label: t('draft') || 'Brouillon' };
+                return { icon: <IconX className="w-4 h-4 !text-muted" />, label: t('draft') || 'Brouillon' };
             }
           } else {
             // Statuts pour factures: draft, sent, paid, overdue
@@ -112,11 +112,11 @@ export default function ClientFacturesPage() {
               case 'paid':
                 return { icon: <IconCheck className="w-4 h-4 !text-success-text -text" />, label: t('paid') || 'Payé' };
               case 'sent':
-                return { icon: <IconCheck className="w-4 h-4 text-info" />, label: t('sent') || 'Envoyé' };
+                return { icon: <IconCheck className="w-4 h-4 !text-info" />, label: t('sent') || 'Envoyé' };
               case 'overdue':
-                return { icon: <IconX className="w-4 h-4 text-danger" />, label: t('overdue') || 'En retard' };
+                return { icon: <IconX className="w-4 h-4 !text-danger" />, label: t('overdue') || 'En retard' };
               default:
-                return { icon: <IconX className="w-4 h-4 text-muted" />, label: t('draft') || 'Brouillon' };
+                return { icon: <IconX className="w-4 h-4 !text-muted" />, label: t('draft') || 'Brouillon' };
             }
           }
         };
@@ -124,7 +124,7 @@ export default function ClientFacturesPage() {
         const { icon, label } = getStatusDisplay();
         
         return (
-          <span className="flex items-center gap-2 text-secondary">
+          <span className="flex items-center gap-2 !text-secondary">
             {icon}
             {label}
           </span>
@@ -165,7 +165,7 @@ export default function ClientFacturesPage() {
                 <button
                   type="button"
                   title={t('view_invoice') || 'Voir la facture'}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-muted text-info border border-default hover:bg-hover hover:text-primary transition-colors !text-xs font-semibold"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-muted !text-info border border-default hover:bg-hover hover:!text-primary transition-colors !text-xs font-semibold"
                   onClick={() => {
                     setPdfToShow(pdfUrl);
                     setShowPdfModal(true);
@@ -201,7 +201,7 @@ export default function ClientFacturesPage() {
       <div className="flex items-center gap-4 mb-2">
         <Link
           href={`/dashboard/clients/${params.slug}`}
-          className="flex items-center gap-2 text-secondary hover:text-primary transition-colors"
+          className="flex items-center gap-2 !text-secondary hover:!text-primary transition-colors"
         >
           <IconArrowLeft className="w-5 h-5" />
           <span>{t('back') || 'Retour'}</span>
@@ -210,7 +210,7 @@ export default function ClientFacturesPage() {
 
       <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-primary">{t('invoices')}</h1>
+          <h1 className="text-3xl font-bold !text-primary">{t('invoices')}</h1>
           <p className="text-secondary mt-1">
             {clientName} • {factures.length} {factures.length > 1 ? 'factures' : 'facture'}
           </p>

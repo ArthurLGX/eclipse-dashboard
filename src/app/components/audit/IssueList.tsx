@@ -51,7 +51,7 @@ export default function IssueList({ issues, title, emptyMessage }: IssueListProp
 
   if (issues.length === 0) {
     return (
-      <div className="text-center py-6 text-muted">
+      <div className="text-center py-6 !text-muted">
         <IconInfoCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
         <p>{emptyMessage || t('no_issues')}</p>
       </div>
@@ -61,7 +61,7 @@ export default function IssueList({ issues, title, emptyMessage }: IssueListProp
   return (
     <div className="space-y-3">
       {title && (
-        <h4 className="text-sm font-medium text-primary mb-3">{title}</h4>
+        <h4 className="text-sm font-medium !text-primary mb-3">{title}</h4>
       )}
       {sortedIssues.map((issue, index) => {
         const config = priorityConfig[issue.priority];
@@ -77,7 +77,7 @@ export default function IssueList({ issues, title, emptyMessage }: IssueListProp
           >
             <Icon className={`w-5 h-5 flex-shrink-0 mt-0.5 ${config.textColor}`} />
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-primary">{t(issue.text) || issue.text}</p>
+              <p className="text-sm !text-primary">{t(issue.text) || issue.text}</p>
             </div>
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${config.bgColor} ${config.textColor}`}>
               {t(config.label)}

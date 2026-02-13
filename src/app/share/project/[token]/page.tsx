@@ -204,16 +204,16 @@ export default function SharedProjectPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-card border border-default rounded-2xl p-8 max-w-md w-full text-center"
+          className="bg-card border border-default rounded-2xl p-8 max-w-md w-full !text-center"
         >
           <div className="w-16 h-16 rounded-full bg-danger-light flex items-center justify-center mx-auto mb-6">
-            <IconAlertTriangle className="w-8 h-8 text-danger" />
+            <IconAlertTriangle className="w-8 h-8 !text-danger" />
           </div>
-          <h1 className="text-xl font-semibold text-primary mb-2">
+          <h1 className="text-xl font-semibold !text-primary mb-2">
             {t('invalid_link')}
           </h1>
           <p className="text-primary mb-6">{error || t('link_expired_or_not_found')}</p>
-          <p className="text-sm text-muted">
+          <p className="text-sm !text-muted">
             {t('contact_owner_for_new_link')}
           </p>
         </motion.div>
@@ -261,18 +261,18 @@ export default function SharedProjectPage() {
           {/* Titre et infos du projet */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">{project.title}</h1>
+              <h1 className="text-2xl sm:!text-3xl font-bold !text-primary mb-2">{project.title}</h1>
               <div className="flex items-center gap-3 flex-wrap">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${statusConfig.colorClass}`}>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full !text-sm font-medium border ${statusConfig.colorClass}`}>
                   {statusConfig.label}
                 </span>
                 {project.user?.username && (
-                  <span className="text-primary text-sm">
+                  <span className="text-primary !text-sm">
                     {t('by')} {project.user.username}
                   </span>
                 )}
                 {project.end_date && (
-                  <span className="text-muted text-sm flex items-center gap-1">
+                  <span className="text-muted !text-sm flex items-center gap-1">
                     <IconCalendar className="w-4 h-4" />
                     {t('deadline')}: {new Date(project.end_date).toLocaleDateString('fr-FR')}
                   </span>
@@ -282,14 +282,14 @@ export default function SharedProjectPage() {
             <div className="flex items-center gap-2">
               <a
                 href={`mailto:?subject=${t('project_progress')} - ${project.title}&body=${t('view_project_progress')} : ${typeof window !== 'undefined' ? window.location.href : ''}`}
-                className="btn btn-ghost flex items-center gap-2 px-4 py-2 text-sm"
+                className="btn btn-ghost flex items-center gap-2 px-4 py-2 !text-sm"
               >
                 <IconMail className="w-4 h-4" />
                 {t('share_button')}
               </a>
               <a
                 href={`/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
-                className="btn btn-primary !text-white flex items-center gap-2 px-4 py-2 text-sm"
+                className="btn btn-primary !text-white flex items-center gap-2 px-4 py-2 !text-sm"
               >
                 <IconExternalLink className="w-4 h-4" color="white" />
                 {t('access_project')}
@@ -306,10 +306,10 @@ export default function SharedProjectPage() {
           >
             <div 
               className="text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
-                [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2
-                [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2
+                [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
+                [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                [&_a]:text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                [&_a]:!text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
               dangerouslySetInnerHTML={{ __html: project.description }}
             />
           </motion.div>
@@ -324,11 +324,11 @@ export default function SharedProjectPage() {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
           >
             <div className="card p-5">
-              <div className="flex items-center gap-2 text-primary text-sm mb-2">
+              <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
                 <IconChartBar className="w-4 h-4" />
                 {t('progression')}
               </div>
-              <div className="text-3xl font-bold text-primary mb-2">{overallProgress}%</div>
+              <div className="text-3xl font-bold !text-primary mb-2">{overallProgress}%</div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-accent rounded-full transition-all duration-500"
@@ -338,27 +338,27 @@ export default function SharedProjectPage() {
             </div>
 
             <div className="card p-5">
-              <div className="flex items-center gap-2 text-primary text-sm mb-2">
+              <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
                 <IconCheck className="w-4 h-4" />
                 {t('tasks_completed')}
               </div>
               <div className="text-3xl font-bold !text-success-text -text">{completedTasks}</div>
-              <div className="text-sm text-muted">{t('on_tasks')} {parentTasks.length} {t('tasks_label')}</div>
+              <div className="text-sm !text-muted">{t('on_tasks')} {parentTasks.length} {t('tasks_label')}</div>
             </div>
 
             <div className="card p-5">
-              <div className="flex items-center gap-2 text-primary text-sm mb-2">
+              <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
                 <IconProgress className="w-4 h-4" />
                 {t('in_progress')}
               </div>
-              <div className="text-3xl font-bold text-info">
+              <div className="text-3xl font-bold !text-info">
                 {parentTasks.filter(task => task.task_status === 'in_progress').length}
               </div>
-              <div className="text-sm text-muted">{t('active_tasks')}</div>
+              <div className="text-sm !text-muted">{t('active_tasks')}</div>
             </div>
 
             <div className="card p-5">
-              <div className="flex items-center gap-2 text-primary text-sm mb-2">
+              <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
                 <IconCalendar className="w-4 h-4" color="white"/>
                 {t('deadline')}
               </div>
@@ -370,7 +370,7 @@ export default function SharedProjectPage() {
                   daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : `${daysRemaining}j`
                 ) : '—'}
               </div>
-              <div className="text-sm text-muted">
+              <div className="text-sm !text-muted">
                 {daysRemaining !== null && daysRemaining < 0 ? t('days_late') : t('days_remaining')}
               </div>
             </div>
@@ -387,7 +387,7 @@ export default function SharedProjectPage() {
           >
             <div className="card p-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="flex items-center gap-2 text-primary">
+                <div className="flex items-center gap-2 !text-primary">
                   <IconFilter className="w-5 h-5" />
                   <span className="font-medium">{t('filter_by_status') || 'Filtrer par statut'}</span>
                 </div>
@@ -401,10 +401,10 @@ export default function SharedProjectPage() {
                         onClick={() => setStatusFilter(option.value)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg !text-sm font-medium transition-all ${
                           isActive
-                            ? 'bg-accent text-white shadow-sm'
-                            : 'bg-muted text-primary hover:bg-hover hover:text-primary'
+                            ? 'bg-accent !text-white shadow-sm'
+                            : 'bg-muted !text-primary hover:bg-hover hover:!text-primary'
                         }`}
                       >
                         <span className={isActive ? 'text-white' : option.color}>
@@ -429,11 +429,11 @@ export default function SharedProjectPage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="mt-3 pt-3 border-t border-default"
                 >
-                  <p className="text-sm text-primary">
+                  <p className="text-sm !text-primary">
                     {t('showing') || 'Affichage de'}{' '}
-                    <span className="font-semibold text-primary">{filteredTasks.length}</span>{' '}
+                    <span className="font-semibold !text-primary">{filteredTasks.length}</span>{' '}
                     {t('tasks_on') || 'tâche(s) sur'}{' '}
-                    <span className="font-semibold text-primary">{parentTasksForDisplay.length}</span>
+                    <span className="font-semibold !text-primary">{parentTasksForDisplay.length}</span>
                     {' • '}
                     <button 
                       onClick={() => setStatusFilter('all')}
@@ -456,11 +456,11 @@ export default function SharedProjectPage() {
             transition={{ delay: 0.2 }}
             className="mb-8"
           >
-            <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-semibold !text-primary mb-4 flex items-center gap-2">
               <IconTimeline className="w-5 h-5 !text-accent-light" />
               {t('gantt_diagram')}
               {statusFilter !== 'all' && (
-                <span className="text-sm font-normal text-muted">
+                <span className="text-sm font-normal !text-muted">
                   ({filteredTasks.length} {t('tasks') || 'tâches'})
                 </span>
               )}
@@ -471,8 +471,8 @@ export default function SharedProjectPage() {
                 projectName={project.title}
               />
             ) : (
-              <div className="card p-8 text-center">
-                <IconTimeline className="w-12 h-12 text-muted mx-auto mb-3" />
+              <div className="card p-8 !text-center">
+                <IconTimeline className="w-12 h-12 !text-muted mx-auto mb-3" />
                 <p className="text-primary">
                   {statusFilter !== 'all' 
                     ? (t('no_tasks_with_status') || 'Aucune tâche avec ce statut')
@@ -490,11 +490,11 @@ export default function SharedProjectPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-semibold !text-primary mb-4 flex items-center gap-2">
               <IconProgress className="w-5 h-5 !text-accent-light" />
               {t('tasks_list')}
               {statusFilter !== 'all' && (
-                <span className="text-sm font-normal text-muted">
+                <span className="text-sm font-normal !text-muted">
                   ({filteredTasks.length} {t('tasks') || 'tâches'})
                 </span>
               )}
@@ -512,8 +512,8 @@ export default function SharedProjectPage() {
                 </div>
               </div>
             ) : (
-              <div className="card p-8 text-center">
-                <IconProgress className="w-12 h-12 text-muted mx-auto mb-3" />
+              <div className="card p-8 !text-center">
+                <IconProgress className="w-12 h-12 !text-muted mx-auto mb-3" />
                 <p className="text-primary">
                   {t('no_tasks_with_status') || 'Aucune tâche avec ce statut'}
                 </p>
@@ -531,7 +531,7 @@ export default function SharedProjectPage() {
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-2">
+              <h3 className="text-xl font-bold !text-primary mb-2 flex items-center gap-2">
                 <IconUserPlus className="w-6 h-6" color="white" />
                 {t('want_to_collaborate')}
               </h3>
@@ -559,7 +559,7 @@ export default function SharedProjectPage() {
         </motion.div>
 
         {/* Footer */}
-        <div className="mt-12 text-center text-muted text-sm">
+        <div className="mt-12 !text-center !text-muted !text-sm">
           <p>{t('generated_with')}</p>
         </div>
       </div>
@@ -590,10 +590,10 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
   
   const getStatusStyle = () => {
     const colorMap: Record<string, string> = {
-      muted: 'bg-muted text-muted border-muted',
-      info: 'bg-info-light text-info border-info',
+      muted: 'bg-muted !text-muted border-muted',
+      info: 'bg-info-light !text-info border-info',
       success: 'bg-success-light !text-success-text -text border-success',
-      danger: 'bg-danger-light text-danger border-danger',
+      danger: 'bg-danger-light !text-danger border-danger',
     };
     return colorMap[statusConfig.color] || colorMap.muted;
   };
@@ -621,11 +621,11 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
           {task.task_status === 'completed' ? (
             <IconCheck className="w-4 h-4 !text-success-text -text" />
           ) : task.task_status === 'in_progress' ? (
-            <IconProgress className="w-4 h-4 text-info" />
+            <IconProgress className="w-4 h-4 !text-info" />
           ) : task.task_status === 'cancelled' ? (
-            <IconX className="w-4 h-4 text-danger" />
+            <IconX className="w-4 h-4 !text-danger" />
           ) : (
-            <IconClock className="w-4 h-4 text-muted" />
+            <IconClock className="w-4 h-4 !text-muted" />
           )}
         </div>
 
@@ -647,14 +647,14 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
             <div className="mt-2">
               <div 
                 className={`text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
-                  [&_h1]:text-base [&_h1]:font-bold [&_h1]:mb-1 [&_h1]:text-primary
-                  [&_h2]:text-sm [&_h2]:font-semibold [&_h2]:mb-1 [&_h2]:text-primary
-                  [&_p]:mb-1 [&_p]:text-primary
+                  [&_h1]:!text-base [&_h1]:font-bold [&_h1]:mb-1 [&_h1]:!text-primary
+                  [&_h2]:!text-sm [&_h2]:font-semibold [&_h2]:mb-1 [&_h2]:!text-primary
+                  [&_p]:mb-1 [&_p]:!text-primary
                   [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-1
                   [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-1
-                  [&_li]:mb-0.5 [&_li]:text-primary
-                  [&_a]:text-accent [&_a]:underline
-                  [&_strong]:font-semibold [&_strong]:text-primary
+                  [&_li]:mb-0.5 [&_li]:!text-primary
+                  [&_a]:!text-accent [&_a]:underline
+                  [&_strong]:font-semibold [&_strong]:!text-primary
                   [&_em]:italic
                   [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2
                   ${!isExpanded ? 'line-clamp-2' : ''}`}
@@ -662,7 +662,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
               />
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1 !text-xs !text-accent hover:text-accent/80 mt-1 transition-colors"
+                className="flex items-center gap-1 !text-xs !text-accent hover:!text-accent/80 mt-1 transition-colors"
               >
                 {isExpanded ? (
                   <>
@@ -679,7 +679,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
             </div>
           )}
           
-          <div className="flex items-center gap-4 mt-2 !text-xs text-muted">
+          <div className="flex items-center gap-4 mt-2 !text-xs !text-muted">
             {task.due_date && (
               <span className={`flex items-center gap-1 ${isOverdue ? 'text-danger' : ''}`}>
                 <IconCalendar className="w-3.5 h-3.5" />
@@ -700,7 +700,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
               style={{ width: `${task.progress || 0}%` }}
             />
           </div>
-          <span className="!text-xs text-muted mt-1 block text-center">{task.progress || 0}%</span>
+          <span className="!text-xs !text-muted mt-1 block !text-center">{task.progress || 0}%</span>
         </div>
       </div>
     </div>
@@ -1014,7 +1014,7 @@ function PublicGanttView({ tasks, projectName }: {
             <td style="padding: 8px 0; position: relative; background: ${colors.bg};">
               <div style="position: relative; height: 24px;">
                 <div style="position: absolute; left: ${leftPercent}%; width: ${widthPercent}%; min-width: 40px; height: 24px; background: ${group.color}; border-radius: 4px; display: table; table-layout: fixed;">
-                  <span style="display: table-cell; vertical-align: middle; text-align: center; color: #ffffff; font-size: 11px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.3); white-space: nowrap; padding: 0 4px;">${task.progress || 0}%</span>
+                  <span style="display: table-cell; vertical-align: middle; !text-align: center; color: #ffffff; font-size: 11px; font-weight: 600; !text-shadow: 0 1px 2px rgba(0,0,0,0.3); white-space: nowrap; padding: 0 4px;">${task.progress || 0}%</span>
                 </div>
               </div>
             </td>
@@ -1041,7 +1041,7 @@ function PublicGanttView({ tasks, projectName }: {
 
     let monthsHTML = '';
     monthsForExport.forEach((month) => {
-      monthsHTML += `<th colspan="${month.days}" style="padding: 6px 4px; text-align: center; font-size: 12px; font-weight: 700; background: ${colors.bgTertiary}; color: ${colors.textPrimary}; border-left: 1px solid ${colors.border}; border-bottom: 1px solid ${colors.border};">${month.label}</th>`;
+      monthsHTML += `<th colspan="${month.days}" style="padding: 6px 4px; !text-align: center; font-size: 12px; font-weight: 700; background: ${colors.bgTertiary}; color: ${colors.textPrimary}; border-left: 1px solid ${colors.border}; border-bottom: 1px solid ${colors.border};">${month.label}</th>`;
     });
 
     let datesHTML = '';
@@ -1050,7 +1050,7 @@ function PublicGanttView({ tasks, projectName }: {
       const isTodayDate = day.getTime() === today.getTime();
       const bgColor = isTodayDate ? '#fee2e2' : isWeekend ? colors.bgTertiary : colors.headerBg;
       const textColor = isTodayDate ? '#ef4444' : colors.headerText;
-      datesHTML += `<th style="padding: 4px 2px; text-align: center; font-size: 11px; font-weight: ${isTodayDate ? '700' : '500'}; background: ${bgColor}; color: ${textColor}; min-width: 20px; border-left: 1px solid ${colors.border};">${day.getDate()}</th>`;
+      datesHTML += `<th style="padding: 4px 2px; !text-align: center; font-size: 11px; font-weight: ${isTodayDate ? '700' : '500'}; background: ${bgColor}; color: ${textColor}; min-width: 20px; border-left: 1px solid ${colors.border};">${day.getDate()}</th>`;
     });
 
     return {
@@ -1065,7 +1065,7 @@ function PublicGanttView({ tasks, projectName }: {
           <table style="width: 100%; border-collapse: collapse; border: 1px solid ${colors.border};">
             <thead>
               <tr style="background: ${colors.bgTertiary};">
-                <th rowspan="2" style="padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 700; color: ${colors.headerText}; text-transform: uppercase; width: 180px; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg}; vertical-align: bottom;">
+                <th rowspan="2" style="padding: 10px 12px; !text-align: left; font-size: 12px; font-weight: 700; color: ${colors.headerText}; !text-transform: uppercase; width: 180px; border-bottom: 2px solid ${colors.border}; background: ${colors.headerBg}; vertical-align: bottom;">
                   ${t('task') || 'Tâche'}
                 </th>
                 ${monthsHTML}
@@ -1131,7 +1131,7 @@ function PublicGanttView({ tasks, projectName }: {
   if (!ganttData || tasksWithDates.length === 0) {
     return (
       <div className="text-center py-12 card">
-        <IconTimeline className="w-12 h-12 text-muted mx-auto mb-3" />
+        <IconTimeline className="w-12 h-12 !text-muted mx-auto mb-3" />
         <p className="text-primary">{t('no_tasks_for_gantt')}</p>
       </div>
     );
@@ -1152,12 +1152,12 @@ function PublicGanttView({ tasks, projectName }: {
             onWheel={(e) => e.stopPropagation()}
           >
             <div className="p-4 border-b border-default flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-primary">
+              <h3 className="text-lg font-semibold !text-primary">
                 {t('export_pdf') || 'Export PDF'}
               </h3>
               <button
                 onClick={() => setShowExportModal(false)}
-                className="p-1 text-primary hover:text-primary transition-colors"
+                className="p-1 !text-primary hover:!text-primary transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -1166,7 +1166,7 @@ function PublicGanttView({ tasks, projectName }: {
             <div className="flex-1 overflow-hidden flex flex-col sm:flex-row">
               <div className="w-full sm:w-72 flex-shrink-0 p-4 border-b sm:border-b-0 sm:border-r border-default space-y-4 overflow-y-auto">
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-2">
+                  <label className="block !text-sm font-medium !text-primary mb-2">
                     {t('file_name') || 'Nom du fichier'}
                   </label>
                   <div className="flex items-center gap-2">
@@ -1174,14 +1174,14 @@ function PublicGanttView({ tasks, projectName }: {
                       type="text"
                       value={exportFileName}
                       onChange={(e) => setExportFileName(e.target.value)}
-                      className="flex-1 px-3 py-2 text-sm bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+                      className="flex-1 px-3 py-2 !text-sm bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                     />
-                    <span className="text-primary text-sm">.pdf</span>
+                    <span className="text-primary !text-sm">.pdf</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-2">
+                  <label className="block !text-sm font-medium !text-primary mb-2">
                     {t('choose_export_theme') || 'Thème'}
                   </label>
                   <div className="flex gap-2">
@@ -1197,7 +1197,7 @@ function PublicGanttView({ tasks, projectName }: {
                         <div className="w-6 h-6 rounded bg-white border border-gray-300 flex items-center justify-center">
                           <div className="w-3 h-0.5 bg-gray-800 rounded"></div>
                         </div>
-                        <span className="!text-xs font-medium text-primary">{t('light') || 'Clair'}</span>
+                        <span className="!text-xs font-medium !text-primary">{t('light') || 'Clair'}</span>
                       </div>
                     </button>
                     <button
@@ -1212,7 +1212,7 @@ function PublicGanttView({ tasks, projectName }: {
                         <div className="w-6 h-6 rounded bg-gray-800 border border-gray-600 flex items-center justify-center">
                           <div className="w-3 h-0.5 bg-gray-100 rounded"></div>
                         </div>
-                        <span className="!text-xs font-medium text-primary">{t('dark') || 'Sombre'}</span>
+                        <span className="!text-xs font-medium !text-primary">{t('dark') || 'Sombre'}</span>
                       </div>
                     </button>
                   </div>
@@ -1222,7 +1222,7 @@ function PublicGanttView({ tasks, projectName }: {
                   <button
                     onClick={() => handleExportPDF(exportMode)}
                     disabled={isExporting}
-                    className="w-full py-2.5 px-4 bg-accent text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 px-4 bg-accent !text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isExporting ? (
                       <>
@@ -1257,7 +1257,7 @@ function PublicGanttView({ tasks, projectName }: {
           onClick={scrollToToday}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-accent text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
+          className="flex items-center gap-2 px-3 py-1.5 !text-sm bg-accent !text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
         >
           <IconCalendar className="w-4 h-4" color="white" />
           {t('today') || "Aujourd'hui"}
@@ -1266,7 +1266,7 @@ function PublicGanttView({ tasks, projectName }: {
         <button
           onClick={() => setShowExportModal(true)}
           disabled={isExporting}
-          className="btn btn-ghost flex items-center gap-2 px-3 py-1.5 text-sm disabled:opacity-50"
+          className="btn btn-ghost flex items-center gap-2 px-3 py-1.5 !text-sm disabled:opacity-50"
         >
           <IconFileTypePdf className="w-4 h-4" />
           {isExporting ? t('exporting') : t('export_pdf')}
@@ -1281,13 +1281,13 @@ function PublicGanttView({ tasks, projectName }: {
             <thead className="sticky top-0 z-20">
               <tr>
                 {/* Colonnes fixes */}
-                <th className="text-left py-3 px-4 !text-xs font-semibold text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
+                <th className="text-left py-3 px-4 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
                   {t('task_name') || 'Tâche'}
                 </th>
-                <th className="text-center py-3 px-2 !text-xs font-semibold text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
+                <th className="text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
                   {t('due_range') || 'Échéance'}
                 </th>
-                <th className="text-center py-3 px-2 !text-xs font-semibold text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                <th className="text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
                   {t('duration') || 'Durée'}
                 </th>
                 {/* Timeline header - Mois */}
@@ -1295,7 +1295,7 @@ function PublicGanttView({ tasks, projectName }: {
                   <th 
                     key={i}
                     colSpan={month.days}
-                    className="text-center py-2 !text-xs font-semibold text-primary bg-muted/10 border-b border-muted/30"
+                    className="text-center py-2 !text-xs font-semibold !text-primary bg-muted/10 border-b border-muted/30"
                   >
                     {month.label}
                   </th>
@@ -1309,9 +1309,9 @@ function PublicGanttView({ tasks, projectName }: {
                 {dayHeaders.map((day, j) => (
                   <th 
                     key={j}
-                    className={`text-center py-1.5 text-[10px] font-medium w-8 min-w-[32px] border-b border-muted/20 ${
+                    className={`text-center py-1.5 !text-[10px] font-medium w-8 min-w-[32px] border-b border-muted/20 ${
                       isToday(day) 
-                        ? 'bg-red-500/15 text-red-500 font-bold' 
+                        ? 'bg-red-500/15 !text-red-500 font-bold' 
                         : day.getDay() === 0 || day.getDay() === 6
                           ? 'text-muted/60 bg-muted/5'
                           : 'text-muted'
@@ -1338,9 +1338,9 @@ function PublicGanttView({ tasks, projectName }: {
                       <td className="py-2.5 px-4 sticky left-0 z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                         <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
-                          <span className="font-medium text-primary text-sm">{groupName}</span>
-                          <span className="!text-xs text-muted">({group.tasks.length})</span>
-                          {isExpanded ? <IconChevronUp className="w-4 h-4 text-muted ml-auto" /> : <IconChevronDown className="w-4 h-4 text-muted ml-auto" />}
+                          <span className="font-medium !text-primary !text-sm">{groupName}</span>
+                          <span className="!text-xs !text-muted">({group.tasks.length})</span>
+                          {isExpanded ? <IconChevronUp className="w-4 h-4 !text-muted ml-auto" /> : <IconChevronDown className="w-4 h-4 !text-muted ml-auto" />}
                         </div>
                       </td>
                       <td className="sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
@@ -1402,20 +1402,20 @@ function PublicGanttView({ tasks, projectName }: {
                                     borderColor: task.task_status !== 'completed' ? group.color + '50' : undefined
                                   }}
                                 >
-                                  {task.task_status === 'completed' && <IconCheck className="w-2.5 h-2.5 text-white" />}
+                                  {task.task_status === 'completed' && <IconCheck className="w-2.5 h-2.5 !text-white" />}
                                 </div>
                                 <span className={`text-sm truncate max-w-[160px] ${task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
                                   {task.title}
                                 </span>
                                 {hasSubtasks && (
-                                  <span className="flex items-center gap-0.5 text-[10px] text-muted bg-muted/30 px-1 py-0.5 rounded">
+                                  <span className="flex items-center gap-0.5 !text-[10px] !text-muted bg-muted/30 px-1 py-0.5 rounded">
                                     {completedSubtasks}/{subtaskCount}
                                   </span>
                                 )}
                               </div>
                             </td>
                             {/* Due Range - utilise les dates effectives */}
-                            <td className="py-2 px-1 text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                            <td className="py-2 px-1 !text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                               <span 
                                 className="text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
                                 style={{ backgroundColor: group.color + '20', color: group.color }}
@@ -1424,8 +1424,8 @@ function PublicGanttView({ tasks, projectName }: {
                               </span>
                             </td>
                             {/* Duration - utilise les dates effectives */}
-                            <td className="py-2 px-1 text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted/5 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
-                              <span className="!text-xs text-muted whitespace-nowrap">
+                            <td className="py-2 px-1 !text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted/5 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                              <span className="!text-xs !text-muted whitespace-nowrap">
                                 {getDurationDays(effectiveStartDate, effectiveEndDate)} {t('days_short') || 'j'}
                               </span>
                             </td>
@@ -1456,12 +1456,12 @@ function PublicGanttView({ tasks, projectName }: {
                                 >
                                   <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${effectiveProgress}%` }} />
                                   <div className="relative h-full flex items-center justify-between px-2 overflow-hidden">
-                                    <span className="text-[11px] text-white font-medium truncate">
+                                    <span className="text-[11px] !text-white font-medium truncate">
                                       {duration > 3 ? task.title : ''}
                                     </span>
                                     {/* Afficher le pourcentage effectif */}
                                     {duration > 2 && (
-                                      <span className="text-[10px] text-white/90 font-semibold ml-1 flex-shrink-0">
+                                      <span className="text-[10px] !text-white/90 font-semibold ml-1 flex-shrink-0">
                                         {effectiveProgress}%
                                       </span>
                                     )}
@@ -1488,18 +1488,18 @@ function PublicGanttView({ tasks, projectName }: {
                                         borderColor: subtask.task_status !== 'completed' ? group.color + '40' : 'transparent'
                                       }}
                                     >
-                                      {subtask.task_status === 'completed' && <IconCheck className="w-2 h-2 text-white" />}
+                                      {subtask.task_status === 'completed' && <IconCheck className="w-2 h-2 !text-white" />}
                                     </div>
                                     <span className={`text-xs truncate max-w-[140px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
                                       {subtask.title}
                                     </span>
                                   </div>
                                 </td>
-                                <td className="py-1 px-1 text-center sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
-                                  <span className="text-[9px] text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
+                                <td className="py-1 px-1 !text-center sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                  <span className="text-[9px] !text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
                                 </td>
-                                <td className="py-1 px-1 text-center sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
-                                  <span className="text-[9px] text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'j'}</span>
+                                <td className="py-1 px-1 !text-center sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                                  <span className="text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'j'}</span>
                                 </td>
                                 <td colSpan={dayHeaders.length} className="h-[34px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <div className="relative w-full h-full">
@@ -1538,7 +1538,7 @@ function PublicGanttView({ tasks, projectName }: {
       </div>
 
       {/* Légende */}
-      <div className="flex flex-wrap items-center gap-4 mt-4 !text-xs text-muted">
+      <div className="flex flex-wrap items-center gap-4 mt-4 !text-xs !text-muted">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-500" />
           <span>{t('today') || "Aujourd'hui"}</span>

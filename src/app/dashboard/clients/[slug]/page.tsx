@@ -115,9 +115,9 @@ export default function ClientDetailsPage() {
       label: 'Projet',
       render: (value, row) => (
         <div>
-          <span className="font-semibold text-primary">{value as string}</span>
+          <span className="font-semibold !text-primary">{value as string}</span>
           <div className="flex items-center gap-2 mt-1">
-            <ProjectTypeIcon type={row.type} className="w-4 h-4 text-muted" />
+            <ProjectTypeIcon type={row.type} className="w-4 h-4 !text-muted" />
             <span className="text-muted !text-xs">{row.type}</span>
           </div>
         </div>
@@ -130,9 +130,9 @@ export default function ClientDetailsPage() {
         const status = value as string;
         const config =
           status === 'completed' ? { label: t('completed') || 'Terminé', className: 'bg-success-light !text-success-text ' } :
-          status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'bg-warning-light text-warning' } :
-          status === 'planning' ? { label: t('planning') || 'Planification', className: 'bg-info-light text-info' } :
-          { label: status, className: 'bg-muted text-secondary' };
+          status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'bg-warning-light !text-warning' } :
+          status === 'planning' ? { label: t('planning') || 'Planification', className: 'bg-info-light !text-info' } :
+          { label: status, className: 'bg-muted !text-secondary' };
 
         return (
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full !text-xs font-medium ${config.className}`}>
@@ -255,7 +255,7 @@ export default function ClientDetailsPage() {
   if (!client) {
     return (
       <div className="max-w-7xl mx-auto p-6">
-        <div className="text-center text-secondary">
+        <div className="text-center !text-secondary">
           {t('client_not_found') || 'Client non trouvé'}
         </div>
       </div>
@@ -295,11 +295,11 @@ export default function ClientDetailsPage() {
         />
         <div className="flex-1 flex flex-col gap-2">
           <div className="flex flex-col-reverse md:flex-row gap-4 items-center justify-between">
-            <h1 className="text-3xl font-extrabold text-primary mb-2 flex items-center gap-2">
+            <h1 className="text-3xl font-extrabold !text-primary mb-2 flex items-center gap-2">
               {client.name}
             </h1>
           </div>
-          <div className="flex flex-wrap flex-col text-primary mb-2">
+          <div className="flex flex-wrap flex-col !text-primary mb-2">
             {client.email && (
               <span className="flex items-center gap-1">
                 <IconMail className="w-4 h-4" stroke={1} /> {client.email}
@@ -312,7 +312,7 @@ export default function ClientDetailsPage() {
             )}
             {client.adress && (
               <span className="flex items-center gap-1">
-                <IconMapPin className="w-4 h-4 text-muted" stroke={1} />
+                <IconMapPin className="w-4 h-4 !text-muted" stroke={1} />
                 {client.adress}
               </span>
             )}
@@ -330,7 +330,7 @@ export default function ClientDetailsPage() {
             <span className="bg-accent-light flex items-center gap-2 !text-accent-text px-3 py-1 rounded-full !text-xs font-semibold uppercase tracking-wider">
               {client.processStatus}
             </span>
-            <span className="bg-muted px-3 flex items-center gap-2 py-1 rounded-full !text-xs text-primary">
+            <span className="bg-muted px-3 flex items-center gap-2 py-1 rounded-full !text-xs !text-primary">
               Créé le {new Date(client.createdAt).toLocaleDateString('fr-FR')}
             </span>
           </div>
@@ -339,9 +339,9 @@ export default function ClientDetailsPage() {
         {/* Actions */}
         <div className="flex lg:w-fit w-full flex-col md:flex-row gap-2">
           {isEditMode ? (
-            <div className="flex flex-col md:flex-row items-center gap-2 w-full justify-center text-center">
+            <div className="flex flex-col md:flex-row items-center gap-2 w-full justify-center !text-center">
               <button
-                className="btn-warning text-center w-full px-4 py-2 rounded-lg font-semibold hover:opacity-80 transition-colors cursor-pointer"
+                className="btn-warning !text-center w-full px-4 py-2 rounded-lg font-semibold hover:opacity-80 transition-colors cursor-pointer"
                 onClick={() => setIsEditMode(false)}
               >
                 {t('cancel')}
@@ -356,7 +356,7 @@ export default function ClientDetailsPage() {
             </div>
           ) : (
             <button
-              className="btn-ghost text-center capitalize cursor-pointer flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold w-full transition-all duration-300"
+              className="btn-ghost !text-center capitalize cursor-pointer flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold w-full transition-all duration-300"
               onClick={() => setIsEditMode(true)}
             >
               <IconEdit className="w-4 h-4" />
@@ -366,7 +366,7 @@ export default function ClientDetailsPage() {
 
           <Link
             href={`/dashboard/clients/${currentSlug}/factures?name=${client.name || ''}`}
-            className="btn-ghost text-center flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold w-full relative transition-all duration-300"
+            className="btn-ghost !text-center flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold w-full relative transition-all duration-300"
           >
             <IconFileInvoice className="w-4 h-4" />
             {t('invoices')}
@@ -382,7 +382,7 @@ export default function ClientDetailsPage() {
       {/* Edit Form */}
       {isEditMode && (
         <div className="bg-card border border-default p-6 mb-8 rounded-xl">
-          <h2 className="text-2xl capitalize font-bold text-primary mb-4">
+          <h2 className="text-2xl capitalize font-bold !text-primary mb-4">
             {t('edit')} {client.name}
           </h2>
           <form
@@ -392,7 +392,7 @@ export default function ClientDetailsPage() {
             onSubmit={handleUpdateClient}
           >
             <div className="flex flex-col gap-1">
-              <label htmlFor="name" className="capitalize text-primary font-medium">{t('name')}</label>
+              <label htmlFor="name" className="capitalize !text-primary font-medium">{t('name')}</label>
               <input id="name" name="name" defaultValue={client.name} required className="input px-3 py-2 rounded-lg" />
             </div>
             <div className="flex flex-col gap-1">
@@ -431,8 +431,8 @@ export default function ClientDetailsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('projects')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            activeTab === 'projects' ? 'bg-accent text-white' : 'bg-hover text-secondary hover:text-primary'
+          className={`px-4 py-2 rounded-lg !text-sm font-medium transition-colors ${
+            activeTab === 'projects' ? 'bg-accent !text-white' : 'bg-hover !text-secondary hover:!text-primary'
           }`}
         >
           {t('projects') || 'Projets'}
@@ -440,8 +440,8 @@ export default function ClientDetailsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('workflow')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
-            activeTab === 'workflow' ? 'bg-accent text-white' : 'bg-hover text-primary hover:!text-secondary'
+          className={`px-4 py-2 rounded-lg !text-sm font-medium transition-colors flex items-center gap-1.5 ${
+            activeTab === 'workflow' ? 'bg-accent !text-white' : 'bg-hover !text-primary hover:!text-secondary'
           }`}
           title={t('client_journey_subtitle') || 'Qu\'est-ce qui existe et qu\'est-ce qui manque ?'}
         >
@@ -452,14 +452,14 @@ export default function ClientDetailsPage() {
       
       {/* Contextual description */}
       {activeTab === 'workflow' && (
-        <p className="!text-xs text-muted mb-4 -mt-2">
+        <p className="!text-xs !text-muted mb-4 -mt-2">
           {t('client_journey_description') || 'Vue détaillée des éléments liés à ce client'} — {t('workflow_explains_what') || 'Ce qui existe / manque'}
         </p>
       )}
 
       {activeTab === 'projects' && (
         <div className="bg-card border border-default p-6 rounded-xl">
-          <h2 className="text-2xl font-bold text-primary mb-4">{t('projects')}</h2>
+          <h2 className="text-2xl font-bold !text-primary mb-4">{t('projects')}</h2>
           <TableFilters
             searchPlaceholder={t('search_project') || 'Rechercher un projet'}
             statusOptions={[]}
@@ -500,19 +500,19 @@ export default function ClientDetailsPage() {
             />
           ) : clientProjects.length === 0 ? (
             /* Aucun projet → message */
-            <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+            <div className="h-full flex flex-col items-center justify-center p-8 !text-center">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
                 <IconRoute size={32} className="text-muted" />
               </div>
-              <h3 className="text-lg font-semibold text-primary mb-2">
+              <h3 className="text-lg font-semibold !text-primary mb-2">
                 {t('no_projects_for_workflow') || 'Aucun projet pour ce client'}
               </h3>
-              <p className="text-secondary text-sm max-w-md">
+              <p className="text-secondary !text-sm max-w-md">
                 {t('workflow_needs_project') || 'Le workflow représente l\'exécution concrète d\'un projet. Créez d\'abord un projet pour ce client.'}
               </p>
               <Link
                 href={`/dashboard/projects/new?client=${client.documentId}`}
-                className="mt-4 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-dark transition-colors"
+                className="mt-4 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent-dark transition-colors"
               >
                 {t('create_project') || 'Créer un projet'}
               </Link>

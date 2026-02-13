@@ -112,10 +112,10 @@ export default function GmailStyleComposer({
             }}
           >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-accent text-white rounded-t-xl flex-shrink-0">
+          <div className="flex items-center justify-between px-4 py-3 bg-accent !text-white rounded-t-xl flex-shrink-0">
             <div className="flex items-center gap-2">
               {getTypeIcon(emailType)}
-              <span className="font-medium text-sm">{getTypeLabel(emailType)}</span>
+              <span className="font-medium !text-sm">{getTypeLabel(emailType)}</span>
             </div>
             
             <div className="flex items-center gap-1">

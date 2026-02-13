@@ -214,7 +214,7 @@ export default function AIContractGenerator({
 
   // Convert contract structure to HTML for editing
   const contractToHtml = useCallback((contract: GeneratedContract): string => {
-    let html = `<h1 style="text-align: center; text-transform: uppercase;">${contract.title}</h1>\n\n`;
+    let html = `<h1 style="text-align: center; !text-transform: uppercase;">${contract.title}</h1>\n\n`;
     
     html += `<h2>ENTRE LES SOUSSIGNÉS :</h2>\n`;
     html += `<p><strong>${contract.parties.provider.name}</strong></p>\n`;
@@ -781,7 +781,7 @@ ${user?.username || 'L\'équipe'}`;
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-xl ${manualMode ? 'bg-info-light' : 'bg-accent-light'}`}>
                 {manualMode ? (
-                  <IconEdit className="w-6 h-6 text-info" />
+                  <IconEdit className="w-6 h-6 !text-info" />
                 ) : (
                   <Image 
                     src="/images/logo/eclipse-logo.png" 
@@ -793,13 +793,13 @@ ${user?.username || 'L\'équipe'}`;
                 )}
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-primary">
+                <h2 className="text-lg font-semibold !text-primary">
                   {manualMode 
                     ? (t('manual_contract_creation') || 'Création manuelle')
                     : 'Eclipse Assistant'
                   }
                 </h2>
-                <p className="text-sm text-muted">
+                <p className="text-sm !text-muted">
                   {manualMode
                     ? (t('manual_contract_description') || 'Créez votre contrat de A à Z')
                     : (t('ai_contract_description') || 'Documents juridiques personnalisés')
@@ -811,15 +811,15 @@ ${user?.username || 'L\'équipe'}`;
               onClick={onClose}
               className="p-2 hover:bg-hover rounded-lg transition-colors"
             >
-              <IconX className="w-5 h-5 text-muted" />
+              <IconX className="w-5 h-5 !text-muted" />
             </button>
           </div>
 
           {/* Error display in header */}
           {error && (
             <div className="mx-6 mt-4 p-3 bg-danger-light rounded-xl flex items-center gap-3 border border-danger">
-              <IconAlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
-              <p className="text-sm text-danger flex-1">{error}</p>
+              <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
+              <p className="text-sm !text-danger flex-1">{error}</p>
               <button onClick={() => setError(null)} className="text-danger hover:opacity-70">
                 <IconX className="w-4 h-4" />
               </button>
@@ -836,8 +836,8 @@ ${user?.username || 'L\'équipe'}`;
                     ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'text-success' : 'text-muted'
                   }`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center !text-xs font-medium ${
-                      step === s ? 'bg-secondary text-white' : 
-                      ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'bg-success text-white' : 'bg-hover'
+                      step === s ? 'bg-secondary !text-white' : 
+                      ['config', 'review', 'sign', 'send'].indexOf(step) > i ? 'bg-success !text-white' : 'bg-hover'
                     }`}>
                       {['config', 'review', 'sign', 'send'].indexOf(step) > i ? <IconCheck className="w-4 h-4" /> : i + 1}
                     </div>
@@ -870,8 +870,8 @@ ${user?.username || 'L\'équipe'}`;
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Client Select */}
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
-                      <IconUser className="w-4 h-4 text-muted" />
+                    <label className="block !text-sm font-medium !text-primary mb-2 flex items-center gap-2">
+                      <IconUser className="w-4 h-4 !text-muted" />
                       {t('client') || 'Client'}
                     </label>
                     <div className="relative">
@@ -881,7 +881,7 @@ ${user?.username || 'L\'équipe'}`;
                           setSelectedClientId(e.target.value || null);
                           setSelectedProjectId(null); // Reset project when client changes
                         }}
-                        className="w-full px-4 py-2.5 bg-muted border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                        className="w-full px-4 py-2.5 bg-muted border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary"
                         disabled={loadingData}
                       >
                         <option value="">{t('select_client') || 'Sélectionner un client'}</option>
@@ -891,21 +891,21 @@ ${user?.username || 'L\'équipe'}`;
                           </option>
                         ))}
                       </select>
-                      <IconChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+                      <IconChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted pointer-events-none" />
                     </div>
                   </div>
 
                   {/* Project Select */}
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
-                      <IconFolder className="w-4 h-4 text-muted" />
+                    <label className="block !text-sm font-medium !text-primary mb-2 flex items-center gap-2">
+                      <IconFolder className="w-4 h-4 !text-muted" />
                       {t('project') || 'Projet'}
                     </label>
                     <div className="relative">
                       <select
                         value={selectedProjectId || ''}
                         onChange={(e) => setSelectedProjectId(e.target.value || null)}
-                        className="w-full px-4 py-2.5 bg-muted border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary"
+                        className="w-full px-4 py-2.5 bg-muted border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary"
                         disabled={loadingData || !selectedClientId}
                       >
                         <option value="">{t('select_project') || 'Sélectionner un projet'}</option>
@@ -915,17 +915,17 @@ ${user?.username || 'L\'équipe'}`;
                           </option>
                         ))}
                       </select>
-                      <IconChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+                      <IconChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted pointer-events-none" />
                     </div>
                     {!selectedClientId && (
-                      <p className="!text-xs text-muted mt-1">{t('select_client_first') || 'Sélectionnez d\'abord un client'}</p>
+                      <p className="!text-xs !text-muted mt-1">{t('select_client_first') || 'Sélectionnez d\'abord un client'}</p>
                     )}
                   </div>
                 </div>
 
                 {/* Contract type selection */}
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-3">
+                  <label className="block !text-sm font-medium !text-primary mb-3">
                     {t('contract_type') || 'Type de contrat'}
                   </label>
                   <div className="grid grid-cols-2 gap-3">
@@ -933,14 +933,14 @@ ${user?.username || 'L\'équipe'}`;
                       <button
                         key={type.id}
                         onClick={() => setContractType(type.id)}
-                        className={`p-4 text-left rounded-xl border transition-colors ${
+                        className={`p-4 !text-left rounded-xl border transition-colors ${
                           contractType === type.id
                             ? 'border-accent bg-accent-light'
                             : 'border-muted hover:border-accent'
                         }`}
                       >
-                        <p className="font-medium text-primary">{type.label}</p>
-                        <p className="!text-xs text-muted mt-1">{type.description}</p>
+                        <p className="font-medium !text-primary">{type.label}</p>
+                        <p className="!text-xs !text-muted mt-1">{type.description}</p>
                       </button>
                     ))}
                   </div>
@@ -949,8 +949,8 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Signature Location, Date & Language */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
-                      <IconMapPin className="w-4 h-4 text-muted" />
+                    <label className="block !text-sm font-medium !text-primary mb-2 flex items-center gap-2">
+                      <IconMapPin className="w-4 h-4 !text-muted" />
                       {t('signature_location') || 'Lieu de signature'}
                       <span className="text-danger">*</span>
                     </label>
@@ -960,14 +960,14 @@ ${user?.username || 'L\'équipe'}`;
                       onChange={(e) => setSignatureLocation(e.target.value)}
                       placeholder="Paris, France"
                       required
-                      className={`w-full px-4 py-2.5 bg-muted border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary ${
+                      className={`w-full px-4 py-2.5 bg-muted border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary ${
                         !signatureLocation ? 'border-warning' : 'border-muted'
                       }`}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
-                      <IconCalendar className="w-4 h-4 text-muted" />
+                    <label className="block !text-sm font-medium !text-primary mb-2 flex items-center gap-2">
+                      <IconCalendar className="w-4 h-4 !text-muted" />
                       {t('signature_date') || 'Date de signature'}
                       <span className="text-danger">*</span>
                     </label>
@@ -976,24 +976,24 @@ ${user?.username || 'L\'équipe'}`;
                       value={signatureDate}
                       onChange={(e) => setSignatureDate(e.target.value)}
                       required
-                      className={`w-full px-4 py-2.5 bg-muted border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none text-primary ${
+                      className={`w-full px-4 py-2.5 bg-muted border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary ${
                         !signatureDate ? 'border-warning' : 'border-muted'
                       }`}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2 flex items-center gap-2">
-                      <IconLanguage className="w-4 h-4 text-muted" />
+                    <label className="block !text-sm font-medium !text-primary mb-2 flex items-center gap-2">
+                      <IconLanguage className="w-4 h-4 !text-muted" />
                       {t('contract_language') || 'Langue du contrat'}
                     </label>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => setContractLanguage('fr')}
-                        className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
+                        className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors !text-sm font-medium ${
                           contractLanguage === 'fr'
                             ? 'border-accent bg-accent-light !text-accent'
-                            : 'border-muted bg-muted text-primary hover:text-primary'
+                            : 'border-muted bg-muted !text-primary hover:!text-primary'
                         }`}
                       >
                         🇫🇷 Français
@@ -1001,10 +1001,10 @@ ${user?.username || 'L\'équipe'}`;
                       <button
                         type="button"
                         onClick={() => setContractLanguage('en')}
-                        className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors text-sm font-medium ${
+                        className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors !text-sm font-medium ${
                           contractLanguage === 'en'
                             ? 'border-accent bg-accent-light !text-accent'
-                            : 'border-muted bg-muted text-primary hover:text-primary'
+                            : 'border-muted bg-muted !text-primary hover:!text-primary'
                         }`}
                       >
                         🇬🇧 English
@@ -1016,11 +1016,11 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Context info when project selected */}
                 {selectedProject && (
                   <div className="p-4 bg-info-light rounded-xl space-y-2">
-                    <p className="text-sm font-medium text-info flex items-center gap-2">
+                    <p className="text-sm font-medium !text-info flex items-center gap-2">
                       <IconSparkles className="w-4 h-4" />
                       {t('project_context') || 'L\'IA adaptera le contrat selon ce projet'}
                     </p>
-                    <div className="text-sm text-info-light space-y-1">
+                    <div className="text-sm !text-info-light space-y-1">
                       <p><strong>Projet:</strong> {selectedProject.title}</p>
                       {selectedProject.description && (
                         <div 
@@ -1040,7 +1040,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Custom clauses */}
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-3">
+                  <label className="block !text-sm font-medium !text-primary mb-3">
                     {t('custom_clauses') || 'Clauses personnalisées (optionnel)'}
                   </label>
                   <div className="flex gap-2 mb-3">
@@ -1055,7 +1055,7 @@ ${user?.username || 'L\'équipe'}`;
                     <button
                       onClick={handleAddClause}
                       disabled={!newClause.trim()}
-                      className="px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-colors"
+                      className="px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-colors"
                     >
                       {t('add') || 'Ajouter'}
                     </button>
@@ -1067,7 +1067,7 @@ ${user?.username || 'L\'équipe'}`;
                           key={index}
                           className="flex items-center gap-2 p-3 bg-muted rounded-lg"
                         >
-                          <span className="flex-1 text-sm text-primary">{clause}</span>
+                          <span className="flex-1 !text-sm !text-primary">{clause}</span>
                           <button
                             onClick={() => handleRemoveClause(index)}
                             className="text-danger hover:opacity-80"
@@ -1082,12 +1082,12 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Warning */}
                 <div className="p-4 bg-warning-light rounded-xl flex items-start gap-3">
-                  <IconAlertTriangle className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
+                  <IconAlertTriangle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-warning">
+                    <p className="text-sm font-medium !text-warning">
                       {t('contract_warning_title') || 'Important'}
                     </p>
-                    <p className="!text-xs text-warning-light mt-1">
+                    <p className="!text-xs !text-warning-light mt-1">
                       {t('contract_warning_text') || 'Ce contrat est généré à titre indicatif. Faites-le relire par un professionnel du droit avant utilisation.'}
                     </p>
                   </div>
@@ -1101,8 +1101,8 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Date validation warnings */}
                 {validatingDates && (
                   <div className="p-4 bg-info-light rounded-xl flex items-center gap-3">
-                    <IconLoader2 className="w-5 h-5 text-info animate-spin" />
-                    <p className="text-sm text-info">
+                    <IconLoader2 className="w-5 h-5 !text-info animate-spin" />
+                    <p className="text-sm !text-info">
                       {contractLanguage === 'fr' 
                         ? 'Vérification des dates du contrat...' 
                         : 'Validating contract dates...'}
@@ -1113,22 +1113,22 @@ ${user?.username || 'L\'équipe'}`;
                 {dateWarnings.length > 0 && (
                   <div className="p-4 bg-accent-light rounded-xl border border-warning">
                     <div className="flex items-start gap-3">
-                      <IconAlertTriangle className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
+                      <IconAlertTriangle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-accent mb-2">
+                        <p className="text-sm font-medium !text-accent mb-2">
                           {contractLanguage === 'fr' 
                             ? 'Attention aux dates du contrat' 
                             : 'Contract date warnings'}
                         </p>
                         <ul className="space-y-1">
                           {dateWarnings.map((warning, index) => (
-                            <li key={index} className="text-sm text-warning-light flex items-start gap-2">
+                            <li key={index} className="text-sm !text-warning-light flex items-start gap-2">
                               <span className="text-warning">•</span>
                               {warning}
                             </li>
                           ))}
                         </ul>
-                        <p className="!text-xs text-muted mt-3">
+                        <p className="!text-xs !text-muted mt-3">
                           {contractLanguage === 'fr' 
                             ? 'Vous pouvez modifier les dates en passant en mode Édition.' 
                             : 'You can modify dates by switching to Edit mode.'}
@@ -1143,10 +1143,10 @@ ${user?.username || 'L\'équipe'}`;
                   <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
                     <button
                       onClick={() => setIsEditMode(false)}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md !text-sm transition-colors ${
                         !isEditMode 
-                          ? 'bg-card text-primary shadow-sm' 
-                          : 'text-muted hover:text-primary'
+                          ? 'bg-card !text-primary shadow-sm' 
+                          : 'text-muted hover:!text-primary'
                       }`}
                     >
                       <IconEye className="w-4 h-4" />
@@ -1154,10 +1154,10 @@ ${user?.username || 'L\'équipe'}`;
                     </button>
                     <button
                       onClick={() => setIsEditMode(true)}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md !text-sm transition-colors ${
                         isEditMode 
-                          ? 'bg-card text-primary shadow-sm' 
-                          : 'text-muted hover:text-primary'
+                          ? 'bg-card !text-primary shadow-sm' 
+                          : 'text-muted hover:!text-primary'
                       }`}
                     >
                       <IconEdit className="w-4 h-4" />
@@ -1175,36 +1175,36 @@ ${user?.username || 'L\'équipe'}`;
                     }}
                   >
                     {/* Title */}
-                    <h3 className="text-xl font-bold text-center text-primary mb-6 uppercase">
+                    <h3 className="text-xl font-bold !text-center !text-primary mb-6 uppercase">
                       {generatedContract.title}
                     </h3>
 
                     {/* Parties */}
-                    <div className="mb-6 text-sm">
-                      <p className="font-semibold text-primary">ENTRE LES SOUSSIGNÉS :</p>
+                    <div className="mb-6 !text-sm">
+                      <p className="font-semibold !text-primary">ENTRE LES SOUSSIGNÉS :</p>
                       <div className="mt-2 p-3 bg-muted rounded-lg">
-                        <p className="font-medium text-primary">{generatedContract.parties.provider.name}</p>
+                        <p className="font-medium !text-primary">{generatedContract.parties.provider.name}</p>
                         <p className="text-primary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
                       </div>
-                      <p className="text-center my-2 text-muted">ET</p>
+                      <p className="text-center my-2 !text-muted">ET</p>
                       <div className="p-3 bg-muted rounded-lg">
-                        <p className="font-medium text-primary">{generatedContract.parties.client.name}</p>
+                        <p className="font-medium !text-primary">{generatedContract.parties.client.name}</p>
                         <p className="text-primary whitespace-pre-line">{generatedContract.parties.client.details}</p>
                       </div>
                     </div>
 
                     {/* Preamble */}
-                    <div className="mb-6 text-sm">
-                      <p className="font-semibold text-primary mb-2">PRÉAMBULE</p>
+                    <div className="mb-6 !text-sm">
+                      <p className="font-semibold !text-primary mb-2">PRÉAMBULE</p>
                       <p className="text-primary whitespace-pre-line">{generatedContract.preamble}</p>
                     </div>
 
                     {/* Articles */}
                     <div className="space-y-4">
-                      <p className="font-semibold text-primary text-sm">IL A ÉTÉ CONVENU CE QUI SUIT :</p>
+                      <p className="font-semibold !text-primary !text-sm">IL A ÉTÉ CONVENU CE QUI SUIT :</p>
                       {generatedContract.articles.map(article => (
                         <div key={article.number} className="text-sm">
-                          <p className="font-semibold text-primary">
+                          <p className="font-semibold !text-primary">
                             Article {article.number} - {article.title}
                           </p>
                           <p className="text-primary whitespace-pre-line mt-1">{article.content}</p>
@@ -1213,28 +1213,28 @@ ${user?.username || 'L\'équipe'}`;
                     </div>
 
                     {/* Signatures preview */}
-                    <div className="mt-8 pt-4 border-t border-muted text-sm">
-                      <p className="text-center text-muted mb-4">
+                    <div className="mt-8 pt-4 border-t border-muted !text-sm">
+                      <p className="text-center !text-muted mb-4">
                         Fait à {generatedContract.signatures.location}, le {generatedContract.signatures.date}
                       </p>
                       <div className="grid grid-cols-2 gap-8">
                         <div className="text-center">
-                          <p className="font-medium text-primary">Le Prestataire</p>
+                          <p className="font-medium !text-primary">Le Prestataire</p>
                           <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
                             {signatures.provider ? (
                               <Image src={signatures.provider} alt="Signature prestataire" width={150} height={60} className="max-h-16 object-contain" />
                             ) : (
-                              <span className="!text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
+                              <span className="!text-xs !text-muted">{t('signature_pending') || 'En attente'}</span>
                             )}
                           </div>
                         </div>
                         <div className="text-center">
-                          <p className="font-medium text-primary">Le Client</p>
+                          <p className="font-medium !text-primary">Le Client</p>
                           <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
                             {signatures.client ? (
                               <Image src={signatures.client} alt="Signature client" width={150} height={60} className="max-h-16 object-contain" />
                             ) : (
-                              <span className="!text-xs text-muted">{t('signature_pending') || 'En attente'}</span>
+                              <span className="!text-xs !text-muted">{t('signature_pending') || 'En attente'}</span>
                             )}
                           </div>
                         </div>
@@ -1245,7 +1245,7 @@ ${user?.username || 'L\'équipe'}`;
                   /* Edit Mode - Rich Text Editor */
                   <div className="space-y-4">
                     <div className="p-4 bg-info-light rounded-xl">
-                      <p className="text-sm text-info flex items-center gap-2">
+                      <p className="text-sm !text-info flex items-center gap-2">
                         <IconEdit className="w-4 h-4" />
                         {t('edit_contract_info') || 'Vous pouvez modifier librement le contenu du contrat ci-dessous.'}
                       </p>
@@ -1271,11 +1271,11 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Tips & Warnings */}
                 {generatedContract.tips && generatedContract.tips.length > 0 && (
                   <div className="p-4 bg-info-light rounded-xl">
-                    <p className="text-sm font-medium text-info flex items-center gap-2 mb-2">
+                    <p className="text-sm font-medium !text-info flex items-center gap-2 mb-2">
                       <IconBulb className="w-4 h-4" />
                       {t('tips') || 'Conseils'}
                     </p>
-                    <ul className="!text-xs text-info-light space-y-1">
+                    <ul className="!text-xs !text-info-light space-y-1">
                       {generatedContract.tips.map((tip, i) => (
                         <li key={i}>• {tip}</li>
                       ))}
@@ -1285,11 +1285,11 @@ ${user?.username || 'L\'équipe'}`;
 
                 {generatedContract.warnings && generatedContract.warnings.length > 0 && (
                   <div className="p-4 bg-accent-light rounded-xl">
-                    <p className="text-sm font-medium text-accent flex items-center gap-2 mb-2">
+                    <p className="text-sm font-medium !text-accent flex items-center gap-2 mb-2">
                       <IconAlertTriangle className="w-4 h-4" />
                       {t('warnings') || 'Points d\'attention'}
                     </p>
-                    <ul className="!text-xs text-accent space-y-1">
+                    <ul className="!text-xs !text-accent space-y-1">
                       {generatedContract.warnings.map((warning, i) => (
                         <li key={i}>• {warning}</li>
                       ))}
@@ -1306,7 +1306,7 @@ ${user?.username || 'L\'équipe'}`;
                   {/* Provider Signature */}
                   <div className="p-4 bg-card rounded-xl border border-muted">
                     <div className="flex items-center justify-between mb-3">
-                      <p className="font-medium text-primary flex items-center gap-2">
+                      <p className="font-medium !text-primary flex items-center gap-2">
                         <IconSignature className="w-4 h-4" />
                         {t('provider_signature') || 'Signature Prestataire'}
                       </p>
@@ -1327,7 +1327,7 @@ ${user?.username || 'L\'équipe'}`;
                     ) : (
                       <button
                         onClick={() => setActiveSignature('provider')}
-                        className="w-full h-32 border-2 border-dashed border-muted rounded-lg hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 text-muted hover:text-accent"
+                        className="w-full h-32 border-2 border-dashed border-muted rounded-lg hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 !text-muted hover:!text-accent"
                       >
                         <IconSignature className="w-8 h-8" />
                         <span className="text-sm">{t('click_to_sign') || 'Cliquer pour signer'}</span>
@@ -1338,14 +1338,14 @@ ${user?.username || 'L\'équipe'}`;
                   {/* Client Signature - Read only for provider */}
                   <div className="p-4 bg-card rounded-xl border border-muted opacity-60">
                     <div className="flex items-center justify-between mb-3">
-                      <p className="font-medium text-primary flex items-center gap-2">
+                      <p className="font-medium !text-primary flex items-center gap-2">
                         <IconSignature className="w-4 h-4" />
                         {t('client_signature') || 'Signature Client'}
                       </p>
                     </div>
-                    <div className="w-full h-32 border-2 border-dashed border-muted rounded-lg bg-muted flex flex-col items-center justify-center gap-2 text-muted">
+                    <div className="w-full h-32 border-2 border-dashed border-muted rounded-lg bg-muted flex flex-col items-center justify-center gap-2 !text-muted">
                       <IconSignature className="w-8 h-8" />
-                      <span className="text-sm text-center px-4">
+                      <span className="text-sm !text-center px-4">
                         {t('client_will_sign_here') || 'Le client signera ici après réception du contrat'}
                       </span>
                     </div>
@@ -1356,14 +1356,14 @@ ${user?.username || 'L\'équipe'}`;
                 {activeSignature && (
                   <div className="p-6 bg-card rounded-xl border border-accent">
                     <div className="flex items-center justify-between mb-4">
-                      <p className="font-medium text-primary">
+                      <p className="font-medium !text-primary">
                         {activeSignature === 'provider' 
                           ? (t('sign_as_provider') || 'Signer en tant que Prestataire')
                           : (t('sign_as_client') || 'Signer en tant que Client')}
                       </p>
                       <button
                         onClick={() => { setActiveSignature(null); clearCanvas(); }}
-                        className="text-muted hover:text-primary"
+                        className="text-muted hover:!text-primary"
                       >
                         <IconX className="w-5 h-5" />
                       </button>
@@ -1386,14 +1386,14 @@ ${user?.username || 'L\'équipe'}`;
                     <div className="flex items-center justify-between mt-4">
                       <button
                         onClick={clearCanvas}
-                        className="px-4 py-2 text-sm text-muted hover:text-primary flex items-center gap-2"
+                        className="px-4 py-2 !text-sm !text-muted hover:!text-primary flex items-center gap-2"
                       >
                         <IconTrash className="w-4 h-4" />
                         {t('clear') || 'Effacer'}
                       </button>
                       <button
                         onClick={saveSignature}
-                        className="px-6 py-2 bg-accent text-white rounded-lg hover:opacity-90 flex items-center gap-2"
+                        className="px-6 py-2 bg-accent !text-white rounded-lg hover:opacity-90 flex items-center gap-2"
                       >
                         <IconCheck className="w-4 h-4" />
                         {t('validate_signature') || 'Valider la signature'}
@@ -1405,7 +1405,7 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Alert for missing date/location */}
                 {(!signatureLocation || !signatureDate) && (
                   <div className="p-4 bg-accent-light rounded-xl border border-warning">
-                    <p className="text-sm text-warning-text flex items-center gap-2">
+                    <p className="text-sm !text-warning-text flex items-center gap-2">
                       <IconAlertTriangle className="w-4 h-4 flex-shrink-0" />
                       <span>
                         {t('missing_signature_info') || 'Veuillez renseigner le lieu et la date de signature dans l\'étape de configuration.'}
@@ -1415,9 +1415,9 @@ ${user?.username || 'L\'équipe'}`;
                 )}
 
                 {/* Contract Summary */}
-                <div className="p-4 bg-muted rounded-xl text-sm">
+                <div className="p-4 bg-muted rounded-xl !text-sm">
                   <p className="text-muted mb-2">{t('contract_summary') || 'Récapitulatif'}</p>
-                  <div className="space-y-1 text-primary">
+                  <div className="space-y-1 !text-primary">
                     <p><strong className="text-primary">Contrat:</strong> {generatedContract.title}</p>
                     <p>
                       <strong className="text-primary">Lieu:</strong>{' '}
@@ -1456,7 +1456,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Client info */}
                 <div className="p-4 bg-card rounded-xl border border-muted">
-                  <p className="font-medium text-primary mb-3 flex items-center gap-2">
+                  <p className="font-medium !text-primary mb-3 flex items-center gap-2">
                     <IconUser className="w-4 h-4" />
                     {t('recipient') || 'Destinataire'}
                   </p>
@@ -1467,13 +1467,13 @@ ${user?.username || 'L\'équipe'}`;
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium text-primary">{selectedClient?.name}</p>
-                      <p className="text-sm text-muted">{selectedClient?.email || t('no_email') || 'Pas d\'email'}</p>
+                      <p className="font-medium !text-primary">{selectedClient?.name}</p>
+                      <p className="text-sm !text-muted">{selectedClient?.email || t('no_email') || 'Pas d\'email'}</p>
                     </div>
                   </div>
                   {!selectedClient?.email && (
                     <div className="mt-3 p-3 bg-accent-light rounded-lg">
-                      <p className="text-sm text-accent flex items-center gap-2">
+                      <p className="text-sm !text-accent flex items-center gap-2">
                         <IconAlertTriangle className="w-4 h-4" />
                         {t('client_no_email_warning') || 'Ce client n\'a pas d\'email. Ajoutez-en un pour pouvoir envoyer le contrat.'}
                       </p>
@@ -1484,7 +1484,7 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Signature link */}
                 {signatureLink && (
                   <div className="p-4 bg-card rounded-xl border border-muted">
-                    <p className="font-medium text-primary mb-3 flex items-center gap-2">
+                    <p className="font-medium !text-primary mb-3 flex items-center gap-2">
                       <IconLink className="w-4 h-4" />
                       {t('signature_link') || 'Lien de signature'}
                     </p>
@@ -1493,19 +1493,19 @@ ${user?.username || 'L\'équipe'}`;
                         type="text"
                         value={signatureLink}
                         readOnly
-                        className="flex-1 p-3 bg-muted rounded-lg text-sm text-primary border border-muted"
+                        className="flex-1 p-3 bg-muted rounded-lg !text-sm !text-primary border border-muted"
                       />
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(signatureLink);
                           showGlobalPopup(t('link_copied') || 'Lien copié', 'success');
                         }}
-                        className="p-3 bg-accent text-white rounded-lg hover:opacity-90"
+                        className="p-3 bg-accent !text-white rounded-lg hover:opacity-90"
                       >
                         <IconCopy className="w-4 h-4" />
                       </button>
                     </div>
-                    <p className="!text-xs text-muted mt-2">
+                    <p className="!text-xs !text-muted mt-2">
                       {t('link_valid_30_days') || 'Ce lien est valide pendant 30 jours.'}
                     </p>
                   </div>
@@ -1513,7 +1513,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Email preview */}
                 <div className="p-4 bg-card rounded-xl border border-muted">
-                  <p className="font-medium text-primary mb-3 flex items-center gap-2">
+                  <p className="font-medium !text-primary mb-3 flex items-center gap-2">
                     <IconMail className="w-4 h-4" />
                     {t('email_preview') || 'Aperçu de l\'email'}
                   </p>
@@ -1522,11 +1522,11 @@ ${user?.username || 'L\'équipe'}`;
                   <div className="border border-muted rounded-lg overflow-hidden bg-white">
                     {/* Email header */}
                     <div className="p-3 bg-slate-50 border-b border-slate-200">
-                      <div className="flex items-center gap-2 !text-xs text-slate-500 mb-1">
+                      <div className="flex items-center gap-2 !text-xs !text-slate-500 mb-1">
                         <span className="font-medium">À:</span>
                         <span className="text-slate-700">{selectedClient?.email || 'client@email.com'}</span>
                       </div>
-                      <div className="flex items-center gap-2 !text-xs text-slate-500">
+                      <div className="flex items-center gap-2 !text-xs !text-slate-500">
                         <span className="font-medium">Objet:</span>
                         <span className="text-slate-700">Contrat à signer - {generatedContract?.title}</span>
                       </div>
@@ -1537,14 +1537,14 @@ ${user?.username || 'L\'équipe'}`;
                       <textarea
                         value={emailContent}
                         onChange={(e) => setEmailContent(e.target.value)}
-                        className="w-full p-0 text-sm text-slate-700 border-0 focus:outline-none focus:ring-0 resize-none bg-transparent"
+                        className="w-full p-0 !text-sm !text-slate-700 border-0 focus:outline-none focus:ring-0 resize-none bg-transparent"
                         rows={6}
                         placeholder={t('email_placeholder') || 'Rédigez votre message...'}
                       />
                       
                       {/* Automatic signature link info */}
                       <div className="mt-4 pt-4 border-t border-slate-200">
-                        <p className="!text-xs text-slate-500 italic">
+                        <p className="!text-xs !text-slate-500 italic">
                           {t('email_auto_link_info') || '↳ Un bouton "Signer le contrat" sera automatiquement ajouté à l\'email.'}
                         </p>
                       </div>
@@ -1554,7 +1554,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Info */}
                 <div className="p-4 bg-info-light rounded-xl">
-                  <p className="text-sm text-info flex items-start gap-2">
+                  <p className="text-sm !text-info flex items-start gap-2">
                     <IconBulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
                     <span>
                       {t('send_contract_info') || 'Une fois l\'email envoyé, le client pourra signer le contrat en ligne. Vous serez notifié dès qu\'il aura signé.'}
@@ -1571,14 +1571,14 @@ ${user?.username || 'L\'équipe'}`;
               <>
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-sm text-primary hover:text-primary transition-colors"
+                  className="px-4 py-2 !text-sm !text-primary hover:!text-primary transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
                 <button
                   onClick={handleGenerate}
                   disabled={loading || !selectedClientId || !signatureLocation || !signatureDate}
-                  className={`flex items-center gap-2 px-6 py-2.5 text-primary btn-primary rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
+                  className={`flex items-center gap-2 px-6 py-2.5 !text-primary btn-primary rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
                     manualMode ? 'bg-info' : 'bg-accent'
                   }`}
                 >
@@ -1611,14 +1611,14 @@ ${user?.username || 'L\'équipe'}`;
               <>
                 <button
                   onClick={() => setStep('config')}
-                  className="px-4 py-2 text-sm text-primary hover:text-primary transition-colors"
+                  className="px-4 py-2 !text-sm !text-primary hover:!text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleCopyContract}
-                    className="flex items-center gap-2 px-4 py-2 bg-muted text-primary rounded-lg hover:bg-card transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-muted !text-primary rounded-lg hover:bg-card transition-colors"
                   >
                     <IconCopy className="w-4 h-4" />
                     {t('copy') || 'Copier'}
@@ -1634,7 +1634,7 @@ ${user?.username || 'L\'équipe'}`;
                       }
                       setStep('sign');
                     }}
-                    className="flex items-center gap-2 px-6 py-2.5 btn-primary text-white rounded-xl hover:opacity-90 transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 btn-primary !text-white rounded-xl hover:opacity-90 transition-colors"
                   >
                     <IconSignature className="w-4 h-4" color="white" />
                     {t('proceed_to_sign') || 'Passer à la signature'}
@@ -1647,7 +1647,7 @@ ${user?.username || 'L\'équipe'}`;
               <>
                 <button
                   onClick={() => setStep('review')}
-                  className="px-4 py-2 text-sm text-primary hover:text-primary transition-colors"
+                  className="px-4 py-2 !text-sm !text-primary hover:!text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
@@ -1655,7 +1655,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleConfirm}
                     disabled={!signatures.provider || saving || savedContract !== null}
-                    className="flex items-center gap-2 px-4 py-2 bg-muted text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-muted !text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
                   >
                     {savedContract ? (
                       <>
@@ -1672,7 +1672,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleProceedToSend}
                     disabled={!signatures.provider || saving}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {saving ? (
                       <>
@@ -1694,7 +1694,7 @@ ${user?.username || 'L\'équipe'}`;
               <>
                 <button
                   onClick={() => setStep('sign')}
-                  className="px-4 py-2 text-sm text-primary hover:text-primary transition-colors"
+                  className="px-4 py-2 !text-sm !text-primary hover:!text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
@@ -1702,7 +1702,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleDownloadPDF}
                     disabled={!savedContract}
-                    className="flex items-center gap-2 px-4 py-2 bg-muted text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-muted !text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
                   >
                     <IconDownload className="w-4 h-4" />
                     {t('download_pdf') || 'PDF'}
@@ -1710,7 +1710,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleSendToClient}
                     disabled={saving || !selectedClient?.email}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-success !text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {saving ? (
                       <>

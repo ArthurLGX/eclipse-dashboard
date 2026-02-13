@@ -154,7 +154,7 @@ function ContactCard({
           )}
           
           <div className="min-w-0">
-            <h4 className="font-medium text-sm text-foreground truncate">{contact.name}</h4>
+            <h4 className="font-medium !text-sm !text-foreground truncate">{contact.name}</h4>
             {contact.processStatus === 'client' && (
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-success-light !text-success-text">
                 Client
@@ -212,14 +212,14 @@ function ContactCard({
               >
                 <button
                   onClick={(e) => { e.stopPropagation(); onClick(); setShowMenu(false); }}
-                  className="w-full px-3 py-2 text-left text-sm hover:bg-hover flex items-center gap-2"
+                  className="w-full px-3 py-2 !text-left !text-sm hover:bg-hover flex items-center gap-2"
                 >
                   <IconEye size={14} /> {t('view') || 'Voir'}
                 </button>
                 {onViewJourney && (
                   <button
                     onClick={(e) => { e.stopPropagation(); onViewJourney(); setShowMenu(false); }}
-                    className="w-full px-3 py-2 text-left text-sm hover:bg-hover flex items-center gap-2 !text-accent"
+                    className="w-full px-3 py-2 !text-left !text-sm hover:bg-hover flex items-center gap-2 !text-accent"
                     title={t('view_client_journey_tooltip') || 'Le pipeline dit où vous en êtes, le parcours explique pourquoi'}
                   >
                     <IconRoute size={14} className="!text-accent" /> {t('view_client_journey') || 'Voir le parcours'}
@@ -227,14 +227,14 @@ function ContactCard({
                 )}
                 <button
                   onClick={(e) => { e.stopPropagation(); onClick(); setShowMenu(false); }}
-                  className="w-full px-3 py-2 text-left text-sm hover:bg-hover flex items-center gap-2"
+                  className="w-full px-3 py-2 !text-left !text-sm hover:bg-hover flex items-center gap-2"
                 >
                   <IconEdit size={14} /> {t('edit') || 'Modifier'}
                 </button>
                 {onDelete && (
                   <button
                     onClick={(e) => { e.stopPropagation(); onDelete(); setShowMenu(false); }}
-                    className="w-full px-3 py-2 text-left text-sm hover:bg-hover text-red-600 flex items-center gap-2"
+                    className="w-full px-3 py-2 !text-left !text-sm hover:bg-hover !text-red-600 flex items-center gap-2"
                   >
                     <IconTrash size={14} /> {t('delete') || 'Supprimer'}
                   </button>
@@ -247,7 +247,7 @@ function ContactCard({
 
       {/* Entreprise */}
       {contact.enterprise && (
-        <div className="flex items-center gap-1.5 !text-xs text-muted-foreground mb-2">
+        <div className="flex items-center gap-1.5 !text-xs !text-muted-foreground mb-2">
           <IconBuilding size={12} />
           <span className="truncate">{contact.enterprise}</span>
         </div>
@@ -259,7 +259,7 @@ function ContactCard({
           <a 
             href={`mailto:${contact.email}`} 
             onClick={(e) => e.stopPropagation()}
-            className="!text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
+            className="!text-xs !text-muted-foreground hover:!text-accent flex items-center gap-1"
           >
             <IconMail size={12} />
           </a>
@@ -268,7 +268,7 @@ function ContactCard({
           <a 
             href={`tel:${contact.phone}`}
             onClick={(e) => e.stopPropagation()}
-            className="!text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
+            className="!text-xs !text-muted-foreground hover:!text-accent flex items-center gap-1"
           >
             <IconPhone size={12} />
           </a>
@@ -279,7 +279,7 @@ function ContactCard({
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="!text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
+            className="!text-xs !text-muted-foreground hover:!text-accent flex items-center gap-1"
           >
             <IconWorld size={12} />
           </a>
@@ -290,13 +290,13 @@ function ContactCard({
       <div className="flex items-center justify-between gap-2 pt-2 border-t border-muted">
         <div className="flex items-center gap-2">
           {contact.estimated_value && (
-            <span className="!text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-0.5">
+            <span className="!text-xs font-medium !text-green-600 dark:!text-green-400 flex items-center gap-0.5">
               <IconCurrencyEuro size={12} />
               {formatCurrency(contact.estimated_value)?.replace('€', '')}
             </span>
           )}
           {contact.next_action_date && (
-            <span className="!text-xs text-muted-foreground flex items-center gap-0.5">
+            <span className="!text-xs !text-muted-foreground flex items-center gap-0.5">
               <IconCalendar size={12} />
               {formatDate(contact.next_action_date)}
             </span>
@@ -304,7 +304,7 @@ function ContactCard({
         </div>
         
         {contact.priority && (
-          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${priorityStyle.bg} ${priorityStyle.text}`}>
+          <span className={`px-1.5 py-0.5 rounded !text-[10px] font-medium ${priorityStyle.bg} ${priorityStyle.text}`}>
             {t(`priority_${contact.priority}`) || contact.priority}
           </span>
         )}
@@ -312,7 +312,7 @@ function ContactCard({
 
       {/* Next action reminder */}
       {contact.next_action && (
-        <div className="mt-2 p-2 bg-warning-light text-warning-text rounded !text-xs truncate">
+        <div className="mt-2 p-2 bg-warning-light !text-warning-text rounded !text-xs truncate">
           📌 {contact.next_action}
         </div>
       )}
@@ -393,7 +393,7 @@ function KanbanColumn({
       <div className={`kanban-header p-3 rounded-t-lg ${column.bgColor} border-b ${column.borderColor}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h3 className={`font-semibold text-sm ${column.color}`}>
+            <h3 className={`font-semibold !text-sm ${column.color}`}>
               {t(column.title) || column.title}
             </h3>
             <span className={`px-2 py-0.5 rounded-full !text-xs font-medium ${column.bgColor} ${column.color} border ${column.borderColor}`}>
@@ -434,7 +434,7 @@ function KanbanColumn({
         
         {contacts.length === 0 && (
           <div className="h-full min-h-[100px] flex items-center justify-center">
-            <p className="!text-xs text-muted-foreground text-center">
+            <p className="!text-xs !text-muted-foreground !text-center">
               {t('pipeline_empty_column') || 'Glissez un contact ici'}
             </p>
           </div>
@@ -560,16 +560,16 @@ export default function KanbanBoard({
       {/* Stats bar */}
       <div className="flex flex-wrap gap-4 p-4 bg-card rounded-lg border border-muted">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">{t('pipeline_total_contacts') || 'Total contacts'}:</span>
-          <span className="font-semibold text-foreground">{totalContacts}</span>
+          <span className="text-sm !text-muted-foreground">{t('pipeline_total_contacts') || 'Total contacts'}:</span>
+          <span className="font-semibold !text-foreground">{totalContacts}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">{t('pipeline_potential_value') || 'Valeur potentielle'}:</span>
-          <span className="font-semibold text-foreground">{formatCurrency(totalValue)}</span>
+          <span className="text-sm !text-muted-foreground">{t('pipeline_potential_value') || 'Valeur potentielle'}:</span>
+          <span className="font-semibold !text-foreground">{formatCurrency(totalValue)}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">{t('pipeline_won_value') || 'Valeur gagnée'}:</span>
-          <span className="font-semibold text-green-600 dark:text-green-400">{formatCurrency(wonValue)}</span>
+          <span className="text-sm !text-muted-foreground">{t('pipeline_won_value') || 'Valeur gagnée'}:</span>
+          <span className="font-semibold !text-green-600 dark:!text-green-400">{formatCurrency(wonValue)}</span>
         </div>
       </div>
 

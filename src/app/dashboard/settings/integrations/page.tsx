@@ -41,7 +41,7 @@ function IntegrationCard({ title, description, icon, status, children }: Integra
   
   const statusColors = {
     active: 'bg-success-lighttext-success-light',
-    inactive: 'bg-muted text-secondary',
+    inactive: 'bg-muted !text-secondary',
     pending: 'bg-warning-lighttext-warning-light',
   };
 
@@ -59,8 +59,8 @@ function IntegrationCard({ title, description, icon, status, children }: Integra
             {icon}
           </div>
           <div>
-            <h3 className="font-semibold text-primary">{title}</h3>
-            <p className="text-sm text-muted">{description}</p>
+            <h3 className="font-semibold !text-primary">{title}</h3>
+            <p className="text-sm !text-muted">{description}</p>
           </div>
         </div>
         <span className={`px-2 py-1 !text-xs font-medium rounded-full ${statusColors[status]}`}>
@@ -92,14 +92,14 @@ function CopyableField({ label, value }: { label: string; value: string }) {
 
   return (
     <div className="space-y-1">
-      <label className="!text-xs font-medium text-muted">{label}</label>
+      <label className="!text-xs font-medium !text-muted">{label}</label>
       <div className="flex items-center gap-2">
-        <code className="flex-1 px-3 py-2 bg-muted border border-default rounded-lg text-sm font-mono truncate text-primary">
+        <code className="flex-1 px-3 py-2 bg-muted border border-default rounded-lg !text-sm font-mono truncate !text-primary">
           {value}
         </code>
         <button
           onClick={handleCopy}
-          className="p-2 hover:bg-hover rounded-lg transition-colors text-secondary"
+          className="p-2 hover:bg-hover rounded-lg transition-colors !text-secondary"
           title={t('copy') || 'Copier'}
         >
           {copied ? <IconCheck size={18} className="text-success-text" /> : <IconCopy size={18} />}
@@ -211,27 +211,27 @@ function ApiTokensSection() {
                 </h4>
                 <button
                   onClick={() => setNewlyCreatedToken(null)}
-                  className="text-success hover:text-primary transition-colors"
+                  className="text-success hover:!text-primary transition-colors"
                 >
                   ×
                 </button>
               </div>
-              <p className="text-sm text-success-light">
+              <p className="text-sm !text-success-light">
                 {t('token_created_warning') || 'Copiez ce token maintenant. Il ne sera plus affiché !'}
               </p>
               <div className="flex items-center gap-2">
-                <code className="flex-1 px-3 py-2 bg-card rounded-lg text-sm font-mono break-all text-primary">
+                <code className="flex-1 px-3 py-2 bg-card rounded-lg !text-sm font-mono break-all !text-primary">
                   {showToken ? newlyCreatedToken : '•'.repeat(40)}
                 </code>
                 <button
                   onClick={() => setShowToken(!showToken)}
-                  className="p-2 hover:bg-hover rounded-lg transition-colors text-secondary"
+                  className="p-2 hover:bg-hover rounded-lg transition-colors !text-secondary"
                 >
                   {showToken ? <IconEyeOff size={18} /> : <IconEye size={18} />}
                 </button>
                 <button
                   onClick={() => handleCopyToken(newlyCreatedToken)}
-                  className="p-2 hover:bg-hover rounded-lg transition-colors text-secondary"
+                  className="p-2 hover:bg-hover rounded-lg transition-colors !text-secondary"
                 >
                   <IconCopy size={18} />
                 </button>
@@ -244,7 +244,7 @@ function ApiTokensSection() {
         {!showCreateModal ? (
           <button
             onClick={() => setShowCreateModal(true)}
-            className="w-full p-3 border-2 border-dashed border-default rounded-lg text-muted hover:!border-accent hover:text-accent transition-colors flex items-center justify-center gap-2"
+            className="w-full p-3 border-2 border-dashed border-default rounded-lg !text-muted hover:!border-accent hover:!text-accent transition-colors flex items-center justify-center gap-2"
           >
             <IconPlus size={18} />
             {t('create_api_token') || 'Générer un nouveau token'}
@@ -260,14 +260,14 @@ function ApiTokensSection() {
               value={newTokenName}
               onChange={(e) => setNewTokenName(e.target.value)}
               placeholder={t('token_name_placeholder') || 'Ex: VS Code - MacBook Pro'}
-              className="w-full px-3 py-2 bg-card border border-default rounded-lg text-primary placeholder:text-placeholder focus:outline-none focus:ring-1 focus:ring-accent"
+              className="w-full px-3 py-2 bg-card border border-default rounded-lg !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-1 focus:ring-accent"
               autoFocus
             />
             <div className="flex items-center gap-2">
               <button
                 onClick={handleCreateToken}
                 disabled={creating || !newTokenName.trim()}
-                className="flex-1 px-4 py-2 bg-accent text-accent rounded-lg hover:opacity-90 disabled:opacity-50 transition-colors"
+                className="flex-1 px-4 py-2 bg-accent !text-accent rounded-lg hover:opacity-90 disabled:opacity-50 transition-colors"
               >
                 {creating ? (t('creating') || 'Création...') : (t('create') || 'Créer')}
               </button>
@@ -276,7 +276,7 @@ function ApiTokensSection() {
                   setShowCreateModal(false);
                   setNewTokenName('');
                 }}
-                className="px-4 py-2 text-muted hover:text-primary transition-colors"
+                className="px-4 py-2 !text-muted hover:!text-primary transition-colors"
               >
                 {t('cancel') || 'Annuler'}
               </button>
@@ -286,11 +286,11 @@ function ApiTokensSection() {
 
         {/* Liste des tokens */}
         {loading ? (
-          <div className="text-center py-4 text-muted">
+          <div className="text-center py-4 !text-muted">
             {t('loading') || 'Chargement...'}
           </div>
         ) : tokens.length === 0 ? (
-          <div className="text-center py-4 text-muted">
+          <div className="text-center py-4 !text-muted">
             {t('no_api_tokens') || 'Aucun token API'}
           </div>
         ) : (
@@ -301,8 +301,8 @@ function ApiTokensSection() {
                 className="flex items-center justify-between p-3 bg-muted border border-default rounded-lg"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-primary truncate">{token.name}</p>
-                  <div className="flex items-center gap-3 !text-xs text-muted">
+                  <p className="font-medium !text-primary truncate">{token.name}</p>
+                  <div className="flex items-center gap-3 !text-xs !text-muted">
                     <code className="font-mono">{token.token_preview}</code>
                     {token.last_used_at && (
                       <span className="flex items-center gap-1">
@@ -314,7 +314,7 @@ function ApiTokensSection() {
                 </div>
                 <button
                   onClick={() => handleDeleteToken(token.id)}
-                  className="p-2 text-muted hover:text-danger transition-colors"
+                  className="p-2 !text-muted hover:!text-danger transition-colors"
                   title={t('revoke_token') || 'Révoquer'}
                 >
                   <IconTrash size={18} />
@@ -326,10 +326,10 @@ function ApiTokensSection() {
 
         {/* Instructions */}
         <div className="bg-info-light border border-info rounded-lg p-4 space-y-2">
-          <h4 className="font-medium text-info">
+          <h4 className="font-medium !text-info">
             {t('api_token_usage') || 'Comment utiliser ?'}
           </h4>
-          <ol className="text-sm text-info space-y-1 list-decimal list-inside">
+          <ol className="text-sm !text-info space-y-1 list-decimal list-inside">
             <li>{t('api_token_step_1') || 'Installez l\'extension Eclipse Time Tracker dans VS Code/Cursor'}</li>
             <li>{t('api_token_step_2') || 'Générez un token ci-dessus et copiez-le'}</li>
             <li>{t('api_token_step_3') || 'Dans VS Code : Ctrl+Shift+P → Eclipse: Configure API Token'}</li>
@@ -341,7 +341,7 @@ function ApiTokensSection() {
           href="https://github.com/ArthurLGX/eclipse-tracker-extension"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm !text-accent hover:underline"
+          className="inline-flex items-center gap-2 !text-sm !text-accent hover:underline"
         >
           {t('download_extension') || 'Télécharger l\'extension VS Code'}
           <IconExternalLink size={14} />
@@ -374,14 +374,14 @@ function GoogleIntegrationCard() {
               <IconCircleDashed size={15} className="text-muted flex-shrink-0" />
             )}
             <div>
-              <p className="font-medium text-primary">{t('google_login') || 'Connexion Google'}</p>
-              <p className="text-sm text-muted">{t('google_login_desc') || 'Se connecter avec votre compte Google'}</p>
+              <p className="font-medium !text-primary">{t('google_login') || 'Connexion Google'}</p>
+              <p className="text-sm !text-muted">{t('google_login_desc') || 'Se connecter avec votre compte Google'}</p>
             </div>
           </div>
           <span className={`px-2 py-1 !text-xs font-medium rounded-full ${
             isAuthenticated 
               ? 'bg-success-light !text-success-text ' 
-              : 'bg-muted text-secondary'
+              : 'bg-muted !text-secondary'
           }`}>
             {isAuthenticated ? (t('integration_available') || 'Disponible') : (t('integration_not_configured') || 'Non configuré')}
           </span>
@@ -391,8 +391,8 @@ function GoogleIntegrationCard() {
           <div className="flex items-center gap-3">
             <IconCircleCheck size={15} className="text-success flex-shrink-0" />
             <div>
-              <p className="font-medium text-primary">{t('google_sheets') || 'Google Sheets'}</p>
-              <p className="text-sm text-muted">{t('google_sheets_desc') || 'Importer des tâches depuis Google Sheets'}</p>
+              <p className="font-medium !text-primary">{t('google_sheets') || 'Google Sheets'}</p>
+              <p className="text-sm !text-muted">{t('google_sheets_desc') || 'Importer des tâches depuis Google Sheets'}</p>
             </div>
           </div>
           <span className="px-2 py-1 !text-xs font-medium rounded-full bg-success-light !text-success-text -text">
@@ -400,7 +400,7 @@ function GoogleIntegrationCard() {
           </span>
         </div>
         
-        <p className="!text-xs text-muted">
+        <p className="!text-xs !text-muted">
           {t('google_integration_note') || 'L\'import Google Sheets est disponible dans les pages Projets et Clients.'}
         </p>
       </div>
@@ -434,10 +434,10 @@ function TypeformIntegrationCard() {
         />
         
         <div className="bg-info-light border border-info rounded-lg p-4 space-y-2">
-          <h4 className="font-medium text-info">
+          <h4 className="font-medium !text-info">
             {t('typeform_setup_title') || 'Comment configurer ?'}
           </h4>
-          <ol className="text-sm text-info space-y-1 list-decimal list-inside">
+          <ol className="text-sm !text-info space-y-1 list-decimal list-inside">
             <li>{t('typeform_step_1') || 'Ouvrez votre formulaire Typeform'}</li>
             <li>{t('typeform_step_2') || 'Allez dans Connect → Webhooks'}</li>
             <li>{t('typeform_step_3') || 'Cliquez sur "Add a webhook"'}</li>
@@ -447,24 +447,24 @@ function TypeformIntegrationCard() {
         </div>
 
         <div className="bg-warning-light border border-warning rounded-lg p-4 space-y-2">
-          <h4 className="font-medium text-warning">
+          <h4 className="font-medium !text-warning">
             {t('typeform_mapping_title') || 'Mappage des champs'}
           </h4>
-          <p className="text-sm text-warning">
+          <p className="text-sm !text-warning">
             {t('typeform_mapping_description') || 'Pour un mappage automatique optimal, nommez vos champs Typeform avec ces références :'}
           </p>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <code className="px-2 py-1 bg-card rounded text-primary">nom, name, full_name</code>
+          <div className="grid grid-cols-2 gap-2 !text-sm">
+            <code className="px-2 py-1 bg-card rounded !text-primary">nom, name, full_name</code>
             <span className="text-warning">→ Nom du prospect</span>
-            <code className="px-2 py-1 bg-card rounded text-primary">email, mail</code>
+            <code className="px-2 py-1 bg-card rounded !text-primary">email, mail</code>
             <span className="text-warning">→ Email</span>
-            <code className="px-2 py-1 bg-card rounded text-primary">telephone, phone</code>
+            <code className="px-2 py-1 bg-card rounded !text-primary">telephone, phone</code>
             <span className="text-warning">→ Téléphone</span>
-            <code className="px-2 py-1 bg-card rounded text-primary">entreprise, company</code>
+            <code className="px-2 py-1 bg-card rounded !text-primary">entreprise, company</code>
             <span className="text-warning">→ Entreprise</span>
-            <code className="px-2 py-1 bg-card rounded text-primary">budget</code>
+            <code className="px-2 py-1 bg-card rounded !text-primary">budget</code>
             <span className="text-warning">→ Budget estimé</span>
-            <code className="px-2 py-1 bg-card rounded text-primary">projet, description</code>
+            <code className="px-2 py-1 bg-card rounded !text-primary">projet, description</code>
             <span className="text-warning">→ Description</span>
           </div>
         </div>
@@ -473,7 +473,7 @@ function TypeformIntegrationCard() {
           href="https://www.typeform.com/help/a/webhooks-360029573471/"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm !text-accent hover:underline"
+          className="inline-flex items-center gap-2 !text-sm !text-accent hover:underline"
         >
           {t('typeform_docs') || 'Documentation Typeform Webhooks'}
           <IconExternalLink size={14} />
@@ -493,15 +493,15 @@ export default function IntegrationsPage() {
       <div className="flex items-center gap-4">
         <Link 
           href="/dashboard/settings"
-          className="p-2 hover:bg-hover rounded-lg transition-colors text-secondary"
+          className="p-2 hover:bg-hover rounded-lg transition-colors !text-secondary"
         >
           <IconArrowLeft size={15} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-primary">
+          <h1 className="text-2xl font-bold !text-primary">
             {t('integrations') || 'Intégrations'}
           </h1>
-          <p className="text-sm text-muted">
+          <p className="text-sm !text-muted">
             {t('integrations_description') || 'Connectez vos outils externes'}
           </p>
         </div>
@@ -518,11 +518,11 @@ export default function IntegrationsPage() {
 
       {/* Future integrations */}
       <div className="text-center py-8">
-        <IconSettings size={48} className="mx-auto text-muted mb-4" />
+        <IconSettings size={48} className="mx-auto !text-muted mb-4" />
         <p className="text-muted">
           {t('more_integrations_coming') || 'Plus d\'intégrations bientôt...'}
         </p>
-        <p className="text-sm text-muted">
+        <p className="text-sm !text-muted">
           Stripe, Slack, Notion, etc.
         </p>
       </div>

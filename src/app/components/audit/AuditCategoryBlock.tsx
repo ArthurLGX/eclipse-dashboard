@@ -14,9 +14,9 @@ interface AuditCategoryBlockProps {
 
 function getScoreBadgeColor(score: number): string {
   if (score >= 80) return 'bg-success-light !text-success-text ';
-  if (score >= 60) return 'bg-warning-light text-warning';
-  if (score >= 40) return 'bg-warning-light text-warning';
-  return 'bg-danger-light text-danger';
+  if (score >= 60) return 'bg-warning-light !text-warning';
+  if (score >= 40) return 'bg-warning-light !text-warning';
+  return 'bg-danger-light !text-danger';
 }
 
 export default function AuditCategoryBlock({
@@ -45,11 +45,11 @@ export default function AuditCategoryBlock({
               {icon}
             </span>
           )}
-          <span className="font-semibold text-primary">{title}</span>
+          <span className="font-semibold !text-primary">{title}</span>
         </div>
         <div className="flex items-center gap-3">
           {score !== undefined && (
-            <span className={`px-2 py-0.5 rounded-full text-sm font-medium ${getScoreBadgeColor(score)}`}>
+            <span className={`px-2 py-0.5 rounded-full !text-sm font-medium ${getScoreBadgeColor(score)}`}>
               {score}/100
             </span>
           )}

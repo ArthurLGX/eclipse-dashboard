@@ -160,12 +160,12 @@ export default function GlobalScoreDisplay({
             >
               {score}
             </motion.span>
-            <span className="!text-xs text-muted">/100</span>
+            <span className="!text-xs !text-muted">/100</span>
           </div>
         </div>
 
         {/* Info */}
-        <div className="flex-1 text-center md:text-left">
+        <div className="flex-1 !text-center md:!text-left">
           {/* Score level badge */}
           <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
             <span className={`p-2 rounded-lg ${scoreLevel.bgColor} ${scoreLevel.color}`}>
@@ -182,7 +182,7 @@ export default function GlobalScoreDisplay({
           </p>
 
           {/* Meta info */}
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 !text-xs text-muted">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 !text-xs !text-muted">
             <span className="px-2 py-1 bg-muted rounded-full">
               {t(pageType === 'landing' ? 'landing_page' : pageType === 'homepage' ? 'homepage' : 'product_page')}
             </span>

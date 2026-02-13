@@ -57,7 +57,7 @@ export default function QuotaAlert() {
                   {notification.message}
                 </p>
                 {notification.type !== 'trial_ending' && (
-                  <p className="text-secondary text-sm mt-1">
+                  <p className="text-secondary !text-sm mt-1">
                     {t('upgrade_to_unlock') || 'Passez à un plan supérieur pour débloquer.'}
                   </p>
                 )}
@@ -66,7 +66,7 @@ export default function QuotaAlert() {
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={handleUpgrade}
-                className="btn-primary px-4 py-2 flex items-center gap-2 text-sm"
+                className="btn-primary px-4 py-2 flex items-center gap-2 !text-sm"
               >
                 {t('upgrade') || 'Mettre à niveau'}
                 <IconArrowRight size={16} />

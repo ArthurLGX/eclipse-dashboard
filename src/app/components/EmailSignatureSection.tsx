@@ -363,11 +363,11 @@ export default function EmailSignatureSection() {
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+            <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
               <IconSignature className="w-5 h-5 !text-accent" />
               {t('email_signature') || 'Signature email'}
             </h3>
-            <p className="text-sm text-muted mt-1">
+            <p className="text-sm !text-muted mt-1">
               {t('email_signature_desc') || 'Cette signature sera utilisée dans le footer de vos newsletters et emails'}
             </p>
           </div>
@@ -375,23 +375,23 @@ export default function EmailSignatureSection() {
           <div className="flex items-center gap-3">
             {/* Language Toggle */}
             <div className="flex items-center gap-2 px-3 py-2 bg-secondary rounded-lg">
-              <IconLanguage className="w-4 h-4 text-muted" />
+              <IconLanguage className="w-4 h-4 !text-muted" />
               <button
                 onClick={() => setFooterLanguage('fr')}
-                className={`px-2 py-1 text-sm rounded transition-colors ${
+                className={`px-2 py-1 !text-sm rounded transition-colors ${
                   footerLanguage === 'fr' 
-                    ? 'bg-accent text-white' 
-                    : 'text-muted hover:text-primary'
+                    ? 'bg-accent !text-white' 
+                    : 'text-muted hover:!text-primary'
                 }`}
               >
                 FR
               </button>
               <button
                 onClick={() => setFooterLanguage('en')}
-                className={`px-2 py-1 text-sm rounded transition-colors ${
+                className={`px-2 py-1 !text-sm rounded transition-colors ${
                   footerLanguage === 'en' 
-                    ? 'bg-accent text-white' 
-                    : 'text-muted hover:text-primary'
+                    ? 'bg-accent !text-white' 
+                    : 'text-muted hover:!text-primary'
                 }`}
               >
                 EN
@@ -400,7 +400,7 @@ export default function EmailSignatureSection() {
             
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-3 py-2 text-sm bg-accent-light !text-accent hover:bg-accent hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 !text-sm bg-accent-light !text-accent hover:bg-accent hover:!text-white rounded-lg transition-colors"
             >
               <IconEye className="w-4 h-4" />
               {t('preview') || 'Aperçu'}
@@ -421,8 +421,8 @@ export default function EmailSignatureSection() {
                 onClick={() => setPreviewMode('desktop')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                   previewMode === 'desktop'
-                    ? 'bg-accent text-white'
-                    : 'bg-muted text-muted hover:bg-muted'
+                    ? 'bg-accent !text-white'
+                    : 'bg-muted !text-muted hover:bg-muted'
                 }`}
               >
                 <IconDeviceDesktop className="w-4 h-4" />
@@ -432,8 +432,8 @@ export default function EmailSignatureSection() {
                 onClick={() => setPreviewMode('mobile')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                   previewMode === 'mobile'
-                    ? 'bg-accent text-white'
-                    : 'bg-muted text-muted hover:bg-muted'
+                    ? 'bg-accent !text-white'
+                    : 'bg-muted !text-muted hover:bg-muted'
                 }`}
               >
                 <IconDeviceMobile className="w-4 h-4" />
@@ -456,14 +456,14 @@ export default function EmailSignatureSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Colonne gauche - Identité */}
           <div className="space-y-4">
-            <h4 className="font-medium text-primary flex items-center gap-2">
+            <h4 className="font-medium !text-primary flex items-center gap-2">
               <IconUser className="w-4 h-4 !text-accent" />
               {t('identity') || 'Identité'}
             </h4>
             
             {/* Logo */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('logo') || 'Logo'}
               </label>
               <div className="flex items-center gap-3">
@@ -477,7 +477,7 @@ export default function EmailSignatureSection() {
                     />
                     <button
                       onClick={() => updateField('logo_url', '')}
-                      className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                      className="absolute -top-2 -right-2 p-1 bg-red-500 !text-white rounded-full hover:bg-red-600 transition-colors"
                     >
                       <IconTrash className="w-3 h-3" />
                     </button>
@@ -485,7 +485,7 @@ export default function EmailSignatureSection() {
                 ) : (
                   <button
                     onClick={() => setShowMediaPicker(true)}
-                    className="w-16 h-16 border-2 border-dashed border-default rounded-lg flex items-center justify-center text-muted hover:border-accent hover:text-accent transition-colors"
+                    className="w-16 h-16 border-2 border-dashed border-default rounded-lg flex items-center justify-center !text-muted hover:border-accent hover:!text-accent transition-colors"
                   >
                     <IconPhoto className="w-6 h-6" />
                   </button>
@@ -503,7 +503,7 @@ export default function EmailSignatureSection() {
             
             {/* Company name */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 <IconBuilding className="w-4 h-4 inline mr-1" />
                 {t('company_name') || 'Nom de l\'entreprise'}
               </label>
@@ -518,7 +518,7 @@ export default function EmailSignatureSection() {
             
             {/* Sender name */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('sender_name') || 'Votre nom'}
               </label>
               <input
@@ -532,7 +532,7 @@ export default function EmailSignatureSection() {
             
             {/* Sender title */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('sender_title') || 'Titre / Fonction'}
               </label>
               <input
@@ -547,14 +547,14 @@ export default function EmailSignatureSection() {
           
           {/* Colonne droite - Contact */}
           <div className="space-y-4">
-            <h4 className="font-medium text-primary flex items-center gap-2">
+            <h4 className="font-medium !text-primary flex items-center gap-2">
               <IconPhone className="w-4 h-4 !text-accent" />
               {t('contact_info') || 'Coordonnées'}
             </h4>
             
             {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('phone') || 'Téléphone'}
               </label>
               <input
@@ -568,7 +568,7 @@ export default function EmailSignatureSection() {
             
             {/* Website */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 <IconWorld className="w-4 h-4 inline mr-1" />
                 {t('website') || 'Site web'}
               </label>
@@ -583,7 +583,7 @@ export default function EmailSignatureSection() {
             
             {/* Address */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 <IconMapPin className="w-4 h-4 inline mr-1" />
                 {t('address') || 'Adresse'}
               </label>
@@ -601,13 +601,13 @@ export default function EmailSignatureSection() {
         {/* Social links - Nouveau système dynamique */}
         <div className="pt-4 border-t border-default">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="font-medium text-primary flex items-center gap-2">
+            <h4 className="font-medium !text-primary flex items-center gap-2">
               <IconLink className="w-4 h-4 !text-accent" />
               {t('social_links') || 'Réseaux sociaux'}
             </h4>
             <button
               onClick={addSocialLink}
-              className="flex items-center gap-1 px-3 py-1.5 text-sm bg-accent-light !text-accent hover:bg-accent-light rounded-lg transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 !text-sm bg-accent-light !text-accent hover:bg-accent-light rounded-lg transition-colors"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_social') || 'Ajouter'}
@@ -634,14 +634,14 @@ export default function EmailSignatureSection() {
                       <button
                         onClick={() => moveSocialLink(link.id, 'up')}
                         disabled={index === 0}
-                        className="text-muted hover:text-primary disabled:opacity-30 transition-colors"
+                        className="text-muted hover:!text-primary disabled:opacity-30 transition-colors"
                       >
                         <IconGripVertical className="w-4 h-4 rotate-180" />
                       </button>
                       <button
                         onClick={() => moveSocialLink(link.id, 'down')}
                         disabled={index === (formData.social_links?.length || 0) - 1}
-                        className="text-muted hover:text-primary disabled:opacity-30 transition-colors"
+                        className="text-muted hover:!text-primary disabled:opacity-30 transition-colors"
                       >
                         <IconGripVertical className="w-4 h-4" />
                       </button>
@@ -704,7 +704,7 @@ export default function EmailSignatureSection() {
                     {/* Remove button */}
                     <button
                       onClick={() => removeSocialLink(link.id)}
-                      className="p-2 text-danger/70 hover:text-danger hover:bg-danger-light rounded-lg transition-colors"
+                      className="p-2 !text-danger/70 hover:!text-danger hover:bg-danger-light rounded-lg transition-colors"
                     >
                       <IconTrash className="w-4 h-4" />
                     </button>
@@ -714,7 +714,7 @@ export default function EmailSignatureSection() {
             </AnimatePresence>
             
             {(!formData.social_links || formData.social_links.length === 0) && (
-              <p className="text-sm text-muted text-center py-4">
+              <p className="text-sm !text-muted !text-center py-4">
                 {t('no_social_links') || 'Aucun réseau social ajouté. Cliquez sur "Ajouter" pour en ajouter un.'}
               </p>
             )}
@@ -729,7 +729,7 @@ export default function EmailSignatureSection() {
           >
             <div className="flex items-center gap-2">
               <IconPalette className="w-5 h-5 !text-accent" />
-              <span className="font-medium text-primary">
+              <span className="font-medium !text-primary">
                 {t('customization') || 'Personnalisation avancée'}
               </span>
             </div>
@@ -737,7 +737,7 @@ export default function EmailSignatureSection() {
               animate={{ rotate: showCustomization ? 180 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              <IconGripVertical className="w-5 h-5 text-muted rotate-90" />
+              <IconGripVertical className="w-5 h-5 !text-muted rotate-90" />
             </motion.div>
           </button>
           
@@ -752,7 +752,7 @@ export default function EmailSignatureSection() {
                 <div className="pt-4 space-y-6">
                   {/* Logo size */}
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">
+                    <label className="block !text-sm font-medium !text-secondary mb-2">
                       {t('logo_size') || 'Taille du logo'} ({formData.logo_size || 100}px)
                     </label>
                     <input
@@ -763,7 +763,7 @@ export default function EmailSignatureSection() {
                       onChange={(e) => updateField('logo_size', parseInt(e.target.value))}
                       className="w-full h-2 bg-muted/20 rounded-lg appearance-none cursor-pointer accent-accent"
                     />
-                    <div className="flex justify-between !text-xs text-muted mt-1">
+                    <div className="flex justify-between !text-xs !text-muted mt-1">
                       <span>40px</span>
                       <span>150px</span>
                     </div>
@@ -773,7 +773,7 @@ export default function EmailSignatureSection() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Primary color */}
                     <div>
-                      <label className="block text-sm font-medium text-secondary mb-2">
+                      <label className="block !text-sm font-medium !text-secondary mb-2">
                         {t('primary_color') || 'Couleur principale'}
                       </label>
                       <div className="flex items-center gap-2">
@@ -795,7 +795,7 @@ export default function EmailSignatureSection() {
                     
                     {/* Text color */}
                     <div>
-                      <label className="block text-sm font-medium text-secondary mb-2">
+                      <label className="block !text-sm font-medium !text-secondary mb-2">
                         {t('signature_text_color') || 'Couleur du texte'}
                       </label>
                       <div className="flex items-center gap-2">
@@ -817,7 +817,7 @@ export default function EmailSignatureSection() {
                     
                     {/* Secondary color */}
                     <div>
-                      <label className="block text-sm font-medium text-secondary mb-2">
+                      <label className="block !text-sm font-medium !text-secondary mb-2">
                         {t('secondary_color') || 'Couleur secondaire'}
                       </label>
                       <div className="flex items-center gap-2">
@@ -840,7 +840,7 @@ export default function EmailSignatureSection() {
                   
                   {/* Font family */}
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">
+                    <label className="block !text-sm font-medium !text-secondary mb-2">
                       {t('signature_font_family') || 'Police'}
                     </label>
                     <select
@@ -859,14 +859,14 @@ export default function EmailSignatureSection() {
                         </optgroup>
                       ))}
                     </select>
-                    <p className="!text-xs text-muted mt-1">
+                    <p className="!text-xs !text-muted mt-1">
                       {t('google_fonts_note') || 'Note : Les Google Fonts peuvent ne pas s\'afficher sur tous les clients email (Outlook, etc.)'}
                     </p>
                   </div>
                   
                   {/* Preview of customization */}
                   <div className="p-4 bg-muted rounded-lg border border-default">
-                    <p className="text-sm text-muted mb-2">{t('preview') || 'Aperçu des couleurs'}:</p>
+                    <p className="text-sm !text-muted mb-2">{t('preview') || 'Aperçu des couleurs'}:</p>
                     <div className="flex items-center gap-4" style={{ fontFamily: formData.font_family }}>
                       <span style={{ color: formData.text_color, fontWeight: 'bold' }}>
                         Texte principal
@@ -889,11 +889,11 @@ export default function EmailSignatureSection() {
         <div className="pt-4 border-t border-default">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h4 className="font-medium text-primary flex items-center gap-2">
+              <h4 className="font-medium !text-primary flex items-center gap-2">
                 <IconPhoto className="w-4 h-4 !text-accent" />
                 {t('promotional_banner') || 'Bannière promotionnelle'}
               </h4>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {t('banner_desc') || 'Optionnel : ajoutez une bannière sous votre signature'}
               </p>
             </div>
@@ -901,7 +901,7 @@ export default function EmailSignatureSection() {
           
           {/* Banner size recommendations */}
           <div className="mb-4 p-3 rounded-lg bg-muted border border-info">
-            <p className="!text-xs text-info">
+            <p className="!text-xs !text-info">
               <strong>{t('recommended_sizes') || 'Tailles recommandées'}</strong>:
               <br />• Desktop : 600×150 px (max)
               <br />• Mobile : 320×100 px (min)
@@ -911,7 +911,7 @@ export default function EmailSignatureSection() {
           <div className="space-y-4">
             {/* Banner preview/upload */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('banner_image') || 'Image de la bannière'}
               </label>
               {formData.banner_url ? (
@@ -924,7 +924,7 @@ export default function EmailSignatureSection() {
                   />
                   <button
                     onClick={() => updateField('banner_url', '')}
-                    className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                    className="absolute -top-2 -right-2 p-1 bg-red-500 !text-white rounded-full hover:bg-red-600 transition-colors"
                   >
                     <IconTrash className="w-3 h-3" />
                   </button>
@@ -932,7 +932,7 @@ export default function EmailSignatureSection() {
               ) : (
                 <button
                   onClick={() => setShowBannerPicker(true)}
-                  className="w-full h-24 border-2 border-dashed border-default rounded-lg flex flex-col items-center justify-center text-muted hover:border-accent hover:text-accent transition-colors"
+                  className="w-full h-24 border-2 border-dashed border-default rounded-lg flex flex-col items-center justify-center !text-muted hover:border-accent hover:!text-accent transition-colors"
                 >
                   <IconPhoto className="w-6 h-6 mb-1" />
                   <span className="text-sm">{t('add_banner') || 'Ajouter une bannière'}</span>
@@ -941,7 +941,7 @@ export default function EmailSignatureSection() {
               {formData.banner_url && (
                 <button
                   onClick={() => setShowBannerPicker(true)}
-                  className="mt-2 text-sm !text-accent hover:underline"
+                  className="mt-2 !text-sm !text-accent hover:underline"
                 >
                   {t('change_banner') || 'Changer la bannière'}
                 </button>
@@ -950,7 +950,7 @@ export default function EmailSignatureSection() {
             
             {/* Banner link */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 <IconLink className="w-4 h-4 inline mr-1" />
                 {t('banner_link') || 'Lien de la bannière'}
               </label>
@@ -961,14 +961,14 @@ export default function EmailSignatureSection() {
                 placeholder="https://example.com/promo"
                 className="input w-full"
               />
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {t('banner_link_desc') || 'URL vers laquelle rediriger au clic sur la bannière'}
               </p>
             </div>
             
             {/* Banner alt text */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('banner_alt') || 'Texte alternatif'}
               </label>
               <input
@@ -987,7 +987,7 @@ export default function EmailSignatureSection() {
           <button
             onClick={handleSave}
             disabled={saving}
-                className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
           >
             {saving ? (
               <>

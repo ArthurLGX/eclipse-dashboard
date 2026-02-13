@@ -440,7 +440,7 @@ export default function RevenuePage() {
     {
       key: 'date',
       label: t('date') || 'Date',
-      render: v => <span className="text-sm text-muted">{v ? formatDate(v as string) : '-'}</span>,
+      render: v => <span className="text-sm !text-muted">{v ? formatDate(v as string) : '-'}</span>,
     },
     {
       key: 'client_id',
@@ -450,7 +450,7 @@ export default function RevenuePage() {
         if (!client?.name) return <span className="text-sm">-</span>;
         return (
           <span
-            className="text-sm cursor-pointer hover:text-accent transition-colors"
+            className="text-sm cursor-pointer hover:!text-accent transition-colors"
             onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/clients/${generateClientSlug(client.name, client.documentId)}`); }}
           >
             {client.name}
@@ -469,7 +469,7 @@ export default function RevenuePage() {
               <>
                 <button
                   type="button"
-                  className="p-1 text-info hover:bg-hover rounded transition-colors"
+                  className="p-1 !text-info hover:bg-hover rounded transition-colors"
                   onClick={(e) => { e.stopPropagation(); setPdfToShow(pdfUrl); setShowPdfModal(true); }}
                 >
                   <IconEye className="w-4 h-4" />
@@ -496,12 +496,12 @@ export default function RevenuePage() {
     <div className="w-full mx-auto flex flex-col gap-4">
       {/* Header + Objectif */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-primary !uppercase">{t('global_revenue_stats')}</h1>
+        <h1 className="text-2xl font-bold !text-primary !uppercase">{t('global_revenue_stats')}</h1>
         <form
           onSubmit={e => { e.preventDefault(); if (inputRef.current) { const val = Number(inputRef.current.value); if (!isNaN(val) && val > 0) setMaxCA(val); } }}
           className="flex items-center gap-2"
         >
-          <span className="text-sm text-muted">{t('target_revenue') || 'Objectif'}:</span>
+          <span className="text-sm !text-muted">{t('target_revenue') || 'Objectif'}:</span>
           <input
             ref={inputRef}
             type="number"
@@ -509,9 +509,9 @@ export default function RevenuePage() {
             step={100}
             value={maxCA}
             onChange={e => setMaxCA(Number(e.target.value))}
-            className="input px-2 py-1 w-24 text-sm"
+            className="input px-2 py-1 w-24 !text-sm"
           />
-          <button type="submit" className="btn-primary px-3 py-1 text-sm rounded">
+          <button type="submit" className="btn-primary px-3 py-1 !text-sm rounded">
             {t('save') || 'OK'}
           </button>
         </form>
@@ -527,7 +527,7 @@ export default function RevenuePage() {
             className="h-2 bg-warning rounded-full"
           />
         </div>
-        <span className="!text-xs text-muted whitespace-nowrap">
+        <span className="!text-xs !text-muted whitespace-nowrap">
           {formatCurrency(totalCA)} / {formatCurrency(maxCA)} ({progress.toFixed(0)}%)
         </span>
       </div>
@@ -549,10 +549,10 @@ export default function RevenuePage() {
           >
             <div className="flex items-center gap-2 mb-1">
               <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-              <span className="!text-xs text-muted">{kpi.label}</span>
+              <span className="!text-xs !text-muted">{kpi.label}</span>
             </div>
             <p className={`text-xl font-bold ${kpi.color}`}>{kpi.value}</p>
-            {kpi.subvalue && <p className="!text-xs text-muted">{kpi.subvalue}</p>}
+            {kpi.subvalue && <p className="!text-xs !text-muted">{kpi.subvalue}</p>}
           </motion.div>
         ))}
       </div>
@@ -568,7 +568,7 @@ export default function RevenuePage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartLine className="w-4 h-4 !text-accent" />
-            <span className="text-sm font-medium text-primary">{t('revenue_evolution') || 'Évolution CA'}</span>
+            <span className="text-sm font-medium !text-primary">{t('revenue_evolution') || 'Évolution CA'}</span>
           </div>
           <div className="h-40">
             {!loading && <Line data={lineChartData} options={lineChartOptions} />}
@@ -584,7 +584,7 @@ export default function RevenuePage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartBar className="w-4 h-4 !text-accent" />
-            <span className="text-sm font-medium text-primary">{t('invoices_by_month') || 'Factures/mois'}</span>
+            <span className="text-sm font-medium !text-primary">{t('invoices_by_month') || 'Factures/mois'}</span>
           </div>
           <div className="h-40">
             {!loading && <Bar data={barChartData} options={barChartOptions} />}
@@ -600,13 +600,13 @@ export default function RevenuePage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartPie className="w-4 h-4 !text-accent" />
-            <span className="text-sm font-medium text-primary">{t('revenue_by_client') || 'CA/client'}</span>
+            <span className="text-sm font-medium !text-primary">{t('revenue_by_client') || 'CA/client'}</span>
           </div>
           <div className="h-40">
             {!loading && clientChartData.data.length > 0 ? (
               <Doughnut data={doughnutChartData} options={doughnutChartOptions} />
             ) : (
-              <div className="h-full flex items-center justify-center text-muted text-sm">
+              <div className="h-full flex items-center justify-center !text-muted !text-sm">
                 {t('no_data') || 'Aucune donnée'}
               </div>
             )}
@@ -622,9 +622,9 @@ export default function RevenuePage() {
         className="card p-4"
       >
         <div className="flex items-center gap-2 mb-3">
-          <IconReceipt className="w-4 h-4 text-info" />
-          <span className="text-sm font-medium text-primary">{t('invoices')}</span>
-          <span className="!text-xs text-muted">({factures.length})</span>
+          <IconReceipt className="w-4 h-4 !text-info" />
+          <span className="text-sm font-medium !text-primary">{t('invoices')}</span>
+          <span className="!text-xs !text-muted">({factures.length})</span>
         </div>
         <DataTable
           columns={columns}

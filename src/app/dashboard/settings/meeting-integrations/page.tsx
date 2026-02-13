@@ -244,24 +244,24 @@ export default function MeetingIntegrationsPage() {
             href="/dashboard/settings"
             className="p-2 rounded-lg hover:bg-hover transition-colors"
           >
-            <IconArrowLeft className="w-5 h-5 text-muted" />
+            <IconArrowLeft className="w-5 h-5 !text-muted" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
+            <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
               <FathomLogo size={28} />
               {t('fathom_ai') || 'Fathom AI - Notes de réunion'}
             </h1>
-            <p className="text-muted text-sm mt-1">
+            <p className="text-muted !text-sm mt-1">
               {t('meeting_integrations_desc') || 'Configurez Fathom pour recevoir automatiquement les transcriptions et résumés de vos réunions'}
             </p>
           </div>
         </div>
 
         {/* Status Badge */}
-        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
+        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full !text-sm font-medium ${
           isConnected 
             ? 'bg-success-light !text-success-text ' 
-            : 'bg-warning-light text-warning'
+            : 'bg-warning-light !text-warning'
         }`}>
           {isConnected ? (
             <>
@@ -280,7 +280,7 @@ export default function MeetingIntegrationsPage() {
         {/* Tutorial Steps */}
         {showTutorial && (
           <div className="card p-6">
-            <h2 className="text-lg font-semibold text-primary mb-6 flex items-center gap-2">
+            <h2 className="text-lg font-semibold !text-primary mb-6 flex items-center gap-2">
               <IconSettings className="w-5 h-5 !text-accent" />
               {t('setup_guide') || 'Guide de configuration'}
             </h2>
@@ -304,10 +304,10 @@ export default function MeetingIntegrationsPage() {
                     {/* Step Number */}
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       step.completed
-                        ? 'bg-success text-white'
+                        ? 'bg-success !text-white'
                         : currentStep === step.id
-                        ? 'bg-accent text-white'
-                        : 'bg-muted text-secondary'
+                        ? 'bg-accent !text-white'
+                        : 'bg-muted !text-secondary'
                     }`}>
                       {step.completed ? (
                         <IconCheck className="w-4 h-4" />
@@ -323,7 +323,7 @@ export default function MeetingIntegrationsPage() {
                       }`}>
                         {step.title}
                       </h3>
-                      <p className="text-sm text-muted mt-1">
+                      <p className="text-sm !text-muted mt-1">
                         {step.description}
                       </p>
 
@@ -331,7 +331,7 @@ export default function MeetingIntegrationsPage() {
                       {step.id === 1 && currentStep >= 1 && (
                         <div className="mt-4 space-y-3">
                           <div>
-                            <label className="text-sm text-secondary block mb-1">
+                            <label className="text-sm !text-secondary block mb-1">
                               Clé API Fathom
                             </label>
                             <input
@@ -339,7 +339,7 @@ export default function MeetingIntegrationsPage() {
                               value={config.api_key}
                               onChange={(e) => setConfig({ ...config, api_key: e.target.value })}
                               placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                              className="w-full input px-3 py-2 text-sm"
+                              className="w-full input px-3 py-2 !text-sm"
                             />
                           </div>
                         </div>
@@ -349,11 +349,11 @@ export default function MeetingIntegrationsPage() {
                       {step.id === 2 && currentStep >= 2 && (
                         <div className="mt-4 space-y-4">
                           <div>
-                            <label className="text-sm text-secondary block mb-1">
+                            <label className="text-sm !text-secondary block mb-1">
                               URL du Webhook (à copier dans Fathom)
                             </label>
                             <div className="flex items-center gap-2">
-                              <code className="flex-1 px-3 py-2 bg-card rounded-lg text-sm font-mono !text-accent overflow-x-auto">
+                              <code className="flex-1 px-3 py-2 bg-card rounded-lg !text-sm font-mono !text-accent overflow-x-auto">
                                 {webhookUrl}
                               </code>
                               <button
@@ -366,7 +366,7 @@ export default function MeetingIntegrationsPage() {
                           </div>
 
                           <div>
-                            <label className="text-sm text-secondary block mb-1">
+                            <label className="text-sm !text-secondary block mb-1">
                               Secret du Webhook (généré par Fathom)
                             </label>
                             <input
@@ -374,15 +374,15 @@ export default function MeetingIntegrationsPage() {
                               value={config.webhook_secret}
                               onChange={(e) => setConfig({ ...config, webhook_secret: e.target.value })}
                               placeholder="whsec_xxxxxxxxxxxxx"
-                              className="w-full input px-3 py-2 text-sm"
+                              className="w-full input px-3 py-2 !text-sm"
                             />
                           </div>
 
                           <div className="p-4 bg-info-light rounded-lg border border-info">
-                            <h4 className="text-sm font-medium text-info mb-2">
+                            <h4 className="text-sm font-medium !text-info mb-2">
                               📋 Instructions dans Fathom :
                             </h4>
-                            <ol className="text-sm text-secondary space-y-1 list-decimal list-inside">
+                            <ol className="text-sm !text-secondary space-y-1 list-decimal list-inside">
                               <li>Allez dans <strong>Settings → API Access</strong></li>
                               <li>Cliquez sur <strong>Manage → Add Webhook</strong></li>
                               <li>Collez l&apos;URL ci-dessus dans <strong>Destination URL</strong></li>
@@ -401,7 +401,7 @@ export default function MeetingIntegrationsPage() {
                             href={step.externalLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors text-sm"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors !text-sm"
                           >
                             {step.actionLabel}
                             <IconExternalLink className="w-4 h-4" />
@@ -411,7 +411,7 @@ export default function MeetingIntegrationsPage() {
                           <button
                             onClick={step.action}
                             disabled={testing}
-                            className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors text-sm disabled:opacity-50"
+                            className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors !text-sm disabled:opacity-50"
                           >
                             {testing ? (
                               <IconLoader2 className="w-4 h-4 animate-spin !text-white" />
@@ -438,7 +438,7 @@ export default function MeetingIntegrationsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="inline-flex cursor-pointer items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50"
+                className="inline-flex cursor-pointer items-center gap-2 px-6 py-2.5 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50"
               >
                 {saving ? (
                   <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -453,7 +453,7 @@ export default function MeetingIntegrationsPage() {
 
         {/* How it works */}
         <div className="card p-6">
-          <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconNotes className="w-5 h-5 !text-accent" />
             Comment ça marche ?
           </h2>
@@ -485,8 +485,8 @@ export default function MeetingIntegrationsPage() {
                 <div className="w-12 h-12 rounded-full bg-accent-light flex items-center justify-center mx-auto mb-3">
                   <item.icon className="w-6 h-6 !text-accent" />
                 </div>
-                <h3 className="font-medium text-primary text-sm mb-1">{item.title}</h3>
-                <p className="!text-xs text-muted">{item.desc}</p>
+                <h3 className="font-medium !text-primary !text-sm mb-1">{item.title}</h3>
+                <p className="!text-xs !text-muted">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -494,10 +494,10 @@ export default function MeetingIntegrationsPage() {
 
         {/* Pro Tips */}
         <div className="card p-6 bg-accent-light border border-accent">
-          <h2 className="text-lg font-semibold text-primary mb-4">
+          <h2 className="text-lg font-semibold !text-primary mb-4">
             💡 Conseils pour un matching parfait
           </h2>
-          <ul className="space-y-2 text-sm text-secondary">
+          <ul className="space-y-2 !text-sm !text-secondary">
             <li className="flex items-start gap-2">
               <IconCheck className="w-4 h-4 !text-success-text -text mt-0.5 flex-shrink-0" />
               <span><strong>Mets le lien Google Meet/Zoom</strong> dans le champ &quot;Lieu&quot; de l&apos;événement Eclipse</span>

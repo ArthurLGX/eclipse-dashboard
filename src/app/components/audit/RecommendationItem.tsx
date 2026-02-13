@@ -13,17 +13,17 @@ interface RecommendationItemProps {
 
 const priorityStyles = {
   high: {
-    badge: 'bg-danger-light text-danger',
+    badge: 'bg-danger-light !text-danger',
     border: 'border-l-[var(--color-danger)]',
     icon: 'text-danger',
   },
   medium: {
-    badge: 'bg-warning-light text-warning',
+    badge: 'bg-warning-light !text-warning',
     border: 'border-l-[var(--color-warning)]',
     icon: 'text-warning',
   },
   low: {
-    badge: 'bg-info-light text-info',
+    badge: 'bg-info-light !text-info',
     border: 'border-l-[var(--color-info)]',
     icon: 'text-info',
   },
@@ -99,13 +99,13 @@ export default function RecommendationItem({ text, priority, index = 0 }: Recomm
         <IconBulb className={`w-4 h-4 ${styles.icon}`} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-primary">{displayText}</p>
+        <p className="text-sm !text-primary">{displayText}</p>
       </div>
       <div className="flex items-center gap-2">
         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${styles.badge}`}>
           {t(`priority_${priority}`)}
         </span>
-        <IconArrowRight className="w-4 h-4 text-muted" />
+        <IconArrowRight className="w-4 h-4 !text-muted" />
       </div>
     </motion.div>
   );

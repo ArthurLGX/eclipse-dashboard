@@ -124,10 +124,10 @@ export default function AssignProjectDropdown({
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-default bg-muted flex-shrink-0 rounded-t-xl">
-              <p className="text-sm font-medium text-primary">
+              <p className="text-sm font-medium !text-primary">
                 {t('choose_project') || 'Choisir un projet'}
               </p>
-              <p className="!text-xs text-muted mt-0.5">
+              <p className="!text-xs !text-muted mt-0.5">
                 {unassignedProjects.length} {t('projects_available') || 'projet(s) disponible(s)'}
               </p>
             </div>
@@ -135,7 +135,7 @@ export default function AssignProjectDropdown({
             {/* Liste des projets - scrollable */}
             <div className="max-h-48 overflow-y-hidden flex-shrink-0 z-[100]">
               {unassignedProjects.length === 0 ? (
-                <div className="px-4 flex lg:flex-row flex-col gap-2 items-center justify-center py-6 text-center">
+                <div className="px-4 flex lg:flex-row flex-col gap-2 items-center justify-center py-6 !text-center">
                   <IconFolder size={32} className="text-muted" />
                   <p className="text-muted !text-sm">
                     {t('no_unassigned_projects') || 'Aucun projet disponible'}
@@ -149,7 +149,7 @@ export default function AssignProjectDropdown({
                     onClick={() => handleAssign(project.id)}
                     disabled={assigningId !== null}
                     className="w-full px-4 py-3 flex items-center gap-3 hover:bg-hover 
-                      transition-colors text-left border-b border-muted last:border-b-0
+                      transition-colors !text-left border-b border-muted last:border-b-0
                       disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="text-lg">{getTypeEmoji(project.type)}</span>
@@ -179,14 +179,14 @@ export default function AssignProjectDropdown({
               <button
                 onClick={handleCreateNew}
                 className="w-full px-4 py-3 flex items-center gap-3 hover:bg-hover 
-                  transition-colors text-left group rounded-b-xl"
+                  transition-colors !text-left group rounded-b-xl"
               >
                 <div className="w-8 h-8 rounded-lg bg-accent-light border border-accent 
                   flex items-center justify-center group-hover:opacity-80 transition-colors">
                   <IconPlus size={18} className="!text-accent" />
                 </div>
                 <div>
-                  <p className="text-accent font-medium text-sm">
+                  <p className="text-accent font-medium !text-sm">
                     {t('create_new_project') || 'Créer un nouveau projet'}
                   </p>
                   <p className="text-muted !text-xs">

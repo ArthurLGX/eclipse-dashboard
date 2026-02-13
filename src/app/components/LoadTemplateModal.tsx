@@ -104,7 +104,7 @@ export default function LoadTemplateModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
-            <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+            <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
               <IconPalette className="w-5 h-5 !text-accent" />
               {t('load_template') || 'Charger un thème'}
             </h3>
@@ -112,7 +112,7 @@ export default function LoadTemplateModal({
               onClick={onClose}
               className="p-2 rounded-lg hover:bg-hover transition-colors"
             >
-              <IconX className="w-5 h-5 text-secondary" />
+              <IconX className="w-5 h-5 !text-secondary" />
             </button>
           </div>
 
@@ -123,12 +123,12 @@ export default function LoadTemplateModal({
                 <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
               </div>
             ) : templates.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-48 text-secondary">
+              <div className="flex flex-col items-center justify-center h-48 !text-secondary">
                 <IconPalette className="w-12 h-12 mb-4 opacity-50" />
                 <p className="text-lg font-medium mb-2">
                   {t('no_saved_templates') || 'Aucun thème sauvegardé'}
                 </p>
-                <p className="text-sm text-muted text-center">
+                <p className="text-sm !text-muted !text-center">
                   {t('no_saved_templates_hint') || 'Personnalisez votre thème et sauvegardez-le pour le réutiliser'}
                 </p>
               </div>
@@ -146,7 +146,7 @@ export default function LoadTemplateModal({
                   >
                     {/* Default badge */}
                     {template.is_default && (
-                      <div className="absolute -top-2 -right-2 bg-yellow-500 text-white !text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                      <div className="absolute -top-2 -right-2 bg-yellow-500 !text-white !text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                         <IconStarFilled className="w-3 h-3" />
                         {t('default') || 'Défaut'}
                       </div>
@@ -155,7 +155,7 @@ export default function LoadTemplateModal({
                     {/* Selection indicator */}
                     {selectedTemplate?.documentId === template.documentId && (
                       <div className="absolute top-3 left-3 w-6 h-6 rounded-full bg-accent flex items-center justify-center">
-                        <IconCheck className="w-4 h-4 text-white" />
+                        <IconCheck className="w-4 h-4 !text-white" />
                       </div>
                     )}
 
@@ -193,13 +193,13 @@ export default function LoadTemplateModal({
                     </div>
 
                     {/* Template info */}
-                    <h4 className="font-semibold text-primary truncate">{template.name}</h4>
+                    <h4 className="font-semibold !text-primary truncate">{template.name}</h4>
                     {template.description && (
-                      <p className="text-sm text-muted mt-1 line-clamp-2">{template.description}</p>
+                      <p className="text-sm !text-muted mt-1 line-clamp-2">{template.description}</p>
                     )}
                     
                     {/* Font */}
-                    <p className="!text-xs text-secondary mt-2">
+                    <p className="!text-xs !text-secondary mt-2">
                       <span style={{ fontFamily: template.font_family }}>
                         {template.font_family.split(',')[0]}
                       </span>
@@ -217,7 +217,7 @@ export default function LoadTemplateModal({
                         className={`flex-1 py-1.5 !text-xs rounded-lg transition-colors flex items-center justify-center gap-1 ${
                           template.is_default
                             ? 'text-yellow-500 cursor-default'
-                            : 'text-secondary hover:text-yellow-500 hover:bg-yellow-500/10'
+                            : 'text-secondary hover:!text-yellow-500 hover:bg-yellow-500/10'
                         }`}
                       >
                         {settingDefault === template.documentId ? (
@@ -239,7 +239,7 @@ export default function LoadTemplateModal({
                           e.stopPropagation();
                           setConfirmDelete(template.documentId);
                         }}
-                        className="p-1.5 text-secondary hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                        className="p-1.5 !text-secondary hover:!text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                       >
                         <IconTrash className="w-4 h-4" />
                       </button>
@@ -253,22 +253,22 @@ export default function LoadTemplateModal({
                         className="absolute inset-0 bg-card/95 rounded-xl flex flex-col items-center justify-center p-4"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <IconAlertTriangle className="w-8 h-8 text-red-500 mb-2" />
-                        <p className="text-sm text-primary text-center mb-3">
+                        <IconAlertTriangle className="w-8 h-8 !text-red-500 mb-2" />
+                        <p className="text-sm !text-primary !text-center mb-3">
                           {t('confirm_delete_template') || 'Supprimer ce thème ?'}
                         </p>
                         <div className="flex gap-2">
                           <button
                             onClick={() => setConfirmDelete(null)}
                             disabled={deleting}
-                            className="px-3 py-1.5 text-sm text-secondary hover:text-primary transition-colors"
+                            className="px-3 py-1.5 !text-sm !text-secondary hover:!text-primary transition-colors"
                           >
                             {t('cancel') || 'Annuler'}
                           </button>
                           <button
                             onClick={() => handleDelete(template.documentId)}
                             disabled={deleting}
-                            className="px-3 py-1.5 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-1"
+                            className="px-3 py-1.5 !text-sm bg-red-500 !text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-1"
                           >
                             {deleting ? (
                               <IconLoader2 className="w-3 h-3 animate-spin" />
@@ -291,14 +291,14 @@ export default function LoadTemplateModal({
             <div className="flex items-center justify-end gap-3 p-4 border-t border-default">
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+                className="px-4 py-2 !text-secondary hover:!text-primary transition-colors"
               >
                 {t('cancel') || 'Annuler'}
               </button>
               <button
                 onClick={handleLoad}
                 disabled={!selectedTemplate}
-                className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 <IconCheck className="w-4 h-4" />
                 {t('load_selected') || 'Charger le thème'}

@@ -100,14 +100,14 @@ export default function AddClientModal({
         <div className="p-2 bg-accent-light rounded-lg border border-accent">
           <IconUserPlus size={22} className="!text-white" />
         </div>
-        <h2 className="text-xl font-bold text-primary">
+        <h2 className="text-xl font-bold !text-primary">
           {t('add_client')}
         </h2>
       </div>
 
       {/* Message d'erreur */}
       {error && (
-        <div className="mb-3 p-2.5 bg-danger-light border border-danger rounded-lg text-danger text-sm">
+        <div className="mb-3 p-2.5 bg-danger-light border border-danger rounded-lg !text-danger !text-sm">
           ⚠️ {error}
         </div>
       )}
@@ -116,7 +116,7 @@ export default function AddClientModal({
         {/* Ligne 1: Nom et Email (requis) */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
               <IconUser size={14} className="text-muted" />
               {t('name')} <span className="!text-accent">*</span>
             </label>
@@ -127,11 +127,11 @@ export default function AddClientModal({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="input w-full px-3 py-2 text-sm"
+              className="input w-full px-3 py-2 !text-sm"
             />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
               <IconMail size={14} className="text-muted" />
               {t('email')}
             </label>
@@ -140,7 +140,7 @@ export default function AddClientModal({
               placeholder="jean@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="input w-full px-3 py-2 text-sm"
+              className="input w-full px-3 py-2 !text-sm"
             />
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function AddClientModal({
         {/* Ligne 2: Téléphone et Entreprise */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
               <IconPhone size={14} className="text-muted" />
               {t('phone')}
             </label>
@@ -157,11 +157,11 @@ export default function AddClientModal({
               placeholder="+33 6 12 34 56 78"
               value={number}
               onChange={(e) => setNumber(e.target.value)}
-              className="input w-full px-3 py-2 text-sm"
+              className="input w-full px-3 py-2 !text-sm"
             />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
               <IconBuilding size={14} className="text-muted" />
               {t('enterprise')}
             </label>
@@ -170,7 +170,7 @@ export default function AddClientModal({
               placeholder="Nom de l'entreprise"
               value={enterprise}
               onChange={(e) => setEnterprise(e.target.value)}
-              className="input w-full px-3 py-2 text-sm"
+              className="input w-full px-3 py-2 !text-sm"
             />
           </div>
         </div>
@@ -178,7 +178,7 @@ export default function AddClientModal({
         {/* Ligne 3: Adresse et Site web */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
               <IconMapPin size={14} className="text-muted" />
               {t('address')}
             </label>
@@ -187,11 +187,11 @@ export default function AddClientModal({
               placeholder="123 Rue de Paris"
               value={adress}
               onChange={(e) => setAdress(e.target.value)}
-              className="input w-full px-3 py-2 text-sm"
+              className="input w-full px-3 py-2 !text-sm"
             />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-secondary !text-xs mb-1.5 font-medium">
+            <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
               <IconWorld size={14} className="text-muted" />
               {t('website')}
             </label>
@@ -200,7 +200,7 @@ export default function AddClientModal({
               placeholder="https://exemple.com"
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
-              className="input w-full px-3 py-2 text-sm"
+              className="input w-full px-3 py-2 !text-sm"
             />
           </div>
         </div>
@@ -219,7 +219,7 @@ export default function AddClientModal({
                 className={`flex-1 px-3 py-1.5 rounded !text-xs font-medium transition-colors ${
                   processStatus === 'client'
                     ? 'bg-success-light !text-success-text '
-                    : 'bg-hover text-secondary hover:bg-card'
+                    : 'bg-hover !text-secondary hover:bg-card'
                 }`}
               >
                 {t('client')}
@@ -229,8 +229,8 @@ export default function AddClientModal({
                 onClick={() => setProcessStatus('prospect')}
                 className={`flex-1 px-3 py-1.5 rounded !text-xs font-medium transition-colors ${
                   processStatus === 'prospect'
-                    ? 'bg-info-light text-info'
-                    : 'bg-hover text-secondary hover:bg-card'
+                    ? 'bg-info-light !text-info'
+                    : 'bg-hover !text-secondary hover:bg-card'
                 }`}
               >
                 {t('prospect')}
@@ -265,14 +265,14 @@ export default function AddClientModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="btn-ghost flex-1 px-4 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-ghost flex-1 px-4 py-2.5 !text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t('cancel')}
           </button>
           <button
             type="submit"
             disabled={loading || !name}
-            className={`btn-primary flex-1 px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`btn-primary flex-1 px-4 py-2.5 !text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {loading ? (
               <>

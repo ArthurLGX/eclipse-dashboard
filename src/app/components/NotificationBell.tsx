@@ -245,10 +245,10 @@ export default function NotificationBell() {
     }
     
     if (notification.type === 'contract_pending') {
-      return <IconFilePencil className="w-5 h-5 text-warning" />;
+      return <IconFilePencil className="w-5 h-5 !text-warning" />;
     }
     
-    return <IconBell className="w-5 h-5 text-info" />;
+    return <IconBell className="w-5 h-5 !text-info" />;
   };
 
   const handleContractAction = (notification: Notification) => {
@@ -278,7 +278,7 @@ export default function NotificationBell() {
       <div ref={dropdownRef} className="hidden lg:block fixed top-5 right-5 z-[1002]">
         <button
           onClick={handleToggle}
-          className="relative p-3 rounded-xl bg-card backdrop-blur-sm border border-default hover:bg-hover text-muted hover:text-primary transition-all shadow-theme-lg"
+          className="relative p-3 rounded-xl bg-card backdrop-blur-sm border border-default hover:bg-hover !text-muted hover:!text-primary transition-all shadow-theme-lg"
         >
           <IconBell className="w-5 h-5" />
           
@@ -287,7 +287,7 @@ export default function NotificationBell() {
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-danger text-white !text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
+              className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-danger !text-white !text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
             >
               {(unreadCount + visibleQuotaAlerts.length + emailUnreadCount) > 99 ? '99+' : (unreadCount + visibleQuotaAlerts.length + emailUnreadCount)}
             </motion.span>
@@ -306,13 +306,13 @@ export default function NotificationBell() {
             >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-default">
-              <h3 className="text-sm font-semibold text-primary">
+              <h3 className="text-sm font-semibold !text-primary">
                 {t('notifications') || 'Notifications'}
               </h3>
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="!text-xs !text-accent hover:text-accent-light flex items-center gap-1"
+                  className="!text-xs !text-accent hover:!text-accent-light flex items-center gap-1"
                 >
                   <IconCheckbox className="w-3 h-3" />
                   {t('mark_all_read') || 'Tout marquer comme lu'}
@@ -334,18 +334,18 @@ export default function NotificationBell() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
-                        <IconBell className="w-5 h-5 text-white" />
+                        <IconBell className="w-5 h-5 !text-white" />
                       </div>
                       <div className="text-left">
-                        <p className="text-sm font-medium text-primary">
+                        <p className="text-sm font-medium !text-primary">
                           {emailUnreadCount} {emailUnreadCount > 1 ? 'nouveaux emails' : 'nouvel email'}
                         </p>
-                        <p className="!text-xs text-muted">
+                        <p className="!text-xs !text-muted">
                           Cliquez pour voir votre boîte de réception
                         </p>
                       </div>
                     </div>
-                    <IconArrowRight className="w-4 h-4 text-muted" />
+                    <IconArrowRight className="w-4 h-4 !text-muted" />
                   </button>
                 </div>
               )}
@@ -365,9 +365,9 @@ export default function NotificationBell() {
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center">
                           {alert.type === 'quota_exceeded' || alert.type === 'trial_expired' ? (
-                            <IconAlertTriangle className="w-5 h-5 text-danger" />
+                            <IconAlertTriangle className="w-5 h-5 !text-danger" />
                           ) : (
-                            <IconClock className="w-5 h-5 text-warning" />
+                            <IconClock className="w-5 h-5 !text-warning" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -406,8 +406,8 @@ export default function NotificationBell() {
                 </div>
               ) : filteredNotifications.length === 0 && visibleQuotaAlerts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 px-4">
-                  <IconBell className="w-12 h-12 text-muted mb-3" />
-                  <p className="text-muted text-sm text-center">
+                  <IconBell className="w-12 h-12 !text-muted mb-3" />
+                  <p className="text-muted !text-sm !text-center">
                     {t('no_notifications') || 'Aucune notification'}
                   </p>
                 </div>
@@ -426,14 +426,14 @@ export default function NotificationBell() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
-                            <p className="text-sm font-medium text-primary">
+                            <p className="text-sm font-medium !text-primary">
                               {notification.title}
                             </p>
-                            <span className="!text-xs text-muted whitespace-nowrap">
+                            <span className="!text-xs !text-muted whitespace-nowrap">
                               {formatTimeAgo(notification.createdAt)}
                             </span>
                           </div>
-                          <p className="text-sm text-secondary mt-1 line-clamp-2">
+                          <p className="text-sm !text-secondary mt-1 line-clamp-2">
                             {notification.message}
                           </p>
 
@@ -475,7 +475,7 @@ export default function NotificationBell() {
                             <div className="flex gap-2 mt-2">
                               <button
                                 onClick={() => handleDelete(notification.documentId)}
-                                className="!text-xs text-muted hover:text-danger flex items-center gap-1"
+                                className="!text-xs !text-muted hover:!text-danger flex items-center gap-1"
                               >
                                 <IconTrash className="w-3 h-3" />
                                 {t('delete') || 'Supprimer'}
@@ -505,7 +505,7 @@ export default function NotificationBell() {
                     setIsOpen(false);
                     router.push('/dashboard/notifications');
                   }}
-                  className="w-full py-2 text-sm text-secondary hover:text-primary text-center transition-colors"
+                  className="w-full py-2 !text-sm !text-secondary hover:!text-primary !text-center transition-colors"
                 >
                   {t('view_all_notifications') || 'Voir toutes les notifications'}
                 </button>

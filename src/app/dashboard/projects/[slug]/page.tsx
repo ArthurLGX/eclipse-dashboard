@@ -420,9 +420,9 @@ const PROJECT_TYPES = [
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-2">
-          <IconFileText className="w-10 h-10 text-muted" />
+          <IconFileText className="w-10 h-10 !text-muted" />
         </div>
-        <h1 className="text-2xl font-semibold text-primary">Projet non trouvé</h1>
+        <h1 className="text-2xl font-semibold !text-primary">Projet non trouvé</h1>
         <p className="text-muted">Ce projet n&apos;existe pas ou a été supprimé</p>
         <Link
           href="/dashboard/projects"
@@ -486,18 +486,18 @@ const PROJECT_TYPES = [
           className="max-w-2xl mx-auto"
         >
           {/* En-tête du projet (infos basiques) */}
-          <div className="card p-8 text-center mb-6">
+          <div className="card p-8 !text-center mb-6">
             <div className="w-20 h-20 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
               <IconFileText className="w-10 h-10 !text-accent" />
             </div>
-            <h1 className="text-2xl font-bold text-primary mb-2">{project.title}</h1>
+            <h1 className="text-2xl font-bold !text-primary mb-2">{project.title}</h1>
             {project.user?.username && (
               <p className="text-muted mb-4">{t('by')} {project.user.username}</p>
             )}
             {(() => {
               const sc = getStatusConfig(project.project_status);
               return (
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${sc.colors.bg} ${sc.colors.text} ${sc.colors.border}`}>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full !text-sm font-medium border ${sc.colors.bg} ${sc.colors.text} ${sc.colors.border}`}>
                   {sc.label}
                 </span>
               );
@@ -509,17 +509,17 @@ const PROJECT_TYPES = [
             {collaborationRequestStatus === 'pending' ? (
               <div className="text-center">
                 <div className="w-16 h-16 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <IconHourglass className="w-8 h-8 text-warning" />
+                  <IconHourglass className="w-8 h-8 !text-warning" />
                 </div>
-                <h2 className="text-xl font-bold text-primary mb-2">{t('pending_request')}</h2>
+                <h2 className="text-xl font-bold !text-primary mb-2">{t('pending_request')}</h2>
                 <p className="text-primary mb-4">{t('collaboration_request_pending')}</p>
               </div>
             ) : collaborationRequestStatus === 'rejected' ? (
               <div className="text-center">
                 <div className="w-16 h-16 bg-danger-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <IconX className="w-8 h-8 text-danger" />
+                  <IconX className="w-8 h-8 !text-danger" />
                 </div>
-                <h2 className="text-xl font-bold text-primary mb-2">{t('collaboration_rejected')}</h2>
+                <h2 className="text-xl font-bold !text-primary mb-2">{t('collaboration_rejected')}</h2>
                 <p className="text-primary mb-4">{t('your_request_was_rejected')}</p>
               </div>
             ) : (
@@ -527,7 +527,7 @@ const PROJECT_TYPES = [
                 <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
                   <IconUserPlus className="w-8 h-8 !text-accent" />
                 </div>
-                <h2 className="text-xl font-bold text-primary mb-2">{t('request_collaboration')}</h2>
+                <h2 className="text-xl font-bold !text-primary mb-2">{t('request_collaboration')}</h2>
                 <p className="text-primary mb-6">{t('collaboration_request_description')}</p>
                 <button
                   onClick={handleRequestAccess}
@@ -554,7 +554,7 @@ const PROJECT_TYPES = [
           <div className="text-center mt-6">
             <Link
               href="/dashboard/projects"
-              className="text-accent hover:text-accent/80 flex items-center gap-2 justify-center"
+              className="text-accent hover:!text-accent/80 flex items-center gap-2 justify-center"
             >
               <IconArrowLeft className="w-4 h-4" />
               {t('back_to_projects')}
@@ -602,7 +602,7 @@ const PROJECT_TYPES = [
           <div className="flex items-center justify-between mb-5">
             <Link
               href="/dashboard/projects"
-              className="flex items-center gap-2 text-primary hover:text-primary transition-colors group"
+              className="flex items-center gap-2 !text-primary hover:!text-primary transition-colors group"
             >
               <IconArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               <span className="text-sm">{t('projects') || 'Projets'}</span>
@@ -614,7 +614,7 @@ const PROJECT_TYPES = [
                 <>
                   <button
                     onClick={() => setShowDuplicateModal(true)}
-                    className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
+                    className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors !text-sm"
                     title={t('duplicate_project') || 'Dupliquer ce projet'}
                   >
                     <IconCopy className="w-4 h-4" />
@@ -622,7 +622,7 @@ const PROJECT_TYPES = [
                   </button>
                   <button
                     onClick={() => setShowShareModal(true)}
-                    className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
+                    className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors !text-sm"
                   >
                     <IconShare className="w-4 h-4" />
                     <span className="hidden sm:inline">{t('share') || 'Partager'}</span>
@@ -640,7 +640,7 @@ const PROJECT_TYPES = [
                           setIsEditMode(false);
                           setBannerColor('auto');
                         }}
-                        className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
+                        className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors !text-sm"
                       >
                         <IconX className="w-4 h-4" />
                         <span className="hidden sm:inline">{t('cancel') || 'Annuler'}</span>
@@ -649,7 +649,7 @@ const PROJECT_TYPES = [
                       <button
                         onClick={() => formRef.current?.requestSubmit()}
                         disabled={isSaving}
-                        className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors text-sm disabled:opacity-50"
+                        className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors !text-sm disabled:opacity-50"
                       >
                         {isSaving ? (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -666,7 +666,7 @@ const PROJECT_TYPES = [
                         setEditNotes(project?.notes || '');
                         setIsEditMode(true);
                       }}
-                      className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors text-sm"
+                      className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors !text-sm"
                     >
                       <IconEdit className="w-4 h-4" />
                       <span className="hidden sm:inline">{t('edit') || 'Modifier'}</span>
@@ -691,11 +691,11 @@ const PROJECT_TYPES = [
                     type="text"
                     name="title"
                     defaultValue={project.title}
-                    className="text-xl md:text-2xl font-bold input px-3 py-1.5 w-full max-w-xl"
+                    className="text-xl md:!text-2xl font-bold input px-3 py-1.5 w-full max-w-xl"
                   />
                 </form>
               ) : (
-                <h1 className="text-xl md:text-2xl font-bold text-primary truncate">{project.title}</h1>
+                <h1 className="text-xl md:!text-2xl font-bold !text-primary truncate">{project.title}</h1>
               )}
             </div>
 
@@ -706,7 +706,7 @@ const PROJECT_TYPES = [
                   <select
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="input px-3 py-1.5 text-sm"
+                    className="input px-3 py-1.5 !text-sm"
                   >
                     {PROJECT_STATUS.map(status => (
                       <option key={status.value} value={status.value}>{status.label}</option>
@@ -715,18 +715,18 @@ const PROJECT_TYPES = [
                   <select
                     value={selectedType}
                     onChange={(e) => setSelectedType(e.target.value)}
-                    className="input px-3 py-1.5 text-sm"
+                    className="input px-3 py-1.5 !text-sm"
                   >
                     {PROJECT_TYPES.map(type => (
                       <option key={type.value} value={type.value}>{type.label}</option>
                     ))}
                   </select>
                   <div className="flex items-center gap-2">
-                    <span className="text-muted text-sm">Couleur :</span>
+                    <span className="text-muted !text-sm">Couleur :</span>
                     <select
                       value={bannerColor}
                       onChange={(e) => setBannerColor(e.target.value)}
-                      className="input px-3 py-1.5 text-sm"
+                      className="input px-3 py-1.5 !text-sm"
                     >
                       {BANNER_COLORS.map(color => (
                         <option key={color.value} value={color.value}>{color.label}</option>
@@ -736,18 +736,18 @@ const PROJECT_TYPES = [
                 </>
               ) : (
                 <>
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${statusConfig.colors.bg} ${statusConfig.colors.text} ${statusConfig.colors.border}`}>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full !text-sm font-medium border ${statusConfig.colors.bg} ${statusConfig.colors.text} ${statusConfig.colors.border}`}>
                     <StatusIcon className="w-3.5 h-3.5" />
                     {statusConfig.label}
                   </span>
-                  <span className="text-primary text-sm flex items-center gap-1.5">
+                  <span className="text-primary !text-sm flex items-center gap-1.5">
                     <ProjectTypeIcon type={project.type} className="w-4 h-4" />
                     {PROJECT_TYPES.find(t => t.value === project.type)?.label}
                   </span>
                   {project.client && (
                     <Link 
                       href={`/dashboard/clients/${generateClientSlug(project.client.name, project.client.documentId)}`}
-                      className="text-primary hover:text-accent text-sm flex items-center gap-1.5 transition-colors"
+                      className="text-primary hover:!text-accent !text-sm flex items-center gap-1.5 transition-colors"
                     >
                       <IconBuilding className="w-4 h-4" />
                       {project.client.name}
@@ -771,11 +771,11 @@ const PROJECT_TYPES = [
             {/* Row 3: Quick Stats Cards */}
             <div className="flex gap-3 flex-wrap md:flex-nowrap mt-2">
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
-                <div className="flex items-center gap-2 text-muted !text-xs mb-1">
+                <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
                   <IconCurrencyEuro className="w-3.5 h-3.5" />
                   {t('billed') || 'Facturé'}
                 </div>
-                <p className="text-xl font-bold text-primary">
+                <p className="text-xl font-bold !text-primary">
                   {totalFactures.toLocaleString('fr-FR')} €
                 </p>
                 <p className="!text-xs !text-success-text -text">
@@ -784,24 +784,24 @@ const PROJECT_TYPES = [
               </div>
               
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
-                <div className="flex items-center gap-2 text-muted !text-xs mb-1">
+                <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
                   <IconFileInvoice className="w-3.5 h-3.5" />
                   {t('invoices') || 'Factures'}
                 </div>
-                <p className="text-xl font-bold text-primary">{factures.length}</p>
-                <p className="!text-xs text-muted">
+                <p className="text-xl font-bold !text-primary">{factures.length}</p>
+                <p className="!text-xs !text-muted">
                   {factures.filter(f => f.facture_status === 'paid').length} {t('paid') || 'payées'}
                 </p>
               </div>
 
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
-                <div className="flex items-center gap-2 text-muted !text-xs mb-1">
+                <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
                   <IconListCheck className="w-3.5 h-3.5" />
                   {t('tasks')}
                 </div>
                 <div className="flex items-center gap-2">
                   {pendingTasks > 0 && (
-                    <p className="text-xl font-bold text-warning">{pendingTasks} {t('tasks_pending')}</p>
+                    <p className="text-xl font-bold !text-warning">{pendingTasks} {t('tasks_pending')}</p>
                   )}
                 </div>
                 <p className="!text-xs !text-success-text -text">
@@ -810,14 +810,14 @@ const PROJECT_TYPES = [
               </div>
               
               <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
-                <div className="flex items-center gap-2 text-muted !text-xs mb-1">
+                <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
                   <IconCalendarEvent className="w-3.5 h-3.5" />
                   {t('due_date')}
                 </div>
                 <p className={`text-xl font-bold ${daysRemaining !== null && daysRemaining < 0 ? 'text-danger' : daysRemaining !== null && daysRemaining < 7 ? 'text-warning' : 'text-primary'}`}>
                   {daysRemaining !== null ? (daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : `${daysRemaining}j`) : t('no_date') || 'Aucune date' || '—'}
                 </p>
-                <p className="!text-xs text-muted">
+                <p className="!text-xs !text-muted">
                   {daysRemaining !== null && daysRemaining < 0 ? t('overdue') || 'En retard' : t('remaining') || 'Restant'}
                 </p> 
               </div>
@@ -836,10 +836,10 @@ const PROJECT_TYPES = [
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-t-lg transition-colors ${
+                className={`flex items-center gap-2 px-4 py-3 !text-sm font-medium rounded-t-lg transition-colors ${
                   activeTab === tab.id
                     ? 'bg-page !text-accent border-t border-x border-default'
-                    : 'text-primary hover:text-primary hover:bg-hover'
+                    : 'text-primary hover:!text-primary hover:bg-hover'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -847,10 +847,10 @@ const PROJECT_TYPES = [
                 {tab.count !== undefined && tab.count > 0 && (
                   <span className={`px-1.5 py-0.5 !text-xs rounded-full font-bold ${
                     tab.isOrange 
-                      ? 'bg-warning-light text-warning' 
+                      ? 'bg-warning-light !text-warning' 
                       : activeTab === tab.id 
                         ? 'bg-accent-light !text-accent' 
-                        : 'bg-muted text-primary'
+                        : 'bg-muted !text-primary'
                   }`}>
                     {tab.count}
                   </span>
@@ -877,7 +877,7 @@ const PROJECT_TYPES = [
                 >
                   {/* Description */}
                   <div className="card p-6">
-                    <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
+                    <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
                       <IconFileText className="w-5 h-5 !text-success-text -text" />
                       {t('description')}
                     </h2>
@@ -892,14 +892,14 @@ const PROJECT_TYPES = [
                     ) : project.description ? (
                       <div 
                         className="text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
-                          [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2
-                          [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2
+                          [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
+                          [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                           [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                          [&_a]:text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                          [&_a]:!text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
                         dangerouslySetInnerHTML={{ __html: project.description }}
                       />
                     ) : (
-                      <p className="text-primary leading-relaxed italic text-muted">
+                      <p className="text-primary leading-relaxed italic !text-muted">
                         {t('no_description_available')}
                       </p>
                     )}
@@ -908,8 +908,8 @@ const PROJECT_TYPES = [
                   {/* Notes */}
                   {(project.notes || isEditMode) && (
                     <div className="card p-6">
-                      <h2 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-                        <IconFileText className="w-5 h-5 text-info" />
+                      <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
+                        <IconFileText className="w-5 h-5 !text-info" />
                         {t('internal_notes')}
                       </h2>
                       {isEditMode ? (
@@ -923,10 +923,10 @@ const PROJECT_TYPES = [
                       ) : (
                         <div 
                           className="text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
-                            [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2
-                            [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2
+                            [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
+                            [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                             [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                            [&_a]:text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                            [&_a]:!text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
                           dangerouslySetInnerHTML={{ __html: project.notes || '' }}
                         />
                       )}
@@ -939,7 +939,7 @@ const PROJECT_TYPES = [
                       <button
                         type="button"
                         onClick={() => setIsEditMode(false)}
-                        className="px-4 py-2 text-primary hover:text-primary transition-colors"
+                        className="px-4 py-2 !text-primary hover:!text-primary transition-colors"
                       >
                         {t('cancel')}
                       </button>
@@ -1063,8 +1063,8 @@ const PROJECT_TYPES = [
                 >
                   <div className="card p-6">
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
-                        <IconNotes className="w-5 h-5 text-info" />
+                      <h2 className="text-lg font-semibold !text-primary flex items-center gap-2">
+                        <IconNotes className="w-5 h-5 !text-info" />
                         {t('meeting_notes') || 'Notes de réunion'}
                       </h2>
                     </div>
@@ -1083,7 +1083,7 @@ const PROJECT_TYPES = [
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-2">
-                                  <h3 className="font-medium text-primary truncate">
+                                  <h3 className="font-medium !text-primary truncate">
                                     {note.title}
                                   </h3>
                                   {note.source === 'phantom_ai' && (
@@ -1093,7 +1093,7 @@ const PROJECT_TYPES = [
                                   )}
                                 </div>
                                 
-                                <div className="flex items-center gap-4 text-sm text-muted mb-3">
+                                <div className="flex items-center gap-4 !text-sm !text-muted mb-3">
                                   <span className="flex items-center gap-1">
                                     <IconCalendar className="w-4 h-4" />
                                     {new Date(note.meeting_date).toLocaleDateString('fr-FR', {
@@ -1118,14 +1118,14 @@ const PROJECT_TYPES = [
                                 </div>
 
                                 {note.summary && (
-                                  <p className="text-sm text-primary line-clamp-2 mb-3">
+                                  <p className="text-sm !text-primary line-clamp-2 mb-3">
                                     {note.summary}
                                   </p>
                                 )}
 
                                 {note.action_items && note.action_items.length > 0 && (
-                                  <div className="flex items-center gap-2 text-sm">
-                                    <IconListCheck className="w-4 h-4 text-warning" />
+                                  <div className="flex items-center gap-2 !text-sm">
+                                    <IconListCheck className="w-4 h-4 !text-warning" />
                                     <span className="text-muted">
                                       {note.action_items.filter(item => !item.completed).length} action{note.action_items.filter(item => !item.completed).length > 1 ? 's' : ''} en attente
                                     </span>
@@ -1151,12 +1151,12 @@ const PROJECT_TYPES = [
                             {/* Expandable transcription */}
                             {note.transcription && (
                               <details className="mt-4 group">
-                                <summary className="cursor-pointer text-sm !text-accent hover:underline list-none flex items-center gap-1">
+                                <summary className="cursor-pointer !text-sm !text-accent hover:underline list-none flex items-center gap-1">
                                   <IconFileText className="w-4 h-4" />
                                   Voir la transcription
                                 </summary>
                                 <div className="mt-3 p-4 bg-page rounded-lg border border-default max-h-64 overflow-y-auto">
-                                  <p className="text-sm text-primary whitespace-pre-wrap">
+                                  <p className="text-sm !text-primary whitespace-pre-wrap">
                                     {note.transcription}
                                   </p>
                                 </div>
@@ -1166,7 +1166,7 @@ const PROJECT_TYPES = [
                             {/* Action items list */}
                             {note.action_items && note.action_items.length > 0 && (
                               <details className="mt-3 group">
-                                <summary className="cursor-pointer text-sm !text-accent hover:underline list-none flex items-center gap-1">
+                                <summary className="cursor-pointer !text-sm !text-accent hover:underline list-none flex items-center gap-1">
                                   <IconListCheck className="w-4 h-4" />
                                   Voir les actions ({note.action_items.length})
                                 </summary>
@@ -1182,11 +1182,11 @@ const PROJECT_TYPES = [
                                         item.completed ? 'text-success' : 'text-warning'
                                       }`} />
                                       <div className="flex-1">
-                                        <p className={`text-sm ${item.completed ? 'line-through text-muted' : 'text-primary'}`}>
+                                        <p className={`text-sm ${item.completed ? 'line-through !text-muted' : 'text-primary'}`}>
                                           {item.text}
                                         </p>
                                         {item.assignee && (
-                                          <p className="!text-xs text-muted mt-0.5">
+                                          <p className="!text-xs !text-muted mt-0.5">
                                             Assigné à : {item.assignee}
                                           </p>
                                         )}
@@ -1202,10 +1202,10 @@ const PROJECT_TYPES = [
                     ) : (
                       <div className="text-center py-12">
                         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                          <IconNotes className="w-8 h-8 text-muted" />
+                          <IconNotes className="w-8 h-8 !text-muted" />
                         </div>
                         <p className="text-muted mb-2">{t('no_meeting_notes') || 'Aucune note de réunion'}</p>
-                        <p className="text-sm text-muted">
+                        <p className="text-sm !text-muted">
                           Les notes seront ajoutées automatiquement via Fathom AI ou manuellement depuis le calendrier.
                         </p>
                       </div>
@@ -1223,13 +1223,13 @@ const PROJECT_TYPES = [
                 >
                   <div className="card p-6">
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
-                        <IconFileInvoice className="w-5 h-5 text-warning" />
+                      <h2 className="text-lg font-semibold !text-primary flex items-center gap-2">
+                        <IconFileInvoice className="w-5 h-5 !text-warning" />
                         {t('project_invoices')}
                       </h2>
                       <Link
                         href={`/dashboard/factures/ajouter?projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}`}
-                        className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors text-sm"
+                        className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors !text-sm"
                       >
                         <IconPlus className="w-4 h-4" />
                         {t('new_invoice')}
@@ -1261,17 +1261,17 @@ const PROJECT_TYPES = [
                                 }`} />
                               </div>
                               <div>
-                                <p className="text-primary font-medium group-hover:text-accent transition-colors">
+                                <p className="text-primary font-medium group-hover:!text-accent transition-colors">
                                   {facture.reference}
                                 </p>
-                                <p className="text-sm text-muted">
+                                <p className="text-sm !text-muted">
                                   {new Date(facture.date).toLocaleDateString('fr-FR')}
                                   {facture.client_id?.name && ` • ${facture.client_id.name}`}
                                 </p>
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-lg font-semibold text-primary">
+                              <p className="text-lg font-semibold !text-primary">
                                 {(facture.number || 0).toLocaleString('fr-FR')} €
                               </p>
                               <span className={`text-xs px-2 py-0.5 rounded-full ${
@@ -1289,7 +1289,7 @@ const PROJECT_TYPES = [
                     ) : (
                       <div className="text-center py-12">
                         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                          <IconFileInvoice className="w-8 h-8 text-muted" />
+                          <IconFileInvoice className="w-8 h-8 !text-muted" />
                         </div>
                         <p className="text-muted mb-4">{t('no_invoices_for_this_project')}</p>
                         <Link
@@ -1328,7 +1328,7 @@ const PROJECT_TYPES = [
 
             {/* Dates Card */}
             <div className="card p-5">
-              <h3 className="!text-xs font-semibold text-muted uppercase tracking-wider mb-4">
+              <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider mb-4">
                 {t('due_dates')}
               </h3>
               <div className="space-y-4">
@@ -1337,16 +1337,16 @@ const PROJECT_TYPES = [
                     <IconCalendar className="w-4 h-4 !text-success-text -text" />
                   </div>
                   <div className="flex-1">
-                    <p className="!text-xs text-muted mb-0.5">{t('start_date')}</p>
+                    <p className="!text-xs !text-muted mb-0.5">{t('start_date')}</p>
                     {isEditMode ? (
                       <input
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full input rounded px-2 py-1 text-sm"
+                        className="w-full input rounded px-2 py-1 !text-sm"
                       />
                     ) : (
-                      <p className="text-primary text-sm font-medium">
+                      <p className="text-primary !text-sm font-medium">
                         {project.start_date 
                           ? new Date(project.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
                           : '—'}
@@ -1356,16 +1356,16 @@ const PROJECT_TYPES = [
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-danger-light rounded-lg">
-                    <IconCalendar className="w-4 h-4 text-danger" />
+                    <IconCalendar className="w-4 h-4 !text-danger" />
                   </div>
                   <div className="flex-1">
-                    <p className="!text-xs text-muted mb-0.5">{t('due_date')}</p>
+                    <p className="!text-xs !text-muted mb-0.5">{t('due_date')}</p>
                     {isEditMode ? (
                       <input
                         type="date"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full input rounded px-2 py-1 text-sm"
+                        className="w-full input rounded px-2 py-1 !text-sm"
                       />
                     ) : (
                       <p className={`text-sm font-medium ${daysRemaining !== null && daysRemaining < 0 ? 'text-danger' : 'text-primary'}`}>
@@ -1381,14 +1381,14 @@ const PROJECT_TYPES = [
 
             {/* Client Card */}
             <div className="card p-5">
-              <h3 className="!text-xs font-semibold text-muted uppercase tracking-wider mb-4">
+              <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider mb-4">
                 {t('client')}
               </h3>
               {isEditMode ? (
                 <select
                   value={selectedClientId}
                   onChange={(e) => setSelectedClientId(e.target.value)}
-                  className="w-full input px-3 py-2 text-sm"
+                  className="w-full input px-3 py-2 !text-sm"
                 >
                     <option value="">{t('no_client_assigned')}</option>
                   {clients.map(client => (
@@ -1408,24 +1408,24 @@ const PROJECT_TYPES = [
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-primary font-medium truncate group-hover:text-accent transition-colors">
+                    <p className="text-primary font-medium truncate group-hover:!text-accent transition-colors">
                       {project.client.name}
                     </p>
                     {project.client.email && (
-                      <p className="!text-xs text-muted truncate">{project.client.email}</p>
+                      <p className="!text-xs !text-muted truncate">{project.client.email}</p>
                     )}
                   </div>
-                  <IconExternalLink className="w-4 h-4 text-muted group-hover:text-accent transition-colors" />
+                  <IconExternalLink className="w-4 h-4 !text-muted group-hover:!text-accent transition-colors" />
                 </Link>
               ) : (
-                <p className="text-muted text-sm">{t('no_client_assigned')}</p>
+                <p className="text-muted !text-sm">{t('no_client_assigned')}</p>
               )}
             </div>
 
             {/* Team Card */}
             <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="!text-xs font-semibold text-muted uppercase tracking-wider">
+                <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider">
                   {t('team')}
                 </h3>
                 <button
@@ -1439,13 +1439,13 @@ const PROJECT_TYPES = [
                 {/* Owner */}
                 <div className="flex items-center gap-3 p-2 bg-warning-light rounded-lg border border-warning">
                   <div className="w-8 h-8 bg-warning rounded-full flex items-center justify-center">
-                    <span className="text-accent text-sm font-medium">
+                    <span className="text-accent !text-sm font-medium">
                       {project.user?.username?.[0]?.toUpperCase() || '?'}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-primary truncate">{project.user?.username}</p>
-                    <p className="!text-xs text-warning">{t('owner')}</p>
+                    <p className="text-sm !text-primary truncate">{project.user?.username}</p>
+                    <p className="!text-xs !text-warning">{t('owner')}</p>
                   </div>
                 </div>
                 
@@ -1453,13 +1453,13 @@ const PROJECT_TYPES = [
                 {collaborators.filter(c => !c.is_owner).map(collab => (
                   <div key={collab.documentId} className="flex items-center gap-3 p-2 bg-muted rounded-lg">
                     <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
-                      <span className="text-accent text-sm font-medium">
+                      <span className="text-accent !text-sm font-medium">
                         {collab.user?.username?.[0]?.toUpperCase() || '?'}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-primary truncate">{collab.user?.username}</p>
-                      <p className="!text-xs text-muted">
+                      <p className="text-sm !text-primary truncate">{collab.user?.username}</p>
+                      <p className="!text-xs !text-muted">
                         {collab.permission === 'edit' ? t('editor') : t('reader')}
                       </p>
                     </div>
@@ -1467,7 +1467,7 @@ const PROJECT_TYPES = [
                 ))}
                 
                 {collaborators.filter(c => !c.is_owner).length === 0 && (
-                  <p className="!text-xs text-muted text-center py-2">
+                  <p className="!text-xs !text-muted !text-center py-2">
                     {t('no_collaborators')}
                   </p>
                 )}
@@ -1476,10 +1476,10 @@ const PROJECT_TYPES = [
 
             {/* Meta Card */}
             <div className="card p-5">
-              <h3 className="!text-xs font-semibold text-muted uppercase tracking-wider mb-4">
+              <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider mb-4">
                 {t('information')}
               </h3>
-              <div className="space-y-3 text-sm">
+              <div className="space-y-3 !text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted">{t('created_at')}</span>
                   <span className="text-primary">

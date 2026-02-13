@@ -121,7 +121,7 @@ function SelectContactModal({
       >
         <div className="sticky top-0 bg-card border-b border-default p-4 rounded-t-xl">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+            <h2 className="text-lg font-semibold !text-primary flex items-center gap-2">
               <IconUsers size={15} />
               {t('select_existing_contact') || 'Sélectionner un contact'}
             </h2>
@@ -132,7 +132,7 @@ function SelectContactModal({
           
           {/* Barre de recherche */}
           <div className="relative">
-            <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted" />
             <input
               type="text"
               value={searchTerm}
@@ -147,7 +147,7 @@ function SelectContactModal({
         {/* Liste des contacts avec scroll */}
         <div className="max-h-[400px] overflow-y-auto p-2">
           {availableContacts.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground">
+            <div className="p-8 !text-center !text-muted-foreground">
               <IconUsers size={48} className="mx-auto mb-2 opacity-30" />
               <p>{t('no_contacts_available') || 'Aucun contact disponible'}</p>
               <p className="text-sm mt-1">{t('all_contacts_in_pipeline') || 'Tous vos contacts sont déjà dans le pipeline'}</p>
@@ -161,7 +161,7 @@ function SelectContactModal({
                     onSelect(contact, targetStatus);
                     onClose();
                   }}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-hover transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-hover transition-colors !text-left"
                 >
                   {/* Avatar */}
                   {contact.image?.url ? (
@@ -179,19 +179,19 @@ function SelectContactModal({
                   {/* Infos */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-foreground truncate">{contact.name}</span>
+                      <span className="font-medium !text-foreground truncate">{contact.name}</span>
                       {contact.processStatus === 'client' && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex-shrink-0">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 !text-green-700 dark:!text-green-400 flex-shrink-0">
                           Client
                         </span>
                       )}
                       {contact.processStatus === 'prospect' && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 flex-shrink-0">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 !text-blue-700 dark:!text-blue-400 flex-shrink-0">
                           Prospect
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 !text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 !text-xs !text-muted-foreground">
                       {contact.enterprise && <span className="truncate">{contact.enterprise}</span>}
                       {contact.enterprise && contact.email && <span>•</span>}
                       {contact.email && <span className="truncate">{contact.email}</span>}
@@ -205,7 +205,7 @@ function SelectContactModal({
 
         {/* Footer */}
         <div className="border-t border-default p-3">
-          <p className="!text-xs text-muted-foreground text-center">
+          <p className="!text-xs !text-muted-foreground !text-center">
             {availableContacts.length} {t('contacts_available') || 'contact(s) disponible(s)'}
           </p>
         </div>
@@ -320,7 +320,7 @@ function ContactModal({
         onWheel={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-card border-b border-default p-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-primary">
+          <h2 className="text-lg font-semibold !text-primary">
             {contact ? t('edit_contact') || 'Modifier le contact' : t('new_contact') || 'Nouveau contact'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
@@ -332,7 +332,7 @@ function ContactModal({
           {/* Infos principales */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 {t('contact_name') || 'Nom du contact'} *
               </label>
               <input
@@ -344,7 +344,7 @@ function ContactModal({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 <IconBuilding size={14} className="inline mr-1" />
                 {t('company') || 'Entreprise'}
               </label>
@@ -360,7 +360,7 @@ function ContactModal({
           {/* Contact */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 <IconMail size={14} className="inline mr-1" />
                 {t('email') || 'Email'}
               </label>
@@ -372,7 +372,7 @@ function ContactModal({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 <IconPhone size={14} className="inline mr-1" />
                 {t('phone') || 'Téléphone'}
               </label>
@@ -384,7 +384,7 @@ function ContactModal({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 <IconWorld size={14} className="inline mr-1" />
                 {t('website') || 'Site web'}
               </label>
@@ -400,7 +400,7 @@ function ContactModal({
           {/* Statut & Source */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 {t('status') || 'Statut'}
               </label>
               <select
@@ -416,7 +416,7 @@ function ContactModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 {t('source') || 'Source'}
               </label>
               <select
@@ -430,7 +430,7 @@ function ContactModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 <IconFlag size={14} className="inline mr-1" />
                 {t('priority') || 'Priorité'}
               </label>
@@ -449,7 +449,7 @@ function ContactModal({
           {/* Valeurs */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 <IconCurrencyEuro size={14} className="inline mr-1" />
                 {t('estimated_value') || 'Valeur estimée (€)'}
               </label>
@@ -462,7 +462,7 @@ function ContactModal({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 {t('budget') || 'Budget client (€)'}
               </label>
               <input
@@ -478,7 +478,7 @@ function ContactModal({
           {/* Next action */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 {t('next_action') || 'Prochaine action'}
               </label>
               <input
@@ -490,7 +490,7 @@ function ContactModal({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block !text-sm font-medium !text-primary mb-1">
                 <IconCalendar size={14} className="inline mr-1" />
                 {t('next_action_date') || 'Date prochaine action'}
               </label>
@@ -505,7 +505,7 @@ function ContactModal({
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-primary mb-1">
+            <label className="block !text-sm font-medium !text-primary mb-1">
               <IconNotes size={14} className="inline mr-1" />
               {t('notes') || 'Notes internes'}
             </label>
@@ -530,7 +530,7 @@ function ContactModal({
             <button
               type="submit"
               disabled={loading || !formData.name}
-              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
             >
               {loading ? '...' : (contact ? t('save') || 'Enregistrer' : t('create') || 'Créer')}
             </button>
@@ -936,13 +936,13 @@ export default function PipelinePage() {
         <div className="flex items-center gap-3">
           <IconChartBar size={28} className="!text-accent" />
           <div>
-            <h1 className="text-2xl font-bold text-primary">
+            <h1 className="text-2xl font-bold !text-primary">
               {t('pipeline') || 'Pipeline commercial'}
             </h1>
-            <p className="text-sm text-muted">
+            <p className="text-sm !text-muted">
               {t('pipeline_description') || 'Vue globale de vos opportunités'}
             </p>
-            <p className="!text-xs text-muted/70 mt-0.5">
+            <p className="!text-xs !text-muted/70 mt-0.5">
               {t('pipeline_subtitle') || 'Priorisez, relancez et estimez votre CA'}
             </p>
           </div>
@@ -953,7 +953,7 @@ export default function PipelinePage() {
           {onboardingCompleted && (
             <button
               onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
-              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-default text-muted hover:text-accent hover:bg-accent-light transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-default !text-muted hover:!text-accent hover:bg-accent-light transition-colors"
               title={t('replay_tutorial') || 'Revoir le tutoriel'}
             >
               <IconPlayerPlay size={16} />
@@ -965,7 +965,7 @@ export default function PipelinePage() {
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
               showKPIs 
                 ? 'bg-accent-light !text-accent border-accent' 
-                : 'bg-card text-muted border-default hover:bg-hover'
+                : 'bg-card !text-muted border-default hover:bg-hover'
             }`}
           >
             <IconChartLine size={18} />
@@ -974,7 +974,7 @@ export default function PipelinePage() {
           </button>
           <button
             onClick={() => setContactModal({ isOpen: true, contact: null })}
-            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent transition-colors"
           >
             <IconPlus size={18} color="white" />
             {t('new_contact') || 'Nouveau contact'}
@@ -989,84 +989,84 @@ export default function PipelinePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {/* CA Potentiel (Tous devis actifs) */}
             <div className="bg-card border border-default rounded-xl p-4">
-              <div className="flex items-center gap-2 text-muted mb-2">
+              <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconReceipt size={16} />
                 <span className="!text-xs font-medium">{t('kpi_potential_revenue') || 'CA Potentiel'}</span>
               </div>
-              <p className="text-xl font-bold text-violet-500">
+              <p className="text-xl font-bold !text-violet-500">
                 {formatCurrency(kpis.potentialValue)}
               </p>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {kpis.quotesSentCount + kpis.quotesAcceptedCount} {t('kpi_active_quotes') || 'devis actifs'}
               </p>
             </div>
 
             {/* CA Gagné */}
             <div className="bg-card border border-default rounded-xl p-4">
-              <div className="flex items-center gap-2 text-muted mb-2">
+              <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconCheck size={16} />
                 <span className="!text-xs font-medium">{t('kpi_won_revenue') || 'CA Gagné'}</span>
               </div>
               <p className="text-xl font-bold !text-success-text -text">
                 {formatCurrency(kpis.wonValue)}
               </p>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {kpis.quotesAcceptedCount} {t('kpi_quotes_accepted') || 'devis acceptés'}
               </p>
             </div>
 
             {/* Taux de conversion */}
             <div className="bg-card border border-default rounded-xl p-4">
-              <div className="flex items-center gap-2 text-muted mb-2">
+              <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconTrendingUp size={16} />
                 <span className="!text-xs font-medium">{t('conversion_rate') || 'Conversion'}</span>
               </div>
               <p className="text-xl font-bold !text-accent">
                 {kpis.conversionRate.toFixed(1)}%
               </p>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {t('kpi_quotes_to_deals') || 'devis → clients'}
               </p>
             </div>
 
             {/* Contacts dans le pipeline */}
             <div className="bg-card border border-default rounded-xl p-4">
-              <div className="flex items-center gap-2 text-muted mb-2">
+              <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconUsers size={16} />
                 <span className="!text-xs font-medium">{t('total_contacts') || 'Total contacts'}</span>
               </div>
-              <p className="text-xl font-bold text-primary">
+              <p className="text-xl font-bold !text-primary">
                 {kpis.totalContacts}
               </p>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {kpis.newContacts} {t('kpi_new_this_month') || 'nouveaux'}
               </p>
             </div>
 
             {/* En cours */}
             <div className="bg-card border border-default rounded-xl p-4">
-              <div className="flex items-center gap-2 text-muted mb-2">
+              <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconClock size={16} />
                 <span className="!text-xs font-medium">{t('in_progress') || 'En cours'}</span>
               </div>
-              <p className="text-xl font-bold text-warning">
+              <p className="text-xl font-bold !text-warning">
                 {kpis.inProgressCount}
               </p>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {t('active_projects') || 'projets actifs'}
               </p>
             </div>
 
             {/* Gagnés */}
             <div className="bg-card border border-default rounded-xl p-4">
-              <div className="flex items-center gap-2 text-muted mb-2">
+              <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconCheck size={16} />
                 <span className="!text-xs font-medium">{t('won') || 'Gagnés'}</span>
               </div>
               <p className="text-xl font-bold !text-success-text -text">
                 {kpis.wonCount}
               </p>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {kpis.lostCount} {t('lost') || 'perdus'}
               </p>
             </div>
@@ -1074,7 +1074,7 @@ export default function PipelinePage() {
 
           {/* Graphique d'évolution */}
           <div className="bg-card border border-default rounded-xl p-4">
-            <h3 className="text-sm font-medium text-primary mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-medium !text-primary mb-4 flex items-center gap-2">
               <IconChartLine size={18} />
               {t('kpi_revenue_evolution') || 'Évolution du CA (12 derniers mois)'}
             </h3>
@@ -1089,7 +1089,7 @@ export default function PipelinePage() {
       <div className="flex flex-wrap gap-3 p-4 bg-card rounded-lg border border-default">
         {/* Recherche */}
         <div className="relative flex-1 min-w-[200px]">
-          <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+          <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted" />
           <input
             type="text"
             value={searchTerm}
@@ -1134,7 +1134,7 @@ export default function PipelinePage() {
               setPriorityFilter('');
               setSourceFilter('');
             }}
-            className="flex items-center gap-1 px-3 py-2 text-sm text-muted hover:text-primary transition-colors"
+            className="flex items-center gap-1 px-3 py-2 !text-sm !text-muted hover:!text-primary transition-colors"
           >
             <IconX size={14} />
             {t('clear_filters') || 'Effacer'}

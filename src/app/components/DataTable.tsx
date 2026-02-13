@@ -353,7 +353,7 @@ export default function DataTable<T = unknown>({
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className="!text-left py-3 px-4 text-secondary font-semibold"
+                  className="!text-left py-3 px-4 !text-secondary font-semibold"
                 >
                   <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
                 </th>
@@ -395,7 +395,7 @@ export default function DataTable<T = unknown>({
   const renderMobileListView = () => (
     <div className="space-y-0">
       {displayData.length === 0 ? (
-        <div className="text-center py-12 text-secondary">
+        <div className="text-center py-12 !text-secondary">
           {emptyMessage}
         </div>
       ) : (
@@ -435,7 +435,7 @@ export default function DataTable<T = unknown>({
                   {isSelected ? (
                     <IconSquareCheck stroke={1} className="w-5 h-5 !text-accent" />
                   ) : (
-                    <IconSquare className="w-5 h-5 text-muted" />
+                    <IconSquare className="w-5 h-5 !text-muted" />
                   )}
                 </button>
               )}
@@ -453,11 +453,11 @@ export default function DataTable<T = unknown>({
               
               {/* Name + Description */}
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-primary truncate">
+                <div className="font-semibold !text-primary truncate">
                   {titleCol?.render ? titleCol.render(titleValue, row) : String(titleValue || '')}
                 </div>
                 {subtitleValue !== undefined && subtitleValue !== null && subtitleValue !== '' && (
-                  <div className="text-sm text-muted truncate">
+                  <div className="text-sm !text-muted truncate">
                     {subtitleCol?.render ? subtitleCol.render(subtitleValue, row) : String(subtitleValue)}
                   </div>
                 )}
@@ -484,9 +484,9 @@ export default function DataTable<T = unknown>({
                   className="flex-shrink-0"
                 >
                   {isFav ? (
-                    <IconStarFilled className="w-5 h-5 text-warning" />
+                    <IconStarFilled className="w-5 h-5 !text-warning" />
                   ) : (
-                    <IconStar className="w-5 h-5 text-muted" />
+                    <IconStar className="w-5 h-5 !text-muted" />
                   )}
                 </button>
               )}
@@ -501,7 +501,7 @@ export default function DataTable<T = unknown>({
   const renderDesktopGridView = () => (
     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
       {displayData.length === 0 ? (
-        <div className="col-span-full text-center py-12 text-secondary">
+        <div className="col-span-full !text-center py-12 !text-secondary">
           {emptyMessage}
         </div>
       ) : (
@@ -542,7 +542,7 @@ export default function DataTable<T = unknown>({
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted-light to-muted">
-                    <span className="text-5xl font-bold text-secondary">
+                    <span className="text-5xl font-bold !text-secondary">
                       {String(titleValue || '').charAt(0).toUpperCase()}
                     </span>
                   </div>
@@ -559,9 +559,9 @@ export default function DataTable<T = unknown>({
                       }`}
                     >
                       {isSelected ? (
-                        <IconSquareCheck stroke={1} className="w-5 h-5 text-white" />
+                        <IconSquareCheck stroke={1} className="w-5 h-5 !text-white" />
                       ) : (
-                        <IconSquare className="w-5 h-5 text-secondary" />
+                        <IconSquare className="w-5 h-5 !text-secondary" />
                       )}
                     </button>
                   )}
@@ -571,7 +571,7 @@ export default function DataTable<T = unknown>({
                 {statusValue !== null && statusValue !== undefined && (
                   <div className="absolute top-2 right-2">
                     {statusCol?.render ? statusCol.render(statusValue, row) : (
-                      <span className="px-2 py-1 rounded-lg bg-card/90 backdrop-blur !text-xs font-medium text-primary shadow-sm">
+                      <span className="px-2 py-1 rounded-lg bg-card/90 backdrop-blur !text-xs font-medium !text-primary shadow-sm">
                         {String(statusValue)}
                       </span>
                     )}
@@ -594,18 +594,18 @@ export default function DataTable<T = unknown>({
                       {isFav ? (
                         <IconStarFilled className="w-4 h-4 !text-warning-text" />
                       ) : (
-                        <IconStar className="w-4 h-4 !text-secondary hover:text-warning-text transition-colors" />
+                        <IconStar className="w-4 h-4 !text-secondary hover:!text-warning-text transition-colors" />
                       )}
                     </button>
                   )}
                   
                   {/* Title and subtitle */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-primary truncate text-sm">
+                    <h3 className="font-semibold !text-primary truncate !text-sm">
                       {titleCol?.render ? titleCol.render(titleValue, row) : String(titleValue || '')}
                     </h3>
                     {subtitleValue !== undefined && subtitleValue !== null && subtitleValue !== '' && (
-                      <div className="!text-xs text-muted truncate mt-0.5">
+                      <div className="!text-xs !text-muted truncate mt-0.5">
                         {subtitleCol?.render ? subtitleCol.render(subtitleValue, row) : String(subtitleValue)}
                       </div>
                     )}
@@ -639,7 +639,7 @@ export default function DataTable<T = unknown>({
             className="flex flex-wrap items-center justify-between gap-4 mb-4 p-3 rounded-xl bg-muted border border-muted"
           >
             <div className="flex items-center gap-3">
-              <span className="text-sm text-primary font-medium">
+              <span className="text-sm !text-primary font-medium">
                 {selectedIds.size} {t('items_selected') || 'élément(s) sélectionné(s)'}
               </span>
               {!allSelected && (
@@ -652,7 +652,7 @@ export default function DataTable<T = unknown>({
               )}
               <button
                 onClick={clearSelection}
-                className="text-sm text-secondary hover:text-primary"
+                className="text-sm !text-secondary hover:!text-primary"
               >
                 {t('clear_selection') || 'Annuler la sélection'}
               </button>
@@ -661,10 +661,10 @@ export default function DataTable<T = unknown>({
               {/* Custom actions */}
               {customActions.map((action, index) => {
                 const variantClasses = {
-                  primary: 'bg-accent text-white hover:bg-[var(--color-accent)]',
-                  success: 'bg-success text-white hover:bg-[var(--color-success)]',
-                  warning: 'bg-warning text-white hover:bg-[var(--color-warning)]',
-                  danger: 'bg-danger text-white hover:bg-[var(--color-danger)]',
+                  primary: 'bg-accent !text-white hover:bg-[var(--color-accent)]',
+                  success: 'bg-success !text-white hover:bg-[var(--color-success)]',
+                  warning: 'bg-warning !text-white hover:bg-[var(--color-warning)]',
+                  danger: 'bg-danger !text-white hover:bg-[var(--color-danger)]',
                 };
                 return (
                   <button
@@ -686,7 +686,7 @@ export default function DataTable<T = unknown>({
               {onDeleteSelected && (
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger text-white hover:bg-[var(--color-danger)] transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger !text-white hover:bg-[var(--color-danger)] transition-colors"
                 >
                   <IconTrash className="w-4 h-4" />
                   {t('delete_selected') || 'Supprimer'} ({selectedIds.size})
@@ -713,21 +713,21 @@ export default function DataTable<T = unknown>({
             )}
             {showFavorites && (
               <th className="w-10 py-3 px-2">
-                <IconStar className="w-4 h-4 text-muted" />
+                <IconStar className="w-4 h-4 !text-muted" />
               </th>
             )}
             {selectable && (
               <th className="w-12 py-3 px-2 lg:px-4">
                 <button
                   onClick={toggleCurrentPage}
-                  className="flex items-center justify-center text-muted hover:text-primary transition-colors"
+                  className="flex items-center justify-center !text-muted hover:!text-primary transition-colors"
                 >
                   {allCurrentPageSelected ? (
                     <IconSquareCheck stroke={1} className="w-5 h-5 !text-muted" />
                   ) : someCurrentPageSelected ? (
                     <IconSquareMinus stroke={1} className="w-5 h-5 !text-muted" />
                   ) : (
-                    <IconSquare className="w-5 h-5 text-muted" />
+                    <IconSquare className="w-5 h-5 !text-muted" />
                   )}
                 </button>
               </th>
@@ -739,7 +739,7 @@ export default function DataTable<T = unknown>({
               return (
                 <th
                   key={index}
-                  className={`!text-left py-3 px-2 lg:px-4 text-secondary font-semibold !capitalize ${isSortable ? 'cursor-pointer hover:text-primary select-none' : ''}`}
+                  className={`!text-left py-3 px-2 lg:px-4 !text-secondary font-semibold !capitalize ${isSortable ? 'cursor-pointer hover:!text-primary select-none' : ''}`}
                   onClick={isSortable ? () => handleSort(column.key) : undefined}
                 >
                   <div className="flex items-center gap-1">
@@ -785,7 +785,7 @@ export default function DataTable<T = unknown>({
                       } ${rowIsFavorite ? 'bg-warning-light' : ''}`}
                     >
                       <td className="w-10 py-4 px-2">
-                        <IconGripVertical className="w-4 h-4 text-muted cursor-grab active:cursor-grabbing" />
+                        <IconGripVertical className="w-4 h-4 !text-muted cursor-grab active:cursor-grabbing" />
                       </td>
                       {showFavorites && (
                         <td className="w-10 py-4 px-2">
@@ -794,12 +794,12 @@ export default function DataTable<T = unknown>({
                               e.stopPropagation();
                               onToggleFavorite?.(row);
                             }}
-                            className="!text-warning hover:text-warning-text transition-colors"
+                            className="!text-warning hover:!text-warning-text transition-colors"
                           >
                             {rowIsFavorite ? (
                               <IconStarFilled className="w-4 h-4 !text-warning" />
                             ) : (
-                              <IconStar className="w-4 h-4 !text-secondary hover:text-warning-text transition-colors" />
+                              <IconStar className="w-4 h-4 !text-secondary hover:!text-warning-text transition-colors" />
                             )}
                           </button>
                         </td>
@@ -808,7 +808,7 @@ export default function DataTable<T = unknown>({
                         <td className="w-12 py-4 px-2 lg:px-4">
                           <button
                             onClick={(e) => toggleItem(itemId, e)}
-                            className="flex items-center justify-center text-muted hover:text-primary transition-colors"
+                            className="flex items-center justify-center !text-muted hover:!text-primary transition-colors"
                           >
                             {isSelected ? (
                               <IconSquareCheck className="w-5 h-5 !text-muted" />
@@ -821,7 +821,7 @@ export default function DataTable<T = unknown>({
                       {columns.map((column, colIndex) => (
                         <td
                           key={colIndex}
-                          className={`py-4 px-2 lg:px-4 text-muted !font-light ${column.className || ''}`}
+                          className={`py-4 px-2 lg:px-4 !text-muted !font-light ${column.className || ''}`}
                         >
                           {column.render
                             ? column.render(
@@ -860,7 +860,7 @@ export default function DataTable<T = unknown>({
                             e.stopPropagation();
                             onToggleFavorite?.(row);
                           }}
-                          className="!text-warning hover:text-warning-text transition-colors"
+                          className="!text-warning hover:!text-warning-text transition-colors"
                         >
                           {rowIsFavorite ? (
                             <IconStarFilled className="w-4 h-4 !text-warning" />
@@ -874,7 +874,7 @@ export default function DataTable<T = unknown>({
                       <td className="w-12 py-4 px-2 lg:px-4">
                         <button
                           onClick={(e) => toggleItem(itemId, e)}
-                          className="flex items-center justify-center text-muted hover:text-primary transition-colors"
+                          className="flex items-center justify-center !text-muted hover:!text-primary transition-colors"
                         >
                           {isSelected ? (
                             <IconSquareCheck className="w-5 h-5 !text-muted" />
@@ -887,7 +887,7 @@ export default function DataTable<T = unknown>({
                     {columns.map((column, colIndex) => (
                       <td
                         key={colIndex}
-                        className={`py-4 px-2 lg:px-4 text-muted !font-light ${column.className || ''}`}
+                        className={`py-4 px-2 lg:px-4 !text-muted !font-light ${column.className || ''}`}
                       >
                         {column.render
                           ? column.render(
@@ -906,7 +906,7 @@ export default function DataTable<T = unknown>({
               <tr>
                 <td
                   colSpan={columns.length + (selectable ? 1 : 0) + (showFavorites ? 1 : 0)}
-                  className="py-8 px-2 lg:px-4 !text-center text-muted"
+                  className="py-8 px-2 lg:px-4 !text-center !text-muted"
                 >
                   {emptyMessage}
                 </td>
@@ -972,13 +972,13 @@ export default function DataTable<T = unknown>({
               <div className="flex items-center justify-between p-6 border-b border-muted">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-xl bg-danger-light">
-                    <IconTrash className="w-6 h-6 text-danger" />
+                    <IconTrash className="w-6 h-6 !text-danger" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-primary">
+                    <h2 className="text-xl font-bold !text-primary">
                       {t('delete_multiple_title') || 'Supprimer les éléments'}
                     </h2>
-                    <p className="text-sm text-secondary">
+                    <p className="text-sm !text-secondary">
                       {t('delete_multiple_subtitle')?.replace('{count}', selectedIds.size.toString()) || 
                         `${selectedIds.size} élément(s) sélectionné(s)`}
                     </p>
@@ -989,14 +989,14 @@ export default function DataTable<T = unknown>({
                   disabled={isDeleting}
                   className="p-2 rounded-lg hover:bg-card-hover transition-colors disabled:opacity-50"
                 >
-                  <IconX className="w-5 h-5 text-secondary" />
+                  <IconX className="w-5 h-5 !text-secondary" />
                 </button>
               </div>
 
               {/* Content */}
               <div className="p-6 space-y-4">
                 <div className="p-4 rounded-xl bg-muted border border-muted">
-                  <p className="text-sm text-danger">
+                  <p className="text-sm !text-danger">
                     {t('delete_multiple_warning') || 'Cette action est irréversible. Les éléments suivants seront définitivement supprimés :'}
                   </p>
                 </div>
@@ -1009,13 +1009,13 @@ export default function DataTable<T = unknown>({
                       className="flex items-center gap-2 p-2 rounded-lg bg-card-hover"
                     >
                       <div className="w-2 h-2 rounded-full bg-danger" />
-                      <span className="text-sm text-primary truncate">
+                      <span className="text-sm !text-primary truncate">
                         {getItemName(item) || getItemId(item)}
                       </span>
                     </div>
                   ))}
                   {selectedItems.length > 10 && (
-                    <p className="text-sm text-secondary text-center py-2">
+                    <p className="text-sm !text-secondary !text-center py-2">
                       ... {t('and_more')?.replace('{count}', (selectedItems.length - 10).toString()) || 
                         `et ${selectedItems.length - 10} autre(s)`}
                     </p>
@@ -1028,14 +1028,14 @@ export default function DataTable<T = unknown>({
                 <button
                   onClick={() => setShowDeleteModal(false)}
                   disabled={isDeleting}
-                  className="px-4 py-2 rounded-lg text-secondary hover:text-primary hover:bg-card-hover transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg !text-secondary hover:!text-primary hover:bg-card-hover transition-colors disabled:opacity-50"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="flex items-center gap-2 px-6 py-2 rounded-lg bg-danger text-white hover:bg-[var(--color-danger)] transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2 rounded-lg bg-danger !text-white hover:bg-[var(--color-danger)] transition-colors disabled:opacity-50"
                 >
                   {isDeleting ? (
                     <>

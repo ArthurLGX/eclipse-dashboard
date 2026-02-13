@@ -274,10 +274,10 @@ export default function AIInvoiceGenerator({
                 />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-primary">
+                <h2 className="text-lg font-semibold !text-primary">
                   Eclipse Assistant
                 </h2>
-                <p className="text-sm text-muted">
+                <p className="text-sm !text-muted">
                   {documentType === 'quote' 
                     ? (t('ai_quote_description') || 'Génération de devis intelligente')
                     : (t('ai_invoice_description') || 'Génération de facture intelligente')
@@ -289,7 +289,7 @@ export default function AIInvoiceGenerator({
               onClick={onClose}
               className="p-2 hover:bg-hover rounded-lg transition-colors"
             >
-              <IconX className="w-5 h-5 text-muted" />
+              <IconX className="w-5 h-5 !text-muted" />
             </button>
           </div>
 
@@ -299,7 +299,7 @@ export default function AIInvoiceGenerator({
               <div className="space-y-4">
                 {/* Prompt input */}
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-2">
+                  <label className="block !text-sm font-medium !text-primary mb-2">
                     {t('ai_describe_project') || 'Décrivez le projet ou la prestation'}
                   </label>
                   <textarea
@@ -317,18 +317,18 @@ export default function AIInvoiceGenerator({
                 {/* Context info */}
                 {(existingClient || existingProjectTitle) && (
                   <div className="p-4 bg-info-light rounded-xl space-y-2">
-                    <p className="text-sm font-medium text-info flex items-center gap-2">
+                    <p className="text-sm font-medium !text-info flex items-center gap-2">
                       <IconSparkles className="w-4 h-4" />
                       {t('ai_context_info') || 'Contexte détecté'}
                     </p>
                     {existingClient && (
-                      <p className="text-sm text-info-light flex items-center gap-2">
+                      <p className="text-sm !text-info-light flex items-center gap-2">
                         <IconUser className="w-4 h-4" />
                         {existingClient.name} {existingClient.enterprise && `(${existingClient.enterprise})`}
                       </p>
                     )}
                     {existingProjectTitle && (
-                      <p className="text-sm text-info-light flex items-center gap-2">
+                      <p className="text-sm !text-info-light flex items-center gap-2">
                         <IconFileInvoice className="w-4 h-4" />
                         {existingProjectTitle}
                       </p>
@@ -338,7 +338,7 @@ export default function AIInvoiceGenerator({
 
                 {/* Examples */}
                 <div className="space-y-2">
-                  <p className="!text-xs text-muted font-medium uppercase tracking-wider">
+                  <p className="!text-xs !text-muted font-medium uppercase tracking-wider">
                     {t('ai_examples') || 'Exemples de prompts'}
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -352,7 +352,7 @@ export default function AIInvoiceGenerator({
                       <button
                         key={i}
                         onClick={() => setPrompt(example)}
-                        className="px-3 py-1.5 !text-xs bg-muted text-secondary rounded-lg hover:bg-accent-light hover:text-accent transition-colors"
+                        className="px-3 py-1.5 !text-xs bg-muted !text-secondary rounded-lg hover:bg-accent-light hover:!text-accent transition-colors"
                       >
                         {example}
                       </button>
@@ -363,8 +363,8 @@ export default function AIInvoiceGenerator({
                 {/* Error */}
                 {error && (
                   <div className="p-4 bg-danger-light rounded-xl flex items-center gap-3">
-                    <IconAlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
-                    <p className="text-sm text-danger">{error}</p>
+                    <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
+                    <p className="text-sm !text-danger">{error}</p>
                   </div>
                 )}
               </div>
@@ -387,11 +387,11 @@ export default function AIInvoiceGenerator({
                     />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-primary">
+                    <p className="text-sm font-medium !text-primary">
                       {t('ai_confidence') || 'Confiance IA'}: {Math.round(generatedData.confidence * 100)}%
                     </p>
                     {generatedData.reasoning && (
-                      <p className="!text-xs text-muted">{generatedData.reasoning}</p>
+                      <p className="!text-xs !text-muted">{generatedData.reasoning}</p>
                     )}
                   </div>
                 </div>
@@ -401,23 +401,23 @@ export default function AIInvoiceGenerator({
                   <div className="grid grid-cols-2 gap-4">
                     {generatedData.client && (
                       <div className="p-4 bg-muted rounded-xl">
-                        <p className="!text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <p className="!text-xs !text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
                           <IconUser className="w-3.5 h-3.5" />
                           {t('client') || 'Client'}
                         </p>
-                        <p className="text-sm font-medium text-primary">{generatedData.client.name}</p>
+                        <p className="text-sm font-medium !text-primary">{generatedData.client.name}</p>
                         {generatedData.client.enterprise && (
-                          <p className="!text-xs text-secondary">{generatedData.client.enterprise}</p>
+                          <p className="!text-xs !text-secondary">{generatedData.client.enterprise}</p>
                         )}
                       </div>
                     )}
                     {generatedData.project && (
                       <div className="p-4 bg-muted rounded-xl">
-                        <p className="!text-xs text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <p className="!text-xs !text-muted font-medium uppercase tracking-wider mb-2 flex items-center gap-2">
                           <IconFileInvoice className="w-3.5 h-3.5" />
                           {t('project') || 'Projet'}
                         </p>
-                        <p className="text-sm font-medium text-primary">{generatedData.project.title}</p>
+                        <p className="text-sm font-medium !text-primary">{generatedData.project.title}</p>
                       </div>
                     )}
                   </div>
@@ -426,12 +426,12 @@ export default function AIInvoiceGenerator({
                 {/* Invoice lines */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-medium text-primary">
+                    <p className="text-sm font-medium !text-primary">
                       {t('invoice_lines') || 'Lignes de facturation'}
                     </p>
                     <button
                       onClick={addLine}
-                      className="flex items-center gap-1.5 px-3 py-1.5 !text-xs bg-accent-light !text-accent rounded-lg hover:bg-accent hover:text-white transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 !text-xs bg-accent-light !text-accent rounded-lg hover:bg-accent hover:!text-white transition-colors"
                     >
                       <IconPlus className="w-3.5 h-3.5" color="white" />
                       {t('add_line') || 'Ajouter'}
@@ -447,50 +447,50 @@ export default function AIInvoiceGenerator({
                             value={line.description}
                             onChange={e => updateLine(index, 'description', e.target.value)}
                             placeholder={t('description') || 'Description'}
-                            className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-sm"
+                            className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-sm"
                           />
                           <button
                             onClick={() => removeLine(index)}
-                            className="p-2 text-danger hover:bg-danger-light rounded-lg transition-colors"
+                            className="p-2 !text-danger hover:bg-danger-light rounded-lg transition-colors"
                           >
                             <IconTrash className="w-4 h-4" />
                           </button> 
                         </div>
                         <div className="grid grid-cols-4 gap-3">
                           <div>
-                            <label className="!text-xs text-muted">{t('quantity') || 'Qté'}</label>
+                            <label className="!text-xs !text-muted">{t('quantity') || 'Qté'}</label>
                             <input
                               type="number"
                               value={line.quantity}
                               onChange={e => updateLine(index, 'quantity', parseFloat(e.target.value) || 0)}
-                              className="w-full px-3 py-2 bg-input border border-input rounded-lg text-sm"
+                              className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-sm"
                               min="0"
                               step="0.5"
                             />
                           </div>
                           <div>
-                            <label className="!text-xs text-muted">{t('unit') || 'Unité'}</label>
+                            <label className="!text-xs !text-muted">{t('unit') || 'Unité'}</label>
                             <input
                               type="text"
                               value={line.unit || 'unité'}
                               onChange={e => updateLine(index, 'unit', e.target.value)}
-                              className="w-full px-3 py-2 bg-input border border-input rounded-lg text-sm"
+                              className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-sm"
                             />
                           </div>
                           <div>
-                            <label className="!text-xs text-muted">{t('unit_price') || 'P.U. HT'}</label>
+                            <label className="!text-xs !text-muted">{t('unit_price') || 'P.U. HT'}</label>
                             <input
                               type="number"
                               value={line.unit_price}
                               onChange={e => updateLine(index, 'unit_price', parseFloat(e.target.value) || 0)}
-                                    className="w-full px-3 py-2 bg-input border border-input rounded-lg text-sm"
+                                    className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-sm"
                               min="0"
                               step="10"
                             />
                           </div>
                           <div>
-                            <label className="!text-xs text-muted">{t('total') || 'Total HT'}</label>
-                            <p className="px-3 py-2 bg-input rounded-lg text-sm font-medium text-primary">
+                            <label className="!text-xs !text-muted">{t('total') || 'Total HT'}</label>
+                            <p className="px-3 py-2 bg-input rounded-lg !text-sm font-medium !text-primary">
                               {(line.quantity * line.unit_price).toLocaleString('fr-FR')} €
                             </p>
                           </div>
@@ -502,18 +502,18 @@ export default function AIInvoiceGenerator({
 
                 {/* Totals */}
                 <div className="p-4 bg-accent-light rounded-xl space-y-2">
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between !text-sm">
                     <span className="text-primary">{t('total_ht') || 'Total HT'}</span>
-                    <span className="font-medium text-primary">{totalHT.toLocaleString('fr-FR')} €</span>
+                    <span className="font-medium !text-primary">{totalHT.toLocaleString('fr-FR')} €</span>
                   </div>
                   {generatedData.tva_applicable && (
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between !text-sm">
                       <span className="text-primary">TVA ({generatedData.tva_rate}%)</span>
-                      <span className="font-medium text-primary">{totalTVA.toLocaleString('fr-FR')} €</span>
+                      <span className="font-medium !text-primary">{totalTVA.toLocaleString('fr-FR')} €</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-base pt-2 border-t border-default">
-                    <span className="font-medium text-primary">{t('total_ttc') || 'Total TTC'}</span>
+                  <div className="flex justify-between !text-base pt-2 border-t border-default">
+                    <span className="font-medium !text-primary">{t('total_ttc') || 'Total TTC'}</span>
                     <span className="font-bold !text-accent">{totalTTC.toLocaleString('fr-FR')} €</span>
                   </div>
                 </div>
@@ -521,10 +521,10 @@ export default function AIInvoiceGenerator({
                 {/* Notes */}
                 {generatedData.notes && (
                   <div className="p-4 bg-muted rounded-xl">
-                    <p className="!text-xs text-muted font-medium uppercase tracking-wider mb-2">
+                    <p className="!text-xs !text-muted font-medium uppercase tracking-wider mb-2">
                       {t('notes') || 'Notes'}
                     </p>
-                    <p className="text-sm text-secondary">{generatedData.notes}</p>
+                    <p className="text-sm !text-secondary">{generatedData.notes}</p>
                   </div>
                 )}
               </div>
@@ -537,14 +537,14 @@ export default function AIInvoiceGenerator({
               <>
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                  className="px-4 py-2 !text-sm !text-secondary hover:!text-primary transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
                 <button
                   onClick={handleGenerate}
                   disabled={loading || !prompt.trim()}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:bg-accent-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white rounded-xl hover:bg-accent-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
                     <>
@@ -563,13 +563,13 @@ export default function AIInvoiceGenerator({
               <>
                 <button
                   onClick={() => setStep('input')}
-                  className="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors"
+                  className="px-4 py-2 !text-sm !text-secondary hover:!text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-success text-white rounded-xl hover:bg-success-light transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-success !text-white rounded-xl hover:bg-success-light transition-colors"
                 >
                   <IconCheck className="w-4 h-4" />
                   {t('apply_to_document') || 'Appliquer au document'}

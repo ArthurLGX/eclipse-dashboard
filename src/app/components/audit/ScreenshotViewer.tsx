@@ -100,14 +100,14 @@ export default function ScreenshotViewer({
 
   if (!hasImages) {
     return (
-      <div className="card p-8 flex flex-col items-center justify-center text-center">
+      <div className="card p-8 flex flex-col items-center justify-center !text-center">
         <div className="w-16 h-16 rounded-full bg-warning-light flex items-center justify-center mb-4">
-          <IconPhotoOff className="w-8 h-8 text-warning" />
+          <IconPhotoOff className="w-8 h-8 !text-warning" />
         </div>
-        <h4 className="font-semibold text-primary mb-2">
+        <h4 className="font-semibold !text-primary mb-2">
           {t('screenshot_unavailable') || 'Capture non disponible'}
         </h4>
-        <p className="text-sm text-muted max-w-sm">
+        <p className="text-sm !text-muted max-w-sm">
           {t('screenshot_unavailable_desc') || 'La capture d\'écran n\'a pas pu être effectuée pour cette page.'}
         </p>
       </div>
@@ -129,11 +129,11 @@ export default function ScreenshotViewer({
               <IconPhoto className="w-4 h-4 !text-accent" />
             </div>
             <div>
-              <h4 className="font-semibold text-primary text-sm">
+              <h4 className="font-semibold !text-primary !text-sm">
                 {t('page_screenshot') || 'Capture de la page'}
               </h4>
               {capturedAt && (
-                <p className="!text-xs text-muted">
+                <p className="!text-xs !text-muted">
                   {new Date(capturedAt).toLocaleString()}
                 </p>
               )}
@@ -148,8 +148,8 @@ export default function ScreenshotViewer({
                   onClick={() => setActiveView('viewport')}
                   className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
                     activeView === 'viewport'
-                      ? 'bg-accent text-white'
-                      : 'text-muted hover:text-primary'
+                      ? 'bg-accent !text-white'
+                      : 'text-muted hover:!text-primary'
                   }`}
                 >
                   {t('viewport') || 'Viewport'}
@@ -158,8 +158,8 @@ export default function ScreenshotViewer({
                   onClick={() => setActiveView('fullPage')}
                   className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors flex items-center gap-1 ${
                     activeView === 'fullPage'
-                      ? 'bg-accent text-white'
-                      : 'text-muted hover:text-primary'
+                      ? 'bg-accent !text-white'
+                      : 'text-muted hover:!text-primary'
                   }`}
                 >
                   <IconLayoutRows className="w-3 h-3" />
@@ -170,7 +170,7 @@ export default function ScreenshotViewer({
 
             <button
               onClick={() => setIsFullscreen(true)}
-              className="p-2 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
               title={t('fullscreen') || 'Plein écran'}
             >
               <IconMaximize className="w-4 h-4" />
@@ -178,7 +178,7 @@ export default function ScreenshotViewer({
 
             <button
               onClick={handleDownload}
-              className="p-2 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
               title={t('download') || 'Télécharger'}
             >
               <IconDownload className="w-4 h-4" />
@@ -198,7 +198,7 @@ export default function ScreenshotViewer({
               className="w-full h-auto max-h-[400px] object-cover object-top"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
-              <span className="px-3 py-1.5 bg-black/60 text-white text-sm rounded-full flex items-center gap-2">
+              <span className="px-3 py-1.5 bg-black/60 !text-white !text-sm rounded-full flex items-center gap-2">
                 <IconZoomIn className="w-4 h-4" />
                 {t('click_to_zoom') || 'Cliquer pour agrandir'}
               </span>
@@ -208,7 +208,7 @@ export default function ScreenshotViewer({
 
         {/* URL info */}
         <div className="px-4 py-2 border-t border-default">
-          <p className="!text-xs text-muted truncate" title={url}>
+          <p className="!text-xs !text-muted truncate" title={url}>
             {url}
           </p>
         </div>
@@ -233,8 +233,8 @@ export default function ScreenshotViewer({
                       onClick={() => { setActiveView('viewport'); handleResetZoom(); }}
                       className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
                         activeView === 'viewport'
-                          ? 'bg-accent text-white'
-                          : 'text-white/70 hover:text-white'
+                          ? 'bg-accent !text-white'
+                          : 'text-white/70 hover:!text-white'
                       }`}
                     >
                       Viewport
@@ -243,8 +243,8 @@ export default function ScreenshotViewer({
                       onClick={() => { setActiveView('fullPage'); handleResetZoom(); }}
                       className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
                         activeView === 'fullPage'
-                          ? 'bg-accent text-white'
-                          : 'text-white/70 hover:text-white'
+                          ? 'bg-accent !text-white'
+                          : 'text-white/70 hover:!text-white'
                       }`}
                     >
                       Page complète
@@ -257,17 +257,17 @@ export default function ScreenshotViewer({
                   <button
                     onClick={handleZoomOut}
                     disabled={zoom <= 0.5}
-                    className="p-2 text-white/70 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed rounded-md transition-colors"
+                    className="p-2 !text-white/70 hover:!text-white disabled:opacity-30 disabled:cursor-not-allowed rounded-md transition-colors"
                   >
                     <IconZoomOut className="w-4 h-4" />
                   </button>
-                  <span className="text-white text-sm w-16 text-center">
+                  <span className="text-white !text-sm w-16 !text-center">
                     {Math.round(zoom * 100)}%
                   </span>
                   <button
                     onClick={handleZoomIn}
                     disabled={zoom >= 3}
-                    className="p-2 text-white/70 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed rounded-md transition-colors"
+                    className="p-2 !text-white/70 hover:!text-white disabled:opacity-30 disabled:cursor-not-allowed rounded-md transition-colors"
                   >
                     <IconZoomIn className="w-4 h-4" />
                   </button>
@@ -277,13 +277,13 @@ export default function ScreenshotViewer({
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleDownload}
-                  className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 rounded-lg transition-colors"
                 >
                   <IconDownload className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => { setIsFullscreen(false); handleResetZoom(); }}
-                  className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 rounded-lg transition-colors"
                 >
                   <IconX className="w-5 h-5" />
                 </button>
@@ -316,8 +316,8 @@ export default function ScreenshotViewer({
             </div>
 
             {/* URL Bar */}
-            <div className="p-3 bg-black/50 text-center">
-              <p className="text-sm text-white/60 truncate">{url}</p>
+            <div className="p-3 bg-black/50 !text-center">
+              <p className="text-sm !text-white/60 truncate">{url}</p>
             </div>
           </motion.div>
         )}

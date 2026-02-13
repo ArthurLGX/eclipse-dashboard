@@ -42,21 +42,21 @@ const getStatusClasses = (status: NodeStatus) => {
       };
     case 'current':
       return {
-        badge: 'bg-info-light text-info',
+        badge: 'bg-info-light !text-info',
         border: 'border-info    ',
         dot: 'bg-info',
         background: 'bg-info-light',
       };
     case 'blocked':
       return {
-        badge: 'bg-danger-light text-danger',
+        badge: 'bg-danger-light !text-danger',
         border: 'border-danger',
         dot: 'bg-danger',
         background: 'bg-danger-light',
       };
     default:
       return {
-        badge: 'bg-muted text-secondary',
+        badge: 'bg-muted !text-secondary',
         border: 'border-default',
         dot: 'bg-muted',
         background: 'bg-muted',
@@ -236,10 +236,10 @@ export default function ClientWorkflowView({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-primary">
+          <h2 className="text-2xl font-bold !text-primary">
             {t('workflow_title') || 'Workflow Client'}
           </h2>
-          <p className="text-sm text-muted">
+          <p className="text-sm !text-muted">
             {t('workflow_description') || 'Vision chronologique de l’état réel du client'}
           </p>
         </div>
@@ -252,7 +252,7 @@ export default function ClientWorkflowView({
           >
             <IconZoomOut className="w-4 h-4" />
           </button>
-          <span className="!text-xs text-muted w-10 text-center">{Math.round(zoom * 100)}%</span>
+          <span className="!text-xs !text-muted w-10 !text-center">{Math.round(zoom * 100)}%</span>
           <button
             type="button"
             onClick={() => setZoom(prev => Math.min(1.4, Math.round((prev + 0.1) * 10) / 10))}
@@ -287,16 +287,16 @@ export default function ClientWorkflowView({
                       }
                     </span>
                     {node.date && (
-                      <span className="!text-xs text-muted ml-auto">{formatDate(node.date)}</span>
+                      <span className="!text-xs !text-muted ml-auto">{formatDate(node.date)}</span>
                     )}
                   </div>
-                  <h3 className="text-base font-semibold text-primary mb-1">{node.title}</h3>
-                  <p className="text-sm text-secondary mb-3">{node.summary}</p>
+                  <h3 className="text-base font-semibold !text-primary mb-1">{node.title}</h3>
+                  <p className="text-sm !text-secondary mb-3">{node.summary}</p>
 
                   {node.alerts && node.alerts.length > 0 && (
                     <div className="space-y-1 mb-3">
                       {node.alerts.map((alert, i) => (
-                        <div key={i} className="flex items-start gap-2 !text-xs text-danger">
+                        <div key={i} className="flex items-start gap-2 !text-xs !text-danger">
                           <IconAlertTriangle className="w-4 h-4" />
                           <span>{alert}</span>
                         </div>
@@ -322,7 +322,7 @@ export default function ClientWorkflowView({
                   {node.cta && (
                     <Link
                       href={node.cta.href}
-                      className="inline-flex items-center gap-2 px-3 py-2 !text-xs font-medium rounded-lg bg-accent text-white hover:opacity-90 transition"
+                      className="inline-flex items-center gap-2 px-3 py-2 !text-xs font-medium rounded-lg bg-accent !text-white hover:opacity-90 transition"
                     >
                       <IconCheck className="w-3.5 h-3.5" />
                       {node.cta.label}

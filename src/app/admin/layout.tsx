@@ -208,8 +208,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <div className="absolute inset-0 w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
           </div>
           <div className="text-center">
-            <p className="font-medium text-primary">Vérification des accès</p>
-            <p className="text-sm text-muted">Veuillez patienter...</p>
+            <p className="font-medium !text-primary">Vérification des accès</p>
+            <p className="text-sm !text-muted">Veuillez patienter...</p>
           </div>
         </motion.div>
       </div>
@@ -243,7 +243,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               {isExpanded || isPinned ? (
                 <div className="flex items-center gap-3">
                   <SidebarLogo />
-                  <span className="!text-xs font-medium text-white bg-accent px-2 py-1 rounded-full">
+                  <span className="!text-xs font-medium !text-white bg-accent px-2 py-1 rounded-full">
                     Admin
                   </span>
                 </div>
@@ -328,7 +328,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 } ${activeItem === item.id ? 'active' : ''}`}
               >
                 <div className={`flex-shrink-0 transition-colors ${
-                  item.id === 'logout' ? 'group-hover:text-danger' : ''
+                  item.id === 'logout' ? 'group-hover:!text-danger' : ''
                 }`}>
                   {item.icon}
                 </div>
@@ -341,7 +341,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       className={`!text-sm font-medium whitespace-nowrap ${
-                        item.id === 'logout' ? 'group-hover:text-danger' : ''
+                        item.id === 'logout' ? 'group-hover:!text-danger' : ''
                       }`}
                     >
                       {language === 'fr' ? item.label : item.labelEn}

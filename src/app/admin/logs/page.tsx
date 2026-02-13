@@ -123,13 +123,13 @@ export default function AdminLogsPage() {
   const getTypeColor = (type: DisplayLog['type']) => {
     const colors: Record<DisplayLog['type'], string> = {
       login: 'bg-success-light !text-success-text',
-      logout: 'bg-info-light text-info',
+      logout: 'bg-info-light !text-info',
       register: 'bg-accent-light !text-accent',
-      update: 'bg-warning-light text-warning',
-      delete: 'bg-danger-light text-danger',
-      email: 'bg-info-light text-info',
-      error: 'bg-danger-light text-danger',
-      system: 'bg-muted/20 text-muted',
+      update: 'bg-warning-light !text-warning',
+      delete: 'bg-danger-light !text-danger',
+      email: 'bg-info-light !text-info',
+      error: 'bg-danger-light !text-danger',
+      system: 'bg-muted/20 !text-muted',
     };
     return colors[type];
   };
@@ -139,9 +139,9 @@ export default function AdminLogsPage() {
       case 'success':
         return <IconCheck className="w-4 h-4 !text-success-text -text" />;
       case 'error':
-        return <IconX className="w-4 h-4 text-danger" />;
+        return <IconX className="w-4 h-4 !text-danger" />;
       case 'warning':
-        return <IconAlertTriangle className="w-4 h-4 text-warning" />;
+        return <IconAlertTriangle className="w-4 h-4 !text-warning" />;
     }
   };
 
@@ -190,11 +190,11 @@ export default function AdminLogsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
+          <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
             <IconHistory className="w-7 h-7 !text-accent" />
             {t('logs_audit') || 'Logs & Audit'}
           </h1>
-          <p className="text-sm text-muted">{t('platform_actions_history') || 'Historique des actions sur la plateforme'}</p>
+          <p className="text-sm !text-muted">{t('platform_actions_history') || 'Historique des actions sur la plateforme'}</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -224,7 +224,7 @@ export default function AdminLogsPage() {
           { label: t('warnings') || 'Avertissements', value: logStats.warnings, color: 'text-warning' },
         ].map((stat) => (
           <div key={stat.label} className="card p-4">
-            <p className="text-sm text-muted">{stat.label}</p>
+            <p className="text-sm !text-muted">{stat.label}</p>
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
           </div>
         ))}
@@ -235,7 +235,7 @@ export default function AdminLogsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Search */}
           <div className="relative lg:col-span-2">
-            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
             <input
               type="text"
               placeholder={t('search') || 'Rechercher...'}
@@ -306,10 +306,10 @@ export default function AdminLogsPage() {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium text-primary">{log.action}</span>
+                      <span className="font-medium !text-primary">{log.action}</span>
                       {getStatusIcon(log.status)}
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 !text-sm !text-muted">
                       {log.user && (
                         <span className="flex items-center gap-1">
                           <IconUserPlus className="w-3 h-3" />
@@ -330,7 +330,7 @@ export default function AdminLogsPage() {
                       </span>
                     </div>
                     {log.details && (
-                      <p className="!text-xs text-muted mt-2 truncate">{log.details}</p>
+                      <p className="!text-xs !text-muted mt-2 truncate">{log.details}</p>
                     )}
                   </div>
 
@@ -343,7 +343,7 @@ export default function AdminLogsPage() {
             ))
           ) : (
             <div className="text-center py-12">
-              <IconHistory className="w-12 h-12 text-muted mx-auto mb-4" />
+              <IconHistory className="w-12 h-12 !text-muted mx-auto mb-4" />
               <p className="text-muted">{t('no_logs_found') || 'Aucun log trouvé'}</p>
             </div>
           )}
@@ -353,7 +353,7 @@ export default function AdminLogsPage() {
       {/* Pagination */}
       {pagination.pageCount > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-muted">
+          <p className="text-sm !text-muted">
             {t('showing_results') || 'Affichage'} {((pagination.page - 1) * pagination.pageSize) + 1} - {Math.min(pagination.page * pagination.pageSize, pagination.total)} {t('of') || 'sur'} {pagination.total}
           </p>
           <div className="flex items-center gap-2">
@@ -364,7 +364,7 @@ export default function AdminLogsPage() {
             >
               {t('previous') || 'Précédent'}
             </button>
-            <span className="text-sm text-muted">
+            <span className="text-sm !text-muted">
               {pagination.page} / {pagination.pageCount}
             </span>
             <button

@@ -64,19 +64,19 @@ export function BusinessTypeSelector({ selectedType, onSelect }: BusinessTypeSel
                 animate={{ scale: 1 }}
                 className="absolute top-2 right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center"
               >
-                <IconCheck className="w-4 h-4 text-white" />
+                <IconCheck className="w-4 h-4 !text-white" />
               </motion.div>
             )}
             
             <div className={`
               p-3 rounded-xl transition-colors
-              ${isSelected ? 'bg-accent text-white' : 'bg-muted text-muted'}
+              ${isSelected ? 'bg-accent !text-white' : 'bg-muted !text-muted'}
             `}>
               {BUSINESS_ICONS[type]}
             </div>
             
             <span className={`
-              font-medium text-center text-sm
+              font-medium !text-center !text-sm
               ${isSelected ? '!text-accent' : '!text-primary'}
             `}>
               {label}
@@ -103,7 +103,7 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
     <div className="space-y-6">
       {/* Modules recommandés */}
       <div>
-        <h4 className="text-sm font-medium text-muted mb-3">
+        <h4 className="text-sm font-medium !text-muted mb-3">
           {t('recommended_modules') || 'Modules recommandés'}
         </h4>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -131,7 +131,7 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
       {/* Modules optionnels */}
       {BUSINESS_CONFIGS[businessType].availableModules.length > 0 && (
         <div>
-          <h4 className="text-sm font-medium text-muted mb-3">
+          <h4 className="text-sm font-medium !text-muted mb-3">
             {t('optional_modules') || 'Modules optionnels'}
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -193,13 +193,13 @@ function ModuleCard({ moduleId, label, isSelected, isCore, onToggle }: ModuleCar
         }
       `}>
         {(isCore || isSelected) && (
-          <IconCheck className="w-3 h-3 text-white" />
+          <IconCheck className="w-3 h-3 !text-white" />
         )}
       </div>
       
-      <div className="flex-1 text-left">
+      <div className="flex-1 !text-left">
         <span className={`
-          font-medium text-sm
+          font-medium !text-sm
           ${isCore || isSelected ? 'text-primary' : 'text-muted'}
         `}>
           {label}
@@ -258,16 +258,16 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
       {/* Step indicator */}
       <div className="flex items-center justify-center gap-4">
         <div className={`
-          flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
-          ${step === 'business' ? 'bg-accent text-white' : 'bg-success text-white'}
+          flex items-center gap-2 px-4 py-2 rounded-full !text-sm font-medium
+          ${step === 'business' ? 'bg-accent !text-white' : 'bg-success !text-white'}
         `}>
           {step === 'modules' ? <IconCheck className="w-4 h-4" /> : '1'}
           <span>{t('your_business') || 'Votre métier'}</span>
         </div>
         <div className="w-8 h-0.5 bg-muted" />
         <div className={`
-          flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
-          ${step === 'modules' ? 'bg-accent text-white' : 'bg-muted text-muted'}
+          flex items-center gap-2 px-4 py-2 rounded-full !text-sm font-medium
+          ${step === 'modules' ? 'bg-accent !text-white' : 'bg-muted !text-muted'}
         `}>
           <span>2</span>
           <span>{t('your_tools') || 'Vos outils'}</span>
@@ -278,7 +278,7 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
       {step === 'business' ? (
         <div className="space-y-6">
           <div className="text-center">
-            <h3 className="text-xl font-bold text-primary">
+            <h3 className="text-xl font-bold !text-primary">
               {t('what_is_your_business') || 'Quel est votre métier ?'}
             </h3>
             <p className="text-muted mt-2">
@@ -293,7 +293,7 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
       ) : (
         <div className="space-y-6">
           <div className="text-center">
-            <h3 className="text-xl font-bold text-primary">
+            <h3 className="text-xl font-bold !text-primary">
               {t('select_your_modules') || 'Sélectionnez vos modules'}
             </h3>
             <p className="text-muted mt-2">
@@ -316,14 +316,14 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
           {step === 'modules' ? (
             <button
               onClick={handleBack}
-              className="px-4 py-2 text-muted hover:text-primary transition-colors"
+              className="px-4 py-2 !text-muted hover:!text-primary transition-colors"
             >
               {t('back') || 'Retour'}
             </button>
           ) : onSkip ? (
             <button
               onClick={onSkip}
-              className="px-4 py-2 text-muted hover:text-primary transition-colors underline"
+              className="px-4 py-2 !text-muted hover:!text-primary transition-colors underline"
             >
               {t('skip') || 'Passer'}
             </button>
@@ -336,8 +336,8 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
           className={`
             px-6 py-2.5 rounded-xl font-medium transition-all
             ${selectedType
-              ? 'bg-accent text-white hover:bg-accent-light'
-              : 'bg-muted text-muted cursor-not-allowed'
+              ? 'bg-accent !text-white hover:bg-accent-light'
+              : 'bg-muted !text-muted cursor-not-allowed'
             }
           `}
         >

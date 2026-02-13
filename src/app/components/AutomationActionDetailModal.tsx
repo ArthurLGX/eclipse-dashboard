@@ -145,13 +145,13 @@ export default function AutomationActionDetailModal({
             <div className="flex items-center justify-between p-6 border-b border-default">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-                  <IconBrain className="w-6 h-6 text-accent" />
+                  <IconBrain className="w-6 h-6 !text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-primary">
+                  <h2 className="text-xl font-bold !text-primary">
                     {t('action_details') || 'Détails de l\'action'}
                   </h2>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm !text-muted">
                     {getTaskTypeLabel(action.follow_up_task?.task_type || 'custom')}
                   </p>
                 </div>
@@ -160,7 +160,7 @@ export default function AutomationActionDetailModal({
                 onClick={onClose}
                 className="p-2 hover:bg-hover rounded-lg transition-colors"
               >
-                <IconX className="w-5 h-5 text-muted" />
+                <IconX className="w-5 h-5 !text-muted" />
               </button>
             </div>
 
@@ -169,20 +169,20 @@ export default function AutomationActionDetailModal({
               {/* AI Summary */}
               <div className="bg-gradient-to-br from-purple-500/5 to-accent/5 border border-purple-500/20 rounded-xl p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <IconBrain className="w-5 h-5 text-purple-500" />
-                  <h3 className="font-semibold text-primary">
+                  <IconBrain className="w-5 h-5 !text-purple-500" />
+                  <h3 className="font-semibold !text-primary">
                     {t('ai_summary') || 'Résumé par IA'}
                   </h3>
                 </div>
                 {loadingSummary ? (
-                  <div className="flex items-center gap-2 text-muted">
+                  <div className="flex items-center gap-2 !text-muted">
                     <IconLoader2 className="w-4 h-4 animate-spin" />
                     <span className="text-sm">
                       {t('generating_summary') || 'Génération du résumé en cours...'}
                     </span>
                   </div>
                 ) : (
-                  <p className="text-sm text-secondary leading-relaxed whitespace-pre-line">
+                  <p className="text-sm !text-secondary leading-relaxed whitespace-pre-line">
                     {aiSummary}
                   </p>
                 )}
@@ -191,7 +191,7 @@ export default function AutomationActionDetailModal({
               {/* Contact Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-muted text-sm">
+                  <div className="flex items-center gap-2 !text-muted !text-sm">
                     <IconUser className="w-4 h-4" />
                     <span>Contact</span>
                   </div>
@@ -199,12 +199,12 @@ export default function AutomationActionDetailModal({
                     {action.client?.name || 'Contact inconnu'}
                   </p>
                   {action.client?.email && (
-                    <p className="text-sm text-muted pl-6">{action.client.email}</p>
+                    <p className="text-sm !text-muted pl-6">{action.client.email}</p>
                   )}
                 </div>
 
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-muted text-sm">
+                  <div className="flex items-center gap-2 !text-muted !text-sm">
                     <IconCalendar className="w-4 h-4" />
                     <span>Créé</span>
                   </div>
@@ -223,21 +223,21 @@ export default function AutomationActionDetailModal({
               {/* Confidence Score */}
               <div className="flex items-center gap-3 p-4 bg-secondary rounded-xl">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted">
+                  <span className="text-sm !text-muted">
                     {t('confidence_score') || 'Score de confiance'} :
                   </span>
-                  <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                  <span className={`px-3 py-1 rounded-full !text-sm font-bold ${
                     action.confidence_score >= 0.8 
-                      ? 'bg-success-light text-success-text' 
+                      ? 'bg-success-light !text-success-text' 
                       : action.confidence_score >= 0.6
-                        ? 'bg-warning-light text-warning-text'
-                        : 'bg-error-light text-error-text'
+                        ? 'bg-warning-light !text-warning-text'
+                        : 'bg-error-light !text-error-text'
                   }`}>
                     {(action.confidence_score * 100).toFixed(0)}%
                   </span>
                 </div>
                 {action.confidence_score < 0.7 && (
-                  <div className="flex items-center gap-2 text-warning text-sm">
+                  <div className="flex items-center gap-2 !text-warning !text-sm">
                     <IconAlertCircle className="w-4 h-4" />
                     <span>{t('low_confidence_warning') || 'Score faible - Vérifiez le contenu avant d\'envoyer'}</span>
                   </div>
@@ -247,14 +247,14 @@ export default function AutomationActionDetailModal({
               {/* Email Preview */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-primary flex items-center gap-2">
-                    <IconMail className="w-5 h-5 text-accent" />
+                  <h3 className="font-semibold !text-primary flex items-center gap-2">
+                    <IconMail className="w-5 h-5 !text-accent" />
                     {t('proposed_email') || 'Email proposé'}
                   </h3>
                   {!isEditing && (
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="text-sm text-accent hover:text-accent-light flex items-center gap-1"
+                      className="text-sm !text-accent hover:!text-accent-light flex items-center gap-1"
                     >
                       <IconEdit className="w-4 h-4" />
                       {t('edit_content') || 'Modifier'}
@@ -264,11 +264,11 @@ export default function AutomationActionDetailModal({
 
                 {/* Subject */}
                 <div className="space-y-2">
-                  <label className="text-xs text-muted uppercase tracking-wide">
+                  <label className="text-xs !text-muted uppercase tracking-wide">
                     {t('email_subject') || 'Objet'}
                   </label>
                   <div className="p-3 bg-secondary border border-default rounded-lg">
-                    <p className="text-sm text-primary font-medium">
+                    <p className="text-sm !text-primary font-medium">
                       {action.proposed_content.subject}
                     </p>
                   </div>
@@ -276,7 +276,7 @@ export default function AutomationActionDetailModal({
 
                 {/* Body */}
                 <div className="space-y-2">
-                  <label className="text-xs text-muted uppercase tracking-wide">
+                  <label className="text-xs !text-muted uppercase tracking-wide">
                     {t('email_body') || 'Message'}
                   </label>
                   {isEditing ? (
@@ -285,7 +285,7 @@ export default function AutomationActionDetailModal({
                         value={editedContent}
                         onChange={(e) => setEditedContent(e.target.value)}
                         rows={12}
-                        className="w-full p-4 bg-page border border-default rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent resize-none"
+                        className="w-full p-4 bg-page border border-default rounded-lg !text-sm !text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent resize-none"
                       />
                       <div className="flex gap-2 justify-end">
                         <button
@@ -293,13 +293,13 @@ export default function AutomationActionDetailModal({
                             setEditedContent(action.proposed_content.body);
                             setIsEditing(false);
                           }}
-                          className="px-4 py-2 text-sm text-muted hover:text-primary"
+                          className="px-4 py-2 !text-sm !text-muted hover:!text-primary"
                         >
                           {t('cancel_edit') || 'Annuler'}
                         </button>
                         <button
                           onClick={() => setIsEditing(false)}
-                          className="px-4 py-2 text-sm bg-accent text-white rounded-lg hover:opacity-90"
+                          className="px-4 py-2 !text-sm bg-accent !text-white rounded-lg hover:opacity-90"
                         >
                           {t('save_changes') || 'Enregistrer les modifications'}
                         </button>
@@ -307,7 +307,7 @@ export default function AutomationActionDetailModal({
                     </div>
                   ) : (
                     <div className="p-4 bg-page border border-default rounded-lg">
-                      <pre className="text-sm text-primary whitespace-pre-wrap font-sans leading-relaxed">
+                      <pre className="text-sm !text-primary whitespace-pre-wrap font-sans leading-relaxed">
                         {editedContent}
                       </pre>
                     </div>
@@ -322,7 +322,7 @@ export default function AutomationActionDetailModal({
                 <button
                   onClick={handleReject}
                   disabled={processing}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-error/10 text-error rounded-xl hover:bg-error/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-error/10 !text-error rounded-xl hover:bg-error/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <IconBan className="w-5 h-5" />
                   {t('reject_action') || 'Rejeter'}
@@ -330,7 +330,7 @@ export default function AutomationActionDetailModal({
                 <button
                   onClick={handleApproveAndSend}
                   disabled={processing}
-                  className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-accent to-purple-500 text-white rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-accent to-purple-500 !text-white rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >
                   {processing ? (
                     <>
@@ -345,7 +345,7 @@ export default function AutomationActionDetailModal({
                   )}
                 </button>
               </div>
-              <p className="text-xs text-muted text-center mt-3">
+              <p className="text-xs !text-muted !text-center mt-3">
                 {t('email_will_be_sent') || 'L\'email sera envoyé automatiquement par le système dans les minutes suivant l\'approbation'}
               </p>
             </div>

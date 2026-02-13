@@ -73,10 +73,10 @@ export default function WireframeComparison({
             <IconLayoutGrid className="w-4 h-4 !text-accent" />
           </div>
           <div>
-            <h4 className="font-semibold text-primary text-sm">
+            <h4 className="font-semibold !text-primary !text-sm">
               {t('wireframe_comparison') || 'Comparaison Wireframe'}
             </h4>
-            <p className="!text-xs text-muted">
+            <p className="!text-xs !text-muted">
               {t('structure_analysis') || 'Analyse de structure'}
             </p>
           </div>
@@ -88,8 +88,8 @@ export default function WireframeComparison({
             onClick={() => setActiveTab('comparison')}
             className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
               activeTab === 'comparison'
-                ? 'bg-accent text-white'
-                : 'text-muted hover:text-primary'
+                ? 'bg-accent !text-white'
+                : 'text-muted hover:!text-primary'
             }`}
           >
             {t('before_after') || 'Avant / Après'}
@@ -98,8 +98,8 @@ export default function WireframeComparison({
             onClick={() => setActiveTab('overlay')}
             className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
               activeTab === 'overlay'
-                ? 'bg-accent text-white'
-                : 'text-muted hover:text-primary'
+                ? 'bg-accent !text-white'
+                : 'text-muted hover:!text-primary'
             }`}
           >
             {t('overlay') || 'Overlay'}
@@ -115,10 +115,10 @@ export default function WireframeComparison({
             {/* Current Structure (Before) */}
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <span className="px-2 py-1 bg-danger-light text-danger !text-xs font-medium rounded-full">
+                <span className="px-2 py-1 bg-danger-light !text-danger !text-xs font-medium rounded-full">
                   {t('current_structure') || 'Structure actuelle'}
                 </span>
-                <span className="!text-xs text-muted">
+                <span className="!text-xs !text-muted">
                   {detectedSections.filter(s => s.detected).length} / {idealSections.length} sections
                 </span>
               </div>
@@ -149,7 +149,7 @@ export default function WireframeComparison({
                             </span>
                           </div>
                           {section.position && (
-                            <span className="!text-xs text-muted">
+                            <span className="!text-xs !text-muted">
                               {section.position.top}%
                             </span>
                           )}
@@ -160,7 +160,7 @@ export default function WireframeComparison({
                   {/* Missing sections indicator */}
                   {missingCritical.length > 0 && (
                     <div className="border-2 border-dashed border-danger rounded-lg p-3 mt-4">
-                      <div className="flex items-center gap-2 text-danger mb-2">
+                      <div className="flex items-center gap-2 !text-danger mb-2">
                         <IconX className="w-4 h-4" />
                         <span className="text-sm font-medium">
                           {t('missing_critical') || 'Sections critiques manquantes'}
@@ -168,7 +168,7 @@ export default function WireframeComparison({
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {missingCritical.map(s => (
-                          <span key={s.id} className="px-2 py-0.5 bg-danger-light text-danger !text-xs rounded">
+                          <span key={s.id} className="px-2 py-0.5 bg-danger-light !text-danger !text-xs rounded">
                             {s.name}
                           </span>
                         ))}
@@ -185,7 +185,7 @@ export default function WireframeComparison({
                 <span className="px-2 py-1 bg-success-light !text-success-text -text !text-xs font-medium rounded-full">
                   {t('ideal_structure') || 'Structure idéale'}
                 </span>
-                <span className="!text-xs text-muted">
+                <span className="!text-xs !text-muted">
                   {idealSections.length} sections recommandées
                 </span>
               </div>
@@ -212,22 +212,22 @@ export default function WireframeComparison({
                               {isDetected ? (
                                 <IconCheck className="w-4 h-4 !text-success-text -text" />
                               ) : (
-                                <IconAlertTriangle className="w-4 h-4 text-warning" />
+                                <IconAlertTriangle className="w-4 h-4 !text-warning" />
                               )}
                               <span className={`text-sm font-medium ${colors.text}`}>
                                 {section.name}
                               </span>
                             </div>
                             <span className={`text-xs px-1.5 py-0.5 rounded ${
-                              section.importance === 'critical' ? 'bg-danger-light text-danger' :
-                              section.importance === 'important' ? 'bg-warning-light text-warning' :
-                              'bg-info-light text-info'
+                              section.importance === 'critical' ? 'bg-danger-light !text-danger' :
+                              section.importance === 'important' ? 'bg-warning-light !text-warning' :
+                              'bg-info-light !text-info'
                             }`}>
                               {section.importance === 'critical' ? 'Critique' :
                                section.importance === 'important' ? 'Important' : 'Optionnel'}
                             </span>
                           </div>
-                          <p className="!text-xs text-muted">{section.description}</p>
+                          <p className="!text-xs !text-muted">{section.description}</p>
                         </motion.div>
                       );
                     })}
@@ -250,7 +250,7 @@ export default function WireframeComparison({
                 {/* Toggle overlay button */}
                 <button
                   onClick={() => setShowOverlay(!showOverlay)}
-                  className="absolute top-3 right-3 px-3 py-1.5 bg-black/70 text-white text-sm rounded-lg flex items-center gap-2 hover:bg-black/80 transition-colors"
+                  className="absolute top-3 right-3 px-3 py-1.5 bg-black/70 !text-white !text-sm rounded-lg flex items-center gap-2 hover:bg-black/80 transition-colors"
                 >
                   {showOverlay ? (
                     <>
@@ -294,8 +294,8 @@ export default function WireframeComparison({
                 )}
               </div>
             ) : (
-              <div className="bg-muted rounded-lg p-12 text-center">
-                <IconEyeOff className="w-12 h-12 mx-auto mb-3 text-muted opacity-50" />
+              <div className="bg-muted rounded-lg p-12 !text-center">
+                <IconEyeOff className="w-12 h-12 mx-auto mb-3 !text-muted opacity-50" />
                 <p className="text-muted">
                   {t('no_screenshot_for_overlay') || 'Capture d\'écran requise pour l\'overlay'}
                 </p>
@@ -308,20 +308,20 @@ export default function WireframeComparison({
         <div className="mt-6 pt-4 border-t border-default">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-primary">{structureScore}%</p>
-              <p className="!text-xs text-muted">{t('structure_score') || 'Score structure'}</p>
+              <p className="text-2xl font-bold !text-primary">{structureScore}%</p>
+              <p className="!text-xs !text-muted">{t('structure_score') || 'Score structure'}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold !text-success-text -text">{detectedSections.filter(s => s.detected).length}</p>
-              <p className="!text-xs text-muted">{t('detected_sections') || 'Sections détectées'}</p>
+              <p className="!text-xs !text-muted">{t('detected_sections') || 'Sections détectées'}</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-danger">{missingCritical.length}</p>
-              <p className="!text-xs text-muted">{t('missing_critical') || 'Critiques manquantes'}</p>
+              <p className="text-2xl font-bold !text-danger">{missingCritical.length}</p>
+              <p className="!text-xs !text-muted">{t('missing_critical') || 'Critiques manquantes'}</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-warning">{missingImportant.length}</p>
-              <p className="!text-xs text-muted">{t('missing_important') || 'Importantes manquantes'}</p>
+              <p className="text-2xl font-bold !text-warning">{missingImportant.length}</p>
+              <p className="!text-xs !text-muted">{t('missing_important') || 'Importantes manquantes'}</p>
             </div>
           </div>
         </div>
@@ -334,12 +334,12 @@ export default function WireframeComparison({
             className="mt-4 p-4 bg-warning-light border border-warning rounded-lg"
           >
             <div className="flex items-start gap-3">
-              <IconArrowRight className="w-5 h-5 text-warning-text flex-shrink-0 mt-0.5" />
+              <IconArrowRight className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-warning-text mb-1">
+                <p className="text-sm font-medium !text-warning-text mb-1">
                   {t('priority_improvements') || 'Améliorations prioritaires'}
                 </p>
-                <p className="text-sm text-secondary">
+                <p className="text-sm !text-secondary">
                   {t('add_missing_sections') || 'Ajoutez les sections critiques manquantes pour améliorer la conversion :'}{' '}
                   <strong>{missingCritical.map(s => s.name).join(', ')}</strong>
                 </p>

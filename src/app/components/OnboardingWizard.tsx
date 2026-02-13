@@ -127,7 +127,7 @@ export default function OnboardingWizard() {
             <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent/20 via-accent-light to-transparent">
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 p-2 text-muted hover:text-primary rounded-lg hover:bg-white/10 transition-colors"
+                className="absolute top-4 right-4 p-2 !text-muted hover:!text-primary rounded-lg hover:bg-white/10 transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -137,7 +137,7 @@ export default function OnboardingWizard() {
                   <IconSparkles className="w-8 h-8 !text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-primary">
+                  <h2 className="text-2xl font-bold !text-primary">
                     {t('onboarding_welcome') || 'Bienvenue sur Eclipse !'}
                   </h2>
                   <p className="text-muted">
@@ -148,7 +148,7 @@ export default function OnboardingWizard() {
 
               {/* Progress bar */}
               <div className="mt-4">
-                <div className="flex justify-between text-sm text-muted mb-2">
+                <div className="flex justify-between !text-sm !text-muted mb-2">
                   <span>{completedCount}/{totalSteps} {t('steps_completed') || 'étapes complétées'}</span>
                   <span>{Math.round(progressPercent)}%</span>
                 </div>
@@ -189,10 +189,10 @@ export default function OnboardingWizard() {
                     <div className={`
                       flex items-center justify-center w-12 h-12 rounded-xl shrink-0
                       ${status === 'completed'
-                        ? 'bg-success text-white'
+                        ? 'bg-success !text-white'
                         : status === 'current'
-                          ? 'bg-accent text-white'
-                          : 'bg-muted text-muted'
+                          ? 'bg-accent !text-white'
+                          : 'bg-muted !text-muted'
                       }
                     `}>
                       {status === 'completed' ? (
@@ -228,7 +228,7 @@ export default function OnboardingWizard() {
                         </span>
                       ) : (
                         <span className={`
-                          flex items-center gap-1 text-sm font-medium
+                          flex items-center gap-1 !text-sm font-medium
                           ${status === 'current' ? 'text-accent' : 'text-muted'}
                         `}>
                           {step.action}
@@ -245,7 +245,7 @@ export default function OnboardingWizard() {
             <div className="px-8 pb-8 flex items-center justify-between">
               <button
                 onClick={handleSkip}
-                className="group text-sm flex items-center gap-1 text-muted hover:!text-primary transition-all ease-in-out duration-300 cursor-pointer underline hover:no-underline"
+                className="group !text-sm flex items-center gap-1 !text-muted hover:!text-primary transition-all ease-in-out duration-300 cursor-pointer underline hover:no-underline"
               >
                 {t('skip_for_now') || 'Passer pour le moment'}
                 <IconArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -256,7 +256,7 @@ export default function OnboardingWizard() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   onClick={handleClose}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl font-medium hover:bg-[var(--color-accent)] transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white rounded-xl font-medium hover:bg-[var(--color-accent)] transition-colors"
                 >
                   <IconRocket className="w-5 h-5" />
                   {t('start_using') || 'Commencer à utiliser Eclipse'}

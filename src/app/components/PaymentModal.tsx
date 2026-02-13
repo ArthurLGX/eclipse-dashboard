@@ -135,7 +135,7 @@ const CheckoutForm: React.FC<{
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div className="bg-hover p-4 rounded-lg border border-default">
-          <h3 className="!text-lg font-semibold text-primary mb-2">
+          <h3 className="!text-lg font-semibold !text-primary mb-2">
             {plan.name.charAt(0).toUpperCase() + plan.name.slice(1)} Plan
           </h3>
           <p className="text-secondary !text-sm mb-3">{plan.description}</p>
@@ -173,14 +173,14 @@ const CheckoutForm: React.FC<{
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 bg-muted text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
+          className="flex-1 bg-muted !text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
         >
           {t('cancel')}
         </button>
         <button
           type="submit"
           disabled={!stripe || loading}
-          className="flex-1 bg-accent text-white px-4 py-3 rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+          className="flex-1 bg-accent !text-white px-4 py-3 rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
         >
           {loading
             ? t('processing')
@@ -230,12 +230,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             className="relative bg-card rounded-xl border border-default p-6 w-full max-w-md outline-none"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="!text-xl font-bold text-primary">
+              <h2 className="!text-xl font-bold !text-primary">
                 {t('payment_details')}
               </h2>
               <button
                 onClick={onClose}
-                className="text-secondary hover:text-primary transition-colors"
+                className="text-secondary hover:!text-primary transition-colors"
               >
                 <svg
                   className="w-6 h-6"
@@ -261,12 +261,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                 <p className="text-primary font-medium mb-2">
                   {t('stripe_not_configured') || 'Stripe non configuré'}
                 </p>
-                <p className="text-secondary text-sm">
+                <p className="text-secondary !text-sm">
                   {t('stripe_config_message') || 'La clé Stripe n\'est pas définie. Contactez l\'administrateur.'}
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-4 bg-muted text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors"
+                  className="mt-4 bg-muted !text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors"
                 >
                   {t('close')}
                 </button>

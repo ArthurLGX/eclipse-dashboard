@@ -873,7 +873,7 @@ export default function ExcelImportModal({
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F3F4F6;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
     <!-- Header -->
-    <div style="background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); border-radius: 16px 16px 0 0; padding: 32px; text-align: center;">
+    <div style="background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); border-radius: 16px 16px 0 0; padding: 32px; !text-align: center;">
       <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">
         📋 Nouvelles tâches assignées
       </h1>
@@ -901,7 +901,7 @@ export default function ExcelImportModal({
       <table style="width: 100%; border-collapse: collapse; background-color: #F9FAFB; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
         <thead>
           <tr>
-            <th style="padding: 12px 16px; text-align: left; background-color: #F3F4F6; color: #6B7280; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+            <th style="padding: 12px 16px; !text-align: left; background-color: #F3F4F6; color: #6B7280; font-size: 12px; font-weight: 600; !text-transform: uppercase; letter-spacing: 0.5px;">
               Vos tâches
             </th>
           </tr>
@@ -912,12 +912,12 @@ export default function ExcelImportModal({
       </table>
       
       <div style="text-align: center; margin: 32px 0;">
-        <a href="${projectUrl || '#'}" style="display: inline-block; background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);">
+        <a href="${projectUrl || '#'}" style="display: inline-block; background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); color: white; !text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);">
           Voir mes tâches →
         </a>
       </div>
       
-      <p style="color: #9CA3AF; font-size: 13px; text-align: center; margin: 24px 0 0; padding-top: 20px; border-top: 1px solid #E5E7EB;">
+      <p style="color: #9CA3AF; font-size: 13px; !text-align: center; margin: 24px 0 0; padding-top: 20px; border-top: 1px solid #E5E7EB;">
         Cet email a été envoyé automatiquement depuis Eclipse Dashboard.
       </p>
     </div>
@@ -956,10 +956,10 @@ export default function ExcelImportModal({
                 </div>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-primary">
+                <h2 className="text-lg font-semibold !text-primary">
                   {t('import_spreadsheet') || 'Importer depuis Excel / Google Sheets'}
                 </h2>
-                <p className="text-sm text-muted">
+                <p className="text-sm !text-muted">
                   {step === 'upload' && (t('excel_step_upload') || 'Étape 1: Sélectionnez votre fichier')}
                   {step === 'mapping' && (t('excel_step_mapping') || 'Étape 2: Mappez les colonnes')}
                   {step === 'preview' && (t('excel_step_preview') || 'Étape 3: Vérifiez l\'aperçu')}
@@ -970,7 +970,7 @@ export default function ExcelImportModal({
             </div>
             <button
               onClick={handleClose}
-              className="p-2 text-muted hover:text-primary hover:bg-hover rounded-lg transition-colors"
+              className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
             >
               <IconX className="w-5 h-5" />
             </button>
@@ -1000,13 +1000,13 @@ export default function ExcelImportModal({
                     {/* Header */}
                     <div className="bg-danger-light p-5 flex items-center gap-4 border-b border-danger">
                       <div className="w-12 h-12 rounded-full bg-danger-light flex items-center justify-center">
-                        <IconAlertCircle className="w-6 h-6 text-danger" />
+                        <IconAlertCircle className="w-6 h-6 !text-danger" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-danger">
+                        <h3 className="text-lg font-semibold !text-danger">
                           {t('import_error') || 'Erreur d\'import'}
                         </h3>
-                        <p className="text-sm text-muted">
+                        <p className="text-sm !text-muted">
                           {t('check_instructions') || 'Veuillez vérifier les instructions ci-dessous'}
                         </p>
                       </div>
@@ -1014,12 +1014,12 @@ export default function ExcelImportModal({
                     
                     {/* Content */}
                     <div className="p-5 space-y-4">
-                      <p className="text-primary text-sm">{error}</p>
+                      <p className="text-primary !text-sm">{error}</p>
                       
                       {/* Instructions for Google Sheets */}
                       {error.includes('publiquement') && (
                         <div className="bg-muted rounded-lg p-4 space-y-3">
-                          <h4 className="text-sm font-medium text-primary flex items-center gap-2">
+                          <h4 className="text-sm font-medium !text-primary flex items-center gap-2">
                             <Image
                               src="/images/google-sheets-icon.png"
                               alt="Google Sheets"
@@ -1028,7 +1028,7 @@ export default function ExcelImportModal({
                             />
                             {t('how_to_share') || 'Comment partager votre Google Sheet :'}
                           </h4>
-                          <ol className="text-sm text-muted space-y-2 list-decimal list-inside">
+                          <ol className="text-sm !text-muted space-y-2 list-decimal list-inside">
                             <li>{t('share_step_1') || 'Ouvrez votre Google Sheet'}</li>
                             <li>{t('share_step_2') || 'Cliquez sur le bouton "Partager" (en haut à droite)'}</li>
                             <li>{t('share_step_3') || 'Cliquez sur "Modifier" à côté de "Accès limité"'}</li>
@@ -1044,7 +1044,7 @@ export default function ExcelImportModal({
                     <div className="p-5 pt-0 flex justify-end">
                       <button
                         onClick={() => setError(null)}
-                        className="px-5 py-2.5 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2"
+                        className="px-5 py-2.5 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2"
                       >
                         <IconCheck className="w-4 h-4" />
                         {t('understood') || 'Compris'}
@@ -1062,7 +1062,7 @@ export default function ExcelImportModal({
                 <div
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
-                  className="border-2 border-dashed border-default hover:border-accent rounded-xl p-8 text-center transition-colors cursor-pointer"
+                  className="border-2 border-dashed border-default hover:border-accent rounded-xl p-8 !text-center transition-colors cursor-pointer"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <input
@@ -1086,17 +1086,17 @@ export default function ExcelImportModal({
                       />
                     </div>
                   </div>
-                  <h3 className="text-base font-medium text-primary mb-2">
+                  <h3 className="text-base font-medium !text-primary mb-2">
                     {t('spreadsheet_drop_file') || 'Glissez-déposez votre fichier'}
                   </h3>
-                  <p className="text-sm text-muted mb-3">
+                  <p className="text-sm !text-muted mb-3">
                     {t('excel_or_click') || 'ou cliquez pour sélectionner'}
                   </p>
-                  <button className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors inline-flex items-center gap-2 text-sm">
+                  <button className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors inline-flex items-center gap-2 !text-sm">
                     <IconUpload className="w-4 h-4" />
                     {t('excel_select_file') || 'Sélectionner un fichier'}
                   </button>
-                  <p className="!text-xs text-muted mt-3">
+                  <p className="!text-xs !text-muted mt-3">
                     {t('spreadsheet_formats') || 'Formats: .xlsx, .xls, .csv'}
                   </p>
                 </div>
@@ -1104,7 +1104,7 @@ export default function ExcelImportModal({
                 {/* Séparateur "ou" */}
                 <div className="flex items-center gap-4">
                   <div className="flex-1 h-px bg-default" />
-                  <span className="text-sm text-muted font-medium">{t('or') || 'ou'}</span>
+                  <span className="text-sm !text-muted font-medium">{t('or') || 'ou'}</span>
                   <div className="flex-1 h-px bg-default" />
                 </div>
 
@@ -1121,10 +1121,10 @@ export default function ExcelImportModal({
                       />
                     </div>
                     <div>
-                      <h3 className="text-base font-medium text-primary">
+                      <h3 className="text-base font-medium !text-primary">
                         {t('google_sheet_link') || 'Lien Google Sheets'}
                       </h3>
-                      <p className="!text-xs text-muted">
+                      <p className="!text-xs !text-muted">
                         {t('google_sheet_must_be_public') || 'Le fichier doit être partagé publiquement'}
                       </p>
                     </div>
@@ -1132,13 +1132,13 @@ export default function ExcelImportModal({
                   
                   <div className="flex gap-2">
                     <div className="flex-1 relative">
-                      <IconLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+                      <IconLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted" />
                       <input
                         type="url"
                         value={googleSheetUrl}
                         onChange={(e) => setGoogleSheetUrl(e.target.value)}
                         placeholder="https://docs.google.com/spreadsheets/d/..."
-                        className="w-full !pl-10 !pr-4 py-2.5 bg-muted border border-default rounded-lg text-primary text-sm placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent"
+                        className="w-full !pl-10 !pr-4 py-2.5 bg-muted border border-default rounded-lg !text-primary !text-sm placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent"
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>
@@ -1148,7 +1148,7 @@ export default function ExcelImportModal({
                         handleGoogleSheetImport();
                       }}
                       disabled={loadingGoogleSheet || !googleSheetUrl.trim()}
-                      className="px-4 py-2.5 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                      className="px-4 py-2.5 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 !text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     >
                       {loadingGoogleSheet ? (
                         <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -1165,10 +1165,10 @@ export default function ExcelImportModal({
                       <div className="flex items-center gap-3">
                         <IconLoader2 className="w-5 h-5 !text-accent animate-spin" />
                         <div>
-                          <p className="text-sm font-medium text-primary">
+                          <p className="text-sm font-medium !text-primary">
                             {t('detecting_tabs') || 'Détection des onglets...'}
                           </p>
-                          <p className="!text-xs text-muted">
+                          <p className="!text-xs !text-muted">
                             {t('detecting_tabs_hint') || 'Recherche des onglets disponibles dans le fichier'}
                           </p>
                         </div>
@@ -1181,11 +1181,11 @@ export default function ExcelImportModal({
                     <div className="mt-4 p-4 bg-accent-light border border-accent rounded-lg">
                       <div className="flex items-center gap-2 mb-3">
                         <IconTable className="w-5 h-5 !text-accent" />
-                        <h4 className="text-sm font-medium text-primary">
+                        <h4 className="text-sm font-medium !text-primary">
                           {t('select_tab') || 'Sélectionnez un onglet'}
                         </h4>
                       </div>
-                      <p className="!text-xs text-muted mb-3">
+                      <p className="!text-xs !text-muted mb-3">
                         {t('multiple_tabs_found') || 'Plusieurs onglets ont été détectés dans ce fichier'}
                       </p>
                       <div className="space-y-2">
@@ -1199,7 +1199,7 @@ export default function ExcelImportModal({
                             disabled={loadingGoogleSheet}
                             className={`w-full p-3 rounded-lg border transition-all flex items-center justify-between ${
                               selectedTabGid === tab.gid
-                                ? 'border-accent bg-accent text-white'
+                                ? 'border-accent bg-accent !text-white'
                                 : 'border-default bg-card hover:border-accent hover:bg-hover'
                             }`}
                           >
@@ -1225,7 +1225,7 @@ export default function ExcelImportModal({
                               </div>
                             </div>
                             {loadingGoogleSheet && selectedTabGid === tab.gid && (
-                              <IconLoader2 className="w-4 h-4 animate-spin text-white" />
+                              <IconLoader2 className="w-4 h-4 animate-spin !text-white" />
                             )}
                           </button>
                         ))}
@@ -1234,7 +1234,7 @@ export default function ExcelImportModal({
                   )}
 
                   {availableTabs.length === 0 && !detectingTabs && (
-                    <p className="!text-xs text-muted mt-3 flex items-start gap-1">
+                    <p className="!text-xs !text-muted mt-3 flex items-start gap-1">
                       <IconAlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
                       {t('google_sheet_share_hint') || 'Fichier > Partager > "Tous ceux disposant du lien peuvent consulter"'}
                     </p>
@@ -1262,8 +1262,8 @@ export default function ExcelImportModal({
                       height={20}
                     />
                   </div>
-                  <span className="text-sm text-primary font-medium">{file?.name}</span>
-                  <span className="!text-xs text-muted">
+                  <span className="text-sm !text-primary font-medium">{file?.name}</span>
+                  <span className="!text-xs !text-muted">
                     ({excelData.length} {t('rows') || 'lignes'})
                   </span>
                 </div>
@@ -1273,7 +1273,7 @@ export default function ExcelImportModal({
                   {TASK_FIELDS.map((field) => (
                     <div key={field.key} className="p-4 bg-muted rounded-lg">
                       <div className="flex items-center justify-between mb-2">
-                        <label className="text-sm font-medium text-primary flex items-center gap-1">
+                        <label className="text-sm font-medium !text-primary flex items-center gap-1">
                           {t(field.label) || field.key}
                           {field.required && <span className="text-danger">*</span>}
                         </label>
@@ -1290,7 +1290,7 @@ export default function ExcelImportModal({
                             [field.key]: value === '' ? null : parseInt(value),
                           }));
                         }}
-                        className="w-full px-3 py-2 bg-card border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+                        className="w-full px-3 py-2 bg-card border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                       >
                         <option value="">{t('excel_not_mapped') || '-- Non mappé --'}</option>
                         {headers.map((header, index) => (
@@ -1306,16 +1306,16 @@ export default function ExcelImportModal({
                 {/* Preview of first row */}
                 {excelData.length > 0 && (
                   <div className="mt-6">
-                    <h4 className="text-sm font-medium text-primary mb-3 flex items-center gap-2">
+                    <h4 className="text-sm font-medium !text-primary mb-3 flex items-center gap-2">
                       <IconTable className="w-4 h-4" />
                       {t('excel_preview_first') || 'Aperçu de la première ligne'}
                     </h4>
                     <div className="overflow-x-auto">
-                      <table className="w-full text-sm border-collapse">
+                      <table className="w-full !text-sm border-collapse">
                         <thead>
                           <tr>
                             {headers.map((header, i) => (
-                              <th key={i} className="px-3 py-2 text-left text-muted bg-muted font-medium">
+                              <th key={i} className="px-3 py-2 !text-left !text-muted bg-muted font-medium">
                                 {header || `Col ${i + 1}`}
                               </th>
                             ))}
@@ -1324,7 +1324,7 @@ export default function ExcelImportModal({
                         <tbody>
                           <tr>
                             {excelData[0]?.map((cell, i) => (
-                              <td key={i} className="px-3 py-2 text-primary border-t border-default">
+                              <td key={i} className="px-3 py-2 !text-primary border-t border-default">
                                 {cell || '-'}
                               </td>
                             ))}
@@ -1341,50 +1341,50 @@ export default function ExcelImportModal({
             {step === 'preview' && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-sm text-secondary">
+                  <p className="text-sm !text-secondary">
                     {previewTasks.length} {t('tasks_to_import') || 'tâches à importer'}
                   </p>
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm border-collapse">
+                  <table className="w-full !text-sm border-collapse">
                     <thead>
                       <tr className="bg-muted">
-                        <th className="px-3 py-2 text-left text-primary font-medium">{t('title') || 'Titre'}</th>
-                        <th className="px-3 py-2 text-left text-primary font-medium">{t('status') || 'Statut'}</th>
-                        <th className="px-3 py-2 text-left text-primary font-medium">{t('priority') || 'Priorité'}</th>
-                        <th className="px-3 py-2 text-left text-primary font-medium">{t('due_date') || 'Échéance'}</th>
-                        <th className="px-3 py-2 text-left text-primary font-medium">{t('assigned') || 'Assigné'}</th>
+                        <th className="px-3 py-2 !text-left !text-primary font-medium">{t('title') || 'Titre'}</th>
+                        <th className="px-3 py-2 !text-left !text-primary font-medium">{t('status') || 'Statut'}</th>
+                        <th className="px-3 py-2 !text-left !text-primary font-medium">{t('priority') || 'Priorité'}</th>
+                        <th className="px-3 py-2 !text-left !text-primary font-medium">{t('due_date') || 'Échéance'}</th>
+                        <th className="px-3 py-2 !text-left !text-primary font-medium">{t('assigned') || 'Assigné'}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {previewTasks.slice(0, 10).map((task, index) => (
                         <tr key={index} className="border-t border-default hover:bg-hover">
-                          <td className="px-3 py-2 text-primary">{task.title}</td>
+                          <td className="px-3 py-2 !text-primary">{task.title}</td>
                           <td className="px-3 py-2">
                             <span className={`px-2 py-0.5 rounded !text-xs font-medium ${
                               task.task_status === 'completed' ? 'bg-success-light !text-success-text ' :
-                              task.task_status === 'in_progress' ? 'bg-info-light text-info' :
-                              task.task_status === 'cancelled' ? 'bg-danger-light text-danger' :
-                              'bg-muted text-secondary'
+                              task.task_status === 'in_progress' ? 'bg-info-light !text-info' :
+                              task.task_status === 'cancelled' ? 'bg-danger-light !text-danger' :
+                              'bg-muted !text-secondary'
                             }`}>
                               {t(task.task_status) || task.task_status}
                             </span>
                           </td>
                           <td className="px-3 py-2">
                             <span className={`px-2 py-0.5 rounded !text-xs font-medium ${
-                              task.priority === 'urgent' ? 'bg-danger-light text-danger' :
-                              task.priority === 'high' ? 'bg-warning-light text-warning' :
-                              task.priority === 'medium' ? 'bg-info-light text-info' :
-                              'bg-muted text-secondary'
+                              task.priority === 'urgent' ? 'bg-danger-light !text-danger' :
+                              task.priority === 'high' ? 'bg-warning-light !text-warning' :
+                              task.priority === 'medium' ? 'bg-info-light !text-info' :
+                              'bg-muted !text-secondary'
                             }`}>
                               {t(task.priority) || task.priority}
                             </span>
                           </td>
-                          <td className="px-3 py-2 text-secondary">
+                          <td className="px-3 py-2 !text-secondary">
                             {task.due_date ? new Date(task.due_date).toLocaleDateString('fr-FR') : '-'}
                           </td>
-                          <td className="px-3 py-2 text-secondary">
+                          <td className="px-3 py-2 !text-secondary">
                             {task.assigned_to 
                               ? collaborators.find(c => c.documentId === task.assigned_to)?.username || '-'
                               : '-'
@@ -1397,7 +1397,7 @@ export default function ExcelImportModal({
                 </div>
 
                 {previewTasks.length > 10 && (
-                  <p className="!text-xs text-muted text-center">
+                  <p className="!text-xs !text-muted !text-center">
                     {t('excel_and_more') || 'et'} {previewTasks.length - 10} {t('excel_more_tasks') || 'autres tâches...'}
                   </p>
                 )}
@@ -1413,10 +1413,10 @@ export default function ExcelImportModal({
                     <div className="flex items-center gap-3">
                       <IconMail className="w-5 h-5 !text-accent" />
                       <div>
-                        <p className="text-sm font-medium text-primary">
+                        <p className="text-sm font-medium !text-primary">
                           {t('send_notification_emails') || 'Envoyer des notifications par email'}
                         </p>
-                        <p className="!text-xs text-muted">
+                        <p className="!text-xs !text-muted">
                           {uniqueAssignedEmails.length} {t('recipients') || 'destinataire(s)'} • {tasksWithAssignedEmails.length} {t('tasks') || 'tâches'}
                         </p>
                       </div>
@@ -1442,31 +1442,31 @@ export default function ExcelImportModal({
                     <div className="space-y-4">
                       {/* Objet */}
                       <div>
-                        <label className="block text-sm font-medium text-secondary mb-2">
+                        <label className="block !text-sm font-medium !text-secondary mb-2">
                           {t('email_subject') || 'Objet de l\'email'}
                         </label>
                         <input
                           type="text"
                           value={emailSubject}
                           onChange={(e) => setEmailSubject(e.target.value)}
-                          className="w-full px-4 py-2 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+                          className="w-full px-4 py-2 bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                           placeholder="Nouvelles tâches assignées..."
                         />
                       </div>
 
                       {/* Message */}
                       <div>
-                        <label className="block text-sm font-medium text-secondary mb-2">
+                        <label className="block !text-sm font-medium !text-secondary mb-2">
                           {t('email_message') || 'Message personnalisé'}
                         </label>
                         <textarea
                           value={emailMessage}
                           onChange={(e) => setEmailMessage(e.target.value)}
                           rows={3}
-                          className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
+                          className="w-full px-4 py-3 bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                           placeholder="Votre message..."
                         />
-                        <p className="!text-xs text-muted mt-1">
+                        <p className="!text-xs !text-muted mt-1">
                           {t('email_message_hint') || 'Ce message sera affiché avant la liste des tâches'}
                         </p>
                       </div>
@@ -1475,10 +1475,10 @@ export default function ExcelImportModal({
                     {/* Liste des destinataires */}
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-sm font-medium text-primary">
+                        <h4 className="text-sm font-medium !text-primary">
                           {t('recipients_preview') || 'Destinataires'}
                         </h4>
-                        <p className="!text-xs text-muted">
+                        <p className="!text-xs !text-muted">
                           {t('one_email_per_person') || 'Un seul email par personne avec toutes ses tâches'}
                         </p>
                       </div>
@@ -1489,12 +1489,12 @@ export default function ExcelImportModal({
                           return (
                             <div key={idx} className="p-3 flex items-center justify-between hover:bg-hover transition-colors">
                               <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center !text-accent font-medium text-sm">
+                                <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center !text-accent font-medium !text-sm">
                                   {collaborator?.username?.charAt(0).toUpperCase() || email?.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
-                                  <p className="text-sm font-medium text-primary">{collaborator?.username || email}</p>
-                                  <p className="!text-xs text-muted">{email}</p>
+                                  <p className="text-sm font-medium !text-primary">{collaborator?.username || email}</p>
+                                  <p className="!text-xs !text-muted">{email}</p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2">
@@ -1507,7 +1507,7 @@ export default function ExcelImportModal({
                                     setPreviewRecipientEmail(email || null);
                                     setShowEmailPreview(true);
                                   }}
-                                  className="p-1.5 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+                                  className="p-1.5 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
                                   title={t('preview') || 'Aperçu'}
                                 >
                                   <IconEye className="w-4 h-4" />
@@ -1521,8 +1521,8 @@ export default function ExcelImportModal({
 
                     {/* Info box */}
                     <div className="p-3 bg-info-light border border-info rounded-lg flex items-start gap-2">
-                      <IconMail className="w-4 h-4 text-info flex-shrink-0 mt-0.5" />
-                      <p className="!text-xs text-primary">
+                      <IconMail className="w-4 h-4 !text-info flex-shrink-0 mt-0.5" />
+                      <p className="!text-xs !text-primary">
                         {t('email_info_consolidated') || 'Chaque collaborateur recevra UN SEUL email contenant la liste de toutes ses tâches avec un bouton pour accéder au projet.'}
                       </p>
                     </div>
@@ -1531,9 +1531,9 @@ export default function ExcelImportModal({
 
                 {/* Message si emails désactivés */}
                 {!sendNotificationEmails && (
-                  <div className="p-4 bg-muted rounded-lg text-center">
-                    <IconMail className="w-8 h-8 text-muted mx-auto mb-2" />
-                    <p className="text-sm text-muted">
+                  <div className="p-4 bg-muted rounded-lg !text-center">
+                    <IconMail className="w-8 h-8 !text-muted mx-auto mb-2" />
+                    <p className="text-sm !text-muted">
                       {t('no_emails_will_be_sent') || 'Aucun email ne sera envoyé. Les collaborateurs ne seront pas notifiés.'}
                     </p>
                   </div>
@@ -1552,10 +1552,10 @@ export default function ExcelImportModal({
                       {importProgress.current}/{importProgress.total}
                     </span>
                   </div>
-                  <h3 className="text-lg font-medium text-primary mb-1">
+                  <h3 className="text-lg font-medium !text-primary mb-1">
                     {t('excel_importing') || 'Import en cours...'}
                   </h3>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm !text-muted">
                     {importProgress.current} / {importProgress.total} {t('tasks') || 'tâches'}
                   </p>
                 </div>
@@ -1574,7 +1574,7 @@ export default function ExcelImportModal({
                       transition={{ duration: 0.3, ease: 'easeOut' }}
                     />
                   </div>
-                  <div className="flex justify-between mt-1 !text-xs text-muted">
+                  <div className="flex justify-between mt-1 !text-xs !text-muted">
                     <span>0%</span>
                     <span className="font-medium !text-accent">
                       {importProgress.total > 0 
@@ -1598,10 +1598,10 @@ export default function ExcelImportModal({
                           <IconCheck className="w-4 h-4 !text-accent" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="!text-xs text-muted mb-0.5">
+                          <p className="!text-xs !text-muted mb-0.5">
                             {t('current_task') || 'Tâche en cours'}
                           </p>
-                          <p className="text-sm font-medium text-primary truncate">
+                          <p className="text-sm font-medium !text-primary truncate">
                             {importProgress.taskTitle}
                           </p>
                         </div>
@@ -1610,7 +1610,7 @@ export default function ExcelImportModal({
                   </motion.div>
                 )}
 
-                <p className="!text-xs text-muted text-center">
+                <p className="!text-xs !text-muted !text-center">
                   {t('excel_please_wait') || 'Veuillez patienter pendant la création des tâches'}
                 </p>
               </div>
@@ -1631,7 +1631,7 @@ export default function ExcelImportModal({
                       setStep('preview');
                     }
                   }}
-                  className="px-4 py-2 text-secondary hover:text-primary hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
                 >
                   <IconArrowLeft className="w-4 h-4" />
                   {t('back') || 'Retour'}
@@ -1643,7 +1643,7 @@ export default function ExcelImportModal({
                 <>
                   <button
                     onClick={() => autoMapColumns(headers)}
-                    className="px-4 py-2 text-secondary hover:text-primary hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
+                    className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
                   >
                     <IconRefresh className="w-4 h-4" />
                     {t('excel_auto_map') || 'Auto-mapper'}
@@ -1651,7 +1651,7 @@ export default function ExcelImportModal({
                   <button
                     onClick={generatePreview}
                     disabled={columnMapping.title === null}
-                    className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {t('continue') || 'Continuer'}
                     <IconArrowRight className="w-4 h-4" />
@@ -1662,7 +1662,7 @@ export default function ExcelImportModal({
                 <button
                   onClick={handleProceedToImport}
                   disabled={importing || previewTasks.length === 0}
-                  className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   <IconArrowRight className="w-4 h-4" />
                   {uniqueAssignedEmails.length > 0 
@@ -1675,7 +1675,7 @@ export default function ExcelImportModal({
                 <button
                   onClick={handleImportFinal}
                   disabled={importing || (sendNotificationEmails && !emailSubject.trim())}
-                  className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {sendNotificationEmails ? (
                     <IconSend className="w-4 h-4" />

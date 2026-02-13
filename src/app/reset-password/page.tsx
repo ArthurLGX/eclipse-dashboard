@@ -104,7 +104,7 @@ function ResetPasswordContent() {
             <div className="w-20 h-20 bg-danger-light rounded-full flex items-center justify-center mx-auto mb-6">
               <IconAlertTriangle size={40} className="text-danger" />
             </div>
-            <h2 className="!text-2xl font-bold text-primary mb-4">
+            <h2 className="!text-2xl font-bold !text-primary mb-4">
               Lien invalide
             </h2>
             <p className="text-secondary mb-6">
@@ -172,7 +172,7 @@ function ResetPasswordContent() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 !text-muted hover:!text-primary transition-colors"
                     >
                       {showPassword ? '👁️' : '👁️‍🗨️'}
                     </button>
@@ -202,7 +202,7 @@ function ResetPasswordContent() {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 !text-muted hover:!text-primary transition-colors"
                     >
                       {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                     </button>
@@ -231,7 +231,7 @@ function ResetPasswordContent() {
               <div className="w-20 h-20 bg-success-light rounded-full flex items-center justify-center mx-auto mb-6">
                 <IconCheck size={40} className="text-success-text" />
               </div>
-              <h2 className="!text-2xl font-bold text-primary mb-4">
+              <h2 className="!text-2xl font-bold !text-primary mb-4">
                 Mot de passe réinitialisé !
               </h2>
               <p className="text-secondary mb-6">

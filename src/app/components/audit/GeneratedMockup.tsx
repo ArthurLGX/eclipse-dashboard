@@ -221,10 +221,10 @@ export default function GeneratedMockup({
               <IconSparkles className="w-4 h-4 !text-accent" />
             </div>
             <div>
-              <h4 className="font-semibold text-primary text-sm">
+              <h4 className="font-semibold !text-primary !text-sm">
                 {t('ai_mockup') || 'Maquette IA'}
               </h4>
-              <p className="!text-xs text-muted">
+              <p className="!text-xs !text-muted">
                 {t('ai_mockup_desc') || 'Généré par DALL-E 3'}
               </p>
             </div>
@@ -235,21 +235,21 @@ export default function GeneratedMockup({
               <>
                 <button
                   onClick={() => setComparisonMode(comparisonMode === 'side-by-side' ? 'slider' : 'side-by-side')}
-                  className="p-2 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
                   title={t('toggle_comparison') || 'Changer le mode'}
                 >
                   <IconArrowsHorizontal className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setIsFullscreen(true)}
-                  className="p-2 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
                   title={t('fullscreen') || 'Plein écran'}
                 >
                   <IconMaximize className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="p-2 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
                   title={t('download') || 'Télécharger'}
                 >
                   <IconDownload className="w-4 h-4" />
@@ -267,10 +267,10 @@ export default function GeneratedMockup({
               <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-accent-light flex items-center justify-center">
                 <IconSparkles className="w-10 h-10 !text-accent" />
               </div>
-              <h4 className="text-lg font-semibold text-primary mb-2">
+              <h4 className="text-lg font-semibold !text-primary mb-2">
                 {t('generate_ideal_mockup') || 'Générer la maquette idéale'}
               </h4>
-              <p className="text-sm text-muted max-w-md mx-auto mb-6">
+              <p className="text-sm !text-muted max-w-md mx-auto mb-6">
                 {t('mockup_explanation') || 'L\'IA va créer une maquette optimisée basée sur les sections manquantes et les meilleures pratiques.'}
               </p>
               <button
@@ -280,7 +280,7 @@ export default function GeneratedMockup({
                 <IconSparkles className="w-5 h-5" />
                 {t('generate_with_ai') || 'Générer avec l\'IA'}
               </button>
-              <p className="!text-xs text-muted mt-3">
+              <p className="!text-xs !text-muted mt-3">
                 {t('generation_time') || 'Génération en ~15-20 secondes'}
               </p>
             </div>
@@ -294,13 +294,13 @@ export default function GeneratedMockup({
                 <div className="absolute inset-0 rounded-full border-4 border-accent border-t-transparent animate-spin" />
                 <IconSparkles className="absolute inset-0 m-auto w-8 h-8 !text-accent animate-pulse" />
               </div>
-              <p className="text-lg font-medium text-primary">
+              <p className="text-lg font-medium !text-primary">
                 {isImageLoading 
                   ? (t('loading_image') || 'Chargement de l\'image...')
                   : (t('generating_mockup') || 'Génération en cours...')
                 }
               </p>
-              <p className="text-sm text-muted mt-2">
+              <p className="text-sm !text-muted mt-2">
                 {isImageLoading
                   ? (t('image_being_created') || 'L\'image est en cours de création')
                   : (t('ai_creating_design') || 'L\'IA crée votre maquette optimisée')
@@ -313,14 +313,14 @@ export default function GeneratedMockup({
             /* Error State */
             <div className="text-center py-12">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-warning-light flex items-center justify-center">
-                <IconAlertTriangle className="w-8 h-8 text-warning" />
+                <IconAlertTriangle className="w-8 h-8 !text-warning" />
               </div>
-              <h4 className="text-lg font-semibold text-warning-text mb-2">
+              <h4 className="text-lg font-semibold !text-warning-text mb-2">
                 {error === 'rate_limit'
                   ? (t('rate_limit_title') || 'Limite de requêtes atteinte')
                   : (t('generation_error') || 'Erreur de génération')}
               </h4>
-              <p className="text-sm text-muted max-w-md mx-auto mb-4">
+              <p className="text-sm !text-muted max-w-md mx-auto mb-4">
                 {error === 'rate_limit'
                   ? (t('rate_limit_desc') || 'Trop de requêtes. Veuillez patienter quelques instants.')
                   : error}
@@ -332,7 +332,7 @@ export default function GeneratedMockup({
                     href="https://pollinations.ai"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-accent hover:underline text-sm"
+                    className="text-accent hover:underline !text-sm"
                   >
                     → {t('check_pollinations') || 'Voir le statut de Pollinations.ai'}
                   </a>
@@ -358,7 +358,7 @@ export default function GeneratedMockup({
                   {/* Current */}
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="px-2 py-1 bg-danger-light text-danger !text-xs font-medium rounded-full">
+                      <span className="px-2 py-1 bg-danger-light !text-danger !text-xs font-medium rounded-full">
                         {t('current') || 'Actuel'}
                       </span>
                     </div>
@@ -371,9 +371,9 @@ export default function GeneratedMockup({
                         />
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-default bg-muted p-12 text-center">
-                        <IconPhoto className="w-8 h-8 mx-auto mb-2 text-muted opacity-50" />
-                        <p className="text-sm text-muted">{t('no_screenshot') || 'Pas de capture'}</p>
+                      <div className="rounded-lg border border-default bg-muted p-12 !text-center">
+                        <IconPhoto className="w-8 h-8 mx-auto mb-2 !text-muted opacity-50" />
+                        <p className="text-sm !text-muted">{t('no_screenshot') || 'Pas de capture'}</p>
                       </div>
                     )}
                   </div>
@@ -385,7 +385,7 @@ export default function GeneratedMockup({
                         {t('ideal') || 'Idéal'}
                       </span>
                       {mockup?.fromCache && (
-                        <span className="!text-xs text-muted">({t('cached') || 'cache'})</span>
+                        <span className="!text-xs !text-muted">({t('cached') || 'cache'})</span>
                       )}
                     </div>
                     <div className="rounded-lg overflow-hidden border border-success">
@@ -438,10 +438,10 @@ export default function GeneratedMockup({
                   </div>
                   
                   {/* Labels */}
-                  <div className="absolute top-3 left-3 px-2 py-1 bg-danger text-white !text-xs font-medium rounded z-10">
+                  <div className="absolute top-3 left-3 px-2 py-1 bg-danger !text-white !text-xs font-medium rounded z-10">
                     {t('current') || 'Actuel'}
                   </div>
-                  <div className="absolute top-3 right-3 px-2 py-1 bg-success text-white !text-xs font-medium rounded z-10">
+                  <div className="absolute top-3 right-3 px-2 py-1 bg-success !text-white !text-xs font-medium rounded z-10">
                     {t('ideal') || 'Idéal'}
                   </div>
                 </div>
@@ -476,7 +476,7 @@ export default function GeneratedMockup({
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setComparisonMode(comparisonMode === 'side-by-side' ? 'slider' : 'side-by-side')}
-                  className="px-3 py-1.5 bg-white/10 text-white text-sm rounded-lg flex items-center gap-2 hover:bg-white/20"
+                  className="px-3 py-1.5 bg-white/10 !text-white !text-sm rounded-lg flex items-center gap-2 hover:bg-white/20"
                 >
                   <IconArrowsHorizontal className="w-4 h-4" />
                   {comparisonMode === 'side-by-side' ? 'Mode slider' : 'Côte à côte'}
@@ -485,13 +485,13 @@ export default function GeneratedMockup({
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleDownload}
-                  className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg"
+                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 rounded-lg"
                 >
                   <IconDownload className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setIsFullscreen(false)}
-                  className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg"
+                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 rounded-lg"
                 >
                   <IconX className="w-5 h-5" />
                 </button>
@@ -508,7 +508,7 @@ export default function GeneratedMockup({
                 {comparisonMode === 'side-by-side' ? (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
-                      <p className="text-white/60 text-sm mb-2 text-center">{t('current') || 'Actuel'}</p>
+                      <p className="text-white/60 !text-sm mb-2 !text-center">{t('current') || 'Actuel'}</p>
                       {currentScreenshot ? (
                         <img
                           src={`data:image/png;base64,${currentScreenshot}`}
@@ -516,13 +516,13 @@ export default function GeneratedMockup({
                           className="w-full rounded-lg"
                         />
                       ) : (
-                        <div className="bg-white/10 rounded-lg p-20 text-center">
+                        <div className="bg-white/10 rounded-lg p-20 !text-center">
                           <p className="text-white/40">{t('no_screenshot') || 'Pas de capture'}</p>
                         </div>
                       )}
                     </div>
                     <div>
-                      <p className="text-white/60 text-sm mb-2 text-center">{t('ideal') || 'Idéal'}</p>
+                      <p className="text-white/60 !text-sm mb-2 !text-center">{t('ideal') || 'Idéal'}</p>
                       <img
                         src={loadedImageUrl}
                         alt="Ideal"

@@ -153,7 +153,7 @@ export default function CompactEmailForm({
       html += `<div style="font-size: 12px; color: #666;">📞 ${data.phone}</div>`;
     }
     if (data.website) {
-      html += `<div style="font-size: 12px;"><a href="${data.website}" style="color: #3b82f6; text-decoration: none;">🌐 ${data.website}</a></div>`;
+      html += `<div style="font-size: 12px;"><a href="${data.website}" style="color: #3b82f6; !text-decoration: none;">🌐 ${data.website}</a></div>`;
     }
     html += '</div></div>';
     return html;
@@ -274,7 +274,7 @@ export default function CompactEmailForm({
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {/* Recipients */}
         <div>
-          <div className="flex items-center gap-2 !text-xs text-muted mb-2">
+          <div className="flex items-center gap-2 !text-xs !text-muted mb-2">
             <span>{t('to') || 'À'}</span>
           </div>
           <div className="flex flex-wrap gap-2 mb-2">
@@ -312,7 +312,7 @@ export default function CompactEmailForm({
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             placeholder={t('subject') || 'Objet'}
-            className="input w-full text-sm"
+            className="input w-full !text-sm"
           />
         </div>
 
@@ -333,10 +333,10 @@ export default function CompactEmailForm({
           <div className="border-t border-default pt-4">
             <button
               onClick={() => setShowOriginalEmail(!showOriginalEmail)}
-              className="flex items-center gap-2 !text-xs text-muted hover:text-primary mb-2"
+              className="flex items-center gap-2 !text-xs !text-muted hover:!text-primary mb-2"
             >
               {showOriginalEmail ? <IconChevronUp className="w-3 h-3" /> : <IconChevronDown className="w-3 h-3" />}
-              <span className="!text-xs text-muted">
+              <span className="!text-xs !text-muted">
                 {showOriginalEmail
                   ? (t('hide_original') || 'Masquer le message original')
                   : (t('show_original') || 'Afficher le message original')}
@@ -348,11 +348,11 @@ export default function CompactEmailForm({
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="!text-xs text-muted border-l-2 border-muted pl-3 py-2"
+                className="!text-xs !text-muted border-l-2 border-muted pl-3 py-2"
               >
                 <div className="mb-2">
                   <strong className="text-primary">{replyToEmail.from_name || replyToEmail.from_email}</strong>
-                  <div className="!text-xs text-muted">
+                  <div className="!text-xs !text-muted">
                     {new Date(replyToEmail.received_at).toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'short',
@@ -385,7 +385,7 @@ export default function CompactEmailForm({
         <button
           onClick={handleSend}
           disabled={sending || recipients.length === 0 || !subject.trim() || !message.trim()}
-          className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {sending ? (
             <>

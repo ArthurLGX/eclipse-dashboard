@@ -409,7 +409,7 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
 
           {/* Info Section */}
           <div className="lg:w-96 p-6 lg:p-8 overflow-y-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold !text-gray-900 mb-2">
               {project.title}
             </h2>
             {project.subtitle && (
@@ -421,7 +421,7 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
               </p>
             )}
             {project.clientName && (
-              <p className="text-sm text-info  mb-2">
+              <p className="text-sm !text-info  mb-2">
                 <span className="font-medium">Client:</span> {project.clientName}
               </p>
             )}
@@ -430,7 +430,7 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
                 href={project.projectUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"
+                className="inline-flex items-center gap-2 !text-sm !text-blue-600 hover:!text-blue-700"
               >
                 {t('portfolio_view')} <IconExternalLink size={14} />
               </a>
@@ -440,7 +440,7 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 !text-xs"
+                    className="px-3 py-1 rounded-full bg-gray-100 !text-gray-700 !text-xs"
                   >
                     {tag}
                   </span>
@@ -599,7 +599,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('portfolio_not_found')}</h1>
+          <h1 className="text-2xl font-bold !text-gray-900 mb-2">{t('portfolio_not_found')}</h1>
           <p className="text-gray-600">{t('portfolio_not_found_desc')}</p>
         </div>
       </div>
@@ -615,24 +615,24 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
       <header className="px-6 lg:px-12 py-4 border-b border-gray-200">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left - Site Name */}
-          <span className="text-sm text-info  font-medium tracking-wide">
+          <span className="text-sm !text-info  font-medium tracking-wide">
             {settings.portfolioName.toLowerCase().replace(/\s+/g, '-')}.com
           </span>
 
           {/* Right - Navigation & Social */}
           <div className="flex items-center gap-6">
             {/* Navigation Links */}
-            <nav className="hidden md:flex items-center gap-6 text-sm">
-              <span className="text-info hover:text-gray-900 cursor-pointer transition-colors">
+            <nav className="hidden md:flex items-center gap-6 !text-sm">
+              <span className="text-info hover:!text-gray-900 cursor-pointer transition-colors">
                 {t('portfolio_nav_home')}
               </span>
-              <span className="text-info hover:text-gray-900 cursor-pointer transition-colors">
+              <span className="text-info hover:!text-gray-900 cursor-pointer transition-colors">
                 {t('portfolio_nav_about')}
               </span>
               <span className="text-gray-900 font-medium cursor-pointer border-b border-gray-900 pb-0.5">
                 {t('portfolio_nav_portfolio')}
               </span>
-              <span className="text-info hover:text-gray-900 cursor-pointer transition-colors">
+              <span className="text-info hover:!text-gray-900 cursor-pointer transition-colors">
                 {t('portfolio_nav_contact')}
               </span>
             </nav>
@@ -642,13 +642,13 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
               <div className="flex items-center gap-2">
                 {settings.instagramUrl && (
                   <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" 
-                     className="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center hover:opacity-80 transition-opacity">
+                     className="w-8 h-8 rounded-full bg-gray-900 !text-white flex items-center justify-center hover:opacity-80 transition-opacity">
                     <IconBrandInstagram size={14} />
                   </a>
                 )}
                 {settings.linkedinUrl && (
                   <a href={settings.linkedinUrl} target="_blank" rel="noopener noreferrer"
-                     className="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center hover:opacity-80 transition-opacity">
+                     className="w-8 h-8 rounded-full bg-gray-900 !text-white flex items-center justify-center hover:opacity-80 transition-opacity">
                     <IconBrandLinkedin size={14} />
                   </a>
                 )}
@@ -679,7 +679,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
               <span className="inline-block">.</span>
             </h1>
             <p
-              className="mt-6 max-w-md text-lg whitespace-pre-line"
+              className="mt-6 max-w-md !text-lg whitespace-pre-line"
               style={{ 
                 color: settings.subtitleColor || '#666666',
                 fontFamily: subtitleFont,
@@ -695,7 +695,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
             {settings.emailAddress && (
               <a
                 href={`mailto:${settings.emailAddress}`}
-                className="px-6 py-2.5 rounded-full border border-gray-900 text-gray-900 text-sm font-medium hover:bg-gray-900 hover:text-white transition-colors"
+                className="px-6 py-2.5 rounded-full border border-gray-900 !text-gray-900 !text-sm font-medium hover:bg-gray-900 hover:!text-white transition-colors"
               >
                 {t('portfolio_connect')}
               </a>

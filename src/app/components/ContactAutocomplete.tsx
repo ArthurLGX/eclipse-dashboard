@@ -169,7 +169,7 @@ export default function ContactAutocomplete({
   return (
     <div className="relative flex-1">
       <div className="relative">
-        <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+        <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted pointer-events-none" />
         <input
           ref={inputRef}
           type="text"
@@ -191,7 +191,7 @@ export default function ContactAutocomplete({
               setQuery('');
               inputRef.current?.focus();
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted hover:text-primary rounded transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 !text-muted hover:!text-primary rounded transition-colors"
           >
             <IconX className="w-4 h-4" />
           </button>
@@ -215,14 +215,14 @@ export default function ContactAutocomplete({
                   key={contact.documentId}
                   onClick={() => handleSelect(contact)}
                   onMouseEnter={() => setHighlightedIndex(index)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 !text-left transition-colors ${
                     index === highlightedIndex
                       ? 'bg-accent-light'
                       : 'hover:bg-hover'
                   }`}
                 >
                   {/* Avatar */}
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0 overflow-hidden ${getAvatarColor(contact.name || contact.enterprise)}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center !text-white !text-sm font-semibold flex-shrink-0 overflow-hidden ${getAvatarColor(contact.name || contact.enterprise)}`}>
                     {getImageUrl(contact) ? (
                       <img
                         src={getImageUrl(contact)!}
@@ -237,17 +237,17 @@ export default function ContactAutocomplete({
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-primary truncate">
+                      <span className="font-medium !text-primary truncate">
                         {contact.name || contact.enterprise || 'Sans nom'}
                       </span>
                       {contact.enterprise && contact.name && (
-                        <span className="flex items-center gap-1 !text-xs text-muted bg-muted px-1.5 py-0.5 rounded">
+                        <span className="flex items-center gap-1 !text-xs !text-muted bg-muted px-1.5 py-0.5 rounded">
                           <IconBuilding className="w-3 h-3" />
                           {contact.enterprise}
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-1 text-sm text-muted truncate">
+                    <div className="flex items-center gap-1 !text-sm !text-muted truncate">
                       <IconMail className="w-3.5 h-3.5 flex-shrink-0" />
                       {contact.email}
                     </div>
@@ -257,7 +257,7 @@ export default function ContactAutocomplete({
             </div>
 
             {/* Footer hint */}
-            <div className="px-4 py-2 bg-muted border-t border-default !text-xs text-muted flex items-center justify-between">
+            <div className="px-4 py-2 bg-muted border-t border-default !text-xs !text-muted flex items-center justify-between">
               <span>↑↓ pour naviguer, Entrée pour sélectionner</span>
               <span>Esc pour fermer</span>
             </div>

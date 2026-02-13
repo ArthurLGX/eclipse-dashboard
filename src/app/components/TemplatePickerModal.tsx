@@ -77,16 +77,16 @@ export default function TemplatePickerModal({
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-default shrink-0">
             <div>
-              <h2 className="text-xl font-bold text-primary">
+              <h2 className="text-xl font-bold !text-primary">
                 {t('choose_template') || 'Choisir un template'}
               </h2>
-              <p className="text-sm text-muted">
+              <p className="text-sm !text-muted">
                 {t('template_picker_desc') || 'Sélectionnez un design pour votre newsletter'}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 text-muted hover:text-primary rounded-lg hover:bg-secondary/10 transition-colors"
+              className="p-2 !text-muted hover:!text-primary rounded-lg hover:bg-secondary/10 transition-colors"
             >
               <IconX className="w-5 h-5" />
             </button>
@@ -99,10 +99,10 @@ export default function TemplatePickerModal({
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
                 className={`
-                  flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all
+                  flex items-center gap-2 px-4 py-2 rounded-lg !text-sm font-medium whitespace-nowrap transition-all
                   ${selectedCategory === category.id
-                    ? 'bg-accent text-white'
-                    : 'bg-secondary/10 text-secondary hover:bg-secondary/20'
+                    ? 'bg-accent !text-white'
+                    : 'bg-secondary/10 !text-secondary hover:bg-secondary/20'
                   }
                 `}
               >
@@ -183,10 +183,10 @@ export default function TemplatePickerModal({
 
                     {/* Info */}
                     <div className="p-3 bg-card">
-                      <h3 className="font-medium text-primary text-sm">
+                      <h3 className="font-medium !text-primary !text-sm">
                         {template.name}
                       </h3>
-                      <p className="!text-xs text-muted line-clamp-1">
+                      <p className="!text-xs !text-muted line-clamp-1">
                         {template.description}
                       </p>
                     </div>
@@ -194,7 +194,7 @@ export default function TemplatePickerModal({
                     {/* Selected indicator */}
                     {isSelected && (
                       <div className="absolute top-2 right-2 p-1.5 bg-accent rounded-full">
-                        <IconCheck className="w-4 h-4 text-white" />
+                        <IconCheck className="w-4 h-4 !text-white" />
                       </div>
                     )}
 
@@ -207,7 +207,7 @@ export default function TemplatePickerModal({
                           exit={{ opacity: 0 }}
                           className="absolute inset-0 bg-accent-light flex items-center justify-center"
                         >
-                          <span className="px-4 py-2 bg-accent text-white rounded-lg text-sm font-medium">
+                          <span className="px-4 py-2 bg-accent !text-white rounded-lg !text-sm font-medium">
                             {t('select') || 'Sélectionner'}
                           </span>
                         </motion.div>
@@ -221,7 +221,7 @@ export default function TemplatePickerModal({
 
           {/* Footer */}
           <div className="px-6 py-4 border-t border-default bg-secondary/5 shrink-0">
-            <p className="!text-xs text-muted text-center">
+            <p className="!text-xs !text-muted !text-center">
               {t('template_customizable') || 'Tous les templates sont personnalisables après sélection'}
             </p>
           </div>

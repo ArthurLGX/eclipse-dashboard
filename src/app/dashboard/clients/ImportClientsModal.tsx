@@ -437,10 +437,10 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
               <div>
-                <h2 className="text-xl font-bold text-primary">
+                <h2 className="text-xl font-bold !text-primary">
                   {t('import_clients') || 'Importer des clients'}
                 </h2>
-                <p className="text-sm text-secondary">
+                <p className="text-sm !text-secondary">
                   {t('import_clients_subtitle_new') || 'Importez vos clients depuis JSON, CSV ou une liste d\'emails'}
                 </p>
               </div>
@@ -449,7 +449,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
               onClick={handleClose}
               className="p-2 rounded-lg hover:bg-card-hover transition-colors"
             >
-              <IconX className="w-5 h-5 text-secondary" />
+              <IconX className="w-5 h-5 !text-secondary" />
             </button>
           </div>
 
@@ -458,15 +458,15 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
             {/* Error message */}
             {error && (
               <div className="flex items-center gap-3 p-4 rounded-xl bg-danger-light border border-danger">
-                <IconAlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
-                <p className="text-danger text-sm">{error}</p>
+                <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
+                <p className="text-danger !text-sm">{error}</p>
               </div>
             )}
 
             {/* Import mode selector */}
             {importedClients.length === 0 && (
               <div className="space-y-4">
-                <p className="text-sm font-medium text-primary">
+                <p className="text-sm font-medium !text-primary">
                   {t('import_mode_title') || 'Choisir le mode d\'import'}
                 </p>
                 <div className="grid grid-cols-3 gap-3">
@@ -475,15 +475,15 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                       key={option.value}
                       onClick={() => setImportMode(option.value)}
                       className={`
-                        flex flex-col items-center gap-2 p-4 rounded-xl border transition-all text-center
+                        flex flex-col items-center gap-2 p-4 rounded-xl border transition-all !text-center
                         ${importMode === option.value 
                           ? 'bg-accent-light border-accent !text-accent' 
-                          : 'bg-card border-default hover:border-accent text-secondary hover:text-primary'
+                          : 'bg-card border-default hover:border-accent !text-secondary hover:!text-primary'
                         }
                       `}
                     >
                       {option.icon}
-                      <span className="font-medium text-sm">{option.label}</span>
+                      <span className="font-medium !text-sm">{option.label}</span>
                       <span className="!text-xs opacity-70">{option.description}</span>
                     </button>
                   ))}
@@ -499,7 +499,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                 onDragLeave={handleDragLeave}
                 onClick={() => fileInputRef.current?.click()}
                 className={`
-                  border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all
+                  border-2 border-dashed rounded-2xl p-12 !text-center cursor-pointer transition-all
                   ${isDragging 
                     ? 'border-accent bg-accent-light scale-[1.02]' 
                     : 'border-default hover:border-accent hover:bg-card-hover'
@@ -524,7 +524,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                         : (t('import_drop_csv') || 'Glissez votre fichier CSV ici')
                       }
                     </p>
-                    <p className="text-secondary text-sm">
+                    <p className="text-secondary !text-sm">
                       {t('import_or_click') || 'ou cliquez pour parcourir'}
                     </p>
                   </div>
@@ -536,16 +536,16 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
             {importedClients.length === 0 && importMode === 'email_list' && (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-primary">
+                  <label className="text-sm font-medium !text-primary">
                     {t('import_paste_emails') || 'Collez votre liste d\'emails'}
                   </label>
                   <textarea
                     value={emailListText}
                     onChange={(e) => setEmailListText(e.target.value)}
                     placeholder={t('import_email_placeholder') || 'jean@example.com, marie@example.com\nou un email par ligne...'}
-                    className="w-full h-40 p-4 rounded-xl bg-page border border-default focus:border-accent focus:outline-none resize-none text-primary placeholder:text-secondary/50"
+                    className="w-full h-40 p-4 rounded-xl bg-page border border-default focus:border-accent focus:outline-none resize-none !text-primary placeholder:!text-secondary/50"
                   />
-                  <p className="!text-xs text-secondary">
+                  <p className="!text-xs !text-secondary">
                     {t('import_email_hint') || 'Séparez les emails par des virgules, points-virgules ou retours à la ligne'}
                   </p>
                 </div>
@@ -562,10 +562,10 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
             {/* Format hints */}
             {importedClients.length === 0 && importMode === 'json' && (
               <div className="p-4 rounded-xl bg-info-light border border-info">
-                <p className="text-sm text-secondary mb-2">
+                <p className="text-sm !text-secondary mb-2">
                   {t('import_list') || 'Format JSON attendu :'}
                 </p>
-                <pre className="!text-xs text-secondary bg-page p-3 rounded-lg overflow-x-auto">
+                <pre className="!text-xs !text-secondary bg-page p-3 rounded-lg overflow-x-auto">
 {`[
   {
     "name": "John Doe",
@@ -580,15 +580,15 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
 
             {importedClients.length === 0 && importMode === 'csv' && (
               <div className="p-4 rounded-xl bg-info-light border border-info">
-                <p className="text-sm text-secondary mb-2">
+                <p className="text-sm !text-secondary mb-2">
                   {t('import_csv_format') || 'Format CSV attendu :'}
                 </p>
-                <pre className="!text-xs text-secondary bg-page p-3 rounded-lg overflow-x-auto">
+                <pre className="!text-xs !text-secondary bg-page p-3 rounded-lg overflow-x-auto">
 {`email,name,company,website
 john@example.com,John Doe,Acme Inc,www.acme.com
 marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 </pre>
-                <p className="!text-xs text-secondary mt-2">
+                <p className="!text-xs !text-secondary mt-2">
                   {t('import_csv_compatible') || 'Compatible avec les exports Mailchimp, HubSpot, Gmail, etc.'}
                 </p>
               </div>
@@ -599,12 +599,12 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
               <div className="space-y-4">
                 {/* Stats */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light !text-success-text -text text-sm">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-light !text-success-text -text !text-sm">
                     <IconCheck className="w-4 h-4" />
                     {validCount} {t('import_valid') || 'valide(s)'}
                   </div>
                   {invalidCount > 0 && (
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-danger-light text-danger text-sm">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-danger-light !text-danger !text-sm">
                       <IconAlertCircle className="w-4 h-4" />
                       {invalidCount} {t('import_invalid') || 'invalide(s)'}
                     </div>
@@ -614,7 +614,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                       setImportedClients([]);
                       setError(null);
                     }}
-                    className="ml-auto flex items-center gap-2 text-sm text-secondary btn-secondary px-4 py-2 rounded-lg hover:text-primary transition-colors"
+                    className="ml-auto flex items-center gap-2 !text-sm !text-secondary btn-secondary px-4 py-2 rounded-lg hover:!text-primary transition-colors"
                   >
                     <IconReload
                       className="w-4 h-4"
@@ -628,34 +628,34 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                   <table className="w-full">
                     <thead className="bg-card-hover">
                       <tr>
-                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 !text-left !text-xs font-semibold !text-secondary uppercase tracking-wider">
                           <div className="flex items-center gap-2">
                             <IconUser className="w-4 h-4" />
                             {t('name')}
                           </div>
                         </th>
-                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 !text-left !text-xs font-semibold !text-secondary uppercase tracking-wider">
                           <div className="flex items-center gap-2">
                             <IconMail className="w-4 h-4" />
                             {t('email')}
                           </div>
                         </th>
-                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 !text-left !text-xs font-semibold !text-secondary uppercase tracking-wider">
                           <div className="flex items-center gap-2">
                             <IconBuilding className="w-4 h-4" />
                             {t('enterprise')}
                           </div>
                         </th>
-                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 !text-left !text-xs font-semibold !text-secondary uppercase tracking-wider">
                           <div className="flex items-center gap-2">
                             <IconWorld className="w-4 h-4" />
                             {t('website')}
                           </div>
                         </th>
-                        <th className="px-4 py-3 text-left !text-xs font-semibold text-secondary uppercase tracking-wider">
+                        <th className="px-4 py-3 !text-left !text-xs font-semibold !text-secondary uppercase tracking-wider">
                           {t('status')}
                         </th>
-                        <th className="px-4 py-3 text-center !text-xs font-semibold text-secondary uppercase tracking-wider w-20">
+                        <th className="px-4 py-3 !text-center !text-xs font-semibold !text-secondary uppercase tracking-wider w-20">
                           {t('actions')}
                         </th>
                       </tr>
@@ -676,7 +676,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                               />
                               <div className="flex items-center gap-2">
                                 {!client.isValid && (
-                                  <IconAlertCircle className="w-4 h-4 text-danger flex-shrink-0" title={client.error} />
+                                  <IconAlertCircle className="w-4 h-4 !text-danger flex-shrink-0" title={client.error} />
                                 )}
                                 <span className={`text-sm font-medium ${client.isValid ? 'text-primary' : 'text-danger'}`}>
                                   {client.name || '-'}
@@ -690,12 +690,12 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-sm text-secondary">
+                            <span className="text-sm !text-secondary">
                               {client.enterprise || '-'}
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-sm text-secondary">
+                            <span className="text-sm !text-secondary">
                               {client.website || '-'}
                             </span>
                           </td>
@@ -704,10 +704,10 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                               {client.processStatus || 'client'}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-center">
+                          <td className="px-4 py-3 !text-center">
                             <button
                               onClick={() => removeClient(index)}
-                              className="p-1.5 rounded-lg hover:bg-danger-light text-secondary hover:text-danger transition-colors"
+                              className="p-1.5 rounded-lg hover:bg-danger-light !text-secondary hover:!text-danger transition-colors"
                               title={t('remove') || 'Supprimer'}
                             >
                               <IconTrash className="w-4 h-4" />
@@ -722,10 +722,10 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 {/* Error list */}
                 {invalidCount > 0 && (
                   <div className="p-4 rounded-xl bg-warning-light border border-warning">
-                    <p className="text-sm text-warning-text font-medium mb-2">
+                    <p className="text-sm !text-warning-text font-medium mb-2">
                       {t('import_errors_found') || 'Erreurs détectées :'}
                     </p>
-                    <ul className="text-sm text-secondary space-y-1">
+                    <ul className="text-sm !text-secondary space-y-1">
                       {importedClients
                         .filter(c => !c.isValid)
                         .map((client, idx) => (
@@ -743,8 +743,8 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 {/* Duplicate action selector */}
                 <div className="p-4 rounded-xl bg-card-hover border border-default">
                   <div className="flex items-center gap-2 mb-3">
-                    <IconAlertCircle className="w-5 h-5 text-warning" />
-                    <p className="text-sm font-medium text-primary">
+                    <IconAlertCircle className="w-5 h-5 !text-warning" />
+                    <p className="text-sm font-medium !text-primary">
                       {t('duplicate_action_title') || 'Action en cas de doublon'}
                     </p>
                   </div>
@@ -779,7 +779,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                               </span>
                             )}
                           </p>
-                          <p className="!text-xs text-secondary mt-0.5">{option.description}</p>
+                          <p className="!text-xs !text-secondary mt-0.5">{option.description}</p>
                         </div>
                       </label>
                     ))}
@@ -790,7 +790,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 <div className="p-4 rounded-xl bg-card-hover border border-default">
                   <div className="flex items-center gap-2 mb-3">
                     <IconInfoCircle className="w-5 h-5 !text-accent" />
-                    <p className="text-sm font-medium text-primary">
+                    <p className="text-sm font-medium !text-primary">
                       {t('duplicate_check_mode') || 'Vérification des doublons'}
                     </p>
                   </div>
@@ -825,7 +825,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                               </span>
                             )}
                           </p>
-                          <p className="!text-xs text-secondary mt-0.5">{option.description}</p>
+                          <p className="!text-xs !text-secondary mt-0.5">{option.description}</p>
                         </div>
                       </label>
                     ))}
@@ -839,7 +839,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
           <div className="flex items-center justify-end gap-3 p-6 border-t border-default bg-card-hover">
             <button
               onClick={handleClose}
-              className="px-4 py-2 rounded-lg text-secondary hover:text-primary hover:bg-card-hover transition-colors"
+              className="px-4 py-2 rounded-lg !text-secondary hover:!text-primary hover:bg-card-hover transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>

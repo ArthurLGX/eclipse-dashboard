@@ -53,7 +53,7 @@ function EmailConfirmationContent() {
               <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
                 <IconLoader2 size={40} className="text-primary-foreground animate-spin" />
               </div>
-              <h2 className="!text-2xl font-bold text-foreground mb-4">
+              <h2 className="!text-2xl font-bold !text-foreground mb-4">
                 {t('email_confirmation_loading')}
               </h2>
               <p className="text-muted-foreground">
@@ -72,7 +72,7 @@ function EmailConfirmationContent() {
               <div className="w-20 h-20 bg-success-light rounded-full flex items-center justify-center mx-auto mb-6">
                 <IconCheck size={40} className="text-success-text" />
               </div>
-              <h2 className="!text-2xl font-bold text-foreground mb-4">
+              <h2 className="!text-2xl font-bold !text-foreground mb-4">
                 {t('email_confirmation_success')}
               </h2>
               <p className="text-muted-foreground mb-8">
@@ -80,7 +80,7 @@ function EmailConfirmationContent() {
               </p>
               <Link
                 href="/login"
-                className="inline-block bg-primary hover:bg-primary-light text-primary-foreground font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                className="inline-block bg-primary hover:bg-primary-light !text-primary-foreground font-medium py-3 px-6 rounded-lg transition-colors duration-200"
               >
                 {t('email_confirmation_login')}
               </Link>
@@ -97,7 +97,7 @@ function EmailConfirmationContent() {
               <div className="w-20 h-20 bg-danger-light rounded-full flex items-center justify-center mx-auto mb-6">
                 <IconAlertTriangle size={40} className="text-danger" />
               </div>
-              <h2 className="!text-2xl font-bold text-foreground mb-4">
+              <h2 className="!text-2xl font-bold !text-foreground mb-4">
                 {t('email_confirmation_error')}
               </h2>
               <p className="text-muted-foreground mb-6">

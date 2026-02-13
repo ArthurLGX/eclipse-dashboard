@@ -1020,7 +1020,7 @@ export default function RichTextEditor({
       link.href = url;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
-      link.style.cssText = 'display: inline-flex; align-items: center; gap: 6px; color: #7c3aed; text-decoration: none; padding: 8px 12px; background: rgba(124, 58, 237, 0.1); border-radius: 8px; font-weight: 500;';
+      link.style.cssText = 'display: inline-flex; align-items: center; gap: 6px; color: #7c3aed; !text-decoration: none; padding: 8px 12px; background: rgba(124, 58, 237, 0.1); border-radius: 8px; font-weight: 500;';
       link.innerHTML = `${icon} ${fileName}`;
       paragraph.appendChild(link);
 
@@ -1117,7 +1117,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h1')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_heading1') || 'Titre 1'}
           >
             <IconH1 className="w-4 h-4" />
@@ -1125,7 +1125,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h2')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_heading2') || 'Titre 2'}
           >
             <IconH2 className="w-4 h-4" />
@@ -1133,7 +1133,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'p')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_paragraph') || 'Paragraphe'}
           >
             <IconTypography className="w-4 h-4" />
@@ -1145,7 +1145,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('bold')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_bold') || 'Gras'}
           >
             <IconBold className="w-4 h-4" />
@@ -1153,7 +1153,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('italic')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_italic') || 'Italique'}
           >
             <IconItalic className="w-4 h-4" />
@@ -1165,7 +1165,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('insertUnorderedList')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_bullet_list') || 'Liste à puces'}
           >
             <IconList className="w-4 h-4" />
@@ -1173,7 +1173,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('insertOrderedList')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_numbered_list') || 'Liste numérotée'}
           >
             <IconListNumbers className="w-4 h-4" />
@@ -1185,7 +1185,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('justifyLeft')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_align_left') || 'Aligner à gauche'}
           >
             <IconAlignLeft className="w-4 h-4" />
@@ -1193,7 +1193,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('justifyCenter')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_align_center') || 'Centrer'}
           >
             <IconAlignCenter className="w-4 h-4" />
@@ -1201,7 +1201,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('justifyRight')}
-            className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+            className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
             title={t('toolbar_align_right') || 'Aligner à droite'}
           >
             <IconAlignRight className="w-4 h-4" />
@@ -1213,7 +1213,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => setShowLinkInput(!showLinkInput)}
-            className={`p-1.5 rounded transition-colors ${showLinkInput ? 'bg-accent text-white' : 'hover:bg-muted text-secondary hover:text-primary'}`}
+            className={`p-1.5 rounded transition-colors ${showLinkInput ? 'bg-accent !text-white' : 'hover:bg-muted !text-secondary hover:!text-primary'}`}
             title={t('toolbar_insert_link') || 'Insérer un lien'}
           >
             <IconLink className="w-4 h-4" />
@@ -1226,20 +1226,20 @@ export default function RichTextEditor({
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 placeholder="https://..."
-                className="px-2 py-1 text-sm bg-input border border-input rounded text-muted w-48"
+                className="px-2 py-1 !text-sm bg-input border border-input rounded !text-muted w-48"
                 onKeyDown={(e) => e.key === 'Enter' && insertLink()}
               />
               <button
                 type="button"
                 onClick={insertLink}
-                className="px-3 py-1 bg-accent text-white rounded text-sm"
+                className="px-3 py-1 bg-accent !text-white rounded !text-sm"
               >
                 OK
               </button>
               <button
                 type="button"
                 onClick={() => setShowLinkInput(false)}
-                className="p-1 text-secondary hover:text-primary"
+                className="p-1 !text-secondary hover:!text-primary"
               >
                 <IconX className="w-4 h-4" />
               </button>
@@ -1257,7 +1257,7 @@ export default function RichTextEditor({
           />
           <select
             onChange={(e) => execCommand('fontName', e.target.value)}
-            className="px-2 py-1 !text-xs bg-input border border-input rounded text-muted"
+            className="px-2 py-1 !text-xs bg-input border border-input rounded !text-muted"
             defaultValue=""
             title={t('toolbar_font') || 'Police'}
           >
@@ -1273,7 +1273,7 @@ export default function RichTextEditor({
                 e.target.value = ''; // Reset select
               }
             }}
-            className="px-2 py-1 !text-xs bg-input border border-input rounded text-muted"
+            className="px-2 py-1 !text-xs bg-input border border-input rounded !text-muted"
             defaultValue=""
             title={t('toolbar_font_size') || 'Taille'}
           >
@@ -1290,7 +1290,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => { setMediaPickerType('image'); setShowMediaPicker(true); }}
-              className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+              className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
               title={t('toolbar_insert_image') || 'Insérer une image'}
             >
               <IconPhoto className="w-4 h-4" />
@@ -1298,7 +1298,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => { setMediaPickerType('document'); setShowMediaPicker(true); }}
-              className="p-1.5 rounded hover:bg-muted text-secondary hover:text-primary transition-colors"
+              className="p-1.5 rounded hover:bg-muted !text-secondary hover:!text-primary transition-colors"
               title={t('toolbar_insert_document') || 'Insérer un document'}
             >
               <IconFileText className="w-4 h-4" />
@@ -1306,7 +1306,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => setShowVideoInput(!showVideoInput)}
-              className={`p-1.5 rounded transition-colors ${showVideoInput ? 'bg-accent text-white' : 'hover:bg-muted text-secondary hover:text-primary'}`}
+              className={`p-1.5 rounded transition-colors ${showVideoInput ? 'bg-accent !text-white' : 'hover:bg-muted !text-secondary hover:!text-primary'}`}
               title={t('toolbar_insert_video') || 'Insérer une vidéo'}
             >
               <IconPlayerPlay className="w-4 h-4" />
@@ -1319,20 +1319,20 @@ export default function RichTextEditor({
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
                   placeholder="https://..."
-                  className="px-2 py-1 text-sm bg-input border border-input rounded text-muted w-56"
+                  className="px-2 py-1 !text-sm bg-input border border-input rounded !text-muted w-56"
                   onKeyDown={(e) => e.key === 'Enter' && insertVideo()}
                 />
                 <button
                   type="button"
                   onClick={insertVideo}
-                  className="px-3 py-1 bg-accent text-white rounded text-sm"
+                  className="px-3 py-1 bg-accent !text-white rounded !text-sm"
                 >
                   OK
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowVideoInput(false)}
-                  className="p-1 text-secondary hover:text-primary"
+                  className="p-1 !text-secondary hover:!text-primary"
                 >
                   <IconX className="w-4 h-4" />
                 </button>
@@ -1354,26 +1354,26 @@ export default function RichTextEditor({
               transform: 'translateX(-50%)',
             }}
           >
-            <button type="button" onClick={() => setMediaAlignment('left')} className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white" title="Gauche">
+            <button type="button" onClick={() => setMediaAlignment('left')} className="p-1.5 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white" title="Gauche">
               <IconAlignLeft className="w-4 h-4" />
             </button>
-            <button type="button" onClick={() => setMediaAlignment('center')} className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white" title="Centre">
+            <button type="button" onClick={() => setMediaAlignment('center')} className="p-1.5 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white" title="Centre">
               <IconAlignCenter className="w-4 h-4" />
             </button>
-            <button type="button" onClick={() => setMediaAlignment('right')} className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white" title="Droite">
+            <button type="button" onClick={() => setMediaAlignment('right')} className="p-1.5 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white" title="Droite">
               <IconAlignRight className="w-4 h-4" />
             </button>
             
             <div className="w-px h-5 bg-gray-600 mx-1" />
             
-            <button type="button" onClick={() => setMediaSize('small')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white !text-xs font-medium">S</button>
-            <button type="button" onClick={() => setMediaSize('medium')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white !text-xs font-medium">M</button>
-            <button type="button" onClick={() => setMediaSize('large')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white !text-xs font-medium">L</button>
-            <button type="button" onClick={() => setMediaSize('full')} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white !text-xs font-medium">100%</button>
+            <button type="button" onClick={() => setMediaSize('small')} className="px-2 py-1 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white !text-xs font-medium">S</button>
+            <button type="button" onClick={() => setMediaSize('medium')} className="px-2 py-1 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white !text-xs font-medium">M</button>
+            <button type="button" onClick={() => setMediaSize('large')} className="px-2 py-1 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white !text-xs font-medium">L</button>
+            <button type="button" onClick={() => setMediaSize('full')} className="px-2 py-1 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white !text-xs font-medium">100%</button>
             
             <div className="w-px h-5 bg-gray-600 mx-1" />
             
-            <button type="button" onClick={deleteSelectedMedia} className="p-1.5 rounded hover:bg-red-600 text-gray-300 hover:text-white" title="Supprimer">
+            <button type="button" onClick={deleteSelectedMedia} className="p-1.5 rounded hover:bg-red-600 !text-gray-300 hover:!text-white" title="Supprimer">
               <IconTrash className="w-4 h-4" />
             </button>
           </div>
@@ -1415,7 +1415,7 @@ export default function RichTextEditor({
               startDrag(e.nativeEvent, hoveredBlock);
             }}
           >
-            <IconGripVertical className="w-4 h-4 text-secondary" />
+            <IconGripVertical className="w-4 h-4 !text-secondary" />
           </div>
         )}
 
@@ -1430,19 +1430,19 @@ export default function RichTextEditor({
           onMouseMove={handleEditorMouseMove}
           onMouseLeave={handleEditorMouseLeave}
           className="focus:outline-none prose prose-sm max-w-none dark:prose-invert overflow-y-auto !pl-8
-            [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:text-primary
-            [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:text-primary
-            [&_p]:mb-2 [&_p]:text-secondary
-            [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:text-secondary
-            [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-secondary
-            [&_a]:text-accent [&_a]:underline
+            [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:!text-primary
+            [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:!text-primary
+            [&_p]:mb-2 [&_p]:!text-secondary
+            [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:!text-secondary
+            [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:!text-secondary
+            [&_a]:!text-accent [&_a]:underline
             [&_img]:rounded-lg [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
             [&_.color-code]:inline-flex [&_.color-code]:items-center [&_.color-code]:gap-1 [&_.color-code]:px-1 [&_.color-code]:rounded [&_.color-code]:bg-muted/40
             [&_.color-swatch]:inline-block [&_.color-swatch]:w-3 [&_.color-swatch]:h-3 [&_.color-swatch]:rounded-sm [&_.color-swatch]:border [&_.color-swatch]:border-default
             [&_.editor-block]:relative [&_.editor-block]:transition-all
             [&_.editor-image-block]:my-2 [&_.editor-image-block]:rounded-lg
             [&_.editor-image-block:hover]:ring-1 [&_.editor-image-block:hover]:ring-accent/30
-            empty:before:content-[attr(data-placeholder)] empty:before:text-muted empty:before:pointer-events-none"
+            empty:before:content-[attr(data-placeholder)] empty:before:!text-muted empty:before:pointer-events-none"
           style={{ 
             minHeight,
             maxHeight,
@@ -1462,7 +1462,7 @@ export default function RichTextEditor({
               left: Math.max(0, Math.min(emojiPickerPosition.left, 200)),
             }}
           >
-            <div className="!text-xs text-muted px-2 py-1 mb-1 flex items-center gap-2">
+            <div className="!text-xs !text-muted px-2 py-1 mb-1 flex items-center gap-2">
               <span>:{emojiSearch}</span>
               <span className="text-muted/50">• ↑↓ naviguez • ↵ sélectionner</span>
             </div>
@@ -1476,7 +1476,7 @@ export default function RichTextEditor({
                   className={`w-full flex items-center gap-3 px-2 py-1.5 rounded-md transition-colors ${
                     index === selectedEmojiIndex
                       ? 'bg-accent-light !text-accent'
-                      : 'hover:bg-hover text-primary'
+                      : 'hover:bg-hover !text-primary'
                   }`}
                 >
                   <span className="text-xl">{emoji.emoji}</span>
@@ -1528,7 +1528,7 @@ export default function RichTextEditor({
             
             {/* Edge resize handles */}
             <div
-              className="absolute w-8 h-3 bg-accent-light0 rounded-sm cursor-n-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="absolute w-8 h-3 bg-accent-light0 rounded-sm cursor-n-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop - 4,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth / 2 - 16,
@@ -1536,7 +1536,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 'n')}
             />
             <div
-              className="absolute w-3 h-8 bg-accent-light0 rounded-sm cursor-e-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="absolute w-3 h-8 bg-accent-light0 rounded-sm cursor-e-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight / 2 - 16,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth - 8,
@@ -1544,7 +1544,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 'e')}
             />
             <div
-              className="absolute w-8 h-3 bg-accent-light0 rounded-sm cursor-s-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="absolute w-8 h-3 bg-accent-light0 rounded-sm cursor-s-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight - 8,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth / 2 - 16,
@@ -1552,7 +1552,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 's')}
             />
             <div
-              className="absolute w-3 h-8 bg-accent-light0 rounded-sm cursor-w-resize z-30 hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="absolute w-3 h-8 bg-accent-light0 rounded-sm cursor-w-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight / 2 - 16,
                 left: selectedMedia.offsetLeft - 4,

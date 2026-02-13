@@ -302,13 +302,13 @@ export default function OnboardingTour({
                 <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
                   <IconSparkles size={15} className="!text-accent" />
                 </div>
-                <span className="text-sm text-secondary font-medium">
+                <span className="text-sm !text-secondary font-medium">
                   {currentStep + 1} / {steps.length}
                 </span>
               </div>
               <button
                 onClick={handleSkip}
-                className="p-2 rounded-lg hover:bg-hover text-muted hover:text-primary transition-colors"
+                className="p-2 rounded-lg hover:bg-hover !text-muted hover:!text-primary transition-colors"
                 title={t('skip') || 'Passer'}
               >
                 <IconX size={18} />
@@ -317,14 +317,14 @@ export default function OnboardingTour({
 
             {/* Content */}
             <div className="px-6 pb-5">
-              <h3 className="text-xl font-bold text-primary mb-3">
+              <h3 className="text-xl font-bold !text-primary mb-3">
                 {step.title}
               </h3>
-              <p className="text-base text-secondary leading-relaxed">
+              <p className="text-base !text-secondary leading-relaxed">
                 {step.description}
               </p>
               {step.microCopy && (
-                <p className="text-sm text-muted mt-3 italic">
+                <p className="text-sm !text-muted mt-3 italic">
                   {step.microCopy}
                 </p>
               )}
@@ -334,7 +334,7 @@ export default function OnboardingTour({
             <div className="px-6 pb-6 flex items-center justify-between">
               <button
                 onClick={handleSkip}
-                className="text-sm text-muted hover:text-primary transition-colors"
+                className="text-sm !text-muted hover:!text-primary transition-colors"
               >
                 {step.skipText || t('skip_tutorial') || 'Passer le tutoriel'}
               </button>
@@ -343,7 +343,7 @@ export default function OnboardingTour({
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={handleNext}
-                className="flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-accent text-white rounded-xl font-semibold text-sm transition-colors shadow-lg"
+                className="flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-accent !text-white rounded-xl font-semibold !text-sm transition-colors shadow-lg"
               >
                 {isLastStep ? (
                   <>
@@ -386,7 +386,7 @@ export function OnboardingReplayButton({
   return (
     <button
       onClick={onReplay}
-      className="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:text-accent bg-muted hover:bg-accent-light rounded-lg transition-all"
+      className="flex items-center gap-2 px-3 py-2 !text-sm !text-secondary hover:!text-accent bg-muted hover:bg-accent-light rounded-lg transition-all"
       title={label || t('replay_tutorial') || 'Revoir le tutoriel'}
     >
       <IconPlayerPlay size={14} className="!text-accent" />

@@ -182,7 +182,7 @@ function EmailPreview({
   const fontStyle = { fontFamily: emailFontFamily };
 
   return (
-    <div className="bg-white rounded-lg shadow-xl overflow-hidden w-full text-gray-800" style={fontStyle}>
+    <div className="bg-white rounded-lg shadow-xl overflow-hidden w-full !text-gray-800" style={fontStyle}>
       {/* Header with template-specific styling */}
       <div 
         className={`text-center ${isAnnouncement ? 'py-12' : 'py-8'}`}
@@ -200,7 +200,7 @@ function EmailPreview({
         }}
       >
         {isPromo && (
-          <div className="inline-block px-4 py-1 bg-white/40 backdrop-blur rounded-full text-gray-800 text-sm font-bold mb-4">
+          <div className="inline-block px-4 py-1 bg-white/40 backdrop-blur rounded-full !text-gray-800 !text-sm font-bold mb-4">
             🎉 {translations.specialOffer}
           </div>
         )}
@@ -217,7 +217,7 @@ function EmailPreview({
       <div className="p-8">
         {/* Content - with forced font inheritance */}
         <div 
-          className="prose prose-sm max-w-none text-gray-700 mb-6 [&_*]:!font-[inherit]"
+          className="prose prose-sm max-w-none !text-gray-700 mb-6 [&_*]:!font-[inherit]"
           style={{ fontFamily: emailFontFamily }}
           dangerouslySetInnerHTML={{ 
             __html: emailContent || `<p style="color: #9CA3AF;">${translations.contentPreviewPlaceholder}</p>` 
@@ -345,7 +345,7 @@ function EmailPreview({
           
           {/* Unsubscribe */}
           {translations.unsubscribe && (
-            <p className="!text-xs mt-4 text-center">
+            <p className="!text-xs mt-4 !text-center">
               <a href="#" style={{ color: sigPrimaryColor }} className="hover:underline">
                 {translations.unsubscribe}
               </a>
@@ -374,14 +374,14 @@ function EmailPreview({
                 />
               ) : (
                 <div className="w-16 h-16 rounded-lg bg-gray-300 flex items-center justify-center">
-                  <IconUser className="w-8 h-8 text-info " />
+                  <IconUser className="w-8 h-8 !text-info " />
                 </div>
               )}
             </div>
 
             {/* Contact Info */}
-            <div className="flex-1 text-sm text-gray-600">
-              <p className="font-semibold text-gray-800 mb-1">
+            <div className="flex-1 !text-sm !text-gray-600">
+              <p className="font-semibold !text-gray-800 mb-1">
                 {footerSettings.firstName} {footerSettings.lastName}
               </p>
               {footerSettings.email && (
@@ -408,22 +408,22 @@ function EmailPreview({
               {/* Social Links */}
               <div className="flex items-center gap-3 mt-3">
                 {footerSettings.linkedin && (
-                  <a href={footerSettings.linkedin} className="text-info hover:text-blue-600">
+                  <a href={footerSettings.linkedin} className="text-info hover:!text-blue-600">
                     <IconBrandLinkedin className="w-5 h-5" />
                   </a>
                 )}
                 {footerSettings.twitter && (
-                  <a href={footerSettings.twitter} className="text-info hover:text-sky-500">
+                  <a href={footerSettings.twitter} className="text-info hover:!text-sky-500">
                     <IconBrandTwitter className="w-5 h-5" />
                   </a>
                 )}
                 {footerSettings.instagram && (
-                  <a href={footerSettings.instagram} className="text-info hover:text-pink-600">
+                  <a href={footerSettings.instagram} className="text-info hover:!text-pink-600">
                     <IconBrandInstagram className="w-5 h-5" />
                   </a>
                 )}
                 {footerSettings.facebook && (
-                  <a href={footerSettings.facebook} className="text-info hover:text-blue-700">
+                  <a href={footerSettings.facebook} className="text-info hover:!text-blue-700">
                     <IconBrandFacebook className="w-5 h-5" />
                   </a>
                 )}
@@ -433,13 +433,13 @@ function EmailPreview({
 
           {/* Custom text */}
           {footerSettings.customText && (
-            <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-gray-200">
+            <p className="text-sm !text-gray-600 mt-4 pt-4 border-t border-gray-200">
               {footerSettings.customText}
             </p>
           )}
 
           {/* Unsubscribe */}
-          <p className="!text-xs text-gray-400 mt-4 text-center">
+          <p className="!text-xs !text-gray-400 mt-4 !text-center">
             <a href="#" className="hover:underline">{footerSettings.unsubscribeText}</a>
           </p>
         </div>
@@ -836,7 +836,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h1')}
-            className="p-2 rounded cursor-pointer hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded cursor-pointer hover:bg-hover transition-colors !text-secondary hover:!text-primary"
             title={translations.heading1}
           >
             <IconH1 className="w-4 h-4" />
@@ -844,7 +844,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h2')}
-            className="p-2 rounded cursor-pointer   hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded cursor-pointer   hover:bg-hover transition-colors !text-secondary hover:!text-primary"
             title={translations.heading2}
           >
             <IconH2 className="w-4 h-4" />
@@ -852,7 +852,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'p')}
-            className="p-2 rounded cursor-pointer hover:bg-hover transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded cursor-pointer hover:bg-hover transition-colors !text-secondary hover:!text-primary"
             title={translations.paragraph}
           >
             <IconTypography className="w-4 h-4" />
@@ -864,7 +864,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('bold')}
-            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors !text-secondary hover:!text-primary"
             title={translations.bold}
           >
             <IconBold className="w-4 h-4" />
@@ -872,7 +872,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('italic')}
-            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors !text-secondary hover:!text-primary"
             title={translations.italic}
           >
             <IconItalic className="w-4 h-4" />
@@ -884,7 +884,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('insertUnorderedList')}
-            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors !text-secondary hover:!text-primary"
             title={translations.bulletList}
           >
             <IconList className="w-4 h-4" />
@@ -892,7 +892,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('insertOrderedList')}
-            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors !text-secondary hover:!text-primary"
             title={translations.numberedList}
           >
             <IconListNumbers className="w-4 h-4" />
@@ -904,7 +904,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('justifyLeft')}
-            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors !text-secondary hover:!text-primary"
             title={translations.alignLeft}
           >
             <IconAlignLeft className="w-4 h-4" />
@@ -912,7 +912,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('justifyCenter')}
-            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors !text-secondary hover:!text-primary"
             title={translations.alignCenter}
           >
             <IconAlignCenter className="w-4 h-4" />
@@ -920,7 +920,7 @@ function RichTextEditor({
           <button
             type="button"
             onClick={() => execCommand('justifyRight')}
-            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors text-secondary hover:text-primary"
+            className="p-2 rounded hover:bg-hover cursor-pointer transition-colors !text-secondary hover:!text-primary"
             title={translations.alignRight}
           >
             <IconAlignRight className="w-4 h-4" />
@@ -934,8 +934,8 @@ function RichTextEditor({
             onClick={toggleColorPicker}
             className={`p-2 rounded transition-colors ${
               showColorPicker 
-                ? 'bg-accent text-white' 
-                : 'hover:bg-hover text-secondary cursor-pointer hover:text-primary'
+                ? 'bg-accent !text-white' 
+                : 'hover:bg-hover !text-secondary cursor-pointer hover:!text-primary'
             }`}
             title={translations.textColor}
           >
@@ -966,8 +966,8 @@ function RichTextEditor({
             onClick={toggleLinkInput}
             className={`p-2 rounded transition-colors ${
               showLinkInput 
-                ? 'bg-accent text-white' 
-                : 'hover:bg-hover text-secondary cursor-pointer hover:text-primary'
+                ? 'bg-accent !text-white' 
+                : 'hover:bg-hover !text-secondary cursor-pointer hover:!text-primary'
             }`}
             title={translations.insertLink}
           >
@@ -980,12 +980,12 @@ function RichTextEditor({
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 placeholder="https://..."
-                className="input text-sm w-48"
+                className="input !text-sm w-48"
               />
               <button
                 type="button"
                 onClick={insertLink}
-                className="px-3 py-1 bg-accent text-white rounded cursor-pointer text-sm"
+                className="px-3 py-1 bg-accent !text-white rounded cursor-pointer !text-sm"
               >
                 OK
               </button>
@@ -1003,8 +1003,8 @@ function RichTextEditor({
               disabled={uploadingImage}
               className={`p-2 rounded cursor-pointer transition-colors disabled:opacity-50 ${
                 showImagePicker 
-                  ? 'bg-accent text-white' 
-                  : 'hover:bg-hover text-secondary hover:text-primary'
+                  ? 'bg-accent !text-white' 
+                  : 'hover:bg-hover !text-secondary hover:!text-primary'
               }`}
               title={translations.insertImage || 'Image'}
             >
@@ -1025,9 +1025,9 @@ function RichTextEditor({
                         onImageFromComputer?.();
                         setShowImagePicker(false);
                       }}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary"
+                      className="w-full px-4 py-2.5 !text-left !text-sm hover:bg-hover transition-colors flex items-center gap-3 !text-primary"
                     >
-                      <IconUpload className="w-4 h-4 text-secondary" />
+                      <IconUpload className="w-4 h-4 !text-secondary" />
                       {translations.fromComputer || 'Depuis l\'ordinateur'}
                     </button>
                     <button
@@ -1036,17 +1036,17 @@ function RichTextEditor({
                         onImageFromLibrary?.();
                         setShowImagePicker(false);
                       }}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary border-t border-default"
+                      className="w-full px-4 py-2.5 !text-left !text-sm hover:bg-hover transition-colors flex items-center gap-3 !text-primary border-t border-default"
                     >
-                      <IconPhoto className="w-4 h-4 text-secondary" />
+                      <IconPhoto className="w-4 h-4 !text-secondary" />
                       {translations.fromLibrary || 'Depuis la bibliothèque'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowImageUrlInput(true)}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary border-t border-default"
+                      className="w-full px-4 py-2.5 !text-left !text-sm hover:bg-hover transition-colors flex items-center gap-3 !text-primary border-t border-default"
                     >
-                      <IconLink className="w-4 h-4 text-secondary" />
+                      <IconLink className="w-4 h-4 !text-secondary" />
                       {translations.fromUrl || 'Depuis une URL'}
                     </button>
                   </>
@@ -1057,21 +1057,21 @@ function RichTextEditor({
                       value={imageUrlInput}
                       onChange={(e) => setImageUrlInput(e.target.value)}
                       placeholder="https://..."
-                      className="input text-sm w-full"
+                      className="input !text-sm w-full"
                       autoFocus
                     />
                     <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => setShowImageUrlInput(false)}
-                        className="flex-1 px-3 py-1.5 text-sm text-secondary hover:text-primary transition-colors"
+                        className="flex-1 px-3 py-1.5 !text-sm !text-secondary hover:!text-primary transition-colors"
                       >
                         {translations.cancel || 'Annuler'}
                       </button>
                       <button
                         type="button"
                         onClick={handleImageUrl}
-                        className="flex-1 px-3 py-1.5 bg-accent text-white rounded text-sm"
+                        className="flex-1 px-3 py-1.5 bg-accent !text-white rounded !text-sm"
                       >
                         OK
                       </button>
@@ -1090,8 +1090,8 @@ function RichTextEditor({
               disabled={uploadingVideo}
               className={`p-2 rounded cursor-pointer transition-colors disabled:opacity-50 ${
                 showVideoPicker 
-                  ? 'bg-accent text-white' 
-                  : 'hover:bg-hover text-secondary hover:text-primary'
+                  ? 'bg-accent !text-white' 
+                  : 'hover:bg-hover !text-secondary hover:!text-primary'
               }`}
               title={translations.insertVideo || 'Video'}
             >
@@ -1112,9 +1112,9 @@ function RichTextEditor({
                         onVideoFromComputer?.();
                         setShowVideoPicker(false);
                       }}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary"
+                      className="w-full px-4 py-2.5 !text-left !text-sm hover:bg-hover transition-colors flex items-center gap-3 !text-primary"
                     >
-                      <IconUpload className="w-4 h-4 text-secondary" />
+                      <IconUpload className="w-4 h-4 !text-secondary" />
                       {translations.fromComputer || 'Depuis l\'ordinateur'}
                     </button>
                     <button
@@ -1123,17 +1123,17 @@ function RichTextEditor({
                         onVideoFromLibrary?.();
                         setShowVideoPicker(false);
                       }}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary border-t border-default"
+                      className="w-full px-4 py-2.5 !text-left !text-sm hover:bg-hover transition-colors flex items-center gap-3 !text-primary border-t border-default"
                     >
-                      <IconVideo className="w-4 h-4 text-secondary" />
+                      <IconVideo className="w-4 h-4 !text-secondary" />
                       {translations.fromLibrary || 'Depuis la bibliothèque'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowVideoUrlInput(true)}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-hover transition-colors flex items-center gap-3 text-primary border-t border-default"
+                      className="w-full px-4 py-2.5 !text-left !text-sm hover:bg-hover transition-colors flex items-center gap-3 !text-primary border-t border-default"
                     >
-                      <IconLink className="w-4 h-4 text-secondary" />
+                      <IconLink className="w-4 h-4 !text-secondary" />
                       {translations.fromUrl || 'Depuis une URL'}
                     </button>
                   </>
@@ -1144,21 +1144,21 @@ function RichTextEditor({
                       value={videoUrlInput}
                       onChange={(e) => setVideoUrlInput(e.target.value)}
                       placeholder="https://..."
-                      className="input text-sm w-full"
+                      className="input !text-sm w-full"
                       autoFocus
                     />
                     <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => setShowVideoUrlInput(false)}
-                        className="flex-1 px-3 py-1.5 text-sm text-secondary hover:text-primary transition-colors"
+                        className="flex-1 px-3 py-1.5 !text-sm !text-secondary hover:!text-primary transition-colors"
                       >
                         {translations.cancel || 'Annuler'}
                       </button>
                       <button
                         type="button"
                         onClick={handleVideoUrl}
-                        className="flex-1 px-3 py-1.5 bg-accent text-white rounded text-sm"
+                        className="flex-1 px-3 py-1.5 bg-accent !text-white rounded !text-sm"
                       >
                         OK
                       </button>
@@ -1187,7 +1187,7 @@ function RichTextEditor({
             <button
               type="button"
               onClick={() => setMediaAlignment('left')}
-              className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+              className="p-1.5 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white transition-colors"
               title="Aligner à gauche avec texte"
             >
               <IconAlignLeft className="w-4 h-4" />
@@ -1195,7 +1195,7 @@ function RichTextEditor({
             <button
               type="button"
               onClick={() => setMediaAlignment('center')}
-              className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+              className="p-1.5 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white transition-colors"
               title="Centrer"
             >
               <IconAlignCenter className="w-4 h-4" />
@@ -1203,7 +1203,7 @@ function RichTextEditor({
             <button
               type="button"
               onClick={() => setMediaAlignment('right')}
-              className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+              className="p-1.5 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white transition-colors"
               title="Aligner à droite avec texte"
             >
               <IconAlignRight className="w-4 h-4" />
@@ -1215,7 +1215,7 @@ function RichTextEditor({
             <button
               type="button"
               onClick={() => setMediaSize('small')}
-              className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors !text-xs font-medium"
+              className="px-2 py-1 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white transition-colors !text-xs font-medium"
               title="Petit"
             >
               S
@@ -1223,7 +1223,7 @@ function RichTextEditor({
             <button
               type="button"
               onClick={() => setMediaSize('medium')}
-              className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors !text-xs font-medium"
+              className="px-2 py-1 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white transition-colors !text-xs font-medium"
               title="Moyen"
             >
               M
@@ -1231,7 +1231,7 @@ function RichTextEditor({
             <button
               type="button"
               onClick={() => setMediaSize('large')}
-              className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors !text-xs font-medium"
+              className="px-2 py-1 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white transition-colors !text-xs font-medium"
               title="Grand"
             >
               L
@@ -1239,7 +1239,7 @@ function RichTextEditor({
             <button
               type="button"
               onClick={() => setMediaSize('full')}
-              className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 hover:text-white transition-colors !text-xs font-medium"
+              className="px-2 py-1 rounded hover:bg-gray-700 !text-gray-300 hover:!text-white transition-colors !text-xs font-medium"
               title="Pleine largeur"
             >
               100%
@@ -1251,7 +1251,7 @@ function RichTextEditor({
             <button
               type="button"
               onClick={deleteSelectedMedia}
-              className="p-1.5 rounded hover:bg-red-600 text-gray-300 hover:text-white transition-colors"
+              className="p-1.5 rounded hover:bg-red-600 !text-gray-300 hover:!text-white transition-colors"
               title="Supprimer"
             >
               <IconTrash className="w-4 h-4" />
@@ -1281,15 +1281,15 @@ function RichTextEditor({
           onInput={handleInput}
           onClick={handleEditorClick}
           className="min-h-[200px] p-4 bg-white focus:outline-none prose prose-sm max-w-none
-            [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3
-            [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mb-2
+            [&_h1]:!text-2xl [&_h1]:font-bold [&_h1]:mb-3
+            [&_h2]:!text-xl [&_h2]:font-semibold [&_h2]:mb-2
             [&_p]:mb-2
             [&_ul]:list-disc [&_ul]:pl-5
             [&_ol]:list-decimal [&_ol]:pl-5
-            [&_a]:text-accent [&_a]:underline
+            [&_a]:!text-accent [&_a]:underline
             [&_img]:rounded-lg [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
             [&_video]:rounded-lg [&_video]:cursor-pointer [&_video]:transition-all [&_video]:max-w-full
-            empty:before:content-[attr(data-placeholder)] empty:before:text-gray-400 empty:before:pointer-events-none"
+            empty:before:content-[attr(data-placeholder)] empty:before:!text-gray-400 empty:before:pointer-events-none"
           style={{ 
             fontFamily: editorFontFamily,
             color: '#000000',
@@ -2508,7 +2508,7 @@ export default function ComposeNewsletterPage() {
         <table width="700" cellpadding="0" cellspacing="0" style="max-width: 700px; width: 100%; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <!-- Header -->
           <tr>
-            <td style="${headerBackground} padding: ${isAnnouncement ? '48px' : '32px'} 24px; text-align: center;">
+            <td style="${headerBackground} padding: ${isAnnouncement ? '48px' : '32px'} 24px; !text-align: center;">
               ${isPromo ? `<div style="display: inline-block; padding: 4px 16px; background-color: rgba(255,255,255,0.4); border-radius: 20px; color: #1f2937; font-size: 14px; font-weight: bold; margin-bottom: 16px;">🎉 ${t('special_offer') || 'Offre Spéciale'}</div>` : ''}
               <h1 style="margin: 0; color: ${titleColor}; font-size: ${isAnnouncement ? '28px' : '24px'}; font-weight: bold;">${title}</h1>
             </td>
@@ -2523,7 +2523,7 @@ export default function ComposeNewsletterPage() {
               
               ${cta && ctaLink ? `
               <div style="text-align: center; margin: 32px 0;">
-                <a href="${ctaLink}" style="display: inline-block; padding: 16px 32px; background-color: ${ctaButtonColor}; color: ${ctaButtonTextColor}; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+                <a href="${ctaLink}" style="display: inline-block; padding: 16px 32px; background-color: ${ctaButtonColor}; color: ${ctaButtonTextColor}; !text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
                   ${cta}${isPromo ? ' →' : ''}
                 </a>
               </div>
@@ -2555,7 +2555,7 @@ export default function ComposeNewsletterPage() {
               
               ${footer.customText ? `<p style="margin: 16px 0 0 0; padding-top: 16px; border-top: 1px solid #e5e7eb; color: #FFFFFF; font-size: 14px;">${footer.customText}</p>` : ''}
               
-              <p style="margin: 16px 0 0 0; text-align: center; color: #9ca3af; font-size: 12px;">
+              <p style="margin: 16px 0 0 0; !text-align: center; color: #9ca3af; font-size: 12px;">
                 <a href="#" style="color: #9ca3af;">${footer.unsubscribeText}</a>
               </p>
             </td>
@@ -2635,12 +2635,12 @@ export default function ComposeNewsletterPage() {
               <div className="flex items-center gap-4">
                 <Link 
                   href="/dashboard/newsletters"
-                  className="p-2 rounded-lg hover:bg-hover transition-colors text-secondary"
+                  className="p-2 rounded-lg hover:bg-hover transition-colors !text-secondary"
                 >
                   <IconArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex flex-col gap-1">
-                  <h1 className="text-lg font-semibold text-primary">{t('create_newsletter')}</h1>
+                  <h1 className="text-lg font-semibold !text-primary">{t('create_newsletter')}</h1>
                   {selectedTemplate ? (
                     <span 
                       className="text-sm px-3 py-1 rounded-full !text-gray-800 font-medium w-fit my-2"
@@ -2649,7 +2649,7 @@ export default function ComposeNewsletterPage() {
                       {templates.find(tp => tp.id === selectedTemplate)?.name}
                     </span>
                   ) : (
-                    <p className="text-sm text-muted my-2">  
+                    <p className="text-sm !text-muted my-2">  
                       {t('select_template')}
                     </p>
                   )}
@@ -2660,7 +2660,7 @@ export default function ComposeNewsletterPage() {
                 <button
                   onClick={() => setShowPreview(!showPreview)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
-                    ${showPreview ? 'bg-accent text-white' : 'bg-muted hover:bg-hover text-secondary'}`}
+                    ${showPreview ? 'bg-accent !text-white' : 'bg-muted hover:bg-hover !text-secondary'}`}
                 >
                   <IconEye className="w-4 h-4" />
                   <span className="hidden sm:inline">{t('preview')}</span>
@@ -2708,7 +2708,7 @@ export default function ComposeNewsletterPage() {
                         ? 'bg-accent-light !text-white' 
                         : index < stepIndex 
                           ? 'bg-success-light !text-success-text ' 
-                          : '!text-primary hover:text-secondary'
+                          : '!text-primary hover:!text-secondary'
                       }`}
                   >
                     {index < stepIndex ? (
@@ -2743,7 +2743,7 @@ export default function ComposeNewsletterPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                   >
-                    <h2 className="text-2xl font-bold text-primary mb-2">{t('choose_template')}</h2>
+                    <h2 className="text-2xl font-bold !text-primary mb-2">{t('choose_template')}</h2>
                     <p className="text-secondary mb-8">{t('choose_template_desc')}</p>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -2755,7 +2755,7 @@ export default function ComposeNewsletterPage() {
                             onClick={() => handleSelectTemplate(template.id)}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className={`relative p-5 rounded-2xl border transition-all text-left
+                            className={`relative p-5 rounded-2xl border transition-all !text-left
                               ${isSelected 
                                 ? 'border-default !shadow-lg !shadow-accent/20' 
                                 : 'border-default hover:border-accent-light'
@@ -2768,7 +2768,7 @@ export default function ComposeNewsletterPage() {
                           >
                             {isSelected && (
                               <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-white/50 backdrop-blur flex items-center justify-center">
-                                <IconCheck className="w-4 h-4 text-gray-700" />
+                                <IconCheck className="w-4 h-4 !text-gray-700" />
                               </div>
                             )}
                             
@@ -2814,11 +2814,11 @@ export default function ComposeNewsletterPage() {
                     {customTemplates.length > 0 && (
                       <div className="mt-8">
                         <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                          <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
                             <IconPalette className="w-5 h-5 !text-accent" />
                             {t('my_saved_themes') || 'Mes thèmes'}
                           </h3>
-                          <span className="text-sm text-muted">
+                          <span className="text-sm !text-muted">
                             {customTemplates.length} {customTemplates.length === 1 ? t('theme') || 'thème' : t('themes') || 'thèmes'}
                           </span>
                         </div>
@@ -2833,7 +2833,7 @@ export default function ComposeNewsletterPage() {
                               <motion.div
                                 key={template.documentId}
                                 whileHover={{ scale: 1.02 }}
-                                className={`relative p-4 rounded-xl border transition-all text-left bg-card group ${
+                                className={`relative p-4 rounded-xl border transition-all !text-left bg-card group ${
                                   isActive 
                                     ? 'border-accent border-2 border-accent' 
                                     : 'border-default hover:border-accent'
@@ -2841,14 +2841,14 @@ export default function ComposeNewsletterPage() {
                               >
                                 {/* Badge défaut */}
                                 {template.is_default && (
-                                  <div className="absolute -top-2 -right-2 bg-yellow-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 z-10">
+                                  <div className="absolute -top-2 -right-2 bg-yellow-500 !text-white !text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 z-10">
                                     <IconStarFilled className="w-2.5 h-2.5" />
                                   </div>
                                 )}
                                 
                                 {/* Active badge */}
                                 {isActive && (
-                                  <div className="absolute -top-2 -left-2 bg-accent text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 z-10">
+                                  <div className="absolute -top-2 -left-2 bg-accent !text-white !text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 z-10">
                                     <IconCheck className="w-2.5 h-2.5" />
                                     {t('active') || 'Actif'}
                                   </div>
@@ -2860,7 +2860,7 @@ export default function ComposeNewsletterPage() {
                                     setSelectedTemplate('custom');
                                     applyTemplate(template);
                                   }}
-                                  className="w-full text-left"
+                                  className="w-full !text-left"
                                 >
                                   {/* Preview */}
                                   <div className="flex items-center gap-2 mb-2">
@@ -2892,12 +2892,12 @@ export default function ComposeNewsletterPage() {
                                   </div>
                                   
                                   {/* Nom */}
-                                  <p className="font-medium text-primary text-sm truncate group-hover:text-accent transition-colors">
+                                  <p className="font-medium !text-primary !text-sm truncate group-hover:!text-accent transition-colors">
                                     {template.name}
                                   </p>
                                   
                                   {/* Font */}
-                                  <p className="text-[10px] text-muted truncate">
+                                  <p className="text-[10px] !text-muted truncate">
                                     <span style={{ fontFamily: template.font_family }}>
                                       {template.font_family.split(',')[0]}
                                     </span>
@@ -2935,7 +2935,7 @@ export default function ComposeNewsletterPage() {
                                       }
                                     }}
                                     disabled={isUpdating || isDeleting}
-                                    className="flex items-center justify-center p-1.5 !text-xs rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                                    className="flex items-center justify-center p-1.5 !text-xs rounded-lg bg-red-500/10 !text-red-500 hover:bg-red-500/20 transition-colors disabled:opacity-50"
                                     title={t('delete_theme') || 'Supprimer ce thème'}
                                   >
                                     {isDeleting ? (
@@ -2997,14 +2997,14 @@ export default function ComposeNewsletterPage() {
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h2 className="text-2xl font-bold text-primary mb-2">{t('write_content')}</h2>
+                        <h2 className="text-2xl font-bold !text-primary mb-2">{t('write_content')}</h2>
                         <p className="text-primary">{t('write_content_desc')}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setShowThemeSettings(!showThemeSettings)}
                           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
-                            ${showThemeSettings ? 'bg-accent text-white' : 'bg-muted hover:bg-hover text-secondary'}`}
+                            ${showThemeSettings ? 'bg-accent !text-white' : 'bg-muted hover:bg-hover !text-secondary'}`}
                         >
                           <IconPalette className="w-4 h-4 !text-primary" />
                           <span>{t('theme') || 'Thème'}</span>
@@ -3012,7 +3012,7 @@ export default function ComposeNewsletterPage() {
                         <button
                           onClick={() => setShowFooterSettings(!showFooterSettings)}
                           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
-                            ${showFooterSettings ? 'bg-accent text-white' : 'bg-muted hover:bg-hover text-secondary'}`}
+                            ${showFooterSettings ? 'bg-accent !text-white' : 'bg-muted hover:bg-hover !text-secondary'}`}
                         >
                           <IconSettings className="w-4 h-4" />
                           <span>{t('footer')}</span>
@@ -3030,7 +3030,7 @@ export default function ComposeNewsletterPage() {
                           className="overflow-hidden"
                         >
                           <div className="bg-muted rounded-xl p-6 space-y-4 border border-default">
-                            <h3 className="font-semibold text-primary flex items-center gap-2">
+                            <h3 className="font-semibold !text-primary flex items-center gap-2">
                               <IconSettings className="w-5 h-5" />
                               {t('customize_footer')}
                             </h3>
@@ -3038,7 +3038,7 @@ export default function ComposeNewsletterPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               {/* Identity */}
                               <div>
-                                <label className="block text-sm font-medium text-secondary mb-1">{t('first_name_label')}</label>
+                                <label className="block !text-sm font-medium !text-secondary mb-1">{t('first_name_label')}</label>
                                 <input
                                   type="text"
                                   value={footerSettings.firstName}
@@ -3047,7 +3047,7 @@ export default function ComposeNewsletterPage() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-sm font-medium text-secondary mb-1">{t('last_name_label')}</label>
+                                <label className="block !text-sm font-medium !text-secondary mb-1">{t('last_name_label')}</label>
                                 <input
                                   type="text"
                                   value={footerSettings.lastName}
@@ -3058,7 +3058,7 @@ export default function ComposeNewsletterPage() {
                               
                               {/* Contact */}
                               <div>
-                                <label className="block text-sm font-medium text-secondary mb-1">{t('email_label')}</label>
+                                <label className="block !text-sm font-medium !text-secondary mb-1">{t('email_label')}</label>
                                 <input
                                   type="email"
                                   value={footerSettings.email}
@@ -3067,7 +3067,7 @@ export default function ComposeNewsletterPage() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-sm font-medium text-secondary mb-1">{t('phone_label')}</label>
+                                <label className="block !text-sm font-medium !text-secondary mb-1">{t('phone_label')}</label>
                                 <input
                                   type="tel"
                                   value={footerSettings.phone}
@@ -3076,7 +3076,7 @@ export default function ComposeNewsletterPage() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-sm font-medium text-secondary mb-1">{t('website_label')}</label>
+                                <label className="block !text-sm font-medium !text-secondary mb-1">{t('website_label')}</label>
                                 <input
                                   type="url"
                                   value={footerSettings.website}
@@ -3088,7 +3088,7 @@ export default function ComposeNewsletterPage() {
                               
                               {/* Social Links */}
                               <div>
-                                <label className="block text-sm font-medium text-secondary mb-1">
+                                <label className="block !text-sm font-medium !text-secondary mb-1">
                                   <IconBrandLinkedin className="w-4 h-4 inline mr-1" />
                                   {t('linkedin_label')}
                                 </label>
@@ -3101,7 +3101,7 @@ export default function ComposeNewsletterPage() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-sm font-medium text-secondary mb-1">
+                                <label className="block !text-sm font-medium !text-secondary mb-1">
                                   <IconBrandTwitter className="w-4 h-4 inline mr-1" />
                                   {t('twitter_label')}
                                 </label>
@@ -3114,7 +3114,7 @@ export default function ComposeNewsletterPage() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-sm font-medium text-secondary mb-1">
+                                <label className="block !text-sm font-medium !text-secondary mb-1">
                                   <IconBrandInstagram className="w-4 h-4 inline mr-1" />
                                   {t('instagram_label')}
                                 </label>
@@ -3127,7 +3127,7 @@ export default function ComposeNewsletterPage() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-sm font-medium text-secondary mb-1">
+                                <label className="block !text-sm font-medium !text-secondary mb-1">
                                   <IconBrandFacebook className="w-4 h-4 inline mr-1" />
                                   {t('facebook_label')}
                                 </label>
@@ -3142,7 +3142,7 @@ export default function ComposeNewsletterPage() {
                               
                               {/* Custom text */}
                               <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-secondary mb-1">
+                                <label className="block !text-sm font-medium !text-secondary mb-1">
                                   {t('custom_text_label')}
                                 </label>
                                 <textarea
@@ -3155,7 +3155,7 @@ export default function ComposeNewsletterPage() {
                               </div>
                               
                               <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-secondary mb-1">
+                                <label className="block !text-sm font-medium !text-secondary mb-1">
                                   {t('unsubscribe_text_label')}
                                 </label>
                                 <input
@@ -3206,7 +3206,7 @@ export default function ComposeNewsletterPage() {
                     {/* Title */}
                     <div className="bg-card rounded-xl p-6 border border-default space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-secondary mb-2">
+                        <label className="block !text-sm font-medium !text-secondary mb-2">
                           {t('email_title_label')} *
                         </label>
                         <input
@@ -3214,11 +3214,11 @@ export default function ComposeNewsletterPage() {
                           value={emailTitle}
                           onChange={(e) => setEmailTitle(e.target.value)}
                           placeholder={t('email_title_placeholder')}
-                          className="input w-full text-lg"
+                          className="input w-full !text-lg"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-secondary mb-2">
+                        <label className="block !text-sm font-medium !text-secondary mb-2">
                           {t('email_subject_label')} *
                           <span className="text-muted font-normal ml-2">({t('email_subject_hint')})</span>
                         </label>
@@ -3234,7 +3234,7 @@ export default function ComposeNewsletterPage() {
 
                     {/* Rich Text Editor */}
                     <div className="bg-card rounded-xl p-6 border border-default space-y-4">
-                      <h3 className="font-semibold text-primary">{t('message_label')} *</h3>
+                      <h3 className="font-semibold !text-primary">{t('message_label')} *</h3>
                       
                       {/* Hidden file inputs for content media */}
                       <input
@@ -3294,7 +3294,7 @@ export default function ComposeNewsletterPage() {
                           {/* Images */}
                           {contentImages.length > 0 && (
                             <div>
-                              <p className="!text-xs text-secondary mb-2 flex items-center gap-1">
+                              <p className="!text-xs !text-secondary mb-2 flex items-center gap-1">
                                 <IconPhoto className="w-3 h-3" />
                                 {t('images_used') || 'Images utilisées'} ({contentImages.length})
                               </p>
@@ -3305,7 +3305,7 @@ export default function ComposeNewsletterPage() {
                                     <img src={img} alt="" className="w-24 h-24 object-cover rounded-lg" />
                                     <button
                                       onClick={() => removeImage(img, idx)}
-                                      className="absolute -top-2 -right-2 p-1 bg-danger text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                      className="absolute -top-2 -right-2 p-1 bg-danger !text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
                                       <IconX className="w-3 h-3" />
                                     </button>
@@ -3318,7 +3318,7 @@ export default function ComposeNewsletterPage() {
                           {/* Videos */}
                           {contentVideos.length > 0 && (
                             <div>
-                              <p className="!text-xs text-secondary mb-2 flex items-center gap-1">
+                              <p className="!text-xs !text-secondary mb-2 flex items-center gap-1">
                                 <IconVideo className="w-3 h-3" />
                                 {t('videos_used') || 'Vidéos utilisées'} ({contentVideos.length})
                               </p>
@@ -3337,7 +3337,7 @@ export default function ComposeNewsletterPage() {
                                     </div>
                                     <button
                                       onClick={() => removeVideo(video, idx)}
-                                      className="absolute -top-2 -right-2 p-1 bg-danger text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                      className="absolute -top-2 -right-2 p-1 bg-danger !text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
                                       <IconX className="w-3 h-3" />
                                     </button>
@@ -3352,10 +3352,10 @@ export default function ComposeNewsletterPage() {
 
                     {/* CTA */}
                     <div className="bg-card rounded-xl p-6 border border-default space-y-4">
-                      <h3 className="font-semibold text-primary">{t('cta_section_title')}</h3>
+                      <h3 className="font-semibold !text-primary">{t('cta_section_title')}</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-secondary mb-2">
+                          <label className="block !text-sm font-medium !text-secondary mb-2">
                             {t('cta_text_label')}
                           </label>
                           <input
@@ -3367,7 +3367,7 @@ export default function ComposeNewsletterPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-secondary mb-2">
+                          <label className="block !text-sm font-medium !text-secondary mb-2">
                             {t('cta_link_label')}
                           </label>
                           <input
@@ -3384,11 +3384,11 @@ export default function ComposeNewsletterPage() {
                     {/* Banner Image */}
                     <div className="bg-card rounded-xl p-6 border border-default space-y-4">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-semibold text-primary">{t('banner_section_title') || 'Bannière de fin'}</h3>
+                        <h3 className="font-semibold !text-primary">{t('banner_section_title') || 'Bannière de fin'}</h3>
                         {signatureData?.banner_url && !bannerImageUrl && (
                           <button
                             onClick={() => setBannerImageUrl(signatureData.banner_url || '')}
-                            className="text-sm !text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+                            className="text-sm !text-accent hover:!text-accent/80 transition-colors flex items-center gap-1"
                           >
                             <IconPhoto className="w-4 h-4" />
                             {t('use_signature_banner') || 'Utiliser la bannière de ma signature'}
@@ -3409,14 +3409,14 @@ export default function ComposeNewsletterPage() {
                           <div className="absolute top-3 right-3 flex gap-2">
                             <button
                               onClick={openBannerPicker}
-                              className="p-2 rounded-lg bg-white/90 hover:bg-white text-gray-700 shadow-lg transition-all"
+                              className="p-2 rounded-lg bg-white/90 hover:bg-white !text-gray-700 shadow-lg transition-all"
                               title={t('change_image') || 'Changer l\'image'}
                             >
                               <IconPhoto className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => setBannerImageUrl('')}
-                              className="p-2 rounded-lg bg-red-500/90 hover:bg-red-500 text-white shadow-lg transition-all"
+                              className="p-2 rounded-lg bg-red-500/90 hover:bg-red-500 !text-white shadow-lg transition-all"
                               title={t('remove_image') || 'Supprimer'}
                             >
                               <IconX className="w-4 h-4" />
@@ -3424,7 +3424,7 @@ export default function ComposeNewsletterPage() {
                           </div>
                           {/* Indicator if using signature banner */}
                           {signatureData?.banner_url === bannerImageUrl && (
-                            <div className="mt-2 !text-xs text-muted flex items-center gap-1">
+                            <div className="mt-2 !text-xs !text-muted flex items-center gap-1">
                               <IconCheck className="w-3 h-3 !text-accent" />
                               {t('using_signature_banner') || 'Utilise la bannière de votre signature email'}
                             </div>
@@ -3433,12 +3433,12 @@ export default function ComposeNewsletterPage() {
                       ) : (
                         <div 
                           onClick={openBannerPicker}
-                          className="border-2 border-dashed border-default rounded-xl p-6 text-center 
+                          className="border-2 border-dashed border-default rounded-xl p-6 !text-center 
                             hover:border-accent hover:bg-accent-light/30 transition-all cursor-pointer group"
                         >
-                          <IconUpload className="w-8 h-8 mx-auto mb-2 text-muted group-hover:text-accent transition-colors" />
+                          <IconUpload className="w-8 h-8 mx-auto mb-2 !text-muted group-hover:!text-accent transition-colors" />
                           <p className="text-primary font-medium">{t('add_banner') || 'Ajouter une bannière'}</p>
-                          <p className="text-sm text-muted">{t('banner_hint') || 'Image promotionnelle en fin d\'email'}</p>
+                          <p className="text-sm !text-muted">{t('banner_hint') || 'Image promotionnelle en fin d\'email'}</p>
                         </div>
                       )}
                       
@@ -3446,7 +3446,7 @@ export default function ComposeNewsletterPage() {
                       <div className="pt-2 border-t border-default">
                         <Link
                           href="/dashboard/settings?tab=email"
-                          className="text-sm !text-accent hover:text-accent/80 transition-colors inline-flex items-center gap-1"
+                          className="text-sm !text-accent hover:!text-accent/80 transition-colors inline-flex items-center gap-1"
                         >
                           <IconSettings className="w-3.5 h-3.5" />
                           {t('edit_signature_banner') || 'Modifier la bannière dans ma signature email'}
@@ -3464,12 +3464,12 @@ export default function ComposeNewsletterPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                   >
-                    <h2 className="text-2xl font-bold text-primary mb-2">{t('select_recipients')}</h2>
+                    <h2 className="text-2xl font-bold !text-primary mb-2">{t('select_recipients')}</h2>
                     <p className="text-secondary mb-6">{t('select_recipients_desc')}</p>
 
                     {/* Manual email input with suggestions */}
                     <div className="bg-card rounded-xl border border-default p-4 mb-4">
-                      <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
+                      <h3 className="font-semibold !text-primary mb-3 flex items-center gap-2">
                         <IconMail className="w-5 h-5 !text-accent" />
                         {t('add_recipient_manually') || 'Ajouter un destinataire'}
                       </h3>
@@ -3513,7 +3513,7 @@ export default function ComposeNewsletterPage() {
                                             setEmailInput('');
                                             setShowSuggestions(false);
                                           }}
-                                          className="w-full flex items-center gap-3 p-3 hover:bg-hover transition-colors text-left"
+                                          className="w-full flex items-center gap-3 p-3 hover:bg-hover transition-colors !text-left"
                                         >
                                           {client.image?.url ? (
                                             // eslint-disable-next-line @next/next/no-img-element
@@ -3528,8 +3528,8 @@ export default function ComposeNewsletterPage() {
                                             </div>
                                           )}
                                           <div className="flex-1 min-w-0">
-                                            <p className="font-medium text-primary truncate">{client.name}</p>
-                                            <p className="text-sm text-muted truncate">{client.email}</p>
+                                            <p className="font-medium !text-primary truncate">{client.name}</p>
+                                            <p className="text-sm !text-muted truncate">{client.email}</p>
                                           </div>
                                           <IconCheck className="w-5 h-5 !text-accent opacity-0 group-hover:opacity-100" />
                                         </button>
@@ -3540,19 +3540,19 @@ export default function ComposeNewsletterPage() {
                                       type="button"
                                       onMouseDown={(e) => e.preventDefault()}
                                       onClick={() => handleAddManualEmail(emailInput)}
-                                      className="w-full flex items-center gap-3 p-3 hover:bg-hover transition-colors text-left"
+                                      className="w-full flex items-center gap-3 p-3 hover:bg-hover transition-colors !text-left"
                                     >
-                                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-secondary font-semibold">
+                                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center !text-secondary font-semibold">
                                         {getEmailInitials(emailInput)}
                                       </div>
                                       <div className="flex-1 min-w-0">
-                                        <p className="font-medium text-primary">{t('add_new_recipient') || 'Ajouter ce destinataire'}</p>
-                                        <p className="text-sm text-muted truncate">{emailInput}</p>
+                                        <p className="font-medium !text-primary">{t('add_new_recipient') || 'Ajouter ce destinataire'}</p>
+                                        <p className="text-sm !text-muted truncate">{emailInput}</p>
                                       </div>
-                                      <IconChevronRight className="w-5 h-5 text-muted" />
+                                      <IconChevronRight className="w-5 h-5 !text-muted" />
                                     </button>
                                   ) : (
-                                    <div className="p-3 text-center text-muted text-sm">
+                                    <div className="p-3 !text-center !text-muted !text-sm">
                                       {t('type_valid_email') || 'Tapez un email valide...'}
                                     </div>
                                   )}
@@ -3565,7 +3565,7 @@ export default function ComposeNewsletterPage() {
                             type="button"
                             onClick={() => handleAddManualEmail(emailInput)}
                             disabled={!emailInput.includes('@')}
-                            className="px-4 py-2 rounded-lg bg-accent text-white font-medium 
+                            className="px-4 py-2 rounded-lg bg-accent !text-white font-medium 
                               hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                           >
                             {t('add') || 'Ajouter'}
@@ -3576,7 +3576,7 @@ export default function ComposeNewsletterPage() {
                       {/* Manual emails list */}
                       {manualEmails.length > 0 && (
                         <div className="mt-4 pt-4 border-t border-default">
-                          <p className="text-sm text-secondary mb-2">
+                          <p className="text-sm !text-secondary mb-2">
                             {t('manual_recipients') || 'Destinataires ajoutés'} ({manualEmails.length})
                           </p>
                           <div className="flex flex-wrap gap-2">
@@ -3588,11 +3588,11 @@ export default function ComposeNewsletterPage() {
                                 <div className="w-6 h-6 rounded-full border-accent-light flex items-center justify-center !text-accent !text-xs font-semibold">
                                   {getEmailInitials(manual.email)}
                                 </div>
-                                <span className="text-sm text-primary">{manual.email}</span>
+                                <span className="text-sm !text-primary">{manual.email}</span>
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveManualEmail(manual.email)}
-                                  className="p-0.5 rounded-full hover:bg-danger-light text-muted hover:text-danger transition-colors"
+                                  className="p-0.5 rounded-full hover:bg-danger-light !text-muted hover:!text-danger transition-colors"
                                 >
                                   <IconX className="w-3.5 h-3.5" />
                                 </button>
@@ -3613,18 +3613,18 @@ export default function ComposeNewsletterPage() {
                             onChange={handleSelectAllRecipients}
                             className="w-5 h-5 rounded border-default !text-accent focus:ring-accent"
                           />
-                          <span className="font-medium text-primary">
+                          <span className="font-medium !text-primary">
                             {t('select_all_clients')} ({clients.length})
                           </span>
                         </label>
-                        <span className="text-sm text-secondary">
+                        <span className="text-sm !text-secondary">
                           {selectedRecipients.length + manualEmails.length} {t('recipients_selected')}
                         </span>
                       </div>
 
                       <div className="max-h-[400px] overflow-y-auto">
                         {clients.length === 0 ? (
-                          <div className="p-8 text-center text-muted">
+                          <div className="p-8 !text-center !text-muted">
                             <IconUsers className="w-12 h-12 mx-auto mb-3 opacity-50" />
                             <p>{t('no_client_found')}</p>
                           </div>
@@ -3653,11 +3653,11 @@ export default function ComposeNewsletterPage() {
                                 </div>
                               )}
                               <div className="flex-1">
-                                <p className="font-medium text-primary">{client.name}</p>
-                                <p className="text-sm text-muted">{client.email}</p>
+                                <p className="font-medium !text-primary">{client.name}</p>
+                                <p className="text-sm !text-muted">{client.email}</p>
                               </div>
                               {client.enterprise && (
-                                <span className="!text-xs px-2 py-1 bg-muted rounded-full text-secondary">
+                                <span className="!text-xs px-2 py-1 bg-muted rounded-full !text-secondary">
                                   {client.enterprise}
                                 </span>
                               )}
@@ -3677,7 +3677,7 @@ export default function ComposeNewsletterPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                   >
-                    <h2 className="text-2xl font-bold text-primary mb-2">{t('review_and_send')}</h2>
+                    <h2 className="text-2xl font-bold !text-primary mb-2">{t('review_and_send')}</h2>
                     <p className="text-secondary mb-6">{t('review_and_send_desc')}</p>
 
                     <div className="space-y-4">
@@ -3687,9 +3687,9 @@ export default function ComposeNewsletterPage() {
                             <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
                               <IconTemplate className="w-5 h-5 !text-accent" />
                             </div>
-                            <span className="text-sm text-secondary">{t('step_template')}</span>
+                            <span className="text-sm !text-secondary">{t('step_template')}</span>
                           </div>
-                          <p className="font-semibold text-primary">
+                          <p className="font-semibold !text-primary">
                             {selectedTemplateData?.name || '-'}
                           </p>
                         </div>
@@ -3697,11 +3697,11 @@ export default function ComposeNewsletterPage() {
                         <div className="bg-card rounded-xl p-5 border border-default">
                           <div className="flex items-center gap-3 mb-3">
                             <div className="w-10 h-10 rounded-lg bg-info-light flex items-center justify-center">
-                              <IconMail className="w-5 h-5 text-info" />
+                              <IconMail className="w-5 h-5 !text-info" />
                             </div>
-                            <span className="text-sm text-secondary">{t('subject')}</span>
+                            <span className="text-sm !text-secondary">{t('subject')}</span>
                           </div>
-                          <p className="font-semibold text-primary truncate">
+                          <p className="font-semibold !text-primary truncate">
                             {emailSubject || '-'}
                           </p>
                         </div>
@@ -3711,16 +3711,16 @@ export default function ComposeNewsletterPage() {
                             <div className="w-10 h-10 rounded-lg bg-success-light flex items-center justify-center">
                               <IconUsers className="w-5 h-5 !text-success-text -text" />
                             </div>
-                            <span className="text-sm text-secondary">{t('step_recipients')}</span>
+                            <span className="text-sm !text-secondary">{t('step_recipients')}</span>
                           </div>
-                          <p className="font-semibold text-primary">
+                          <p className="font-semibold !text-primary">
                             {totalRecipients} {t('contacts')}
                           </p>
                         </div>
                       </div>
 
                       <div className="bg-card rounded-xl p-5 border border-default">
-                        <h3 className="font-semibold text-primary mb-3">{t('step_recipients')}</h3>
+                        <h3 className="font-semibold !text-primary mb-3">{t('step_recipients')}</h3>
                         <div className="flex flex-wrap gap-2">
                           {/* Clients sélectionnés */}
                           {clients
@@ -3729,7 +3729,7 @@ export default function ComposeNewsletterPage() {
                             .map(client => (
                               <span
                                 key={client.id}
-                                className="px-3 py-1 bg-muted rounded-full text-sm text-secondary"
+                                className="px-3 py-1 bg-muted rounded-full !text-sm !text-secondary"
                               >
                                 {client.name}
                               </span>
@@ -3738,16 +3738,16 @@ export default function ComposeNewsletterPage() {
                           {manualEmails.slice(0, 3).map(manual => (
                             <span
                               key={manual.email}
-                              className="px-3 py-1 bg-accent-light rounded-full text-sm !text-accent flex items-center gap-1"
+                              className="px-3 py-1 bg-accent-light rounded-full !text-sm !text-accent flex items-center gap-1"
                             >
-                              <span className="w-4 h-4 rounded-full border-accent-light flex items-center justify-center text-[10px] font-bold">
+                              <span className="w-4 h-4 rounded-full border-accent-light flex items-center justify-center !text-[10px] font-bold">
                                 {getEmailInitials(manual.email)}
                               </span>
                               {manual.email}
                             </span>
                           ))}
                           {totalRecipients > 11 && (
-                            <span className="px-3 py-1 bg-accent-light rounded-full text-sm !text-accent">
+                            <span className="px-3 py-1 bg-accent-light rounded-full !text-sm !text-accent">
                               +{totalRecipients - 11} {t('others')}
                             </span>
                           )}
@@ -3764,13 +3764,13 @@ export default function ComposeNewsletterPage() {
                       <div className={`rounded-xl p-6 border ${scheduledAt ? 'bg-purple-600 border-purple-500' : 'bg-accent border-muted'}`}>
                         <div className="flex items-center justify-between">
                           <div>
-                            <h3 className="font-semibold text-white mb-1">
+                            <h3 className="font-semibold !text-white mb-1">
                               {scheduledAt 
                                 ? (t('schedule_send') || 'Planifier l\'envoi')
                                 : t('ready_to_send')
                               }
                             </h3>
-                            <p className="text-sm text-white/80">
+                            <p className="text-sm !text-white/80">
                               {scheduledAt 
                                 ? `${t('newsletter_scheduled_for') || 'La newsletter sera envoyée le'} ${scheduledAt.toLocaleDateString('fr-FR')} à ${scheduledAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
                                 : `${t('newsletter_will_be_sent')} ${totalRecipients} ${t('recipients_count')}`
@@ -3780,7 +3780,7 @@ export default function ComposeNewsletterPage() {
                           <button
                             onClick={handleSend}
                             disabled={sending}
-                            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-page hover:bg-accent-light text-primary font-semibold
+                            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-page hover:bg-accent-light !text-primary font-semibold
                               hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-accent/25"
                           >
                             {sending ? (
@@ -3811,7 +3811,7 @@ export default function ComposeNewsletterPage() {
                 <button
                   onClick={handlePrevStep}
                   disabled={currentStep === 'template'}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-secondary hover:text-primary
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg !text-secondary hover:!text-primary
                     disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <IconChevronLeft className="w-5 h-5" />
@@ -3822,7 +3822,7 @@ export default function ComposeNewsletterPage() {
                   <button
                     onClick={handleNextStep}
                     disabled={!canProceed()}
-                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accent text-accent font-medium
+                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accent !text-accent font-medium
                       hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     <span>{t('next')}</span>
@@ -3854,20 +3854,20 @@ export default function ComposeNewsletterPage() {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-warning-light flex items-center justify-center">
-                    <IconSettings className="w-6 h-6 text-warning" />
+                    <IconSettings className="w-6 h-6 !text-warning" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-primary">
+                    <h3 className="text-lg font-semibold !text-primary">
                       {t('smtp_config_required') || 'Configuration email requise'}
                     </h3>
-                    <p className="text-sm text-secondary">
+                    <p className="text-sm !text-secondary">
                       {t('smtp_config_required_desc') || 'Configurez votre SMTP pour envoyer des newsletters'}
                     </p>
                   </div>
                 </div>
                 
                 <div className="p-4 rounded-xl bg-warning-light border border-warning mb-6">
-                  <p className="text-sm text-secondary">
+                  <p className="text-sm !text-secondary">
                     {smtpConfig ? (
                       t('smtp_not_verified_warning') || 'Votre configuration SMTP n\'a pas été vérifiée. Testez la connexion et enregistrez pour continuer.'
                     ) : (
@@ -3879,7 +3879,7 @@ export default function ComposeNewsletterPage() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setShowSmtpWarning(false)}
-                    className="flex-1 px-4 py-2.5 rounded-xl border border-default text-secondary hover:bg-muted transition-colors"
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-default !text-secondary hover:bg-muted transition-colors"
                   >
                     {t('cancel') || 'Annuler'}
                   </button>
@@ -3918,18 +3918,18 @@ export default function ComposeNewsletterPage() {
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                        <IconMail className="w-4 h-4 text-white" />
+                        <IconMail className="w-4 h-4 !text-white" />
                       </div>
-                      <span className="font-semibold text-gray-800">{t('mailbox_preview')}</span>
+                      <span className="font-semibold !text-gray-800">{t('mailbox_preview')}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button className="p-2 hover:bg-gray-200 rounded-lg text-gray-600">
+                    <button className="p-2 hover:bg-gray-200 rounded-lg !text-gray-600">
                       <IconRefresh className="w-5 h-5" />
                     </button>
                     <button 
                       onClick={() => setShowPreview(false)}
-                      className="p-2 hover:bg-gray-200 rounded-lg text-gray-600"
+                      className="p-2 hover:bg-gray-200 rounded-lg !text-gray-600"
                     >
                       <IconX className="w-5 h-5" />
                     </button>
@@ -3940,24 +3940,24 @@ export default function ComposeNewsletterPage() {
                   {/* Sidebar - Folders */}
                   <div className="w-16 md:w-48 bg-gray-50 border-r border-gray-200 flex-shrink-0 hidden sm:block">
                     <div className="p-2 md:p-4 space-y-1">
-                      <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700 rounded-lg font-medium">
                         <IconInbox className="w-5 h-5" />
                         <span className="hidden md:inline">{t('inbox')}</span>
-                        <span className="hidden md:inline ml-auto bg-blue-500 text-white !text-xs px-2 py-0.5 rounded-full">1</span>
+                        <span className="hidden md:inline ml-auto bg-blue-500 !text-white !text-xs px-2 py-0.5 rounded-full">1</span>
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
                         <IconStar className="w-5 h-5" />
                         <span className="hidden md:inline">{t('favorites')}</span>
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
                         <IconSend className="w-5 h-5" />
                         <span className="hidden md:inline">{t('sent_folder')}</span>
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
                         <IconArchive className="w-5 h-5" />
                         <span className="hidden md:inline">{t('archives')}</span>
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
                         <IconTrash className="w-5 h-5" />
                         <span className="hidden md:inline">{t('trash')}</span>
                       </button>
@@ -3969,11 +3969,11 @@ export default function ComposeNewsletterPage() {
                     {/* Search bar */}
                     <div className="p-3 border-b border-gray-200">
                       <div className="relative">
-                        <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-gray-400" />
                         <input 
                           type="text" 
                           placeholder={t('search_placeholder')}
-                          className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
+                          className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg !text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
                         />
                       </div>
                     </div>
@@ -3984,19 +3984,19 @@ export default function ComposeNewsletterPage() {
                       <div className="bg-blue-50 border-l-4 border-blue-500 p-4 cursor-pointer">
                         <div className="flex items-start gap-3">
                           <div 
-                            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-semibold"
+                            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 !text-white font-semibold"
                             style={{ backgroundColor: selectedTemplateData?.primaryColor || '#8B9DC3' }}
                           >
                             {(footerSettings.firstName?.[0] || 'E').toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-1">
-                              <span className="font-semibold text-gray-900 truncate">
+                              <span className="font-semibold !text-gray-900 truncate">
                                 {footerSettings.firstName} {footerSettings.lastName}
                               </span>
-                              <span className="!text-xs text-info  flex-shrink-0 ml-2">{t('now')}</span>
+                              <span className="!text-xs !text-info  flex-shrink-0 ml-2">{t('now')}</span>
                             </div>
-                            <p className="font-medium text-gray-800 text-sm truncate mb-0.5">
+                            <p className="font-medium !text-gray-800 !text-sm truncate mb-0.5">
                               {emailSubject || t('email_subject_label')}
                             </p>
                             <p className="text-info !text-xs truncate">
@@ -4005,8 +4005,8 @@ export default function ComposeNewsletterPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 mt-2 ml-13">
-                          {bannerImageUrl && <IconPaperclip className="w-3 h-3 text-gray-400" />}
-                          <IconStarFilled className="w-3 h-3 text-yellow-400" />
+                          {bannerImageUrl && <IconPaperclip className="w-3 h-3 !text-gray-400" />}
+                          <IconStarFilled className="w-3 h-3 !text-yellow-400" />
                         </div>
                       </div>
 
@@ -4022,17 +4022,17 @@ export default function ComposeNewsletterPage() {
                         <div key={idx} className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
                           <div className="flex items-start gap-3">
                             <div 
-                              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-semibold text-sm"
+                              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 !text-white font-semibold !text-sm"
                               style={{ backgroundColor: email.avatar }}
                             >
                               {email.from[0]}
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between mb-1">
-                                <span className="font-medium text-gray-700 truncate">{email.from}</span>
-                                <span className="!text-xs text-gray-400 flex-shrink-0 ml-2">{email.time}</span>
+                                <span className="font-medium !text-gray-700 truncate">{email.from}</span>
+                                <span className="!text-xs !text-gray-400 flex-shrink-0 ml-2">{email.time}</span>
                               </div>
-                              <p className="text-gray-600 text-sm truncate">{email.subject}</p>
+                              <p className="text-gray-600 !text-sm truncate">{email.subject}</p>
                             </div>
                           </div>
                         </div>
@@ -4045,38 +4045,38 @@ export default function ComposeNewsletterPage() {
                     {/* Email header */}
                     <div className="p-4 border-b border-gray-200">
                       <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold text-gray-900">
+                        <h2 className="text-xl font-semibold !text-gray-900">
                           {emailSubject || t('email_subject_label')}
                         </h2>
                         <div className="flex items-center gap-2">
-                          <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
+                          <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
                             <IconArchive className="w-5 h-5" />
                           </button>
-                          <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
+                          <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
                             <IconTrash className="w-5 h-5" />
                           </button>
-                          <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
+                          <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
                             <IconDots className="w-5 h-5" />
                           </button>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <div 
-                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold"
+                          className="w-12 h-12 rounded-full flex items-center justify-center !text-white font-semibold"
                           style={{ backgroundColor: selectedTemplateData?.primaryColor || '#8B9DC3' }}
                         >
                           {(footerSettings.firstName?.[0] || 'E').toUpperCase()}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-gray-900">
+                            <span className="font-semibold !text-gray-900">
                               {footerSettings.firstName} {footerSettings.lastName}
                             </span>
-                            <span className="text-gray-400 text-sm">
+                            <span className="text-gray-400 !text-sm">
                               &lt;{footerSettings.email || 'email@example.com'}&gt;
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-info ">
+                          <div className="flex items-center gap-2 !text-sm !text-info ">
                             <span>{t('to_me')}</span>
                             <IconChevronDown className="w-4 h-4" />
                           </div>
@@ -4108,7 +4108,7 @@ export default function ComposeNewsletterPage() {
                             translations={emailPreviewTranslations}
                           />
                         ) : (
-                          <div className="text-center py-12 text-gray-400">
+                          <div className="text-center py-12 !text-gray-400">
                             <IconTemplate className="w-16 h-16 mx-auto mb-4 opacity-50" />
                             <p className="text-lg">{t('select_template_preview')}</p>
                           </div>
@@ -4140,12 +4140,12 @@ export default function ComposeNewsletterPage() {
               >
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-default">
-                  <h2 className="text-xl font-bold text-primary">
+                  <h2 className="text-xl font-bold !text-primary">
                     {t('select_from_library')} - {showLibraryModal.type === 'image' ? t('toolbar_insert_image') : t('toolbar_insert_video')}
                   </h2>
                   <button
                     onClick={() => setShowLibraryModal({ type: 'image', isOpen: false })}
-                    className="p-2 rounded-lg hover:bg-hover transition-colors text-secondary hover:text-primary"
+                    className="p-2 rounded-lg hover:bg-hover transition-colors !text-secondary hover:!text-primary"
                   >
                     <IconX className="w-5 h-5" />
                   </button>
@@ -4175,13 +4175,13 @@ export default function ComposeNewsletterPage() {
                               loading="lazy"
                             />
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                              <IconCheck className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                              <IconCheck className="w-8 h-8 !text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                           </button>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12 text-secondary">
+                      <div className="text-center py-12 !text-secondary">
                         <IconPhoto className="w-16 h-16 mx-auto mb-4 opacity-30" />
                         <p>{t('no_media_in_library')}</p>
                       </div>
@@ -4201,13 +4201,13 @@ export default function ComposeNewsletterPage() {
                               preload="metadata"
                             />
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                              <IconCheck className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                              <IconCheck className="w-8 h-8 !text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                           </button>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12 text-secondary">
+                      <div className="text-center py-12 !text-secondary">
                         <IconVideo className="w-16 h-16 mx-auto mb-4 opacity-30" />
                         <p>{t('no_media_in_library')}</p>
                       </div>

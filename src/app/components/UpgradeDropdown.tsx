@@ -103,7 +103,7 @@ export default function UpgradeDropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggleAction}
-        className="w-full cursor-pointer bg-accent !text-white px-4 py-3 rounded-lg border border-accent hover:bg-accent-light hover:text-secondary transition-colors font-semibold flex items-center justify-between"
+        className="w-full cursor-pointer bg-accent !text-white px-4 py-3 rounded-lg border border-accent hover:bg-accent-light hover:!text-secondary transition-colors font-semibold flex items-center justify-between"
       >
         <span>{t('upgrade_plan')}</span>
         <motion.span
@@ -185,7 +185,7 @@ export default function UpgradeDropdown({
                   className={`px-2 py-1 ${
                     togglePlan
                       ? 'bg-accent-light !text-accent'
-                      : 'bg-page text-muted'
+                      : 'bg-page !text-muted'
                   } !text-xs font-medium rounded-full`}
                 >
                   {t('save_20_percent')}
@@ -202,7 +202,7 @@ export default function UpgradeDropdown({
                   className="w-full p-4 rounded-lg border border-default hover:border-accent hover:bg-hover transition-all duration-200 !text-left group"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-primary font-semibold capitalize group-hover:text-accent transition-colors">
+                    <h4 className="text-primary font-semibold capitalize group-hover:!text-accent transition-colors">
                       {plan.name}
                     </h4>
                     <div className="!text-right">
@@ -250,7 +250,7 @@ export default function UpgradeDropdown({
                 }}
                 className="flex items-center justify-center w-full"
               >
-                <p className="text-danger cursor-pointer bg-danger-light px-4 py-2 text-center rounded-lg !text-sm w-full hover:bg-danger-light transition-colors border border-danger hover:border-danger">
+                <p className="text-danger cursor-pointer bg-danger-light px-4 py-2 !text-center rounded-lg !text-sm w-full hover:bg-danger-light transition-colors border border-danger hover:border-danger">
                   {t('cancel_subscription')}
                 </p>
               </div>

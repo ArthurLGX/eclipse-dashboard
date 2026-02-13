@@ -274,13 +274,13 @@ export default function ProspectsPage() {
           label: t('total_prospects'),
           value: stats.limit > 0 ? `${stats.total}/${stats.limit}` : stats.total,
           colorClass: 'text-info',
-          icon: <IconUsers className="w-6 h-6 text-info" />,
+          icon: <IconUsers className="w-6 h-6 !text-info" />,
         },
         {
           label: t('qualified') || 'Qualifiés',
           value: stats.qualified,
           colorClass: 'text-warning',
-          icon: <IconUserCheck className="w-6 h-6 text-warning" />,
+          icon: <IconUserCheck className="w-6 h-6 !text-warning" />,
         },
         {
           label: t('quote_sent') || 'Devis envoyés',

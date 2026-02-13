@@ -658,7 +658,7 @@ function DashboardLayoutContent({
                               </span>
                               {/* Badge count for category */}
                               {item.badgeCount && item.badgeCount > 0 && (
-                                <span className="min-w-[18px] h-[18px] px-1 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                                <span className="min-w-[18px] h-[18px] px-1 bg-accent !text-white !text-[10px] font-bold rounded-full flex items-center justify-center">
                                   {item.badgeCount > 99 ? '99+' : item.badgeCount}
                                 </span>
                               )}
@@ -697,15 +697,15 @@ function DashboardLayoutContent({
                                   </span>
                                   {/* Badge count (e.g., unread emails) */}
                                   {menuItem.badgeCount && menuItem.badgeCount > 0 && (
-                                    <span className="ml-auto min-w-[18px] h-[18px] px-1 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                                    <span className="ml-auto min-w-[18px] h-[18px] px-1 bg-accent !text-white !text-[10px] font-bold rounded-full flex items-center justify-center">
                                       {menuItem.badgeCount > 99 ? '99+' : menuItem.badgeCount}
                                     </span>
                                   )}
                                   {/* Status badge */}
                                   {menuItem.status && !menuItem.badgeCount && (
-                                    <span className={`ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                                    <span className={`ml-auto !text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                       menuItem.status === 'beta' 
-                                        ? 'bg-warning-light text-warning-text border border-warning' 
+                                        ? 'bg-warning-light !text-warning-text border border-warning' 
                                         : 'bg-success-light !text-success-text -text border border-success'
                                     }`}>
                                       {menuItem.status === 'beta' ? 'Beta' : 'New'}

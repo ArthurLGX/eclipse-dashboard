@@ -163,7 +163,7 @@ export default function EmailFooter({
         {/* Language Toggle (preview mode only) */}
         {showLanguageToggle && onLanguageChange && (
           <div className="flex justify-center mb-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg text-sm">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg !text-sm">
               <IconLanguage className="w-4 h-4" style={{ color: secondaryColor }} />
               <button
                 onClick={() => onLanguageChange('fr')}
@@ -212,7 +212,7 @@ export default function EmailFooter({
           <div className="flex-1 min-w-0">
             {/* Nom & Titre */}
             {data.sender_name && (
-              <div className="font-bold text-base" style={{ color: textColor }}>
+              <div className="font-bold !text-base" style={{ color: textColor }}>
                 {data.sender_name}
               </div>
             )}

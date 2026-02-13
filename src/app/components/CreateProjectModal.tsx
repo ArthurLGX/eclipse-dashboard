@@ -332,12 +332,12 @@ export default function CreateProjectModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-default flex-shrink-0">
           <div>
-            <h2 className="text-xl font-bold text-primary">
+            <h2 className="text-xl font-bold !text-primary">
               {step === 'template' 
                 ? (t('choose_template') || 'Choisir un template')
                 : (t('project_details') || 'Détails du projet')}
             </h2>
-            <p className="text-sm text-muted mt-1">
+            <p className="text-sm !text-muted mt-1">
               {step === 'template'
                 ? (t('choose_template_desc') || 'Sélectionnez un template pour démarrer rapidement')
                 : (t('project_details_desc') || 'Personnalisez votre projet')}
@@ -373,24 +373,24 @@ export default function CreateProjectModal({
                     <button
                       key={template.id}
                       onClick={() => handleSelectTemplate(template)}
-                      className="p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover text-left transition-all group"
+                      className="p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="p-2 rounded-lg bg-accent-light !text-accent">
                           <IconBriefcase className="w-5 h-5" />
                         </div>
-                        <IconChevronRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
+                        <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
                       </div>
                       
-                      <h3 className="font-semibold text-primary mb-1">
+                      <h3 className="font-semibold !text-primary mb-1">
                         {language === 'en' ? template.nameEn : template.name}
                       </h3>
-                      <p className="text-sm text-muted mb-3">
+                      <p className="text-sm !text-muted mb-3">
                         {language === 'en' ? template.descriptionEn : template.description}
                       </p>
                       
                       {!isCustom && (
-                        <div className="flex flex-wrap gap-3 !text-xs text-secondary">
+                        <div className="flex flex-wrap gap-3 !text-xs !text-secondary">
                           <span className="flex items-center gap-1">
                             <IconClock className="w-3 h-3" />
                             {template.estimated_duration_days} {t('days') || 'jours'}
@@ -410,13 +410,13 @@ export default function CreateProjectModal({
                           {phases.slice(0, 4).map((phase) => (
                             <span
                               key={phase}
-                              className="px-2 py-0.5 !text-xs rounded-full bg-muted text-secondary"
+                              className="px-2 py-0.5 !text-xs rounded-full bg-muted !text-secondary"
                             >
                               {phase}
                             </span>
                           ))}
                           {phases.length > 4 && (
-                            <span className="px-2 py-0.5 !text-xs text-muted">
+                            <span className="px-2 py-0.5 !text-xs !text-muted">
                               +{phases.length - 4}
                             </span>
                           )}
@@ -439,11 +439,11 @@ export default function CreateProjectModal({
                   <div className="p-4 rounded-xl bg-accent-light border border-accent-light">
                     <div className="flex items-center gap-3 mb-2">
                       <IconCheck className="w-5 h-5 !text-accent" />
-                      <span className="font-medium text-primary">
+                      <span className="font-medium !text-primary">
                         {language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
                       </span>
                     </div>
-                    <div className="flex flex-wrap gap-4 text-sm text-secondary">
+                    <div className="flex flex-wrap gap-4 !text-sm !text-secondary">
                       <span>{selectedTemplate.estimated_duration_days} {t('days') || 'jours'}</span>
                       <span>{selectedTemplate.tasks.length} {t('tasks') || 'tâches'}</span>
                       <span>~{calculateTemplateTotals(selectedTemplate).totalHours}h</span>
@@ -453,7 +453,7 @@ export default function CreateProjectModal({
 
                 {/* Project name */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">
+                  <label className="block !text-sm font-medium !text-secondary mb-2">
                     {t('project_name') || 'Nom du projet'} *
                   </label>
                   <input
@@ -468,7 +468,7 @@ export default function CreateProjectModal({
 
                 {/* Client selection */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">
+                  <label className="block !text-sm font-medium !text-secondary mb-2">
                     {t('client') || 'Client'}
                   </label>
                   
@@ -490,7 +490,7 @@ export default function CreateProjectModal({
                       <button
                         type="button"
                         onClick={() => setShowNewClientForm(true)}
-                        className="flex items-center gap-2 text-sm !text-accent hover:underline"
+                        className="flex items-center gap-2 !text-sm !text-accent hover:underline"
                       >
                         <IconPlus className="w-4 h-4" color="white" />
                         {t('create_new_client') || 'Créer un nouveau client'}
@@ -499,7 +499,7 @@ export default function CreateProjectModal({
                   ) : (
                     <div className="space-y-3 p-4 rounded-xl bg-muted border border-default">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-primary flex items-center gap-2">
+                        <span className="text-sm font-medium !text-primary flex items-center gap-2">
                           <IconUser className="w-4 h-4" />
                           {t('new_client') || 'Nouveau client'}
                         </span>
@@ -510,7 +510,7 @@ export default function CreateProjectModal({
                             setNewClientName('');
                             setNewClientEmail('');
                           }}
-                          className="text-sm text-secondary hover:text-primary"
+                          className="text-sm !text-secondary hover:!text-primary"
                         >
                           {t('cancel') || 'Annuler'}
                         </button>
@@ -518,7 +518,7 @@ export default function CreateProjectModal({
                       
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block !text-xs text-muted mb-1">
+                          <label className="block !text-xs !text-muted mb-1">
                             {t('name') || 'Nom'} *
                           </label>
                           <input
@@ -530,7 +530,7 @@ export default function CreateProjectModal({
                           />
                         </div>
                         <div>
-                          <label className="block !text-xs text-muted mb-1">
+                          <label className="block !text-xs !text-muted mb-1">
                             {t('email') || 'Email'}
                           </label>
                           <input
@@ -549,7 +549,7 @@ export default function CreateProjectModal({
                 {/* Dates */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">
+                    <label className="block !text-sm font-medium !text-secondary mb-2">
                       {t('start_date') || 'Date de début'}
                     </label>
                     <input
@@ -560,7 +560,7 @@ export default function CreateProjectModal({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">
+                    <label className="block !text-sm font-medium !text-secondary mb-2">
                       {t('hourly_rate') || 'Taux horaire'} (€/h)
                     </label>
                     <input
@@ -575,15 +575,15 @@ export default function CreateProjectModal({
 
                 {/* Timing scope */}
                 <div className="p-4 rounded-xl border border-default bg-muted space-y-3">
-                  <div className="flex items-center gap-2 text-sm font-medium text-secondary">
+                  <div className="flex items-center gap-2 !text-sm font-medium !text-secondary">
                     <IconClock className="w-4 h-4" />
                     {t('timing_scope') || 'Périmètre temporel'} *
                   </div>
-                  <p className="!text-xs text-muted">
+                  <p className="!text-xs !text-muted">
                     {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                   </p>
                   <div className="grid grid-cols-2 gap-3">
-                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default text-secondary'}`}>
+                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                       <input
                         type="radio"
                         name="timing_mode"
@@ -593,7 +593,7 @@ export default function CreateProjectModal({
                       />
                       {t('timing_scope_duration') || 'Durée'}
                     </label>
-                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default text-secondary'}`}>
+                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                       <input
                         type="radio"
                         name="timing_mode"
@@ -608,7 +608,7 @@ export default function CreateProjectModal({
                   {timingMode === 'duration' ? (
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block !text-xs text-muted mb-1">
+                        <label className="block !text-xs !text-muted mb-1">
                           {t('duration') || 'Durée'}
                         </label>
                         <select
@@ -622,17 +622,17 @@ export default function CreateProjectModal({
                         </select>
                       </div>
                       <div>
-                        <label className="block !text-xs text-muted mb-1">
+                        <label className="block !text-xs !text-muted mb-1">
                           {t('end_date_preview') || 'Date de fin estimée'}
                         </label>
-                        <div className="input w-full bg-muted/50 text-secondary">
+                        <div className="input w-full bg-muted/50 !text-secondary">
                           {computedEndDate || '—'}
                         </div>
                       </div>
                     </div>
                   ) : (
                     <div>
-                      <label className="block !text-xs text-muted mb-1">
+                      <label className="block !text-xs !text-muted mb-1">
                         {t('end_date') || 'Date de fin'}
                       </label>
                       <input
@@ -649,7 +649,7 @@ export default function CreateProjectModal({
                 {selectedTemplate && selectedTemplate.tasks.length > 0 && (
                   <div className="p-4 rounded-xl bg-success-light border border success">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-secondary">
+                      <span className="text-sm !text-secondary">
                         {t('estimated_value') || 'Valeur estimée'}
                       </span>
                       <span className="text-lg font-bold !text-success-text -text">
@@ -669,14 +669,14 @@ export default function CreateProjectModal({
             <>
               <button
                 onClick={() => setStep('template')}
-                className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+                className="px-4 py-2 !text-secondary hover:!text-primary transition-colors"
               >
                 {t('back') || 'Retour'}
               </button>
               <button
                 onClick={handleCreateProject}
                 disabled={isSaving || !projectName || !startDate || !isTimingValid}
-                className="flex items-center gap-2 px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
               >
                 {isSaving ? (
                   <>
@@ -695,11 +695,11 @@ export default function CreateProjectModal({
             <>
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+                className="px-4 py-2 !text-secondary hover:!text-primary transition-colors"
               >
                 {t('cancel') || 'Annuler'}
               </button>
-              <span className="text-sm text-muted">
+              <span className="text-sm !text-muted">
                 {t('select_template_hint') || 'Sélectionnez un template pour continuer'}
               </span>
             </>

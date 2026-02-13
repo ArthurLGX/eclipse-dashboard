@@ -165,13 +165,13 @@ function DraftsContent() {
       >
         <Link
           href="/dashboard/emails"
-          className="inline-flex items-center gap-2 text-muted hover:text-accent mb-4 transition-colors"
+          className="inline-flex items-center gap-2 !text-muted hover:!text-accent mb-4 transition-colors"
         >
           <IconArrowLeft className="w-4 h-4" />
           {t('back_to_emails') || 'Retour aux emails'}
         </Link>
         
-        <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
+        <h1 className="text-3xl font-bold !text-primary flex items-center gap-3">
           <IconDeviceFloppy className="w-8 h-8 !text-accent" />
           {t('drafts') || 'Brouillons'}
         </h1>
@@ -189,7 +189,7 @@ function DraftsContent() {
       >
         {/* Search */}
         <div className="relative flex-1">
-          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
           <input
             type="text"
             value={search}
@@ -201,7 +201,7 @@ function DraftsContent() {
         
         {/* Category Filter */}
         <div className="relative">
-          <IconFilter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+          <IconFilter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as EmailCategory | 'all')}
@@ -226,9 +226,9 @@ function DraftsContent() {
             <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
           </div>
         ) : filteredDrafts.length === 0 ? (
-          <div className="text-center py-16 text-muted">
+          <div className="text-center py-16 !text-muted">
             <IconDeviceFloppy className="w-16 h-16 mx-auto mb-4 opacity-30" />
-            <h3 className="text-lg font-medium text-primary mb-2">
+            <h3 className="text-lg font-medium !text-primary mb-2">
               {t('no_drafts_found') || 'Aucun brouillon trouvé'}
             </h3>
             <p>{t('no_drafts_message') || 'Vos brouillons apparaîtront ici'}</p>
@@ -259,7 +259,7 @@ function DraftsContent() {
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold text-primary truncate group-hover:text-accent transition-colors">
+                        <h4 className="font-semibold !text-primary truncate group-hover:!text-accent transition-colors">
                           {draft.name || draft.subject || t('untitled_draft') || 'Sans titre'}
                         </h4>
                         <span 
@@ -269,10 +269,10 @@ function DraftsContent() {
                           {getCategoryLabel(draft.category)}
                         </span>
                       </div>
-                      <p className="text-sm text-muted truncate mb-1">
+                      <p className="text-sm !text-muted truncate mb-1">
                         {draft.subject || t('no_subject') || 'Sans objet'}
                       </p>
-                      <p className="!text-xs text-muted">
+                      <p className="!text-xs !text-muted">
                         {draft.recipients && draft.recipients.length > 0 
                           ? `${draft.recipients.length} destinataire(s): ${draft.recipients.map(r => r.email).join(', ')}`
                           : t('no_recipients') || 'Aucun destinataire'
@@ -281,7 +281,7 @@ function DraftsContent() {
                     </div>
                     
                     <div className="text-right shrink-0">
-                      <span className="text-sm text-muted">
+                      <span className="text-sm !text-muted">
                         {formatDate(draft.updatedAt)}
                       </span>
                     </div>
@@ -292,7 +292,7 @@ function DraftsContent() {
                         handleDelete(draft.documentId);
                       }}
                       disabled={deletingId === draft.documentId}
-                      className="p-2 text-muted hover:text-error rounded-lg hover:bg-error-light transition-colors opacity-0 group-hover:opacity-100 shrink-0"
+                      className="p-2 !text-muted hover:!text-error rounded-lg hover:bg-error-light transition-colors opacity-0 group-hover:opacity-100 shrink-0"
                     >
                       {deletingId === draft.documentId ? (
                         <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -314,7 +314,7 @@ function DraftsContent() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-center text-muted mt-4"
+          className="text-center !text-muted mt-4"
         >
           {filteredDrafts.length} {t('drafts_count') || 'brouillon(s)'}
         </motion.p>

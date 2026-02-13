@@ -68,7 +68,7 @@ export default function FloatingPricingHeader({
         >
           <button
             onClick={handleToggleMinimize}
-            className="cursor-pointer text-muted hover:text-primary transition-colors absolute top-2 right-4 z-50 w-8 h-8 flex items-center justify-center rounded-full hover:bg-hover"
+            className="cursor-pointer !text-muted hover:!text-primary transition-colors absolute top-2 right-4 z-50 w-8 h-8 flex items-center justify-center rounded-full hover:bg-hover"
             title={isMinimized ? 'Agrandir' : 'Réduire'}
           >
             {isMinimized ? (
@@ -90,13 +90,13 @@ export default function FloatingPricingHeader({
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-default">
-                      <th className="p-4 text-left text-muted font-medium capitalize w-1/3">
+                      <th className="p-4 !text-left !text-muted font-medium capitalize w-1/3">
                         {t('features')}
                       </th>
                       {plans.map(plan => (
                         <th
                           key={plan.id}
-                          className={`p-4 text-center text-primary font-semibold transition-all duration-500 w-1/6 ${
+                          className={`p-4 !text-center !text-primary font-semibold transition-all duration-500 w-1/6 ${
                             highlightedPlan === plan.name
                               ? 'bg-accent-light'
                               : ''

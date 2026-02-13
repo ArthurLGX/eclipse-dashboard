@@ -155,11 +155,11 @@ export default function MonitoringPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
-            <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
+            <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
               <IconServer className="w-7 h-7 !text-accent" />
               {t('monitoring') || 'Monitoring'}
             </h1>
-            <p className="text-muted text-sm mt-1">
+            <p className="text-muted !text-sm mt-1">
               {t('monitoring_desc') || 'Surveillez la disponibilité de vos sites web'}
             </p>
           </div>
@@ -190,8 +190,8 @@ export default function MonitoringPage() {
                 <IconWorld className="w-5 h-5 !text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-primary">{stats.total}</p>
-                <p className="!text-xs text-muted">{t('total_sites') || 'Sites surveillés'}</p>
+                <p className="text-2xl font-bold !text-primary">{stats.total}</p>
+                <p className="!text-xs !text-muted">{t('total_sites') || 'Sites surveillés'}</p>
               </div>
             </div>
           </div>
@@ -202,29 +202,29 @@ export default function MonitoringPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold !text-success-text -text">{stats.up}</p>
-                <p className="!text-xs text-muted">{t('sites_up') || 'En ligne'}</p>
+                <p className="!text-xs !text-muted">{t('sites_up') || 'En ligne'}</p>
               </div>
             </div>
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-error-light rounded-lg">
-                <IconX className="w-5 h-5 text-error" />
+                <IconX className="w-5 h-5 !text-error" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-error">{stats.down}</p>
-                <p className="!text-xs text-muted">{t('sites_down') || 'Hors ligne'}</p>
+                <p className="text-2xl font-bold !text-error">{stats.down}</p>
+                <p className="!text-xs !text-muted">{t('sites_down') || 'Hors ligne'}</p>
               </div>
             </div>
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-warning-light rounded-lg">
-                <IconClock className="w-5 h-5 text-warning" />
+                <IconClock className="w-5 h-5 !text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-warning">{stats.slow}</p>
-                <p className="!text-xs text-muted">{t('sites_slow') || 'Lent'}</p>
+                <p className="text-2xl font-bold !text-warning">{stats.slow}</p>
+                <p className="!text-xs !text-muted">{t('sites_slow') || 'Lent'}</p>
               </div>
             </div>
           </div>
@@ -237,10 +237,10 @@ export default function MonitoringPage() {
               <button
                 key={type}
                 onClick={() => setTypeFilter(type)}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1 ${
+                className={`px-3 py-1.5 rounded-md !text-sm font-medium transition-colors flex items-center gap-1 ${
                   typeFilter === type
-                    ? 'bg-accent text-white'
-                    : 'text-muted hover:text-primary'
+                    ? 'bg-accent !text-white'
+                    : 'text-muted hover:!text-primary'
                 }`}
               >
                 {type === 'all' && <IconWorld className={`w-4 h-4 ${typeFilter === type ? '!text-white' : 'text-muted'}`} />}
@@ -264,8 +264,8 @@ export default function MonitoringPage() {
               <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />
             </div>
           ) : !filteredSites?.length ? (
-            <div className="p-8 text-center">
-              <IconServer className="w-12 h-12 text-muted mx-auto mb-4" />
+            <div className="p-8 !text-center">
+              <IconServer className="w-12 h-12 !text-muted mx-auto mb-4" />
               <p className="text-muted">{t('no_sites') || 'Aucun site surveillé'}</p>
               <button
                 onClick={() => setShowAddModal(true)}
@@ -279,28 +279,28 @@ export default function MonitoringPage() {
               <table className="w-full">
                 <thead className="bg-hover">
                   <tr>
-                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase">
                       {t('site') || 'Site'}
                     </th>
-                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase">
                       {t('type') || 'Type'}
                     </th>
-                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase">
                       {t('status') || 'Statut'}
                     </th>
-                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase">
                       {t('uptime') || 'Uptime'}
                     </th>
-                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase">
                       {t('response_time') || 'Réponse'}
                     </th>
-                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase">
                       SSL
                     </th>
-                    <th className="px-4 py-3 text-left !text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 !text-left !text-xs font-medium !text-muted uppercase">
                       {t('last_check') || 'Dernière vérif.'}
                     </th>
-                    <th className="px-4 py-3 text-right !text-xs font-medium text-muted uppercase">
+                    <th className="px-4 py-3 !text-right !text-xs font-medium !text-muted uppercase">
                       {t('actions') || 'Actions'}
                     </th>
                   </tr>
@@ -325,7 +325,7 @@ export default function MonitoringPage() {
                               }}
                             />
                             <div>
-                              <p className="font-medium text-primary">{site.name}</p>
+                              <p className="font-medium !text-primary">{site.name}</p>
                               <a 
                                 href={site.url} 
                                 target="_blank" 
@@ -364,12 +364,12 @@ export default function MonitoringPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`font-mono text-sm ${site.uptime_percentage >= 99 ? 'text-success-text' : site.uptime_percentage >= 95 ? 'text-warning-text' : 'text-error-text'}`}>
+                          <span className={`font-mono !text-sm ${site.uptime_percentage >= 99 ? 'text-success-text' : site.uptime_percentage >= 95 ? 'text-warning-text' : 'text-error-text'}`}>
                             {formatUptime(site.uptime_percentage)}
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`font-mono text-sm ${
+                          <span className={`font-mono !text-sm ${
                             site.last_response_time && site.last_response_time < 500 ? 'text-success-text' :
                             site.last_response_time && site.last_response_time < 2000 ? 'text-warning-text' : 'text-error-text'
                           }`}>
@@ -389,7 +389,7 @@ export default function MonitoringPage() {
                           )}
                         </td>
                         <td className="px-4 py-3">
-                          <span className="!text-xs text-muted">
+                          <span className="!text-xs !text-muted">
                             {site.last_check 
                               ? new Date(site.last_check).toLocaleString('fr-FR', { 
                                   hour: '2-digit', 
@@ -405,20 +405,20 @@ export default function MonitoringPage() {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => router.push(`/dashboard/monitoring/${site.documentId}`)}
-                              className="p-1.5 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+                              className="p-1.5 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
                               title={t('view_stats') || 'Voir les statistiques'}
                             >
                               <IconChartBar className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => setEditingSite(site)}
-                              className="p-1.5 text-muted hover:text-primary hover:bg-hover rounded-lg transition-colors"
+                              className="p-1.5 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
                             >
                               <IconEdit className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => setDeleteModal({ isOpen: true, site })}
-                              className="p-1.5 text-muted hover:text-error hover:bg-error-light rounded-lg transition-colors"
+                              className="p-1.5 !text-muted hover:!text-error hover:bg-error-light rounded-lg transition-colors"
                             >
                               <IconTrash className="w-4 h-4" />
                             </button>
@@ -575,7 +575,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
         className="w-full max-w-lg bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-y-auto"
       >
         <div className="p-6 border-b border-default sticky top-0 bg-card z-10">
-          <h2 className="text-lg font-semibold text-primary">
+          <h2 className="text-lg font-semibold !text-primary">
             {site ? (t('edit_site') || 'Modifier le site') : (t('add_site') || 'Ajouter un site')}
           </h2>
         </div>
@@ -583,7 +583,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Basic Info */}
           <div>
-            <label className="block text-sm font-medium text-secondary mb-1">
+            <label className="block !text-sm font-medium !text-secondary mb-1">
               {t('site_name') || 'Nom du site'}
             </label>
             <input
@@ -597,7 +597,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-1">
+            <label className="block !text-sm font-medium !text-secondary mb-1">
               URL
             </label>
             <input
@@ -612,7 +612,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
 
           {/* Site Type */}
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label className="block !text-sm font-medium !text-secondary mb-2">
               {t('site_type') || 'Type de site'}
             </label>
             <div className="grid grid-cols-4 gap-2">
@@ -621,10 +621,10 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
                   key={type}
                   type="button"
                   onClick={() => setSiteType(type)}
-                  className={`p-2 rounded-lg border text-sm font-medium transition-colors flex flex-col items-center gap-1 ${
+                  className={`p-2 rounded-lg border !text-sm font-medium transition-colors flex flex-col items-center gap-1 ${
                     siteType === type
                       ? 'border-accent bg-accent-light !text-accent'
-                      : 'border-default bg-muted text-muted hover:text-primary'
+                      : 'border-default bg-muted !text-muted hover:!text-primary'
                   }`}
                 >
                   {type === 'frontend' && <IconDeviceDesktop className={`w-5 h-5 ${siteType === type ? 'text-accent' : 'text-muted'}`} />}
@@ -639,7 +639,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
           {/* Monitoring Settings */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-secondary mb-1">
+              <label className="block !text-sm font-medium !text-secondary mb-1">
                 {t('check_interval') || 'Intervalle'} (min)
               </label>
               <select
@@ -656,7 +656,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary mb-1">
+              <label className="block !text-sm font-medium !text-secondary mb-1">
                 {t('slow_threshold') || 'Seuil lenteur'} (ms)
               </label>
               <input
@@ -678,7 +678,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
               onChange={(e) => setAlertEmail(e.target.checked)}
               className="w-4 h-4 rounded border-default accent-accent"
             />
-            <label htmlFor="alertEmail" className="text-sm text-secondary">
+            <label htmlFor="alertEmail" className="text-sm !text-secondary">
               {t('alert_by_email') || 'M\'alerter par email si le site est down'}
             </label>
           </div>
@@ -688,7 +688,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
             <button
               type="button"
               onClick={() => setShowServerInfo(!showServerInfo)}
-              className="w-full flex items-center justify-between p-3 bg-muted rounded-lg text-sm font-medium text-secondary hover:text-primary transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-muted rounded-lg !text-sm font-medium !text-secondary hover:!text-primary transition-colors"
             >
               <span className="flex items-center gap-2">
                 <IconServer className="w-4 h-4" />
@@ -708,7 +708,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
               className="space-y-4 p-4 bg-muted rounded-lg"
             >
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">
+                <label className="block !text-sm font-medium !text-secondary mb-1">
                   {t('hosting_provider') || 'Hébergeur'}
                 </label>
                 <select
@@ -724,7 +724,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">
+                <label className="block !text-sm font-medium !text-secondary mb-1">
                   {t('server_ip') || 'Adresse IP du serveur'}
                 </label>
                 <input
@@ -737,7 +737,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">
+                <label className="block !text-sm font-medium !text-secondary mb-1">
                   {t('server_notes') || 'Notes sur le serveur'}
                 </label>
                 <textarea
@@ -749,7 +749,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
               </div>
 
               <div className="p-3 bg-warning-light border border-warning rounded-lg">
-                <p className="!text-xs text-warning-text flex items-center gap-2">
+                <p className="!text-xs !text-warning-text flex items-center gap-2">
                   <IconKey className="w-4 h-4" />
                   {t('credentials_info') || 'Les identifiants de connexion seront gérés dans une section sécurisée séparée.'}
                 </p>

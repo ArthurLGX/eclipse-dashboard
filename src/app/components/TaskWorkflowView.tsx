@@ -331,16 +331,16 @@ const TaskNode: React.FC<TaskNodeProps> = ({
       {/* Task title (below node) */}
       <div
         className={`
-          absolute left-1/2 -translate-x-1/2 text-center whitespace-nowrap
+          absolute left-1/2 -translate-x-1/2 !text-center whitespace-nowrap
           ${isSubtask ? 'top-full mt-1' : 'top-full mt-3'}
         `}
         style={{ maxWidth: size * 2 }}
       >
-        <span className={`text-xs font-medium text-primary truncate block ${isSubtask ? 'text-[10px]' : ''}`}>
+        <span className={`text-xs font-medium !text-primary truncate block ${isSubtask ? 'text-[10px]' : ''}`}>
           {task.title}
         </span>
         {!isSubtask && task.endDate && (
-          <span className="text-[10px] text-muted flex items-center justify-center gap-0.5 mt-0.5">
+          <span className="text-[10px] !text-muted flex items-center justify-center gap-0.5 mt-0.5">
             <IconCalendar size={10} />
             {new Date(task.endDate).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
           </span>
@@ -394,12 +394,12 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-hover text-muted hover:text-primary transition-colors"
+            className="p-1 rounded-lg hover:bg-hover !text-muted hover:!text-primary transition-colors"
           >
             <IconX size={18} />
           </button>
         </div>
-        <h3 className="text-lg font-bold text-primary mt-2">{task.title}</h3>
+        <h3 className="text-lg font-bold !text-primary mt-2">{task.title}</h3>
       </div>
 
       {/* Content */}
@@ -407,7 +407,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
         {/* Progress */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-secondary">{t('progress') || 'Progression'}</span>
+            <span className="text-sm !text-secondary">{t('progress') || 'Progression'}</span>
             <span className={`text-sm font-bold ${config.color}`}>{task.progress}%</span>
           </div>
           <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
@@ -423,8 +423,8 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
         {/* Description */}
         {task.description && (
           <div>
-            <span className="text-sm text-secondary block mb-1">{t('description') || 'Description'}</span>
-            <p className="text-sm text-primary">{task.description}</p>
+            <span className="text-sm !text-secondary block mb-1">{t('description') || 'Description'}</span>
+            <p className="text-sm !text-primary">{task.description}</p>
           </div>
         )}
 
@@ -432,7 +432,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
         {priorityConfig && (
           <div className="flex items-center gap-2">
             <IconFlag size={16} className={priorityConfig.color} />
-            <span className="text-sm text-secondary">{t('priority') || 'Priorité'}:</span>
+            <span className="text-sm !text-secondary">{t('priority') || 'Priorité'}:</span>
             <span className={`text-sm font-medium ${priorityConfig.color}`}>
               {t(`priority_${task.priority}`) || priorityConfig.label}
             </span>
@@ -443,8 +443,8 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
         {task.assignee && (
           <div className="flex items-center gap-2">
             <IconUser size={16} className="text-muted" />
-            <span className="text-sm text-secondary">{t('assignee') || 'Assigné à'}:</span>
-            <span className="text-sm text-primary font-medium">{task.assignee}</span>
+            <span className="text-sm !text-secondary">{t('assignee') || 'Assigné à'}:</span>
+            <span className="text-sm !text-primary font-medium">{task.assignee}</span>
           </div>
         )}
 
@@ -454,7 +454,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
             {task.startDate && (
               <div className="flex items-center gap-1">
                 <IconCalendar size={14} className="text-muted" />
-                <span className="!text-xs text-secondary">
+                <span className="!text-xs !text-secondary">
                   {t('start') || 'Début'}: {new Date(task.startDate).toLocaleDateString('fr-FR')}
                 </span>
               </div>
@@ -462,7 +462,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
             {task.endDate && (
               <div className="flex items-center gap-1">
                 <IconCalendar size={14} className="text-muted" />
-                <span className="!text-xs text-secondary">
+                <span className="!text-xs !text-secondary">
                   {t('end') || 'Fin'}: {new Date(task.endDate).toLocaleDateString('fr-FR')}
                 </span>
               </div>
@@ -474,11 +474,11 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
         {task.subtasks && task.subtasks.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-secondary">
+              <span className="text-sm !text-secondary">
                 {t('subtasks') || 'Sous-tâches'} ({task.subtasks.length})
               </span>
               {subtaskProgress !== null && (
-                <span className="!text-xs text-muted">{subtaskProgress}% {t('completed_short') || 'terminé'}</span>
+                <span className="!text-xs !text-muted">{subtaskProgress}% {t('completed_short') || 'terminé'}</span>
               )}
             </div>
             <div className="space-y-2">
@@ -882,12 +882,12 @@ export default function TaskWorkflowView({
       <div className="flex-shrink-0 px-4 py-3 bg-card border-b border-default">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h3 className="font-semibold text-primary">
+            <h3 className="font-semibold !text-primary">
               {t('task_workflow') || 'Workflow des tâches'}
             </h3>
             {/* Overall progress with visual bar */}
             <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-muted">
-              <span className="!text-xs text-secondary">{t('progress') || 'Progression'}:</span>
+              <span className="!text-xs !text-secondary">{t('progress') || 'Progression'}:</span>
               <div className="flex items-center gap-2">
                 <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
                   <div 
@@ -899,7 +899,7 @@ export default function TaskWorkflowView({
               </div>
             </div>
             {/* Task count */}
-            <span className="!text-xs text-muted ">
+            <span className="!text-xs !text-muted ">
               {localTasks.length} {t('tasks') || 'tâches'}
             </span>
           </div>
@@ -909,24 +909,24 @@ export default function TaskWorkflowView({
             {onRefresh && (
               <button 
                 onClick={onRefresh} 
-                className="p-1.5 rounded-lg hover:bg-hover text-muted hover:text-accent transition-colors" 
+                className="p-1.5 rounded-lg hover:bg-hover !text-muted hover:!text-accent transition-colors" 
                 title={t('refresh') || 'Actualiser'}
               >
                 <IconRefresh size={18} />
               </button>
             )}
             <div className="w-px h-4 bg-border mx-1" />
-            <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom -">
+            <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Zoom -">
               <IconZoomOut size={18} />
             </button>
-            <span className="!text-xs text-muted w-12 text-center">{Math.round(scale * 100)}%</span>
-            <button onClick={handleZoomIn} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Zoom +">
+            <span className="!text-xs !text-muted w-12 !text-center">{Math.round(scale * 100)}%</span>
+            <button onClick={handleZoomIn} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Zoom +">
               <IconZoomIn size={18} />
             </button>
-            <button onClick={handleReset} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Reset">
+            <button onClick={handleReset} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Reset">
               <IconFocus2 size={18} />
             </button>
-            <button onClick={toggleFullscreen} className="p-1.5 rounded-lg hover:bg-hover text-muted" title="Fullscreen">
+            <button onClick={toggleFullscreen} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Fullscreen">
               {isFullscreen ? <IconMinimize size={18} /> : <IconMaximize size={18} />}
             </button>
           </div>
@@ -1029,7 +1029,7 @@ export default function TaskWorkflowView({
 
         {/* Legend */}
         <div className="absolute bottom-4 left-4 bg-card border border-default rounded-lg p-3 !text-xs space-y-1.5">
-          <div className="font-medium text-primary mb-2">{t('legend') || 'Légende'}</div>
+          <div className="font-medium !text-primary mb-2">{t('legend') || 'Légende'}</div>
           {Object.entries(STATUS_CONFIG).map(([status, config]) => {
             const StatusIcon = config.icon;
             return (
@@ -1131,11 +1131,11 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-primary truncate">{task.title}</span>
+                      <span className="font-medium !text-primary truncate">{task.title}</span>
                       <span className={`text-xs font-bold ${config.color}`}>{task.progress}%</span>
                     </div>
                     {task.endDate && (
-                      <span className="!text-xs text-muted flex items-center gap-1 mt-0.5">
+                      <span className="!text-xs !text-muted flex items-center gap-1 mt-0.5">
                         <IconCalendar size={12} />
                         {t('due') || 'Échéance'}: {new Date(task.endDate).toLocaleDateString('fr-FR')}
                       </span>
@@ -1149,7 +1149,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
                         e.stopPropagation();
                         toggleExpand(task.id);
                       }}
-                      className="p-2 rounded-lg hover:bg-hover text-muted"
+                      className="p-2 rounded-lg hover:bg-hover !text-muted"
                     >
                       {isExpanded ? <IconChevronDown size={18} /> : <IconChevronRight size={18} />}
                     </button>
@@ -1174,7 +1174,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
                             className="flex items-center gap-3 p-2 rounded-lg bg-muted"
                           >
                             <StIcon size={14} className={stConfig.color} />
-                            <span className="text-sm text-primary flex-1 truncate">{subtask.title}</span>
+                            <span className="text-sm !text-primary flex-1 truncate">{subtask.title}</span>
                             <span className={`text-xs font-bold ${stConfig.color}`}>{subtask.progress}%</span>
                             <div className="w-16">
                               <SubtaskProgressBar progress={subtask.progress} status={subtask.status} />

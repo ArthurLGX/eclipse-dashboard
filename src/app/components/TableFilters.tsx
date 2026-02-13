@@ -124,20 +124,20 @@ export default function TableFilters({
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Search bar */}
         <div className="flex-1 relative">
-          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
           <input
             type="text"
             placeholder={searchPlaceholder}
             value={searchValue}
             onChange={e => onSearchChangeAction(e.target.value)}
-            className="input w-full py-2.5 !pr-4 !pl-10 placeholder:text-muted"
+            className="input w-full py-2.5 !pr-4 !pl-10 placeholder:!text-muted"
           />
           {searchValue && (
             <button
               onClick={() => onSearchChangeAction('')}
               className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
             >
-              <IconX className="w-4 h-4 text-muted" />
+              <IconX className="w-4 h-4 !text-muted" />
             </button>
           )}
         </div>
@@ -168,13 +168,13 @@ export default function TableFilters({
             className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
               showAdvanced || activeFiltersCount > 0
                 ? 'bg-accent-light border-accent !text-accent'
-                : 'bg-card border-default text-primary hover:!text-secondary hover:border-accent'
+                : 'bg-card border-default !text-primary hover:!text-secondary hover:border-accent'
             }`}
           >
             <IconAdjustments className="w-5 h-5" />
             <span className="hidden sm:inline">{t('advanced_filters') || 'Filtres avancés'}</span>
             {activeFiltersCount > 0 && (
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-accent text-white !text-xs font-bold">
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-accent !text-white !text-xs font-bold">
                 {activeFiltersCount}
               </span>
             )}
@@ -225,7 +225,7 @@ export default function TableFilters({
         {hasActiveFilters && (
           <button
             onClick={clearAllFilters}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-danger text-danger hover:bg-danger-light transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-danger !text-danger hover:bg-danger-light transition-colors"
           >
             <IconX className="w-4 h-4" />
             <span className="hidden sm:inline">{t('clear_filters') || 'Effacer'}</span>
@@ -248,7 +248,7 @@ export default function TableFilters({
                 <div className="p-1.5">
                   <IconFilter className="w-4 h-4 !text-accent" />
                 </div>
-                <span className="text-sm font-semibold text-primary">
+                <span className="text-sm font-semibold !text-primary">
                   {t('filter_by') || 'Filtrer par'}
                 </span>
                 {activeFiltersCount > 0 && (
@@ -264,7 +264,7 @@ export default function TableFilters({
                 {/* Select Filters */}
                 {selectFilters.map(filter => (
                   <div key={filter.id} className="flex flex-col sm:flex-row sm:items-center gap-2 lg:gap-3">
-                    <label className="text-sm font-medium text-secondary whitespace-nowrap min-w-fit">
+                    <label className="text-sm font-medium !text-secondary whitespace-nowrap min-w-fit">
                       {filter.label}
                     </label>
                     
@@ -273,7 +273,7 @@ export default function TableFilters({
                         id={filter.id}
                         value={(filter.value as string) || ''}
                         onChange={e => onAdvancedFilterChange?.(filter.id, e.target.value)}
-                        className="input px-3 py-2 text-sm min-w-[180px]"
+                        className="input px-3 py-2 !text-sm min-w-[180px]"
                       >
                         <option value="">{filter.placeholder || t('select') || 'Tous'}</option>
                         {filter.options.map(opt => (
@@ -288,7 +288,7 @@ export default function TableFilters({
                       <div className="relative min-w-[180px]">
                         <button
                           onClick={() => setOpenMultiSelect(openMultiSelect === filter.id ? null : filter.id)}
-                          className="input w-full px-3 py-2 text-sm text-left flex items-center justify-between gap-2"
+                          className="input w-full px-3 py-2 !text-sm !text-left flex items-center justify-between gap-2"
                         >
                           <span className={`truncate ${
                             (filter.value as string[])?.length > 0 ? 'text-primary' : 'text-muted'
@@ -298,7 +298,7 @@ export default function TableFilters({
                               : filter.placeholder || t('select') || 'Sélectionner...'
                             }
                           </span>
-                          <IconChevronDown className={`w-4 h-4 text-muted flex-shrink-0 transition-transform ${
+                          <IconChevronDown className={`w-4 h-4 !text-muted flex-shrink-0 transition-transform ${
                             openMultiSelect === filter.id ? 'rotate-180' : ''
                           }`} />
                         </button>
@@ -317,7 +317,7 @@ export default function TableFilters({
                                   <button
                                     key={opt.value}
                                     onClick={() => handleMultiSelectToggle(filter.id, opt.value)}
-                                    className={`w-full px-3 py-2 text-left flex items-center gap-2 hover:bg-muted transition-colors text-sm ${
+                                    className={`w-full px-3 py-2 !text-left flex items-center gap-2 hover:bg-muted transition-colors !text-sm ${
                                       isSelected ? 'bg-accent-light !text-accent' : 'text-primary'
                                     }`}
                                   >
@@ -325,14 +325,14 @@ export default function TableFilters({
                                       isSelected ? 'bg-accent border-accent' : 'border-default'
                                     }`}>
                                       {isSelected && (
-                                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-3 h-3 !text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                         </svg>
                                       )}
                                     </div>
                                     <span className="truncate">{opt.label}</span>
                                     {opt.count !== undefined && (
-                                      <span className="ml-auto !text-xs text-muted">({opt.count})</span>
+                                      <span className="ml-auto !text-xs !text-muted">({opt.count})</span>
                                     )}
                                   </button>
                                 );
@@ -374,7 +374,7 @@ export default function TableFilters({
                 {/* Date Range Filters */}
                 {dateFilters.map(filter => (
                   <div key={filter.id} className="flex flex-col sm:flex-row sm:items-center gap-2 lg:gap-3">
-                    <label className="text-sm font-medium text-secondary whitespace-nowrap min-w-fit">
+                    <label className="text-sm font-medium !text-secondary whitespace-nowrap min-w-fit">
                       {filter.label}
                     </label>
                     <div className="flex items-center gap-2">
@@ -386,10 +386,10 @@ export default function TableFilters({
                             ...(filter.value as DateRangeFilter || { from: '', to: '' }),
                             from: e.target.value
                           })}
-                          className="input cursor-pointer !pr-2 py-2 text-sm min-w-[140px]"
+                          className="input cursor-pointer !pr-2 py-2 !text-sm min-w-[140px]"
                         />
                       </div>
-                      <span className="text-muted text-sm">→</span>
+                      <span className="text-muted !text-sm">→</span>
                       <div className="relative">
                         <input
                           type="date"
@@ -398,7 +398,7 @@ export default function TableFilters({
                             ...(filter.value as DateRangeFilter || { from: '', to: '' }),
                             to: e.target.value
                           })}
-                          className="input cursor-pointer !pr-2 py-2 text-sm min-w-[140px]"
+                          className="input cursor-pointer !pr-2 py-2 !text-sm min-w-[140px]"
                         />
                       </div>
                     </div>

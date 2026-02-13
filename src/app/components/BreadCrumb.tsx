@@ -221,7 +221,7 @@ export const BreadCrumb = () => {
                 item.isLast
                   ? '!text-accent-subtle font-medium cursor-default' // Page active en accent-subtle
                   : clickable && !item.isLast
-                    ? 'text-accent-subtle hover:text-accent-bg hover:underline cursor-pointer'
+                    ? 'text-accent-subtle hover:!text-accent-bg hover:underline cursor-pointer'
                     : 'text-accent-subtle cursor-default' // Non-cliquable
               }`}
               aria-current={item.isLast ? 'page' : undefined}

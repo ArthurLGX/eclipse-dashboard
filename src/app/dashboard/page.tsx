@@ -217,7 +217,7 @@ export default function DashboardPage() {
               className="w-full bg-warning rounded-t transition-all hover:bg-violet-500"
               style={{ height: `${(month.value / maxValue) * 100}%`, minHeight: month.value > 0 ? '4px' : '2px' }}
             />
-            <span className="text-[10px] text-muted">{month.month}</span>
+            <span className="text-[10px] !text-muted">{month.month}</span>
           </div>
         ))}
       </div>
@@ -236,7 +236,7 @@ export default function DashboardPage() {
         className="space-y-6 bg-page"
       >
         <div className="flex items-center justify-between">
-          <h1 className="!text-3xl !uppercase font-extrabold !text-left text-primary">
+          <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-primary">
             {t('dashboard')}
           </h1>
         </div>
@@ -252,7 +252,7 @@ export default function DashboardPage() {
           >
             <div className="flex items-start justify-between mb-2">
               <div className="w-10 h-10 bg-warning-light rounded-lg flex items-center justify-center">
-                <IconCurrencyEuro className="w-5 h-5 text-warning-text" />
+                <IconCurrencyEuro className="w-5 h-5 !text-warning-text" />
               </div>
               {stats.caTrend !== 0 && (
                 <div className={`flex items-center gap-0.5 !text-xs font-medium ${stats.caTrend > 0 ? 'text-green-500' : 'text-red-500'}`}>
@@ -261,8 +261,8 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-            <p className="!text-xs text-muted mb-1">{t('revenue_this_month')}</p>
-            <p className="text-xl font-bold text-primary">
+            <p className="!text-xs !text-muted mb-1">{t('revenue_this_month')}</p>
+            <p className="text-xl font-bold !text-primary">
               {loading ? '...' : stats.caThisMonth.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
             </p>
           </motion.div>
@@ -283,8 +283,8 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-            <p className="!text-xs text-muted mb-1">{t('clients')}</p>
-            <p className="text-xl font-bold text-primary">
+            <p className="!text-xs !text-muted mb-1">{t('clients')}</p>
+            <p className="text-xl font-bold !text-primary">
               {loading ? '...' : stats.clientsCount}
             </p>
           </motion.div>
@@ -297,14 +297,14 @@ export default function DashboardPage() {
           >
             <div className="flex items-start justify-between mb-2">
               <div className="w-10 h-10 bg-info rounded-lg flex items-center justify-center">
-                <IconBriefcase className="w-5 h-5 text-info" />
+                <IconBriefcase className="w-5 h-5 !text-info" />
               </div>
-              <div className="!text-xs text-muted">
+              <div className="!text-xs !text-muted">
                 {stats.inProgressProjects.length} {t('in_progress_short')}
               </div>
             </div>
-            <p className="!text-xs text-muted mb-1">{t('projects')}</p>
-            <p className="text-xl font-bold text-primary">
+            <p className="!text-xs !text-muted mb-1">{t('projects')}</p>
+            <p className="text-xl font-bold !text-primary">
               {loading ? '...' : stats.projectsCount}
             </p>
           </motion.div>
@@ -317,14 +317,14 @@ export default function DashboardPage() {
           >
             <div className="flex items-start justify-between mb-2">
               <div className="w-10 h-10 bg-info rounded-lg flex items-center justify-center">
-                <IconUserSearch className="w-5 h-5 text-info" />
+                <IconUserSearch className="w-5 h-5 !text-info" />
               </div>
-              <div className="!text-xs font-medium text-info">
+              <div className="!text-xs font-medium !text-info">
                 {stats.conversionRate}% conv.
               </div>
             </div>
-            <p className="!text-xs text-muted mb-1">{t('prospects')}</p>
-            <p className="text-xl font-bold text-primary">
+            <p className="!text-xs !text-muted mb-1">{t('prospects')}</p>
+            <p className="text-xl font-bold !text-primary">
               {loading ? '...' : stats.prospectsCount}
             </p>
           </motion.div>
@@ -340,10 +340,10 @@ export default function DashboardPage() {
                 <IconFileInvoice className={`w-5 h-5 ${stats.unpaidInvoices.length > 0 ? 'text-red-500' : 'text-info'}`} />
               </div>
               {stats.unpaidInvoices.length > 0 && (
-                <IconAlertTriangle className="w-4 h-4 text-red-500" />
+                <IconAlertTriangle className="w-4 h-4 !text-red-500" />
               )}
             </div>
-            <p className="!text-xs text-muted mb-1">{t('overdue_invoices')}</p>
+            <p className="!text-xs !text-muted mb-1">{t('overdue_invoices')}</p>
             <p className={`text-xl font-bold ${stats.unpaidInvoices.length > 0 ? 'text-red-500' : 'text-primary'}`}>
               {loading ? '...' : stats.unpaidInvoices.length}
             </p>
@@ -355,10 +355,10 @@ export default function DashboardPage() {
           {/* Mini-graphique revenus */}
           <div className="card p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-primary">{t('revenue_evolution')}</h3>
+              <h3 className="font-semibold !text-primary">{t('revenue_evolution')}</h3>
               <button 
                 onClick={() => router.push('/dashboard/revenue')}
-                className="!text-xs text-secondary hover:text-primary flex items-center gap-1 !shadow-none"
+                className="!text-xs !text-secondary hover:!text-primary flex items-center gap-1 !shadow-none"
               >
                 {t('view_details')}
                 <IconArrowUpRight className="w-3 h-3 !text-secondary" style={{ color: 'var(--color-secondary)' }} />
@@ -369,7 +369,7 @@ export default function DashboardPage() {
             ) : (
               renderMiniChart()
             )}
-            <div className="mt-3 pt-3 border-t border-default flex justify-between text-sm">
+            <div className="mt-3 pt-3 border-t border-default flex justify-between !text-sm">
               <span className="text-muted">{t('total_revenue')}</span>
               <span className="font-semibold !text-secondary">
                 {stats.totalCA.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
@@ -394,7 +394,7 @@ export default function DashboardPage() {
 
           {/* Activité récente enrichie */}
           <div className="card p-6">
-            <h3 className="font-semibold text-primary mb-4">{t('recent_activity')}</h3>
+            <h3 className="font-semibold !text-primary mb-4">{t('recent_activity')}</h3>
             {loading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map(i => (
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : recentActivities.length === 0 ? (
-              <div className="text-center py-8 text-muted">
+              <div className="text-center py-8 !text-muted">
                 <IconCalendarEvent className="w-12 h-12 mx-auto mb-2 opacity-30" />
                 <p>{t('no_recent_activity')}</p>
               </div>
@@ -419,16 +419,16 @@ export default function DashboardPage() {
                     <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-hover transition-colors">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                         activity.color === 'emerald' ? 'bg-success !text-success-text ' :
-                        activity.color === 'blue' ? 'bg-info text-info' :
+                        activity.color === 'blue' ? 'bg-info !text-info' :
                         activity.color === 'green' ? 'bg-success !text-success-text ' :
-                        'bg-muted text-muted'
+                        'bg-muted !text-muted'
                       }`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-primary truncate">{activity.message}</p>
+                        <p className="text-sm !text-primary truncate">{activity.message}</p>
                         {activity.time && (
-                          <p className="!text-xs text-muted">{activity.time}</p>
+                          <p className="!text-xs !text-muted">{activity.time}</p>
                         )}
                       </div>
                     </div>

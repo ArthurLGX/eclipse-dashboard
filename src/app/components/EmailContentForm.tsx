@@ -63,7 +63,7 @@ export default function EmailContentForm({
         {/* Title field */}
         {showTitle && (
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label className="block !text-sm font-medium !text-secondary mb-2">
               <IconHeading className="w-4 h-4 inline mr-1.5 !text-accent" />
               {l.title} *
             </label>
@@ -72,17 +72,17 @@ export default function EmailContentForm({
               value={data.title}
               onChange={(e) => onChange({ title: e.target.value })}
               placeholder={l.titlePlaceholder}
-              className="input w-full text-lg"
+              className="input w-full !text-lg"
             />
             {l.titleHint && (
-              <p className="!text-xs text-muted mt-1">{l.titleHint}</p>
+              <p className="!text-xs !text-muted mt-1">{l.titleHint}</p>
             )}
           </div>
         )}
 
         {/* Subject field */}
         <div>
-          <label className="block text-sm font-medium text-secondary mb-2">
+          <label className="block !text-sm font-medium !text-secondary mb-2">
             <IconMail className="w-4 h-4 inline mr-1.5 !text-accent" />
             {l.subject} *
             {l.subjectHint && (
@@ -101,7 +101,7 @@ export default function EmailContentForm({
 
       {/* Message field */}
       <div className="bg-card border border-default rounded-xl p-6">
-        <label className="block text-sm font-medium text-secondary mb-3">
+        <label className="block !text-sm font-medium !text-secondary mb-3">
           {l.message} *
         </label>
         

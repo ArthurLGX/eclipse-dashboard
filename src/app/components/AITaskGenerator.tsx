@@ -448,10 +448,10 @@ export default function AITaskGenerator({
                 />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-primary">
+                <h2 className="text-lg font-semibold !text-primary">
                   Eclipse Assistant
                 </h2>
-                <p className="text-sm text-muted">
+                <p className="text-sm !text-muted">
                   {t('ai_tasks_description') || 'Génération de tâches intelligente'} • {projectTitle}
                 </p>
               </div>
@@ -460,7 +460,7 @@ export default function AITaskGenerator({
               onClick={onClose}
               className="p-2 hover:bg-hover rounded-lg transition-colors"
             >
-              <IconX className="w-5 h-5 text-muted" />
+              <IconX className="w-5 h-5 !text-muted" />
             </button>
           </div>
 
@@ -478,10 +478,10 @@ export default function AITaskGenerator({
                     <button
                       key={mode.id}
                       onClick={() => setInputMode(mode.id)}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg !text-sm font-medium transition-colors ${
                         inputMode === mode.id
-                          ? 'bg-muted text-primary shadow-sm'
-                          : 'text-muted hover:text-primary'
+                          ? 'bg-muted !text-primary shadow-sm'
+                          : 'text-muted hover:!text-primary'
                       }`}
                     >
                       <mode.icon className="w-4 h-4" />
@@ -493,7 +493,7 @@ export default function AITaskGenerator({
                 {/* Input content */}
                 {inputMode === 'prompt' && (
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2">
+                    <label className="block !text-sm font-medium !text-primary mb-2">
                       {t('describe_tasks_needed') || 'Décrivez les objectifs ou fonctionnalités à développer'}
                     </label>
                     <textarea
@@ -507,14 +507,14 @@ export default function AITaskGenerator({
 
                 {inputMode === 'meeting' && (
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2">
+                    <label className="block !text-sm font-medium !text-primary mb-2">
                       {t('paste_meeting_notes') || 'Collez vos notes de réunion'}
                     </label>
                     <textarea
                       value={meetingNotes}
                       onChange={e => setMeetingNotes(e.target.value)}
                       placeholder={t('ai_meeting_placeholder') || 'Collez le transcript ou les notes de votre réunion client...'}
-                      className="w-full h-48 p-4 bg-muted border border-default rounded-xl resize-none focus:ring-2 focus:ring-muted focus:border-transparent font-mono text-sm"
+                      className="w-full h-48 p-4 bg-muted border border-default rounded-xl resize-none focus:ring-2 focus:ring-muted focus:border-transparent font-mono !text-sm"
                     />
                   </div>
                 )}
@@ -522,7 +522,7 @@ export default function AITaskGenerator({
                 {inputMode === 'fathom' && (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-primary mb-2">
+                      <label className="block !text-sm font-medium !text-primary mb-2">
                         {t('fathom_meeting_url') || 'URL de la réunion Fathom ou contenu exporté'}
                       </label>
                       <textarea
@@ -533,7 +533,7 @@ export default function AITaskGenerator({
                       />
                     </div>
                     <div className="p-4 bg-muted rounded-xl">
-                      <p className="text-sm text-info">
+                      <p className="text-sm !text-info">
                         💡 {t('fathom_tip') || 'Astuce : Exportez le résumé et les action items depuis Fathom pour de meilleurs résultats'}
                       </p>
                     </div>
@@ -542,18 +542,18 @@ export default function AITaskGenerator({
 
                 {/* Project context */}
                 <div className="p-4 bg-muted rounded-xl">
-                  <p className="!text-xs text-muted font-medium uppercase tracking-wider mb-2">
+                  <p className="!text-xs !text-muted font-medium uppercase tracking-wider mb-2">
                     {t('project_context') || 'Contexte du projet'}
                   </p>
-                  <p className="text-sm font-medium text-primary">{projectTitle}</p>
+                  <p className="text-sm font-medium !text-primary">{projectTitle}</p>
                   {projectDescription && (
                     <div 
-                      className="text-sm text-primary mt-1 line-clamp-2 prose prose-sm max-w-none"
+                      className="text-sm !text-primary mt-1 line-clamp-2 prose prose-sm max-w-none"
                       dangerouslySetInnerHTML={{ __html: projectDescription }}
                     />
                   )}
                   {existingTasks && existingTasks.length > 0 && (
-                    <p className="!text-xs text-muted mt-2">
+                    <p className="!text-xs !text-muted mt-2">
                       {existingTasks.length} {t('existing_tasks') || 'tâches existantes'}
                     </p>
                   )}
@@ -562,8 +562,8 @@ export default function AITaskGenerator({
                 {/* Error */}
                 {error && (
                   <div className="p-4 bg-danger-light rounded-xl flex items-center gap-3">
-                    <IconAlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
-                    <p className="text-sm text-danger">{error}</p>
+                    <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
+                    <p className="text-sm !text-danger">{error}</p>
                   </div>
                 )}
               </div>
@@ -575,19 +575,19 @@ export default function AITaskGenerator({
                 <div className="flex items-center gap-4 p-4 bg-muted rounded-xl">
                   <div className="flex items-center gap-2">
                     <IconListCheck className="w-5 h-5 !text-muted" />
-                    <span className="text-sm font-medium text-primary">
+                    <span className="text-sm font-medium !text-primary">
                       {totalSelectedTasks} {t('tasks') || 'tâches'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <IconClock className="w-5 h-5 text-muted" />
-                    <span className="text-sm font-medium text-primary">
+                    <IconClock className="w-5 h-5 !text-muted" />
+                    <span className="text-sm font-medium !text-primary">
                       {totalSelectedHours}h {t('estimated') || 'estimées'}
                     </span>
                   </div>
                   <button
                     onClick={addTask}
-                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 !text-xs bg-muted !text-muted rounded-lg hover:bg-muted hover:text-primary transition-colors"
+                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 !text-xs bg-muted !text-muted rounded-lg hover:bg-muted hover:!text-primary transition-colors"
                   >
                     <IconPlus className="w-3.5 h-3.5"  />
                     {t('add_task') || 'Ajouter'}
@@ -618,8 +618,8 @@ export default function AITaskGenerator({
                             className="mt-0.5 p-1 hover:bg-hover rounded"
                           >
                             {expandedTasks.has(taskIndex) 
-                              ? <IconChevronDown className="w-4 h-4 text-muted" />
-                              : <IconChevronRight className="w-4 h-4 text-muted" />
+                              ? <IconChevronDown className="w-4 h-4 !text-muted" />
+                              : <IconChevronRight className="w-4 h-4 !text-muted" />
                             }
                           </button>
                         )}
@@ -630,22 +630,22 @@ export default function AITaskGenerator({
                             value={task.title}
                             onChange={e => updateTaskField(taskIndex, 'title', e.target.value)}
                             placeholder={t('task_title') || 'Titre de la tâche'}
-                              className="w-full px-3 py-2 bg-muted border border-default rounded-lg text-sm font-medium"
+                              className="w-full px-3 py-2 bg-muted border border-default rounded-lg !text-sm font-medium"
                           />
                           
                           <div className="flex items-center gap-3">
                             <div className="flex items-center gap-2">
-                              <IconClock className="w-4 h-4 text-muted" />
+                              <IconClock className="w-4 h-4 !text-muted" />
                               <input
                                 type="number"
                                 value={task.estimated_hours || ''}
                                 onChange={e => updateTaskField(taskIndex, 'estimated_hours', parseFloat(e.target.value) || undefined)}
                                 placeholder="0"
-                                className="w-16 px-2 py-1 bg-muted border border-default rounded text-sm text-center"
+                                className="w-16 px-2 py-1 bg-muted border border-default rounded !text-sm !text-center"
                                 min="0"
                                 step="0.5"
                               />
-                              <span className="!text-xs text-muted">h</span>
+                              <span className="!text-xs !text-muted">h</span>
                             </div>
                             
                             <select
@@ -660,12 +660,12 @@ export default function AITaskGenerator({
                             </select>
                             
                             {task.phase && (
-                              <span className="px-2 py-1 bg-muted text-muted rounded !text-xs">
+                              <span className="px-2 py-1 bg-muted !text-muted rounded !text-xs">
                                 {task.phase}
                               </span>
                             )}
                             {formatDateRange(task.start_date, task.due_date) && (
-                              <span className="px-2 py-1 bg-muted text-muted rounded !text-xs">
+                              <span className="px-2 py-1 bg-muted !text-muted rounded !text-xs">
                                 {formatDateRange(task.start_date, task.due_date)}
                               </span>
                             )}
@@ -674,7 +674,7 @@ export default function AITaskGenerator({
                         
                         <button
                           onClick={() => removeTask(taskIndex)}
-                          className="p-2 text-danger hover:bg-danger-light rounded-lg transition-colors"
+                          className="p-2 !text-danger hover:bg-danger-light rounded-lg transition-colors"
                         >
                           <IconTrash className="w-4 h-4" />
                         </button>
@@ -696,13 +696,13 @@ export default function AITaskGenerator({
                                 onChange={() => toggleSubtaskSelection(taskIndex, subtaskIndex)}
                                 className="w-4 h-4 rounded border-default !text-muted focus:ring-muted"
                               />
-                              <IconSubtask className="w-4 h-4 text-muted" />
-                              <span className="flex-1 text-sm text-primary">{subtask.title}</span>
+                              <IconSubtask className="w-4 h-4 !text-muted" />
+                              <span className="flex-1 !text-sm !text-primary">{subtask.title}</span>
                               {subtask.estimated_hours && (
-                                <span className="!text-xs text-muted">{subtask.estimated_hours}h</span>
+                                <span className="!text-xs !text-muted">{subtask.estimated_hours}h</span>
                               )}
                               {formatDateRange(subtask.start_date, subtask.due_date) && (
-                                <span className="!text-xs text-muted">
+                                <span className="!text-xs !text-muted">
                                   {formatDateRange(subtask.start_date, subtask.due_date)}
                                 </span>
                               )}
@@ -726,14 +726,14 @@ export default function AITaskGenerator({
               <>
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-sm text-muted hover:text-primary transition-colors"
+                  className="px-4 py-2 !text-sm !text-muted hover:!text-primary transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
                 <button
                   onClick={handleGenerate}
                   disabled={loading || !getInputContent().trim()}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-muted text-primary rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-muted !text-primary rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
                     <>
@@ -752,14 +752,14 @@ export default function AITaskGenerator({
               <>
                 <button
                   onClick={() => setStep('input')}
-                  className="px-4 py-2 text-sm text-muted hover:text-primary transition-colors"
+                  className="px-4 py-2 !text-sm !text-muted hover:!text-primary transition-colors"
                 >
                   {t('back') || 'Retour'}
                 </button>
                 <button
                   onClick={handleRescheduleDates}
                   disabled={totalSelectedTasks === 0}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-muted hover:text-primary border border-default rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-4 py-2 !text-sm !text-muted hover:!text-primary border border-default rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <IconCalendarEvent className="w-4 h-4" />
                   {t('reschedule_dates') || 'Ré-étaler les dates'}
@@ -767,7 +767,7 @@ export default function AITaskGenerator({
                 <button
                   onClick={handleConfirm}
                   disabled={totalSelectedTasks === 0}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-muted text-primary rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-muted !text-primary rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <IconCheck className="w-4 h-4" />
                   {t('add_selected_tasks') || `Ajouter ${totalSelectedTasks} tâche${totalSelectedTasks > 1 ? 's' : ''}`}

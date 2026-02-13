@@ -117,7 +117,7 @@ export default function NewslettersPage() {
       key: 'actions',
       label: t('actions'),
       render: () => (
-        <p className="!text-primary flex items-center gap-2 cursor-pointer hover:text-zinc-200 transition-colors">
+        <p className="!text-primary flex items-center gap-2 cursor-pointer hover:!text-zinc-200 transition-colors">
           <IconPencil className="w-4 h-4" />
           <IconTrash className="w-4 h-4 !text-red-400" />
         </p>

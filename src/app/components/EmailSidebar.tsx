@@ -86,7 +86,7 @@ export default function EmailSidebar({
         <div className="relative">
           <button
             onClick={() => setShowNewMenu(!showNewMenu)}
-            className="w-full flex items-center gap-3 px-4 py-3 bg-accent hover:opacity-90 text-white rounded-2xl transition-all shadow-lg group"
+            className="w-full flex items-center gap-3 px-4 py-3 bg-accent hover:opacity-90 !text-white rounded-2xl transition-all shadow-lg group"
           >
             <IconPencil className="w-5 h-5" />
             <span className="font-medium">Nouveau message</span>
@@ -111,30 +111,30 @@ export default function EmailSidebar({
                       onNewMessage();
                       setShowNewMenu(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors !text-left"
                   >
-                    <IconMail className="w-5 h-5 text-blue-500" />
-                    <span className="text-sm text-primary">Email classique</span>
+                    <IconMail className="w-5 h-5 !text-blue-500" />
+                    <span className="text-sm !text-primary">Email classique</span>
                   </button>
                   <button
                     onClick={() => {
                       onNewQuote();
                       setShowNewMenu(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors !text-left"
                   >
-                    <IconFileDescription className="w-5 h-5 text-green-500" />
-                    <span className="text-sm text-primary">Devis</span>
+                    <IconFileDescription className="w-5 h-5 !text-green-500" />
+                    <span className="text-sm !text-primary">Devis</span>
                   </button>
                   <button
                     onClick={() => {
                       onNewInvoice();
                       setShowNewMenu(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors !text-left"
                   >
-                    <IconFileInvoice className="w-5 h-5 text-orange-500" />
-                    <span className="text-sm text-primary">Facture</span>
+                    <IconFileInvoice className="w-5 h-5 !text-orange-500" />
+                    <span className="text-sm !text-primary">Facture</span>
                   </button>
                   {onNewNewsletter && (
                     <button
@@ -142,10 +142,10 @@ export default function EmailSidebar({
                         onNewNewsletter();
                         setShowNewMenu(false);
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors text-left"
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors !text-left"
                     >
-                      <IconTag className="w-5 h-5 text-purple-500" />
-                      <span className="text-sm text-primary">Newsletter</span>
+                      <IconTag className="w-5 h-5 !text-purple-500" />
+                      <span className="text-sm !text-primary">Newsletter</span>
                     </button>
                   )}
                 </motion.div>
@@ -165,17 +165,17 @@ export default function EmailSidebar({
             <button
               key={item.id}
               onClick={() => onViewChange(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-2 rounded-r-full transition-colors text-left mb-1 ${
+              className={`w-full flex items-center gap-3 px-4 py-2 rounded-r-full transition-colors !text-left mb-1 ${
                 isActive
-                  ? 'bg-accent-light text-accent font-medium'
-                  : 'hover:bg-hover text-primary'
+                  ? 'bg-accent-light !text-accent font-medium'
+                  : 'hover:bg-hover !text-primary'
               }`}
             >
               <Icon className={`w-5 h-5 ${isActive ? 'text-accent' : 'text-muted'}`} />
-              <span className="flex-1 text-sm">{item.label}</span>
+              <span className="flex-1 !text-sm">{item.label}</span>
               {item.count !== undefined && item.count > 0 && (
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
-                  isActive ? 'bg-accent text-white' : 'bg-muted text-primary'
+                  isActive ? 'bg-accent !text-white' : 'bg-muted !text-primary'
                 }`}>
                   {item.count > 999 ? '999+' : item.count}
                 </span>
@@ -188,12 +188,12 @@ export default function EmailSidebar({
         <div className="mt-2">
           <button
             onClick={() => setShowMore(!showMore)}
-            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-hover rounded-r-full transition-colors text-left text-primary"
+            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-hover rounded-r-full transition-colors !text-left !text-primary"
           >
             {showMore ? (
-              <IconChevronDown className="w-5 h-5 text-muted" />
+              <IconChevronDown className="w-5 h-5 !text-muted" />
             ) : (
-              <IconChevronRight className="w-5 h-5 text-muted" />
+              <IconChevronRight className="w-5 h-5 !text-muted" />
             )}
             <span className="text-sm">Plus</span>
           </button>
@@ -214,17 +214,17 @@ export default function EmailSidebar({
                     <button
                       key={item.id}
                       onClick={() => onViewChange(item.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-2 pl-11 rounded-r-full transition-colors text-left mb-1 ${
+                      className={`w-full flex items-center gap-3 px-4 py-2 pl-11 rounded-r-full transition-colors !text-left mb-1 ${
                         isActive
-                          ? 'bg-accent-light text-accent font-medium'
-                          : 'hover:bg-hover text-primary'
+                          ? 'bg-accent-light !text-accent font-medium'
+                          : 'hover:bg-hover !text-primary'
                       }`}
                     >
                       <Icon className={`w-4 h-4 ${isActive ? 'text-accent' : 'text-muted'}`} />
-                      <span className="flex-1 text-sm">{item.label}</span>
+                      <span className="flex-1 !text-sm">{item.label}</span>
                       {item.count !== undefined && item.count > 0 && (
                         <span className={`text-xs px-2 py-0.5 rounded-full ${
-                          isActive ? 'bg-accent text-white' : 'bg-muted text-primary'
+                          isActive ? 'bg-accent !text-white' : 'bg-muted !text-primary'
                         }`}>
                           {item.count > 999 ? '999+' : item.count}
                         </span>
@@ -242,12 +242,12 @@ export default function EmailSidebar({
           <div className="mt-4 border-t border-default pt-2">
             <button
               onClick={() => setShowLabels(!showLabels)}
-              className="w-full flex items-center gap-3 px-4 py-2 hover:bg-hover rounded-r-full transition-colors text-left text-primary"
+              className="w-full flex items-center gap-3 px-4 py-2 hover:bg-hover rounded-r-full transition-colors !text-left !text-primary"
             >
               {showLabels ? (
-                <IconChevronDown className="w-5 h-5 text-muted" />
+                <IconChevronDown className="w-5 h-5 !text-muted" />
               ) : (
-                <IconChevronRight className="w-5 h-5 text-muted" />
+                <IconChevronRight className="w-5 h-5 !text-muted" />
               )}
               <span className="text-sm font-medium">Libellés</span>
             </button>
@@ -263,16 +263,16 @@ export default function EmailSidebar({
                   {labels.map((label) => (
                     <button
                       key={label.id}
-                      className="w-full flex items-center gap-3 px-4 py-2 pl-11 hover:bg-hover rounded-r-full transition-colors text-left mb-1"
+                      className="w-full flex items-center gap-3 px-4 py-2 pl-11 hover:bg-hover rounded-r-full transition-colors !text-left mb-1"
                     >
                       <div
                         className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: label.color }}
                       />
-                      <span className="flex-1 text-sm text-primary">{label.name}</span>
+                      <span className="flex-1 !text-sm !text-primary">{label.name}</span>
                     </button>
                   ))}
-                  <button className="w-full flex items-center gap-3 px-4 py-2 pl-11 hover:bg-hover rounded-r-full transition-colors text-left text-muted">
+                  <button className="w-full flex items-center gap-3 px-4 py-2 pl-11 hover:bg-hover rounded-r-full transition-colors !text-left !text-muted">
                     <IconPlus className="w-4 h-4" />
                     <span className="text-sm">Créer un libellé</span>
                   </button>
@@ -285,7 +285,7 @@ export default function EmailSidebar({
 
       {/* Footer avec quota de stockage (optionnel) */}
       <div className="p-4 border-t border-default">
-        <div className="!text-xs text-muted">
+        <div className="!text-xs !text-muted">
           <div className="flex items-center justify-between mb-1">
             <span>Stockage</span>
             <span>15 GB utilisés</span>

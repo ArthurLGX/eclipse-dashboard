@@ -263,18 +263,18 @@ export default function TimeTrackingPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
-            <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
+            <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
               <IconClock className="w-7 h-7 !text-accent" />
               {t('time_tracking') || 'Suivi du temps'}
             </h1>
-            <p className="text-muted text-sm mt-1">
+            <p className="text-muted !text-sm mt-1">
               {t('time_tracking_desc') || 'Gérez le temps passé sur vos projets'}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Link
               href="/dashboard/time-tracking/analytics"
-              className="px-4 py-2 flex items-center gap-2 rounded-lg border border-default text-secondary hover:text-primary hover:bg-hover transition-colors"
+              className="px-4 py-2 flex items-center gap-2 rounded-lg border border-default !text-secondary hover:!text-primary hover:bg-hover transition-colors"
             >
               <IconChartBar className="w-4 h-4" />
               {t('analytics') || 'Analyses'}
@@ -293,24 +293,24 @@ export default function TimeTrackingPage() {
         <div className={`card p-6 ${runningEntry ? 'border-2 border-accent bg-accent-light' : ''}`}>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-xl ${runningEntry ? 'bg-accent text-white animate-pulse' : 'bg-muted'}`}>
+              <div className={`p-3 rounded-xl ${runningEntry ? 'bg-accent !text-white animate-pulse' : 'bg-muted'}`}>
                 <IconClock className="w-8 h-8" />
               </div>
               <div>
                 {runningEntry ? (
                   <>
-                    <p className="text-sm text-muted">{t('timer_running') || 'Timer en cours'}</p>
+                    <p className="text-sm !text-muted">{t('timer_running') || 'Timer en cours'}</p>
                     <p className="text-3xl font-mono font-bold !text-accent">
                       {formatSeconds(runningTime)}
                     </p>
-                    <p className="text-sm text-secondary">
+                    <p className="text-sm !text-secondary">
                       {runningEntry.project?.title || runningEntry.description || t('no_project') || 'Sans projet'}
                     </p>
                   </>
                 ) : (
                   <>
-                    <p className="text-sm text-muted">{t('no_timer') || 'Aucun timer actif'}</p>
-                    <p className="text-2xl font-mono font-bold text-muted">00:00:00</p>
+                    <p className="text-sm !text-muted">{t('no_timer') || 'Aucun timer actif'}</p>
+                    <p className="text-2xl font-mono font-bold !text-muted">00:00:00</p>
                   </>
                 )}
               </div>
@@ -341,8 +341,8 @@ export default function TimeTrackingPage() {
                 <IconClock className="w-5 h-5 !text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-primary">{formatDuration(stats.totalTime)}</p>
-                <p className="!text-xs text-muted">{t('total_time') || 'Temps total'}</p>
+                <p className="text-2xl font-bold !text-primary">{formatDuration(stats.totalTime)}</p>
+                <p className="!text-xs !text-muted">{t('total_time') || 'Temps total'}</p>
               </div>
             </div>
           </div>
@@ -353,18 +353,18 @@ export default function TimeTrackingPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold !text-success-text -text">{formatDuration(stats.billableTime)}</p>
-                <p className="!text-xs text-muted">{t('billable_time') || 'Temps facturable'}</p>
+                <p className="!text-xs !text-muted">{t('billable_time') || 'Temps facturable'}</p>
               </div>
             </div>
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
                 <div className="p-2 bg-warning-light rounded-lg">
-                <IconCurrencyEuro className="w-5 h-5 text-warning" />
+                <IconCurrencyEuro className="w-5 h-5 !text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-warning">{formatCurrency(stats.billableAmount)}</p>
-                <p className="!text-xs text-muted">{t('to_invoice') || 'À facturer'}</p>
+                <p className="text-2xl font-bold !text-warning">{formatCurrency(stats.billableAmount)}</p>
+                <p className="!text-xs !text-muted">{t('to_invoice') || 'À facturer'}</p>
               </div>
             </div>
           </div>
@@ -377,10 +377,10 @@ export default function TimeTrackingPage() {
               <button
                 key={filter}
                 onClick={() => setDateFilter(filter)}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-md !text-sm font-medium transition-colors ${
                   dateFilter === filter
-                    ? 'bg-accent text-white'
-                    : 'text-muted hover:text-primary'
+                    ? 'bg-accent !text-white'
+                    : 'text-muted hover:!text-primary'
                 }`}
               >
                 {filter === 'today' ? (t('today') || "Aujourd'hui") :
@@ -394,7 +394,7 @@ export default function TimeTrackingPage() {
           <select
             value={projectFilter}
             onChange={(e) => setProjectFilter(e.target.value)}
-            className="input px-3 py-2 text-sm"
+            className="input px-3 py-2 !text-sm"
           >
             <option value="">{t('all_projects') || 'Tous les projets'}</option>
             {projects.map((project) => (
@@ -412,15 +412,15 @@ export default function TimeTrackingPage() {
               <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />
             </div>
           ) : Object.keys(groupedEntries).length === 0 ? (
-            <div className="card p-8 text-center">
-              <IconClock className="w-12 h-12 text-muted mx-auto mb-4" />
+            <div className="card p-8 !text-center">
+              <IconClock className="w-12 h-12 !text-muted mx-auto mb-4" />
               <p className="text-muted">{t('no_entries') || 'Aucune entrée de temps'}</p>
             </div>
           ) : (
             Object.entries(groupedEntries).map(([date, dateEntries]) => (
               <div key={date} className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-medium text-muted capitalize">{date}</h3>
+                  <h3 className="text-sm font-medium !text-muted capitalize">{date}</h3>
                   <span className="text-sm !text-accent font-mono">
                     {formatDuration(dateEntries.reduce((acc, e) => acc + (e.duration || 0), 0))}
                   </span>
@@ -456,14 +456,14 @@ export default function TimeTrackingPage() {
                           <div className="flex items-center gap-4 flex-1 min-w-0">
                             <div className={`w-1 h-12 rounded-full ${statusColor}`} />
                             <div className="flex-1 min-w-0">
-                              <p className="font-medium text-primary truncate flex items-center gap-2">
+                              <p className="font-medium !text-primary truncate flex items-center gap-2">
                                 {entry.description || t('no_description') || 'Sans description'}
-                                {isRunning && <span className="!text-xs text-warning-text font-normal">({t('running') || 'en cours'})</span>}
+                                {isRunning && <span className="!text-xs !text-warning-text font-normal">({t('running') || 'en cours'})</span>}
                                 {entry.source && entry.source !== 'manual' && (
                                   <TimeSourceBadge source={entry.source as TimeEntrySource} />
                                 )}
                               </p>
-                              <p className="!text-xs text-muted flex items-center gap-1">
+                              <p className="!text-xs !text-muted flex items-center gap-1">
                                 {new Date(entry.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                                 {isRunning && entry.estimated_duration ? (
                                   ` - ${new Date(new Date(entry.start_time).getTime() + entry.estimated_duration * 60000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
@@ -502,13 +502,13 @@ export default function TimeTrackingPage() {
                             <div className="flex items-center gap-1">
                               <button
                                 onClick={() => setEditingEntry(entry)}
-                                className="p-1.5 text-muted hover:text-primary hover:bg-hover rounded-lg"
+                                className="p-1.5 !text-muted hover:!text-primary hover:bg-hover rounded-lg"
                               >
                                 <IconEdit className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteModal({ isOpen: true, entry })}
-                                className="p-1.5 text-muted hover:text-error hover:bg-error/10 rounded-lg"
+                                className="p-1.5 !text-muted hover:!text-error hover:bg-error/10 rounded-lg"
                               >
                                 <IconTrash className="w-4 h-4" />
                               </button>
@@ -668,13 +668,13 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
         animate={{ opacity: 1, scale: 1 }}
         className="card w-full max-w-md p-6 m-4"
       >
-        <h2 className="text-xl font-bold text-primary mb-4">
+        <h2 className="text-xl font-bold !text-primary mb-4">
           {entry ? (t('edit_entry') || 'Modifier l\'entrée') : (t('start_task') || 'Démarrer une tâche')}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm text-muted mb-1">{t('description') || 'Description'}</label>
+            <label className="block !text-sm !text-muted mb-1">{t('description') || 'Description'}</label>
             <input
               type="text"
               value={description}
@@ -686,7 +686,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
           </div>
 
           <div>
-            <label className="block text-sm text-muted mb-1">{t('project') || 'Projet'}</label>
+            <label className="block !text-sm !text-muted mb-1">{t('project') || 'Projet'}</label>
             <select
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
@@ -705,7 +705,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
           {isEditMode && (
             <>
               <div>
-                <label className="block text-sm text-muted mb-1">{t('date') || 'Date'}</label>
+                <label className="block !text-sm !text-muted mb-1">{t('date') || 'Date'}</label>
                 <input
                   type="date"
                   value={date}
@@ -716,7 +716,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-muted mb-1">{t('start_time') || 'Début'}</label>
+                  <label className="block !text-sm !text-muted mb-1">{t('start_time') || 'Début'}</label>
                   <input
                     type="time"
                     value={startTime}
@@ -725,7 +725,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-muted mb-1">{t('end_time') || 'Fin'}</label>
+                  <label className="block !text-sm !text-muted mb-1">{t('end_time') || 'Fin'}</label>
                   <input
                     type="time"
                     value={endTime}
@@ -740,7 +740,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
           {/* Temps imparti - en mode création OU pour les tâches en cours */}
           {(!isEditMode || isRunningEntry) && (
             <div>
-              <label className="block text-sm text-muted mb-1">{t('estimated_duration') || 'Temps imparti'}</label>
+              <label className="block !text-sm !text-muted mb-1">{t('estimated_duration') || 'Temps imparti'}</label>
               <div className="flex items-center gap-2 flex-wrap">
                 <input
                   type="number"
@@ -749,7 +749,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
                   className="input w-20"
                   min="1"
                 />
-                <span className="text-sm text-muted">min</span>
+                <span className="text-sm !text-muted">min</span>
                 <div className="flex gap-1">
                   {[15, 30, 60, 90, 120].map((mins) => (
                     <button
@@ -758,8 +758,8 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
                       onClick={() => setEstimatedDuration(mins)}
                       className={`px-2 py-1 !text-xs rounded transition-colors ${
                         estimatedDuration === mins 
-                          ? 'bg-accent text-white' 
-                          : 'bg-hover text-muted hover:text-primary hover:bg-hover'
+                          ? 'bg-accent !text-white' 
+                          : 'bg-hover !text-muted hover:!text-primary hover:bg-hover'
                       }`}
                     >
                       {mins >= 60 ? `${mins/60}h` : `${mins}m`}
@@ -778,7 +778,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
                 onChange={(e) => setBillable(e.target.checked)}
                 className="w-4 h-4 accent-accent"
               />
-              <span className="text-sm text-secondary">{t('billable') || 'Facturable'}</span>
+              <span className="text-sm !text-secondary">{t('billable') || 'Facturable'}</span>
             </label>
             
             {billable && (
@@ -787,11 +787,11 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
                   type="number"
                   value={hourlyRate}
                   onChange={(e) => setHourlyRate(Number(e.target.value))}
-                  className="input w-24 text-right"
+                  className="input w-24 !text-right"
                   min="0"
                   step="0.01"
                 />
-                <span className="text-sm text-muted">€/h</span>
+                <span className="text-sm !text-muted">€/h</span>
               </div>
             )}
           </div>
@@ -800,7 +800,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-muted hover:text-primary transition-colors"
+              className="px-4 py-2 !text-muted hover:!text-primary transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>

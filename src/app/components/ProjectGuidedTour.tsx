@@ -234,7 +234,7 @@ export default function ProjectGuidedTour({
               </div>
               <button
                 onClick={handleSkip}
-                className="p-1 rounded-lg hover:bg-hover text-secondary hover:text-primary transition-colors"
+                className="p-1 rounded-lg hover:bg-hover !text-secondary hover:!text-primary transition-colors"
                 aria-label="Fermer"
               >
                 <IconX className="w-5 h-5" />
@@ -296,21 +296,21 @@ export default function ProjectGuidedTour({
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-bold text-primary text-center">
+                  <h2 className="text-xl font-bold !text-primary !text-center">
                     {title}
                   </h2>
 
                   {/* Project title badge (first step only) */}
                   {currentStep === 0 && projectTitle && (
                     <div className="flex justify-center">
-                      <span className="px-3 py-1 bg-accent-light !text-accent rounded-full text-sm font-medium">
+                      <span className="px-3 py-1 bg-accent-light !text-accent rounded-full !text-sm font-medium">
                         {projectTitle}
                       </span>
                     </div>
                   )}
 
                   {/* Description */}
-                  <p className="text-secondary text-center leading-relaxed">
+                  <p className="text-secondary !text-center leading-relaxed">
                     {description}
                   </p>
 
@@ -342,14 +342,14 @@ export default function ProjectGuidedTour({
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                   currentStep === 0
                     ? 'text-muted-foreground cursor-not-allowed'
-                    : 'text-secondary hover:text-primary hover:bg-hover'
+                    : 'text-secondary hover:!text-primary hover:bg-hover'
                 }`}
               >
                 <IconArrowLeft className="w-4 h-4" />
                 {t('previous') || 'Précédent'}
               </button>
 
-              <span className="text-sm text-secondary">
+              <span className="text-sm !text-secondary">
                 {currentStep + 1} / {TOUR_STEPS.length}
               </span>
 
@@ -357,8 +357,8 @@ export default function ProjectGuidedTour({
                 onClick={handleNext}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                   isLastStep
-                    ? 'bg-success text-white hover:bg-success'
-                    : 'bg-accent text-white hover:bg-accent'
+                    ? 'bg-success !text-white hover:bg-success'
+                    : 'bg-accent !text-white hover:bg-accent'
                 }`}
               >
                 {isLastStep ? (
@@ -376,10 +376,10 @@ export default function ProjectGuidedTour({
             </div>
 
             {/* Skip link */}
-            <div className="px-4 pb-4 text-center">
+            <div className="px-4 pb-4 !text-center">
               <button
                 onClick={handleSkip}
-                className="text-sm text-secondary hover:text-primary transition-colors underline"
+                className="text-sm !text-secondary hover:!text-primary transition-colors underline"
               >
                 {t('skip_tour') || 'Ne plus afficher ce guide'}
               </button>

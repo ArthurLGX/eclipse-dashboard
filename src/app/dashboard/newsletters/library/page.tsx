@@ -162,7 +162,7 @@ export default function MediaLibraryPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-primary">
+            <h1 className="text-2xl font-bold !text-primary">
               {t('media_library') || 'Bibliothèque de médias'}
             </h1>
             <p className="text-secondary mt-1">
@@ -179,8 +179,8 @@ export default function MediaLibraryPage() {
                 <IconPhoto className="w-5 h-5 !text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-primary">{stats.images}</p>
-                <p className="text-sm text-secondary">{t('images') || 'Images'}</p>
+                <p className="text-2xl font-bold !text-primary">{stats.images}</p>
+                <p className="text-sm !text-secondary">{t('images') || 'Images'}</p>
               </div>
             </div>
           </div>
@@ -188,11 +188,11 @@ export default function MediaLibraryPage() {
           <div className="bg-card rounded-xl p-4 border border-default">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-warning-light rounded-lg">
-                <IconVideo className="w-5 h-5 text-warning" />
+                <IconVideo className="w-5 h-5 !text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-primary">{stats.videos}</p>
-                <p className="text-sm text-secondary">{t('videos') || 'Vidéos'}</p>
+                <p className="text-2xl font-bold !text-primary">{stats.videos}</p>
+                <p className="text-sm !text-secondary">{t('videos') || 'Vidéos'}</p>
               </div>
             </div>
           </div>
@@ -203,8 +203,8 @@ export default function MediaLibraryPage() {
                 <IconPhoto className="w-5 h-5 !text-success-text -text" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-primary">{stats.total}</p>
-                <p className="text-sm text-secondary">{t('total_files') || 'Total fichiers'}</p>
+                <p className="text-2xl font-bold !text-primary">{stats.total}</p>
+                <p className="text-sm !text-secondary">{t('total_files') || 'Total fichiers'}</p>
               </div>
             </div>
           </div>
@@ -212,11 +212,11 @@ export default function MediaLibraryPage() {
           <div className="bg-card rounded-xl p-4 border border-default">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-info-light rounded-lg">
-                <IconDownload className="w-5 h-5 text-info" />
+                <IconDownload className="w-5 h-5 !text-info" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-primary">{formatSize(stats.totalSize)}</p>
-                <p className="text-sm text-secondary">{t('storage_used') || 'Espace utilisé'}</p>
+                <p className="text-2xl font-bold !text-primary">{formatSize(stats.totalSize)}</p>
+                <p className="text-sm !text-secondary">{t('storage_used') || 'Espace utilisé'}</p>
               </div>
             </div>
           </div>
@@ -226,7 +226,7 @@ export default function MediaLibraryPage() {
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
           <div className="relative flex-1">
-            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
             <input
               type="text"
               value={searchQuery}
@@ -238,16 +238,16 @@ export default function MediaLibraryPage() {
           
           {/* Type Filter */}
           <div className="flex items-center gap-2">
-            <IconFilter className="w-5 h-5 text-secondary" />
+            <IconFilter className="w-5 h-5 !text-secondary" />
             <div className="flex rounded-lg overflow-hidden border border-default">
               {(['all', 'image', 'video'] as MediaType[]).map((type) => (
                 <button
                   key={type}
                   onClick={() => setFilterType(type)}
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 !text-sm font-medium transition-colors ${
                     filterType === type
-                      ? 'bg-accent text-white'
-                      : 'bg-card text-secondary hover:bg-muted'
+                      ? 'bg-accent !text-white'
+                      : 'bg-card !text-secondary hover:bg-muted'
                   }`}
                 >
                   {type === 'all' && (t('all') || 'Tous')}
@@ -266,8 +266,8 @@ export default function MediaLibraryPage() {
           </div>
         ) : filteredMedia.length === 0 ? (
           <div className="text-center py-20 bg-card rounded-xl border border-default">
-            <IconPhoto className="w-16 h-16 text-muted mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-primary mb-2">
+            <IconPhoto className="w-16 h-16 !text-muted mx-auto mb-4" />
+            <h3 className="text-lg font-medium !text-primary mb-2">
               {t('no_media') || 'Aucun média'}
             </h3>
             <p className="text-primary">
@@ -306,7 +306,7 @@ export default function MediaLibraryPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted">
+                    <div className="w-full h-full flex items-center justify-center !text-muted">
                       {getMediaIcon(file.mime)}
                     </div>
                   )}
@@ -320,7 +320,7 @@ export default function MediaLibraryPage() {
                       }}
                       className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors"
                     >
-                      <IconEye className="w-5 h-5 text-white" />
+                      <IconEye className="w-5 h-5 !text-white" />
                     </button>
                     <button
                       onClick={(e) => {
@@ -332,7 +332,7 @@ export default function MediaLibraryPage() {
                       {copiedId === file.id ? (
                         <IconCheck className="w-5 h-5 !text-success-text -text" />
                       ) : (
-                        <IconCopy className="w-5 h-5 text-white" />
+                        <IconCopy className="w-5 h-5 !text-white" />
                       )}
                     </button>
                     <button
@@ -344,9 +344,9 @@ export default function MediaLibraryPage() {
                       className="p-2 bg-danger/80 rounded-full hover:bg-[var(--color-danger)] transition-colors"
                     >
                       {deletingId === file.id ? (
-                        <IconLoader2 className="w-5 h-5 text-white animate-spin" />
+                        <IconLoader2 className="w-5 h-5 !text-white animate-spin" />
                       ) : (
-                        <IconTrash className="w-5 h-5 text-white" />
+                        <IconTrash className="w-5 h-5 !text-white" />
                       )}
                     </button>
                   </div>
@@ -354,12 +354,12 @@ export default function MediaLibraryPage() {
 
                 {/* Info */}
                 <div className="p-3">
-                  <p className="text-sm font-medium text-primary truncate" title={file.name}>
+                  <p className="text-sm font-medium !text-primary truncate" title={file.name}>
                     {file.name}
                   </p>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="!text-xs text-muted">{formatSize(file.size)}</span>
-                    <span className="!text-xs text-muted">{formatDate(file.createdAt)}</span>
+                    <span className="!text-xs !text-muted">{formatSize(file.size)}</span>
+                    <span className="!text-xs !text-muted">{formatDate(file.createdAt)}</span>
                   </div>
                 </div>
 
@@ -369,9 +369,9 @@ export default function MediaLibraryPage() {
                     file.mime.startsWith('image/') ? 'bg-accent' : 'bg-warning'
                   }`}>
                     {file.mime.startsWith('image/') ? (
-                      <IconPhoto className="w-4 h-4 text-white" />
+                      <IconPhoto className="w-4 h-4 !text-white" />
                     ) : (
-                      <IconVideo className="w-4 h-4 text-white" />
+                      <IconVideo className="w-4 h-4 !text-white" />
                     )}
                   </div>
                 </div>
@@ -402,8 +402,8 @@ export default function MediaLibraryPage() {
                   <div className="flex items-center gap-3">
                     {getMediaIcon(selectedMedia.mime)}
                     <div>
-                      <h3 className="font-semibold text-primary">{selectedMedia.name}</h3>
-                      <p className="text-sm text-secondary">
+                      <h3 className="font-semibold !text-primary">{selectedMedia.name}</h3>
+                      <p className="text-sm !text-secondary">
                         {formatSize(selectedMedia.size)} • {formatDate(selectedMedia.createdAt)}
                         {selectedMedia.width && selectedMedia.height && (
                           <> • {selectedMedia.width}x{selectedMedia.height}</>
@@ -435,7 +435,7 @@ export default function MediaLibraryPage() {
                       className="max-w-full max-h-[55vh]"
                     />
                   ) : (
-                    <div className="text-center text-muted py-20">
+                    <div className="text-center !text-muted py-20">
                       {getMediaIcon(selectedMedia.mime)}
                       <p className="mt-2">{t('preview_not_available') || 'Aperçu non disponible'}</p>
                     </div>
@@ -449,7 +449,7 @@ export default function MediaLibraryPage() {
                       type="text"
                       value={selectedMedia.url}
                       readOnly
-                      className="input text-sm w-64 md:w-96"
+                      className="input !text-sm w-64 md:w-96"
                     />
                     <button
                       onClick={() => handleCopyUrl(selectedMedia)}

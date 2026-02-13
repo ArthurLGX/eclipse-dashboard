@@ -71,21 +71,21 @@ const STATUS_STYLES: Record<NodeStatus, { dot: string; badge: string; border: st
   },
   current: {
     dot: 'bg-warning',
-    badge: 'bg-warning-light text-warning',
+    badge: 'bg-warning-light !text-warning',
     border: 'border-warning',
     background: 'bg-card',
     ring: 'shadow-[0_12px_28px_rgba(245,158,11,0.25)]',
   },
   blocked: {
     dot: 'bg-danger',
-    badge: 'bg-danger-light text-danger',
+    badge: 'bg-danger-light !text-danger',
     border: 'border-danger',
     background: 'bg-card',
     ring: 'shadow-[0_8px_20px_rgba(239,68,68,0.18)]',
   },
   pending: {
     dot: 'bg-muted',
-    badge: 'bg-muted text-secondary',
+    badge: 'bg-muted !text-secondary',
     border: 'border-default',
     background: 'bg-card',
     ring: 'shadow-sm',
@@ -777,10 +777,10 @@ export default function ClientWorkflowMapView({
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center !text-xs font-bold ${
-                  satellite.status === 'done' ? 'bg-success text-white' :
-                  satellite.status === 'blocked' ? 'bg-danger text-white' :
-                  satellite.status === 'current' ? 'bg-warning text-white' :
-                  'bg-muted text-secondary'
+                  satellite.status === 'done' ? 'bg-success !text-white' :
+                  satellite.status === 'blocked' ? 'bg-danger !text-white' :
+                  satellite.status === 'current' ? 'bg-warning !text-white' :
+                  'bg-muted !text-secondary'
                 }`}
               >
                 {satellite.count}
@@ -793,7 +793,7 @@ export default function ClientWorkflowMapView({
             </div>
 
             {/* Label */}
-            <span className="text-[11px] font-medium text-primary text-center px-1">{satellite.label}</span>
+            <span className="text-[11px] font-medium !text-primary !text-center px-1">{satellite.label}</span>
 
             {/* Anchor point indicator */}
             {!satellite.linked && (
@@ -808,7 +808,7 @@ export default function ClientWorkflowMapView({
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-card border border-default rounded-lg shadow-lg !text-xs text-secondary whitespace-nowrap z-30"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-card border border-default rounded-lg shadow-lg !text-xs !text-secondary whitespace-nowrap z-30"
               >
                 {satellite.hoverTip}
               </motion.div>
@@ -820,7 +820,7 @@ export default function ClientWorkflowMapView({
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-accent-light border border-accent rounded-full text-[10px] !text-accent whitespace-nowrap flex items-center gap-1"
+              className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-accent-light border border-accent rounded-full !text-[10px] !text-accent whitespace-nowrap flex items-center gap-1"
             >
               <IconChevronRight className="w-3 h-3" />
               {satellite.guidedTip}
@@ -870,10 +870,10 @@ export default function ClientWorkflowMapView({
                         router.push(route);
                       }}
                     >
-                      <div className="font-medium text-primary whitespace-nowrap truncate max-w-[80px]">{item.label}</div>
-                      <div className="text-muted capitalize text-[10px]">{item.status}</div>
+                      <div className="font-medium !text-primary whitespace-nowrap truncate max-w-[80px]">{item.label}</div>
+                      <div className="text-muted capitalize !text-[10px]">{item.status}</div>
                       {item.amount && (
-                        <div className="text-success font-semibold mt-0.5 text-[10px]">
+                        <div className="text-success font-semibold mt-0.5 !text-[10px]">
                           {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(item.amount)}
                         </div>
                       )}
@@ -906,7 +906,7 @@ export default function ClientWorkflowMapView({
             <button
               type="button"
               onClick={() => { setViewMode('timeline'); setTimeout(fitToView, 50); }}
-              className={`p-2 rounded transition-colors ${viewMode === 'timeline' ? 'bg-hover text-primary' : 'text-muted hover:bg-hover hover:text-primary'}`}
+              className={`p-2 rounded transition-colors ${viewMode === 'timeline' ? 'bg-hover !text-primary' : 'text-muted hover:bg-hover hover:!text-primary'}`}
               title={t('workflow_mode_timeline') || 'Vue timeline'}
             >
               <IconTimeline className="w-4 h-4" />
@@ -914,7 +914,7 @@ export default function ClientWorkflowMapView({
             <button
               type="button"
               onClick={() => { setViewMode('radial'); setTimeout(fitToView, 50); }}
-              className={`p-2 rounded transition-colors ${viewMode === 'radial' ? 'bg-hover text-primary' : 'text-muted hover:bg-hover hover:text-primary'}`}
+              className={`p-2 rounded transition-colors ${viewMode === 'radial' ? 'bg-hover !text-primary' : 'text-muted hover:bg-hover hover:!text-primary'}`}
               title={t('workflow_mode_radial') || 'Vue radiale'}
             >
               <IconCircle className="w-4 h-4" />
@@ -928,7 +928,7 @@ export default function ClientWorkflowMapView({
             <button
               type="button"
               onClick={() => { setViewMode('timeline'); setTimeout(fitToView, 50); }}
-              className={`p-2 rounded transition-colors ${viewMode === 'timeline' ? 'bg-hover text-primary' : 'text-muted hover:bg-hover hover:text-primary'}`}
+              className={`p-2 rounded transition-colors ${viewMode === 'timeline' ? 'bg-hover !text-primary' : 'text-muted hover:bg-hover hover:!text-primary'}`}
               title={t('workflow_mode_timeline') || 'Vue timeline'}
             >
               <IconTimeline className="w-4 h-4" />
@@ -936,7 +936,7 @@ export default function ClientWorkflowMapView({
             <button
               type="button"
               onClick={() => { setViewMode('radial'); setTimeout(fitToView, 50); }}
-              className={`p-2 rounded transition-colors ${viewMode === 'radial' ? 'bg-hover text-primary' : 'text-muted hover:bg-hover hover:text-primary'}`}
+              className={`p-2 rounded transition-colors ${viewMode === 'radial' ? 'bg-hover !text-primary' : 'text-muted hover:bg-hover hover:!text-primary'}`}
               title={t('workflow_mode_radial') || 'Vue satellite'}
             >
               <IconCircle className="w-4 h-4" />
@@ -949,7 +949,7 @@ export default function ClientWorkflowMapView({
             <button
               type="button"
               onClick={() => setGuidedMode(!guidedMode)}
-              className={`p-2 rounded transition-colors ${guidedMode ? 'bg-accent-light !text-accent' : 'text-muted hover:bg-hover hover:text-primary'}`}
+              className={`p-2 rounded transition-colors ${guidedMode ? 'bg-accent-light !text-accent' : 'text-muted hover:bg-hover hover:!text-primary'}`}
               title={guidedMode ? (t('workflow_mode_free') || 'Vue libre') : (t('workflow_mode_guided') || 'Vue guidée')}
             >
               <IconCompass className="w-4 h-4" />
@@ -959,7 +959,7 @@ export default function ClientWorkflowMapView({
               <button
                 type="button"
                 onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
-                className="p-2 rounded text-muted hover:bg-hover hover:text-accent transition-colors"
+                className="p-2 rounded !text-muted hover:bg-hover hover:!text-accent transition-colors"
                 title={t('replay_tutorial') || 'Revoir le tutoriel'}
               >
                 <IconPlayerPlay className="w-4 h-4" />
@@ -971,7 +971,7 @@ export default function ClientWorkflowMapView({
         <button
           type="button"
           onClick={() => setScale(prev => Math.min(2, Math.round((prev + 0.1) * 10) / 10))}
-          className="p-2 rounded text-muted hover:bg-hover hover:text-primary"
+          className="p-2 rounded !text-muted hover:bg-hover hover:!text-primary"
           title={t('zoom_in') || 'Zoom +'}
         >
           <IconZoomIn className="w-4 h-4" />
@@ -979,7 +979,7 @@ export default function ClientWorkflowMapView({
         <button
           type="button"
           onClick={() => setScale(prev => Math.max(0.1, Math.round((prev - 0.1) * 10) / 10))}
-          className="p-2 rounded text-muted hover:bg-hover hover:text-primary"
+          className="p-2 rounded !text-muted hover:bg-hover hover:!text-primary"
           title={t('zoom_out') || 'Zoom -'}
         >
           <IconZoomOut className="w-4 h-4" />
@@ -987,7 +987,7 @@ export default function ClientWorkflowMapView({
         <button
           type="button"
           onClick={fitToView}
-          className="p-2 rounded text-muted hover:bg-hover hover:text-primary"
+          className="p-2 rounded !text-muted hover:bg-hover hover:!text-primary"
           title={t('reset_view') || 'Recentrer'}
         >
           <IconFocus2 className="w-4 h-4" />
@@ -1003,7 +1003,7 @@ export default function ClientWorkflowMapView({
               await wrapperRef.current.requestFullscreen();
             }
           }}
-          className="p-2 rounded text-muted hover:bg-hover hover:text-primary"
+          className="p-2 rounded !text-muted hover:bg-hover hover:!text-primary"
           title={isFullscreen ? (t('exit_fullscreen') || 'Quitter') : (t('fullscreen') || 'Plein écran')}
         >
           {isFullscreen ? <IconMinimize className="w-4 h-4" /> : <IconMaximize className="w-4 h-4" />}
@@ -1176,22 +1176,22 @@ export default function ClientWorkflowMapView({
                       className="w-14 h-14 rounded-full border border-default object-cover"
                     />
                   ) : (
-                    <div className="w-14 h-14 rounded-full bg-muted text-primary font-bold text-xl flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-full bg-muted !text-primary font-bold !text-xl flex items-center justify-center">
                       {radialClient.name?.slice(0, 2).toUpperCase() || 'CL'}
                     </div>
                   )}
 
                   {/* Name */}
-                  <span className="mt-1.5 text-sm font-semibold text-primary text-center px-2 truncate max-w-full">
+                  <span className="mt-1.5 !text-sm font-semibold !text-primary !text-center px-2 truncate max-w-full">
                     {radialClient.name}
                   </span>
 
                   {/* Global state badge */}
                   <div 
-                    className={`mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 cursor-help ${
+                    className={`mt-1 px-2 py-0.5 rounded-full !text-[10px] font-medium flex items-center gap-1 cursor-help ${
                       globalState === 'ok' ? 'bg-success-light !text-success-text ' :
-                      globalState === 'blocked' ? 'bg-danger-light text-danger' :
-                      'bg-warning-light text-warning'
+                      globalState === 'blocked' ? 'bg-danger-light !text-danger' :
+                      'bg-warning-light !text-warning'
                     }`}
                     title={completeness < 1 ? `${Math.round(completeness * 100)}% complet${completenessData.missing.length > 0 ? `\n⚠ Manquant: ${completenessData.missing.join(', ')}` : ''}${completenessData.notDone.length > 0 ? `\n⏳ En cours: ${completenessData.notDone.join(', ')}` : ''}` : '100% complet'}
                   >
@@ -1204,7 +1204,7 @@ export default function ClientWorkflowMapView({
                   {/* Pipeline stage indicator - shows where in sales cycle */}
                   {radialClient.pipeline_status && (
                     <div 
-                      className="absolute -bottom-5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-accent-light border border-accent text-[9px] !text-accent whitespace-nowrap flex items-center gap-1"
+                      className="absolute -bottom-5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-accent-light border border-accent !text-[9px] !text-accent whitespace-nowrap flex items-center gap-1"
                       title={t('current_pipeline_stage') || 'Étape pipeline actuelle'}
                     >
                       <IconChartLine className="w-2.5 h-2.5 !text-accent" />
@@ -1214,7 +1214,7 @@ export default function ClientWorkflowMapView({
                   
                   {/* Completeness percentage */}
                   {completeness < 1 && (
-                    <div className="absolute -bottom-11 left-1/2 -translate-x-1/2 text-[9px] text-muted whitespace-nowrap">
+                    <div className="absolute -bottom-11 left-1/2 -translate-x-1/2 !text-[9px] !text-muted whitespace-nowrap">
                       {Math.round(completeness * 100)}% • {completenessData.missing.length > 0 && <span className="text-warning">{completenessData.missing.length} {t(completenessData.missing.length > 1 ? 'workflow_missing_plural' : 'workflow_missing') || 'manquant'}</span>}
                       {completenessData.missing.length > 0 && completenessData.notDone.length > 0 && ' • '}
                       {completenessData.notDone.length > 0 && <span className="!text-accent">{completenessData.notDone.length} {t('workflow_in_progress') || 'en cours'}</span>}
@@ -1261,7 +1261,7 @@ export default function ClientWorkflowMapView({
                 return (
                   <div
                     key={stage.id}
-                    className="absolute flex items-center gap-2 !text-xs text-muted uppercase tracking-wider"
+                    className="absolute flex items-center gap-2 !text-xs !text-muted uppercase tracking-wider"
                     style={{ left: x, top: 40 }}
                   >
                     <Icon className="w-4 h-4" />
@@ -1281,8 +1281,8 @@ export default function ClientWorkflowMapView({
                       className="absolute w-[160px] !pl-6"
                       style={{ top: 0, transform: 'translateY(-50%)' }}
                     >
-                      <div className="!text-xs text-muted mb-2">{client.enterprise || client.email}</div>
-                      <div className="text-sm font-semibold text-primary">{client.name}</div>
+                      <div className="!text-xs !text-muted mb-2">{client.enterprise || client.email}</div>
+                      <div className="text-sm font-semibold !text-primary">{client.name}</div>
                     </div>
 
                     {/* Nodes */}
@@ -1325,7 +1325,7 @@ export default function ClientWorkflowMapView({
                                   className="w-6 h-6 rounded-full border border-accent bg-accent-light p-0.5 object-cover shadow-sm animate-pulse"
                                 />
                               ) : (
-                                <div className="w-6 h-6 rounded-full border border-warning bg-muted text-[10px] font-semibold text-secondary flex items-center justify-center shadow-sm">
+                                <div className="w-6 h-6 rounded-full border border-warning bg-muted !text-[10px] font-semibold !text-secondary flex items-center justify-center shadow-sm">
                                   {client.name?.slice(0, 2).toUpperCase() || 'CL'}
                                 </div>
                               )}
@@ -1335,11 +1335,11 @@ export default function ClientWorkflowMapView({
                             <span className="w-7 h-7 rounded-full border border-default flex items-center justify-center bg-white">
                               <span className={`w-3.5 h-3.5 rounded-full ${statusClasses.dot}`} />
                             </span>
-                            <Icon className="w-4 h-4 text-muted" />
-                            <span className="text-sm font-medium text-primary">{stage.label}</span>
+                            <Icon className="w-4 h-4 !text-muted" />
+                            <span className="text-sm font-medium !text-primary">{stage.label}</span>
                           </div>
                           <div className="px-3 pb-3">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] ${statusClasses.badge}`}>
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full !text-[11px] ${statusClasses.badge}`}>
                               {displayStatus === 'done'
                                 ? (t('workflow_done') || 'Terminé')
                                 : displayStatus === 'current'
@@ -1588,10 +1588,10 @@ export default function ClientWorkflowMapView({
                                   initial={{ scale: 0 }}
                                   animate={{ scale: 1 }}
                                   className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center !text-xs font-bold ${
-                                    sat.status === 'done' ? 'bg-success text-white' :
-                                    sat.status === 'blocked' ? 'bg-danger text-white' :
-                                    sat.status === 'current' ? 'bg-warning text-white' :
-                                    'bg-muted text-secondary'
+                                    sat.status === 'done' ? 'bg-success !text-white' :
+                                    sat.status === 'blocked' ? 'bg-danger !text-white' :
+                                    sat.status === 'current' ? 'bg-warning !text-white' :
+                                    'bg-muted !text-secondary'
                                   }`}
                                 >
                                   {sat.count}
@@ -1604,7 +1604,7 @@ export default function ClientWorkflowMapView({
                               </div>
 
                               {/* Label */}
-                              <span className="text-[11px] font-medium text-primary text-center px-1">{sat.label}</span>
+                              <span className="text-[11px] font-medium !text-primary !text-center px-1">{sat.label}</span>
 
                               {/* Anchor point indicator if no items */}
                               {sat.count === 0 && (
@@ -1672,13 +1672,13 @@ export default function ClientWorkflowMapView({
                               className="w-14 h-14 rounded-full border border-default object-cover"
                             />
                           ) : (
-                            <div className="w-14 h-14 rounded-full bg-muted text-primary font-bold text-xl flex items-center justify-center">
+                            <div className="w-14 h-14 rounded-full bg-muted !text-primary font-bold !text-xl flex items-center justify-center">
                               {client.name?.slice(0, 2).toUpperCase() || 'CL'}
                             </div>
                           )}
 
                           {/* Name */}
-                          <span className="mt-1.5 text-sm font-semibold text-primary text-center px-2 truncate max-w-full">
+                          <span className="mt-1.5 !text-sm font-semibold !text-primary !text-center px-2 truncate max-w-full">
                             {client.name}
                           </span>
 
@@ -1687,10 +1687,10 @@ export default function ClientWorkflowMapView({
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ delay: 0.3, type: 'spring', stiffness: 400 }}
-                            className={`mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 ${
+                            className={`mt-1 px-2 py-0.5 rounded-full !text-[10px] font-medium flex items-center gap-1 ${
                               realGlobalState === 'ok' ? 'bg-success-light !text-success-text ' :
-                              realGlobalState === 'blocked' ? 'bg-danger-light text-danger' :
-                              'bg-warning-light text-warning'
+                              realGlobalState === 'blocked' ? 'bg-danger-light !text-danger' :
+                              'bg-warning-light !text-warning'
                             }`}
                           >
                             {realGlobalState === 'ok' ? <IconCheck className="w-3 h-3" /> :
@@ -1735,7 +1735,7 @@ export default function ClientWorkflowMapView({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('search_placeholder') || 'Rechercher un client...'}
-              className="w-full bg-transparent text-sm text-primary placeholder:text-muted outline-none"
+              className="w-full bg-transparent !text-sm !text-primary placeholder:!text-muted outline-none"
             />
           </div>
         </div>
@@ -1754,29 +1754,29 @@ export default function ClientWorkflowMapView({
                   {createModal.type === 'project' && <IconBriefcase className="w-5 h-5 !text-accent" />}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-primary">{createModal.label}</h3>
-                  <p className="!text-xs text-muted">{t('workflow_create_for_client') || 'Création pour'} {radialClient.name}</p>
+                  <h3 className="text-lg font-semibold !text-primary">{createModal.label}</h3>
+                  <p className="!text-xs !text-muted">{t('workflow_create_for_client') || 'Création pour'} {radialClient.name}</p>
                 </div>
               </div>
               <button
                 onClick={() => setCreateModal(null)}
-                className="p-2 rounded-lg text-muted hover:text-primary hover:bg-hover"
+                className="p-2 rounded-lg !text-muted hover:!text-primary hover:bg-hover"
               >
                 <IconX className="w-5 h-5" />
               </button>
             </div>
             <div className="p-5">
-              <p className="text-sm text-secondary mb-6">
+              <p className="text-sm !text-secondary mb-6">
                 {t('workflow_create_confirm') || 'Voulez-vous créer'}{' '}
-                <span className="font-medium text-primary">{creationLabels[createModal.type]}</span>{' '}
+                <span className="font-medium !text-primary">{creationLabels[createModal.type]}</span>{' '}
                 {t('workflow_create_for') || 'pour'}{' '}
-                <span className="font-medium text-primary">{radialClient.name}</span> ?
+                <span className="font-medium !text-primary">{radialClient.name}</span> ?
               </p>
               <div className="flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setCreateModal(null)}
-                  className="px-4 py-2.5 rounded-lg border border-default text-sm font-medium text-secondary hover:text-primary hover:bg-hover transition-colors"
+                  className="px-4 py-2.5 rounded-lg border border-default !text-sm font-medium !text-secondary hover:!text-primary hover:bg-hover transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
@@ -1787,7 +1787,7 @@ export default function ClientWorkflowMapView({
                     setCreateModal(null);
                     router.push(route);
                   }}
-                  className="px-5 py-2.5 rounded-lg bg-accent text-white text-sm font-medium hover:opacity-90 transition-opacity"
+                  className="px-5 py-2.5 rounded-lg bg-accent !text-white !text-sm font-medium hover:opacity-90 transition-opacity"
                 >
                   {t('workflow_create_action') || 'Créer'} {creationLabels[createModal.type]}
                 </button>
@@ -1803,12 +1803,12 @@ export default function ClientWorkflowMapView({
           <div className="bg-card border border-default rounded-xl shadow-2xl w-full max-w-lg mx-4">
             <div className="flex items-center justify-between p-5 border-b border-default">
               <div>
-                <p className="!text-xs text-muted">{t('workflow_node_details') || 'Détails du node'}</p>
-                <h3 className="text-lg font-semibold text-primary">{activeNode.stageLabel}</h3>
+                <p className="!text-xs !text-muted">{t('workflow_node_details') || 'Détails du node'}</p>
+                <h3 className="text-lg font-semibold !text-primary">{activeNode.stageLabel}</h3>
               </div>
               <button
                 onClick={() => setActiveNode(null)}
-                className="p-2 rounded-lg text-muted hover:text-primary hover:bg-hover"
+                className="p-2 rounded-lg !text-muted hover:!text-primary hover:bg-hover"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -1826,13 +1826,13 @@ export default function ClientWorkflowMapView({
                 { label: t('estimated_value') || 'Valeur estimée', value: formatCurrency(activeNode.client.estimated_value) },
               ].map(item => (
                 <div key={item.label} className="flex items-center justify-between">
-                  <span className="text-sm text-muted">{item.label}</span>
+                  <span className="text-sm !text-muted">{item.label}</span>
                   <span className={`text-sm font-medium ${item.value ? 'text-primary' : 'text-primary opacity-50 italic !text-xs !font-light'}`}>
                     {item.value || (t('not_specified') || 'Non renseigné')}
                   </span>
                 </div>
               ))}
-              <div className="p-3 rounded-lg bg-muted text-sm text-secondary">
+              <div className="p-3 rounded-lg bg-muted !text-sm !text-secondary">
                 {activeNode.client.notes || (t('workflow_node_placeholder') || 'Zone de détails du devis/contrat/projet/facture.')}
               </div>
               <div className="flex justify-end">
@@ -1842,7 +1842,7 @@ export default function ClientWorkflowMapView({
                     const slug = generateClientSlug(activeNode.client.name, activeNode.client.documentId);
                     router.push(`/dashboard/clients/${slug}`);
                   }}
-                  className="px-4 py-2 rounded-lg bg-accent text-white text-sm hover:opacity-90"
+                  className="px-4 py-2 rounded-lg bg-accent !text-white !text-sm hover:opacity-90"
                 >
                   {t('open_details') || 'Ouvrir la fiche'}
                 </button>

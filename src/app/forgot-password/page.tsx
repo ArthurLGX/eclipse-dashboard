@@ -113,14 +113,14 @@ export default function ForgotPassword() {
               <div className="w-20 h-20 bg-success-light rounded-full flex items-center justify-center mx-auto mb-6">
                 <IconCheck size={40} className="text-success-text" />
               </div>
-              <h2 className="!text-2xl font-bold text-primary mb-4">
+              <h2 className="!text-2xl font-bold !text-primary mb-4">
                 Email envoyé !
               </h2>
               <p className="text-secondary mb-6">
                 Si un compte existe avec l&apos;adresse <strong className="text-primary">{email}</strong>,
                 vous recevrez un email avec les instructions pour réinitialiser votre mot de passe.
               </p>
-              <p className="text-muted text-sm mb-8">
+              <p className="text-muted !text-sm mb-8">
                 N&apos;oubliez pas de vérifier votre dossier spam.
               </p>
               <Link

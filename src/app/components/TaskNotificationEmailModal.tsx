@@ -71,7 +71,7 @@ function generateEmailHtml(
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F3F4F6;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
     <!-- Header -->
-    <div style="background: linear-gradient(135deg, ${buttonColor} 0%, #5B21B6 100%); border-radius: 16px 16px 0 0; padding: 32px; text-align: center;">
+    <div style="background: linear-gradient(135deg, ${buttonColor} 0%, #5B21B6 100%); border-radius: 16px 16px 0 0; padding: 32px; !text-align: center;">
       <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">
         📋 Nouvelles tâches assignées
       </h1>
@@ -103,7 +103,7 @@ function generateEmailHtml(
       <table style="width: 100%; border-collapse: collapse; background-color: #F9FAFB; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
         <thead>
           <tr>
-            <th style="padding: 12px 16px; text-align: left; background-color: #F3F4F6; color: #6B7280; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+            <th style="padding: 12px 16px; !text-align: left; background-color: #F3F4F6; color: #6B7280; font-size: 12px; font-weight: 600; !text-transform: uppercase; letter-spacing: 0.5px;">
               Vos tâches
             </th>
           </tr>
@@ -115,13 +115,13 @@ function generateEmailHtml(
       
       <!-- CTA Button -->
       <div style="text-align: center; margin: 32px 0;">
-        <a href="${projectUrl}" style="display: inline-block; background: linear-gradient(135deg, ${buttonColor} 0%, #5B21B6 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px ${buttonColor}40;">
+        <a href="${projectUrl}" style="display: inline-block; background: linear-gradient(135deg, ${buttonColor} 0%, #5B21B6 100%); color: white; !text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px ${buttonColor}40;">
           Voir mes tâches →
         </a>
       </div>
       
       <!-- Footer note -->
-      <p style="color: #9CA3AF; font-size: 13px; text-align: center; margin: 24px 0 0; padding-top: 20px; border-top: 1px solid #E5E7EB;">
+      <p style="color: #9CA3AF; font-size: 13px; !text-align: center; margin: 24px 0 0; padding-top: 20px; border-top: 1px solid #E5E7EB;">
         Cet email a été envoyé automatiquement depuis Eclipse Dashboard.
       </p>
     </div>
@@ -224,10 +224,10 @@ export default function TaskNotificationEmailModal({
                   <IconMail className="w-5 h-5 !text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-primary">
+                  <h2 className="text-lg font-semibold !text-primary">
                     {t('email_notification_compose') || 'Notification par email'}
                   </h2>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm !text-muted">
                     {recipients.length} {t('recipients') || 'destinataire(s)'} • {totalTasks} {t('tasks') || 'tâches'}
                   </p>
                 </div>
@@ -235,7 +235,7 @@ export default function TaskNotificationEmailModal({
               <button
                 onClick={onClose}
                 disabled={sending}
-                className="p-2 text-muted hover:text-primary hover:bg-hover rounded-lg transition-colors"
+                className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -245,38 +245,38 @@ export default function TaskNotificationEmailModal({
             <div className="flex-1 overflow-auto p-6 space-y-6">
               {/* Subject */}
               <div>
-                <label className="block text-sm font-medium text-secondary mb-2">
+                <label className="block !text-sm font-medium !text-secondary mb-2">
                   {t('email_subject') || 'Objet de l\'email'}
                 </label>
                 <input
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-4 py-2 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full px-4 py-2 bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                   placeholder="Objet..."
                 />
               </div>
 
               {/* Message */}
               <div>
-                <label className="block text-sm font-medium text-secondary mb-2">
+                <label className="block !text-sm font-medium !text-secondary mb-2">
                   {t('email_message') || 'Message personnalisé'}
                 </label>
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
+                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                   placeholder="Votre message..."
                 />
-                <p className="!text-xs text-muted mt-1">
+                <p className="!text-xs !text-muted mt-1">
                   {t('email_message_hint') || 'Ce message sera affiché avant la liste des tâches'}
                 </p>
               </div>
 
               {/* Recipients list */}
               <div>
-                <label className="block text-sm font-medium text-secondary mb-3">
+                <label className="block !text-sm font-medium !text-secondary mb-3">
                   {t('recipients_preview') || 'Destinataires et aperçu'}
                 </label>
                 <div className="bg-muted rounded-xl divide-y divide-default overflow-hidden">
@@ -287,8 +287,8 @@ export default function TaskNotificationEmailModal({
                           {recipient.username?.charAt(0).toUpperCase() || recipient.email?.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-primary">{recipient.username}</p>
-                          <p className="!text-xs text-muted">{recipient.email}</p>
+                          <p className="text-sm font-medium !text-primary">{recipient.username}</p>
+                          <p className="!text-xs !text-muted">{recipient.email}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -298,7 +298,7 @@ export default function TaskNotificationEmailModal({
                         </span>
                         <button
                           onClick={() => openPreview(recipient)}
-                          className="p-2 text-muted hover:text-accent hover:bg-accent-light rounded-lg transition-colors"
+                          className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
                           title={t('preview') || 'Aperçu'}
                         >
                           <IconEye className="w-4 h-4" />
@@ -311,10 +311,10 @@ export default function TaskNotificationEmailModal({
 
               {/* Info box */}
               <div className="p-4 bg-info-light border border-info rounded-lg">
-                <p className="text-sm text-primary">
+                <p className="text-sm !text-primary">
                   <strong>{t('email_info_title') || 'Un seul email par personne'}</strong>
                 </p>
-                <p className="text-sm text-muted mt-1">
+                <p className="text-sm !text-muted mt-1">
                   {t('email_info_description') || 'Chaque collaborateur recevra un email unique contenant la liste de toutes ses tâches assignées.'}
                 </p>
               </div>
@@ -325,7 +325,7 @@ export default function TaskNotificationEmailModal({
               <button
                 onClick={handleSkip}
                 disabled={sending}
-                className="px-4 py-2 text-muted hover:text-primary transition-colors"
+                className="px-4 py-2 !text-muted hover:!text-primary transition-colors"
               >
                 {t('skip_emails') || 'Ignorer les emails'}
               </button>
@@ -333,7 +333,7 @@ export default function TaskNotificationEmailModal({
                 <button
                   onClick={() => recipients[0] && openPreview(recipients[0])}
                   disabled={sending || recipients.length === 0}
-                  className="px-4 py-2 bg-muted border border-default text-primary rounded-lg hover:bg-hover transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-muted border border-default !text-primary rounded-lg hover:bg-hover transition-colors flex items-center gap-2"
                 >
                   <IconEye className="w-4 h-4" />
                   {t('preview') || 'Aperçu'}
@@ -341,7 +341,7 @@ export default function TaskNotificationEmailModal({
                 <button
                   onClick={handleSend}
                   disabled={sending || !subject.trim()}
-                  className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {sending ? (
                     <IconLoader2 className="w-4 h-4 animate-spin" />

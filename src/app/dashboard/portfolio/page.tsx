@@ -436,12 +436,12 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
   // Render font selector with categories and search
   const renderFontSelector = (value: string, onChange: (fontId: string) => void, label: string) => (
     <div>
-      <label className="block text-sm font-medium text-secondary mb-2">{label}</label>
+      <label className="block !text-sm font-medium !text-secondary mb-2">{label}</label>
       <div className="relative">
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+          className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
         >
           {settings.customFontName && settings.customFontUrl && (
             <optgroup label="🎨 Police personnalisée">
@@ -476,7 +476,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
         </select>
         {fontsLoading && (
           <div className="absolute right-8 top-1/2 -translate-y-1/2">
-            <IconLoader2 size={16} className="animate-spin text-muted" />
+            <IconLoader2 size={16} className="animate-spin !text-muted" />
           </div>
         )}
       </div>
@@ -486,7 +486,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
   // Render color picker with reset button
   const renderColorPicker = (value: string, onChange: (color: string) => void, label: string) => (
     <div>
-      <label className="block text-sm font-medium text-secondary mb-2">{label}</label>
+      <label className="block !text-sm font-medium !text-secondary mb-2">{label}</label>
       <div className="flex items-center gap-2">
         <input
           type="color"
@@ -499,13 +499,13 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Thème par défaut"
-          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm"
+          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm"
         />
         {value && (
           <button
             type="button"
             onClick={() => onChange('')}
-            className="px-2 py-2 !text-xs text-muted hover:text-primary border border-default rounded-lg hover:bg-hover transition-colors"
+            className="px-2 py-2 !text-xs !text-muted hover:!text-primary border border-default rounded-lg hover:bg-hover transition-colors"
             title="Utiliser le thème par défaut"
           >
             Reset
@@ -513,7 +513,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
         )}
       </div>
       {!value && (
-        <p className="!text-xs text-muted mt-1">✓ Utilise la couleur du thème</p>
+        <p className="!text-xs !text-muted mt-1">✓ Utilise la couleur du thème</p>
       )}
     </div>
   );
@@ -541,7 +541,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
       >
         {/* Header */}
         <div className="flex-shrink-0 bg-card border-b border-default p-4 flex items-center justify-between rounded-t-2xl">
-          <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+          <h2 className="text-lg font-semibold !text-primary flex items-center gap-2">
             <IconSettings size={15} />
             {t('portfolio_settings')}
           </h2>
@@ -561,10 +561,10 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`flex-1 py-3 px-4 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              className={`flex-1 py-3 px-4 !text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === tab.id
                   ? 'text-accent border-b-2 border-accent bg-accent-light'
-                  : 'text-muted hover:text-primary hover:bg-hover'
+                  : 'text-muted hover:!text-primary hover:bg-hover'
               }`}
             >
               <tab.icon size={16} />
@@ -583,27 +583,27 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
           <>
             {/* Portfolio Name */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_name')}
               </label>
               <input
                 type="text"
                 value={settings.portfolioName}
                 onChange={(e) => updateSetting('portfolioName', e.target.value)}
-                className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+                className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
               />
             </div>
 
             {/* Tagline */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_tagline')}
               </label>
               <input
                 type="text"
                 value={settings.tagline}
                 onChange={(e) => updateSetting('tagline', e.target.value)}
-                className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+                className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
               />
             </div>
 
@@ -615,13 +615,13 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
             {/* Custom Font Import */}
             <div className="border-t border-default pt-4">
-              <h4 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
+              <h4 className="text-sm font-semibold !text-primary mb-3 flex items-center gap-2">
                 <IconCloudUpload size={16} />
                 {t('portfolio_import_custom_font')}
               </h4>
               <div className="space-y-3">
                 <div>
-                  <label className="block !text-xs font-medium text-secondary mb-1">
+                  <label className="block !text-xs font-medium !text-secondary mb-1">
                     Nom de la police
                   </label>
                   <input
@@ -629,11 +629,11 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     value={settings.customFontName || ''}
                     onChange={(e) => updateSetting('customFontName', e.target.value)}
                     placeholder="Ma Police"
-                    className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                   />
                 </div>
                 <div>
-                  <label className="block !text-xs font-medium text-secondary mb-1">
+                  <label className="block !text-xs font-medium !text-secondary mb-1">
                     URL du fichier (Google Fonts ou @font-face)
                   </label>
                   <input
@@ -641,10 +641,10 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     value={settings.customFontUrl || ''}
                     onChange={(e) => updateSetting('customFontUrl', e.target.value)}
                     placeholder="https://fonts.googleapis.com/css2?family=..."
-                    className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                   />
                 </div>
-                <p className="!text-xs text-muted">
+                <p className="!text-xs !text-muted">
                   💡 Collez l&apos;URL d&apos;import Google Fonts ou le lien vers un fichier .woff2
                 </p>
               </div>
@@ -659,7 +659,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   onChange={(e) => updateSetting('enableAnimations', e.target.checked)}
                   className="w-5 h-5 rounded border-input bg-input !text-accent focus:ring-accent"
                 />
-                <span className="text-sm text-secondary flex items-center gap-2">
+                <span className="text-sm !text-secondary flex items-center gap-2">
                   <IconSparkles size={16} />
                   {t('portfolio_enable_animations')}
                 </span>
@@ -670,7 +670,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <select
                     value={settings.animationType}
                     onChange={(e) => updateSetting('animationType', e.target.value as PortfolioSettings['animationType'])}
-                    className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+                    className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
                   >
                     <option value="fade">Fade</option>
                     <option value="slide">Slide</option>
@@ -687,33 +687,33 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
           <>
             {/* Font Search */}
             <div className="bg-muted/30 rounded-lg p-3 border border-default">
-              <label className="block !text-xs font-medium text-secondary mb-2">{t('portfolio_search_font')}</label>
+              <label className="block !text-xs font-medium !text-secondary mb-2">{t('portfolio_search_font')}</label>
               <div className="relative">
-                <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted" />
                 <input
                   type="text"
                   value={fontSearch}
                   onChange={(e) => setFontSearch(e.target.value)}
                   placeholder={t('portfolio_search_font_placeholder')}
-                  className="w-full !pl-9 !pr-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  className="w-full !pl-9 !pr-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                 />
                 {fontSearch && (
                   <button
                     onClick={() => setFontSearch('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 !text-muted hover:!text-primary"
                   >
                     <IconX size={14} />
                   </button>
                 )}
               </div>
-              <p className="!text-xs text-muted mt-2">
+              <p className="!text-xs !text-muted mt-2">
                 {fontsLoading ? t('portfolio_loading_fonts') : `${allFonts.length} ${t('portfolio_fonts_available')}`}
               </p>
             </div>
 
             {/* Title Typography */}
             <div className="space-y-4">
-              <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
+              <h4 className="text-sm font-semibold !text-primary flex items-center gap-2 border-b border-default pb-2">
                 <IconBold size={16} />
                 {t('portfolio_title_typography')}
               </h4>
@@ -722,11 +722,11 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
+                  <label className="block !text-xs font-medium !text-secondary mb-1">{t('portfolio_font_weight')}</label>
                   <select
                     value={settings.titleFontWeight}
                     onChange={(e) => updateSetting('titleFontWeight', Number(e.target.value))}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {FONT_WEIGHTS.map((w) => (
                       <option key={w.value} value={w.value}>{w.label} ({w.value})</option>
@@ -734,11 +734,11 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   </select>
                 </div>
                 <div>
-                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_size')}</label>
+                  <label className="block !text-xs font-medium !text-secondary mb-1">{t('portfolio_font_size')}</label>
                   <select
                     value={settings.titleSize}
                     onChange={(e) => updateSetting('titleSize', e.target.value)}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {FONT_SIZES.map((s) => (
                       <option key={s.value} value={s.value}>{s.label}</option>
@@ -749,11 +749,11 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_letter_spacing')}</label>
+                  <label className="block !text-xs font-medium !text-secondary mb-1">{t('portfolio_letter_spacing')}</label>
                   <select
                     value={settings.titleLetterSpacing}
                     onChange={(e) => updateSetting('titleLetterSpacing', e.target.value)}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {LETTER_SPACINGS.map((s) => (
                       <option key={s.value} value={s.value}>{s.label}</option>
@@ -761,11 +761,11 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   </select>
                 </div>
                 <div>
-                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_case')}</label>
+                  <label className="block !text-xs font-medium !text-secondary mb-1">{t('portfolio_case')}</label>
                   <select
                     value={settings.titleTransform}
                     onChange={(e) => updateSetting('titleTransform', e.target.value as PortfolioSettings['titleTransform'])}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     <option value="none">{t('portfolio_case_normal')}</option>
                     <option value="uppercase">{t('portfolio_case_uppercase')}</option>
@@ -780,7 +780,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
             {/* Subtitle Typography */}
             <div className="space-y-4 border-t border-default pt-4">
-              <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
+              <h4 className="text-sm font-semibold !text-primary flex items-center gap-2 border-b border-default pb-2">
                 <IconBold size={16} />
                 {t('portfolio_subtitle_typography')}
               </h4>
@@ -789,11 +789,11 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
+                  <label className="block !text-xs font-medium !text-secondary mb-1">{t('portfolio_font_weight')}</label>
                   <select
                     value={settings.subtitleFontWeight}
                     onChange={(e) => updateSetting('subtitleFontWeight', Number(e.target.value))}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {FONT_WEIGHTS.map((w) => (
                       <option key={w.value} value={w.value}>{w.label} ({w.value})</option>
@@ -801,11 +801,11 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   </select>
                 </div>
                 <div>
-                  <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_size')}</label>
+                  <label className="block !text-xs font-medium !text-secondary mb-1">{t('portfolio_font_size')}</label>
                   <select
                     value={settings.subtitleSize}
                     onChange={(e) => updateSetting('subtitleSize', e.target.value)}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {FONT_SIZES.map((s) => (
                       <option key={s.value} value={s.value}>{s.label}</option>
@@ -819,7 +819,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
             {/* Project Card Typography */}
             <div className="space-y-4 border-t border-default pt-4">
-              <h4 className="text-sm font-semibold text-primary flex items-center gap-2 border-b border-default pb-2">
+              <h4 className="text-sm font-semibold !text-primary flex items-center gap-2 border-b border-default pb-2">
                 <IconBold size={16} />
                 {t('portfolio_card_typography')}
               </h4>
@@ -827,11 +827,11 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
               {renderFontSelector(settings.projectTitleFont, (f) => updateSetting('projectTitleFont', f), t('portfolio_font'))}
 
               <div>
-                <label className="block !text-xs font-medium text-secondary mb-1">{t('portfolio_font_weight')}</label>
+                <label className="block !text-xs font-medium !text-secondary mb-1">{t('portfolio_font_weight')}</label>
                 <select
                   value={settings.projectTitleFontWeight}
                   onChange={(e) => updateSetting('projectTitleFontWeight', Number(e.target.value))}
-                  className="w-full px-2 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                  className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                 >
                   {FONT_WEIGHTS.map((w) => (
                     <option key={w.value} value={w.value}>{w.label} ({w.value})</option>
@@ -852,7 +852,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
           <>
             {/* Columns */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_columns')}
               </label>
               <div className="flex gap-2">
@@ -860,10 +860,10 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <button
                     key={num}
                     onClick={() => updateSetting('columns', num as 2 | 3 | 4)}
-                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex-1 py-2 rounded-lg !text-sm font-medium transition-colors ${
                       settings.columns === num
-                        ? 'bg-accent text-accent'
-                        : 'bg-muted text-secondary hover:bg-hover'
+                        ? 'bg-accent !text-accent'
+                        : 'bg-muted !text-secondary hover:bg-hover'
                     }`}
                   >
                     {num} {t('portfolio_columns_label')}
@@ -874,7 +874,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
             {/* Gap */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_gap')}
               </label>
               <div className="flex gap-2">
@@ -886,10 +886,10 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <button
                     key={gap.id}
                     onClick={() => updateSetting('gap', gap.id as PortfolioSettings['gap'])}
-                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex-1 py-2 rounded-lg !text-sm font-medium transition-colors ${
                       settings.gap === gap.id
-                        ? 'bg-accent text-accent'
-                        : 'bg-muted text-secondary hover:bg-hover'
+                        ? 'bg-accent !text-accent'
+                        : 'bg-muted !text-secondary hover:bg-hover'
                     }`}
                   >
                     {gap.label}
@@ -900,13 +900,13 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
             {/* Image Ratio */}
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_image_ratio')}
               </label>
               <select
                 value={settings.imageRatio}
                 onChange={(e) => updateSetting('imageRatio', e.target.value as PortfolioSettings['imageRatio'])}
-                className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+                className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
               >
                 <option value="auto">{t('portfolio_ratio_auto')}</option>
                 <option value="square">{t('portfolio_ratio_square')}</option>
@@ -929,12 +929,12 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   onChange={(e) => updateSetting('isPublic', e.target.checked)}
                   className="w-5 h-5 rounded border-input bg-input !text-accent focus:ring-accent"
                 />
-                <span className="text-sm text-secondary flex items-center gap-2">
+                <span className="text-sm !text-secondary flex items-center gap-2">
                   {settings.isPublic ? <IconWorld size={16} /> : <IconLock size={16} />}
                   {t('portfolio_public')}
                 </span>
               </label>
-              <p className="!text-xs text-muted mt-1 ml-8">
+              <p className="!text-xs !text-muted mt-1 ml-8">
                 {settings.isPublic
                   ? t('portfolio_public_desc')
                   : t('portfolio_private_desc')}
@@ -945,7 +945,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
               <>
                 {/* Share Link */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">
+                  <label className="block !text-sm font-medium !text-secondary mb-2">
                     {t('portfolio_share_link')}
                   </label>
                   <div className="flex gap-2">
@@ -953,9 +953,9 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                       type="text"
                       value={`${typeof window !== 'undefined' ? window.location.origin : ''}/portfolio/${settings.shareSlug || 'mon-portfolio'}`}
                       readOnly
-                      className="flex-1 px-3 py-2 bg-muted border border-input rounded-lg text-primary text-sm"
+                      className="flex-1 px-3 py-2 bg-muted border border-input rounded-lg !text-primary !text-sm"
                     />
-                    <button className="px-3 py-2 bg-accent text-accent rounded-lg hover:bg-accent transition-colors">
+                    <button className="px-3 py-2 bg-accent !text-accent rounded-lg hover:bg-accent transition-colors">
                       <IconCopy size={18} />
                     </button>
                   </div>
@@ -963,17 +963,17 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
                 {/* Slug */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">
+                  <label className="block !text-sm font-medium !text-secondary mb-2">
                     {t('portfolio_custom_slug')}
                   </label>
                   <div className="flex items-center gap-2">
-                    <span className="text-muted text-sm">/portfolio/</span>
+                    <span className="text-muted !text-sm">/portfolio/</span>
                     <input
                       type="text"
                       value={settings.shareSlug}
                       onChange={(e) => updateSetting('shareSlug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                       placeholder="mon-portfolio"
-                      className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-accent"
+                      className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
                     />
                   </div>
                 </div>
@@ -987,7 +987,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                       onChange={(e) => updateSetting('showSocialLinks', e.target.checked)}
                       className="w-5 h-5 rounded border-input bg-input !text-accent focus:ring-accent"
                     />
-                    <span className="text-sm text-secondary">
+                    <span className="text-sm !text-secondary">
                       {t('portfolio_show_social')}
                     </span>
                   </label>
@@ -1001,7 +1001,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                           value={settings.instagramUrl}
                           onChange={(e) => updateSetting('instagramUrl', e.target.value)}
                           placeholder="URL Instagram"
-                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                         />
                       </div>
                       <div className="flex items-center gap-2">
@@ -1011,7 +1011,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                           value={settings.linkedinUrl}
                           onChange={(e) => updateSetting('linkedinUrl', e.target.value)}
                           placeholder="URL LinkedIn"
-                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                         />
                       </div>
                       <div className="flex items-center gap-2">
@@ -1021,7 +1021,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                           value={settings.dribbbleUrl}
                           onChange={(e) => updateSetting('dribbbleUrl', e.target.value)}
                           placeholder="URL Dribbble"
-                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                         />
                       </div>
                       <div className="flex items-center gap-2">
@@ -1031,7 +1031,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                           value={settings.emailAddress}
                           onChange={(e) => updateSetting('emailAddress', e.target.value)}
                           placeholder="Email de contact"
-                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg text-primary text-sm focus:outline-none focus:border-accent"
+                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
                         />
                       </div>
                     </div>
@@ -1199,11 +1199,11 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               <IconDownload size={15} className="!text-accent" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-primary">
+              <h2 className="text-lg font-semibold !text-primary">
                 {step === 'url' ? t('portfolio_import_title') : t('portfolio_import_select')}
               </h2>
               {siteName && step === 'select' && (
-                <p className="text-sm text-secondary">{t('portfolio_import_from')} {siteName}</p>
+                <p className="text-sm !text-secondary">{t('portfolio_import_from')} {siteName}</p>
               )}
             </div>
           </div>
@@ -1217,25 +1217,25 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
           {step === 'url' ? (
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-secondary mb-2">
+                <label className="block !text-sm font-medium !text-secondary mb-2">
                   {t('portfolio_import_url_label')}
                 </label>
                 <div className="flex gap-3">
                   <div className="flex-1 relative">
-                    <IconWorld size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                    <IconWorld size={18} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted" />
                     <input
                       type="url"
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
                       placeholder="https://monportfolio.com/projets"
-                      className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-lg text-primary placeholder:text-muted focus:outline-none focus:border-accent"
+                      className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:border-accent"
                       onKeyDown={(e) => e.key === 'Enter' && handleScrape()}
                     />
                   </div>
                   <button
                     onClick={handleScrape}
                     disabled={loading || !url.trim()}
-                    className="px-6 py-3 bg-accent text-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                    className="px-6 py-3 bg-accent !text-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                   >
                     {loading ? (
                       <>
@@ -1254,8 +1254,8 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
 
               {error && (
                 <div className="p-4 bg-danger-light border border-danger rounded-lg space-y-3">
-                  <p className="text-danger text-sm font-medium">{error}</p>
-                  <div className="!text-xs text-secondary space-y-1">
+                  <p className="text-danger !text-sm font-medium">{error}</p>
+                  <div className="!text-xs !text-secondary space-y-1">
                     <p>Conseils :</p>
                     <ul className="list-disc list-inside space-y-0.5">
                       <li>{t('portfolio_tips_url')}</li>
@@ -1272,7 +1272,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                         {showDebug ? t('portfolio_hide_debug') : t('portfolio_show_debug')}
                       </button>
                       {showDebug && (
-                        <pre className="mt-2 p-2 bg-card rounded !text-xs text-muted overflow-auto max-h-32">
+                        <pre className="mt-2 p-2 bg-card rounded !text-xs !text-muted overflow-auto max-h-32">
                           {debugInfo.join('\n')}
                         </pre>
                       )}
@@ -1282,8 +1282,8 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               )}
 
               <div className="bg-muted rounded-lg p-4">
-                <h3 className="text-sm font-medium text-primary mb-2">💡 {t('portfolio_import_how_title')}</h3>
-                <ul className="text-sm text-secondary space-y-1">
+                <h3 className="text-sm font-medium !text-primary mb-2">💡 {t('portfolio_import_how_title')}</h3>
+                <ul className="text-sm !text-secondary space-y-1">
                   <li>• {t('portfolio_import_how_1')}</li>
                   <li>• {t('portfolio_import_how_2')}</li>
                   <li>• {t('portfolio_import_how_3')}</li>
@@ -1292,11 +1292,11 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               </div>
 
               <div className="bg-muted rounded-lg p-4">
-                <h3 className="text-sm font-medium text-primary mb-2">🔗 {t('portfolio_import_supported_title')}</h3>
-                <p className="text-sm text-secondary">
+                <h3 className="text-sm font-medium !text-primary mb-2">🔗 {t('portfolio_import_supported_title')}</h3>
+                <p className="text-sm !text-secondary">
                   {t('portfolio_import_supported_desc')}
                 </p>
-                <p className="!text-xs text-muted mt-2">
+                <p className="!text-xs !text-muted mt-2">
                   {t('portfolio_import_js_note')}
                 </p>
               </div>
@@ -1311,7 +1311,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                 >
                   {scrapedProjects.every(p => p.selected) ? t('portfolio_import_deselect_all') : t('portfolio_import_select_all')}
                 </button>
-                <span className="text-sm text-secondary">
+                <span className="text-sm !text-secondary">
                   {selectedCount} / {scrapedProjects.length} {t('portfolio_import_selected')}
                 </span>
               </div>
@@ -1355,9 +1355,9 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
 
                     {/* Title */}
                     <div className="p-2 bg-card">
-                      <p className="!text-xs font-medium text-primary truncate">{project.title}</p>
+                      <p className="!text-xs font-medium !text-primary truncate">{project.title}</p>
                       {project.category && (
-                        <p className="!text-xs text-secondary truncate">{project.category}</p>
+                        <p className="!text-xs !text-secondary truncate">{project.category}</p>
                       )}
                     </div>
                   </div>
@@ -1367,7 +1367,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               {/* Back button */}
               <button
                 onClick={() => setStep('url')}
-                className="text-sm text-secondary hover:text-primary flex items-center gap-1"
+                className="text-sm !text-secondary hover:!text-primary flex items-center gap-1"
               >
                 <IconChevronLeft size={16} />
                 {t('portfolio_import_back')}
@@ -1381,14 +1381,14 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
           <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-default bg-muted/30">
             <button
               onClick={handleClose}
-              className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+              className="px-4 py-2 !text-secondary hover:!text-primary transition-colors"
             >
               {t('cancel')}
             </button>
             <button
               onClick={handleImport}
               disabled={selectedCount === 0}
-              className="px-6 py-2 bg-accent text-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-accent !text-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
             >
               <IconDownload size={18} />
               {t('portfolio_import_btn')} {selectedCount} {t('portfolio_import_projects')}
@@ -1494,18 +1494,18 @@ function ProjectCard({ project, settings, onClick, onEdit, onDelete, index, allF
             >
               <button
                 onClick={onEdit}
-                className="p-2.5 rounded-full bg-page text-primary hover:bg-muted transition-colors"
+                className="p-2.5 rounded-full bg-page !text-primary hover:bg-muted transition-colors"
               >
                 <IconEdit size={16} />
               </button>
               <button
                 onClick={onDelete}
-                className="p-2.5 rounded-full bg-page text-danger hover:bg-muted transition-colors"
+                className="p-2.5 rounded-full bg-page !text-danger hover:bg-muted transition-colors"
               >
                 <IconTrash size={16} />
               </button>
               {project.media.length > 1 && (
-                <span className="px-2.5 py-1.5 rounded-full bg-page text-primary !text-xs flex items-center gap-1">
+                <span className="px-2.5 py-1.5 rounded-full bg-page !text-primary !text-xs flex items-center gap-1">
                   <IconPhoto size={12} />
                   {project.media.length}
                 </span>
@@ -1567,7 +1567,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 z-10 p-3 rounded-full bg-muted text-primary hover:bg-accent hover:text-accent transition-colors"
+        className="absolute top-6 right-6 z-10 p-3 rounded-full bg-muted !text-primary hover:bg-accent hover:!text-accent transition-colors"
       >
         <IconX size={24} />
       </button>
@@ -1581,13 +1581,13 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
             <>
               <button
                 onClick={() => setCurrentMediaIndex((i) => (i > 0 ? i - 1 : project.media.length - 1))}
-                className="absolute left-4 p-3 rounded-full bg-muted text-primary hover:bg-accent hover:text-accent transition-colors"
+                className="absolute left-4 p-3 rounded-full bg-muted !text-primary hover:bg-accent hover:!text-accent transition-colors"
               >
                 <IconChevronLeft size={24} />
               </button>
               <button
                 onClick={() => setCurrentMediaIndex((i) => (i < project.media.length - 1 ? i + 1 : 0))}
-                className="absolute right-4 lg:right-auto lg:left-[calc(100%-4rem)] p-3 rounded-full bg-muted text-primary hover:bg-accent hover:text-accent transition-colors"
+                className="absolute right-4 lg:right-auto lg:left-[calc(100%-4rem)] p-3 rounded-full bg-muted !text-primary hover:bg-accent hover:!text-accent transition-colors"
               >
                 <IconChevronRight size={24} />
               </button>
@@ -1643,7 +1643,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
         {/* Info Section */}
         <div className="lg:w-96 bg-card p-8 overflow-y-auto border-l border-default" style={{ overscrollBehavior: 'contain' }}>
           <h2
-            className="text-2xl tracking-wider text-primary"
+            className="text-2xl tracking-wider !text-primary"
             style={{ 
               fontFamily: titleFont,
               fontWeight: settings.projectTitleFontWeight,
@@ -1652,7 +1652,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
           >
             {project.title}
           </h2>
-          <p className="text-lg mt-2 text-secondary">
+          <p className="text-lg mt-2 !text-secondary">
             {project.subtitle}
           </p>
 
@@ -1672,14 +1672,14 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
 
           {/* Description */}
           <div
-            className="mt-6 leading-relaxed text-primary"
+            className="mt-6 leading-relaxed !text-primary"
             dangerouslySetInnerHTML={{ __html: project.descriptionHtml || project.description }}
           />
 
           {/* Meta */}
           {project.clientName && (
             <div className="mt-6 pt-6 border-t border-default">
-              <p className="text-sm text-secondary">
+              <p className="text-sm !text-secondary">
                 <span className="font-medium">Client:</span> {project.clientName}
               </p>
             </div>
@@ -1691,7 +1691,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
               href={project.projectUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-lg bg-accent text-accent font-medium transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-lg bg-accent !text-accent font-medium transition-opacity hover:opacity-90"
             >
               <IconExternalLink size={18} />
               Voir le projet
@@ -1874,12 +1874,12 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
       >
         {/* Header */}
         <div className="sticky top-0 bg-card border-b border-default px-6 py-4 flex items-center justify-between z-10">
-          <h2 className="text-xl font-bold text-primary">
+          <h2 className="text-xl font-bold !text-primary">
             {project ? t('portfolio_edit_project') : t('portfolio_add_project')}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-hover text-muted hover:text-primary transition-colors"
+            className="p-2 rounded-lg hover:bg-hover !text-muted hover:!text-primary transition-colors"
           >
             <IconX size={15} />
           </button>
@@ -1889,7 +1889,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Media Gallery */}
           <div>
-            <label className="block text-sm font-medium text-secondary mb-3">
+            <label className="block !text-sm font-medium !text-secondary mb-3">
               {t('portfolio_media')}
             </label>
             <div className="grid grid-cols-4 gap-3">
@@ -1916,7 +1916,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
               <button
                 type="button"
                 onClick={() => setShowMediaPicker(true)}
-                className="aspect-square rounded-lg border-2 border-dashed border-default flex flex-col items-center justify-center text-muted hover:text-accent hover:border-accent transition-colors"
+                className="aspect-square rounded-lg border-2 border-dashed border-default flex flex-col items-center justify-center !text-muted hover:!text-accent hover:border-accent transition-colors"
               >
                 <IconPlus size={24} />
                 <span className="!text-xs mt-1">Ajouter</span>
@@ -1943,7 +1943,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b border-default">
-                    <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                    <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
                       <IconPhoto className="w-5 h-5 !text-accent" />
                       Ajouter un média
                     </h3>
@@ -1952,7 +1952,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                       onClick={() => setShowMediaPicker(false)}
                       className="p-2 rounded-lg hover:bg-hover transition-colors"
                     >
-                      <IconX className="w-5 h-5 text-secondary" />
+                      <IconX className="w-5 h-5 !text-secondary" />
                     </button>
                   </div>
 
@@ -1970,7 +1970,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accent text-accent rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accent !text-accent rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
                       >
                         {uploading ? (
                           <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -1985,7 +1985,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                           addMediaUrl('image');
                           setShowMediaPicker(false);
                         }}
-                        className="flex items-center gap-2 py-3 px-4 bg-muted text-primary rounded-lg hover:bg-muted transition-colors"
+                        className="flex items-center gap-2 py-3 px-4 bg-muted !text-primary rounded-lg hover:bg-muted transition-colors"
                       >
                         <IconLink className="w-5 h-5" />
                         URL
@@ -1995,13 +1995,13 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
 
                   {/* Library */}
                   <div className="flex-1 overflow-y-auto p-4" style={{ overscrollBehavior: 'contain' }}>
-                    <h4 className="text-sm font-medium text-secondary mb-3">Ma bibliothèque</h4>
+                    <h4 className="text-sm font-medium !text-secondary mb-3">Ma bibliothèque</h4>
                     {loadingLibrary ? (
                       <div className="flex items-center justify-center h-48">
                         <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
                       </div>
                     ) : libraryImages.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center h-48 text-muted">
+                      <div className="flex flex-col items-center justify-center h-48 !text-muted">
                         <IconPhoto className="w-12 h-12 mb-4 opacity-50" />
                         <p>Aucune image dans la bibliothèque</p>
                         <p className="!text-xs mt-1">Importez votre première image ci-dessus</p>
@@ -2023,7 +2023,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                               className="object-cover"
                             />
                             <div className="absolute inset-0 bg-accent-light group-hover:bg-accent-light transition-colors flex items-center justify-center">
-                              <IconCheck className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                              <IconCheck className="w-8 h-8 !text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
                             </div>
                           </button>
                         ))}
@@ -2038,27 +2038,27 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
           {/* Title & Subtitle */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_title')} *
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value.toUpperCase() })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-placeholder focus:outline-none focus:border-accent uppercase font-bold tracking-wide"
+                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent uppercase font-bold tracking-wide"
                 placeholder="TITRE DU PROJET"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_subtitle_field')}
               </label>
               <input
                 type="text"
                 value={formData.subtitle}
                 onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-placeholder focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
                 placeholder="Lieu ou description courte"
               />
             </div>
@@ -2066,17 +2066,17 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
 
           {/* Description with Rich Text (simplified for now) */}
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label className="block !text-sm font-medium !text-secondary mb-2">
               {t('portfolio_description')}
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={4}
-              className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-placeholder focus:outline-none focus:border-accent resize-none"
+              className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent resize-none"
               placeholder="Décrivez votre projet..."
             />
-            <p className="!text-xs text-muted mt-1">
+            <p className="!text-xs !text-muted mt-1">
               💡 L&apos;éditeur de texte riche sera bientôt disponible
             </p>
           </div>
@@ -2084,13 +2084,13 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
           {/* Category & Tags */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_category')}
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary focus:outline-none focus:border-accent"
               >
                 {CATEGORIES.filter((c) => c.id !== 'all').map((cat) => (
                   <option key={cat.id} value={cat.id}>
@@ -2100,14 +2100,14 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_tags')}
               </label>
               <input
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-placeholder focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
                 placeholder="Nature, Arctic, Landscape"
               />
             </div>
@@ -2116,26 +2116,26 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
           {/* Client & URL */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_client')}
               </label>
               <input
                 type="text"
                 value={formData.clientName}
                 onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-placeholder focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
                 placeholder="Nom du client (optionnel)"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label className="block !text-sm font-medium !text-secondary mb-2">
                 {t('portfolio_project_url')}
               </label>
               <input
                 type="url"
                 value={formData.projectUrl}
                 onChange={(e) => setFormData({ ...formData, projectUrl: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-placeholder focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
                 placeholder="https://..."
               />
             </div>
@@ -2146,13 +2146,13 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-default text-secondary hover:bg-hover transition-colors"
+              className="px-5 py-2.5 rounded-xl border border-default !text-secondary hover:bg-hover transition-colors"
             >
               {t('cancel')}
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-accent text-accent font-medium hover:bg-accent transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-accent !text-accent font-medium hover:bg-accent transition-colors"
             >
               {project ? t('save') : t('portfolio_create')}
             </button>
@@ -2171,11 +2171,11 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
   const { t } = useLanguage();
 
   return (
-    <div className="flex flex-col items-center justify-center py-32 text-center">
+    <div className="flex flex-col items-center justify-center py-32 !text-center">
       <div className="w-24 h-24 rounded-full bg-accent-light flex items-center justify-center mb-6">
         <IconPhoto size={48} className="!text-accent" />
       </div>
-      <h2 className="text-2xl font-bold text-primary mb-2">
+      <h2 className="text-2xl font-bold !text-primary mb-2">
         {t('portfolio_empty')}
       </h2>
       <p className="text-secondary max-w-md mb-8">
@@ -2183,7 +2183,7 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
       </p>
       <button
         onClick={onAddProject}
-        className="flex items-center gap-2 px-6 py-3 bg-accent text-accent font-medium rounded-xl hover:bg-accent transition-colors"
+        className="flex items-center gap-2 px-6 py-3 bg-accent !text-accent font-medium rounded-xl hover:bg-accent transition-colors"
       >
         <IconPlus size={15} />
         {t('portfolio_add_first')}
@@ -2497,7 +2497,7 @@ export default function PortfolioPage() {
       {isSaving && (
         <div className="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 bg-card rounded-lg shadow-lg border border-default">
           <IconLoader2 size={16} className="animate-spin !text-accent" />
-          <span className="text-sm text-secondary">{t('portfolio_saving')}</span>
+          <span className="text-sm !text-secondary">{t('portfolio_saving')}</span>
         </div>
       )}
 
@@ -2505,27 +2505,27 @@ export default function PortfolioPage() {
       <header className="px-6 lg:px-12 py-4 border border-default rounded-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left - Site Name */}
-          <span className="text-sm text-secondary font-medium tracking-wide">
+          <span className="text-sm !text-secondary font-medium tracking-wide">
             {settings.portfolioName.toLowerCase().replace(/\s+/g, '-')}.com
           </span>
 
           {/* Right - Navigation & Actions */}
           <div className="flex items-center gap-6">
             {/* Navigation Links */}
-            <nav className="hidden md:flex items-center gap-6 text-sm">
-              <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
+            <nav className="hidden md:flex items-center gap-6 !text-sm">
+              <span className="text-secondary hover:!text-primary cursor-pointer transition-colors">
                 {t('portfolio_nav_home')}
               </span>
-              <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
+              <span className="text-secondary hover:!text-primary cursor-pointer transition-colors">
                 {t('portfolio_nav_about')}
               </span>
               <span className="text-primary font-medium cursor-pointer border-b border-primary pb-0.5">
                 {t('portfolio_nav_portfolio')}
               </span>
-              <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
+              <span className="text-secondary hover:!text-primary cursor-pointer transition-colors">
                 {t('portfolio_nav_blog')}
               </span>
-              <span className="text-secondary hover:text-primary cursor-pointer transition-colors">
+              <span className="text-secondary hover:!text-primary cursor-pointer transition-colors">
                 {t('portfolio_nav_contact')}
               </span>
             </nav>
@@ -2535,13 +2535,13 @@ export default function PortfolioPage() {
               <div className="flex items-center gap-2">
                 {settings.instagramUrl && (
                   <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" 
-                     className="w-8 h-8 rounded-full bg-primary text-page flex items-center justify-center hover:opacity-80 transition-opacity">
+                     className="w-8 h-8 rounded-full bg-primary !text-page flex items-center justify-center hover:opacity-80 transition-opacity">
                     <IconBrandInstagram size={14} />
                   </a>
                 )}
                 {settings.linkedinUrl && (
                   <a href={settings.linkedinUrl} target="_blank" rel="noopener noreferrer"
-                     className="w-8 h-8 rounded-full bg-primary text-page flex items-center justify-center hover:opacity-80 transition-opacity">
+                     className="w-8 h-8 rounded-full bg-primary !text-page flex items-center justify-center hover:opacity-80 transition-opacity">
                     <IconBrandLinkedin size={14} />
                   </a>
                 )}
@@ -2620,7 +2620,7 @@ export default function PortfolioPage() {
               <span className="inline-block">.</span>
             </h1>
             <p
-              className={`mt-6 max-w-md text-lg ${!settings.subtitleColor ? 'text-secondary' : ''}`}
+              className={`mt-6 max-w-md !text-lg ${!settings.subtitleColor ? 'text-secondary' : ''}`}
               style={{ 
                 color: settings.subtitleColor || undefined,
                 fontFamily: subtitleFont,
@@ -2636,7 +2636,7 @@ export default function PortfolioPage() {
             {settings.emailAddress && (
               <a
                 href={`mailto:${settings.emailAddress}`}
-                className="px-6 py-2.5 rounded-full border border-primary text-primary text-sm font-medium hover:bg-primary hover:text-page transition-colors"
+                className="px-6 py-2.5 rounded-full border border-primary !text-primary !text-sm font-medium hover:bg-primary hover:!text-page transition-colors"
               >
                 {t('portfolio_connect')}
               </a>
@@ -2661,7 +2661,7 @@ export default function PortfolioPage() {
                     className={`text-sm transition-all duration-200 ${
                       selectedCategory === cat.id 
                         ? 'text-primary font-medium' 
-                        : 'text-muted hover:text-secondary'
+                        : 'text-muted hover:!text-secondary'
                     }`}
                   >
                     {language === 'en' ? cat.labelEn : cat.label}

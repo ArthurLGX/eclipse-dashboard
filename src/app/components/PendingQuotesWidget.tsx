@@ -99,17 +99,17 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                 <IconFileDescription className="w-5 h-5 !text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-primary">
+                <h3 className="font-semibold !text-primary">
                   {t('pending_quotes_widget_title') || 'Devis en attente de réponse'}
                 </h3>
-                <p className="text-sm text-muted">
+                <p className="text-sm !text-muted">
                   {pendingQuotes.length} {pendingQuotes.length > 1 ? (t('quotes_plural') || 'devis') : (t('quote_singular') || 'devis')} {t('awaiting_response') || 'en attente'}
                 </p>
               </div>
             </div>
             <button
               onClick={() => router.push('/dashboard/factures?type=quote')}
-              className="text-sm text-secondary hover:text-primary flex items-center gap-1 !shadow-none"
+              className="text-sm !text-secondary hover:!text-primary flex items-center gap-1 !shadow-none"
             >
               {t('view_all') || 'Voir tout'}
               <IconChevronRight className="w-4 h-4 !text-secondary" style={{ color: 'var(--color-secondary)' }} />
@@ -137,17 +137,17 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                   {/* Infos du devis */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium text-primary truncate">
+                      <span className="font-medium !text-primary truncate">
                         {quote.reference}
                       </span>
                       {isUrgent && (
-                        <span className="flex items-center gap-1 !text-xs text-warning-text bg-warning-light px-2 py-0.5 rounded-full">
+                        <span className="flex items-center gap-1 !text-xs !text-warning-text bg-warning-light px-2 py-0.5 rounded-full">
                           <IconAlertTriangle className="w-3 h-3" />
                           {t('urgent') || 'Urgent'}
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-sm text-muted">
+                    <div className="flex items-center gap-3 !text-sm !text-muted">
                       <span>{clientName}</span>
                       <span>•</span>
                       <span className="font-medium !text-white bg-accent rounded-full px-2 py-1">
@@ -155,7 +155,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                           .format(quote.number || 0)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 !text-xs text-muted mt-1">
+                    <div className="flex items-center gap-1 !text-xs !text-muted mt-1">
                       <IconClock className="w-3 h-3" />
                       {t('sent_days_ago', { days: daysSince })}
                     </div>
@@ -164,13 +164,13 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                   {/* Actions */}
                   <div className="flex items-center gap-2">
                     {isUpdating ? (
-                      <IconLoader2 className="w-5 h-5 text-muted animate-spin" />
+                      <IconLoader2 className="w-5 h-5 !text-muted animate-spin" />
                     ) : (
                       <>
                         {/* Bouton Relancer */}
                         <button
                           onClick={() => handleFollowUp(quote)}
-                          className="p-2 text-info hover:bg-info-light rounded-lg transition-colors"
+                          className="p-2 !text-info hover:bg-info-light rounded-lg transition-colors"
                           title={t('follow_up') || 'Relancer'}
                         >
                           <IconMail className="w-4 h-4" />
@@ -188,7 +188,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {/* Bouton Refusé */}
                         <button
                           onClick={() => handleUpdateStatus(quote, 'rejected')}
-                          className="p-2 text-danger hover:bg-danger-light rounded-lg transition-colors"
+                          className="p-2 !text-danger hover:bg-danger-light rounded-lg transition-colors"
                           title={t('mark_rejected') || 'Marquer comme refusé'}
                         >
                           <IconX className="w-4 h-4" />
@@ -204,10 +204,10 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
 
         {/* Footer si plus de 5 devis */}
         {pendingQuotes.length > 5 && (
-          <div className="px-6 py-3 border-t border-default bg-muted text-center">
+          <div className="px-6 py-3 border-t border-default bg-muted !text-center">
             <button
               onClick={() => router.push('/dashboard/factures?type=quote')}
-                className="text-sm text-accent hover:text-primary"
+                className="text-sm !text-accent hover:!text-primary"
             >
               {`+ ${pendingQuotes.length - 5} ${t('other_quotes') || 'autres devis'}`}
             </button>

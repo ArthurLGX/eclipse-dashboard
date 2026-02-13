@@ -188,7 +188,7 @@ const GravitationalFlow: React.FC<GravitationalFlowProps> = ({
                 }}
               >
                 {showLabels && (
-                  <span className="!text-xs font-semibold text-primary uppercase tracking-wider">
+                  <span className="!text-xs font-semibold !text-primary uppercase tracking-wider">
                     Client
                   </span>
                 )}
@@ -358,7 +358,7 @@ const GravitationalFlow: React.FC<GravitationalFlowProps> = ({
                     }}
                   >
                     {showLabels && (
-                      <span className="text-[10px] font-medium text-secondary text-center px-1">
+                      <span className="text-[10px] font-medium !text-secondary !text-center px-1">
                         {element.label}
                       </span>
                     )}
@@ -410,13 +410,13 @@ const GravitationalFlow: React.FC<GravitationalFlowProps> = ({
               delay: 0.8,
               ease: fluentEasing
             }}
-            className="absolute bottom-12 text-center space-y-2"
+            className="absolute bottom-12 !text-center space-y-2"
           >
             <motion.p 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2, duration: 1 }}
-              className="text-primary font-medium text-lg tracking-wide"
+              className="text-primary font-medium !text-lg tracking-wide"
             >
               Tout votre business.
             </motion.p>
@@ -424,7 +424,7 @@ const GravitationalFlow: React.FC<GravitationalFlowProps> = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.5, duration: 1 }}
-              className="text-accent text-sm font-light tracking-wider"
+              className="text-accent !text-sm font-light tracking-wider"
             >
               Un seul flux.
             </motion.p>

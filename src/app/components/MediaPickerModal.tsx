@@ -285,7 +285,7 @@ export default function MediaPickerModal({
               onClick={onClose}
               className="p-2 rounded-lg hover:bg-hover transition-colors"
             >
-                <IconX className="w-5 h-5 text-secondary" />
+                <IconX className="w-5 h-5 !text-secondary" />
             </button>
           </div>
 
@@ -293,10 +293,10 @@ export default function MediaPickerModal({
           <div className="flex border-b border-default">
             <button
               onClick={() => setActiveTab('computer')}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              className={`flex-1 px-4 py-3 !text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'computer'
                   ? '!text-accent border-b-2 border-accent bg-accent-light'
-                  : '!text-secondary hover:text-primary hover:bg-hover'
+                  : '!text-secondary hover:!text-primary hover:bg-hover'
               }`}
             >
               <IconUpload className="w-4 h-4" />
@@ -304,10 +304,10 @@ export default function MediaPickerModal({
             </button>
             <button
               onClick={() => setActiveTab('library')}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              className={`flex-1 px-4 py-3 !text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'library'
                   ? '!text-accent border-b-2 border-accent bg-accent-light'
-                  : '!text-secondary hover:text-primary hover:bg-hover'
+                  : '!text-secondary hover:!text-primary hover:bg-hover'
               }`}
             >
               <IconPhoto className="w-4 h-4" />
@@ -315,10 +315,10 @@ export default function MediaPickerModal({
             </button>
             <button
               onClick={() => setActiveTab('url')}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              className={`flex-1 px-4 py-3 !text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'url'
                   ? '!text-accent border-b-2 border-accent bg-accent-light'
-                  : '!text-secondary hover:text-primary hover:bg-hover'
+                  : '!text-secondary hover:!text-primary hover:bg-hover'
               }`}
             >
               <IconLink className="w-4 h-4" />
@@ -358,7 +358,7 @@ export default function MediaPickerModal({
                       <p className="text-primary font-medium mb-2">
                         {t('click_to_upload') || 'Cliquez pour sélectionner'}
                       </p>
-                      <p className="text-secondary text-sm text-center">
+                      <p className="text-secondary !text-sm !text-center">
                         {mediaType === 'image' && (t('supported_image_formats') || 'JPG, PNG, GIF, WebP, AVIF (max 5MB)')}
                         {mediaType === 'video' && (t('supported_video_formats') || 'MP4, WebM, OGG (max 50MB)')}
                         {mediaType === 'document' && (t('supported_document_formats') || 'PDF, Word, TXT (max 10MB)')}
@@ -378,7 +378,7 @@ export default function MediaPickerModal({
                     <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
                   </div>
                 ) : libraryMedia.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-[300px] text-secondary">
+                  <div className="flex flex-col items-center justify-center h-[300px] !text-secondary">
                     <IconPhoto className="w-12 h-12 mb-4 opacity-50" />
                     <p>{t('no_media_in_library') || 'Aucun média dans la bibliothèque'}</p>
                   </div>
@@ -413,16 +413,16 @@ export default function MediaPickerModal({
                         >
                           {isVideo ? (
                             <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
-                              <IconVideo className="w-8 h-8 text-zinc-400" />
+                              <IconVideo className="w-8 h-8 !text-zinc-400" />
                             </div>
                           ) : isDocument ? (
                             <div className="w-full h-full bg-zinc-800 flex flex-col items-center justify-center gap-2 p-2">
                               {isPdf ? (
-                                <IconFileTypePdf className="w-8 h-8 text-red-400" />
+                                <IconFileTypePdf className="w-8 h-8 !text-red-400" />
                               ) : (
-                                <IconFileText className="w-8 h-8 text-blue-400" />
+                                <IconFileText className="w-8 h-8 !text-blue-400" />
                               )}
-                              <span className="!text-xs text-zinc-400 text-center truncate w-full px-1">
+                              <span className="!text-xs !text-zinc-400 !text-center truncate w-full px-1">
                                 {media.name || 'Document'}
                               </span>
                             </div>
@@ -439,7 +439,7 @@ export default function MediaPickerModal({
                           {selectedLibraryItem?.id === media.id && (
                             <div className="absolute inset-0 bg-accent-light flex items-center justify-center">
                               <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
-                                <IconCheck className="w-5 h-5 text-white" />
+                                <IconCheck className="w-5 h-5 !text-white" />
                               </div>
                             </div>
                           )}
@@ -460,7 +460,7 @@ export default function MediaPickerModal({
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2">
+                    <label className="block !text-sm font-medium !text-primary mb-2">
                       {t('media_url') || 'URL du média'}
                     </label>
                     <input
@@ -478,10 +478,10 @@ export default function MediaPickerModal({
                           ? 'https://example.com/video.mp4'
                           : 'https://example.com/media.jpg'
                       }
-                      className="w-full px-4 py-3 bg-input border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
+                      className="w-full px-4 py-3 bg-input border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
                     />
                     {urlError && (
-                      <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                      <p className="mt-2 !text-sm !text-red-400 flex items-center gap-1">
                         <IconAlertCircle className="w-4 h-4" />
                         {urlError}
                       </p>
@@ -491,13 +491,13 @@ export default function MediaPickerModal({
                   <button
                     onClick={handleUrlSubmit}
                     disabled={!urlInput.trim()}
-                    className="w-full px-4 py-3 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full px-4 py-3 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <IconCheck className="w-4 h-4" />
                     {t('insert') || 'Insérer'}
                   </button>
 
-                  <p className="!text-xs text-muted text-center">
+                  <p className="!text-xs !text-muted !text-center">
                     {t('url_direct_link_hint') || 'Entrez l\'URL directe vers le fichier média'}
                   </p>
                 </div>
@@ -508,12 +508,12 @@ export default function MediaPickerModal({
           {/* Footer fixe avec bouton de sélection (pour la bibliothèque) */}
           {activeTab === 'library' && selectedLibraryItem && (
             <div className="border-t border-default bg-card p-4 flex items-center justify-between">
-              <p className="text-sm text-muted">
+              <p className="text-sm !text-muted">
                 {t('selected') || 'Sélectionné'}: <span className="text-primary font-medium">{selectedLibraryItem.name || 'Media'}</span>
               </p>
               <button
                 onClick={handleLibrarySelect}
-                className="px-6 py-2.5 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 font-medium"
+                className="px-6 py-2.5 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 font-medium"
               >
                 <IconCheck className="w-4 h-4" />
                 {t('confirm_selection') || 'Confirmer'}

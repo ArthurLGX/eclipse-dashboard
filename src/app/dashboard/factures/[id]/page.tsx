@@ -742,7 +742,7 @@ export default function FacturePage() {
           {/* Bouton paramètres de facturation */}
           <button
             onClick={() => window.open('/dashboard/settings?tab=invoice', '_blank')}
-            className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+            className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
             title={t('billing_settings') || 'Paramètres de facturation'}
           >
             <IconSettings className="w-4 h-4" color="white" />
@@ -752,7 +752,7 @@ export default function FacturePage() {
           {!editing ? (
             <button
               onClick={handleEdit}
-              className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+              className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
             >
               <IconEdit className="w-4 h-4" color="white" />
             
@@ -777,13 +777,13 @@ export default function FacturePage() {
               )}
               <button
                 onClick={handleSave}
-                className="flex items-center justify-center gap-2 bg-success !text-white border border-success px-4 py-2 rounded-full hover:bg-[var(--color-success)] hover:text-white transition-colors"
+                className="flex items-center justify-center gap-2 bg-success !text-white border border-success px-4 py-2 rounded-full hover:bg-[var(--color-success)] hover:!text-white transition-colors"
               >
                 <IconDeviceFloppy className="w-4 h-4" color="black" />
                </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:text-white transition-colors"
+                className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:!text-white transition-colors"
                   > 
                 <IconX className="w-4 h-4" color="white" />
                </button>
@@ -795,7 +795,7 @@ export default function FacturePage() {
               {isQuote && facture?.quote_status !== 'accepted' && (
                 <button
                   onClick={() => setShowConvertModal(true)}
-                  className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+                  className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
                 >
                   <IconFileInvoice className="w-4 h-4" color="white" />
                  </button>
@@ -808,19 +808,19 @@ export default function FacturePage() {
               )}
               <button
                 onClick={handleSendEmail}
-                className="flex !text-xs flex-1 w-full items-center justify-center gap-2 bg-warning !text-white border border-warning px-4 py-2 rounded-full hover:bg-[var(--color-warning)] hover:text-white transition-colors"
+                className="flex !text-xs flex-1 w-full items-center justify-center gap-2 bg-warning !text-white border border-warning px-4 py-2 rounded-full hover:bg-[var(--color-warning)] hover:!text-white transition-colors"
               >
                 <IconMail className="w-4 h-4" color="white" />
                </button>
               <button
                 onClick={handleDownloadPDF}
-                className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+                className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               >
                 <IconDownload className="w-4 h-4" color="white" />
                </button>
               <button
                 onClick={handleDelete}
-                className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:text-white transition-colors"
+                className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:!text-white transition-colors"
               >
                 <IconTrash className="w-4 h-4" color="white" />
                </button>
@@ -850,7 +850,7 @@ export default function FacturePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               <div>
-                <label className="block text-sm font-medium mb-1 !text-zinc-800 ">
+                <label className="block !text-sm font-medium mb-1 !text-zinc-800 ">
                   {t('reference')}
                 </label>
                 {editing ? (
@@ -862,13 +862,13 @@ export default function FacturePage() {
                     className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
-                  <p className="!text-zinc-800 text-sm font-semibold">
+                  <p className="!text-zinc-800 !text-sm font-semibold">
                     {facture?.reference}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 !text-zinc-800">
+                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
                   {t('status')}
                 </label>
                 {editing ? (
@@ -898,13 +898,13 @@ export default function FacturePage() {
                     </select>
                   )
                 ) : (
-                  <p className="!text-zinc-800 text-sm font-semibold">
+                  <p className="!text-zinc-800 !text-sm font-semibold">
                     {t(isQuote ? (facture?.quote_status || '') : (facture?.facture_status || ''))}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 !text-zinc-800">
+                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
                   {t('emission_date')}
                 </label>
                 {editing ? (
@@ -916,7 +916,7 @@ export default function FacturePage() {
                     className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
-                  <p className="!text-zinc-800 text-sm font-semibold">
+                  <p className="!text-zinc-800 !text-sm font-semibold">
                     {facture?.date
                       ? new Date(facture.date).toLocaleDateString('fr-FR')
                       : ''}
@@ -924,7 +924,7 @@ export default function FacturePage() {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 !text-zinc-800">
+                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
                   {isQuote ? t('valid_until') || 'Valide jusqu\'au' : t('due_date')}
                 </label>
                 {editing ? (
@@ -950,7 +950,7 @@ export default function FacturePage() {
                     />
                   )
                 ) : (
-                  <p className="!text-zinc-800 text-sm font-semibold">
+                  <p className="!text-zinc-800 !text-sm font-semibold">
                     {isQuote 
                       ? (facture?.valid_until
                           ? new Date(facture.valid_until).toLocaleDateString('fr-FR')
@@ -962,7 +962,7 @@ export default function FacturePage() {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 !text-zinc-800">
+                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
                   {t('currency')}
                 </label>
                 {editing ? (
@@ -977,13 +977,13 @@ export default function FacturePage() {
                     <option value="GBP">GBP</option>
                   </select>
                 ) : (
-                  <p className="!text-zinc-800 text-sm font-semibold">
+                  <p className="!text-zinc-800 !text-sm font-semibold">
                     {facture?.currency}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 !text-zinc-800">
+                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
                   {t('client')}
                 </label>
                 {editing ? (
@@ -1014,13 +1014,13 @@ export default function FacturePage() {
                     ))}
                   </select>
                 ) : (
-                  <p className="!text-zinc-800 text-sm font-semibold">
+                  <p className="!text-zinc-800 !text-sm font-semibold">
                     {facture?.client_id?.name}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 !text-zinc-800">
+                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
                   {t('project')}
                 </label>
                 {editing ? (
@@ -1046,7 +1046,7 @@ export default function FacturePage() {
                     <button
                       type="button"
                       onClick={refreshProjects}
-                      className="p-2 bg-blue-500/10 text-blue-600 border border-blue-500/30 rounded-lg hover:bg-blue-500/20 transition-colors"
+                      className="p-2 bg-blue-500/10 !text-blue-600 border border-blue-500/30 rounded-lg hover:bg-blue-500/20 transition-colors"
                       title={t('refresh_projects') || 'Rafraîchir les projets'}
                     >
                       <IconRefresh className="w-4 h-4" />
@@ -1054,20 +1054,20 @@ export default function FacturePage() {
                     <button
                       type="button"
                       onClick={() => window.open('/dashboard/projects?new=1', '_blank')}
-                      className="px-3 py-2 bg-emerald-500/10 text-emerald-600 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/20 transition-colors text-sm font-medium whitespace-nowrap"
+                      className="px-3 py-2 bg-emerald-500/10 !text-emerald-600 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/20 transition-colors !text-sm font-medium whitespace-nowrap"
                       title={t('create_new_project') || 'Créer un nouveau projet'}
                     >
                       + {t('new_project') || 'Nouveau'}
                     </button>
                   </div>
                 ) : (
-                  <p className="!text-zinc-800 text-sm font-semibold">
+                  <p className="!text-zinc-800 !text-sm font-semibold">
                     {facture?.project?.title || '-'}
                   </p>
                 )}
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-1 !text-zinc-800">
+                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
                   {t('notes')}
                 </label>
                 {editing ? (
@@ -1078,7 +1078,7 @@ export default function FacturePage() {
                     className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
-                  <p className="!text-zinc-800 text-sm font-semibold">
+                  <p className="!text-zinc-800 !text-sm font-semibold">
                     {facture?.notes}
                   </p>
                 )}
@@ -1203,7 +1203,7 @@ export default function FacturePage() {
                                   e.target.value
                                 )
                               }
-                              className="input border w-20 text-right rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                              className="input border w-20 !text-right rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                             />
                           ) : (
                             line.unit === 'fixed' ? line.quantity : `${line.quantity}${getUnitLabel(line.unit)}`
@@ -1222,7 +1222,7 @@ export default function FacturePage() {
                                   e.target.value
                                 )
                               }
-                              className="input border w-24 text-right rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                              className="input border w-24 !text-right rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                             />
                           ) : (
                             `${line.unit_price}€`
@@ -1323,7 +1323,7 @@ export default function FacturePage() {
                     />
                   )}
                   {company?.name && (
-                    <p className="font-bold !text-zinc-800 text-base">
+                    <p className="font-bold !text-zinc-800 !text-base">
                       {company.name}
                     </p>
                   )}
@@ -1392,13 +1392,13 @@ export default function FacturePage() {
             <>
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-colors"
+                className="flex items-center gap-2 bg-green-500/10 !text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-colors"
               >
                 {t('save')}
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 bg-muted text-secondary border border-default px-4 py-2 rounded-lg hover:bg-card transition-colors"
+                className="flex items-center gap-2 bg-muted !text-secondary border border-default px-4 py-2 rounded-lg hover:bg-card transition-colors"
               >
                 {t('cancel')}
               </button>
@@ -1433,13 +1433,13 @@ export default function FacturePage() {
         <div className="p-6 space-y-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
-              <IconFileInvoice className="w-6 h-6 text-green-500" />
+              <IconFileInvoice className="w-6 h-6 !text-green-500" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-primary">
+              <h3 className="text-lg font-semibold !text-primary">
                 {t('convert_quote_to_invoice') || 'Convertir ce devis en facture'}
               </h3>
-              <p className="text-sm text-muted">
+              <p className="text-sm !text-muted">
                 {facture?.reference}
               </p>
             </div>
@@ -1459,10 +1459,10 @@ export default function FacturePage() {
               className="mt-1 w-4 h-4 rounded border-default !text-accent focus:ring-accent"
             />
             <div>
-              <label htmlFor="updateClientStatus" className="text-sm font-medium text-primary cursor-pointer">
+              <label htmlFor="updateClientStatus" className="text-sm font-medium !text-primary cursor-pointer">
                 {t('update_client_status') || 'Mettre à jour le statut du client'}
               </label>
-              <p className="!text-xs text-muted mt-1">
+              <p className="!text-xs !text-muted mt-1">
                 {t('update_client_status_desc') || 'Passer le client en "Devis accepté" dans le pipeline'}
               </p>
             </div>
@@ -1472,14 +1472,14 @@ export default function FacturePage() {
             <button
               onClick={() => setShowConvertModal(false)}
               disabled={isConverting}
-              className="px-4 py-2 text-secondary hover:text-primary transition-colors"
+              className="px-4 py-2 !text-secondary hover:!text-primary transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>
             <button
               onClick={handleConvertToInvoice}
               disabled={isConverting}
-              className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-green-500 !text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
             >
               {isConverting ? (
                 <>

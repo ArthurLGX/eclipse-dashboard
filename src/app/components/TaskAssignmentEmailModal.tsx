@@ -114,9 +114,9 @@ export default function TaskAssignmentEmailModal({
             <table style="width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb;">
               <thead>
                 <tr style="background: #f9fafb;">
-                  <th style="padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Tâche</th>
-                  <th style="padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Priorité</th>
-                  <th style="padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Échéance</th>
+                  <th style="padding: 12px 16px; !text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; !text-transform: uppercase;">Tâche</th>
+                  <th style="padding: 12px 16px; !text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; !text-transform: uppercase;">Priorité</th>
+                  <th style="padding: 12px 16px; !text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; !text-transform: uppercase;">Échéance</th>
                 </tr>
               </thead>
               <tbody>
@@ -126,9 +126,9 @@ export default function TaskAssignmentEmailModal({
           </div>
         ` : ''}
         
-        <div style="margin: 32px 0; text-align: center;">
+        <div style="margin: 32px 0; !text-align: center;">
           <a href="${projectUrl}" 
-             style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);">
+             style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; !text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);">
             Voir le projet →
           </a>
         </div>
@@ -193,17 +193,17 @@ export default function TaskAssignmentEmailModal({
                   <IconMail className="w-5 h-5 !text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-primary">
+                  <h2 className="text-lg font-semibold !text-primary">
                     {t('compose_notification_email') || 'Rédiger l\'email de notification'}
                   </h2>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm !text-muted">
                     {assignedUsers.length} {assignedUsers.length > 1 ? 'destinataires' : 'destinataire'} • {totalTasks} {totalTasks > 1 ? 'tâches' : 'tâche'}
                   </p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 text-muted hover:text-primary hover:bg-hover rounded-lg transition-colors"
+                className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -213,7 +213,7 @@ export default function TaskAssignmentEmailModal({
             <div className="flex-1 overflow-auto p-6 space-y-6">
               {/* Recipients */}
               <div>
-                <label className="block text-sm font-medium text-primary mb-2">
+                <label className="block !text-sm font-medium !text-primary mb-2">
                   {t('recipients') || 'Destinataires'}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -225,11 +225,11 @@ export default function TaskAssignmentEmailModal({
                       <div className="w-6 h-6 rounded-full bg-accent-light flex items-center justify-center !text-accent !text-xs font-medium">
                         {user.username.charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-sm text-primary">{user.username}</span>
-                      <span className="!text-xs text-muted">({user.tasks.length})</span>
+                      <span className="text-sm !text-primary">{user.username}</span>
+                      <span className="!text-xs !text-muted">({user.tasks.length})</span>
                       <button
                         onClick={() => openPreview(user)}
-                        className="p-1 hover:bg-hover rounded text-muted hover:text-accent"
+                        className="p-1 hover:bg-hover rounded !text-muted hover:!text-accent"
                         title={t('preview') || 'Prévisualiser'}
                       >
                         <IconEye className="w-3.5 h-3.5" />
@@ -241,7 +241,7 @@ export default function TaskAssignmentEmailModal({
 
               {/* Subject */}
               <div>
-                <label className="block text-sm font-medium text-primary mb-2">
+                <label className="block !text-sm font-medium !text-primary mb-2">
                   {t('email_subject') || 'Objet'}
                 </label>
                 <input
@@ -249,13 +249,13 @@ export default function TaskAssignmentEmailModal({
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder={defaultSubject}
-                  className="w-full px-4 py-2.5 bg-muted border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full px-4 py-2.5 bg-muted border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent"
                 />
               </div>
 
               {/* Message */}
               <div>
-                <label className="block text-sm font-medium text-primary mb-2">
+                <label className="block !text-sm font-medium !text-primary mb-2">
                   {t('email_message') || 'Message'}
                 </label>
                 <textarea
@@ -263,7 +263,7 @@ export default function TaskAssignmentEmailModal({
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={defaultMessage}
                   rows={5}
-                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent resize-none"
+                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                 />
               </div>
 
@@ -273,10 +273,10 @@ export default function TaskAssignmentEmailModal({
                   <div className="flex items-center gap-3">
                     <IconListCheck className="w-5 h-5 !text-accent" />
                     <div>
-                      <p className="text-sm font-medium text-primary">
+                      <p className="text-sm font-medium !text-primary">
                         {t('include_task_list') || 'Inclure la liste des tâches'}
                       </p>
-                      <p className="!text-xs text-muted">
+                      <p className="!text-xs !text-muted">
                         {t('include_task_list_hint') || 'Afficher le tableau des tâches assignées dans l\'email'}
                       </p>
                     </div>
@@ -298,8 +298,8 @@ export default function TaskAssignmentEmailModal({
 
               {/* Info */}
               <div className="p-4 bg-info-light border border-info rounded-lg flex items-start gap-3">
-                <IconMail className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
-                <div className="text-sm text-primary">
+                <IconMail className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
+                <div className="text-sm !text-primary">
                   <p className="font-medium mb-1">
                     {t('one_email_per_user') || 'Un email par utilisateur'}
                   </p>
@@ -314,7 +314,7 @@ export default function TaskAssignmentEmailModal({
             <div className="flex items-center justify-between p-6 border-t border-default">
               <button
                 onClick={() => openPreview(assignedUsers[0])}
-                className="px-4 py-2 text-secondary hover:text-primary hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
               >
                 <IconEye className="w-4 h-4" />
                 {t('preview') || 'Prévisualiser'}
@@ -322,14 +322,14 @@ export default function TaskAssignmentEmailModal({
               <div className="flex items-center gap-3">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-secondary hover:text-primary hover:bg-hover rounded-lg transition-colors"
+                  className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover rounded-lg transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
                 <button
                   onClick={handleSend}
                   disabled={sending}
-                  className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {sending ? (
                     <>

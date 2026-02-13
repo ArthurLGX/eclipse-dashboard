@@ -154,18 +154,18 @@ export default function EmailPreviewModal({
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                    <IconMail className="w-4 h-4 text-white" />
+                    <IconMail className="w-4 h-4 !text-white" />
                   </div>
-                  <span className="font-semibold text-gray-800">{t.mailbox_preview}</span>
+                  <span className="font-semibold !text-gray-800">{t.mailbox_preview}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button className="p-2 hover:bg-gray-200 rounded-lg text-gray-600">
+                <button className="p-2 hover:bg-gray-200 rounded-lg !text-gray-600">
                   <IconRefresh className="w-5 h-5" />
                 </button>
                 <button 
                   onClick={onClose}
-                  className="p-2 hover:bg-gray-200 rounded-lg text-gray-600"
+                  className="p-2 hover:bg-gray-200 rounded-lg !text-gray-600"
                 >
                   <IconX className="w-5 h-5" />
                 </button>
@@ -176,24 +176,24 @@ export default function EmailPreviewModal({
               {/* Sidebar - Folders */}
               <div className="w-16 md:w-48 bg-gray-50 border-r border-gray-200 flex-shrink-0 hidden sm:block">
                 <div className="p-2 md:p-4 space-y-1">
-                  <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700 rounded-lg font-medium">
                     <IconInbox className="w-5 h-5" />
                     <span className="hidden md:inline">{t.inbox}</span>
-                    <span className="hidden md:inline ml-auto bg-blue-500 text-white !text-xs px-2 py-0.5 rounded-full">1</span>
+                    <span className="hidden md:inline ml-auto bg-blue-500 !text-white !text-xs px-2 py-0.5 rounded-full">1</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
                     <IconStar className="w-5 h-5" />
                     <span className="hidden md:inline">{t.favorites}</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
                     <IconSend className="w-5 h-5" />
                     <span className="hidden md:inline">{t.sent_folder}</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
                     <IconArchive className="w-5 h-5" />
                     <span className="hidden md:inline">{t.archives}</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
                     <IconTrash className="w-5 h-5" />
                     <span className="hidden md:inline">{t.trash}</span>
                   </button>
@@ -205,11 +205,11 @@ export default function EmailPreviewModal({
                 {/* Search bar */}
                 <div className="p-3 border-b border-gray-200">
                   <div className="relative">
-                    <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-gray-400" />
                     <input 
                       type="text" 
                       placeholder={t.search_placeholder}
-                      className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
+                      className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg !text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
                       readOnly
                     />
                   </div>
@@ -221,7 +221,7 @@ export default function EmailPreviewModal({
                   <div className="bg-blue-50 border-l-4 border-blue-500 p-4 cursor-pointer">
                     <div className="flex items-start gap-3">
                       <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-semibold overflow-hidden"
+                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 !text-white font-semibold overflow-hidden"
                         style={{ backgroundColor: primaryColor }}
                       >
                         {senderInfo.profilePicture ? (
@@ -237,12 +237,12 @@ export default function EmailPreviewModal({
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="font-semibold text-gray-900 truncate">
+                          <span className="font-semibold !text-gray-900 truncate">
                             {senderInfo.firstName} {senderInfo.lastName}
                           </span>
-                          <span className="!text-xs text-info  flex-shrink-0 ml-2">{t.now}</span>
+                          <span className="!text-xs !text-info  flex-shrink-0 ml-2">{t.now}</span>
                         </div>
-                        <p className="font-medium text-gray-800 text-sm truncate mb-0.5">
+                        <p className="font-medium !text-gray-800 !text-sm truncate mb-0.5">
                           {emailData.subject || 'Objet de l\'email'}
                         </p>
                         <p className="text-info !text-xs truncate">
@@ -251,8 +251,8 @@ export default function EmailPreviewModal({
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mt-2 ml-13">
-                      {effectiveBannerUrl && <IconPaperclip className="w-3 h-3 text-gray-400" />}
-                      <IconStarFilled className="w-3 h-3 text-yellow-400" />
+                      {effectiveBannerUrl && <IconPaperclip className="w-3 h-3 !text-gray-400" />}
+                      <IconStarFilled className="w-3 h-3 !text-yellow-400" />
                     </div>
                   </div>
 
@@ -261,17 +261,17 @@ export default function EmailPreviewModal({
                     <div key={idx} className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
                       <div className="flex items-start gap-3">
                         <div 
-                          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-semibold text-sm"
+                          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 !text-white font-semibold !text-sm"
                           style={{ backgroundColor: email.avatar }}
                         >
                           {email.from[0]}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="font-medium text-gray-700 truncate">{email.from}</span>
-                            <span className="!text-xs text-gray-400 flex-shrink-0 ml-2">{email.time}</span>
+                            <span className="font-medium !text-gray-700 truncate">{email.from}</span>
+                            <span className="!text-xs !text-gray-400 flex-shrink-0 ml-2">{email.time}</span>
                           </div>
-                          <p className="text-gray-600 text-sm truncate">{email.subject}</p>
+                          <p className="text-gray-600 !text-sm truncate">{email.subject}</p>
                         </div>
                       </div>
                     </div>
@@ -284,24 +284,24 @@ export default function EmailPreviewModal({
                 {/* Email header */}
                 <div className="p-4 border-b border-gray-200 flex-shrink-0">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-gray-900">
+                    <h2 className="text-xl font-semibold !text-gray-900">
                       {emailData.subject || 'Objet de l\'email'}
                     </h2>
                     <div className="flex items-center gap-2">
-                      <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
+                      <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
                         <IconArchive className="w-5 h-5" />
                       </button>
-                      <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
+                      <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
                         <IconTrash className="w-5 h-5" />
                       </button>
-                      <button className="p-2 hover:bg-gray-100 rounded-lg text-info ">
+                      <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
                         <IconDots className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <div 
-                      className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold overflow-hidden"
+                      className="w-12 h-12 rounded-full flex items-center justify-center !text-white font-semibold overflow-hidden"
                       style={{ backgroundColor: primaryColor }}
                     >
                       {senderInfo.profilePicture ? (
@@ -317,14 +317,14 @@ export default function EmailPreviewModal({
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-gray-900">
+                        <span className="font-semibold !text-gray-900">
                           {senderInfo.firstName} {senderInfo.lastName}
                         </span>
-                        <span className="text-gray-400 text-sm">
+                        <span className="text-gray-400 !text-sm">
                           &lt;{senderInfo.email || 'email@example.com'}&gt;
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-info ">
+                      <div className="flex items-center gap-2 !text-sm !text-info ">
                         <span>{t.to_me}</span>
                         <IconChevronDown className="w-4 h-4" />
                       </div>
@@ -335,7 +335,7 @@ export default function EmailPreviewModal({
                 {/* Email body - scrollable */}
                 <div className="flex-1 overflow-y-auto p-4 bg-gray-50 min-w-0">
                   <div className="w-full max-w-2xl mx-auto">
-                    <div className="bg-white rounded-xl shadow-xl overflow-hidden text-gray-800">
+                    <div className="bg-white rounded-xl shadow-xl overflow-hidden !text-gray-800">
                       {/* Header with title (if provided) */}
                       {(emailData.title || headerBackground) && (
                         <div 
@@ -351,7 +351,7 @@ export default function EmailPreviewModal({
                         >
                           {emailData.title && (
                             <h1 
-                              className="font-bold text-2xl px-6"
+                              className="font-bold !text-2xl px-6"
                               style={{ 
                                 color: headerBackground ? '#ffffff' : sigTextColor,
                                 fontFamily: emailFontFamily,
@@ -369,14 +369,14 @@ export default function EmailPreviewModal({
                         {/* Content */}
                         {emailData.htmlContent ? (
                           <div 
-                            className="prose prose-sm max-w-none text-gray-700
-                              [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3 [&_h1]:text-gray-900
-                              [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:text-gray-800
+                            className="prose prose-sm max-w-none !text-gray-700
+                              [&_h1]:!text-2xl [&_h1]:font-bold [&_h1]:mb-3 [&_h1]:!text-gray-900
+                              [&_h2]:!text-xl [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:!text-gray-800
                               [&_p]:mb-3 [&_p]:leading-relaxed
                               [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-3 [&_ul]:space-y-1
                               [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-3 [&_ol]:space-y-1
-                              [&_li]:text-gray-700
-                              [&_a]:text-blue-600 [&_a]:underline [&_a]:hover:text-blue-800
+                              [&_li]:!text-gray-700
+                              [&_a]:!text-blue-600 [&_a]:underline [&_a]:hover:!text-blue-800
                               [&_img]:rounded-lg [&_img]:max-w-full [&_img]:h-auto [&_img]:my-3
                               [&_strong]:font-bold [&_b]:font-bold
                               [&_em]:italic [&_i]:italic"
@@ -398,7 +398,7 @@ export default function EmailPreviewModal({
                                 </p>
                               ))
                             ) : (
-                              <p className="text-gray-400 italic text-center py-8">
+                              <p className="text-gray-400 italic !text-center py-8">
                                 Votre contenu apparaîtra ici...
                               </p>
                             )}
@@ -457,7 +457,7 @@ export default function EmailPreviewModal({
 
                         {/* Unsubscribe link (for newsletters) */}
                         {t.unsubscribe && (
-                          <div className="mt-6 pt-4 border-t border-gray-100 text-center">
+                          <div className="mt-6 pt-4 border-t border-gray-100 !text-center">
                             <a 
                               href="#" 
                               className="text-sm hover:underline"

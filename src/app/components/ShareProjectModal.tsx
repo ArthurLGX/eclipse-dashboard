@@ -359,7 +359,7 @@ export default function ShareProjectModal({
     
     signatureHTML += `<div style="font-size: 13px; color: ${secondaryColor};">`;
     if (sig.phone) signatureHTML += `<div>📞 ${sig.phone}</div>`;
-    if (sig.website) signatureHTML += `<div>🌐 <a href="${sig.website}" style="color: ${primaryColor}; text-decoration: none;">${sig.website.replace(/^https?:\/\//, '')}</a></div>`;
+    if (sig.website) signatureHTML += `<div>🌐 <a href="${sig.website}" style="color: ${primaryColor}; !text-decoration: none;">${sig.website.replace(/^https?:\/\//, '')}</a></div>`;
     if (sig.address) signatureHTML += `<div>📍 ${sig.address}</div>`;
     signatureHTML += `</div>`;
     
@@ -369,7 +369,7 @@ export default function ShareProjectModal({
       sig.social_links.forEach(link => {
         const color = link.color || primaryColor;
         const label = link.label || link.platform;
-        signatureHTML += `<a href="${link.url}" style="color: ${color}; margin-right: 8px; text-decoration: none; font-weight: 500;">${label}</a>`;
+        signatureHTML += `<a href="${link.url}" style="color: ${color}; margin-right: 8px; !text-decoration: none; font-weight: 500;">${label}</a>`;
       });
       signatureHTML += `</div>`;
     }
@@ -387,7 +387,7 @@ export default function ShareProjectModal({
       // Bannière avec couleur de fond
       if (showBannerTitle && customBannerTitle) {
         bannerHTML += `
-          <div style="background: ${bannerBackgroundColor}; border-radius: 12px 12px 0 0; padding: 32px 24px; text-align: center;">
+          <div style="background: ${bannerBackgroundColor}; border-radius: 12px 12px 0 0; padding: 32px 24px; !text-align: center;">
             <h1 style="margin: 0; color: ${bannerTitleColor}; font-size: 24px; font-weight: 700;">${customBannerTitle}</h1>
             <p style="margin: 8px 0 0 0; color: ${bannerTitleColor}; opacity: 0.9; font-size: 14px;">${t('project_progress') || 'Suivi du projet'}</p>
           </div>
@@ -404,8 +404,8 @@ export default function ShareProjectModal({
             <div style="position: relative; border-radius: 12px 12px 0 0; overflow: hidden;">
               <img src="${imageUrl}" alt="Banner" style="width: 100%; height: auto; display: block;" />
               <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6)); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px;">
-                <h1 style="margin: 0; color: ${bannerTitleColor}; font-size: 24px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${customBannerTitle}</h1>
-                <p style="margin: 8px 0 0 0; color: ${bannerTitleColor}; opacity: 0.9; font-size: 14px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">${t('project_progress') || 'Suivi du projet'}</p>
+                <h1 style="margin: 0; color: ${bannerTitleColor}; font-size: 24px; font-weight: 700; !text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${customBannerTitle}</h1>
+                <p style="margin: 8px 0 0 0; color: ${bannerTitleColor}; opacity: 0.9; font-size: 14px; !text-shadow: 0 1px 2px rgba(0,0,0,0.3);">${t('project_progress') || 'Suivi du projet'}</p>
               </div>
             </div>
           `;
@@ -419,7 +419,7 @@ export default function ShareProjectModal({
       } else if (showBannerTitle && customBannerTitle) {
         // Pas d'image mais un titre, on utilise la couleur de fond par défaut
         bannerHTML += `
-          <div style="background: ${bannerBackgroundColor}; border-radius: 12px 12px 0 0; padding: 32px 24px; text-align: center;">
+          <div style="background: ${bannerBackgroundColor}; border-radius: 12px 12px 0 0; padding: 32px 24px; !text-align: center;">
             <h1 style="margin: 0; color: ${bannerTitleColor}; font-size: 24px; font-weight: 700;">${customBannerTitle}</h1>
             <p style="margin: 8px 0 0 0; color: ${bannerTitleColor}; opacity: 0.9; font-size: 14px;">${t('project_progress') || 'Suivi du projet'}</p>
           </div>
@@ -457,11 +457,11 @@ export default function ShareProjectModal({
               <p style="white-space: pre-wrap; margin: 0; color: #374151; line-height: 1.6;">${emailMessage}</p>
             </div>
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${shareUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+              <a href="${shareUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; !text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                 ${t('view_project_progress') || 'Voir l\'avancement du projet'}
               </a>
             </div>
-            <p style="color: #6b7280; font-size: 12px; text-align: center; margin-top: 20px;">
+            <p style="color: #6b7280; font-size: 12px; !text-align: center; margin-top: 20px;">
               ${t('link_valid_info') || 'Ce lien vous permet de consulter l\'avancement du projet à tout moment.'}
             </p>
             ${signatureHTML}
@@ -530,16 +530,16 @@ export default function ShareProjectModal({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div>
-              <h2 className="text-xl font-semibold text-primary">
+              <h2 className="text-xl font-semibold !text-primary">
                 {t('share_project') || 'Partager le projet'}
               </h2>
-              <p className="text-sm text-muted mt-1">
+              <p className="text-sm !text-muted mt-1">
                 {projectTitle}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-hover text-secondary hover:text-primary transition-colors"
+              className="p-2 rounded-lg hover:bg-hover !text-secondary hover:!text-primary transition-colors"
             >
               <IconX className="w-5 h-5" />
             </button>
@@ -549,10 +549,10 @@ export default function ShareProjectModal({
           <div className="flex border-b border-default">
             <button
               onClick={() => setActiveTab('invite')}
-              className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
+              className={`flex-1 py-3 px-4 !text-sm font-medium transition-colors ${
                 activeTab === 'invite'
                   ? 'text-success border-b-2 border-success'
-                  : 'text-muted hover:text-secondary'
+                  : 'text-muted hover:!text-secondary'
               }`}
             >
               <span className="flex items-center justify-center gap-2">
@@ -562,10 +562,10 @@ export default function ShareProjectModal({
             </button>
             <button
               onClick={() => setActiveTab('members')}
-              className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
+              className={`flex-1 py-3 px-4 !text-sm font-medium transition-colors ${
                 activeTab === 'members'
                   ? 'text-success border-b-2 border-success'
-                  : 'text-muted hover:text-secondary'
+                  : 'text-muted hover:!text-secondary'
               }`}
             >
               <span className="flex items-center justify-center gap-2">
@@ -575,10 +575,10 @@ export default function ShareProjectModal({
             </button>
             <button
               onClick={() => setActiveTab('public')}
-              className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
+              className={`flex-1 py-3 px-4 !text-sm font-medium transition-colors ${
                 activeTab === 'public'
                   ? 'text-success border-b-2 border-success'
-                  : 'text-muted hover:text-secondary'
+                  : 'text-muted hover:!text-secondary'
               }`}
             >
               <span className="flex items-center justify-center gap-2">
@@ -595,24 +595,24 @@ export default function ShareProjectModal({
                 {/* Invitation par email */}
                 <form onSubmit={handleSendInvitation} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">
+                    <label className="block !text-sm font-medium !text-secondary mb-2">
                       {t('invite_by_email') || 'Inviter par email'}
                     </label>
                     <div className="flex gap-2">
                       <div className="flex-1 relative">
-                        <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+                        <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
                         <input
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="email@exemple.com"
-                          className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-success transition-colors"
+                          className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-muted focus:outline-none focus:border-success transition-colors"
                         />
                       </div>
                       <button
                         type="submit"
                         disabled={loading || !email.trim()}
-                        className="px-4 py-3 bg-success hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl transition-colors flex items-center gap-2"
+                        className="px-4 py-3 bg-success hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed !text-white rounded-xl transition-colors flex items-center gap-2"
                       >
                         {loading ? (
                           <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -625,7 +625,7 @@ export default function ShareProjectModal({
 
                   {/* Permission */}
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">
+                    <label className="block !text-sm font-medium !text-secondary mb-2">
                       {t('permission') || 'Permission'}
                     </label>
                     <div className="flex gap-2">
@@ -634,8 +634,8 @@ export default function ShareProjectModal({
                         onClick={() => setPermission('view')}
                         className={`flex-1 py-2 px-4 rounded-lg border transition-colors ${
                           permission === 'view'
-                            ? 'bg-info-light border-info text-info'
-                            : 'border-default text-secondary hover:border-input'
+                            ? 'bg-info-light border-info !text-info'
+                            : 'border-default !text-secondary hover:border-input'
                         }`}
                       >
                         {t('view_only') || 'Lecture seule'}
@@ -646,7 +646,7 @@ export default function ShareProjectModal({
                         className={`flex-1 py-2 px-4 rounded-lg border transition-colors ${
                           permission === 'edit'
                             ? 'bg-success-light border-success !text-success-text '
-                            : 'border-default text-secondary hover:border-input'
+                            : 'border-default !text-secondary hover:border-input'
                         }`}
                       >
                         {t('can_edit') || 'Peut modifier'}
@@ -658,14 +658,14 @@ export default function ShareProjectModal({
                 {/* Séparateur */}
                 <div className="flex items-center gap-4">
                   <div className="flex-1 h-px bg-muted" />
-                  <span className="!text-xs text-muted uppercase">{t('or') || 'ou'}</span>
+                  <span className="!text-xs !text-muted uppercase">{t('or') || 'ou'}</span>
                   <div className="flex-1 h-px bg-muted" />
                 </div>
 
                 {/* Partage par lien */}
                 <button
                   onClick={handleCopyLink}
-                  className="w-full py-3 px-4 bg-muted hover:bg-card-hover border border-default rounded-xl text-primary transition-colors flex items-center justify-center gap-3"
+                  className="w-full py-3 px-4 bg-muted hover:bg-card-hover border border-default rounded-xl !text-primary transition-colors flex items-center justify-center gap-3"
                 >
                   {linkCopied ? (
                     <>
@@ -676,7 +676,7 @@ export default function ShareProjectModal({
                     <>
                       <IconLink className="w-5 h-5" />
                       <span>{t('copy_share_link') || 'Copier le lien de partage'}</span>
-                      <IconCopy className="w-4 h-4 text-muted" />
+                      <IconCopy className="w-4 h-4 !text-muted" />
                     </>
                   )}
                 </button>
@@ -684,7 +684,7 @@ export default function ShareProjectModal({
                 {/* Invitations en attente */}
                 {pendingInvitations.length > 0 && (
                   <div className="mt-6">
-                    <h4 className="text-sm font-medium text-secondary mb-3">
+                    <h4 className="text-sm font-medium !text-secondary mb-3">
                       {t('pending_invitations') || 'Invitations en attente'}
                     </h4>
                     <div className="space-y-2">
@@ -695,11 +695,11 @@ export default function ShareProjectModal({
                         >
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-warning-light flex items-center justify-center">
-                              <IconMail className="w-4 h-4 text-warning" />
+                              <IconMail className="w-4 h-4 !text-warning" />
                             </div>
                             <div>
-                              <p className="text-sm text-primary">{invitation.recipient_email}</p>
-                              <p className="!text-xs text-muted">
+                              <p className="text-sm !text-primary">{invitation.recipient_email}</p>
+                              <p className="!text-xs !text-muted">
                                 {invitation.permission === 'edit' 
                                   ? t('can_edit') || 'Peut modifier' 
                                   : t('view_only') || 'Lecture seule'}
@@ -709,7 +709,7 @@ export default function ShareProjectModal({
                           {isOwner && (
                             <button
                               onClick={() => handleCancelInvitation(invitation.documentId)}
-                              className="p-2 text-muted hover:text-danger hover:bg-danger-light rounded-lg transition-colors"
+                              className="p-2 !text-muted hover:!text-danger hover:bg-danger-light rounded-lg transition-colors"
                             >
                               <IconTrash className="w-4 h-4" />
                             </button>
@@ -732,10 +732,10 @@ export default function ShareProjectModal({
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm text-primary">
+                      <p className="text-sm !text-primary">
                         {ownerName || ownerEmail || 'Propriétaire'}
                       </p>
-                      <p className="!text-xs text-warning-text font-medium">
+                      <p className="!text-xs !text-warning-text font-medium">
                         {t('owner') || 'Propriétaire'}
                       </p>
                     </div>
@@ -745,7 +745,7 @@ export default function ShareProjectModal({
                 {/* Collaborateurs */}
                 {collaborators.length === 0 ? (
                   <div className="text-center py-4">
-                    <p className="text-muted text-sm">
+                    <p className="text-muted !text-sm">
                       {t('no_collaborators_yet') || 'Aucun collaborateur pour le moment'}
                     </p>
                   </div>
@@ -762,10 +762,10 @@ export default function ShareProjectModal({
                           </span>
                         </div>
                         <div>
-                          <p className="text-sm text-primary">
+                          <p className="text-sm !text-primary">
                             {collab.user?.username || collab.user?.email}
                           </p>
-                          <p className="!text-xs text-muted">
+                          <p className="!text-xs !text-muted">
                             {collab.permission === 'edit' 
                               ? t('can_edit') || 'Peut modifier' 
                               : t('view_only') || 'Lecture seule'}
@@ -775,7 +775,7 @@ export default function ShareProjectModal({
                       {isOwner && (
                         <button
                           onClick={() => handleRemoveCollaborator(collab.documentId)}
-                          className="p-2 text-muted hover:text-danger hover:bg-danger-light rounded-lg transition-colors"
+                          className="p-2 !text-muted hover:!text-danger hover:bg-danger-light rounded-lg transition-colors"
                         >
                           <IconTrash className="w-4 h-4" />
                         </button>
@@ -792,10 +792,10 @@ export default function ShareProjectModal({
                   <div className="flex items-start gap-3">
                     <IconTimeline className="w-5 h-5 !text-accent-light mt-0.5" />
                     <div>
-                      <h4 className="text-sm font-medium text-primary mb-1">
+                      <h4 className="text-sm font-medium !text-primary mb-1">
                         {t('public_share_title') || 'Partage public avec vos clients'}
                       </h4>
-                      <p className="!text-xs text-secondary">
+                      <p className="!text-xs !text-secondary">
                         {t('public_share_description') || 'Générez un lien accessible sans connexion pour partager l\'avancement du projet (diagramme de Gantt, progression, tâches).'}
                       </p>
                     </div>
@@ -805,7 +805,7 @@ export default function ShareProjectModal({
                 {/* Configuration du nouveau lien */}
                 {showPublicLinkConfig ? (
                   <div className="bg-hover border border-default rounded-xl p-4 space-y-4">
-                    <h4 className="text-sm font-medium text-primary">
+                    <h4 className="text-sm font-medium !text-primary">
                       {t('configure_public_link') || 'Configurer le lien public'}
                     </h4>
 
@@ -820,7 +820,7 @@ export default function ShareProjectModal({
                         />
                         <div className="flex items-center gap-2">
                           <IconTimeline className="w-4 h-4 !text-accent-light" />
-                          <span className="text-sm text-secondary group-hover:text-primary">
+                          <span className="text-sm !text-secondary group-hover:!text-primary">
                             {t('show_gantt') || 'Afficher le diagramme de Gantt'}
                           </span>
                         </div>
@@ -835,7 +835,7 @@ export default function ShareProjectModal({
                         />
                         <div className="flex items-center gap-2">
                           <IconChartBar className="w-4 h-4 !text-success-text -text" />
-                          <span className="text-sm text-secondary group-hover:text-primary">
+                          <span className="text-sm !text-secondary group-hover:!text-primary">
                             {t('show_progress') || 'Afficher les statistiques de progression'}
                           </span>
                         </div>
@@ -849,8 +849,8 @@ export default function ShareProjectModal({
                           className="w-4 h-4 rounded border-input bg-input !text-success-text -text focus:ring-success/50"
                         />
                         <div className="flex items-center gap-2">
-                          <IconEye className="w-4 h-4 text-info" />
-                          <span className="text-sm text-secondary group-hover:text-primary">
+                          <IconEye className="w-4 h-4 !text-info" />
+                          <span className="text-sm !text-secondary group-hover:!text-primary">
                             {t('show_tasks_list') || 'Afficher la liste des tâches'}
                           </span>
                         </div>
@@ -859,7 +859,7 @@ export default function ShareProjectModal({
 
                     {/* Expiration */}
                     <div>
-                      <label className="block text-sm text-secondary mb-2">
+                      <label className="block !text-sm !text-secondary mb-2">
                         {t('link_expiration') || 'Expiration du lien'}
                       </label>
                       <select
@@ -868,7 +868,7 @@ export default function ShareProjectModal({
                           ...publicLinkConfig, 
                           expires_in_days: e.target.value ? parseInt(e.target.value) : null 
                         })}
-                        className="w-full px-3 py-2 bg-input border border-input rounded-lg text-primary focus:outline-none focus:border-success"
+                        className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-success"
                       >
                         <option value="">{t('no_expiration') || 'Jamais'}</option>
                         <option value="7">{t('7_days') || '7 jours'}</option>
@@ -881,14 +881,14 @@ export default function ShareProjectModal({
                     <div className="flex gap-2 pt-2">
                       <button
                         onClick={() => setShowPublicLinkConfig(false)}
-                        className="flex-1 py-2 px-4 text-secondary hover:text-primary transition-colors"
+                        className="flex-1 py-2 px-4 !text-secondary hover:!text-primary transition-colors"
                       >
                         {t('cancel') || 'Annuler'}
                       </button>
                       <button
                         onClick={handleCreatePublicLink}
                         disabled={creatingPublicLink}
-                        className="flex-1 py-2 px-4 bg-success hover:opacity-90 disabled:opacity-50 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+                        className="flex-1 py-2 px-4 bg-success hover:opacity-90 disabled:opacity-50 !text-white rounded-lg transition-colors flex items-center justify-center gap-2"
                       >
                         {creatingPublicLink ? (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -904,7 +904,7 @@ export default function ShareProjectModal({
                 ) : (
                   <button
                     onClick={() => setShowPublicLinkConfig(true)}
-                    className="w-full py-3 px-4 bg-success hover:opacity-90 text-white rounded-xl transition-colors flex items-center justify-center gap-3"
+                    className="w-full py-3 px-4 bg-success hover:opacity-90 !text-white rounded-xl transition-colors flex items-center justify-center gap-3"
                   >
                     <IconLink className="w-5 h-5" />
                     {t('create_public_link') || 'Créer un lien public'}
@@ -914,7 +914,7 @@ export default function ShareProjectModal({
                 {/* Liens existants */}
                 {publicLinks.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-medium text-secondary mb-3">
+                    <h4 className="text-sm font-medium !text-secondary mb-3">
                       {t('active_links') || 'Liens actifs'}
                     </h4>
                     <div className="space-y-2">
@@ -928,13 +928,13 @@ export default function ShareProjectModal({
                               <IconLink className="w-5 h-5 !text-accent-light" />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-sm text-primary truncate">
+                              <p className="text-sm !text-primary truncate">
                                 /share/project/{link.share_token.substring(0, 8)}...
                               </p>
-                              <div className="flex items-center gap-2 !text-xs text-muted">
+                              <div className="flex items-center gap-2 !text-xs !text-muted">
                                 {link.show_gantt && <span className="px-1.5 py-0.5 bg-primary-light !text-accent-light rounded">Gantt</span>}
                                 {link.show_progress && <span className="px-1.5 py-0.5 bg-success-light !text-success-text -text rounded">Stats</span>}
-                                {link.show_tasks && <span className="px-1.5 py-0.5 bg-info-light text-info rounded">Tâches</span>}
+                                {link.show_tasks && <span className="px-1.5 py-0.5 bg-info-light !text-info rounded">Tâches</span>}
                                 {link.expires_at && (
                                   <span className="text-muted">
                                     Expire {new Date(link.expires_at).toLocaleDateString('fr-FR')}
@@ -946,14 +946,14 @@ export default function ShareProjectModal({
                           <div className="flex items-center gap-1 flex-shrink-0">
                             <button
                               onClick={() => handleCopyPublicLink(link.share_token)}
-                              className="p-2 text-muted hover:text-success hover:bg-success-light rounded-lg transition-colors"
+                              className="p-2 !text-muted hover:!text-success hover:bg-success-light rounded-lg transition-colors"
                               title={t('copy_link') || 'Copier le lien'}
                             >
                               {publicLinkCopied ? <IconCheck className="w-4 h-4" /> : <IconCopy className="w-4 h-4" />}
                             </button>
                             <button
                               onClick={() => handleOpenEmailModal(link.share_token)}
-                              className="p-2 text-muted hover:text-info hover:bg-info-light rounded-lg transition-colors"
+                              className="p-2 !text-muted hover:!text-info hover:bg-info-light rounded-lg transition-colors"
                               title={t('send_by_email') || 'Envoyer par email'}
                             >
                               <IconMail className="w-4 h-4" />
@@ -962,7 +962,7 @@ export default function ShareProjectModal({
                               href={`/share/project/${link.share_token}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-2 text-muted hover:text-accent-light hover:bg-primary-light rounded-lg transition-colors"
+                              className="p-2 !text-muted hover:!text-accent-light hover:bg-primary-light rounded-lg transition-colors"
                               title={t('preview') || 'Aperçu'}
                             >
                               <IconExternalLink className="w-4 h-4" />
@@ -970,7 +970,7 @@ export default function ShareProjectModal({
                             {isOwner && (
                               <button
                                 onClick={() => handleDeactivateLink(link.documentId)}
-                                className="p-2 text-muted hover:text-danger hover:bg-danger-light rounded-lg transition-colors"
+                                className="p-2 !text-muted hover:!text-danger hover:bg-danger-light rounded-lg transition-colors"
                                 title={t('deactivate') || 'Désactiver'}
                               >
                                 <IconTrash className="w-4 h-4" />
@@ -988,7 +988,7 @@ export default function ShareProjectModal({
 
           {/* Footer */}
           <div className="p-4 border-t border-default bg-muted">
-            <p className="!text-xs text-muted text-center">
+            <p className="!text-xs !text-muted !text-center">
               {t('share_note') || 'Les collaborateurs invités ne peuvent pas supprimer ce projet.'}
             </p>
           </div>
@@ -1012,13 +1012,13 @@ export default function ShareProjectModal({
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
-                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
                   <IconMail className="w-5 h-5 !text-accent-light" />
                   {t('send_link_by_email') || 'Envoyer le lien par email'}
                 </h3>
                 <button
                   onClick={() => setShowEmailModal(false)}
-                  className="p-2 rounded-lg hover:bg-hover text-secondary hover:text-primary transition-colors"
+                  className="p-2 rounded-lg hover:bg-hover !text-secondary hover:!text-primary transition-colors"
                 >
                   <IconX className="w-5 h-5" />
                 </button>
@@ -1028,7 +1028,7 @@ export default function ShareProjectModal({
               <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
                 {/* Email destinataire */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">
+                  <label className="block !text-sm font-medium !text-secondary mb-2">
                     {t('recipient_email') || 'Email du destinataire'}
                   </label>
                   <div className="relative">
@@ -1038,14 +1038,14 @@ export default function ShareProjectModal({
                       value={emailRecipient}
                       onChange={(e) => setEmailRecipient(e.target.value)}
                       placeholder="client@exemple.com"
-                      className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
+                      className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
                     />
                   </div>
                 </div>
 
                 {/* Objet de l'email */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">
+                  <label className="block !text-sm font-medium !text-secondary mb-2">
                     {t('email_subject') || 'Objet'}
                   </label>
                   <input
@@ -1053,7 +1053,7 @@ export default function ShareProjectModal({
                     value={emailSubject}
                     onChange={(e) => setEmailSubject(e.target.value)}
                     placeholder={`${t('project_progress') || 'Suivi du projet'} : ${projectTitle}`}
-                    className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
+                    className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
@@ -1062,7 +1062,7 @@ export default function ShareProjectModal({
                   {/* Option bannière */}
                   <div className="bg-hover rounded-xl p-4 border border-default">
                     <div className="flex items-center justify-between mb-3">
-                      <label className="text-sm font-medium text-primary">
+                      <label className="text-sm font-medium !text-primary">
                         {t('include_banner') || 'Inclure une bannière'}
                       </label>
                       <button
@@ -1088,7 +1088,7 @@ export default function ShareProjectModal({
                             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
                               bannerType === 'color' 
                                 ? 'border-accent bg-accent-light !text-accent' 
-                                : 'border-default bg-muted text-secondary hover:border-accent'
+                                : 'border-default bg-muted !text-secondary hover:border-accent'
                             }`}
                           >
                             <IconPalette className="w-4 h-4" />
@@ -1100,7 +1100,7 @@ export default function ShareProjectModal({
                             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg border-2 transition-all ${
                               bannerType === 'image' 
                                 ? 'border-accent bg-accent-light !text-accent' 
-                                : 'border-default bg-muted text-secondary hover:border-accent'
+                                : 'border-default bg-muted !text-secondary hover:border-accent'
                             }`}
                           >
                             <IconPhoto className="w-4 h-4" />
@@ -1112,7 +1112,7 @@ export default function ShareProjectModal({
                         {bannerType === 'color' && (
                           <div className="grid grid-cols-2 gap-3">
                             <div>
-                              <label className="block !text-xs text-secondary mb-1">
+                              <label className="block !text-xs !text-secondary mb-1">
                                 {t('background_color') || 'Couleur de fond'}
                               </label>
                               <div className="flex items-center gap-2">
@@ -1126,12 +1126,12 @@ export default function ShareProjectModal({
                                   type="text"
                                   value={bannerBackgroundColor}
                                   onChange={(e) => setBannerBackgroundColor(e.target.value)}
-                                  className="flex-1 px-2 py-1.5 !text-xs bg-input border border-input rounded text-primary"
+                                  className="flex-1 px-2 py-1.5 !text-xs bg-input border border-input rounded !text-primary"
                                 />
                               </div>
                             </div>
                             <div>
-                              <label className="block !text-xs text-secondary mb-1">
+                              <label className="block !text-xs !text-secondary mb-1">
                                 {t('title_color') || 'Couleur du titre'}
                               </label>
                               <div className="flex items-center gap-2">
@@ -1145,7 +1145,7 @@ export default function ShareProjectModal({
                                   type="text"
                                   value={bannerTitleColor}
                                   onChange={(e) => setBannerTitleColor(e.target.value)}
-                                  className="flex-1 px-2 py-1.5 !text-xs bg-input border border-input rounded text-primary"
+                                  className="flex-1 px-2 py-1.5 !text-xs bg-input border border-input rounded !text-primary"
                                 />
                               </div>
                             </div>
@@ -1165,7 +1165,7 @@ export default function ShareProjectModal({
                                 <button
                                   type="button"
                                   onClick={() => setCustomBannerImage('')}
-                                  className="absolute top-2 right-2 p-1 bg-danger text-white rounded-full hover:bg-[var(--color-danger)]"
+                                  className="absolute top-2 right-2 p-1 bg-danger !text-white rounded-full hover:bg-[var(--color-danger)]"
                                 >
                                   <IconX className="w-3 h-3" />
                                 </button>
@@ -1178,7 +1178,7 @@ export default function ShareProjectModal({
                                   alt="Signature banner" 
                                   className="w-full h-24 object-cover rounded-lg"
                                 />
-                                <div className="absolute bottom-2 left-2 !text-xs bg-black/60 text-white px-2 py-1 rounded">
+                                <div className="absolute bottom-2 left-2 !text-xs bg-black/60 !text-white px-2 py-1 rounded">
                                   {t('from_signature') || 'De votre signature'}
                                 </div>
                               </div>
@@ -1186,7 +1186,7 @@ export default function ShareProjectModal({
                             <button
                               type="button"
                               onClick={() => setShowMediaPicker(true)}
-                              className="w-full py-2 px-3 border-2 border-dashed border-default rounded-lg text-sm text-secondary hover:border-accent hover:text-accent transition-colors flex items-center justify-center gap-2"
+                              className="w-full py-2 px-3 border-2 border-dashed border-default rounded-lg !text-sm !text-secondary hover:border-accent hover:!text-accent transition-colors flex items-center justify-center gap-2"
                             >
                               <IconPhoto className="w-4 h-4" />
                               {customBannerImage 
@@ -1196,7 +1196,7 @@ export default function ShareProjectModal({
                             </button>
                             {bannerType === 'image' && (
                               <div>
-                                <label className="block !text-xs text-secondary mb-1">
+                                <label className="block !text-xs !text-secondary mb-1">
                                   {t('title_color') || 'Couleur du titre'}
                                 </label>
                                 <div className="flex items-center gap-2">
@@ -1210,7 +1210,7 @@ export default function ShareProjectModal({
                                     type="text"
                                     value={bannerTitleColor}
                                     onChange={(e) => setBannerTitleColor(e.target.value)}
-                                    className="flex-1 px-2 py-1.5 !text-xs bg-input border border-input rounded text-primary"
+                                    className="flex-1 px-2 py-1.5 !text-xs bg-input border border-input rounded !text-primary"
                                   />
                                 </div>
                               </div>
@@ -1228,7 +1228,7 @@ export default function ShareProjectModal({
                               onChange={(e) => setShowBannerTitle(e.target.checked)}
                               className="w-4 h-4 !text-accent border-default rounded focus:ring-accent"
                             />
-                            <label htmlFor="showBannerTitle" className="text-sm text-secondary">
+                            <label htmlFor="showBannerTitle" className="text-sm !text-secondary">
                               {t('show_banner_title') || 'Afficher un titre'}
                             </label>
                           </div>
@@ -1239,7 +1239,7 @@ export default function ShareProjectModal({
                               value={customBannerTitle}
                               onChange={(e) => setCustomBannerTitle(e.target.value)}
                               placeholder={projectTitle}
-                              className="w-full px-3 py-2 text-sm bg-input border border-input rounded-lg text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
+                              className="w-full px-3 py-2 !text-sm bg-input border border-input rounded-lg !text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
                             />
                           )}
                         </div>
@@ -1247,7 +1247,7 @@ export default function ShareProjectModal({
                         {/* Aperçu de la bannière */}
                         {(showBannerTitle || customBannerImage || (bannerType === 'image' && emailSignature?.banner_url)) && (
                           <div className="border-t border-default pt-3">
-                            <p className="!text-xs text-secondary mb-2">{t('preview') || 'Aperçu'}</p>
+                            <p className="!text-xs !text-secondary mb-2">{t('preview') || 'Aperçu'}</p>
                             <div 
                               className="rounded-lg overflow-hidden"
                               style={{ 
@@ -1264,15 +1264,15 @@ export default function ShareProjectModal({
                                   />
                                   {showBannerTitle && (
                                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                      <span style={{ color: bannerTitleColor }} className="font-bold text-lg">
+                                      <span style={{ color: bannerTitleColor }} className="font-bold !text-lg">
                                         {customBannerTitle || projectTitle}
                                       </span>
                                     </div>
                                   )}
                                 </div>
                               ) : showBannerTitle && (
-                                <div className="py-4 px-3 text-center">
-                                  <span style={{ color: bannerTitleColor }} className="font-bold text-lg">
+                                <div className="py-4 px-3 !text-center">
+                                  <span style={{ color: bannerTitleColor }} className="font-bold !text-lg">
                                     {customBannerTitle || projectTitle}
                                   </span>
                                 </div>
@@ -1287,7 +1287,7 @@ export default function ShareProjectModal({
                   {/* Option signature */}
                   <div className="bg-hover rounded-xl p-4 border border-default">
                     <div className="flex items-center justify-between mb-3">
-                      <label className="text-sm font-medium text-primary">
+                      <label className="text-sm font-medium !text-primary">
                         {t('include_signature') || 'Inclure ma signature'}
                       </label>
                       <button
@@ -1311,7 +1311,7 @@ export default function ShareProjectModal({
                             {emailSignature.sender_name || emailSignature.company_name || t('signature_loaded') || 'Signature chargée'}
                           </div>
                         ) : (
-                          <p className="!text-xs text-warning-text !text-warning">
+                          <p className="!text-xs !text-warning-text !text-warning">
                             {t('no_signature_configured') || 'Aucune signature configurée'}
                           </p>
                         )}
@@ -1322,20 +1322,20 @@ export default function ShareProjectModal({
 
                 {/* Message personnalisé */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">
+                  <label className="block !text-sm font-medium !text-secondary mb-2">
                     {t('custom_message') || 'Message personnalisé'}
                   </label>
                   <textarea
                     value={emailMessage}
                     onChange={(e) => setEmailMessage(e.target.value)}
                     rows={6}
-                    className="w-full px-4 py-3 bg-input border border-input rounded-xl text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors resize-y"
+                    className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors resize-y"
                   />
                 </div>
 
                 {/* Aperçu du lien */}
                 <div className="bg-primary-light border border-primary rounded-lg p-3">
-                  <p className="!text-xs text-secondary mb-1">{t('link_included') || 'Le lien suivant sera inclus :'}</p>
+                  <p className="!text-xs !text-secondary mb-1">{t('link_included') || 'Le lien suivant sera inclus :'}</p>
                   <p className="text-sm !text-accent-light truncate">
                     {typeof window !== 'undefined' ? window.location.origin : ''}/share/project/{currentShareToken?.substring(0, 12)}...
                   </p>
@@ -1346,14 +1346,14 @@ export default function ShareProjectModal({
               <div className="flex gap-3 p-4 border-t border-default">
                 <button
                   onClick={() => setShowEmailModal(false)}
-                  className="flex-1 py-2.5 px-4 text-secondary hover:text-primary transition-colors"
+                  className="flex-1 py-2.5 px-4 !text-secondary hover:!text-primary transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
                 <button
                   onClick={handleSendPublicLinkByEmail}
                   disabled={sendingEmail || !emailRecipient.trim()}
-                  className="flex-1 py-2.5 px-4 bg-accent hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 px-4 bg-accent hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed !text-white rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   {sendingEmail ? (
                     <>

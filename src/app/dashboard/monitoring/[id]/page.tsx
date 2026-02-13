@@ -105,7 +105,7 @@ export default function MonitoringDetailPage() {
       <ProtectedRoute>
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
-            <IconAlertTriangle className="w-12 h-12 text-error mx-auto mb-4" />
+            <IconAlertTriangle className="w-12 h-12 !text-error mx-auto mb-4" />
             <p className="text-primary">{t('site_not_found') || 'Site non trouvé'}</p>
             <button 
               onClick={() => router.push('/dashboard/monitoring')}
@@ -142,7 +142,7 @@ export default function MonitoringDetailPage() {
               onClick={() => router.push('/dashboard/monitoring')}
               className="p-2 hover:bg-hover rounded-lg transition-colors"
             >
-              <IconArrowLeft className="w-5 h-5 text-muted" />
+              <IconArrowLeft className="w-5 h-5 !text-muted" />
             </button>
             
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -156,7 +156,7 @@ export default function MonitoringDetailPage() {
             />
             
             <div>
-              <h1 className="text-xl font-bold text-primary flex items-center gap-2">
+              <h1 className="text-xl font-bold !text-primary flex items-center gap-2">
                 {site.name}
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full !text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
                   {statusConfig.icon}
@@ -167,7 +167,7 @@ export default function MonitoringDetailPage() {
                 href={site.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent hover:underline flex items-center gap-1 text-sm"
+                className="text-accent hover:underline flex items-center gap-1 !text-sm"
               >
                 {site.url}
                 <IconExternalLink className="w-3 h-3" />
@@ -179,20 +179,20 @@ export default function MonitoringDetailPage() {
             <button
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="btn-primary px-3 py-1.5 text-sm rounded-lg flex items-center gap-1.5"
+              className="btn-primary px-3 py-1.5 !text-sm rounded-lg flex items-center gap-1.5"
             >
               <IconRefresh className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
               {t('refresh') || 'Actualiser'}
             </button>
             <button
               onClick={() => router.push(`/dashboard/monitoring?edit=${site.documentId}`)}
-              className="btn-tertiary px-3 py-1.5 text-sm rounded-lg flex items-center gap-1.5"
+              className="btn-tertiary px-3 py-1.5 !text-sm rounded-lg flex items-center gap-1.5"
             >
               <IconSettings className="w-4 h-4" />
             </button>
             <button
               onClick={() => setDeleteModal(true)}
-              className="btn-tertiary px-3 py-1.5 text-sm rounded-lg text-error hover:bg-error-light flex items-center gap-1.5"
+              className="btn-tertiary px-3 py-1.5 !text-sm rounded-lg !text-error hover:bg-error-light flex items-center gap-1.5"
             >
               <IconTrash className="w-4 h-4" />
             </button>
@@ -216,7 +216,7 @@ export default function MonitoringDetailPage() {
             >
               <div className="flex items-center gap-2 mb-1">
                 <span className={item.color}>{item.icon}</span>
-                <span className="!text-xs text-muted">{item.label}</span>
+                <span className="!text-xs !text-muted">{item.label}</span>
               </div>
               <p className={`text-lg font-bold ${item.color}`}>{item.value}</p>
             </motion.div>
@@ -233,26 +233,26 @@ export default function MonitoringDetailPage() {
           >
             <div className="flex items-center gap-2 mb-3">
               <IconServer className="w-4 h-4 !text-accent" />
-              <span className="text-sm font-medium text-primary">{t('hosting_info') || 'Hébergement'}</span>
+              <span className="text-sm font-medium !text-primary">{t('hosting_info') || 'Hébergement'}</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {site.hosting_provider && (
                 <div>
-                  <p className="!text-xs text-muted">{t('hosting_provider') || 'Hébergeur'}</p>
-                  <p className="text-sm text-primary font-medium capitalize">{site.hosting_provider}</p>
+                  <p className="!text-xs !text-muted">{t('hosting_provider') || 'Hébergeur'}</p>
+                  <p className="text-sm !text-primary font-medium capitalize">{site.hosting_provider}</p>
                 </div>
               )}
               {site.server_ip && (
                 <div>
-                  <p className="!text-xs text-muted">{t('server_ip') || 'IP Serveur'}</p>
-                  <p className="text-sm text-primary font-mono">{site.server_ip}</p>
+                  <p className="!text-xs !text-muted">{t('server_ip') || 'IP Serveur'}</p>
+                  <p className="text-sm !text-primary font-mono">{site.server_ip}</p>
                 </div>
               )}
             </div>
             {site.server_notes && (
               <div className="mt-3 pt-3 border-t border-default">
-                <p className="!text-xs text-muted mb-1">{t('notes') || 'Notes'}</p>
-                <p className="text-sm text-secondary whitespace-pre-wrap">{site.server_notes}</p>
+                <p className="!text-xs !text-muted mb-1">{t('notes') || 'Notes'}</p>
+                <p className="text-sm !text-secondary whitespace-pre-wrap">{site.server_notes}</p>
               </div>
             )}
           </motion.div>
@@ -260,7 +260,7 @@ export default function MonitoringDetailPage() {
 
         {/* Time Range Selector */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted">{t('period') || 'Période'}:</span>
+          <span className="text-sm !text-muted">{t('period') || 'Période'}:</span>
           <div className="flex bg-elevated rounded-lg p-0.5">
             {(['24h', '7d', '30d'] as const).map((range) => (
               <button
@@ -268,8 +268,8 @@ export default function MonitoringDetailPage() {
                 onClick={() => setTimeRange(range)}
                 className={`px-3 py-1 !text-xs rounded-md transition-colors ${
                   timeRange === range
-                    ? 'bg-accent text-white'
-                    : 'text-muted hover:text-primary'
+                    ? 'bg-accent !text-white'
+                    : 'text-muted hover:!text-primary'
                 }`}
               >
                 {range}
@@ -280,8 +280,8 @@ export default function MonitoringDetailPage() {
 
         {/* Charts */}
         {logsError ? (
-          <div className="card p-6 text-center">
-            <IconAlertTriangle className="w-8 h-8 text-warning-text mx-auto mb-2" />
+          <div className="card p-6 !text-center">
+            <IconAlertTriangle className="w-8 h-8 !text-warning-text mx-auto mb-2" />
             <p className="text-muted">{t('error_loading_logs') || 'Erreur lors du chargement des logs'}</p>
           </div>
         ) : !logs ? (

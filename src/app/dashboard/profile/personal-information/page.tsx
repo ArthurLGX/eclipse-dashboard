@@ -181,7 +181,7 @@ export default function PersonalInformationPage() {
       className="space-y-6"
     >
       <div className="flex lg:flex-row flex-col gap-4 items-center justify-between">
-        <h1 className="!text-3xl !uppercase font-extrabold !text-left text-primary">
+        <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-primary">
           {t('profile')}
         </h1>
         {!editing ? (
@@ -203,7 +203,7 @@ export default function PersonalInformationPage() {
           <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={handleCancel}
-              className="bg-warning-light lg:w-fit w-full text-warning-text border border-warning px-4 py-2 hover:opacity-80 rounded-lg cursor-pointer transition-colors"
+              className="bg-warning-light lg:w-fit w-full !text-warning-text border border-warning px-4 py-2 hover:opacity-80 rounded-lg cursor-pointer transition-colors"
             >
               {t('cancel')}
             </button>
@@ -231,12 +231,12 @@ export default function PersonalInformationPage() {
                 disabled={!editing}
               />
               {editing && (
-                <p className="!text-xs text-muted text-center">
+                <p className="!text-xs !text-muted !text-center">
                   {t('click_to_change_photo') || 'Cliquez pour changer la photo'}
                 </p>
               )}
               <div className="!text-center">
-                <h3 className="!text-lg font-semibold text-primary">
+                <h3 className="!text-lg font-semibold !text-primary">
                   {profile?.username}
                 </h3>
                 <p className="text-secondary !text-sm">
@@ -253,7 +253,7 @@ export default function PersonalInformationPage() {
         {/* Section Informations */}
         <div className="lg:col-span-2">
           <div className="card p-6 space-y-6">
-            <h2 className="!text-xl font-semibold text-primary mb-4">
+            <h2 className="!text-xl font-semibold !text-primary mb-4">
               {t('personal_information')}
             </h2>
 
@@ -326,13 +326,13 @@ export default function PersonalInformationPage() {
       {/* Section Mot de passe */}
       <div className="card p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="!text-xl font-semibold text-primary">
+          <h2 className="!text-xl font-semibold !text-primary">
             {t('change_password')}
           </h2>
           {!showPasswordSection && (
             <button
               onClick={() => setShowPasswordSection(true)}
-              className="btn-ghost px-4 py-2 text-sm"
+              className="btn-ghost px-4 py-2 !text-sm"
             >
               {t('modify')}
             </button>
@@ -357,7 +357,7 @@ export default function PersonalInformationPage() {
                 <button
                   type="button"
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 !text-muted hover:!text-primary transition-colors"
                 >
                   {showCurrentPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                 </button>
@@ -381,12 +381,12 @@ export default function PersonalInformationPage() {
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 !text-muted hover:!text-primary transition-colors"
                 >
                   {showNewPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                 </button>
               </div>
-              <p className="!text-xs text-muted">{t('password_min_chars')}</p>
+              <p className="!text-xs !text-muted">{t('password_min_chars')}</p>
             </div>
 
             {/* Confirm Password */}
@@ -406,7 +406,7 @@ export default function PersonalInformationPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 !text-muted hover:!text-primary transition-colors"
                 >
                   {showConfirmPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
                 </button>
@@ -414,7 +414,7 @@ export default function PersonalInformationPage() {
             </div>
 
             {newPassword && confirmPassword && newPassword !== confirmPassword && (
-              <p className="text-danger text-sm">{t('passwords_not_match')}</p>
+              <p className="text-danger !text-sm">{t('passwords_not_match')}</p>
             )}
 
             <div className="flex gap-4 pt-2">
@@ -442,7 +442,7 @@ export default function PersonalInformationPage() {
         )}
 
         {!showPasswordSection && (
-          <p className="text-muted text-sm">
+          <p className="text-muted !text-sm">
             {t('password_hint')}
           </p>
         )}

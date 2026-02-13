@@ -271,11 +271,11 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="card p-8 text-center"
+        className="card p-8 !text-center"
       >
-        <IconActivity className="w-12 h-12 mx-auto mb-4 text-muted opacity-50" />
+        <IconActivity className="w-12 h-12 mx-auto mb-4 !text-muted opacity-50" />
         <p className="text-muted">{t('no_monitoring_data') || 'Aucune donnée de monitoring disponible'}</p>
-        <p className="text-sm text-muted mt-2">{t('monitoring_data_hint') || 'Les données apparaîtront après les premières vérifications'}</p>
+        <p className="text-sm !text-muted mt-2">{t('monitoring_data_hint') || 'Les données apparaîtront après les premières vérifications'}</p>
       </motion.div>
     );
   }
@@ -299,10 +299,10 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           >
             <div className="flex items-center gap-2 mb-1">
               <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-              <span className="!text-xs text-muted">{kpi.label}</span>
+              <span className="!text-xs !text-muted">{kpi.label}</span>
             </div>
             <p className={`text-xl font-bold ${kpi.color}`}>{kpi.value}</p>
-            {kpi.subvalue && <p className="!text-xs text-muted">{kpi.subvalue}</p>}
+            {kpi.subvalue && <p className="!text-xs !text-muted">{kpi.subvalue}</p>}
           </motion.div>
         ))}
       </div>
@@ -322,7 +322,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
             className="card p-4"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="!text-xs text-muted">Uptime {item.period}</span>
+              <span className="!text-xs !text-muted">Uptime {item.period}</span>
               <span className={`text-sm font-bold ${
                 item.value >= 99.9 ? 'text-success' : item.value >= 95 ? 'text-warning' : 'text-danger'
               }`}>{item.value}%</span>
@@ -352,7 +352,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartLine className="w-4 h-4 !text-accent" />
-            <span className="text-sm font-medium text-primary">{t('response_time_chart') || 'Temps de réponse'}</span>
+            <span className="text-sm font-medium !text-primary">{t('response_time_chart') || 'Temps de réponse'}</span>
           </div>
           <div className="h-40">
             <ResponsiveContainer width="100%" height="100%">
@@ -410,7 +410,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartBar className="w-4 h-4 !text-success-text -text" />
-            <span className="text-sm font-medium text-primary">{t('uptime_timeline') || 'Uptime par heure'}</span>
+            <span className="text-sm font-medium !text-primary">{t('uptime_timeline') || 'Uptime par heure'}</span>
           </div>
           <div className="h-40">
             <ResponsiveContainer width="100%" height="100%">
@@ -462,8 +462,8 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           className="card p-4 md:col-span-2 lg:col-span-1"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconChartPie className="w-4 h-4 text-info" />
-            <span className="text-sm font-medium text-primary">{t('status_distribution') || 'Statuts'}</span>
+            <IconChartPie className="w-4 h-4 !text-info" />
+            <span className="text-sm font-medium !text-primary">{t('status_distribution') || 'Statuts'}</span>
           </div>
           <div className="h-40 flex items-center">
             <ResponsiveContainer width="60%" height="100%">
@@ -516,8 +516,8 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
         className="card p-4"
       >
         <div className="flex items-center gap-2 mb-3">
-          <IconClock className="w-4 h-4 text-warning" />
-          <span className="text-sm font-medium text-primary">{t('response_distribution') || 'Distribution temps de réponse (ms)'}</span>
+          <IconClock className="w-4 h-4 !text-warning" />
+          <span className="text-sm font-medium !text-primary">{t('response_distribution') || 'Distribution temps de réponse (ms)'}</span>
         </div>
         <div className="h-32">
           <ResponsiveContainer width="100%" height="100%">
@@ -566,9 +566,9 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           className="card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconX className="w-4 h-4 text-danger" />
-            <span className="text-sm font-medium text-primary">{t('recent_incidents') || 'Incidents récents'}</span>
-            <span className="!text-xs text-muted">({recentIncidents.length})</span>
+            <IconX className="w-4 h-4 !text-danger" />
+            <span className="text-sm font-medium !text-primary">{t('recent_incidents') || 'Incidents récents'}</span>
+            <span className="!text-xs !text-muted">({recentIncidents.length})</span>
           </div>
           <div className="space-y-2">
             {recentIncidents.map((incident, index) => (
@@ -577,14 +577,14 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                 className="flex items-center justify-between p-2 bg-danger-light border border-danger rounded-lg"
               >
                 <div className="flex items-center gap-2">
-                  <IconAlertTriangle className="w-4 h-4 text-danger" />
+                  <IconAlertTriangle className="w-4 h-4 !text-danger" />
                   <div>
-                    <p className="!text-xs text-primary">{incident.message}</p>
-                    <p className="!text-xs text-muted">{incident.time}</p>
+                    <p className="!text-xs !text-primary">{incident.message}</p>
+                    <p className="!text-xs !text-muted">{incident.time}</p>
                   </div>
                 </div>
                 {incident.statusCode && (
-                  <span className="px-1.5 py-0.5 bg-danger-light text-danger !text-xs font-mono rounded">
+                  <span className="px-1.5 py-0.5 bg-danger-light !text-danger !text-xs font-mono rounded">
                     HTTP {incident.statusCode}
                   </span>
                 )}

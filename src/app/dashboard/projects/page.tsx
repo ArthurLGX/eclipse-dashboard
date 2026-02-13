@@ -334,13 +334,13 @@ export default function ProjectsPage() {
           <div className="flex items-start gap-2">
             <h4 className="text-primary font-medium">{value as string}</h4>
             {taskCounts[row.documentId] > 0 && (
-              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 !text-xs font-bold text-white bg-accent rounded-full">
+              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 !text-xs font-bold !text-white bg-accent rounded-full">
                 {taskCounts[row.documentId]}
               </span>
             )}
           </div>
           <div className="flex items-center gap-2 mt-1">
-            <ProjectTypeIcon type={row.type} className="w-4 h-4 text-zinc-500" />
+            <ProjectTypeIcon type={row.type} className="w-4 h-4 !text-zinc-500" />
             <p className="text-muted !text-sm">{row.type}</p>
           </div>
         </div>
@@ -364,7 +364,7 @@ export default function ProjectsPage() {
           status === 'completed' ? { label: t('completed') || 'Terminé', className: 'badge-success' } :
           status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'badge-warning' } :
           status === 'planning' ? { label: t('planning') || 'Planification', className: 'badge-info' } :
-          status === 'archived' ? { label: t('archived') || 'Archivé', className: 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:!text-primary' } :
+          status === 'archived' ? { label: t('archived') || 'Archivé', className: 'bg-zinc-200 dark:bg-zinc-700 !text-zinc-600 dark:!text-primary' } :
           { label: status, className: 'badge-primary' };
 
         return (
@@ -404,7 +404,7 @@ export default function ProjectsPage() {
                 handleScheduleMeeting(row);
               }}
               title={t('schedule_meeting') || 'Planifier une réunion'}
-              className="p-1.5 lg:w-fit w-full rounded-lg cursor-pointer hover:bg-accent-light text-muted hover:text-accent transition-colors"
+              className="p-1.5 lg:w-fit w-full rounded-lg cursor-pointer hover:bg-accent-light !text-muted hover:!text-accent transition-colors"
             >
               <IconCalendarEvent className="w-4 h-4" />
             </button>
@@ -419,8 +419,8 @@ export default function ProjectsPage() {
               : (t('unarchive_project') || 'Restaurer')}
             className={`p-1.5 lg:w-fit w-full rounded-lg cursor-pointer transition-colors ${
               activeTab === 'active' 
-                ? 'hover:bg-warning-light text-muted hover:text-warning' 
-                : 'hover:bg-success-light text-muted hover:text-success'
+                ? 'hover:bg-warning-light !text-muted hover:!text-warning' 
+                : 'hover:bg-success-light !text-muted hover:!text-success'
             }`}
           >
             {activeTab === 'active' 
@@ -573,8 +573,8 @@ export default function ProjectsPage() {
           onClick={() => setActiveTab('active')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
             activeTab === 'active'
-              ? 'bg-accent text-white shadow-md'
-              : 'bg-card text-primary hover:bg-hover border border-default'
+              ? 'bg-accent !text-white shadow-md'
+              : 'bg-card !text-primary hover:bg-hover border border-default'
           }`}
         >
           <IconBuilding className={`w-4 h-4 ${activeTab === 'active' ? '!text-white' : '!text-accent'}`} />
@@ -589,14 +589,14 @@ export default function ProjectsPage() {
           onClick={() => setActiveTab('archived')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
             activeTab === 'archived'
-              ? 'bg-warning text-white shadow-md'
-              : 'bg-card text-primary hover:bg-hover border border-default'
+              ? 'bg-warning !text-white shadow-md'
+              : 'bg-card !text-primary hover:bg-hover border border-default'
           }`}
         >
           <IconArchive className={`w-4 h-4 ${activeTab === 'archived' ? '!text-white' : '!text-warning'}`} />
           {t('archived_projects') || 'Archives'}
           <span className={`ml-1 px-2 py-0.5 !text-xs rounded-full ${
-            activeTab === 'archived' ? 'bg-white/20' : 'bg-warning-light text-warning'
+            activeTab === 'archived' ? 'bg-white/20' : 'bg-warning-light !text-warning'
           }`}>
             {archivedProjects.length}
           </span>
@@ -627,13 +627,13 @@ export default function ProjectsPage() {
             label: t('completed_projects'),
             value: stats.completed,
             colorClass: 'text-info',
-            icon: <IconCheck className="w-6 h-6 text-info" />,
+            icon: <IconCheck className="w-6 h-6 !text-info" />,
           },
           {
             label: t('in_progress_projects'),
             value: stats.inProgress,
             colorClass: 'text-warning',
-            icon: <IconProgressCheck className="w-6 h-6 text-warning" />,
+            icon: <IconProgressCheck className="w-6 h-6 !text-warning" />,
           },
         ]}
         loading={loadingProjects}

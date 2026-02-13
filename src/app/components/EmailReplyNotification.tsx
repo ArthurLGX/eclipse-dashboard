@@ -137,26 +137,26 @@ export default function EmailReplyNotification({
             >
               <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
                 {notification.email.client?.enterprise ? (
-                  <IconBuilding className="w-5 h-5 text-accent" />
+                  <IconBuilding className="w-5 h-5 !text-accent" />
                 ) : (
-                  <IconUser className="w-5 h-5 text-accent" />
+                  <IconUser className="w-5 h-5 !text-accent" />
                 )}
               </div>
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <IconMail className="w-4 h-4 text-accent" />
-                  <span className="!text-xs text-accent font-medium">
+                  <IconMail className="w-4 h-4 !text-accent" />
+                  <span className="!text-xs !text-accent font-medium">
                     {t('new_reply') || 'Nouvelle réponse'}
                   </span>
                 </div>
-                <p className="font-semibold text-primary truncate">
+                <p className="font-semibold !text-primary truncate">
                   {getSenderName(notification.email)}
                 </p>
-                <p className="text-sm text-muted truncate">
+                <p className="text-sm !text-muted truncate">
                   {notification.email.subject || '(Sans objet)'}
                 </p>
-                <p className="!text-xs text-muted mt-1 line-clamp-2">
+                <p className="!text-xs !text-muted mt-1 line-clamp-2">
                   {notification.email.snippet || ''}
                 </p>
               </div>
@@ -167,7 +167,7 @@ export default function EmailReplyNotification({
               <button
                 onClick={() => handleReplyNow(notification)}
                 disabled={processingId === notification.id}
-                className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium text-white bg-accent hover:bg-accent-light transition-colors disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 py-3 !text-sm font-medium !text-white bg-accent hover:bg-accent-light transition-colors disabled:opacity-50"
               >
                 <IconSend className="w-4 h-4" />
                 {t('reply_yes') || 'Oui'}
@@ -176,7 +176,7 @@ export default function EmailReplyNotification({
               <button
                 onClick={() => handleArchive(notification)}
                 disabled={processingId === notification.id}
-                className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium text-muted hover:text-danger hover:bg-danger-light border-l border-muted transition-colors disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 py-3 !text-sm font-medium !text-muted hover:!text-danger hover:bg-danger-light border-l border-muted transition-colors disabled:opacity-50"
               >
                 <IconX className="w-4 h-4" />
                 {t('reply_no') || 'Non'}
@@ -185,7 +185,7 @@ export default function EmailReplyNotification({
               <button
                 onClick={() => handleLater(notification)}
                 disabled={processingId === notification.id}
-                className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium text-muted hover:text-primary hover:bg-secondary border-l border-muted transition-colors disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 py-3 !text-sm font-medium !text-muted hover:!text-primary hover:bg-secondary border-l border-muted transition-colors disabled:opacity-50"
               >
                 <IconClock className="w-4 h-4" />
                 {t('reply_later') || 'Plus tard'}
@@ -201,7 +201,7 @@ export default function EmailReplyNotification({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           onClick={onDismissAll}
-          className="!text-xs text-muted hover:text-primary text-center py-2"
+          className="!text-xs !text-muted hover:!text-primary !text-center py-2"
         >
           {t('dismiss_all') || 'Tout fermer'} ({notifications.length})
         </motion.button>

@@ -338,14 +338,14 @@ export default function TimerIndicator() {
             {isCollapsed ? (
               <>
                 {isPaused ? (
-                  <IconCoffee className="w-4 h-4 text-white animate-pulse" />
+                  <IconCoffee className="w-4 h-4 !text-white animate-pulse" />
                 ) : (
-                  <IconClock className="w-4 h-4 text-white animate-pulse" />
+                  <IconClock className="w-4 h-4 !text-white animate-pulse" />
                 )}
-                <IconChevronLeft className="w-4 h-4 text-white" />
+                <IconChevronLeft className="w-4 h-4 !text-white" />
               </>
             ) : (
-              <IconChevronRight className="w-4 h-4 text-white" />
+              <IconChevronRight className="w-4 h-4 !text-white" />
             )}
           </div>
         </button>
@@ -389,7 +389,7 @@ export default function TimerIndicator() {
               {isPaused ? (
                 <IconCoffee className="w-4 h-4 !text-accent animate-pulse" />
               ) : (
-                <IconClock className="w-4 h-4 text-warning-text animate-pulse" />
+                <IconClock className="w-4 h-4 !text-warning-text animate-pulse" />
               )}
               <span className={`text-sm font-medium truncate max-w-[140px] ${isPaused ? 'text-accent' : 'text-warning'}`}>
                 {isPaused ? (t('coffee_break') || 'Pause café') : taskName}
@@ -406,7 +406,7 @@ export default function TimerIndicator() {
                 {isPaused ? formatSeconds(pauseTimeLeft) : formatSeconds(runningTime)}
               </motion.span>
               {!isPaused && runningEntry.estimated_duration && (
-                <span className="!text-xs text-warning/80 font-medium">
+                <span className="!text-xs !text-warning/80 font-medium">
                   / {formatMinutes(runningEntry.estimated_duration)}
                 </span>
               )}
@@ -452,7 +452,7 @@ export default function TimerIndicator() {
                 // Bouton reprendre pendant la pause
                 <button
                   onClick={handleResume}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-accent-light hover:bg-[var(--color-accent-bg)] !text-accent text-sm font-semibold rounded-lg transition-colors shadow-sm"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-accent-light hover:bg-[var(--color-accent-bg)] !text-accent !text-sm font-semibold rounded-lg transition-colors shadow-sm"
                 >
                   <IconPlayerPlay className="w-4 h-4" />
                   {t('resume') || 'Reprendre'}
@@ -463,7 +463,7 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer(isExceeded ? undefined : 'completed')}
                     disabled={loading}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white/25 hover:bg-white/35 text-warning-text text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white/25 hover:bg-white/35 !text-warning-text !text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 shadow-sm"
                   >
                     {loading ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -479,7 +479,7 @@ export default function TimerIndicator() {
                     onClick={handlePauseClick}
                     onMouseEnter={() => setIsPauseHovered(true)}
                     onMouseLeave={() => setIsPauseHovered(false)}
-                    className="relative flex items-center p-2 bg-white/25 hover:bg-white/35 text-warning-text rounded-lg transition-colors shadow-sm overflow-hidden"
+                    className="relative flex items-center p-2 bg-white/25 hover:bg-white/35 !text-warning-text rounded-lg transition-colors shadow-sm overflow-hidden"
                     title={t('coffee_break') || 'Pause café'}
                   >
                     <IconCoffee className="w-4 h-4 flex-shrink-0" />
@@ -490,7 +490,7 @@ export default function TimerIndicator() {
                           animate={{ opacity: 1, x: 0, width: 'auto' }}
                           exit={{ opacity: 0, x: -10, width: 0 }}
                           transition={{ duration: 0.2, ease: 'easeOut' }}
-                          className="ml-1.5 text-sm font-medium whitespace-nowrap"
+                          className="ml-1.5 !text-sm font-medium whitespace-nowrap"
                         >
                           {t('pause') || 'Pause'}
                         </motion.span>
@@ -504,7 +504,7 @@ export default function TimerIndicator() {
                 className={`p-2 rounded-lg transition-colors shadow-sm ${
                   isPaused 
                     ? 'bg-accent-light hover:bg-[var(--color-accent-bg)] !text-accent' 
-                    : 'bg-white/25 hover:bg-white/35 text-warning'
+                    : 'bg-white/25 hover:bg-white/35 !text-warning'
                 }`}
                 title={t('view_details') || 'Voir détails'}
               >
@@ -536,13 +536,13 @@ export default function TimerIndicator() {
               <div className="p-6 bg-warning-light border-b border-warning">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-warning-light flex items-center justify-center">
-                    <IconAlertTriangle className="w-6 h-6 text-warning-light" />
+                    <IconAlertTriangle className="w-6 h-6 !text-warning-light" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-primary">
+                    <h3 className="text-lg font-semibold !text-primary">
                       {t('time_exceeded') || 'Temps imparti écoulé'}
                     </h3>
-                    <p className="text-sm text-muted">
+                    <p className="text-sm !text-muted">
                       {formatMinutes(runningEntry?.estimated_duration || 0)} {t('elapsed') || 'écoulé(s)'}
                     </p>
                   </div>
@@ -559,12 +559,12 @@ export default function TimerIndicator() {
                   {/* Continue */}
                   <button
                     onClick={handleContinue}
-                    className="w-full flex items-center gap-3 p-4 bg-warning-light group cursor-pointer hover:bg-[var(--warning)] border border-warning rounded-xl transition-colors text-left"
+                    className="w-full flex items-center gap-3 p-4 bg-warning-light group cursor-pointer hover:bg-[var(--warning)] border border-warning rounded-xl transition-colors !text-left"
                   >
-                    <IconClock className="w-5 h-5 text-warning-text group-hover:text-white flex-shrink-0" />
+                    <IconClock className="w-5 h-5 !text-warning-text group-hover:!text-white flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-primary group-hover:text-white">{t('continue_task') || 'Continuer la tâche'}</p>
-                      <p className="!text-xs text-muted group-hover:text-white/80">{t('continue_task_desc') || 'Rallonger le temps de travail'}</p>
+                      <p className="font-medium !text-primary group-hover:!text-white">{t('continue_task') || 'Continuer la tâche'}</p>
+                      <p className="!text-xs !text-muted group-hover:!text-white/80">{t('continue_task_desc') || 'Rallonger le temps de travail'}</p>
                     </div>
                   </button>
 
@@ -572,12 +572,12 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer('exceeded_success')}
                     disabled={loading}
-                    className="w-full flex items-center gap-3 p-4 bg-success-light group cursor-pointer hover:bg-[var(--success)] border border-success rounded-xl transition-colors text-left disabled:opacity-50"
+                    className="w-full flex items-center gap-3 p-4 bg-success-light group cursor-pointer hover:bg-[var(--success)] border border-success rounded-xl transition-colors !text-left disabled:opacity-50"
                   >
-                    <IconCheck className="w-5 h-5 !text-success-text -text group-hover:text-white flex-shrink-0" />
+                    <IconCheck className="w-5 h-5 !text-success-text -text group-hover:!text-white flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-primary group-hover:text-white">{t('objectives_completed') || 'Objectifs atteints'}</p>
-                      <p className="!text-xs text-muted group-hover:text-white/80">{t('objectives_completed_desc') || 'La tâche est terminée avec succès'}</p>
+                      <p className="font-medium !text-primary group-hover:!text-white">{t('objectives_completed') || 'Objectifs atteints'}</p>
+                      <p className="!text-xs !text-muted group-hover:!text-white/80">{t('objectives_completed_desc') || 'La tâche est terminée avec succès'}</p>
                     </div>
                   </button>
 
@@ -585,12 +585,12 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer('exceeded_failed')}
                     disabled={loading}
-                    className="w-full flex items-center gap-3 p-4 bg-danger-light group cursor-pointer hover:bg-[var(--danger)] border border-danger rounded-xl transition-colors text-left disabled:opacity-50"
+                    className="w-full flex items-center gap-3 p-4 bg-danger-light group cursor-pointer hover:bg-[var(--danger)] border border-danger rounded-xl transition-colors !text-left disabled:opacity-50"
                   >
-                    <IconX className="w-5 h-5 text-danger group-hover:text-white flex-shrink-0" />
+                    <IconX className="w-5 h-5 !text-danger group-hover:!text-white flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-primary group-hover:text-white">{t('objectives_not_completed') || 'Objectifs non atteints'}</p>
-                      <p className="!text-xs text-muted group-hover:text-white/80">{t('objectives_not_completed_desc') || 'Arrêter et marquer comme incomplet'}</p>
+                      <p className="font-medium !text-primary group-hover:!text-white">{t('objectives_not_completed') || 'Objectifs non atteints'}</p>
+                      <p className="!text-xs !text-muted group-hover:!text-white/80">{t('objectives_not_completed_desc') || 'Arrêter et marquer comme incomplet'}</p>
                     </div>
                   </button>
                 </div>
@@ -624,10 +624,10 @@ export default function TimerIndicator() {
                     <IconCoffee className="w-5 h-5 !text-accent" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-primary">
+                    <h3 className="text-lg font-semibold !text-primary">
                       {t('coffee_break') || 'Pause café'}
                     </h3>
-                    <p className="text-sm text-muted">
+                    <p className="text-sm !text-muted">
                       {t('select_pause_duration') || 'Choisir la durée de la pause'}
                     </p>
                   </div>
@@ -655,7 +655,7 @@ export default function TimerIndicator() {
                 {/* Divider */}
                 <div className="flex items-center gap-3 py-2">
                   <div className="flex-1 h-px bg-border" />
-                  <span className="!text-xs text-muted uppercase">{t('or') || 'ou'}</span>
+                  <span className="!text-xs !text-muted uppercase">{t('or') || 'ou'}</span>
                   <div className="flex-1 h-px bg-border" />
                 </div>
 
@@ -664,11 +664,11 @@ export default function TimerIndicator() {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                   onClick={() => startPause(null)}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-muted/10 hover:bg-muted/20 text-secondary font-medium rounded-xl transition-colors border border-default"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-muted/10 hover:bg-muted/20 !text-secondary font-medium rounded-xl transition-colors border border-default"
                 >
                   <IconPlayerPlay className="w-4 h-4" />
                   {t('indefinite_pause') || 'Pause libre'}
-                  <span className="!text-xs text-muted ml-1">
+                  <span className="!text-xs !text-muted ml-1">
                     ({t('resume_manually') || 'reprendre manuellement'})
                   </span>
                 </motion.button>
@@ -678,7 +678,7 @@ export default function TimerIndicator() {
               <div className="px-4 pb-4">
                 <button
                   onClick={() => setShowPauseModal(false)}
-                  className="w-full py-2 text-sm text-muted hover:text-secondary transition-colors"
+                  className="w-full py-2 !text-sm !text-muted hover:!text-secondary transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
