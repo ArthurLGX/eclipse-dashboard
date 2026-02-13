@@ -736,7 +736,7 @@ const PROJECT_TYPES = [
                 </>
               ) : (
                 <>
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full !text-sm font-medium border ${statusConfig.colors.bg} ${statusConfig.colors.text} ${statusConfig.colors.border}`}>
+                    <span className={`badge badge-status-${project.project_status}`}>
                     <StatusIcon className="w-3.5 h-3.5" />
                     {statusConfig.label}
                   </span>
