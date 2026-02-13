@@ -209,12 +209,16 @@ function DashboardLayoutContent({
           label: t('dashboard'),
           icon: <IconHome size={15} stroke={1} />,
           path: '/dashboard',
+          moduleId: 'home',
+          status: getModuleStatus('home', moduleStatuses) || undefined,
         },
         {
           id: 'global_revenue_stats',
           label: t('global_revenue_stats'),
           icon: <IconChartLine size={15} stroke={1} />,
           path: '/dashboard/revenue',
+          moduleId: 'revenue',
+          status: getModuleStatus('revenue', moduleStatuses) || undefined,
         },
       ],
     },
@@ -234,6 +238,8 @@ function DashboardLayoutContent({
           label: t('contacts') || 'Contacts',
           icon: <IconUsers size={15} stroke={1} />,
           path: '/dashboard/clients',
+          moduleId: 'contacts',
+          status: getModuleStatus('contacts', moduleStatuses) || undefined,
         },
         // Pipeline CRM (vue Kanban des contacts avec filtrage par pipeline_status)
         {
@@ -247,12 +253,16 @@ function DashboardLayoutContent({
           label: t('mentors'),
           icon: <IconBrain size={15} stroke={1} />,
           path: '/dashboard/mentors',
+          moduleId: 'mentors',
+          status: getModuleStatus('mentors', moduleStatuses) || undefined,
         },
         {
           id: 'subscriptions',
           label: t('subscriptions') || 'Abonnements',
           icon: <IconCreditCard size={15} stroke={1} />,
           path: '/dashboard/subscriptions',
+          moduleId: 'subscriptions',
+          status: getModuleStatus('subscriptions', moduleStatuses) || undefined,
         },
       ],
     },
@@ -273,6 +283,8 @@ function DashboardLayoutContent({
           label: t('invoices_and_quotes') || 'Factures / Devis',
           icon: <IconFileInvoice size={15} stroke={1} />,
           path: '/dashboard/factures',
+          moduleId: 'invoices',
+          status: getModuleStatus('invoices', moduleStatuses) || undefined,
         },
         // Projets & Organisation
         {
@@ -332,6 +344,7 @@ function DashboardLayoutContent({
           path: '/dashboard/emails/inbox',
           moduleId: 'emails',
           badgeCount: emailUnreadCount > 0 ? emailUnreadCount : undefined,
+          status: getModuleStatus('inbox', moduleStatuses) || undefined,
         },
         // Smart Follow-Up Engine
         {
@@ -340,7 +353,7 @@ function DashboardLayoutContent({
           icon: <IconTargetArrow size={15} stroke={1} />,
           path: '/dashboard/smart-follow-up',
           moduleId: 'smart_follow_up',
-          status: 'new' as const,
+          status: getModuleStatus('smart_follow_up', moduleStatuses) || undefined,
         },
         // Technique
         {
@@ -386,13 +399,15 @@ function DashboardLayoutContent({
           label: t('media_library') || 'Bibliothèque',
           icon: <IconPhoto size={15} stroke={1} />,
           path: '/dashboard/newsletters/library',
+          moduleId: 'media_library',
+          status: getModuleStatus('media_library', moduleStatuses) || undefined,
         },
         {
           id: 'instagram_planner',
           label: t('instagram_planner') || 'Instagram Planner',
           icon: <IconBrandInstagram size={15} stroke={1} />,
           path: '/dashboard/instagram',
-          status: 'new' as const,
+          status: getModuleStatus('instagram_planner', moduleStatuses) || undefined,
         },
       ],
     },
@@ -420,25 +435,33 @@ function DashboardLayoutContent({
             </div>
           ),
           path: '/dashboard/profile/personal-information',
+          moduleId: 'profile',
+          status: getModuleStatus('profile', moduleStatuses) || undefined,
         },
         {
           id: 'your_subscription',
           label: t('your_subscription'),
           icon: <IconCreditCard size={15} stroke={1} />,
           path: '/dashboard/profile/your-subscription',
+          moduleId: 'profile',
+          status: getModuleStatus('your_subscription', moduleStatuses) || undefined,
         },
         {
           id: 'your_enterprise',
           label: t('your_enterprise'),
           icon: <IconBuildings size={15} stroke={1} />,
           path: '/dashboard/profile/your-company',
+          moduleId: 'profile',
+          status: getModuleStatus('your_enterprise', moduleStatuses) || undefined,
         },
         {
           id: 'settings',
           label: t('settings') || 'Paramètres',
           icon: <IconSettings size={15} stroke={1} />,
           path: '/dashboard/settings',
-        },
+          moduleId: 'profile',
+          status: getModuleStatus('settings', moduleStatuses) || undefined,
+              },
       ],
     },
 
