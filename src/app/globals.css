@@ -571,8 +571,7 @@
 .card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-default);
-  border-radius: 0.75rem;
-  transition: all 0.2s ease;
+   transition: all 0.2s ease;
 }
 
 /* Glass effect sur les cards en mode dark */
@@ -626,8 +625,7 @@ button {
   align-items: center;
   justify-content: center;
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
+   font-weight: 500;
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -654,8 +652,7 @@ button {
   align-items: center;
   justify-content: center;
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
+   font-weight: 500;
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -720,8 +717,7 @@ button {
   background-color: transparent;
   color: var(--text-secondary);
   border: 1px solid var(--border-default);
-  border-radius: 0.5rem;
-}
+ }
 
 .btn-ghost:hover {
   background-color: var(--bg-hover);
@@ -838,8 +834,7 @@ button {
   background-color: var(--bg-input);
   border: 1px solid var(--border-input);
   color: var(--text-primary);
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
+   padding: 0.5rem 0.75rem;
   transition: all 0.2s ease;
 }
 
@@ -876,8 +871,7 @@ button {
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  color: var(--text-muted);
+   color: var(--text-muted);
   font-family: var(--font-racing), cursive;
   font-weight: 500;
   font-size: 14px;
@@ -945,8 +939,7 @@ button {
   width: 100%;
   background-color: var(--bg-card);
   border: 1px solid var(--border-default);
-  border-radius: 0.5rem;
-  overflow: hidden;
+   overflow: hidden;
 }
 
 .table th {
@@ -983,8 +976,7 @@ button {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.5rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
+   font-size: 0.75rem;
   font-weight: 500;
 }
 
@@ -1212,8 +1204,7 @@ button {
 
 ::-webkit-scrollbar-thumb {
   background: var(--text-muted);
-  border-radius: 10px;
-}
+ }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
@@ -1244,13 +1235,11 @@ button {
 
 .scrollbar-visible::-webkit-scrollbar-track {
   background: var(--bg-hover);
-  border-radius: 10px;
-}
+ }
 
 .scrollbar-visible::-webkit-scrollbar-thumb {
   background: var(--border-default);
-  border-radius: 10px;
-  border: 2px solid var(--bg-hover);
+   border: 2px solid var(--bg-hover);
 }
 
 .scrollbar-visible::-webkit-scrollbar-thumb:hover {
@@ -1447,7 +1436,6 @@ input, textarea, select {
   background-color: var(--bg-input);
   border: 1px solid var(--border-input);
   color: var(--text-primary);
-  border-radius: 0.5rem;
   padding: 0.5rem 0.75rem;
 }
 
@@ -1764,12 +1752,7 @@ nav button:hover svg, nav a:hover svg {
    BRUTALIST THEME - SPECIAL STYLES
    ============================================ */
 
-/* Remove all rounded corners in brutalist theme */
-:root.brutalist *,
-:root.brutalist-dark *,
-:root.brutalist-light * {
-  border-radius: 0 !important;
-}
+ 
 
 /* Brutalist hover effect - 3D lift effect */
 :root.brutalist,
@@ -1900,12 +1883,7 @@ nav button:hover svg, nav a:hover svg {
   box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
 }
 
-/* Brutalist scrollbar */
-:root.brutalist::-webkit-scrollbar-thumb,
-:root.brutalist-dark::-webkit-scrollbar-thumb,
-:root.brutalist-light::-webkit-scrollbar-thumb {
-  border-radius: 0 !important;
-}
+ 
 
 /* Brutalist badges - square */
 :root.brutalist .badge,
