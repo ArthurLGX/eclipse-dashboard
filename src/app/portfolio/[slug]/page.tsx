@@ -347,7 +347,7 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="relative max-w-5xl w-full max-h-[90vh] bg-white rounded-lg overflow-hidden"
+        className="relative max-w-5xl w-full max-h-[90vh] bg-white  overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}

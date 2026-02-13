@@ -154,7 +154,7 @@ export default function ProjectProfitabilityCard({
       </h3>
 
       {/* Status Alert - compact inline */}
-      <div className={`flex items-center gap-2 p-2.5 rounded-lg ${statusConfig.bgColor} border ${statusConfig.borderColor} mb-4`}>
+      <div className={`flex items-center gap-2 p-2.5  ${statusConfig.bgColor} border ${statusConfig.borderColor} mb-4`}>
         <StatusIcon className={`w-4 h-4 flex-shrink-0 ${statusConfig.color}`} />
         <span className={`text-sm font-medium ${statusConfig.color}`}>
           {statusConfig.label}

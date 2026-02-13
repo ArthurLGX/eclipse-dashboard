@@ -759,7 +759,7 @@ function DashboardLayoutContent({
                 {/* Theme toggle mobile */}
                 <button
                   onClick={() => setThemeMode(resolvedMode === 'dark' ? 'light' : 'dark')}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-hover transition-colors"
+                  className="w-10 h-10 flex items-center justify-center  hover:bg-hover transition-colors"
                 >
                   {resolvedMode === 'dark' ? (
                     <IconSun stroke={'#ffd700'} size={18} className="!text-warning" />
@@ -770,7 +770,7 @@ function DashboardLayoutContent({
                 {/* Notification bell mobile */}
                 <button
                   onClick={() => router.push('/dashboard/notifications')}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-hover transition-colors"
+                  className="w-10 h-10 flex items-center justify-center  hover:bg-hover transition-colors"
                 >
                   <IconBell size={18} className="!text-secondary" />
                 </button>

@@ -1315,7 +1315,7 @@ export default function ProjectTasks({
             {/* Bouton Import Excel / Google Sheets */}
             <button
               onClick={() => setShowExcelImport(true)}
-              className="flex items-center gap-2 px-3 py-2 !bg-muted hover:!bg-accent-light !text-primary border border-default rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 !bg-muted hover:!bg-accent-light !text-primary border border-default  transition-colors"
               title={t('import_spreadsheet') || 'Importer depuis Excel ou Google Sheets'}
             >
               <div className="flex items-center -space-x-1">
@@ -1340,7 +1340,7 @@ export default function ProjectTasks({
             {/* Bouton IA */}
             <button
               onClick={() => setShowAIGenerator(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-accent hover:!text-white !text-accent rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-accent hover:!text-white !text-accent  transition-colors"
               title={t('ai_assistant') || 'Assistant IA Eclipse'}
             >
               <Image 
@@ -1356,7 +1356,7 @@ export default function ProjectTasks({
             {/* Bouton Nouvelle tâche */}
             <button
               onClick={() => setShowNewTaskForm(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-hover !text-primary rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-hover !text-primary  transition-colors"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_task') || 'Nouvelle tâche'}
@@ -1367,7 +1367,7 @@ export default function ProjectTasks({
 
       {/* Barre de progression globale */}
       {tasks.length > 0 && (
-        <div className="bg-muted rounded-lg p-4 border border-default">
+        <div className="bg-muted  p-4 border border-default">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm !text-primary">{t('overall_progress') || 'Progression globale'}</span>
             <span className="text-sm font-medium !text-muted">{overallProgress}%</span>
@@ -1390,7 +1390,7 @@ export default function ProjectTasks({
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-3 py-1.5 rounded-lg !text-sm transition-colors ${
+              className={`px-3 py-1.5  !text-sm transition-colors ${
                 filter === 'all'
                   ? 'bg-accent !text-white'
                   : 'bg-muted !text-primary hover:bg-hover'
@@ -1402,7 +1402,7 @@ export default function ProjectTasks({
               <button
                 key={option.value}
                 onClick={() => setFilter(option.value)}
-                className={`px-3 py-1.5 rounded-lg !text-sm transition-colors flex items-center gap-1.5 ${
+                className={`px-3 py-1.5  !text-sm transition-colors flex items-center gap-1.5 ${
                   filter === option.value
                     ? getStatusStyle(option.value)
                     : 'bg-card !text-primary hover:bg-hover'
@@ -1419,7 +1419,7 @@ export default function ProjectTasks({
             {archivedCount > 0 && (
               <button
                 onClick={() => setShowArchived(!showArchived)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg !text-sm transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5  !text-sm transition-colors ${
                   showArchived
                     ? 'bg-warning-light !text-warning'
                     : 'bg-muted !text-primary hover:bg-hover'
@@ -1440,7 +1440,7 @@ export default function ProjectTasks({
                   setIsSelectionMode(!isSelectionMode);
                   if (isSelectionMode) deselectAllTasks();
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg !text-sm transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5  !text-sm transition-colors ${
                   isSelectionMode
                     ? 'bg-accent !text-white'
                     : 'bg-muted !text-primary hover:bg-hover'
@@ -1454,12 +1454,12 @@ export default function ProjectTasks({
             )}
 
             {/* Sélecteur de vue */}
-            <div className="flex items-center gap-1 bg-muted p-1 rounded-lg border border-default">
+            <div className="flex items-center gap-1 bg-muted p-1  border border-default">
               {VIEW_OPTIONS.map(option => (
                 <button
                   key={option.value}
                   onClick={() => setViewMode(option.value)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md !text-sm transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5  !text-sm transition-colors ${
                     viewMode === option.value
                       ? 'bg-accent !text-white'
                       : 'text-primary hover:!text-primary'
@@ -1482,7 +1482,7 @@ export default function ProjectTasks({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex flex-wrap items-center justify-between gap-3 p-3 bg-accent-light border border-accent rounded-xl"
+            className="flex flex-wrap items-center justify-between gap-3 p-3 bg-accent-light border border-accent "
           >
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium !text-accent">
@@ -1501,7 +1501,7 @@ export default function ProjectTasks({
               {showArchived || filter === 'archived' ? (
                 <button
                   onClick={handleBulkUnarchive}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg !text-sm bg-success !text-white hover:bg-[var(--color-success)] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5  !text-sm bg-success !text-white hover:bg-[var(--color-success)] transition-colors"
                 >
                   <IconArchiveOff className="w-4 h-4" />
                   {t('unarchive_tasks') || 'Restaurer'}
@@ -1509,7 +1509,7 @@ export default function ProjectTasks({
               ) : (
                 <button
                   onClick={handleBulkArchive}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg !text-sm bg-warning !text-white hover:bg-[var(--color-warning)] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5  !text-sm bg-warning !text-white hover:bg-[var(--color-warning)] transition-colors"
                 >
                   <IconArchive className="w-4 h-4" />
                   {t('archive_tasks') || 'Archiver'}
@@ -1518,7 +1518,7 @@ export default function ProjectTasks({
               {/* Supprimer */}
               <button
                 onClick={handleBulkDelete}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg !text-sm bg-danger !text-white hover:bg-[var(--color-danger)] transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5  !text-sm bg-danger !text-white hover:bg-[var(--color-danger)] transition-colors"
               >
                 <IconTrash className="w-4 h-4" />
                 {t('delete_tasks') || 'Supprimer'}
@@ -1526,7 +1526,7 @@ export default function ProjectTasks({
               {/* Annuler */}
               <button
                 onClick={deselectAllTasks}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg !text-sm bg-muted !text-primary hover:bg-hover transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5  !text-sm bg-muted !text-primary hover:bg-hover transition-colors"
               >
                 <IconX className="w-4 h-4" />
               </button>
@@ -1543,7 +1543,7 @@ export default function ProjectTasks({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             onSubmit={handleCreateTask}
-            className={`bg-card border border-default rounded-xl p-4 space-y-4 ${parentTaskForSubtask ? 'ml-8' : ''}`}
+            className={`bg-card border border-default  p-4 space-y-4 ${parentTaskForSubtask ? 'ml-8' : ''}`}
             style={parentTaskForSubtask ? { 
               borderLeftWidth: '4px', 
               borderLeftColor: parentTaskForSubtask.color || TASK_COLORS[0],
@@ -1553,11 +1553,11 @@ export default function ProjectTasks({
             {/* Header avec info tâche parente pour les sous-tâches */}
             {parentTaskForSubtask && (
               <div 
-                className="flex items-center gap-3 p-3 rounded-lg mb-2"
+                className="flex items-center gap-3 p-3  mb-2"
                 style={{ backgroundColor: (parentTaskForSubtask.color || TASK_COLORS[0]) + '15' }}
               >
                 <div 
-                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  className="w-8 h-8  flex items-center justify-center"
                   style={{ backgroundColor: parentTaskForSubtask.color || TASK_COLORS[0] }}
                 >
                   <IconSubtask className="w-4 h-4 !text-white" />
@@ -1741,7 +1741,7 @@ export default function ProjectTasks({
               <button
                 type="submit"
                 disabled={!newTask.title.trim()}
-                className="px-4 py-2 bg-accent hover:bg-[var(--color-accent)] disabled:opacity-50 !text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-accent hover:bg-[var(--color-accent)] disabled:opacity-50 !text-white  transition-colors"
               >
                 {t('create') || 'Créer'}
               </button>
@@ -1752,7 +1752,7 @@ export default function ProjectTasks({
 
       {/* Liste des tâches selon la vue */}
       {filteredTasks.length === 0 ? (
-        <div className="text-center py-12 bg-muted rounded-xl border border-default">
+        <div className="text-center py-12 bg-muted  border border-default">
           <IconProgress className="w-12 h-12 !text-muted mx-auto mb-3" />
           <p className="text-muted">
             {filter === 'all' 
@@ -1762,7 +1762,7 @@ export default function ProjectTasks({
           {canEdit && filter === 'all' && (
             <button
               onClick={() => setShowNewTaskForm(true)}
-              className="mt-4 px-4 py-2 bg-card hover:bg-hover !text-primary rounded-lg transition-colors inline-flex items-center gap-2 border border-default"
+              className="mt-4 px-4 py-2 bg-card hover:bg-hover !text-primary  transition-colors inline-flex items-center gap-2 border border-default"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_first_task') || 'Ajouter une tâche'}
@@ -2071,7 +2071,7 @@ function TaskCard({
         onDragLeave={canBeDropTarget ? handleDragLeave : undefined}
         onDrop={canBeDropTarget ? handleDrop : undefined}
         onDragEnd={handleDragEnd}
-        className={`border rounded-xl overflow-hidden transition-all cursor-pointer hover:border-accent ${
+        className={`border  overflow-hidden transition-all cursor-pointer hover:border-accent ${
           isOverdue ? 'border-danger !bg-danger' : 'border-default bg-card'
         } ${isSubtask ? 'ml-8' : ''} ${
           isDragging ? 'opacity-50 scale-95' : ''
@@ -2303,7 +2303,7 @@ function TaskCard({
                   {task.subtasks?.map(subtask => (
                     <div 
                       key={subtask.documentId}
-                      className="group flex items-center gap-2 p-2 rounded-lg bg-muted hover:bg-hover transition-colors cursor-pointer"
+                      className="group flex items-center gap-2 p-2  bg-muted hover:bg-hover transition-colors cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         onEditSubtask(subtask); // Ouvre l'édition de la sous-tâche
@@ -2394,7 +2394,7 @@ function TaskCard({
             max="100"
             value={displayProgress}
             onChange={(e) => onProgressChange(parseInt(e.target.value))}
-            className="w-full h-1 bg-muted rounded-lg appearance-none cursor-pointer slider-thumb"
+            className="w-full h-1 bg-muted  appearance-none cursor-pointer slider-thumb"
           />
         </div>
       )}
@@ -2487,7 +2487,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="bg-card border border-default rounded-2xl w-full max-w-5xl shadow-2xl overflow-hidden outline-none overscroll-contain"
+        className="bg-card border border-default  w-full max-w-5xl shadow-2xl overflow-hidden outline-none overscroll-contain"
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
       >
@@ -2518,7 +2518,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             <button
               type="button"
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-hover !text-primary hover:!text-primary transition-colors"
+              className="p-2  hover:bg-hover !text-primary hover:!text-primary transition-colors"
             >
               <IconX className="w-5 h-5" />
             </button>
@@ -2710,7 +2710,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                       onClose();
                       onAddSubtask();
                     }}
-                    className="!text-xs px-2 py-1 rounded-lg border-accent-light !text-accent hover:bg-accent-light hover:border-accent transition-colors flex items-center gap-1"
+                    className="!text-xs px-2 py-1  border-accent-light !text-accent hover:bg-accent-light hover:border-accent transition-colors flex items-center gap-1"
                   >
                     <IconPlus className="w-3 h-3" />
                     {t('add_subtask') || 'Ajouter'}
@@ -2718,11 +2718,11 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                 </div>
                 
                 {hasSubtasks ? (
-                  <div className="space-y-2 p-3 rounded-lg bg-muted border border-default">
+                  <div className="space-y-2 p-3  bg-muted border border-default">
                     {task.subtasks?.map(subtask => (
                       <div 
                         key={subtask.documentId}
-                        className="flex items-center gap-2 p-2 rounded-lg bg-card"
+                        className="flex items-center gap-2 p-2  bg-card"
                       >
                         <div 
                           className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
@@ -2750,7 +2750,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-4 !text-muted !text-sm rounded-lg bg-muted border border-default">
+                  <div className="text-center py-4 !text-muted !text-sm  bg-muted border border-default">
                     {t('no_subtasks') || 'Aucune sous-tâche'}
                   </div>
                 )}
@@ -2768,7 +2768,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-accent hover:bg-[var(--color-accent)] !text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-accent hover:bg-[var(--color-accent)] !text-white  transition-colors"
             >
               {t('save') || 'Enregistrer'}
             </button>
@@ -2849,7 +2849,7 @@ function KanbanTaskCard({
   return (
     <div
       className={`
-        group relative bg-card border border-muted rounded-lg p-3 cursor-pointer
+        group relative bg-card border border-muted  p-3 cursor-pointer
         transition-all duration-200 hover:shadow-md hover:border-accent
         ${isDragging ? 'opacity-50 rotate-2 scale-105 shadow-xl' : ''}
       `}
@@ -2883,7 +2883,7 @@ function KanbanTaskCard({
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
-              <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-muted rounded-lg shadow-xl py-1 min-w-[140px]">
+              <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-muted  shadow-xl py-1 min-w-[140px]">
                 <button
                   onClick={(e) => { e.stopPropagation(); onClick(); setShowMenu(false); }}
                   className="w-full px-3 py-2 !text-left !text-sm hover:bg-hover flex items-center gap-2"
@@ -3025,7 +3025,7 @@ function KanbanColumn({
   return (
     <div 
       className={`
-        flex flex-col min-w-[280px] max-w-[320px] rounded-xl border-2 transition-all duration-200
+        flex flex-col min-w-[280px] max-w-[320px]  border-2 transition-all duration-200
         ${isDragOver ? 'border-accent bg-accent/5 scale-[1.02]' : 'border-transparent'}
       `}
       onDragOver={handleDragOver}
@@ -3162,7 +3162,7 @@ function TaskKanbanView({
   return (
     <div className="space-y-4">
       {/* Stats bar */}
-      <div className="flex flex-wrap gap-4 p-4 bg-card rounded-lg border border-muted">
+      <div className="flex flex-wrap gap-4 p-4 bg-card  border border-muted">
         <div className="flex items-center gap-2">
           <span className="text-sm !text-muted-foreground">{t('total_tasks') || 'Total tâches'}:</span>
           <span className="font-semibold !text-foreground">{totalTasks}</span>
@@ -3218,7 +3218,7 @@ function TaskKanbanView({
               onDragLeave={handleDeleteZoneDragLeave}
               onDrop={handleDeleteZoneDrop}
               className={`
-                flex items-center gap-3 px-6 py-4 rounded-xl border-2 border-dashed transition-all duration-200
+                flex items-center gap-3 px-6 py-4  border-2 border-dashed transition-all duration-200
                 ${isOverDeleteZone 
                   ? 'bg-red-500/20 border-red-500 scale-105 shadow-lg' 
                   : 'bg-card border-red-500/50 backdrop-blur-sm shadow-md'
@@ -3276,7 +3276,7 @@ function TaskTableView({
   };
 
   return (
-    <div className="overflow-x-auto bg-card rounded-xl border border-default">
+    <div className="overflow-x-auto bg-card  border border-default">
       <table className="w-full">
         <thead>
           <tr className="border-b border-default">
@@ -3925,7 +3925,7 @@ function TaskGanttView({
   // Early return si pas de données Gantt (après tous les hooks)
   if (!ganttData) {
     return (
-      <div className="text-center py-12 bg-muted rounded-xl border border-default">
+      <div className="text-center py-12 bg-muted  border border-default">
         <IconTimeline className="w-12 h-12 !text-muted mx-auto mb-3" />
         <p className="text-muted">{t('no_tasks_with_dates_for_gantt') || 'Aucune tâche avec des dates pour afficher le Gantt'}</p>
         <p className="!text-xs !text-muted mt-1">{t('add_dates_to_tasks') || 'Ajoutez des dates de début et d&apos;échéance à vos tâches'}</p>
@@ -3944,7 +3944,7 @@ function TaskGanttView({
           onWheel={(e) => e.stopPropagation()}
         >
           <div 
-            className="bg-card border border-default rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col overscroll-contain"
+            className="bg-card border border-default  shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col overscroll-contain"
             onWheel={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -3974,7 +3974,7 @@ function TaskGanttView({
                       type="text"
                       value={exportFileName}
                       onChange={(e) => setExportFileName(e.target.value)}
-                      className="flex-1 px-3 py-2 !text-sm bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+                      className="flex-1 px-3 py-2 !text-sm bg-muted border border-default  !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                     />
                     <span className="text-primary !text-sm">.pdf</span>
                   </div>
@@ -3988,7 +3988,7 @@ function TaskGanttView({
                   <div className="flex gap-2">
                     <button
                       onClick={() => setExportMode('light')}
-                      className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
+                      className={`flex-1 py-2 px-3  border-2 transition-all ${
                         exportMode === 'light' 
                           ? 'border-accent bg-accent-light' 
                           : 'border-default bg-muted hover:border-accent'
@@ -4003,7 +4003,7 @@ function TaskGanttView({
                     </button>
                     <button
                       onClick={() => setExportMode('dark')}
-                      className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
+                      className={`flex-1 py-2 px-3  border-2 transition-all ${
                         exportMode === 'dark' 
                           ? 'border-accent bg-accent-light' 
                           : 'border-default bg-muted hover:border-accent'
@@ -4024,14 +4024,14 @@ function TaskGanttView({
                   <button
                     onClick={() => handleExportPDF(exportMode)}
                     disabled={isExporting}
-                    className="w-full py-2.5 px-4 !text-sm bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 px-4 !text-sm bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     <IconFileTypePdf className="w-4 h-4" />
                     {isExporting ? (t('exporting') || 'Export...') : (t('export') || 'Exporter')}
                   </button>
                   <button
                     onClick={() => setShowExportModal(false)}
-                    className="w-full py-2 px-4 !text-sm border border-default rounded-lg !text-primary hover:bg-hover transition-colors"
+                    className="w-full py-2 px-4 !text-sm border border-default  !text-primary hover:bg-hover transition-colors"
                   >
                     {t('cancel') || 'Annuler'}
                   </button>
@@ -4042,7 +4042,7 @@ function TaskGanttView({
               <div className="flex-1 p-4 overflow-auto bg-muted-light">
                 <p className="!text-xs !text-muted mb-2 uppercase tracking-wider">{t('preview') || 'Aperçu'}</p>
                 <div 
-                  className="border !border-default rounded-lg shadow-lg overflow-auto"
+                  className="border !border-default  shadow-lg overflow-auto"
                   style={{ 
                     maxHeight: 'calc(90vh - 180px)',
                     transform: 'scale(0.7)',
@@ -4064,7 +4064,7 @@ function TaskGanttView({
           onClick={scrollToToday}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex items-center gap-2 px-3 py-1.5 !text-sm bg-accent !text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
+          className="flex items-center gap-2 px-3 py-1.5 !text-sm bg-accent !text-white  font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
         >
           <IconCalendarEvent className="w-4 h-4" />
           {t('today') || "Aujourd'hui"}
@@ -4073,7 +4073,7 @@ function TaskGanttView({
         <button
           onClick={() => setShowExportModal(true)}
           disabled={isExporting}
-          className="flex items-center gap-2 px-3 py-1.5 !text-sm bg-card border border-default rounded-lg !text-primary hover:!text-primary hover:bg-hover transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 px-3 py-1.5 !text-sm bg-card border border-default  !text-primary hover:!text-primary hover:bg-hover transition-colors disabled:opacity-50"
         >
           <IconFileTypePdf className="w-4 h-4" />
           {isExporting ? (t('exporting') || 'Export...') : (t('export_pdf') || 'Export PDF')}
@@ -4081,7 +4081,7 @@ function TaskGanttView({
       </div>
 
       {/* Design Gantt style Gamma - Structure unifiée */}
-      <div className="bg-card rounded-xl border border-default overflow-hidden" ref={ganttRef}>
+      <div className="bg-card  border border-default overflow-hidden" ref={ganttRef}>
         <div className="overflow-x-auto" ref={timelineRef}>
           <table className="w-full border-collapse" style={{ minWidth: `${450 + dayHeaders.length * 32}px` }}>
             {/* En-tête */}

@@ -140,7 +140,7 @@ const ToolResultCard: React.FC<{
 
   if (!result.success) {
     return (
-      <div className="mt-2 p-3 bg-danger-light border border-danger rounded-lg">
+      <div className="mt-2 p-3 bg-danger-light border border-danger ">
         <div className="flex items-center gap-2">
           <IconX size={16} className="text-danger" />
           <span className="text-sm !text-danger">{result.error || 'Une erreur est survenue'}</span>
@@ -150,7 +150,7 @@ const ToolResultCard: React.FC<{
   }
 
   return (
-    <div className="mt-2 p-3 bg-muted border border-default rounded-lg">
+    <div className="mt-2 p-3 bg-muted border border-default ">
       <div className="flex items-center gap-2 mb-2">
         {getIcon()}
         <span className="text-sm font-medium !text-primary">{getTitle()}</span>
@@ -201,7 +201,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmTask', result)}
-              className="w-full !text-xs !text-white bg-success hover:bg-success-light hover:!text-success flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full !text-xs !text-white bg-success hover:bg-success-light hover:!text-success flex items-center justify-center gap-1 px-3 py-2  transition-colors"
             >
               <IconCheck size={14} />
               {t('confirm_create_task') || 'Confirmer la création'}
@@ -228,7 +228,7 @@ const ToolResultCard: React.FC<{
               {result.actionUrl && (
                 <button 
                   onClick={() => onAction?.('navigateToQuote', result)}
-                  className="w-full !text-xs !text-accent bg-accent-light hover:bg-accent hover:!text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+                  className="w-full !text-xs !text-accent bg-accent-light hover:bg-accent hover:!text-white flex items-center justify-center gap-1 px-3 py-2  transition-colors"
                 >
                   <IconExternalLink size={14} />
                   {t('view_quote') || 'Voir le devis'}
@@ -238,7 +238,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmQuote', result)}
-              className="w-full !text-xs !text-white bg-accent hover:bg-accent-light hover:!text-accent flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full !text-xs !text-white bg-accent hover:bg-accent-light hover:!text-accent flex items-center justify-center gap-1 px-3 py-2  transition-colors"
             >
               <IconFileInvoice size={14} />
               {t('create_quote_now') || 'Créer le devis maintenant'}
@@ -266,7 +266,7 @@ const ToolResultCard: React.FC<{
               {result.actionUrl && (
                 <button 
                   onClick={() => onAction?.('navigateToContract', result)}
-                  className="w-full !text-xs !text-warning-text bg-warning-light hover:bg-warning hover:!text-white flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+                  className="w-full !text-xs !text-warning-text bg-warning-light hover:bg-warning hover:!text-white flex items-center justify-center gap-1 px-3 py-2  transition-colors"
                 >
                   <IconExternalLink size={14} />
                   {t('view_contract') || 'Voir le contrat'}
@@ -276,7 +276,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmContract', result)}
-              className="w-full !text-xs !text-white bg-warning hover:bg-warning-light hover:!text-warning-text flex items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors"
+              className="w-full !text-xs !text-white bg-warning hover:bg-warning-light hover:!text-warning-text flex items-center justify-center gap-1 px-3 py-2  transition-colors"
             >
               <IconFileText size={14} />
               {t('create_contract_now') || 'Créer le contrat maintenant'}
@@ -326,7 +326,7 @@ const TypingIndicator: React.FC<{ toolName?: string }> = ({ toolName }) => {
 
   return (
     <div className="flex justify-start">
-      <div className="bg-hover border border-default rounded-2xl rounded-bl-md px-4 py-3 max-w-[85%]">
+      <div className="bg-hover border border-default  rounded-bl-md px-4 py-3 max-w-[85%]">
         <div className="flex items-center gap-3">
           {/* Animated dots */}
           <div className="flex items-center gap-1">
@@ -404,7 +404,7 @@ const ToolLoadingCard: React.FC<{ toolName: string; args?: Record<string, unknow
 
   return (
     <motion.div 
-      className="mt-3 p-4 bg-card border border-default rounded-xl"
+      className="mt-3 p-4 bg-card border border-default "
       initial={{ opacity: 0, y: 10, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.3 }}
@@ -413,7 +413,7 @@ const ToolLoadingCard: React.FC<{ toolName: string; args?: Record<string, unknow
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-          className="p-2 rounded-lg bg-muted"
+          className="p-2  bg-muted"
         >
           {getIcon()}
         </motion.div>
@@ -683,7 +683,7 @@ export default function AIChatAssistant() {
             </div>
             {/* Keyboard shortcut tooltip on hover */}
             <div className="absolute left-full ml-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <div className="bg-card border border-default rounded-lg px-2 py-1 shadow-lg whitespace-nowrap">
+              <div className="bg-card border border-default  px-2 py-1 shadow-lg whitespace-nowrap">
                 <KeyboardShortcutHint />
               </div>
             </div>
@@ -699,7 +699,7 @@ export default function AIChatAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`fixed bottom-6 left-6 z-[9999] ${panelWidth} ${panelHeight} bg-card border border-default rounded-2xl shadow-2xl flex flex-col overflow-hidden overscroll-contain`}
+            className={`fixed bottom-6 left-6 z-[9999] ${panelWidth} ${panelHeight} bg-card border border-default  shadow-2xl flex flex-col overflow-hidden overscroll-contain`}
             onWheel={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -726,7 +726,7 @@ export default function AIChatAssistant() {
                 {messages.length > 0 && (
                   <button
                     onClick={handleClearChat}
-                    className="p-1.5 rounded-lg hover:bg-muted hover:!text-primary transition-colors"
+                    className="p-1.5  hover:bg-muted hover:!text-primary transition-colors"
                     title={t('clear_chat') || 'Nouvelle conversation'}
                   >
                     <IconRefresh size={16} />
@@ -734,14 +734,14 @@ export default function AIChatAssistant() {
                 )}
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-1.5 rounded-lg hover:bg-muted hover:!text-primary transition-colors"
+                  className="p-1.5  hover:bg-muted hover:!text-primary transition-colors"
                   title={isExpanded ? 'Réduire' : 'Agrandir'}
                 >
                   {isExpanded ? <IconMinimize size={16} /> : <IconMaximize size={16} />}
                 </button>
                 <button
                   onClick={closeAssistant}
-                  className="p-1.5 rounded-lg hover:bg-muted hover:!text-primary transition-colors"
+                  className="p-1.5  hover:bg-muted hover:!text-primary transition-colors"
                   title="Fermer (Échap)"
                 >
                   <IconX size={18} />
@@ -770,7 +770,7 @@ export default function AIChatAssistant() {
                   <div className="space-y-2 w-full">
                     <button
                       onClick={() => handleQuickAction('blocked')}
-                      className="w-full p-3 !text-left rounded-xl bg-muted border border-default hover:border-muted transition-colors group"
+                      className="w-full p-3 !text-left  bg-muted border border-default hover:border-muted transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">🚧</span>
@@ -787,7 +787,7 @@ export default function AIChatAssistant() {
                     
                     <button
                       onClick={() => handleQuickAction('relance')}
-                      className="w-full p-3 !text-left rounded-xl bg-muted border border-default hover:border-muted transition-colors group"
+                      className="w-full p-3 !text-left  bg-muted border border-default hover:border-muted transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">📧</span>
@@ -804,7 +804,7 @@ export default function AIChatAssistant() {
                     
                     <button
                       onClick={() => handleQuickAction('next')}
-                      className="w-full p-3 !text-left rounded-xl bg-muted border border-default hover:border-muted transition-colors group"
+                      className="w-full p-3 !text-left  bg-muted border border-default hover:border-muted transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">🎯</span>
@@ -828,7 +828,7 @@ export default function AIChatAssistant() {
                       className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
+                        className={`max-w-[85%]  px-4 py-2.5 ${
                           message.role === 'user'
                             ? 'bg-muted !text-primary rounded-br-md'
                             : 'bg-hover !text-primary border border-default rounded-bl-md'
@@ -897,7 +897,7 @@ export default function AIChatAssistant() {
                   
                   {error && (
                     <div className="flex justify-center">
-                      <div className="bg-danger-light border border-danger rounded-lg px-4 py-2 flex items-center gap-2">
+                      <div className="bg-danger-light border border-danger  px-4 py-2 flex items-center gap-2">
                         <span className="text-sm !text-danger">{error.message}</span>
                         <button onClick={handleRetry} className="text-danger hover:underline">
                           <IconRefresh size={14} />
@@ -920,7 +920,7 @@ export default function AIChatAssistant() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder={t('ai_input_placeholder') || 'Écris ton message...'}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-muted border border-default !text-primary placeholder:!text-muted focus:outline-none focus:border-muted !text-sm"
+                  className="flex-1 px-4 py-2.5  bg-muted border border-default !text-primary placeholder:!text-muted focus:outline-none focus:border-muted !text-sm"
                   disabled={isLoading}
                   data-ai-input="true"
                 />
@@ -928,7 +928,7 @@ export default function AIChatAssistant() {
                   <button
                     type="button"
                     onClick={stop}
-                    className="p-2.5 rounded-xl bg-danger !text-danger-text hover:bg-danger-light hover:!text-danger transition-colors"
+                    className="p-2.5  bg-danger !text-danger-text hover:bg-danger-light hover:!text-danger transition-colors"
                   >
                     <IconX size={18} />
                   </button>
@@ -936,7 +936,7 @@ export default function AIChatAssistant() {
                   <button
                     type="submit"
                     disabled={!inputValue.trim()}
-                      className="p-2.5 rounded-xl bg-muted !text-primary hover:bg-hover hover:!text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2.5  bg-muted !text-primary hover:bg-hover hover:!text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <IconSend size={18} />
                   </button>

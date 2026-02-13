@@ -120,7 +120,7 @@ function ContactCard({
     <div
       data-onboarding="pipeline-card"
       className={`
-        group relative bg-card border border-muted rounded-lg p-3 cursor-pointer
+        group relative bg-card border border-muted  p-3 cursor-pointer
         transition-all duration-200 hover:shadow-md hover:border-accent
         ${isDragging ? 'opacity-50 rotate-2 scale-105 shadow-xl' : ''}
       `}
@@ -207,7 +207,7 @@ function ContactCard({
             <>
               <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
               <div 
-                className="fixed z-50 bg-card border border-muted rounded-lg shadow-xl py-1 min-w-[180px]"
+                className="fixed z-50 bg-card border border-muted  shadow-xl py-1 min-w-[180px]"
                 style={menuStyle}
               >
                 <button
@@ -382,7 +382,7 @@ function KanbanColumn({
   return (
     <div 
       className={`
-        flex flex-col min-w-[280px] max-w-[320px] rounded-xl border-2 transition-all duration-200
+        flex flex-col min-w-[280px] max-w-[320px]  border-2 transition-all duration-200
         ${isDragOver ? 'border-accent bg-accent-light scale-[1.02]' : 'border-transparent'}
       `}
       onDragOver={handleDragOver}
@@ -558,7 +558,7 @@ export default function KanbanBoard({
   return (
     <div className="space-y-4 overscroll-contain">
       {/* Stats bar */}
-      <div className="flex flex-wrap gap-4 p-4 bg-card rounded-lg border border-muted">
+      <div className="flex flex-wrap gap-4 p-4 bg-card  border border-muted">
         <div className="flex items-center gap-2">
           <span className="text-sm !text-muted-foreground">{t('pipeline_total_contacts') || 'Total contacts'}:</span>
           <span className="font-semibold !text-foreground">{totalContacts}</span>
@@ -620,7 +620,7 @@ export default function KanbanBoard({
                 onDragLeave={handleRemoveZoneDragLeave}
                 onDrop={handleRemoveZoneDrop}
                 className={`
-                  flex items-center gap-3 px-6 py-4 rounded-xl border-2 border-dashed transition-all duration-200
+                  flex items-center gap-3 px-6 py-4  border-2 border-dashed transition-all duration-200
                   ${isOverRemoveZone 
                     ? 'bg-warning-light border-warning-light scale-105 shadow-lg' 
                     : 'bg-card-hover border-warning-light backdrop-blur-sm shadow-md'
@@ -644,7 +644,7 @@ export default function KanbanBoard({
                 onDragLeave={handleDeleteZoneDragLeave}
                 onDrop={handleDeleteZoneDrop}
                 className={`
-                  flex items-center gap-3 px-6 py-4 rounded-xl border-2 border-dashed transition-all duration-200
+                  flex items-center gap-3 px-6 py-4  border-2 border-dashed transition-all duration-200
                   ${isOverDeleteZone 
                     ? 'bg-danger-light border-danger scale-105 shadow-lg' 
                     : 'bg-card-hover border-danger backdrop-blur-sm shadow-md'

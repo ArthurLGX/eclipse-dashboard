@@ -325,7 +325,7 @@ export default function CreateProjectModal({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-3xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col outline-none overscroll-contain"
+        className="w-full max-w-3xl bg-card border border-default  shadow-xl max-h-[90vh] overflow-hidden flex flex-col outline-none overscroll-contain"
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
       >
@@ -345,7 +345,7 @@ export default function CreateProjectModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-hover transition-colors"
+            className="p-2  hover:bg-hover transition-colors"
           >
             <IconX className="w-5 h-5" />
           </button>
@@ -373,10 +373,10 @@ export default function CreateProjectModal({
                     <button
                       key={template.id}
                       onClick={() => handleSelectTemplate(template)}
-                      className="p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
+                      className="p-4  border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                     >
                       <div className="flex items-start justify-between mb-3">
-                        <div className="p-2 rounded-lg bg-accent-light !text-accent">
+                        <div className="p-2  bg-accent-light !text-accent">
                           <IconBriefcase className="w-5 h-5" />
                         </div>
                         <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
@@ -436,7 +436,7 @@ export default function CreateProjectModal({
               >
                 {/* Template summary */}
                 {selectedTemplate && selectedTemplate.id !== 'custom' && (
-                  <div className="p-4 rounded-xl bg-accent-light border border-accent-light">
+                  <div className="p-4  bg-accent-light border border-accent-light">
                     <div className="flex items-center gap-3 mb-2">
                       <IconCheck className="w-5 h-5 !text-accent" />
                       <span className="font-medium !text-primary">
@@ -497,7 +497,7 @@ export default function CreateProjectModal({
                       </button>
                     </div>
                   ) : (
-                    <div className="space-y-3 p-4 rounded-xl bg-muted border border-default">
+                    <div className="space-y-3 p-4  bg-muted border border-default">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium !text-primary flex items-center gap-2">
                           <IconUser className="w-4 h-4" />
@@ -574,7 +574,7 @@ export default function CreateProjectModal({
                 </div>
 
                 {/* Timing scope */}
-                <div className="p-4 rounded-xl border border-default bg-muted space-y-3">
+                <div className="p-4  border border-default bg-muted space-y-3">
                   <div className="flex items-center gap-2 !text-sm font-medium !text-secondary">
                     <IconClock className="w-4 h-4" />
                     {t('timing_scope') || 'Périmètre temporel'} *
@@ -583,7 +583,7 @@ export default function CreateProjectModal({
                     {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                   </p>
                   <div className="grid grid-cols-2 gap-3">
-                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
+                    <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                       <input
                         type="radio"
                         name="timing_mode"
@@ -593,7 +593,7 @@ export default function CreateProjectModal({
                       />
                       {t('timing_scope_duration') || 'Durée'}
                     </label>
-                    <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
+                    <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                       <input
                         type="radio"
                         name="timing_mode"
@@ -647,7 +647,7 @@ export default function CreateProjectModal({
 
                 {/* Estimated value */}
                 {selectedTemplate && selectedTemplate.tasks.length > 0 && (
-                  <div className="p-4 rounded-xl bg-success-light border border success">
+                  <div className="p-4  bg-success-light border border success">
                     <div className="flex items-center justify-between">
                       <span className="text-sm !text-secondary">
                         {t('estimated_value') || 'Valeur estimée'}
@@ -676,7 +676,7 @@ export default function CreateProjectModal({
               <button
                 onClick={handleCreateProject}
                 disabled={isSaving || !projectName || !startDate || !isTimingValid}
-                className="flex items-center gap-2 px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
               >
                 {isSaving ? (
                   <>

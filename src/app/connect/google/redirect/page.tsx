@@ -66,7 +66,7 @@ export default function GoogleRedirectPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center p-8 rounded-xl bg-card border-default min-w-md"
+          className="text-center p-8  bg-card border-default min-w-md"
         >
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
             <IconAlertCircle className="w-8 h-8 !text-red-500" />
@@ -77,7 +77,7 @@ export default function GoogleRedirectPage() {
             <p className="text-center !text-primary mb-6">{error}</p>
           <button
             onClick={() => router.push('/login')}
-            className="px-6 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-opacity"
+            className="px-6 py-2 bg-accent !text-white  hover:opacity-90 transition-opacity"
           > 
             {t('back_to_login')}
           </button>

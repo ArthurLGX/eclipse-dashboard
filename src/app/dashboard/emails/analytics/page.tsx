@@ -158,12 +158,12 @@ function EmailAnalytics() {
 
         {/* Filtres */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-card border border-default rounded-lg p-1">
+          <div className="flex items-center gap-2 bg-card border border-default  p-1">
             {(['7d', '30d', '90d', 'all'] as TimeFilter[]).map(filter => (
               <button
                 key={filter}
                 onClick={() => setTimeFilter(filter)}
-                className={`px-3 py-1.5 !text-sm rounded-md transition-colors ${
+                className={`px-3 py-1.5 !text-sm  transition-colors ${
                   timeFilter === filter
                     ? 'bg-accent !text-white'
                     : 'text-muted hover:!text-primary'
@@ -230,7 +230,7 @@ function EmailAnalytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Liste des emails récents */}
-        <div className="bg-card border border-default rounded-xl p-6">
+        <div className="bg-card border border-default  p-6">
           <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconMail className="w-5 h-5 !text-accent" />
             {t('recent_emails') || 'Emails récents'}
@@ -254,7 +254,7 @@ function EmailAnalytics() {
         </div>
 
         {/* Top liens cliqués */}
-        <div className="bg-card border border-default rounded-xl p-6">
+        <div className="bg-card border border-default  p-6">
           <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconClick className="w-5 h-5 !text-accent" />
             {t('top_clicked_links') || 'Liens les plus cliqués'}
@@ -264,7 +264,7 @@ function EmailAnalytics() {
             {topLinks.map((link, index) => (
               <div
                 key={link.url}
-                className="flex items-center gap-3 p-3 bg-secondary/5 rounded-lg"
+                className="flex items-center gap-3 p-3 bg-secondary/5 "
               >
                 <div className="w-8 h-8 rounded-full bg-accent-light !text-accent flex items-center justify-center !text-sm font-bold">
                   {index + 1}
@@ -332,9 +332,9 @@ function StatCard({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-card border border-default rounded-xl p-4"
+      className="bg-card border border-default  p-4"
     >
-      <div className={`w-10 h-10 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-3`}>
+      <div className={`w-10 h-10  ${colorClasses[color]} flex items-center justify-center mb-3`}>
         {icon}
       </div>
       <div className="text-2xl font-bold !text-primary">{value}</div>
@@ -353,7 +353,7 @@ function EmailRow({ email, onClick }: { email: SentEmail; onClick?: () => void }
 
   return (
     <div 
-      className="flex items-center gap-4 p-3 bg-secondary/5 rounded-lg hover:bg-secondary/10 transition-colors cursor-pointer group"
+      className="flex items-center gap-4 p-3 bg-secondary/5  hover:bg-secondary/10 transition-colors cursor-pointer group"
       onClick={onClick}
     >
       <div className="flex-1 min-w-0">
@@ -472,7 +472,7 @@ function EmailDetailModal({
           initial={{ scale: 0.9, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
-          className="bg-card rounded-xl shadow-xl w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col"
+          className="bg-card  shadow-xl w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
@@ -506,7 +506,7 @@ function EmailDetailModal({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+                className="p-2 !text-muted hover:!text-primary hover:bg-hover  transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -514,28 +514,28 @@ function EmailDetailModal({
 
             {/* Stats rapides */}
             <div className="grid grid-cols-4 gap-4 mt-4">
-              <div className="text-center p-3 bg-page rounded-lg">
+              <div className="text-center p-3 bg-page ">
                 <div className="flex items-center justify-center gap-1 !text-blue-500 mb-1">
                   <IconSend className="w-4 h-4" />
                   <span className="font-bold">{email.recipients.length}</span>
                 </div>
                 <div className="!text-xs !text-muted">{t('recipients') || 'Destinataires'}</div>
               </div>
-              <div className="text-center p-3 bg-page rounded-lg">
+              <div className="text-center p-3 bg-page ">
                 <div className="flex items-center justify-center gap-1 !text-green-500 mb-1">
                   <IconEye className="w-4 h-4" />
                   <span className="font-bold">{openedCount}</span>
                 </div>
                 <div className="!text-xs !text-muted">{t('opened') || 'Ouvert'}</div>
               </div>
-              <div className="text-center p-3 bg-page rounded-lg">
+              <div className="text-center p-3 bg-page ">
                 <div className="flex items-center justify-center gap-1 !text-orange-500 mb-1">
                   <IconClick className="w-4 h-4" />
                   <span className="font-bold">{clickedCount}</span>
                 </div>
                 <div className="!text-xs !text-muted">{t('clicked') || 'Cliqué'}</div>
               </div>
-              <div className="text-center p-3 bg-page rounded-lg">
+              <div className="text-center p-3 bg-page ">
                 <div className="flex items-center justify-center gap-1 !text-purple-500 mb-1">
                   <IconMessageCircle className="w-4 h-4" />
                   <span className="font-bold">{replies.length}</span>
@@ -596,7 +596,7 @@ function EmailDetailModal({
                 {recipientTracking.map((recipient, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-4 p-3 bg-page rounded-lg"
+                    className="flex items-center gap-4 p-3 bg-page "
                   >
                     <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center">
                       <IconUser className="w-4 h-4 !text-accent" />
@@ -668,9 +668,9 @@ function EmailDetailModal({
                   email.clicks.map((click, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-4 p-4 bg-page rounded-lg"
+                      className="flex items-center gap-4 p-4 bg-page "
                     >
-                      <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                      <div className="w-10 h-10  bg-orange-500/10 flex items-center justify-center">
                         <IconClick className="w-5 h-5 !text-orange-500" />
                       </div>
                       
@@ -718,7 +718,7 @@ function EmailDetailModal({
                   replies.map((reply, index) => (
                     <div
                       key={index}
-                      className="bg-page rounded-lg overflow-hidden"
+                      className="bg-page  overflow-hidden"
                     >
                       <div 
                         className="flex items-center gap-4 p-4 cursor-pointer hover:bg-hover transition-colors"

@@ -152,7 +152,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
   if (error || !data) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center">
+        <div className="bg-white  shadow-xl p-8 max-w-md !text-center">
           <IconAlertTriangle size={64} className="mx-auto !text-accent-subtle mb-4" />
           <h1 className="text-2xl font-bold !text-slate-800 mb-2">Lien invalide</h1>
           <p className="text-slate-600">{error || 'Ce lien de partage est invalide ou a expiré.'}</p>
@@ -164,7 +164,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
   if (validationSuccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center">
+        <div className="bg-white  shadow-xl p-8 max-w-md !text-center">
           <IconCircleCheck size={64} className="mx-auto !text-green-500 mb-4" />
           <h1 className="text-2xl font-bold !text-slate-800 mb-2">
             {validationAction === 'approve' ? 'Maquettes validées !' : 'Modifications demandées'}
@@ -201,7 +201,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Progress */}
         {data.show_progress && data.project.progress !== undefined && (
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <div className="bg-white  shadow-sm p-6 mb-6">
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium !text-slate-700 flex items-center gap-2">
                 <IconProgress size={15} className="text-accent-subtle" />
@@ -220,7 +220,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
 
         {/* Tasks */}
         {data.show_tasks && data.project.tasks && data.project.tasks.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <div className="bg-white  shadow-sm p-6 mb-6">
             <h2 className="font-semibold !text-slate-800 mb-4 flex items-center gap-2">
               <IconCheck size={15} className="text-accent-subtle" />
               Avancement des tâches
@@ -254,7 +254,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
 
         {/* Mockups Gallery */}
         {data.show_mockups && data.mockups && data.mockups.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
+          <div className="bg-white  shadow-sm overflow-hidden mb-6">
             <div className="p-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="font-semibold !text-slate-800 flex items-center gap-2">
                 <IconPhoto size={15} className="text-accent-subtle" />
@@ -324,7 +324,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                       <button
                         key={mockup.id}
                         onClick={() => setCurrentMockupIndex(idx)}
-                        className={`flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${
+                        className={`flex-shrink-0 w-20 h-14  overflow-hidden border-2 transition-all ${
                           idx === currentMockupIndex 
                             ? 'border-accent-subtle ring-1 ring-accent-bg' 
                             : 'border-transparent opacity-60 hover:opacity-100'
@@ -346,7 +346,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
 
         {/* Validation buttons */}
         {data.allow_validation && data.validation_status === 'pending' && (
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white  shadow-sm p-6">
             <h2 className="font-semibold !text-slate-800 mb-4">Votre décision</h2>
             <p className="text-slate-600 mb-6">
               Après avoir examiné les maquettes, veuillez valider ou demander des modifications.
@@ -354,14 +354,14 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={() => { setValidationAction('approve'); setValidationModal(true); }}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-subtle !text-accent-text rounded-xl font-semibold hover:bg-accent-bg transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-subtle !text-accent-text  font-semibold hover:bg-accent-bg transition-colors"
               >
                 <IconCheck size={15} />
                 Valider les maquettes
               </button>
               <button
                 onClick={() => { setValidationAction('request_changes'); setValidationModal(true); }}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-bg !text-accent-subtle rounded-xl font-semibold hover:bg-accent-bg transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-accent-bg !text-accent-subtle  font-semibold hover:bg-accent-bg transition-colors"
               >
                 <IconMessageCircle size={15} />
                 Demander des modifications
@@ -372,7 +372,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
 
         {/* Already validated */}
         {data.validation_status !== 'pending' && (
-          <div className="bg-white rounded-xl shadow-sm p-6 !text-center">
+          <div className="bg-white  shadow-sm p-6 !text-center">
             <IconCircleCheck size={48} className="mx-auto !text-accent-subtle mb-4" />
             <h2 className="text-lg font-semibold !text-slate-800 mb-2">
               {data.validation_status === 'approved' ? 'Maquettes validées' : 'Modifications demandées'}
@@ -390,7 +390,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
       {validationModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50" onClick={() => setValidationModal(false)} />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+          <div className="relative bg-white  shadow-2xl w-full max-w-md p-6">
             <h3 className="text-xl font-bold !text-slate-800 mb-4">
               {validationAction === 'approve' ? 'Valider les maquettes' : 'Demander des modifications'}
             </h3>
@@ -402,7 +402,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                   type="text"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
-                          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-accent-subtle"
+                          className="w-full px-4 py-2 border border-slate-300  focus:ring-1 focus:ring-accent-subtle"
                   required
                 />
               </div>
@@ -412,7 +412,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                   type="email"
                   value={clientEmail}
                   onChange={(e) => setClientEmail(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-accent-subtle"
+                  className="w-full px-4 py-2 border border-slate-300  focus:ring-1 focus:ring-accent-subtle"
                   required
                 />
               </div>
@@ -423,7 +423,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
                   <textarea
                     value={comments}
                     onChange={(e) => setComments(e.target.value)}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-accent-subtle"
+                    className="w-full px-4 py-2 border border-slate-300  focus:ring-1 focus:ring-accent-subtle"
                     rows={4}
                     placeholder="Décrivez les modifications souhaitées..."
                   />
@@ -433,14 +433,14 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => setValidationModal(false)}
-                  className="flex-1 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50"
+                  className="flex-1 px-4 py-2 border border-slate-300  hover:bg-slate-50"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={handleValidation}
                   disabled={validating || !clientName || !clientEmail}
-                  className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 ${
+                  className={`flex-1 px-4 py-2  font-semibold transition-colors disabled:opacity-50 ${
                     validationAction === 'approve'
                       ? 'bg-accent-subtle !text-accent-text hover:bg-accent-subtle'
                       : 'bg-accent-bg !text-accent-subtle hover:bg-accent-subtle'

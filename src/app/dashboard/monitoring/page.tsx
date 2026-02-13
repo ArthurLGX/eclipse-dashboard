@@ -174,7 +174,7 @@ export default function MonitoringPage() {
             </button>
             <button
               onClick={() => setShowAddModal(true)}
-              className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
+              className="btn-primary px-4 py-2 flex items-center gap-2 "
             >
               <IconPlus className="w-4 h-4" color="white" />
               {t('add_site') || 'Ajouter un site'}
@@ -186,7 +186,7 @@ export default function MonitoringPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent-light rounded-lg">
+              <div className="p-2 bg-accent-light ">
                 <IconWorld className="w-5 h-5 !text-accent" />
               </div>
               <div>
@@ -197,7 +197,7 @@ export default function MonitoringPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-success-light rounded-lg">
+              <div className="p-2 bg-success-light ">
                 <IconCheck className="w-5 h-5 !text-success-text -text" />
               </div>
               <div>
@@ -208,7 +208,7 @@ export default function MonitoringPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-error-light rounded-lg">
+              <div className="p-2 bg-error-light ">
                 <IconX className="w-5 h-5 !text-error" />
               </div>
               <div>
@@ -219,7 +219,7 @@ export default function MonitoringPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-warning-light rounded-lg">
+              <div className="p-2 bg-warning-light ">
                 <IconClock className="w-5 h-5 !text-warning" />
               </div>
               <div>
@@ -232,12 +232,12 @@ export default function MonitoringPage() {
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-muted  p-1">
             {(['all', 'frontend', 'backend', 'api', 'other'] as const).map((type) => (
               <button
                 key={type}
                 onClick={() => setTypeFilter(type)}
-                className={`px-3 py-1.5 rounded-md !text-sm font-medium transition-colors flex items-center gap-1 ${
+                className={`px-3 py-1.5  !text-sm font-medium transition-colors flex items-center gap-1 ${
                   typeFilter === type
                     ? 'bg-accent !text-white'
                     : 'text-muted hover:!text-primary'
@@ -269,7 +269,7 @@ export default function MonitoringPage() {
               <p className="text-muted">{t('no_sites') || 'Aucun site surveillé'}</p>
               <button
                 onClick={() => setShowAddModal(true)}
-                className="mt-4 btn-primary px-4 py-2 rounded-lg"
+                className="mt-4 btn-primary px-4 py-2 "
               >
                 {t('add_first_site') || 'Ajouter votre premier site'}
               </button>
@@ -318,7 +318,7 @@ export default function MonitoringPage() {
                             <img 
                               src={getFaviconUrl(site.url)} 
                               alt={`${site.name} favicon`}
-                              className="w-8 h-8 rounded-lg bg-elevated p-1 object-contain"
+                              className="w-8 h-8  bg-elevated p-1 object-contain"
                               onError={(e) => {
                                 const img = e.currentTarget;
                                 img.style.display = 'none';
@@ -405,20 +405,20 @@ export default function MonitoringPage() {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => router.push(`/dashboard/monitoring/${site.documentId}`)}
-                              className="p-1.5 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
+                              className="p-1.5 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
                               title={t('view_stats') || 'Voir les statistiques'}
                             >
                               <IconChartBar className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => setEditingSite(site)}
-                              className="p-1.5 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+                              className="p-1.5 !text-muted hover:!text-primary hover:bg-hover  transition-colors"
                             >
                               <IconEdit className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => setDeleteModal({ isOpen: true, site })}
-                              className="p-1.5 !text-muted hover:!text-error hover:bg-error-light rounded-lg transition-colors"
+                              className="p-1.5 !text-muted hover:!text-error hover:bg-error-light  transition-colors"
                             >
                               <IconTrash className="w-4 h-4" />
                             </button>
@@ -572,7 +572,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-lg bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-lg bg-card border border-default  shadow-xl max-h-[90vh] overflow-y-auto"
       >
         <div className="p-6 border-b border-default sticky top-0 bg-card z-10">
           <h2 className="text-lg font-semibold !text-primary">
@@ -621,7 +621,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
                   key={type}
                   type="button"
                   onClick={() => setSiteType(type)}
-                  className={`p-2 rounded-lg border !text-sm font-medium transition-colors flex flex-col items-center gap-1 ${
+                  className={`p-2  border !text-sm font-medium transition-colors flex flex-col items-center gap-1 ${
                     siteType === type
                       ? 'border-accent bg-accent-light !text-accent'
                       : 'border-default bg-muted !text-muted hover:!text-primary'
@@ -688,7 +688,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
             <button
               type="button"
               onClick={() => setShowServerInfo(!showServerInfo)}
-              className="w-full flex items-center justify-between p-3 bg-muted rounded-lg !text-sm font-medium !text-secondary hover:!text-primary transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-muted  !text-sm font-medium !text-secondary hover:!text-primary transition-colors"
             >
               <span className="flex items-center gap-2">
                 <IconServer className="w-4 h-4" />
@@ -705,7 +705,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="space-y-4 p-4 bg-muted rounded-lg"
+              className="space-y-4 p-4 bg-muted "
             >
               <div>
                 <label className="block !text-sm font-medium !text-secondary mb-1">
@@ -748,7 +748,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
                 />
               </div>
 
-              <div className="p-3 bg-warning-light border border-warning rounded-lg">
+              <div className="p-3 bg-warning-light border border-warning ">
                 <p className="!text-xs !text-warning-text flex items-center gap-2">
                   <IconKey className="w-4 h-4" />
                   {t('credentials_info') || 'Les identifiants de connexion seront gérés dans une section sécurisée séparée.'}
@@ -768,7 +768,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
             <button
               type="submit"
               disabled={isSaving || !name || !url}
-              className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2"
+              className="btn-primary px-4 py-2  flex items-center gap-2"
             >
               {isSaving && <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />}
               {site ? (t('save') || 'Sauvegarder') : (t('add') || 'Ajouter')}

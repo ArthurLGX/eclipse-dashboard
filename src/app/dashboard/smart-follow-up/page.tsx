@@ -166,13 +166,13 @@ export default function SmartFollowUpPage() {
         <div className="flex gap-2">
           <button
             onClick={() => handleApprove(row.id, row.documentId)}
-            className="px-3 py-1 bg-accent !text-white rounded-lg !text-sm hover:opacity-90 transition-opacity"
+            className="px-3 py-1 bg-accent !text-white  !text-sm hover:opacity-90 transition-opacity"
           >
             Approuver
           </button>
           <button
             onClick={() => handleReject(row.id, row.documentId)}
-            className="px-3 py-1 bg-error !text-primary rounded-lg !text-sm hover:opacity-90 transition-opacity"
+            className="px-3 py-1 bg-error !text-primary  !text-sm hover:opacity-90 transition-opacity"
           >
             Rejeter
           </button>
@@ -257,7 +257,7 @@ export default function SmartFollowUpPage() {
       render: (_value, row: FollowUpTask) => (
         <button
           onClick={() => handlePauseTask(row.id, row.documentId)}
-          className="px-3 py-1 bg-muted !text-primary rounded-lg !text-sm hover:bg-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 bg-muted !text-primary  !text-sm hover:bg-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={row.status_follow_up === 'cancelled' || row.status_follow_up === 'completed'}
         >
           Mettre en pause
@@ -291,7 +291,7 @@ export default function SmartFollowUpPage() {
         <div className="flex gap-3">
           <button
             onClick={() => setShowRulesModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 !text-purple-600 rounded-xl hover:bg-purple-500/20 transition-colors border border-purple-500/20"
+            className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 !text-purple-600  hover:bg-purple-500/20 transition-colors border border-purple-500/20"
             title="Gérer les règles de filtrage"
           >
             <IconFilter className="w-5 h-5" />
@@ -306,7 +306,7 @@ export default function SmartFollowUpPage() {
           <button
             onClick={handleToggleSystem}
             disabled={togglingPause}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
+            className={`flex items-center gap-2 px-4 py-2  font-medium transition-all ${
               isSystemEnabled
                 ? 'bg-warning/10 !text-warning border border-warning/20 hover:bg-warning/20'
                 : 'bg-success/10 !text-success border border-success/20 hover:bg-success/20'
@@ -327,7 +327,7 @@ export default function SmartFollowUpPage() {
 
           <button
             onClick={() => router.push('/dashboard/smart-follow-up/settings')}
-            className="flex items-center gap-2 px-4 py-2 bg-secondary !text-primary rounded-xl hover:bg-hover transition-colors border border-default"
+            className="flex items-center gap-2 px-4 py-2 bg-secondary !text-primary  hover:bg-hover transition-colors border border-default"
           >
             <IconSettings className="w-5 h-5" />
             Paramètres
@@ -337,7 +337,7 @@ export default function SmartFollowUpPage() {
 
       {/* Warning si système désactivé */}
       {!isSystemEnabled && (
-        <div className="mb-6 p-4 bg-warning/10 border border-warning/20 rounded-xl flex items-start gap-3">
+        <div className="mb-6 p-4 bg-warning/10 border border-warning/20  flex items-start gap-3">
           <IconAlertCircle className="w-5 h-5 !text-warning flex-shrink-0 mt-0.5" />
           <div>
             <h3 className="font-semibold !text-warning mb-1">Système en pause</h3>
@@ -351,28 +351,28 @@ export default function SmartFollowUpPage() {
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-card border border-default rounded-xl p-6">
+        <div className="bg-card border border-default  p-6">
           <div className="text-sm !text-muted mb-2">Actions en attente</div>
           <div className="text-3xl font-bold !text-primary">
             {statsLoading ? '...' : stats?.activeActions || 0}
           </div>
         </div>
         
-        <div className="bg-card border border-default rounded-xl p-6">
+        <div className="bg-card border border-default  p-6">
           <div className="text-sm !text-muted mb-2">À traiter aujourd&apos;hui</div>
           <div className="text-3xl font-bold !text-accent">
             {statsLoading ? '...' : stats?.dueToday || 0}
           </div>
         </div>
         
-        <div className="bg-card border border-default rounded-xl p-6">
+        <div className="bg-card border border-default  p-6">
           <div className="text-sm !text-muted mb-2">Envoyés (7 jours)</div>
           <div className="text-3xl font-bold !text-success">
             {statsLoading ? '...' : stats?.sentThisWeek || 0}
           </div>
         </div>
         
-        <div className="bg-card border border-default rounded-xl p-6">
+        <div className="bg-card border border-default  p-6">
           <div className="text-sm !text-muted mb-2">Taux de succès</div>
           <div className="text-3xl font-bold !text-primary">
             {statsLoading ? '...' : `${stats?.successRate.toFixed(0) || 0}%`}

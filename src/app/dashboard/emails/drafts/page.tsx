@@ -195,7 +195,7 @@ function DraftsContent() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('search_drafts') || 'Rechercher un brouillon...'}
-            className="w-full !pl-10 !pr-4 py-3 bg-card border border-default rounded-lg focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all"
+            className="w-full !pl-10 !pr-4 py-3 bg-card border border-default  focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all"
           />
         </div>
         
@@ -205,7 +205,7 @@ function DraftsContent() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as EmailCategory | 'all')}
-            className="pl-10 !pr-8 py-3 bg-card border border-default rounded-lg focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all appearance-none cursor-pointer"
+            className="pl-10 !pr-8 py-3 bg-card border border-default  focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all appearance-none cursor-pointer"
           >
             {categories.map(cat => (
               <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -219,7 +219,7 @@ function DraftsContent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-card border border-default rounded-xl overflow-hidden"
+        className="bg-card border border-default  overflow-hidden"
       >
         {loading ? (
           <div className="flex items-center justify-center py-16">
@@ -251,7 +251,7 @@ function DraftsContent() {
                     className="group flex items-center gap-4 p-5 cursor-pointer hover:bg-hover transition-colors"
                   >
                     <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                      className="w-12 h-12  flex items-center justify-center shrink-0"
                       style={{ backgroundColor: `${color}15` }}
                     >
                       <CategoryIcon className="w-6 h-6" style={{ color }} />
@@ -292,7 +292,7 @@ function DraftsContent() {
                         handleDelete(draft.documentId);
                       }}
                       disabled={deletingId === draft.documentId}
-                      className="p-2 !text-muted hover:!text-error rounded-lg hover:bg-error-light transition-colors opacity-0 group-hover:opacity-100 shrink-0"
+                      className="p-2 !text-muted hover:!text-error  hover:bg-error-light transition-colors opacity-0 group-hover:opacity-100 shrink-0"
                     >
                       {deletingId === draft.documentId ? (
                         <IconLoader2 className="w-5 h-5 animate-spin" />

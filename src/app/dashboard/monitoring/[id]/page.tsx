@@ -109,7 +109,7 @@ export default function MonitoringDetailPage() {
             <p className="text-primary">{t('site_not_found') || 'Site non trouvé'}</p>
             <button 
               onClick={() => router.push('/dashboard/monitoring')}
-              className="btn-primary mt-4 rounded-lg"
+              className="btn-primary mt-4 "
             >
               {t('back_to_monitoring') || 'Retour au monitoring'}
             </button>
@@ -140,7 +140,7 @@ export default function MonitoringDetailPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.push('/dashboard/monitoring')}
-              className="p-2 hover:bg-hover rounded-lg transition-colors"
+              className="p-2 hover:bg-hover  transition-colors"
             >
               <IconArrowLeft className="w-5 h-5 !text-muted" />
             </button>
@@ -149,7 +149,7 @@ export default function MonitoringDetailPage() {
             <img 
               src={getFaviconUrl(site.url)} 
               alt={`${site.name} favicon`}
-              className="w-10 h-10 rounded-lg bg-elevated p-1.5 object-contain"
+              className="w-10 h-10  bg-elevated p-1.5 object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
@@ -179,20 +179,20 @@ export default function MonitoringDetailPage() {
             <button
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="btn-primary px-3 py-1.5 !text-sm rounded-lg flex items-center gap-1.5"
+              className="btn-primary px-3 py-1.5 !text-sm  flex items-center gap-1.5"
             >
               <IconRefresh className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
               {t('refresh') || 'Actualiser'}
             </button>
             <button
               onClick={() => router.push(`/dashboard/monitoring?edit=${site.documentId}`)}
-              className="btn-tertiary px-3 py-1.5 !text-sm rounded-lg flex items-center gap-1.5"
+              className="btn-tertiary px-3 py-1.5 !text-sm  flex items-center gap-1.5"
             >
               <IconSettings className="w-4 h-4" />
             </button>
             <button
               onClick={() => setDeleteModal(true)}
-              className="btn-tertiary px-3 py-1.5 !text-sm rounded-lg !text-error hover:bg-error-light flex items-center gap-1.5"
+              className="btn-tertiary px-3 py-1.5 !text-sm  !text-error hover:bg-error-light flex items-center gap-1.5"
             >
               <IconTrash className="w-4 h-4" />
             </button>
@@ -261,12 +261,12 @@ export default function MonitoringDetailPage() {
         {/* Time Range Selector */}
         <div className="flex items-center justify-between">
           <span className="text-sm !text-muted">{t('period') || 'Période'}:</span>
-          <div className="flex bg-elevated rounded-lg p-0.5">
+          <div className="flex bg-elevated  p-0.5">
             {(['24h', '7d', '30d'] as const).map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`px-3 py-1 !text-xs rounded-md transition-colors ${
+                className={`px-3 py-1 !text-xs  transition-colors ${
                   timeRange === range
                     ? 'bg-accent !text-white'
                     : 'text-muted hover:!text-primary'

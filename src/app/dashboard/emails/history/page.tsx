@@ -204,7 +204,7 @@ function EmailHistory() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/dashboard/emails')}
-              className="p-2 !text-muted hover:!text-primary hover:bg-accent-light rounded-lg transition-colors"
+              className="p-2 !text-muted hover:!text-primary hover:bg-accent-light  transition-colors"
             >
               <IconArrowLeft className="w-5 h-5" />
             </button>
@@ -216,7 +216,7 @@ function EmailHistory() {
           </div>
           
           {/* Search */}
-          <div className="flex items-center gap-2 bg-page rounded-lg  px-3 py-2 w-72">
+          <div className="flex items-center gap-2 bg-page   px-3 py-2 w-72">
             <IconSearch className="w-4 h-4 !text-muted" />
             <input
               type="text"
@@ -238,7 +238,7 @@ function EmailHistory() {
         <div className="flex gap-6">
           {/* Sidebar - Categories */}
           <div className="w-64 flex-shrink-0">
-            <div className="bg-card border border-default rounded-xl p-4 sticky top-24">
+            <div className="bg-card border border-default  p-4 sticky top-24">
               <h3 className="text-sm font-medium !text-secondary mb-3 flex items-center gap-2">
                 <IconFilter className="w-4 h-4" />
                 {t('categories') || 'Catégories'}
@@ -254,7 +254,7 @@ function EmailHistory() {
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+                      className={`w-full flex items-center justify-between px-3 py-2  transition-colors ${
                         selectedCategory === cat.id
                           ? 'bg-accent-light !text-accent'
                           : 'text-secondary hover:bg-hover hover:!text-primary'
@@ -298,7 +298,7 @@ function EmailHistory() {
                 </p>
               </div>
             ) : (
-              <div className="bg-card rounded-xl overflow-hidden">
+              <div className="bg-card  overflow-hidden">
                 {filteredEmails.map((email, index) => {
                   const catInfo = getCategoryInfo(email.category);
                   
@@ -315,7 +315,7 @@ function EmailHistory() {
                       <div className="flex items-start gap-4">
                         {/* Category Icon */}
                         <div 
-                          className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                          className="w-10 h-10  flex items-center justify-center flex-shrink-0"
                           style={{ backgroundColor: `${catInfo.color}15` }}
                         >
                           <span style={{ color: catInfo.color }}>{catInfo.icon}</span>
@@ -380,14 +380,14 @@ function EmailHistory() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-xl shadow-xl w-full max-w-7xl max-h-[90vh] overflow-hidden"
+              className="bg-card  shadow-xl w-full max-w-7xl max-h-[90vh] overflow-hidden"
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
               <div className="p-4 border-b border-default flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div 
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    className="w-10 h-10  flex items-center justify-center"
                     style={{ backgroundColor: `${getCategoryInfo(selectedEmail.category).color}15` }}
                   >
                     <span style={{ color: getCategoryInfo(selectedEmail.category).color }}>
@@ -409,7 +409,7 @@ function EmailHistory() {
                 </div>
                 <button
                   onClick={() => setSelectedEmail(null)}
-                  className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+                  className="p-2 !text-muted hover:!text-primary hover:bg-hover  transition-colors"
                 >
                   <IconX className="w-5 h-5" />
                 </button>
@@ -417,7 +417,7 @@ function EmailHistory() {
               
               {/* Error message if failed */}
               {selectedEmail.status_mail === 'failed' && selectedEmail.error_message && (
-                <div className="mx-4 mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div className="mx-4 mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 ">
                   <div className="flex items-start gap-2">
                     <IconAlertCircle className="w-5 h-5 !text-red-500 flex-shrink-0 mt-0.5" />
                     <div>

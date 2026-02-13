@@ -120,7 +120,7 @@ export default function AdminSettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
         >
           {saving ? (
             <IconRefresh className="w-4 h-4 animate-spin" />
@@ -136,7 +136,7 @@ export default function AdminSettingsPage() {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="bg-warning-light border border-warning rounded-xl p-4 flex items-center gap-3"
+          className="bg-warning-light border border-warning  p-4 flex items-center gap-3"
         >
           <IconAlertTriangle className="w-6 h-6 !text-warning" />
           <div>
@@ -382,16 +382,16 @@ export default function AdminSettingsPage() {
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-danger-light border border-danger rounded-xl p-6">
+      <div className="bg-danger-light border border-danger  p-6">
         <h2 className="text-lg font-semibold !text-danger mb-4">{t('danger_zone') || 'Zone de danger'}</h2>
         <div className="flex flex-wrap gap-4">
-          <button className="px-4 py-2 bg-danger-light !text-danger rounded-lg hover:bg-danger-light transition-colors">
+          <button className="px-4 py-2 bg-danger-light !text-danger  hover:bg-danger-light transition-colors">
             {t('reset_settings') || 'Réinitialiser les paramètres'}
           </button>
-          <button className="px-4 py-2 bg-danger-light !text-danger rounded-lg hover:bg-danger-light transition-colors">
+          <button className="px-4 py-2 bg-danger-light !text-danger  hover:bg-danger-light transition-colors">
             {t('clear_cache') || 'Vider le cache'}
           </button>
-          <button className="px-4 py-2 bg-danger-light !text-danger rounded-lg hover:bg-danger-light transition-colors">
+          <button className="px-4 py-2 bg-danger-light !text-danger  hover:bg-danger-light transition-colors">
             {t('export_data') || 'Exporter les données'}
           </button>
         </div>

@@ -442,7 +442,7 @@ export default function ProjectWorkflowView({
             {onBack && (
               <button
                 onClick={onBack}
-                className="p-1.5 rounded-lg hover:bg-hover !text-muted hover:!text-primary transition-colors"
+                className="p-1.5  hover:bg-hover !text-muted hover:!text-primary transition-colors"
               >
                 <IconArrowRight className="rotate-180" size={18} />
               </button>
@@ -481,24 +481,24 @@ export default function ProjectWorkflowView({
                   resetOnboarding();
                   setShowOnboarding(true);
                 }}
-                className="p-1.5 rounded-lg hover:bg-hover !text-muted hover:!text-accent transition-colors flex items-center gap-1"
+                className="p-1.5  hover:bg-hover !text-muted hover:!text-accent transition-colors flex items-center gap-1"
                 title={t('replay_tutorial') || 'Revoir le tutoriel'}
               >
                 <IconHelpCircle size={18} />
               </button>
             )}
             <div className="w-px h-4 bg-default mx-1" />
-            <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Zoom -">
+            <button onClick={handleZoomOut} className="p-1.5  hover:bg-hover !text-muted" title="Zoom -">
               <IconZoomOut size={18} />
             </button>
             <span className="!text-xs !text-muted w-12 !text-center">{Math.round(scale * 100)}%</span>
-            <button onClick={handleZoomIn} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Zoom +">
+            <button onClick={handleZoomIn} className="p-1.5  hover:bg-hover !text-muted" title="Zoom +">
               <IconZoomIn size={18} />
             </button>
-            <button onClick={handleReset} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Reset">
+            <button onClick={handleReset} className="p-1.5  hover:bg-hover !text-muted" title="Reset">
               <IconFocus2 size={18} />
             </button>
-            <button onClick={toggleFullscreen} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Fullscreen">
+            <button onClick={toggleFullscreen} className="p-1.5  hover:bg-hover !text-muted" title="Fullscreen">
               {isFullscreen ? <IconMinimize size={18} /> : <IconMaximize size={18} />}
             </button>
           </div>
@@ -586,7 +586,7 @@ export default function ProjectWorkflowView({
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleNodeClick(node)}
                       className={`
-                        relative flex flex-col items-center p-4 rounded-xl border-2 min-w-[120px]
+                        relative flex flex-col items-center p-4  border-2 min-w-[120px]
                         transition-all duration-200 cursor-pointer
                         ${styles.bg} ${styles.border}
                         ${isGhost ? 'border-dashed hover:border-accent hover:bg-accent-light' : ''}
@@ -630,13 +630,13 @@ export default function ProjectWorkflowView({
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 bg-card border border-default rounded-lg shadow-xl p-2 min-w-[180px]"
+                          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 bg-card border border-default  shadow-xl p-2 min-w-[180px]"
                         >
                           {node.items.map((item) => (
                             <Link
                               key={item.id}
                               href={item.href || '#'}
-                              className="flex items-center justify-between p-2 rounded-lg hover:bg-hover !text-sm"
+                              className="flex items-center justify-between p-2  hover:bg-hover !text-sm"
                             >
                               <span className="text-primary truncate">{item.label}</span>
                               <span className={`px-1.5 py-0.5 rounded !text-xs ${
@@ -654,7 +654,7 @@ export default function ProjectWorkflowView({
                           {/* Add new button */}
                           <button
                             onClick={() => handleNodeClick({ ...node, status: 'ghost' })}
-                            className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-accent-light !text-accent !text-sm mt-1 border-t border-default pt-2"
+                            className="w-full flex items-center gap-2 p-2  hover:bg-accent-light !text-accent !text-sm mt-1 border-t border-default pt-2"
                           >
                             <IconPlus size={14} />
                             Ajouter
@@ -695,13 +695,13 @@ export default function ProjectWorkflowView({
                           <div key={secondary.label} className="relative group">
                             <button
                               onClick={(e) => handleSecondaryAction(secondary.action, e)}
-                              className="p-1.5 rounded-lg bg-card border border-default hover:border-accent hover:bg-hover transition-colors"
+                              className="p-1.5  bg-card border border-default hover:border-accent hover:bg-hover transition-colors"
                             >
                               <secondary.icon size={14} className={secondary.color} />
                             </button>
                             
                             {/* Tooltip au hover */}
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-card border border-accent rounded-lg shadow-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-card border border-accent  shadow-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50">
                               <span className="!text-xs !text-primary font-medium">{secondary.label}</span>
                               <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
                                 <div className="border-4 border-transparent border-t-accent"></div>
@@ -719,7 +719,7 @@ export default function ProjectWorkflowView({
         </div>
 
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 bg-card border border-default rounded-lg p-3 !text-xs space-y-1.5">
+        <div className="absolute bottom-4 left-4 bg-card border border-default  p-3 !text-xs space-y-1.5">
           <div className="font-medium !text-primary mb-2">{t('legend') || 'Légende'}</div>
           <div className="flex items-center gap-2">
             <IconCheck size={14} className="text-success-text" />
@@ -809,7 +809,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => onSelectProject(project)}
-                className="w-full p-4 bg-card border border-default rounded-xl hover:border-accent hover:shadow-lg transition-all !text-left"
+                className="w-full p-4 bg-card border border-default  hover:border-accent hover:shadow-lg transition-all !text-left"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0 !pr-4">

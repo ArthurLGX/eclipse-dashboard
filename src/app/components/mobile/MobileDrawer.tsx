@@ -90,7 +90,7 @@ export default function MobileDrawer({
                 <SidebarLogo />
                 <button
                   onClick={onClose}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-muted hover:bg-muted transition-colors active:scale-95"
+                  className="w-9 h-9 flex items-center justify-center  bg-muted hover:bg-muted transition-colors active:scale-95"
                 >
                   <IconX size={15} className="text-primary" />
                 </button>
@@ -105,7 +105,7 @@ export default function MobileDrawer({
                         {/* Category header */}
                         <button
                           onClick={() => toggleCategory(item.id)}
-                          className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
+                          className={`w-full flex items-center justify-between p-3  transition-all ${
                             activeCategory === item.id
                               ? 'bg-accent-muted !text-accent'
                               : 'text-secondary hover:bg-hover'
@@ -138,7 +138,7 @@ export default function MobileDrawer({
                                   <button
                                     key={subItem.id}
                                     onClick={() => handleItemClick(subItem)}
-                                    className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-all active:scale-98 ${
+                                    className={`w-full flex items-center gap-3 p-2.5  transition-all active:scale-98 ${
                                       activeItem === subItem.id || pathname === subItem.path
                                         ? 'bg-accent-muted !text-accent font-medium'
                                         : 'text-secondary hover:bg-hover hover:!text-primary'
@@ -166,7 +166,7 @@ export default function MobileDrawer({
                       /* Regular item (logout, admin, etc.) */
                       <button
                         onClick={() => handleItemClick(item)}
-                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all active:scale-98 ${
+                        className={`w-full flex items-center gap-3 p-3  transition-all active:scale-98 ${
                           activeItem === item.id
                             ? 'bg-accent-muted !text-accent font-medium'
                             : 'text-secondary hover:bg-hover hover:!text-primary'

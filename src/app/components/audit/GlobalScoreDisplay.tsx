@@ -168,7 +168,7 @@ export default function GlobalScoreDisplay({
         <div className="flex-1 !text-center md:!text-left">
           {/* Score level badge */}
           <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-            <span className={`p-2 rounded-lg ${scoreLevel.bgColor} ${scoreLevel.color}`}>
+            <span className={`p-2  ${scoreLevel.bgColor} ${scoreLevel.color}`}>
               {scoreLevel.icon}
             </span>
             <span className={`text-xl font-bold ${scoreLevel.color}`}>

@@ -259,7 +259,7 @@ function LoginContent() {
                   type="button"
                   onClick={handleGoogleLogin}
                   disabled={isGoogleLoading}
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default  transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isGoogleLoading ? (
                     <>
@@ -281,7 +281,7 @@ function LoginContent() {
                 </button>
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default rounded-xl transition-all duration-200 group opacity-50 cursor-not-allowed"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default  transition-all duration-200 group opacity-50 cursor-not-allowed"
                   disabled
                   title={t('coming_soon') || 'Prochainement'}
                 >
@@ -317,7 +317,7 @@ function LoginContent() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="p-3 bg-danger-bg border border-danger rounded-xl"
+                    className="p-3 bg-danger-bg border border-danger "
                   >
                     <p className="text-sm !text-danger !text-center">{error}</p>
                   </motion.div>
@@ -335,7 +335,7 @@ function LoginContent() {
                     required
                     autoComplete={isLogin ? 'username' : 'email'}
                     onChange={e => isLogin ? setUsername(e.target.value) : setEmail(e.target.value)}
-                    className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                    className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                   />
                 </div>
 
@@ -355,7 +355,7 @@ function LoginContent() {
                       required={!isLogin}
                       autoComplete="username"
                       onChange={e => setUsername(e.target.value)}
-                      className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                     />
                   </motion.div>
                 )}
@@ -384,7 +384,7 @@ function LoginContent() {
                         setPassword(e.target.value);
                         if (!isLogin) setPasswordError(validatePassword(e.target.value));
                       }}
-                      className="w-full px-4 py-3 pr-12 bg-input border border-input rounded-xl !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      className="w-full px-4 py-3 pr-12 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                     />
                     <button
                       type="button"
@@ -419,7 +419,7 @@ function LoginContent() {
                           setConfirmPassword(e.target.value);
                           checkPassword(e.target.value);
                         }}
-                        className="w-full px-4 py-3 pr-12 bg-input border border-input rounded-xl !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                        className="w-full px-4 py-3 pr-12 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                       />
                       <button
                         type="button"
@@ -438,7 +438,7 @@ function LoginContent() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-highlight hover:bg-highlight-hover !text-highlight-text font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="w-full bg-highlight hover:bg-highlight-hover !text-highlight-text font-semibold py-3 px-6  transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
                   {isLogin ? t('sign_in') : t('sign_up')}
                 </button>

@@ -71,7 +71,7 @@ export default function TemplatePickerModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-4xl max-h-[85vh] bg-card border border-default rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+          className="relative w-full max-w-4xl max-h-[85vh] bg-card border border-default  shadow-2xl overflow-hidden flex flex-col"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
@@ -86,7 +86,7 @@ export default function TemplatePickerModal({
             </div>
             <button
               onClick={onClose}
-              className="p-2 !text-muted hover:!text-primary rounded-lg hover:bg-secondary/10 transition-colors"
+              className="p-2 !text-muted hover:!text-primary  hover:bg-secondary/10 transition-colors"
             >
               <IconX className="w-5 h-5" />
             </button>
@@ -99,7 +99,7 @@ export default function TemplatePickerModal({
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
                 className={`
-                  flex items-center gap-2 px-4 py-2 rounded-lg !text-sm font-medium whitespace-nowrap transition-all
+                  flex items-center gap-2 px-4 py-2  !text-sm font-medium whitespace-nowrap transition-all
                   ${selectedCategory === category.id
                     ? 'bg-accent !text-white'
                     : 'bg-secondary/10 !text-secondary hover:bg-secondary/20'
@@ -134,7 +134,7 @@ export default function TemplatePickerModal({
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className={`
-                      relative cursor-pointer rounded-xl overflow-hidden border-2 transition-all
+                      relative cursor-pointer  overflow-hidden border-2 transition-all
                       ${isSelected
                         ? 'border-accent shadow-lg shadow-accent/20'
                         : 'border-transparent hover:border-accent'
@@ -159,7 +159,7 @@ export default function TemplatePickerModal({
                       </div>
 
                       {/* Fake content */}
-                      <div className="flex-1 bg-white/90 rounded-lg p-3 space-y-2">
+                      <div className="flex-1 bg-white/90  p-3 space-y-2">
                         <div
                           className="h-2 w-full rounded"
                           style={{ backgroundColor: template.text_color, opacity: 0.3 }}
@@ -207,7 +207,7 @@ export default function TemplatePickerModal({
                           exit={{ opacity: 0 }}
                           className="absolute inset-0 bg-accent-light flex items-center justify-center"
                         >
-                          <span className="px-4 py-2 bg-accent !text-white rounded-lg !text-sm font-medium">
+                          <span className="px-4 py-2 bg-accent !text-white  !text-sm font-medium">
                             {t('select') || 'Sélectionner'}
                           </span>
                         </motion.div>

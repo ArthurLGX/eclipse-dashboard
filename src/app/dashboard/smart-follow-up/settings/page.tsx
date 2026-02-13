@@ -155,7 +155,7 @@ export default function SmartFollowUpSettingsPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="p-2 hover:bg-secondary rounded-lg transition-colors"
+            className="p-2 hover:bg-secondary  transition-colors"
           >
             <IconArrowLeft className="w-5 h-5" />
           </button>
@@ -171,7 +171,7 @@ export default function SmartFollowUpSettingsPage() {
         <button
           onClick={handleSave}
           disabled={loading}
-          className="flex items-center gap-2 px-6 py-3 bg-accent !text-white rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+          className="flex items-center gap-2 px-6 py-3 bg-accent !text-white  hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed font-medium"
         >
           <IconDeviceFloppy className="w-5 h-5" />
           {loading ? 'Enregistrement...' : 'Enregistrer'}
@@ -179,14 +179,14 @@ export default function SmartFollowUpSettingsPage() {
       </div>
 
       {/* Section Activation */}
-      <div className="bg-card border border-default rounded-xl p-6 mb-6">
+      <div className="bg-card border border-default  p-6 mb-6">
         <h2 className="text-xl font-bold !text-primary mb-4 flex items-center gap-2">
           <IconShieldCheck className="w-6 h-6 !text-accent" />
           Activation du système
         </h2>
         
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-secondary rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-secondary ">
             <div>
               <h3 className="font-semibold !text-primary">Smart Follow-Up activé</h3>
               <p className="text-sm !text-muted">Activer ou désactiver le système de relances automatiques</p>
@@ -202,7 +202,7 @@ export default function SmartFollowUpSettingsPage() {
             </label>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-secondary rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-secondary ">
             <div>
               <h3 className="font-semibold !text-primary">Approbation automatique</h3>
               <p className="text-sm !text-muted">Les actions à haute confiance (&gt;80%) seront approuvées automatiquement</p>
@@ -221,7 +221,7 @@ export default function SmartFollowUpSettingsPage() {
       </div>
 
       {/* Section Domaines exclus */}
-      <div className="bg-card border border-default rounded-xl p-6 mb-6">
+      <div className="bg-card border border-default  p-6 mb-6">
         <h2 className="text-xl font-bold !text-primary mb-4">Domaines exclus</h2>
         <p className="text-sm !text-muted mb-4">
           Les emails provenant de ces domaines ne déclencheront pas de relances automatiques
@@ -234,11 +234,11 @@ export default function SmartFollowUpSettingsPage() {
             onChange={(e) => setNewDomain(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAddDomain()}
             placeholder="ex: noreply.com, spam.com"
-            className="flex-1 px-4 py-2 bg-secondary border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 px-4 py-2 bg-secondary border border-default  !text-primary placeholder:!text-muted focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             onClick={handleAddDomain}
-            className="px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+            className="px-4 py-2 bg-accent !text-white  hover:opacity-90 transition-opacity flex items-center gap-2"
           >
             <IconPlus className="w-5 h-5" />
             Ajouter
@@ -249,7 +249,7 @@ export default function SmartFollowUpSettingsPage() {
           {excludedDomains.map((domain) => (
             <div
               key={domain}
-              className="flex items-center gap-2 px-3 py-2 bg-secondary border border-default rounded-lg"
+              className="flex items-center gap-2 px-3 py-2 bg-secondary border border-default "
             >
               <span className="text-sm !text-primary">{domain}</span>
               <button
@@ -267,7 +267,7 @@ export default function SmartFollowUpSettingsPage() {
       </div>
 
       {/* Section Mots-clés prioritaires */}
-      <div className="bg-card border border-default rounded-xl p-6 mb-6">
+      <div className="bg-card border border-default  p-6 mb-6">
         <h2 className="text-xl font-bold !text-primary mb-4">Mots-clés prioritaires</h2>
         <p className="text-sm !text-muted mb-4">
           Les emails contenant ces mots-clés seront traités en priorité
@@ -280,11 +280,11 @@ export default function SmartFollowUpSettingsPage() {
             onChange={(e) => setNewKeyword(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAddKeyword()}
             placeholder="ex: urgent, important, deadline"
-            className="flex-1 px-4 py-2 bg-secondary border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 px-4 py-2 bg-secondary border border-default  !text-primary placeholder:!text-muted focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             onClick={handleAddKeyword}
-            className="px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+            className="px-4 py-2 bg-accent !text-white  hover:opacity-90 transition-opacity flex items-center gap-2"
           >
             <IconPlus className="w-5 h-5" />
             Ajouter
@@ -295,7 +295,7 @@ export default function SmartFollowUpSettingsPage() {
           {priorityKeywords.map((keyword) => (
             <div
               key={keyword}
-              className="flex items-center gap-2 px-3 py-2 bg-accent/10 border border-accent/20 rounded-lg"
+              className="flex items-center gap-2 px-3 py-2 bg-accent/10 border border-accent/20 "
             >
               <span className="text-sm !text-accent font-medium">{keyword}</span>
               <button
@@ -313,7 +313,7 @@ export default function SmartFollowUpSettingsPage() {
       </div>
 
       {/* Section Délais de relance */}
-      <div className="bg-card border border-default rounded-xl p-6 mb-6">
+      <div className="bg-card border border-default  p-6 mb-6">
         <h2 className="text-xl font-bold !text-primary mb-4 flex items-center gap-2">
           <IconClock className="w-6 h-6 !text-accent" />
           Délais de relance (en jours)
@@ -332,7 +332,7 @@ export default function SmartFollowUpSettingsPage() {
                 ...delaySettings,
                 payment_reminder: parseInt(e.target.value) || 1
               })}
-              className="w-full px-4 py-2 bg-secondary border border-default rounded-lg !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-secondary border border-default  !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
@@ -348,7 +348,7 @@ export default function SmartFollowUpSettingsPage() {
                 ...delaySettings,
                 proposal_follow_up: parseInt(e.target.value) || 1
               })}
-              className="w-full px-4 py-2 bg-secondary border border-default rounded-lg !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-secondary border border-default  !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
@@ -364,7 +364,7 @@ export default function SmartFollowUpSettingsPage() {
                 ...delaySettings,
                 meeting_follow_up: parseInt(e.target.value) || 1
               })}
-              className="w-full px-4 py-2 bg-secondary border border-default rounded-lg !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-secondary border border-default  !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
@@ -380,7 +380,7 @@ export default function SmartFollowUpSettingsPage() {
                 ...delaySettings,
                 thank_you: parseInt(e.target.value) || 1
               })}
-              className="w-full px-4 py-2 bg-secondary border border-default rounded-lg !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-secondary border border-default  !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
@@ -396,14 +396,14 @@ export default function SmartFollowUpSettingsPage() {
                 ...delaySettings,
                 check_in: parseInt(e.target.value) || 1
               })}
-              className="w-full px-4 py-2 bg-secondary border border-default rounded-lg !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-secondary border border-default  !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
         </div>
       </div>
 
       {/* Section Heures de travail */}
-      <div className="bg-card border border-default rounded-xl p-6 mb-6">
+      <div className="bg-card border border-default  p-6 mb-6">
         <h2 className="text-xl font-bold !text-primary mb-4">Heures de travail</h2>
         <p className="text-sm !text-muted mb-4">
           Les emails ne seront envoyés que pendant ces horaires
@@ -418,7 +418,7 @@ export default function SmartFollowUpSettingsPage() {
               type="time"
               value={workHours.start}
               onChange={(e) => setWorkHours({ ...workHours, start: e.target.value })}
-              className="w-full px-4 py-2 bg-secondary border border-default rounded-lg !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-secondary border border-default  !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
@@ -430,7 +430,7 @@ export default function SmartFollowUpSettingsPage() {
               type="time"
               value={workHours.end}
               onChange={(e) => setWorkHours({ ...workHours, end: e.target.value })}
-              className="w-full px-4 py-2 bg-secondary border border-default rounded-lg !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-secondary border border-default  !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
         </div>
@@ -444,7 +444,7 @@ export default function SmartFollowUpSettingsPage() {
               <button
                 key={day.value}
                 onClick={() => handleDayToggle(day.value)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-4 py-2  font-medium transition-colors ${
                   workHours.days.includes(day.value)
                     ? 'bg-accent !text-white'
                     : 'bg-secondary !text-muted hover:bg-hover'
@@ -458,7 +458,7 @@ export default function SmartFollowUpSettingsPage() {
       </div>
 
       {/* Section Règles personnalisées */}
-      <div className="bg-card border border-default rounded-xl p-6 mb-6">
+      <div className="bg-card border border-default  p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-xl font-bold !text-primary flex items-center gap-2">
@@ -472,7 +472,7 @@ export default function SmartFollowUpSettingsPage() {
         </div>
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-secondary rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-secondary ">
             <div>
               <h3 className="font-semibold !text-primary">
                 {customRules.length} règle{customRules.length > 1 ? 's' : ''} configurée{customRules.length > 1 ? 's' : ''}
@@ -483,7 +483,7 @@ export default function SmartFollowUpSettingsPage() {
             </div>
             <button
               onClick={() => setShowRulesModal(true)}
-              className="px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+              className="px-4 py-2 bg-accent !text-white  hover:opacity-90 transition-opacity flex items-center gap-2"
             >
               <IconFilter className="w-5 h-5" />
               Gérer les règles
@@ -494,7 +494,7 @@ export default function SmartFollowUpSettingsPage() {
             <div className="space-y-2">
               <h4 className="text-sm font-medium !text-muted">Règles actives :</h4>
               {customRules.filter(r => r.enabled).map(rule => (
-                <div key={rule.id} className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
+                <div key={rule.id} className="flex items-center gap-2 p-3 bg-secondary/50 ">
                   <span className="text-sm !text-primary font-medium">{rule.name}</span>
                   <span className="px-2 py-1 !text-xs bg-accent/10 !text-accent rounded">
                     Priorité {rule.priority}
@@ -510,14 +510,14 @@ export default function SmartFollowUpSettingsPage() {
       </div>
 
       {/* Section Notifications */}
-      <div className="bg-card border border-default rounded-xl p-6 mb-6">
+      <div className="bg-card border border-default  p-6 mb-6">
         <h2 className="text-xl font-bold !text-primary mb-4 flex items-center gap-2">
           <IconBell className="w-6 h-6 !text-accent" />
           Préférences de notification
         </h2>
         
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-secondary rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-secondary ">
             <div>
               <h3 className="font-semibold !text-primary">Notifications email</h3>
               <p className="text-sm !text-muted">Recevoir un email pour chaque action</p>
@@ -536,7 +536,7 @@ export default function SmartFollowUpSettingsPage() {
             </label>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-secondary rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-secondary ">
             <div>
               <h3 className="font-semibold !text-primary">Notifications dashboard</h3>
               <p className="text-sm !text-muted">Afficher les notifications dans l&apos;interface</p>
@@ -565,7 +565,7 @@ export default function SmartFollowUpSettingsPage() {
                 ...notificationPreferences,
                 frequency: e.target.value
               })}
-              className="w-full px-4 py-2 bg-secondary border border-default rounded-lg !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-secondary border border-default  !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="immediate">Immédiate</option>
               <option value="hourly">Toutes les heures</option>

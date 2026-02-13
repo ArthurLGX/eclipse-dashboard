@@ -484,7 +484,7 @@ export default function CalendarPage() {
             {isSupported && (
               <button
                 onClick={toggleNotifications}
-                className={`p-2.5 rounded-lg border transition-colors ${
+                className={`p-2.5  border transition-colors ${
                   notificationsEnabled
                     ? 'bg-accent-light border-accent !text-accent'
                     : 'border-default !text-muted hover:!text-primary hover:border-primary'
@@ -507,7 +507,7 @@ export default function CalendarPage() {
                 setSelectedDate(new Date());
                 setShowAddModal(true);
               }}
-              className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
+              className="btn-primary px-4 py-2 flex items-center gap-2 "
             >
               <IconPlus className="w-4 h-4" color="white" />
               {t('new_event') || 'Nouvel événement'}
@@ -517,7 +517,7 @@ export default function CalendarPage() {
         <div className="flex items-center justify-center w-fit md:flex-row flex-col gap-4">
           <p className="text-muted !text-sm">{t('integrate') || 'Intégrez'}</p>
           {/*TODO: afficher le favicon de fathom et le lien vers le site de fathom */}
-          <div className="flex cursor-pointer items-center gap-2 bg-accent-light rounded-lg p-2 group hover:bg-[var(--color-accent)] transition-colors">
+          <div className="flex cursor-pointer items-center gap-2 bg-accent-light  p-2 group hover:bg-[var(--color-accent)] transition-colors">
           <Image
             src="https://icons.duckduckgo.com/ip3/fathom.video.ico"
             alt="Fathom"
@@ -545,13 +545,13 @@ export default function CalendarPage() {
             {/* Calendar Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <button onClick={prevMonth} className="p-2 hover:bg-hover rounded-lg">
+                <button onClick={prevMonth} className="p-2 hover:bg-hover ">
                   <IconChevronLeft className="w-5 h-5" />
                 </button>
                 <h2 className="text-lg font-semibold !text-primary min-w-[200px] !text-center">
                   {currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
                 </h2>
-                <button onClick={nextMonth} className="p-2 hover:bg-hover rounded-lg">
+                <button onClick={nextMonth} className="p-2 hover:bg-hover ">
                   <IconChevronRight className="w-5 h-5" />
                 </button>
               </div>
@@ -585,7 +585,7 @@ export default function CalendarPage() {
                     key={index}
                     onClick={() => setSelectedDate(date)}
                     className={`
-                      min-h-[80px] p-1 rounded-lg border cursor-pointer transition-all
+                      min-h-[80px] p-1  border cursor-pointer transition-all
                       ${isToday(date) ? 'border-accent bg-accent-light' : 'border-transparent hover:border-default'}
                       ${isSelected ? 'ring-1 ring-accent' : ''}
                       ${!isCurrentMonth(date) ? 'opacity-40' : ''}
@@ -652,7 +652,7 @@ export default function CalendarPage() {
                   {upcomingEvents.map((event) => (
                     <div
                       key={event.documentId}
-                      className="p-3 rounded-lg border border-default hover:border-accent transition-colors cursor-pointer"
+                      className="p-3  border border-default hover:border-accent transition-colors cursor-pointer"
                       onClick={() => handleEditEvent(event)}
                     >
                       <div className="flex items-start gap-2">
@@ -740,7 +740,7 @@ export default function CalendarPage() {
                     onClick={() => {
                       setShowAddModal(true);
                     }}
-                    className="p-1.5 hover:bg-hover rounded-lg"
+                    className="p-1.5 hover:bg-hover "
                   >
                     <IconPlus className="w-4 h-4" />
                   </button>
@@ -753,7 +753,7 @@ export default function CalendarPage() {
                     {getEventsForDay(selectedDate).map((event) => (
                       <div
                         key={event.documentId}
-                        className={`p-2 rounded-lg border ${event.is_completed ? 'opacity-50' : ''}`}
+                        className={`p-2  border ${event.is_completed ? 'opacity-50' : ''}`}
                         style={{ 
                           borderColor: event.color || EVENT_COLORS[event.event_type],
                           backgroundColor: `${event.color || EVENT_COLORS[event.event_type]}10`,
@@ -1087,7 +1087,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
         tabIndex={-1}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] flex flex-col outline-none overscroll-contain"
+        className="w-full max-w-2xl bg-card border border-default  shadow-xl max-h-[90vh] flex flex-col outline-none overscroll-contain"
         onWheel={(e) => e.stopPropagation()}
       >
         {/* Header fixe */}
@@ -1103,7 +1103,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
               type="submit"
               form="event-form"
               disabled={isSaving}
-              className="btn-primary px-3 py-1.5 !text-sm rounded-lg flex items-center gap-2 disabled:opacity-50"
+              className="btn-primary px-3 py-1.5 !text-sm  flex items-center gap-2 disabled:opacity-50"
             >
               {isSaving && <div className="animate-spin w-3 h-3 border-2 border-white border-t-transparent rounded-full" />}
               {event ? (t('save') || 'Sauvegarder') : (t('create') || 'Créer')}
@@ -1231,7 +1231,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                 <label className="block !text-sm font-medium !text-secondary mb-1">
                   {t('duration') || 'Durée'}
                 </label>
-                <div className="text-sm !text-muted py-2.5 px-3 bg-muted/30 rounded-lg">
+                <div className="text-sm !text-muted py-2.5 px-3 bg-muted/30 ">
                   {(() => {
                     const start = new Date(`2000-01-01T${startTime}`);
                     const end = new Date(`2000-01-01T${endTime}`);
@@ -1408,7 +1408,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
 
           {/* Section Notes de réunion - pour les événements de type meeting */}
           {eventType === 'meeting' && (
-            <div className="p-4 rounded-xl border border-default bg-muted space-y-3">
+            <div className="p-4  border border-default bg-muted space-y-3">
               <div className="flex items-center gap-2 !text-sm font-medium !text-primary">
                 <IconNotes className="w-4 h-4 !text-accent" />
                 {t('meeting_notes') || 'Notes de réunion'}
@@ -1419,7 +1419,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                 <button
                   type="button"
                   onClick={() => setNoteMode(noteMode === 'manual' ? 'none' : 'manual')}
-                  className={`flex-1 p-3 rounded-lg border-2 transition-all !text-left ${
+                  className={`flex-1 p-3  border-2 transition-all !text-left ${
                     noteMode === 'manual'
                       ? 'border-accent bg-accent-light'
                       : 'border-default hover:border-muted'
@@ -1448,7 +1448,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                     }
                   }}
                   disabled={checkingFathom}
-                  className={`flex-1 p-3 rounded-lg border-2 transition-all !text-left ${
+                  className={`flex-1 p-3  border-2 transition-all !text-left ${
                     noteMode === 'fathom' && fathomConfigured
                       ? 'border-success bg-success-light'
                       : 'border-default hover:border-muted'
@@ -1483,7 +1483,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
 
               {/* Message de succès Fathom */}
               {noteMode === 'fathom' && fathomConfigured && (
-                <div className="flex items-center gap-2 p-2 rounded-lg !bg-success-light border border-success">
+                <div className="flex items-center gap-2 p-2  !bg-success-light border border-success">
                   <IconCheck className="w-4 h-4 !text-success-text -text" />
                   <span className="text-sm !text-success-text -text">
                     {t('fathom_will_join') || 'Fathom rejoindra automatiquement votre réunion et prendra les notes'}
@@ -1499,7 +1499,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
               <button
                 type="button"
                 onClick={onDelete}
-                className="flex items-center gap-2 px-3 py-2 !text-error hover:bg-error/10 rounded-lg transition-colors !text-sm"
+                className="flex items-center gap-2 px-3 py-2 !text-error hover:bg-error/10  transition-colors !text-sm"
               >
                 <IconTrash className="w-4 h-4" />
                 {t('delete') || 'Supprimer'}
@@ -1508,7 +1508,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
           )}
 
           {/* Conseils pour le matching Fathom */}
-          <div className="p-4 rounded-xl border border-default bg-muted/30 mt-4">
+          <div className="p-4  border border-default bg-muted/30 mt-4">
             <p className="!text-xs !text-muted leading-relaxed">
               <span className="font-medium !text-secondary">💡 {t('tips_title') || 'Conseils pour le matching Fathom'} :</span><br />
               • {t('tip_meeting_link') || 'Mets le lien Google Meet/Zoom dans le champ "Lieu"'}<br />

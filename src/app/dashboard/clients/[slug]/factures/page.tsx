@@ -216,7 +216,7 @@ export default function ClientFacturesPage() {
           </p>
         </div>
         <button
-          className="flex items-center gap-2 btn-primary px-4 py-2.5 rounded-lg font-semibold"
+          className="flex items-center gap-2 btn-primary px-4 py-2.5  font-semibold"
           onClick={handleAddInvoice}
           disabled={!clientDocumentId}
         >
@@ -243,7 +243,7 @@ export default function ClientFacturesPage() {
             <iframe
               src={pdfToShow}
               title={t('invoice_pdf')}
-              className="flex-1 w-full h-full rounded-lg border border-default bg-white"
+              className="flex-1 w-full h-full  border border-default bg-white"
             />
           </div>
         </FloatingModal>

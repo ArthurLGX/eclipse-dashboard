@@ -136,7 +136,7 @@ export default function SupportDropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggle}
-        className="cursor-pointer w-full bg-muted !text-primary px-4 py-2 rounded-lg hover:bg-card border border-default transition-colors !text-sm flex items-center justify-between"
+        className="cursor-pointer w-full bg-muted !text-primary px-4 py-2  hover:bg-card border border-default transition-colors !text-sm flex items-center justify-between"
       >
         <span>{t('contact_support')}</span>
         <motion.span
@@ -155,7 +155,7 @@ export default function SupportDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="absolute lg:top-full lg:bottom-auto bottom-full left-0 right-0 mb-2 bg-card border border-default rounded-lg shadow-lg z-50 overflow-hidden"
+            className="absolute lg:top-full lg:bottom-auto bottom-full left-0 right-0 mb-2 bg-card border border-default  shadow-lg z-50 overflow-hidden"
           >
             <div className="p-2 space-y-1">
               {supportOptions.map((option, index) => (
@@ -165,7 +165,7 @@ export default function SupportDropdown({
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2, delay: index * 0.05 }}
                   onClick={option.action}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-hover transition-colors !text-left group"
+                  className="w-full flex items-center gap-3 p-3  hover:bg-hover transition-colors !text-left group"
                 >
                   <span className="!text-lg">{option.icon}</span>
                   <div className="flex-1">

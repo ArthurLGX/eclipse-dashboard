@@ -51,7 +51,7 @@ export function BusinessTypeSelector({ selectedType, onSelect }: BusinessTypeSel
             transition={{ delay: index * 0.05 }}
             onClick={() => onSelect(type)}
             className={`
-              relative flex flex-col items-center gap-3 p-6 rounded-xl border-2 transition-all cursor-pointer
+              relative flex flex-col items-center gap-3 p-6  border-2 transition-all cursor-pointer
               ${isSelected 
                 ? 'border-accent bg-accent-light shadow-lg shadow-accent-light' 
                 : 'border-default bg-card hover:border-accent-light hover:bg-accent-light'
@@ -69,7 +69,7 @@ export function BusinessTypeSelector({ selectedType, onSelect }: BusinessTypeSel
             )}
             
             <div className={`
-              p-3 rounded-xl transition-colors
+              p-3  transition-colors
               ${isSelected ? 'bg-accent !text-white' : 'bg-muted !text-muted'}
             `}>
               {BUSINESS_ICONS[type]}
@@ -176,7 +176,7 @@ function ModuleCard({ moduleId, label, isSelected, isCore, onToggle }: ModuleCar
       onClick={() => !isCore && onToggle(moduleId)}
       disabled={isCore}
       className={`
-        relative flex items-center gap-3 p-4 rounded-xl border transition-all
+        relative flex items-center gap-3 p-4  border transition-all
         ${isCore 
             ? 'border-success bg-success-light cursor-not-allowed' 
           : isSelected 
@@ -186,7 +186,7 @@ function ModuleCard({ moduleId, label, isSelected, isCore, onToggle }: ModuleCar
       `}
     >
       <div className={`
-        w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0
+        w-5 h-5  border-2 flex items-center justify-center shrink-0
         ${isCore || isSelected 
           ? 'border-accent bg-accent' 
           : 'border-muted'
@@ -334,7 +334,7 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
           onClick={handleNext}
           disabled={!selectedType}
           className={`
-            px-6 py-2.5 rounded-xl font-medium transition-all
+            px-6 py-2.5  font-medium transition-all
             ${selectedType
               ? 'bg-accent !text-white hover:bg-accent-light'
               : 'bg-muted !text-muted cursor-not-allowed'

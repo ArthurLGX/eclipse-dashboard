@@ -188,7 +188,7 @@ export default function ProjectInsightCard({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-card border border-default rounded-xl overflow-hidden"
+      className="bg-card border border-default  overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-default bg-muted">
@@ -207,7 +207,7 @@ export default function ProjectInsightCard({
         <button
           onClick={fetchInsight}
           disabled={loading}
-          className="p-1.5 hover:bg-muted rounded-lg transition-colors disabled:opacity-50"
+          className="p-1.5 hover:bg-muted  transition-colors disabled:opacity-50"
           title={t('refresh') || 'Actualiser'}
         >
           <IconRefresh className={`w-4 h-4 !text-muted ${loading ? 'animate-spin' : ''}`} />
@@ -233,8 +233,8 @@ export default function ProjectInsightCard({
         {insight && (
           <div className="space-y-3">
             {/* Status + Summary */}
-            <div className={`flex items-start gap-2.5 p-3 rounded-lg ${getStatusStyles(insight.status).bg}`}>
-              <div className={`p-1.5 rounded-lg flex-shrink-0 ${getStatusStyles(insight.status).iconBg}`}>
+            <div className={`flex items-start gap-2.5 p-3  ${getStatusStyles(insight.status).bg}`}>
+              <div className={`p-1.5  flex-shrink-0 ${getStatusStyles(insight.status).iconBg}`}>
                 {getStatusStyles(insight.status).icon}
               </div>
               <p className="text-sm !text-primary leading-snug flex-1">
@@ -244,7 +244,7 @@ export default function ProjectInsightCard({
 
             {/* Key Metric - inline layout */}
             {insight.key_metric && (
-              <div className="flex items-center justify-between gap-3 p-2.5 bg-muted rounded-lg">
+              <div className="flex items-center justify-between gap-3 p-2.5 bg-muted ">
                 <span className="!text-xs !text-muted whitespace-nowrap">{insight.key_metric.label}</span>
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm font-bold !text-primary whitespace-nowrap">

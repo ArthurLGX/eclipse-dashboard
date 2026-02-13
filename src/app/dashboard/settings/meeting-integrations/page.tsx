@@ -242,7 +242,7 @@ export default function MeetingIntegrationsPage() {
         <div className="flex items-center gap-4 pb-4">
           <Link
             href="/dashboard/settings"
-            className="p-2 rounded-lg hover:bg-hover transition-colors"
+            className="p-2  hover:bg-hover transition-colors"
           >
             <IconArrowLeft className="w-5 h-5 !text-muted" />
           </Link>
@@ -292,7 +292,7 @@ export default function MeetingIntegrationsPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className={`p-4 rounded-xl border-2 transition-all ${
+                  className={`p-4  border-2 transition-all ${
                     currentStep === step.id
                       ? 'border-accent bg-accent-light'
                       : step.completed
@@ -353,12 +353,12 @@ export default function MeetingIntegrationsPage() {
                               URL du Webhook (à copier dans Fathom)
                             </label>
                             <div className="flex items-center gap-2">
-                              <code className="flex-1 px-3 py-2 bg-card rounded-lg !text-sm font-mono !text-accent overflow-x-auto">
+                              <code className="flex-1 px-3 py-2 bg-card  !text-sm font-mono !text-accent overflow-x-auto">
                                 {webhookUrl}
                               </code>
                               <button
                                 onClick={() => copyToClipboard(webhookUrl, 'URL')}
-                                className="p-2 rounded-lg bg-accent-light !text-accent hover:opacity-80 transition-colors"
+                                className="p-2  bg-accent-light !text-accent hover:opacity-80 transition-colors"
                               >
                                 <IconCopy className="w-4 h-4" />
                               </button>
@@ -378,7 +378,7 @@ export default function MeetingIntegrationsPage() {
                             />
                           </div>
 
-                          <div className="p-4 bg-info-light rounded-lg border border-info">
+                          <div className="p-4 bg-info-light  border border-info">
                             <h4 className="text-sm font-medium !text-info mb-2">
                               📋 Instructions dans Fathom :
                             </h4>
@@ -401,7 +401,7 @@ export default function MeetingIntegrationsPage() {
                             href={step.externalLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors !text-sm"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-accent !text-white  hover:opacity-90 transition-colors !text-sm"
                           >
                             {step.actionLabel}
                             <IconExternalLink className="w-4 h-4" />
@@ -411,7 +411,7 @@ export default function MeetingIntegrationsPage() {
                           <button
                             onClick={step.action}
                             disabled={testing}
-                            className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors !text-sm disabled:opacity-50"
+                            className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 bg-accent !text-white  hover:opacity-90 transition-colors !text-sm disabled:opacity-50"
                           >
                             {testing ? (
                               <IconLoader2 className="w-4 h-4 animate-spin !text-white" />
@@ -438,7 +438,7 @@ export default function MeetingIntegrationsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="inline-flex cursor-pointer items-center gap-2 px-6 py-2.5 bg-accent !text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50"
+                className="inline-flex cursor-pointer items-center gap-2 px-6 py-2.5 bg-accent !text-white  hover:opacity-90 transition-colors disabled:opacity-50"
               >
                 {saving ? (
                   <IconLoader2 className="w-4 h-4 animate-spin" />

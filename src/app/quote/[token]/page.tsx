@@ -153,7 +153,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
   if (error || !quote) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center">
+        <div className="bg-white  shadow-xl p-8 max-w-md !text-center">
           <IconAlertTriangle size={64} className="mx-auto !text-amber-500 mb-4" />
           <h1 className="text-2xl font-bold !text-slate-800 mb-2">Devis introuvable</h1>
           <p className="text-slate-600">{error || 'Ce lien de devis est invalide ou a expiré.'}</p>
@@ -165,7 +165,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
   if (signSuccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center">
+        <div className="bg-white  shadow-xl p-8 max-w-md !text-center">
           {signSuccess === 'accepted' ? (
             <>
               <IconCircleCheck size={64} className="mx-auto !text-green-500 mb-4" />
@@ -197,7 +197,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
   if (quote.already_signed) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center">
+        <div className="bg-white  shadow-xl p-8 max-w-md !text-center">
           <IconCircleCheck size={64} className="mx-auto !text-green-500 mb-4" />
           <h1 className="text-2xl font-bold !text-slate-800 mb-2">Devis déjà signé</h1>
           <p className="text-slate-600 mb-4">
@@ -214,7 +214,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
   if (quote.expired) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md !text-center">
+        <div className="bg-white  shadow-xl p-8 max-w-md !text-center">
           <IconAlertTriangle size={64} className="mx-auto !text-amber-500 mb-4" />
           <h1 className="text-2xl font-bold !text-slate-800 mb-2">Devis expiré</h1>
           <p className="text-slate-600 mb-4">
@@ -229,7 +229,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-6">
+        <div className="bg-white  shadow-xl overflow-hidden mb-6">
           <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-6 !text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -378,7 +378,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
         </div>
 
         {/* Action buttons */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+        <div className="bg-white  shadow-xl p-6">
           <h3 className="text-lg font-semibold !text-slate-800 mb-4 flex items-center gap-2">
             <IconSignature size={24} className="text-violet-600" />
             Valider votre décision
@@ -390,14 +390,14 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={() => setSignatureModal('accept')}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-green-600 !text-white rounded-xl font-semibold hover:bg-green-700 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-green-600 !text-white  font-semibold hover:bg-green-700 transition-colors"
             >
               <IconCheck size={15} />
               Accepter le devis
             </button>
             <button
               onClick={() => setSignatureModal('reject')}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-slate-200 !text-slate-700 rounded-xl font-semibold hover:bg-slate-300 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-slate-200 !text-slate-700  font-semibold hover:bg-slate-300 transition-colors"
             >
               <IconX size={15} />
               Refuser le devis
@@ -410,7 +410,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
       {signatureModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50" onClick={() => setSignatureModal(null)} />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+          <div className="relative bg-white  shadow-2xl w-full max-w-md p-6">
             <h3 className="text-xl font-bold !text-slate-800 mb-4">
               {signatureModal === 'accept' ? 'Accepter le devis' : 'Refuser le devis'}
             </h3>
@@ -422,7 +422,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
                   type="text"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-violet-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-slate-300  focus:ring-1 focus:ring-violet-500 focus:border-transparent"
                   placeholder="Jean Dupont"
                   required
                 />
@@ -433,7 +433,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
                   type="email"
                   value={clientEmail}
                   onChange={(e) => setClientEmail(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-violet-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-slate-300  focus:ring-1 focus:ring-violet-500 focus:border-transparent"
                   placeholder="jean@example.com"
                   required
                 />
@@ -445,7 +445,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
                   <textarea
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-violet-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-slate-300  focus:ring-1 focus:ring-violet-500 focus:border-transparent"
                     rows={3}
                     placeholder="Dites-nous pourquoi..."
                   />
@@ -469,14 +469,14 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => setSignatureModal(null)}
-                  className="flex-1 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-slate-300  hover:bg-slate-50 transition-colors"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={() => handleSign(signatureModal)}
                   disabled={signing || !clientName || !clientEmail || (signatureModal === 'accept' && !acceptTerms)}
-                  className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 ${
+                  className={`flex-1 px-4 py-2  font-semibold transition-colors disabled:opacity-50 ${
                     signatureModal === 'accept'
                       ? 'bg-green-600 !text-white hover:bg-green-700'
                       : 'bg-red-600 !text-white hover:bg-red-700'

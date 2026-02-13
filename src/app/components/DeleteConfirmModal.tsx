@@ -101,7 +101,7 @@ export default function DeleteConfirmModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-card border border-default rounded-2xl p-6 max-w-md w-full shadow-2xl outline-none"
+            className="bg-card border border-default  p-6 max-w-md w-full shadow-2xl outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -126,14 +126,14 @@ export default function DeleteConfirmModal({
 
             {/* Item Name */}
             {displayName && (
-              <div className="mt-4 p-3 bg-muted rounded-lg border border-default">
+              <div className="mt-4 p-3 bg-muted  border border-default">
                 <p className="text-primary font-medium truncate">{displayName}</p>
               </div>
             )}
 
             {/* Warning */}
             {warningMessage && (
-              <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg">
+              <div className="mt-4 p-3 bg-warning-light border border-warning ">
                 <p className="text-warning-text !text-sm">{warningMessage}</p>
               </div>
             )}
@@ -177,7 +177,7 @@ export default function DeleteConfirmModal({
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-3 bg-danger-light border border-danger rounded-lg"
+                className="mt-4 p-3 bg-danger-light border border-danger "
               >
                 <p className="text-danger !text-sm">{error}</p>
               </motion.div>
@@ -196,7 +196,7 @@ export default function DeleteConfirmModal({
                 onClick={handleConfirm}
                 disabled={isDeleting || !isConfirmValid}
                 className={`
-                  flex-1 px-4 py-2.5 !text-sm font-medium rounded-lg transition-all
+                  flex-1 px-4 py-2.5 !text-sm font-medium  transition-all
                   flex items-center justify-center gap-2
                   ${isConfirmValid
                     ? 'btn-danger'

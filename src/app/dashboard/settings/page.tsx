@@ -236,7 +236,7 @@ export default function SettingsPage() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`
-              flex items-center gap-2 px-3 py-2 rounded-lg !text-sm font-medium transition-all
+              flex items-center gap-2 px-3 py-2  !text-sm font-medium transition-all
               ${activeTab === tab.id
                 ? 'bg-accent !text-white'
                 : 'bg-muted !text-primary hover:!text-primary hover:bg-hover'
@@ -406,7 +406,7 @@ export default function SettingsPage() {
               title={t('timezone') || 'Fuseau horaire'} 
               description={t('timezone_desc') || 'Votre fuseau horaire actuel'}
             >
-              <p className="text-sm !text-primary bg-muted px-3 py-2 rounded-lg inline-block">
+              <p className="text-sm !text-primary bg-muted px-3 py-2  inline-block">
                 🌍 {preferences.format.timezone}
               </p>
             </SettingsRow>
@@ -807,7 +807,7 @@ export default function SettingsPage() {
                     <button
                       onClick={handleSaveModules}
                       disabled={isSavingModules}
-                      className="btn-primary px-6 py-2 flex items-center gap-2 rounded-lg"
+                      className="btn-primary px-6 py-2 flex items-center gap-2 "
                     >
                       {isSavingModules ? (
                         <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
@@ -841,7 +841,7 @@ export default function SettingsPage() {
                         showGlobalPopup(t('error') || 'Erreur', 'error');
                       }
                     }}
-                    className="btn-ghost px-4 py-2.5 flex items-center gap-2 rounded-lg border border-default hover:border-accent hover:bg-accent-light transition-all"
+                    className="btn-ghost px-4 py-2.5 flex items-center gap-2  border border-default hover:border-accent hover:bg-accent-light transition-all"
                   >
                     <IconRocket className="w-5 h-5 !text-accent" />
                     <span>{t('launch_onboarding') || 'Lancer l\'assistant de configuration'}</span>
@@ -908,10 +908,10 @@ export default function SettingsPage() {
             {/* VS Code / Cursor - API Tokens */}
             <Link
               href="/dashboard/settings/integrations"
-              className="block p-4 rounded-xl border border-default hover:border-accent hover:bg-accent-light/50 transition-all group"
+              className="block p-4  border border-default hover:border-accent hover:bg-accent-light/50 transition-all group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-accent-hover flex items-center justify-center flex-shrink-0 shadow-sm">
+                <div className="w-12 h-12  bg-gradient-to-br from-accent to-accent-hover flex items-center justify-center flex-shrink-0 shadow-sm">
                   <IconPlugConnected className="w-6 h-6 !text-primary" />
                 </div>
                 <div className="flex-1">
@@ -929,10 +929,10 @@ export default function SettingsPage() {
             {/* Fathom AI */}
             <Link
               href="/dashboard/settings/meeting-integrations"
-              className="block p-4 rounded-xl border border-default hover:border-accent hover:bg-accent-light/50 transition-all group"
+              className="block p-4  border border-default hover:border-accent hover:bg-accent-light/50 transition-all group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm border border-default">
+                <div className="w-12 h-12  bg-white flex items-center justify-center flex-shrink-0 shadow-sm border border-default">
                   <Image
                     src="https://icons.duckduckgo.com/ip3/fathom.video.ico"
                     alt="Fathom AI"
@@ -955,7 +955,7 @@ export default function SettingsPage() {
             </Link>
 
             {/* Future integrations placeholder */}
-            <div className="p-4 rounded-xl border border-dashed border-default !text-center">
+            <div className="p-4  border border-dashed border-default !text-center">
               <p className="text-sm !text-muted">
                 {t('more_integrations_soon') || 'D\'autres intégrations arrivent bientôt...'}
               </p>
@@ -992,7 +992,7 @@ function OptionButton({ children, selected, onClick }: { children: React.ReactNo
     <button
       onClick={onClick}
       className={`
-        flex items-center gap-2 px-3 py-2 rounded-lg border !text-sm transition-all
+        flex items-center gap-2 px-3 py-2  border !text-sm transition-all
         ${selected
           ? 'border-accent bg-accent !text-white'
             : 'border-default !text-primary hover:border-muted hover:!text-secondary'

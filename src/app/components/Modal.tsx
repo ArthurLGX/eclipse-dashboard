@@ -19,7 +19,7 @@ export default function Modal({ open, onClose, children }: ModalProps) {
       <div 
         ref={modalRef}
         tabIndex={-1}
-        className="bg-card border border-default rounded-xl shadow-2xl relative min-w-[350px] max-w-[90vw] max-h-[90vh] overflow-auto print-modal outline-none overscroll-contain"
+        className="bg-card border border-default  shadow-2xl relative min-w-[350px] max-w-[90vw] max-h-[90vh] overflow-auto print-modal outline-none overscroll-contain"
         onWheel={(e) => e.stopPropagation()}
       >
         <button

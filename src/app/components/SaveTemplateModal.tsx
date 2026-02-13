@@ -103,7 +103,7 @@ export default function SaveTemplateModal({
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
+          className="bg-card border border-default  shadow-2xl w-full max-w-lg overflow-hidden"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
@@ -114,7 +114,7 @@ export default function SaveTemplateModal({
             <button
               onClick={handleClose}
               disabled={saving}
-              className="p-2 rounded-lg hover:bg-hover transition-colors disabled:opacity-50"
+              className="p-2  hover:bg-hover transition-colors disabled:opacity-50"
             >
               <IconX className="w-5 h-5 !text-secondary" />
             </button>
@@ -123,14 +123,14 @@ export default function SaveTemplateModal({
           {/* Content */}
           <div className="p-4 space-y-4">
             {/* Aperçu du template */}
-            <div className="p-4 rounded-xl border border-default bg-muted/30">
+            <div className="p-4  border border-default bg-muted/30">
               <p className="!text-xs !text-muted mb-3 uppercase tracking-wide">
                 {t('template_preview') || 'Aperçu du thème'}
               </p>
               <div className="flex items-center gap-4">
                 {/* Gradient preview */}
                 <div 
-                  className="w-20 h-12 rounded-lg border border-default"
+                  className="w-20 h-12  border border-default"
                   style={{
                     background: templateData.gradientStops.length > 0
                       ? `linear-gradient(${templateData.gradientAngle}deg, ${
@@ -197,7 +197,7 @@ export default function SaveTemplateModal({
                   setError('');
                 }}
                 placeholder={t('template_name_placeholder') || 'Ex: Mon thème corporate'}
-                className="w-full px-4 py-3 bg-input border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-default  !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
                 disabled={saving}
               />
             </div>
@@ -212,7 +212,7 @@ export default function SaveTemplateModal({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={t('template_description_placeholder') || 'Décrivez l\'utilisation de ce thème...'}
                 rows={2}
-                className="w-full px-4 py-3 bg-input border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent resize-none"
+                className="w-full px-4 py-3 bg-input border border-default  !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent resize-none"
                 disabled={saving}
               />
             </div>
@@ -222,7 +222,7 @@ export default function SaveTemplateModal({
               type="button"
               onClick={() => setIsDefault(!isDefault)}
               disabled={saving}
-              className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-all ${
+              className={`w-full flex items-center gap-3 p-4  border transition-all ${
                 isDefault
                   ? 'border-yellow-500/50 bg-yellow-500/10'
                   : 'border-default hover:border-accent-light hover:bg-hover'
@@ -261,7 +261,7 @@ export default function SaveTemplateModal({
             <button
               onClick={handleSave}
               disabled={saving || !name.trim()}
-              className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {saving ? (
                 <>

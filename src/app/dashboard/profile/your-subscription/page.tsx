@@ -220,7 +220,7 @@ export default function YourSubscriptionPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="bg-hover p-6 rounded-lg border border-default"
+                    className="bg-hover p-6  border border-default"
                   >
                     {/* En-tête de l'abonnement */}
                     <div className="flex items-center justify-between mb-4">
@@ -253,7 +253,7 @@ export default function YourSubscriptionPage() {
                         <label className="text-secondary !text-sm font-light">
                           {t('billing_type')}
                         </label>
-                        <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                        <div className="flex items-center gap-2 p-3 bg-muted ">
                           <span className="text-primary font-medium capitalize">
                             {subscription.billing_type}
                           </span>
@@ -264,7 +264,7 @@ export default function YourSubscriptionPage() {
                         <label className="text-secondary !text-sm font-light">
                           {t('status')}
                         </label>
-                        <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                        <div className="flex items-center gap-2 p-3 bg-muted ">
                           <div
                             className={`w-2 h-2 rounded-full ${subscription.trial ? 'bg-warning' : 'bg-success'}`}
                           ></div>
@@ -278,7 +278,7 @@ export default function YourSubscriptionPage() {
                         <label className="text-secondary !text-sm font-light">
                           {t('created_at')}
                         </label>
-                        <p className="text-primary p-3 bg-muted rounded-lg">
+                        <p className="text-primary p-3 bg-muted ">
                           {subscription.createdAt
                             ? new Date(
                                 subscription.createdAt
@@ -291,7 +291,7 @@ export default function YourSubscriptionPage() {
                         <label className="text-secondary !text-sm font-light">
                           {t('last_updated')}
                         </label>
-                        <p className="text-primary p-3 bg-muted rounded-lg">
+                        <p className="text-primary p-3 bg-muted ">
                           {subscription.updatedAt
                             ? new Date(
                                 subscription.updatedAt
@@ -307,7 +307,7 @@ export default function YourSubscriptionPage() {
                         <label className="text-secondary !text-sm font-light">
                           {t('description')}
                         </label>
-                        <p className="text-primary p-3 bg-muted rounded-lg">
+                        <p className="text-primary p-3 bg-muted ">
                           {subscription.plan?.description ||
                             t('no_description')}
                         </p>
@@ -317,7 +317,7 @@ export default function YourSubscriptionPage() {
                         <label className="text-secondary !text-sm font-light">
                           {t('features')}
                         </label>
-                        <div className="p-3 bg-muted rounded-lg">
+                        <div className="p-3 bg-muted ">
                           {subscription.plan?.features ? (
                             <div className="text-primary space-y-2">
                               {(() => {

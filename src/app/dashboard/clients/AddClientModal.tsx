@@ -97,7 +97,7 @@ export default function AddClientModal({
     <FloatingModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-2xl">
       {/* Header compact */}
       <div className="flex items-center gap-3 mb-5">
-        <div className="p-2 bg-accent-light rounded-lg border border-accent">
+        <div className="p-2 bg-accent-light  border border-accent">
           <IconUserPlus size={22} className="!text-white" />
         </div>
         <h2 className="text-xl font-bold !text-primary">
@@ -107,7 +107,7 @@ export default function AddClientModal({
 
       {/* Message d'erreur */}
       {error && (
-        <div className="mb-3 p-2.5 bg-danger-light border border-danger rounded-lg !text-danger !text-sm">
+        <div className="mb-3 p-2.5 bg-danger-light border border-danger  !text-danger !text-sm">
           ⚠️ {error}
         </div>
       )}
@@ -206,7 +206,7 @@ export default function AddClientModal({
         </div>
 
         {/* Section Statut et Actif - compact */}
-        <div className="flex items-center gap-4 p-3 bg-muted rounded-lg border border-default">
+        <div className="flex items-center gap-4 p-3 bg-muted  border border-default">
           {/* Sélecteur de statut */}
           <div className="flex-1">
             <label className="text-secondary !text-xs mb-2 font-medium block">

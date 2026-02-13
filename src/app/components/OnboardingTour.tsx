@@ -265,7 +265,7 @@ export default function OnboardingTour({
               transition={{ 
                 boxShadow: step.highlightStyle === 'pulse' ? { duration: 1.5, repeat: Infinity } : undefined 
               }}
-              className="fixed z-[9999] rounded-2xl pointer-events-none border-2 border-accent"
+              className="fixed z-[9999]  pointer-events-none border-2 border-accent"
               style={{
                 top: targetRect.top - 20,
                 left: targetRect.left - 20,
@@ -282,7 +282,7 @@ export default function OnboardingTour({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed z-[10000] w-[420px] bg-card border-2 border-accent rounded-2xl shadow-2xl overflow-hidden"
+            className="fixed z-[10000] w-[420px] bg-card border-2 border-accent  shadow-2xl overflow-hidden"
             style={getTooltipStyle()}
             onClick={(e) => e.stopPropagation()}
           >
@@ -308,7 +308,7 @@ export default function OnboardingTour({
               </div>
               <button
                 onClick={handleSkip}
-                className="p-2 rounded-lg hover:bg-hover !text-muted hover:!text-primary transition-colors"
+                className="p-2  hover:bg-hover !text-muted hover:!text-primary transition-colors"
                 title={t('skip') || 'Passer'}
               >
                 <IconX size={18} />
@@ -343,7 +343,7 @@ export default function OnboardingTour({
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={handleNext}
-                className="flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-accent !text-white rounded-xl font-semibold !text-sm transition-colors shadow-lg"
+                className="flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-accent !text-white  font-semibold !text-sm transition-colors shadow-lg"
               >
                 {isLastStep ? (
                   <>
@@ -386,7 +386,7 @@ export function OnboardingReplayButton({
   return (
     <button
       onClick={onReplay}
-      className="flex items-center gap-2 px-3 py-2 !text-sm !text-secondary hover:!text-accent bg-muted hover:bg-accent-light rounded-lg transition-all"
+      className="flex items-center gap-2 px-3 py-2 !text-sm !text-secondary hover:!text-accent bg-muted hover:bg-accent-light  transition-all"
       title={label || t('replay_tutorial') || 'Revoir le tutoriel'}
     >
       <IconPlayerPlay size={14} className="!text-accent" />

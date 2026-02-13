@@ -245,8 +245,8 @@ export default function ClientDetailsPage() {
     return (
       <div className="max-w-7xl mx-auto p-6">
         <div className="animate-pulse space-y-6">
-          <div className="h-48 bg-card rounded-xl"></div>
-          <div className="h-64 bg-card rounded-xl"></div>
+          <div className="h-48 bg-card "></div>
+          <div className="h-64 bg-card "></div>
         </div>
       </div>
     );
@@ -282,7 +282,7 @@ export default function ClientDetailsPage() {
   return (
     <div className="w-full mx-auto p-6 flex flex-col">
       {/* Header */}
-      <div className="bg-card border border-default rounded-xl shadow-lg p-12 flex flex-col md:flex-row gap-16 items-center mb-8">
+      <div className="bg-card border border-default  shadow-lg p-12 flex flex-col md:flex-row gap-16 items-center mb-8">
         <ImageUpload
           currentImageUrl={client.image?.url ? apiUrl + client.image.url : null}
           onUpload={handleClientImageUpload}
@@ -341,7 +341,7 @@ export default function ClientDetailsPage() {
           {isEditMode ? (
             <div className="flex flex-col md:flex-row items-center gap-2 w-full justify-center !text-center">
               <button
-                className="btn-warning !text-center w-full px-4 py-2 rounded-lg font-semibold hover:opacity-80 transition-colors cursor-pointer"
+                className="btn-warning !text-center w-full px-4 py-2  font-semibold hover:opacity-80 transition-colors cursor-pointer"
                 onClick={() => setIsEditMode(false)}
               >
                 {t('cancel')}
@@ -349,14 +349,14 @@ export default function ClientDetailsPage() {
               <button
                 type="submit"
                 form="edit-form"
-                className="btn-success !text-center w-full items-center gap-2 px-4 py-2 rounded-lg font-semibold cursor-pointer transition-all duration-300"
+                className="btn-success !text-center w-full items-center gap-2 px-4 py-2  font-semibold cursor-pointer transition-all duration-300"
               >
                 {t('save')}
               </button>
             </div>
           ) : (
             <button
-              className="btn-ghost !text-center capitalize cursor-pointer flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold w-full transition-all duration-300"
+              className="btn-ghost !text-center capitalize cursor-pointer flex items-center justify-center gap-2 px-4 py-2  font-semibold w-full transition-all duration-300"
               onClick={() => setIsEditMode(true)}
             >
               <IconEdit className="w-4 h-4" />
@@ -366,7 +366,7 @@ export default function ClientDetailsPage() {
 
           <Link
             href={`/dashboard/clients/${currentSlug}/factures?name=${client.name || ''}`}
-            className="btn-ghost !text-center flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold w-full relative transition-all duration-300"
+            className="btn-ghost !text-center flex items-center justify-center gap-2 px-4 py-2  font-semibold w-full relative transition-all duration-300"
           >
             <IconFileInvoice className="w-4 h-4" />
             {t('invoices')}
@@ -381,7 +381,7 @@ export default function ClientDetailsPage() {
 
       {/* Edit Form */}
       {isEditMode && (
-        <div className="bg-card border border-default p-6 mb-8 rounded-xl">
+        <div className="bg-card border border-default p-6 mb-8 ">
           <h2 className="text-2xl capitalize font-bold !text-primary mb-4">
             {t('edit')} {client.name}
           </h2>
@@ -393,31 +393,31 @@ export default function ClientDetailsPage() {
           >
             <div className="flex flex-col gap-1">
               <label htmlFor="name" className="capitalize !text-primary font-medium">{t('name')}</label>
-              <input id="name" name="name" defaultValue={client.name} required className="input px-3 py-2 rounded-lg" />
+              <input id="name" name="name" defaultValue={client.name} required className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="email" className="text-primary font-medium">Email</label>
-              <input id="email" name="email" type="email" defaultValue={client.email} required className="input px-3 py-2 rounded-lg" />
+              <input id="email" name="email" type="email" defaultValue={client.email} required className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="enterprise" className="text-primary font-medium">{t('enterprise')}</label>
-              <input id="enterprise" name="enterprise" defaultValue={client.enterprise} className="input px-3 py-2 rounded-lg" />
+              <input id="enterprise" name="enterprise" defaultValue={client.enterprise} className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="address" className="text-primary font-medium">{t('address')}</label>
-              <input id="address" name="address" defaultValue={client.adress || ''} className="input px-3 py-2 rounded-lg" />
+              <input id="address" name="address" defaultValue={client.adress || ''} className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="number" className="text-primary font-medium">{t('number')}</label>
-              <input id="number" name="number" defaultValue={client.number} className="input px-3 py-2 rounded-lg" />
+              <input id="number" name="number" defaultValue={client.number} className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="website" className="text-primary font-medium">{t('website')}</label>
-              <input id="website" name="website" defaultValue={client.website || ''} className="input px-3 py-2 rounded-lg" />
+              <input id="website" name="website" defaultValue={client.website || ''} className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="processStatus" className="text-primary font-medium">{t('status')}</label>
-              <select id="processStatus" name="processStatus" defaultValue={client.processStatus} className="input px-3 py-2 rounded-lg">
+              <select id="processStatus" name="processStatus" defaultValue={client.processStatus} className="input px-3 py-2 ">
                 <option value="client">Client</option>
                 <option value="prospect">Prospect</option>
               </select>
@@ -431,7 +431,7 @@ export default function ClientDetailsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('projects')}
-          className={`px-4 py-2 rounded-lg !text-sm font-medium transition-colors ${
+          className={`px-4 py-2  !text-sm font-medium transition-colors ${
             activeTab === 'projects' ? 'bg-accent !text-white' : 'bg-hover !text-secondary hover:!text-primary'
           }`}
         >
@@ -440,7 +440,7 @@ export default function ClientDetailsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('workflow')}
-          className={`px-4 py-2 rounded-lg !text-sm font-medium transition-colors flex items-center gap-1.5 ${
+          className={`px-4 py-2  !text-sm font-medium transition-colors flex items-center gap-1.5 ${
             activeTab === 'workflow' ? 'bg-accent !text-white' : 'bg-hover !text-primary hover:!text-secondary'
           }`}
           title={t('client_journey_subtitle') || 'Qu\'est-ce qui existe et qu\'est-ce qui manque ?'}
@@ -458,7 +458,7 @@ export default function ClientDetailsPage() {
       )}
 
       {activeTab === 'projects' && (
-        <div className="bg-card border border-default p-6 rounded-xl">
+        <div className="bg-card border border-default p-6 ">
           <h2 className="text-2xl font-bold !text-primary mb-4">{t('projects')}</h2>
           <TableFilters
             searchPlaceholder={t('search_project') || 'Rechercher un projet'}
@@ -486,7 +486,7 @@ export default function ClientDetailsPage() {
       )}
 
       {activeTab === 'workflow' && client && (
-        <div className="bg-card border border-default rounded-xl overflow-hidden" style={{ minHeight: '80vh' }}>
+        <div className="bg-card border border-default  overflow-hidden" style={{ minHeight: '80vh' }}>
           {/* Si plusieurs projets et aucun sélectionné → sélecteur */}
           {clientProjects.length > 1 && !selectedProjectId ? (
             <ProjectSelector
@@ -512,7 +512,7 @@ export default function ClientDetailsPage() {
               </p>
               <Link
                 href={`/dashboard/projects/new?client=${client.documentId}`}
-                className="mt-4 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent-dark transition-colors"
+                className="mt-4 px-4 py-2 bg-accent !text-white  hover:bg-accent-dark transition-colors"
               >
                 {t('create_project') || 'Créer un projet'}
               </Link>

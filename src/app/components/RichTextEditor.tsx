@@ -1106,7 +1106,7 @@ export default function RichTextEditor({
   }, []);
 
   return (
-    <div className={`border border-default rounded-xl overflow-visible bg-card ${className}`}>
+    <div className={`border border-default  overflow-visible bg-card ${className}`}>
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Playfair+Display:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap');`}
       </style>
@@ -1220,7 +1220,7 @@ export default function RichTextEditor({
           </button>
           
           {showLinkInput && (
-            <div className="absolute top-full left-0 mt-1 p-2 bg-card border border-default rounded-lg shadow-lg z-10 flex gap-2">
+            <div className="absolute top-full left-0 mt-1 p-2 bg-card border border-default  shadow-lg z-10 flex gap-2">
               <input
                 type="url"
                 value={linkUrl}
@@ -1313,7 +1313,7 @@ export default function RichTextEditor({
             </button>
 
             {showVideoInput && (
-              <div className="absolute top-full right-0 mt-1 p-2 bg-card border border-default rounded-lg shadow-lg z-20 flex gap-2">
+              <div className="absolute top-full right-0 mt-1 p-2 bg-card border border-default  shadow-lg z-20 flex gap-2">
                 <input
                   type="url"
                   value={videoUrl}
@@ -1347,7 +1347,7 @@ export default function RichTextEditor({
         {/* Media Toolbar - appears when image is selected */}
         {selectedMedia && !isResizing && (
           <div 
-            className="absolute z-20 flex items-center gap-1 p-1.5 bg-gray-900 rounded-lg shadow-xl"
+            className="absolute z-20 flex items-center gap-1 p-1.5 bg-gray-900  shadow-xl"
             style={{ 
               top: Math.max(0, mediaToolbarPosition.top),
               left: mediaToolbarPosition.left,
@@ -1456,7 +1456,7 @@ export default function RichTextEditor({
         {/* Emoji Picker Popup */}
         {showEmojiPicker && emojiResults.length > 0 && (
           <div
-            className="absolute z-50 bg-card border border-muted rounded-lg shadow-xl p-2 min-w-[200px] max-w-[320px]"
+            className="absolute z-50 bg-card border border-muted  shadow-xl p-2 min-w-[200px] max-w-[320px]"
             style={{
               top: emojiPickerPosition.top,
               left: Math.max(0, Math.min(emojiPickerPosition.left, 200)),
@@ -1473,7 +1473,7 @@ export default function RichTextEditor({
                   type="button"
                   onClick={() => insertEmoji(emoji.emoji)}
                   onMouseEnter={() => setSelectedEmojiIndex(index)}
-                  className={`w-full flex items-center gap-3 px-2 py-1.5 rounded-md transition-colors ${
+                  className={`w-full flex items-center gap-3 px-2 py-1.5  transition-colors ${
                     index === selectedEmojiIndex
                       ? 'bg-accent-light !text-accent'
                       : 'hover:bg-hover !text-primary'
@@ -1494,7 +1494,7 @@ export default function RichTextEditor({
           <>
             {/* Corner resize handles */}
             <div
-              className="absolute w-3 h-3 bg-accent border-2 border-white rounded-sm cursor-nw-resize z-30 shadow hover:scale-125 transition-transform"
+              className="absolute w-3 h-3 bg-accent border-2 border-white  cursor-nw-resize z-30 shadow hover:scale-125 transition-transform"
               style={{
                 top: selectedMedia.offsetTop - 4,
                 left: selectedMedia.offsetLeft - 4,
@@ -1502,7 +1502,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 'nw')}
             />
             <div
-              className="absolute w-3 h-3 bg-accent border-2 border-white rounded-sm cursor-ne-resize z-30 shadow hover:scale-125 transition-transform"
+              className="absolute w-3 h-3 bg-accent border-2 border-white  cursor-ne-resize z-30 shadow hover:scale-125 transition-transform"
               style={{
                 top: selectedMedia.offsetTop - 4,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth - 8,
@@ -1510,7 +1510,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 'ne')}
             />
             <div
-              className="absolute w-3 h-3 bg-accent border-2 border-white rounded-sm cursor-sw-resize z-30 shadow hover:scale-125 transition-transform"
+              className="absolute w-3 h-3 bg-accent border-2 border-white  cursor-sw-resize z-30 shadow hover:scale-125 transition-transform"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight - 8,
                 left: selectedMedia.offsetLeft - 4,
@@ -1518,7 +1518,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 'sw')}
             />
             <div
-              className="absolute w-3 h-3 bg-accent border-2 border-white rounded-sm cursor-se-resize z-30 shadow hover:scale-125 transition-transform"
+              className="absolute w-3 h-3 bg-accent border-2 border-white  cursor-se-resize z-30 shadow hover:scale-125 transition-transform"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight - 8,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth - 8,
@@ -1528,7 +1528,7 @@ export default function RichTextEditor({
             
             {/* Edge resize handles */}
             <div
-              className="absolute w-8 h-3 bg-accent-light0 rounded-sm cursor-n-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
+              className="absolute w-8 h-3 bg-accent-light0  cursor-n-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop - 4,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth / 2 - 16,
@@ -1536,7 +1536,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 'n')}
             />
             <div
-              className="absolute w-3 h-8 bg-accent-light0 rounded-sm cursor-e-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
+              className="absolute w-3 h-8 bg-accent-light0  cursor-e-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight / 2 - 16,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth - 8,
@@ -1544,7 +1544,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 'e')}
             />
             <div
-              className="absolute w-8 h-3 bg-accent-light0 rounded-sm cursor-s-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
+              className="absolute w-8 h-3 bg-accent-light0  cursor-s-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight - 8,
                 left: selectedMedia.offsetLeft + selectedMedia.offsetWidth / 2 - 16,
@@ -1565,7 +1565,7 @@ export default function RichTextEditor({
         {/* Selection indicator */}
         {selectedMedia && (
           <div
-            className="absolute pointer-events-none border-2 border-accent rounded-lg"
+            className="absolute pointer-events-none border-2 border-accent "
             style={{
               top: selectedMedia.offsetTop,
               left: selectedMedia.offsetLeft,

@@ -648,10 +648,10 @@ export default function FacturesPage() {
 
   // Onglets pour basculer entre Factures et Devis
   const tabs = (
-    <div className="flex w-fit gap-1 p-1 bg-muted rounded-lg mb-6">
+    <div className="flex w-fit gap-1 p-1 bg-muted  mb-6">
       <button
         onClick={() => router.push('/dashboard/factures')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md !text-sm font-medium transition-all ${
+        className={`flex items-center gap-2 px-4 py-2  !text-sm font-medium transition-all ${
           !isQuoteMode
             ? 'bg-card !text-amber-600 dark:!text-amber-400 shadow-sm'
             : 'text-muted hover:!text-primary'
@@ -662,7 +662,7 @@ export default function FacturesPage() {
       </button>
       <button
         onClick={() => router.push('/dashboard/factures?type=quote')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md !text-sm font-medium transition-all ${
+        className={`flex items-center gap-2 px-4 py-2  !text-sm font-medium transition-all ${
           isQuoteMode
             ? 'bg-card !text-secondary shadow-sm'
             : 'text-muted hover:!text-primary'
@@ -732,7 +732,7 @@ export default function FacturesPage() {
           </p>
 
           {/* Option pour mettre à jour le statut du client */}
-          <div className="flex items-start gap-3 p-4 bg-muted rounded-lg">
+          <div className="flex items-start gap-3 p-4 bg-muted ">
             <input
               type="checkbox"
               id="updateClientStatusTable"
@@ -761,7 +761,7 @@ export default function FacturesPage() {
             <button
               onClick={handleConvertQuote}
               disabled={isConverting}
-              className="flex items-center gap-2 px-4 py-2 bg-green-500 !text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-green-500 !text-white  hover:bg-green-600 transition-colors disabled:opacity-50"
             >
               {isConverting ? (
                 <>

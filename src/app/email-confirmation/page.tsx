@@ -41,7 +41,7 @@ function EmailConfirmationContent() {
   }, [confirmation]);
 
   return (
-    <div className="flex flex-col h-fit w-fit !my-32 border border-default bg-muted rounded-xl">
+    <div className="flex flex-col h-fit w-fit !my-32 border border-default bg-muted ">
       <div className="flex-1 flex items-center justify-center p-4 md:p-16 bg-secondary min-h-[400px]">
         <div className="md:max-w-md max-w-full w-full">
           {status === 'loading' && (
@@ -80,7 +80,7 @@ function EmailConfirmationContent() {
               </p>
               <Link
                 href="/login"
-                className="inline-block bg-primary hover:bg-primary-light !text-primary-foreground font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                className="inline-block bg-primary hover:bg-primary-light !text-primary-foreground font-medium py-3 px-6  transition-colors duration-200"
               >
                 {t('email_confirmation_login')}
               </Link>
@@ -106,13 +106,13 @@ function EmailConfirmationContent() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/login"
-                  className="inline-block btn-primary font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="inline-block btn-primary font-medium py-3 px-6  transition-colors duration-200"
                 >
                   {t('email_confirmation_login')}
                 </Link>
                 <Link
                   href="/login?type=register"
-                  className="inline-block btn-secondary font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="inline-block btn-secondary font-medium py-3 px-6  transition-colors duration-200"
                 >
                   {t('email_confirmation_register')}
                 </Link>
@@ -127,7 +127,7 @@ function EmailConfirmationContent() {
 
 function EmailConfirmationLoading() {
   return (
-    <div className="flex h-fit w-fit !my-32 border border-default bg-muted rounded-xl">
+    <div className="flex h-fit w-fit !my-32 border border-default bg-muted ">
       <div className="flex-1 flex items-center justify-center p-16 min-h-[400px]">
         <div className="w-full max-w-md !text-center">
           <div className="w-20 h-20 bg-primary rounded-full mx-auto mb-6 animate-pulse"></div>

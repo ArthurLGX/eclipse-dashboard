@@ -32,7 +32,7 @@ export default function PageSkeleton({
       {/* Skeleton pour le contenu principal */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Skeleton pour la barre de progression */}
-        <div className="bg-card backdrop-blur-sm border border-default rounded-lg p-4 mb-6">
+        <div className="bg-card backdrop-blur-sm border border-default  p-4 mb-6">
           <div className="flex flex-wrap gap-4">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="flex-1 min-w-48">

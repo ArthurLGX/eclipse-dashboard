@@ -474,7 +474,7 @@ export default function TimeTrackingAnalyticsPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard/time-tracking"
-              className="p-2 rounded-lg border border-default !text-muted hover:!text-primary hover:bg-hover transition-colors"
+              className="p-2  border border-default !text-muted hover:!text-primary hover:bg-hover transition-colors"
             >
               <IconArrowLeft className="w-5 h-5" />
             </Link>
@@ -490,12 +490,12 @@ export default function TimeTrackingAnalyticsPage() {
           </div>
           
           {/* Date Range Filter */}
-          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-muted  p-1">
             {(['week', 'month', '3months', 'year'] as const).map((range) => (
               <button
                 key={range}
                 onClick={() => setDateRange(range)}
-                className={`px-3 py-1.5 rounded-md !text-sm font-medium transition-colors ${
+                className={`px-3 py-1.5  !text-sm font-medium transition-colors ${
                   dateRange === range
                     ? 'bg-accent !text-white'
                     : 'text-muted hover:!text-primary'
@@ -520,7 +520,7 @@ export default function TimeTrackingAnalyticsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="card p-5">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-accent-light rounded-xl">
+                  <div className="p-3 bg-accent-light ">
                     <IconClock className="w-6 h-6 !text-accent" />
                   </div>
                   <div>
@@ -532,7 +532,7 @@ export default function TimeTrackingAnalyticsPage() {
               
               <div className="card p-5">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-warning-light rounded-xl">
+                  <div className="p-3 bg-warning-light ">
                     <IconCalendar className="w-6 h-6 !text-warning" />
                   </div>
                   <div>
@@ -544,7 +544,7 @@ export default function TimeTrackingAnalyticsPage() {
               
               <div className="card p-5">
                 <div className="flex items-center gap-3">
-                  <div className={`p-3 rounded-xl ${
+                  <div className={`p-3  ${
                     analytics.avgAccuracy > 110 ? 'bg-danger-light' :
                     analytics.avgAccuracy < 90 ? 'bg-info-light' : 'bg-success-light'
                   }`}>
@@ -567,7 +567,7 @@ export default function TimeTrackingAnalyticsPage() {
               
               <div className="card p-5">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-success-light rounded-xl">
+                  <div className="p-3 bg-success-light ">
                     <IconTrendingUp className="w-6 h-6 !text-success-text -text" />
                   </div>
                   <div>
@@ -655,7 +655,7 @@ export default function TimeTrackingAnalyticsPage() {
                     </p>
                   ) : (
                     analytics.groupedDeviations.map((item) => (
-                      <div key={item.projectId} className="flex items-center justify-between p-2 rounded-lg bg-muted">
+                      <div key={item.projectId} className="flex items-center justify-between p-2  bg-muted">
                         <div className="flex items-center gap-2 min-w-0 flex-1">
                           {getAccuracyIcon(item.accuracy)}
                           <div className="min-w-0 flex-1">
@@ -696,7 +696,7 @@ export default function TimeTrackingAnalyticsPage() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {analytics.avgAccuracy > 120 && (
-                  <div className="flex items-start gap-3 p-3 bg-danger-light rounded-lg">
+                  <div className="flex items-start gap-3 p-3 bg-danger-light ">
                     <IconTrendingUp className="w-5 h-5 !text-danger flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium !text-primary">
@@ -709,7 +709,7 @@ export default function TimeTrackingAnalyticsPage() {
                   </div>
                 )}
                 {analytics.avgAccuracy < 80 && (
-                  <div className="flex items-start gap-3 p-3 bg-info-light rounded-lg">
+                  <div className="flex items-start gap-3 p-3 bg-info-light ">
                     <IconTrendingDown className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium !text-primary">
@@ -722,7 +722,7 @@ export default function TimeTrackingAnalyticsPage() {
                   </div>
                 )}
                 {analytics.avgAccuracy >= 80 && analytics.avgAccuracy <= 120 && (
-                  <div className="flex items-start gap-3 p-3 bg-success-light rounded-lg">
+                  <div className="flex items-start gap-3 p-3 bg-success-light ">
                     <IconTarget className="w-5 h-5 !text-success-text -text flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium !text-primary">
@@ -735,7 +735,7 @@ export default function TimeTrackingAnalyticsPage() {
                   </div>
                 )}
                 {analytics.exceededTasks > analytics.completedTasks && (
-                  <div className="flex items-start gap-3 p-3 bg-warning-light rounded-lg">
+                  <div className="flex items-start gap-3 p-3 bg-warning-light ">
                     <IconClock className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium !text-primary">

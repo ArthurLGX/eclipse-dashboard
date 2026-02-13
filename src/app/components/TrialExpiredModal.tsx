@@ -128,7 +128,7 @@ export default function TrialExpiredModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="bg-card border border-default rounded-xl p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto outline-none"
+            className="bg-card border border-default  p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto outline-none"
             onClick={e => e.stopPropagation()}
           >
             {/* En-tête */}
@@ -160,7 +160,7 @@ export default function TrialExpiredModal({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
                       onClick={() => handleChoosePlan(plan)}
-                      className="bg-hover border border-default rounded-lg p-4 hover:border-accent hover:bg-hover transition-all duration-200 !text-left group"
+                      className="bg-hover border border-default  p-4 hover:border-accent hover:bg-hover transition-all duration-200 !text-left group"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="text-primary font-semibold capitalize group-hover:!text-accent transition-colors">
@@ -197,13 +197,13 @@ export default function TrialExpiredModal({
             <div className="flex gap-3">
               <button
                 onClick={handleClose}
-                className="flex-1 bg-muted !text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
+                className="flex-1 bg-muted !text-secondary px-4 py-3  hover:bg-card transition-colors"
               >
                 {t('cancel')}
               </button>
               <button
                 onClick={() => router.push('/pricing')}
-                className="flex-1 bg-accent !text-white px-4 py-3 rounded-lg hover:bg-[var(--color-accent)] transition-colors font-semibold"
+                className="flex-1 bg-accent !text-white px-4 py-3  hover:bg-[var(--color-accent)] transition-colors font-semibold"
               >
                 {t('view_all_plans')}
               </button>

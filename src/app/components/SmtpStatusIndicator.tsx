@@ -129,8 +129,8 @@ export function SmtpWarningBanner({ className = '' }: SmtpWarningBannerProps) {
 
   if (isConfigured && !isVerified) {
     return (
-        <div className={`flex items-center gap-3 p-4 bg-warning-light border border-warning rounded-xl ${className}`}>
-        <div className="w-10 h-10 rounded-lg bg-warning-light flex items-center justify-center flex-shrink-0">
+        <div className={`flex items-center gap-3 p-4 bg-warning-light border border-warning  ${className}`}>
+        <div className="w-10 h-10  bg-warning-light flex items-center justify-center flex-shrink-0">
           <IconAlertTriangle className="w-5 h-5 !text-warning" />
         </div>
         <div className="flex-1">
@@ -139,7 +139,7 @@ export function SmtpWarningBanner({ className = '' }: SmtpWarningBannerProps) {
         </div>
         <Link
           href="/dashboard/settings?tab=email"
-          className="flex items-center gap-2 px-4 py-2 bg-warning !text-white rounded-lg hover:bg-warning-dark transition-colors !text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-warning !text-white  hover:bg-warning-dark transition-colors !text-sm font-medium"
         >
           <IconSettings className="w-4 h-4" />
           {t('verify') || 'Vérifier'}
@@ -150,8 +150,8 @@ export function SmtpWarningBanner({ className = '' }: SmtpWarningBannerProps) {
 
   // Non configuré
   return (
-    <div className={`flex items-center gap-3 p-4 bg-danger-light border border-danger rounded-xl ${className}`}>
-      <div className="w-10 h-10 rounded-lg bg-danger-light flex items-center justify-center flex-shrink-0">
+    <div className={`flex items-center gap-3 p-4 bg-danger-light border border-danger  ${className}`}>
+      <div className="w-10 h-10  bg-danger-light flex items-center justify-center flex-shrink-0">
         <IconAlertTriangle className="w-5 h-5 !text-danger" />
       </div>
       <div className="flex-1">
@@ -162,7 +162,7 @@ export function SmtpWarningBanner({ className = '' }: SmtpWarningBannerProps) {
       </div>
       <Link
         href="/dashboard/settings?tab=email"
-        className="flex items-center gap-2 px-4 py-2 bg-danger !text-white rounded-lg hover:bg-danger-dark transition-colors !text-sm font-medium"
+        className="flex items-center gap-2 px-4 py-2 bg-danger !text-white  hover:bg-danger-dark transition-colors !text-sm font-medium"
       >
         <IconSettings className="w-4 h-4" />
         {t('configure') || 'Configurer'}

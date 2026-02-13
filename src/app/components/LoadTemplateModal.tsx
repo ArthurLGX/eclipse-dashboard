@@ -100,7 +100,7 @@ export default function LoadTemplateModal({
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden"
+          className="bg-card border border-default  shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
@@ -110,7 +110,7 @@ export default function LoadTemplateModal({
             </h3>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-hover transition-colors"
+              className="p-2  hover:bg-hover transition-colors"
             >
               <IconX className="w-5 h-5 !text-secondary" />
             </button>
@@ -137,7 +137,7 @@ export default function LoadTemplateModal({
                 {templates.map((template) => (
                   <div
                     key={template.documentId}
-                    className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    className={`relative p-4  border-2 transition-all cursor-pointer ${
                       selectedTemplate?.documentId === template.documentId
                         ? 'border-accent bg-accent-light'
                         : 'border-default hover:border-accent'
@@ -163,7 +163,7 @@ export default function LoadTemplateModal({
                     <div className="flex items-center gap-3 mb-3">
                       {/* Gradient preview */}
                       <div 
-                        className="w-16 h-10 rounded-lg border border-default flex-shrink-0"
+                        className="w-16 h-10  border border-default flex-shrink-0"
                         style={{
                           background: template.gradient_stops?.length > 0
                             ? `linear-gradient(${template.gradient_angle}deg, ${
@@ -214,7 +214,7 @@ export default function LoadTemplateModal({
                           handleSetDefault(template.documentId);
                         }}
                         disabled={template.is_default || settingDefault === template.documentId}
-                        className={`flex-1 py-1.5 !text-xs rounded-lg transition-colors flex items-center justify-center gap-1 ${
+                        className={`flex-1 py-1.5 !text-xs  transition-colors flex items-center justify-center gap-1 ${
                           template.is_default
                             ? 'text-yellow-500 cursor-default'
                             : 'text-secondary hover:!text-yellow-500 hover:bg-yellow-500/10'
@@ -239,7 +239,7 @@ export default function LoadTemplateModal({
                           e.stopPropagation();
                           setConfirmDelete(template.documentId);
                         }}
-                        className="p-1.5 !text-secondary hover:!text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                        className="p-1.5 !text-secondary hover:!text-red-500 hover:bg-red-500/10  transition-colors"
                       >
                         <IconTrash className="w-4 h-4" />
                       </button>
@@ -250,7 +250,7 @@ export default function LoadTemplateModal({
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="absolute inset-0 bg-card/95 rounded-xl flex flex-col items-center justify-center p-4"
+                        className="absolute inset-0 bg-card/95  flex flex-col items-center justify-center p-4"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <IconAlertTriangle className="w-8 h-8 !text-red-500 mb-2" />
@@ -268,7 +268,7 @@ export default function LoadTemplateModal({
                           <button
                             onClick={() => handleDelete(template.documentId)}
                             disabled={deleting}
-                            className="px-3 py-1.5 !text-sm bg-red-500 !text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-1"
+                            className="px-3 py-1.5 !text-sm bg-red-500 !text-white  hover:bg-red-600 transition-colors flex items-center gap-1"
                           >
                             {deleting ? (
                               <IconLoader2 className="w-3 h-3 animate-spin" />
@@ -298,7 +298,7 @@ export default function LoadTemplateModal({
               <button
                 onClick={handleLoad}
                 disabled={!selectedTemplate}
-                className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 <IconCheck className="w-4 h-4" />
                 {t('load_selected') || 'Charger le thème'}

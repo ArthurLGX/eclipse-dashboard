@@ -217,7 +217,7 @@ export default function GeneratedMockup({
         {/* Header */}
         <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">
           <div className="flex items-center gap-3 relative">
-            <div className="p-1.5 bg-accent-light rounded-lg">
+            <div className="p-1.5 bg-accent-light ">
               <IconSparkles className="w-4 h-4 !text-accent" />
             </div>
             <div>
@@ -235,21 +235,21 @@ export default function GeneratedMockup({
               <>
                 <button
                   onClick={() => setComparisonMode(comparisonMode === 'side-by-side' ? 'slider' : 'side-by-side')}
-                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
+                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
                   title={t('toggle_comparison') || 'Changer le mode'}
                 >
                   <IconArrowsHorizontal className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setIsFullscreen(true)}
-                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
+                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
                   title={t('fullscreen') || 'Plein écran'}
                 >
                   <IconMaximize className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
+                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
                   title={t('download') || 'Télécharger'}
                 >
                   <IconDownload className="w-4 h-4" />
@@ -275,7 +275,7 @@ export default function GeneratedMockup({
               </p>
               <button
                 onClick={generateMockup}
-                className="btn-primary px-6 py-3 rounded-lg flex items-center gap-2 mx-auto"
+                className="btn-primary px-6 py-3  flex items-center gap-2 mx-auto"
               >
                 <IconSparkles className="w-5 h-5" />
                 {t('generate_with_ai') || 'Générer avec l\'IA'}
@@ -401,7 +401,7 @@ export default function GeneratedMockup({
                 /* Slider View */
                 <div
                   ref={sliderRef}
-                  className="relative rounded-lg overflow-hidden cursor-col-resize select-none border border-default"
+                  className="relative  overflow-hidden cursor-col-resize select-none border border-default"
                   onMouseMove={handleSliderMove}
                   style={{ minHeight: '300px' }}
                 >
@@ -476,7 +476,7 @@ export default function GeneratedMockup({
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setComparisonMode(comparisonMode === 'side-by-side' ? 'slider' : 'side-by-side')}
-                  className="px-3 py-1.5 bg-white/10 !text-white !text-sm rounded-lg flex items-center gap-2 hover:bg-white/20"
+                  className="px-3 py-1.5 bg-white/10 !text-white !text-sm  flex items-center gap-2 hover:bg-white/20"
                 >
                   <IconArrowsHorizontal className="w-4 h-4" />
                   {comparisonMode === 'side-by-side' ? 'Mode slider' : 'Côte à côte'}
@@ -485,13 +485,13 @@ export default function GeneratedMockup({
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleDownload}
-                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 rounded-lg"
+                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 "
                 >
                   <IconDownload className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setIsFullscreen(false)}
-                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 rounded-lg"
+                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 "
                 >
                   <IconX className="w-5 h-5" />
                 </button>
@@ -513,10 +513,10 @@ export default function GeneratedMockup({
                         <img
                           src={`data:image/png;base64,${currentScreenshot}`}
                           alt="Current"
-                          className="w-full rounded-lg"
+                          className="w-full "
                         />
                       ) : (
-                        <div className="bg-white/10 rounded-lg p-20 !text-center">
+                        <div className="bg-white/10  p-20 !text-center">
                           <p className="text-white/40">{t('no_screenshot') || 'Pas de capture'}</p>
                         </div>
                       )}
@@ -526,14 +526,14 @@ export default function GeneratedMockup({
                       <img
                         src={loadedImageUrl}
                         alt="Ideal"
-                        className="w-full rounded-lg"
+                        className="w-full "
                       />
                     </div>
                   </div>
                 ) : (
                   <div
                     ref={sliderRef}
-                    className="relative rounded-lg overflow-hidden cursor-col-resize"
+                    className="relative  overflow-hidden cursor-col-resize"
                     onMouseMove={handleSliderMove}
                   >
                     <img src={loadedImageUrl} alt="Ideal" className="w-full" />

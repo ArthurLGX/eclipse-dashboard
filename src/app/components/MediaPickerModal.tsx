@@ -267,7 +267,7 @@ export default function MediaPickerModal({
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden outline-none"
+          className="bg-card border border-default  shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden outline-none"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
@@ -283,7 +283,7 @@ export default function MediaPickerModal({
             </h3>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-hover transition-colors"
+              className="p-2  hover:bg-hover transition-colors"
             >
                 <IconX className="w-5 h-5 !text-secondary" />
             </button>
@@ -343,7 +343,7 @@ export default function MediaPickerModal({
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="flex flex-col items-center justify-center w-full max-w-md p-8 border-2 border-dashed border-default rounded-xl hover:border-accent hover:bg-hover/30 transition-all cursor-pointer group"
+                  className="flex flex-col items-center justify-center w-full max-w-md p-8 border-2 border-dashed border-default  hover:border-accent hover:bg-hover/30 transition-all cursor-pointer group"
                 >
                   {uploading ? (
                     <>
@@ -405,7 +405,7 @@ export default function MediaPickerModal({
                             onSelect(url, media.id);
                             onClose();
                           }}
-                          className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                          className={`relative aspect-square  overflow-hidden border-2 transition-all ${
                             selectedLibraryItem?.id === media.id
                               ? 'border-accent border-2 border-accent'
                               : 'border-transparent hover:border-accent'
@@ -478,7 +478,7 @@ export default function MediaPickerModal({
                           ? 'https://example.com/video.mp4'
                           : 'https://example.com/media.jpg'
                       }
-                      className="w-full px-4 py-3 bg-input border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
+                      className="w-full px-4 py-3 bg-input border border-default  !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent"
                     />
                     {urlError && (
                       <p className="mt-2 !text-sm !text-red-400 flex items-center gap-1">
@@ -491,7 +491,7 @@ export default function MediaPickerModal({
                   <button
                     onClick={handleUrlSubmit}
                     disabled={!urlInput.trim()}
-                    className="w-full px-4 py-3 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full px-4 py-3 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <IconCheck className="w-4 h-4" />
                     {t('insert') || 'Insérer'}
@@ -513,7 +513,7 @@ export default function MediaPickerModal({
               </p>
               <button
                 onClick={handleLibrarySelect}
-                className="px-6 py-2.5 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 font-medium"
+                className="px-6 py-2.5 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 font-medium"
               >
                 <IconCheck className="w-4 h-4" />
                 {t('confirm_selection') || 'Confirmer'}

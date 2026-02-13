@@ -247,7 +247,7 @@ export default function ClientWorkflowView({
           <button
             type="button"
             onClick={() => setZoom(prev => Math.max(0.1, Math.round((prev - 0.1) * 10) / 10))}
-            className="p-2 rounded-lg border border-default hover:bg-hover"
+            className="p-2  border border-default hover:bg-hover"
             title={t('zoom_out') || 'Zoom arrière'}
           >
             <IconZoomOut className="w-4 h-4" />
@@ -256,7 +256,7 @@ export default function ClientWorkflowView({
           <button
             type="button"
             onClick={() => setZoom(prev => Math.min(1.4, Math.round((prev + 0.1) * 10) / 10))}
-            className="p-2 rounded-lg border border-default hover:bg-hover"
+            className="p-2  border border-default hover:bg-hover"
             title={t('zoom_in') || 'Zoom avant'}
           >
             <IconZoomIn className="w-4 h-4" />
@@ -264,7 +264,7 @@ export default function ClientWorkflowView({
         </div>
       </div>
 
-      <div className="bg-card border border-default rounded-xl p-4 overflow-x-auto">
+      <div className="bg-card border border-default  p-4 overflow-x-auto">
         <div
           className="flex items-start gap-6 min-w-max py-2"
           style={{ transform: `scale(${zoom})`, transformOrigin: 'left top' }}
@@ -273,7 +273,7 @@ export default function ClientWorkflowView({
             const status = getStatusClasses(node.status);
             return (
               <div key={node.id} className="relative flex items-start gap-6">
-                <div className={`w-80 bg-card border rounded-2xl p-4 shadow-sm ${status.border} ${status.background}`}>
+                <div className={`w-80 bg-card border  p-4 shadow-sm ${status.border} ${status.background}`}>
                   <div className="flex items-center gap-2 mb-3">
                     <span className={`w-2.5 h-2.5 rounded-full ${status.dot}`} />
                     <span className={`px-2 py-0.5 rounded-full !text-xs font-medium ${status.badge}`}>
@@ -322,7 +322,7 @@ export default function ClientWorkflowView({
                   {node.cta && (
                     <Link
                       href={node.cta.href}
-                      className="inline-flex items-center gap-2 px-3 py-2 !text-xs font-medium rounded-lg bg-accent !text-white hover:opacity-90 transition"
+                      className="inline-flex items-center gap-2 px-3 py-2 !text-xs font-medium  bg-accent !text-white hover:opacity-90 transition"
                     >
                       <IconCheck className="w-3.5 h-3.5" />
                       {node.cta.label}

@@ -381,7 +381,7 @@ export default function SmtpConfigSection() {
       </div>
 
       {/* Info box */}
-      <div className="p-4 rounded-xl bg-info-light border border-info">
+      <div className="p-4  bg-info-light border border-info">
         <div className="flex gap-3">
           <IconInfoCircle className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
           <div className="text-sm !text-secondary space-y-2">
@@ -401,7 +401,7 @@ export default function SmtpConfigSection() {
             <button
               key={preset.name}
               onClick={() => applyPreset(preset)}
-              className={`px-3 py-1.5 rounded-lg !text-sm border transition-all ${
+              className={`px-3 py-1.5  !text-sm border transition-all ${
                 formData.smtp_host === preset.host
                   ? 'bg-accent-light border-accent !text-accent'
                   : 'bg-card border-default !text-secondary hover:border-accent'
@@ -417,7 +417,7 @@ export default function SmtpConfigSection() {
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
-            className="p-3 rounded-lg bg-warning-light border border-warning"
+            className="p-3  bg-warning-light border border-warning"
           >
             <div className="flex items-start gap-3">
               <IconKey className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
@@ -565,7 +565,7 @@ export default function SmtpConfigSection() {
 
       {/* Test result */}
       {testResult && (
-        <div className={`p-4 rounded-xl flex items-center gap-3 ${
+        <div className={`p-4  flex items-center gap-3 ${
           testResult.success 
             ? 'bg-emerald-300/80 !text-white border border-success' 
             : 'bg-danger-light border border-danger'
@@ -586,10 +586,10 @@ export default function SmtpConfigSection() {
         <button
           type="button"
           onClick={() => setShowImapConfig(!showImapConfig)}
-          className="w-full flex items-center justify-between p-4 rounded-xl bg-secondary hover:bg-secondary hover:opacity-80 transition-colors"
+          className="w-full flex items-center justify-between p-4  bg-secondary hover:bg-secondary hover:opacity-80 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+            <div className="w-10 h-10  bg-purple-500/10 flex items-center justify-center">
               <IconMessageCircle className="w-5 h-5 !text-purple-500" />
             </div>
             <div className="text-left">
@@ -626,7 +626,7 @@ export default function SmtpConfigSection() {
             >
               <div className="pt-6 space-y-4">
                 {/* IMAP Info */}
-                <div className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20">
+                <div className="p-4  bg-purple-500/5 border border-purple-500/20">
                   <div className="flex gap-3">
                     <IconInbox className="w-5 h-5 !text-purple-500 flex-shrink-0 mt-0.5" />
                     <div className="text-sm !text-secondary space-y-2">
@@ -637,7 +637,7 @@ export default function SmtpConfigSection() {
                 </div>
 
                 {/* Enable IMAP Toggle */}
-                <div className="flex items-center justify-between p-4 bg-secondary hover:opacity-80 transition-colors rounded-xl">
+                <div className="flex items-center justify-between p-4 bg-secondary hover:opacity-80 transition-colors ">
                   <div>
                     <h5 className="font-medium !text-primary">
                       {t('enable_imap') || 'Activer la détection des réponses'}
@@ -669,7 +669,7 @@ export default function SmtpConfigSection() {
                     className="space-y-4"
                   >
                     {/* Use same credentials option */}
-                    <div className="p-3 bg-info-light rounded-lg border border-info !text-sm !text-secondary">
+                    <div className="p-3 bg-info-light  border border-info !text-sm !text-secondary">
                       <p>{existingConfig 
                         ? (t('imap_existing_config_hint') || 'Pour tester la connexion, vous devez re-saisir le mot de passe (SMTP ou IMAP). À l\'enregistrement, les mots de passe vides seront conservés.')
                         : (t('imap_same_credentials_hint') || 'Astuce: Si vous utilisez le même compte email, vous pouvez laisser les champs email et mot de passe vides pour utiliser ceux du SMTP.')
@@ -784,7 +784,7 @@ export default function SmtpConfigSection() {
 
                     {/* IMAP Test Result */}
                     {imapTestResult && (
-                      <div className={`p-4 rounded-xl flex items-center gap-3 ${
+                      <div className={`p-4  flex items-center gap-3 ${
                         imapTestResult.success 
                           ? 'bg-purple-300/80 !text-white border border-purple-500' 
                           : 'bg-danger-light border border-danger'
@@ -806,7 +806,7 @@ export default function SmtpConfigSection() {
                         type="button"
                         onClick={handleTestImap}
                         disabled={testingImap || !formData.imap_host}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/10 !text-purple-500 hover:bg-purple-500/20 border border-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-4 py-2  bg-purple-500/10 !text-purple-500 hover:bg-purple-500/20 border border-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {testingImap ? (
                           <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -829,7 +829,7 @@ export default function SmtpConfigSection() {
         {existingConfig && (
           <button
             onClick={handleDelete}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg !text-danger hover:bg-danger-light transition-colors"
+            className="flex items-center gap-2 px-4 py-2  !text-danger hover:bg-danger-light transition-colors"
           >
             <IconTrash className="w-4 h-4" />
             {t('delete') || 'Supprimer'}
@@ -841,7 +841,7 @@ export default function SmtpConfigSection() {
         <button
           onClick={handleTest}
           disabled={testing || !formData.smtp_host || !formData.smtp_user || !formData.smtp_password}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg btn-outline border border-default disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-4 py-2  btn-outline border border-default disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {testing ? (
             <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -854,7 +854,7 @@ export default function SmtpConfigSection() {
         <button
           onClick={handleSave}
           disabled={saving || !formData.smtp_host || !formData.smtp_user}
-          className="flex items-center gap-2 px-6 py-2 rounded-lg btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-6 py-2  btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {saving ? (
             <IconLoader2 className="w-4 h-4 animate-spin" />

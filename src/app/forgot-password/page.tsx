@@ -34,7 +34,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
+    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container ">
       <div className="auth-header z-100 w-full rounded-t-xl">
         <BackBtn />
       </div>
@@ -73,14 +73,14 @@ export default function ForgotPassword() {
                     value={email}
                     required
                     onChange={e => setEmail(e.target.value)}
-                    className="w-full p-3 auth-input rounded-lg transition-all duration-200"
+                    className="w-full p-3 auth-input  transition-all duration-200"
                   />
                 </div>
 
                 <motion.button
                   type="submit"
                   disabled={isLoading}
-                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed font-semibold py-3 px-6  transition-colors duration-200"
                 >
                   {isLoading ? 'Envoi en cours...' : 'Envoyer le lien'}
                 </motion.button>
@@ -125,7 +125,7 @@ export default function ForgotPassword() {
               </p>
               <Link
                 href="/login"
-                className="btn-secondary inline-block font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                className="btn-secondary inline-block font-medium py-3 px-6  transition-colors duration-200"
               >
                 Retour à la connexion
               </Link>

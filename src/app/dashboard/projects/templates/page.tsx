@@ -301,7 +301,7 @@ export default function ProjectTemplatesPage() {
         <div className="flex items-center gap-4">
           <Link 
             href="/dashboard/projects"
-            className="p-2 hover:bg-hover rounded-lg transition-colors"
+            className="p-2 hover:bg-hover  transition-colors"
           >
             <IconArrowLeft size={15} />
           </Link>
@@ -320,7 +320,7 @@ export default function ProjectTemplatesPage() {
           {templates.length === 0 && (
             <button
               onClick={initializeDefaults}
-              className="flex items-center gap-2 px-4 py-2 border border-muted rounded-lg hover:bg-hover"
+              className="flex items-center gap-2 px-4 py-2 border border-muted  hover:bg-hover"
             >
               <IconTemplate size={18} />
               Créer templates par défaut
@@ -328,7 +328,7 @@ export default function ProjectTemplatesPage() {
           )}
           <button
             onClick={() => { setEditingTemplate(null); setModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent"
+            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white  hover:bg-accent"
           >
             <IconPlus size={18} />
             {t('new_template') || 'Nouveau template'}
@@ -337,7 +337,7 @@ export default function ProjectTemplatesPage() {
       </div>
 
       {/* Search */}
-      <div className="flex gap-3 p-4 bg-card rounded-lg border border-muted">
+      <div className="flex gap-3 p-4 bg-card  border border-muted">
         <div className="relative flex-1">
           <IconSearch size={10} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground" />
           <input
@@ -345,7 +345,7 @@ export default function ProjectTemplatesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t('search') || 'Rechercher...'}
-            className="w-full !pl-9 !pr-3 py-2 bg-page border border-muted rounded-lg"
+            className="w-full !pl-9 !pr-3 py-2 bg-page border border-muted "
           />
         </div>
       </div>
@@ -365,7 +365,7 @@ export default function ProjectTemplatesPage() {
           {filteredTemplates.map((template) => (
             <div 
               key={template.documentId} 
-              className="bg-card border border-muted rounded-xl overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-card border border-muted  overflow-hidden hover:shadow-md transition-shadow"
             >
               <div className="p-4 border-b border-muted">
                 <div className="flex items-start justify-between mb-2">

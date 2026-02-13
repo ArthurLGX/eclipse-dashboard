@@ -381,7 +381,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
-      className="absolute right-4 top-4 bottom-4 w-80 bg-card border border-default rounded-xl shadow-xl overflow-hidden z-50"
+      className="absolute right-4 top-4 bottom-4 w-80 bg-card border border-default  shadow-xl overflow-hidden z-50"
     >
       {/* Header */}
       <div className={`p-4 ${config.bgColor} border-b border-default`}>
@@ -394,7 +394,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-hover !text-muted hover:!text-primary transition-colors"
+            className="p-1  hover:bg-hover !text-muted hover:!text-primary transition-colors"
           >
             <IconX size={18} />
           </button>
@@ -488,7 +488,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
                 return (
                   <div
                     key={subtask.id}
-                    className="p-2 rounded-lg bg-muted border border-default"
+                    className="p-2  bg-muted border border-default"
                   >
                     <div className="flex items-center gap-2 mb-1">
                       {/* Toggle checkbox */}
@@ -909,24 +909,24 @@ export default function TaskWorkflowView({
             {onRefresh && (
               <button 
                 onClick={onRefresh} 
-                className="p-1.5 rounded-lg hover:bg-hover !text-muted hover:!text-accent transition-colors" 
+                className="p-1.5  hover:bg-hover !text-muted hover:!text-accent transition-colors" 
                 title={t('refresh') || 'Actualiser'}
               >
                 <IconRefresh size={18} />
               </button>
             )}
             <div className="w-px h-4 bg-border mx-1" />
-            <button onClick={handleZoomOut} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Zoom -">
+            <button onClick={handleZoomOut} className="p-1.5  hover:bg-hover !text-muted" title="Zoom -">
               <IconZoomOut size={18} />
             </button>
             <span className="!text-xs !text-muted w-12 !text-center">{Math.round(scale * 100)}%</span>
-            <button onClick={handleZoomIn} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Zoom +">
+            <button onClick={handleZoomIn} className="p-1.5  hover:bg-hover !text-muted" title="Zoom +">
               <IconZoomIn size={18} />
             </button>
-            <button onClick={handleReset} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Reset">
+            <button onClick={handleReset} className="p-1.5  hover:bg-hover !text-muted" title="Reset">
               <IconFocus2 size={18} />
             </button>
-            <button onClick={toggleFullscreen} className="p-1.5 rounded-lg hover:bg-hover !text-muted" title="Fullscreen">
+            <button onClick={toggleFullscreen} className="p-1.5  hover:bg-hover !text-muted" title="Fullscreen">
               {isFullscreen ? <IconMinimize size={18} /> : <IconMaximize size={18} />}
             </button>
           </div>
@@ -1028,7 +1028,7 @@ export default function TaskWorkflowView({
         </div>
 
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 bg-card border border-default rounded-lg p-3 !text-xs space-y-1.5">
+        <div className="absolute bottom-4 left-4 bg-card border border-default  p-3 !text-xs space-y-1.5">
           <div className="font-medium !text-primary mb-2">{t('legend') || 'Légende'}</div>
           {Object.entries(STATUS_CONFIG).map(([status, config]) => {
             const StatusIcon = config.icon;
@@ -1110,7 +1110,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
             >
               <div
                 className={`
-                  p-4 rounded-xl bg-card border-2 ${config.borderColor}
+                  p-4  bg-card border-2 ${config.borderColor}
                   hover:shadow-md transition-all cursor-pointer
                 `}
                 onClick={() => onTaskClick?.(task)}
@@ -1149,7 +1149,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
                         e.stopPropagation();
                         toggleExpand(task.id);
                       }}
-                      className="p-2 rounded-lg hover:bg-hover !text-muted"
+                      className="p-2  hover:bg-hover !text-muted"
                     >
                       {isExpanded ? <IconChevronDown size={18} /> : <IconChevronRight size={18} />}
                     </button>
@@ -1171,7 +1171,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
                         return (
                           <div
                             key={subtask.id}
-                            className="flex items-center gap-3 p-2 rounded-lg bg-muted"
+                            className="flex items-center gap-3 p-2  bg-muted"
                           >
                             <StIcon size={14} className={stConfig.color} />
                             <span className="text-sm !text-primary flex-1 truncate">{subtask.title}</span>

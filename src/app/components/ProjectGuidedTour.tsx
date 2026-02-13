@@ -213,7 +213,7 @@ export default function ProjectGuidedTour({
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           className="relative z-10 w-full max-w-md mx-4"
         >
-          <div className="bg-card rounded-2xl shadow-2xl border border-default overflow-hidden">
+          <div className="bg-card  shadow-2xl border border-default overflow-hidden">
             {/* Header with close button */}
             <div className="flex items-center justify-between p-4 border-b border-default bg-muted">
               <div className="flex items-center gap-2">
@@ -234,7 +234,7 @@ export default function ProjectGuidedTour({
               </div>
               <button
                 onClick={handleSkip}
-                className="p-1 rounded-lg hover:bg-hover !text-secondary hover:!text-primary transition-colors"
+                className="p-1  hover:bg-hover !text-secondary hover:!text-primary transition-colors"
                 aria-label="Fermer"
               >
                 <IconX className="w-5 h-5" />
@@ -339,7 +339,7 @@ export default function ProjectGuidedTour({
               <button
                 onClick={handlePrev}
                 disabled={currentStep === 0}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2  font-medium transition-all ${
                   currentStep === 0
                     ? 'text-muted-foreground cursor-not-allowed'
                     : 'text-secondary hover:!text-primary hover:bg-hover'
@@ -355,7 +355,7 @@ export default function ProjectGuidedTour({
 
               <button
                 onClick={handleNext}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2  font-medium transition-all ${
                   isLastStep
                     ? 'bg-success !text-white hover:bg-success'
                     : 'bg-accent !text-white hover:bg-accent'

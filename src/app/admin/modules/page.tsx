@@ -112,10 +112,10 @@ export default function AdminModulesPage() {
             return (
               <div
                 key={module.id}
-                className="p-4 flex-1 bg-page flex min-h-[100px] flex-col gap-4 items-center justify-between transition-colors border border-default rounded-lg"
+                className="p-4 flex-1 bg-page flex min-h-[100px] flex-col gap-4 items-center justify-between transition-colors border border-default "
               >
                 <div className="flex items-center justify-start w-full  gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
+                  <div className="w-10 h-10  bg-accent-light flex items-center justify-center">
                     <span className="text-accent !text-lg">
                       {module.icon === 'IconTargetArrow' ? '🎯' : '📦'}
                     </span>
@@ -134,7 +134,7 @@ export default function AdminModulesPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleStatusChange(module.id, null)}
-                    className={`px-3 py-1.5 !text-sm rounded-lg transition-colors ${
+                    className={`px-3 py-1.5 !text-sm  transition-colors ${
                       currentStatus === null
                         ? 'bg-accent border border-accent !text-white font-medium'
                         : 'text-muted bg-muted'
@@ -144,7 +144,7 @@ export default function AdminModulesPage() {
                   </button>
                   <button
                     onClick={() => handleStatusChange(module.id, 'beta')}
-                    className={`px-3 py-1.5 !text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
+                    className={`px-3 py-1.5 !text-sm  transition-colors flex items-center gap-1.5 ${
                       currentStatus === 'beta'
                         ? 'bg-warning-light !text-warning-text font-medium border border-warning'
                         : 'text-muted bg-muted'
@@ -155,7 +155,7 @@ export default function AdminModulesPage() {
                   </button>
                   <button
                     onClick={() => handleStatusChange(module.id, 'new')}
-                    className={`px-3 py-1.5 !text-sm rounded-lg transition-colors flex items-center gap-1.5 ${
+                    className={`px-3 py-1.5 !text-sm  transition-colors flex items-center gap-1.5 ${
                       currentStatus === 'new'
                         ? 'bg-success-light !text-success-text font-medium border border-success'
                         : 'text-muted hover:bg-hover'

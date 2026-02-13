@@ -137,7 +137,7 @@ function EmailPreviewContent({
   const sigSecondaryColor = signatureData?.secondary_color || '#666666';
 
   return (
-    <div className="bg-white rounded-xl shadow-xl overflow-hidden !text-gray-800 w-full" style={{ fontFamily: emailFontFamily }}>
+    <div className="bg-white  shadow-xl overflow-hidden !text-gray-800 w-full" style={{ fontFamily: emailFontFamily }}>
       {/* Header with template-specific styling */}
       <div 
         className={`text-center ${isAnnouncement ? 'py-12' : 'py-8'}`}
@@ -219,7 +219,7 @@ function EmailPreviewContent({
               <img 
                 src={effectiveBannerUrl} 
                 alt="Banner" 
-                className="w-full rounded-lg object-contain max-h-48"
+                className="w-full  object-contain max-h-48"
               />
             </a>
           ) : (
@@ -227,7 +227,7 @@ function EmailPreviewContent({
             <img 
               src={effectiveBannerUrl} 
               alt="Banner" 
-              className="w-full rounded-lg object-contain max-h-48"
+              className="w-full  object-contain max-h-48"
             />
           )}
         </div>
@@ -391,7 +391,7 @@ export default function MailboxPreview({
   const effectiveBannerUrl = bannerUrl || signatureData?.banner_url;
 
   return (
-    <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[700px]">
+    <div className="bg-white  shadow-2xl overflow-hidden flex flex-col h-[700px]">
       {/* Mailbox Header */}
       <div className="bg-gray-100 border-b border-gray-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-4">
@@ -408,24 +408,24 @@ export default function MailboxPreview({
         {/* Sidebar - Folders */}
         <div className="w-16 md:w-48 bg-gray-50 border-r border-gray-200 flex-shrink-0 hidden sm:block">
           <div className="p-2 md:p-4 space-y-1">
-            <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700 rounded-lg font-medium">
+            <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700  font-medium">
               <IconInbox className="w-5 h-5" />
               <span className="hidden md:inline">{translations.inbox}</span>
               <span className="hidden md:inline ml-auto bg-blue-500 !text-white !text-xs px-2 py-0.5 rounded-full">1</span>
             </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+            <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
               <IconStar className="w-5 h-5" />
               <span className="hidden md:inline">{translations.favorites}</span>
             </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+            <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
               <IconSend className="w-5 h-5" />
               <span className="hidden md:inline">{translations.sent_folder}</span>
             </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+            <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
               <IconArchive className="w-5 h-5" />
               <span className="hidden md:inline">{translations.archives}</span>
             </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+            <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
               <IconTrash className="w-5 h-5" />
               <span className="hidden md:inline">{translations.trash}</span>
             </button>
@@ -441,7 +441,7 @@ export default function MailboxPreview({
               <input 
                 type="text" 
                 placeholder={translations.search_placeholder}
-                className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg !text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
+                className="w-full !pl-10 !pr-4 py-2 !bg-gray-100  !text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
                 readOnly
               />
             </div>
@@ -531,13 +531,13 @@ export default function MailboxPreview({
                 {newsletter.subject}
               </h2>
               <div className="flex items-center gap-2">
-                <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
+                <button className="p-2 hover:bg-gray-100  !text-info ">
                   <IconArchive className="w-5 h-5" />
                 </button>
-                <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
+                <button className="p-2 hover:bg-gray-100  !text-info ">
                   <IconTrash className="w-5 h-5" />
                 </button>
-                <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
+                <button className="p-2 hover:bg-gray-100  !text-info ">
                   <IconDots className="w-5 h-5" />
                 </button>
               </div>

@@ -52,10 +52,10 @@ function IntegrationCard({ title, description, icon, status, children }: Integra
   };
 
   return (
-    <div className="bg-card border border-default rounded-xl p-6 space-y-4">
+    <div className="bg-card border border-default  p-6 space-y-4">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-accent-light rounded-lg !text-accent">
+          <div className="p-2 bg-accent-light  !text-accent">
             {icon}
           </div>
           <div>
@@ -94,12 +94,12 @@ function CopyableField({ label, value }: { label: string; value: string }) {
     <div className="space-y-1">
       <label className="!text-xs font-medium !text-muted">{label}</label>
       <div className="flex items-center gap-2">
-        <code className="flex-1 px-3 py-2 bg-muted border border-default rounded-lg !text-sm font-mono truncate !text-primary">
+        <code className="flex-1 px-3 py-2 bg-muted border border-default  !text-sm font-mono truncate !text-primary">
           {value}
         </code>
         <button
           onClick={handleCopy}
-          className="p-2 hover:bg-hover rounded-lg transition-colors !text-secondary"
+          className="p-2 hover:bg-hover  transition-colors !text-secondary"
           title={t('copy') || 'Copier'}
         >
           {copied ? <IconCheck size={18} className="text-success-text" /> : <IconCopy size={18} />}
@@ -203,7 +203,7 @@ function ApiTokensSection() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="bg-success-light border border-success rounded-lg p-4 space-y-2"
+              className="bg-success-light border border-success  p-4 space-y-2"
             >
               <div className="flex items-center justify-between">
                 <h4 className="font-mediumtext-success-light">
@@ -220,18 +220,18 @@ function ApiTokensSection() {
                 {t('token_created_warning') || 'Copiez ce token maintenant. Il ne sera plus affiché !'}
               </p>
               <div className="flex items-center gap-2">
-                <code className="flex-1 px-3 py-2 bg-card rounded-lg !text-sm font-mono break-all !text-primary">
+                <code className="flex-1 px-3 py-2 bg-card  !text-sm font-mono break-all !text-primary">
                   {showToken ? newlyCreatedToken : '•'.repeat(40)}
                 </code>
                 <button
                   onClick={() => setShowToken(!showToken)}
-                  className="p-2 hover:bg-hover rounded-lg transition-colors !text-secondary"
+                  className="p-2 hover:bg-hover  transition-colors !text-secondary"
                 >
                   {showToken ? <IconEyeOff size={18} /> : <IconEye size={18} />}
                 </button>
                 <button
                   onClick={() => handleCopyToken(newlyCreatedToken)}
-                  className="p-2 hover:bg-hover rounded-lg transition-colors !text-secondary"
+                  className="p-2 hover:bg-hover  transition-colors !text-secondary"
                 >
                   <IconCopy size={18} />
                 </button>
@@ -244,7 +244,7 @@ function ApiTokensSection() {
         {!showCreateModal ? (
           <button
             onClick={() => setShowCreateModal(true)}
-            className="w-full p-3 border-2 border-dashed border-default rounded-lg !text-muted hover:!border-accent hover:!text-accent transition-colors flex items-center justify-center gap-2"
+            className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:!border-accent hover:!text-accent transition-colors flex items-center justify-center gap-2"
           >
             <IconPlus size={18} />
             {t('create_api_token') || 'Générer un nouveau token'}
@@ -253,21 +253,21 @@ function ApiTokensSection() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 bg-muted border border-default rounded-lg space-y-3"
+            className="p-4 bg-muted border border-default  space-y-3"
           >
             <input
               type="text"
               value={newTokenName}
               onChange={(e) => setNewTokenName(e.target.value)}
               placeholder={t('token_name_placeholder') || 'Ex: VS Code - MacBook Pro'}
-              className="w-full px-3 py-2 bg-card border border-default rounded-lg !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-1 focus:ring-accent"
+              className="w-full px-3 py-2 bg-card border border-default  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-1 focus:ring-accent"
               autoFocus
             />
             <div className="flex items-center gap-2">
               <button
                 onClick={handleCreateToken}
                 disabled={creating || !newTokenName.trim()}
-                className="flex-1 px-4 py-2 bg-accent !text-accent rounded-lg hover:opacity-90 disabled:opacity-50 transition-colors"
+                className="flex-1 px-4 py-2 bg-accent !text-accent  hover:opacity-90 disabled:opacity-50 transition-colors"
               >
                 {creating ? (t('creating') || 'Création...') : (t('create') || 'Créer')}
               </button>
@@ -298,7 +298,7 @@ function ApiTokensSection() {
             {tokens.map((token) => (
               <div
                 key={token.id}
-                className="flex items-center justify-between p-3 bg-muted border border-default rounded-lg"
+                className="flex items-center justify-between p-3 bg-muted border border-default "
               >
                 <div className="flex-1 min-w-0">
                   <p className="font-medium !text-primary truncate">{token.name}</p>
@@ -325,7 +325,7 @@ function ApiTokensSection() {
         )}
 
         {/* Instructions */}
-        <div className="bg-info-light border border-info rounded-lg p-4 space-y-2">
+        <div className="bg-info-light border border-info  p-4 space-y-2">
           <h4 className="font-medium !text-info">
             {t('api_token_usage') || 'Comment utiliser ?'}
           </h4>
@@ -366,7 +366,7 @@ function GoogleIntegrationCard() {
       status={isAuthenticated ? 'active' : 'inactive'}
     >
       <div className="space-y-4">
-        <div className="flex items-center justify-between p-3 bg-muted border border-default rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-muted border border-default ">
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
               <IconCircleCheck size={15} className="text-success flex-shrink-0" />
@@ -387,7 +387,7 @@ function GoogleIntegrationCard() {
           </span>
         </div>
 
-        <div className="flex items-center justify-between p-3 bg-muted border border-default rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-muted border border-default ">
           <div className="flex items-center gap-3">
             <IconCircleCheck size={15} className="text-success flex-shrink-0" />
             <div>
@@ -433,7 +433,7 @@ function TypeformIntegrationCard() {
           value={typeformWebhookUrl}
         />
         
-        <div className="bg-info-light border border-info rounded-lg p-4 space-y-2">
+        <div className="bg-info-light border border-info  p-4 space-y-2">
           <h4 className="font-medium !text-info">
             {t('typeform_setup_title') || 'Comment configurer ?'}
           </h4>
@@ -446,7 +446,7 @@ function TypeformIntegrationCard() {
           </ol>
         </div>
 
-        <div className="bg-warning-light border border-warning rounded-lg p-4 space-y-2">
+        <div className="bg-warning-light border border-warning  p-4 space-y-2">
           <h4 className="font-medium !text-warning">
             {t('typeform_mapping_title') || 'Mappage des champs'}
           </h4>
@@ -493,7 +493,7 @@ export default function IntegrationsPage() {
       <div className="flex items-center gap-4">
         <Link 
           href="/dashboard/settings"
-          className="p-2 hover:bg-hover rounded-lg transition-colors !text-secondary"
+          className="p-2 hover:bg-hover  transition-colors !text-secondary"
         >
           <IconArrowLeft size={15} />
         </Link>

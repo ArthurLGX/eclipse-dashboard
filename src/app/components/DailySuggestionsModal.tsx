@@ -190,7 +190,7 @@ export default function DailySuggestionsModal() {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="bg-page rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col"
+          className="bg-page  shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
@@ -200,7 +200,7 @@ export default function DailySuggestionsModal() {
             
             <div className="relative flex items-start justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-muted rounded-2xl">
+                <div className="p-3 bg-muted ">
                   <Image 
                     src="/images/logo/eclipse-logo.png" 
                     alt="Eclipse Assistant" 
@@ -226,7 +226,7 @@ export default function DailySuggestionsModal() {
               </div>
               <button
                 onClick={handleClose}
-                className="p-2 hover:bg-hover rounded-lg transition-colors"
+                className="p-2 hover:bg-hover  transition-colors"
               >
                 <IconX className="w-5 h-5 !text-muted" />
               </button>
@@ -255,12 +255,12 @@ export default function DailySuggestionsModal() {
             )}
 
             {error && (
-              <div className="p-4 bg-danger-light rounded-xl !text-center">
+              <div className="p-4 bg-danger-light  !text-center">
                 <IconAlertTriangle className="w-8 h-8 !text-danger mx-auto mb-2" />
                 <p className="text-sm !text-danger">{error}</p>
                 <button
                   onClick={fetchSuggestions}
-                  className="mt-3 px-4 py-2 bg-danger !text-white rounded-lg !text-sm hover:opacity-90"
+                  className="mt-3 px-4 py-2 bg-danger !text-white  !text-sm hover:opacity-90"
                 >
                   {t('retry') || 'Réessayer'}
                 </button>
@@ -297,11 +297,11 @@ export default function DailySuggestionsModal() {
                         <Link
                           href={suggestion.action.href}
                           onClick={handleClose}
-                          className="block p-4 bg-card rounded-xl border border-muted hover:border-accent transition-all group"
+                          className="block p-4 bg-card  border border-muted hover:border-accent transition-all group"
                         >
                           <div className="flex items-start gap-4">
                             {/* Icon */}
-                            <div className={`p-2.5 rounded-xl ${getPriorityColor(suggestion.priority)} bg-opacity-20`}>
+                            <div className={`p-2.5  ${getPriorityColor(suggestion.priority)} bg-opacity-20`}>
                               <span className={getTypeColor(suggestion.type)}>
                                 {getSuggestionIcon(suggestion.type)}
                               </span>
@@ -362,7 +362,7 @@ export default function DailySuggestionsModal() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="mt-6 p-4 bg-muted rounded-xl"
+                    className="mt-6 p-4 bg-muted "
                   >
                     <div className="flex items-start gap-3">
                       <span className="text-2xl">💡</span>
@@ -388,7 +388,7 @@ export default function DailySuggestionsModal() {
             </p>
             <button
               onClick={handleClose}
-              className="px-4 py-2 bg-muted !text-primary rounded-lg !text-sm hover:opacity-90 transition-colors"
+              className="px-4 py-2 bg-muted !text-primary  !text-sm hover:opacity-90 transition-colors"
             >
               {t('start_day') || 'Commencer ma journée'}
             </button>

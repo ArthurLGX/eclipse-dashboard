@@ -190,10 +190,10 @@ function EmailsDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={() => router.push(type.href)}
-            className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent hover:shadow-lg transition-all duration-300"
+            className="group cursor-pointer bg-card border border-default  p-6 hover:border-accent hover:shadow-lg transition-all duration-300"
           >
             <div 
-              className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
+              className="w-14 h-14  flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
               style={{ backgroundColor: `${type.color}15` }}
             >
               <type.icon className="w-7 h-7" style={{ color: type.color }} />
@@ -223,10 +223,10 @@ function EmailsDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           onClick={() => router.push('/dashboard/emails/analytics')}
-          className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent hover:shadow-lg transition-all duration-300"
+          className="group cursor-pointer bg-card border border-default  p-6 hover:border-accent hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl border-accent-light flex items-center justify-center">
+            <div className="w-14 h-14  border-accent-light flex items-center justify-center">
               <IconChartBar className="w-7 h-7 !text-accent" />
             </div>
             <div className="flex-1">
@@ -247,10 +247,10 @@ function EmailsDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           onClick={() => router.push('/dashboard/emails/history')}
-          className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent hover:shadow-lg transition-all duration-300"
+          className="group cursor-pointer bg-card border border-default  p-6 hover:border-accent hover:shadow-lg transition-all duration-300"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl bg-info-light flex items-center justify-center">
+            <div className="w-14 h-14  bg-info-light flex items-center justify-center">
               <IconHistory className="w-7 h-7 !text-info" />
             </div>
             <div className="flex-1">
@@ -272,10 +272,10 @@ function EmailsDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
         onClick={() => router.push('/dashboard/emails/scheduled')}
-        className="group cursor-pointer bg-card border border-default rounded-xl p-6 hover:border-accent hover:shadow-lg transition-all duration-300 mb-10"
+        className="group cursor-pointer bg-card border border-default  p-6 hover:border-accent hover:shadow-lg transition-all duration-300 mb-10"
       >
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-xl bg-warning-light flex items-center justify-center">
+          <div className="w-14 h-14  bg-warning-light flex items-center justify-center">
             <IconClock className="w-7 h-7 !text-warning" />
           </div>
           <div className="flex-1">
@@ -295,11 +295,11 @@ function EmailsDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
-        className="bg-card border border-default rounded-xl p-6"
+        className="bg-card border border-default  p-6"
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+            <div className="w-10 h-10  bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
               <IconDeviceFloppy className="w-5 h-5 !text-gray-600 dark:!text-gray-400" />
             </div>
             <div>
@@ -335,10 +335,10 @@ function EmailsDashboard() {
                 <div
                   key={draft.documentId}
                   onClick={() => handleOpenDraft(draft)}
-                  className="group flex items-center gap-4 p-4 bg-muted rounded-lg cursor-pointer hover:bg-hover transition-colors"
+                  className="group flex items-center gap-4 p-4 bg-muted  cursor-pointer hover:bg-hover transition-colors"
                 >
                   <div 
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    className="w-10 h-10  flex items-center justify-center"
                     style={{ backgroundColor: `${color}15` }}
                   >
                     <CategoryIcon className="w-5 h-5" style={{ color }} />
@@ -363,7 +363,7 @@ function EmailsDashboard() {
                   <button
                     onClick={(e) => handleDeleteDraft(e, draft.documentId)}
                     disabled={deletingDraftId === draft.documentId}
-                    className="p-2 !text-muted hover:!text-error rounded-lg hover:bg-error-light transition-colors opacity-0 group-hover:opacity-100"
+                    className="p-2 !text-muted hover:!text-error  hover:bg-error-light transition-colors opacity-0 group-hover:opacity-100"
                   >
                     {deletingDraftId === draft.documentId ? (
                       <IconLoader2 className="w-4 h-4 animate-spin" />

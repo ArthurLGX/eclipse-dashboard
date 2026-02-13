@@ -171,7 +171,7 @@ export default function DraggableGanttBar({
         onDragStart={(e, info) => handleDragStart(e, info, 'move')}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
-        className={`relative h-7 rounded-md shadow-sm hover:shadow-md transition-all cursor-move ${className} ${
+        className={`relative h-7  shadow-sm hover:shadow-md transition-all cursor-move ${className} ${
           isDragging && dragMode === 'move' ? 'opacity-80 shadow-lg scale-105' : ''
         }`}
         style={{

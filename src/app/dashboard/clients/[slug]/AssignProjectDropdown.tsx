@@ -97,7 +97,7 @@ export default function AssignProjectDropdown({
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={loading}
-        className="btn-primary px-4 py-2.5 rounded-lg font-semibold flex items-center gap-2 disabled:opacity-50"
+        className="btn-primary px-4 py-2.5  font-semibold flex items-center gap-2 disabled:opacity-50"
       >
         {loading ? (
           <IconLoader2 size={15} className="animate-spin" />
@@ -119,7 +119,7 @@ export default function AssignProjectDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 mt-2 w-80 bg-card border border-default rounded-xl 
+            className="absolute top-full left-0 mt-2 w-80 bg-card border border-default  
               shadow-xl z-50 flex flex-col"
           >
             {/* Header */}
@@ -181,7 +181,7 @@ export default function AssignProjectDropdown({
                 className="w-full px-4 py-3 flex items-center gap-3 hover:bg-hover 
                   transition-colors !text-left group rounded-b-xl"
               >
-                <div className="w-8 h-8 rounded-lg bg-accent-light border border-accent 
+                <div className="w-8 h-8  bg-accent-light border border-accent 
                   flex items-center justify-center group-hover:opacity-80 transition-colors">
                   <IconPlus size={18} className="!text-accent" />
                 </div>

@@ -199,7 +199,7 @@ export default function AdminLogsPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={exportLogs}
-            className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-hover ease-in-out duration-300"
+            className="btn-secondary flex items-center gap-2 px-4 py-2  transition-colors hover:bg-hover ease-in-out duration-300"
           >
             <IconDownload className="w-4 h-4" />
             {t('export') || 'Exporter'}
@@ -207,7 +207,7 @@ export default function AdminLogsPage() {
           <button
             onClick={loadLogs}
             disabled={loading}
-            className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-hover ease-in-out duration-300 disabled:opacity-50"
+            className="btn-secondary flex items-center gap-2 px-4 py-2  transition-colors hover:bg-hover ease-in-out duration-300 disabled:opacity-50"
           >
             <IconRefresh className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             {t('refresh') || 'Actualiser'}
@@ -299,7 +299,7 @@ export default function AdminLogsPage() {
               >
                 <div className="flex items-start gap-4">
                   {/* Type Icon */}
-                  <div className={`p-2 rounded-lg ${getTypeColor(log.type)}`}>
+                  <div className={`p-2  ${getTypeColor(log.type)}`}>
                     {getTypeIcon(log.type)}
                   </div>
 
@@ -360,7 +360,7 @@ export default function AdminLogsPage() {
             <button
               onClick={() => setPagination(prev => ({ ...prev, page: Math.max(1, prev.page - 1) }))}
               disabled={pagination.page <= 1}
-              className="btn-secondary px-3 py-1.5 rounded-lg disabled:opacity-50"
+              className="btn-secondary px-3 py-1.5  disabled:opacity-50"
             >
               {t('previous') || 'Précédent'}
             </button>
@@ -370,7 +370,7 @@ export default function AdminLogsPage() {
             <button
               onClick={() => setPagination(prev => ({ ...prev, page: Math.min(prev.pageCount, prev.page + 1) }))}
               disabled={pagination.page >= pagination.pageCount}
-              className="btn-secondary px-3 py-1.5 rounded-lg disabled:opacity-50"
+              className="btn-secondary px-3 py-1.5  disabled:opacity-50"
             >
               {t('next') || 'Suivant'}
             </button>

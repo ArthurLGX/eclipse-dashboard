@@ -261,7 +261,7 @@ export default function AdminOverviewPage() {
         <button
           onClick={refreshData}
           disabled={refreshing}
-          className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-hover ease-in-out duration-300 disabled:opacity-50"
+          className="btn-secondary flex items-center gap-2 px-4 py-2  transition-colors hover:bg-hover ease-in-out duration-300 disabled:opacity-50"
         >
           <IconRefresh className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
           {t('refresh') || 'Actualiser'}
@@ -293,7 +293,7 @@ export default function AdminOverviewPage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-muted/5 border border-muted">
+          <div className="p-4  bg-muted/5 border border-muted">
             <div className="flex items-center gap-2 !text-muted mb-1">
               <IconDatabase className="w-4 h-4" />
               <span className="!text-xs">{t('database') || 'Base de données'}</span>
@@ -305,7 +305,7 @@ export default function AdminOverviewPage() {
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-muted/5 border border-muted">
+          <div className="p-4  bg-muted/5 border border-muted">
             <div className="flex items-center gap-2 !text-muted mb-1">
               <IconClock className="w-4 h-4" />
               <span className="!text-xs">{t('response_time') || 'Temps de réponse'}</span>
@@ -318,7 +318,7 @@ export default function AdminOverviewPage() {
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-muted/5 border border-muted">
+          <div className="p-4  bg-muted/5 border border-muted">
             <div className="flex items-center gap-2 !text-muted mb-1">
               <IconServer className="w-4 h-4" />
               <span className="!text-xs">{t('strapi_version') || 'Version Strapi'}</span>
@@ -328,7 +328,7 @@ export default function AdminOverviewPage() {
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-muted/5 border border-muted">
+          <div className="p-4  bg-muted/5 border border-muted">
             <div className="flex items-center gap-2 !text-muted mb-1">
               <IconClock className="w-4 h-4" />
               <span className="!text-xs">{t('last_check') || 'Dernière vérification'}</span>
@@ -392,7 +392,7 @@ export default function AdminOverviewPage() {
               className="card p-6"
             >
               <div className="flex items-start justify-between mb-4">
-                <div className={`p-2.5 rounded-xl ${stat.bgColor}`}>
+                <div className={`p-2.5  ${stat.bgColor}`}>
                   <Icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
                 <div className={`flex items-center gap-1 !text-xs font-medium ${
@@ -433,9 +433,9 @@ export default function AdminOverviewPage() {
               recentActivity.map((activity) => (
                 <div
                   key={activity.id}
-                  className="flex items-start gap-3 p-3 rounded-xl bg-muted/5 border border-muted"
+                  className="flex items-start gap-3 p-3  bg-muted/5 border border-muted"
                 >
-                  <div className="p-2 rounded-lg bg-card border border-muted">
+                  <div className="p-2  bg-card border border-muted">
                     {getActivityIcon(activity.type)}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -480,7 +480,7 @@ export default function AdminOverviewPage() {
                 <a
                   key={action.label}
                   href={action.href}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-muted/5 border border-muted hover:border-accent-light hover:bg-accent-light transition-all group"
+                  className="flex items-center gap-3 p-4  bg-muted/5 border border-muted hover:border-accent-light hover:bg-accent-light transition-all group"
                 >
                   <Icon className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
                   <span className="text-sm font-medium !text-primary group-hover:!text-accent transition-colors">

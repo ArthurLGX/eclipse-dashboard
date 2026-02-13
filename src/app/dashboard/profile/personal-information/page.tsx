@@ -188,7 +188,7 @@ export default function PersonalInformationPage() {
           <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={() => setEditing(true)}
-              className="btn-primary lg:w-fit w-full px-4 py-2 rounded-lg"
+              className="btn-primary lg:w-fit w-full px-4 py-2 "
             >
               {t('edit_profile')}
             </button>
@@ -203,7 +203,7 @@ export default function PersonalInformationPage() {
           <div className="flex lg:flex-row flex-col lg:w-fit w-full gap-4">
             <button
               onClick={handleCancel}
-              className="bg-warning-light lg:w-fit w-full !text-warning-text border border-warning px-4 py-2 hover:opacity-80 rounded-lg cursor-pointer transition-colors"
+              className="bg-warning-light lg:w-fit w-full !text-warning-text border border-warning px-4 py-2 hover:opacity-80  cursor-pointer transition-colors"
             >
               {t('cancel')}
             </button>
@@ -270,7 +270,7 @@ export default function PersonalInformationPage() {
                     className="input w-full p-3"
                   />
                 ) : (
-                  <p className="text-primary p-3 bg-muted rounded-lg">
+                  <p className="text-primary p-3 bg-muted ">
                     {profile?.username}
                   </p>
                 )}
@@ -288,7 +288,7 @@ export default function PersonalInformationPage() {
                     className="input w-full p-3"
                   />
                 ) : (
-                  <p className="text-primary p-3 bg-muted rounded-lg">
+                  <p className="text-primary p-3 bg-muted ">
                     {profile?.email}
                   </p>
                 )}
@@ -298,7 +298,7 @@ export default function PersonalInformationPage() {
                 <label className="text-secondary !text-sm font-light">
                   {t('account_status')}
                 </label>
-                <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                <div className="flex items-center gap-2 p-3 bg-muted ">
                   <div
                     className={`w-2 h-2 rounded-full ${profile?.confirmed ? 'bg-success' : 'bg-danger'}`}
                   ></div>
@@ -312,7 +312,7 @@ export default function PersonalInformationPage() {
                 <label className="text-secondary !text-sm font-light">
                   {t('last_update')}
                 </label>
-                <p className="text-primary p-3 bg-muted rounded-lg">
+                <p className="text-primary p-3 bg-muted ">
                   {profile?.updatedAt
                     ? new Date(profile.updatedAt).toLocaleDateString('fr-FR')
                     : 'N/A'}

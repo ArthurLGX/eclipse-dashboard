@@ -134,7 +134,7 @@ function CompatibilityInfo({
       
       {showTooltip && (
         <div 
-          className="absolute top-full left-0 mt-2 w-80 p-4 bg-card border border-default rounded-xl shadow-2xl !text-xs"
+          className="absolute top-full left-0 mt-2 w-80 p-4 bg-card border border-default  shadow-2xl !text-xs"
           style={{ zIndex: 9999 }}
         >
           {/* Arrow pointing up */}
@@ -223,7 +223,7 @@ export default function ThemeCustomizer({
   void bannerUrl;
   
   return (
-    <div className="bg-muted rounded-xl p-6 space-y-6 border border-default">
+    <div className="bg-muted  p-6 space-y-6 border border-default">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold !text-primary flex items-center gap-2">
           <IconPalette className="w-5 h-5" />
@@ -237,7 +237,7 @@ export default function ThemeCustomizer({
             {onLoadTemplate && (
               <button
                 onClick={onLoadTemplate}
-                className={`flex items-center gap-1.5 px-3 py-1.5 !text-sm rounded-lg transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 !text-sm  transition-colors ${
                   hasSavedTemplates 
                     ? 'text-accent hover:bg-accent-light' 
                     : 'text-muted cursor-not-allowed'
@@ -257,7 +257,7 @@ export default function ThemeCustomizer({
             {onSaveTemplate && (
               <button
                 onClick={onSaveTemplate}
-                className="flex items-center gap-1.5 px-3 py-1.5 !text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:!text-white rounded-lg transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 !text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:!text-white  transition-colors"
                 title={t('save_template') || 'Sauvegarder le thème'}
               >
                 <IconDeviceFloppy className="w-4 h-4" />
@@ -287,7 +287,7 @@ export default function ThemeCustomizer({
                 key={font.name}
                 type="button"
                 onClick={() => setCustomColors(prev => ({ ...prev, fontFamily: font.name }))}
-                className={`px-2 py-1.5 rounded-lg !text-xs transition-all border ${
+                className={`px-2 py-1.5  !text-xs transition-all border ${
                   customColors.fontFamily === font.name
                     ? 'bg-accent !text-white border-accent'
                     : 'bg-card border-default hover:border-accent !text-primary'
@@ -312,7 +312,7 @@ export default function ThemeCustomizer({
         
         {/* Gradient preview bar */}
         <div 
-          className="w-full h-12 rounded-lg border border-default shadow-inner"
+          className="w-full h-12  border border-default shadow-inner"
           style={{
             background: generateGradientCSS(customColors.gradientStops, customColors.gradientAngle)
           }}
@@ -320,7 +320,7 @@ export default function ThemeCustomizer({
         
         {/* Type selector + Angle */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-card rounded-lg border border-default w-fit">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-card  border border-default w-fit">
             <span className="text-sm !text-primary">{t('linear') || 'Linéaire'}</span>
           </div>
           <div className="flex items-center gap-2 flex-1">
@@ -332,7 +332,7 @@ export default function ThemeCustomizer({
               onChange={(e) => setCustomColors(prev => ({ ...prev, gradientAngle: parseInt(e.target.value) }))}
               className="flex-1 h-1 bg-card rounded-full appearance-none cursor-pointer accent-accent"
             />
-            <div className="flex items-center bg-card rounded-lg border border-default overflow-hidden w-fit">
+            <div className="flex items-center bg-card  border border-default overflow-hidden w-fit">
               <input
                 type="number"
                 min="0"
@@ -364,7 +364,7 @@ export default function ThemeCustomizer({
               .map((stop) => (
               <div 
                 key={stop.id} 
-                className="flex items-center gap-3 py-2 px-1 rounded-lg hover:bg-card/50 transition-colors"
+                className="flex items-center gap-3 py-2 px-1  hover:bg-card/50 transition-colors"
               >
                 <div className="flex items-center gap-0.5 w-fit">
                   <input
@@ -459,7 +459,7 @@ export default function ThemeCustomizer({
             <img 
               src={headerBackgroundUrl} 
               alt="Header background" 
-              className="w-full max-w-md h-24 object-cover rounded-lg border border-default"
+              className="w-full max-w-md h-24 object-cover  border border-default"
             />
             <div className="absolute top-2 right-2 flex gap-1">
               <button
@@ -487,7 +487,7 @@ export default function ThemeCustomizer({
           <button
             onClick={handleOpenImagePicker}
             disabled={uploadingHeaderBackground}
-            className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-default rounded-lg hover:border-accent transition-colors !text-secondary hover:!text-primary"
+            className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-default  hover:border-accent transition-colors !text-secondary hover:!text-primary"
           >
             {uploadingHeaderBackground ? (
               <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -514,7 +514,7 @@ export default function ThemeCustomizer({
               type="color"
               value={customColors.headerTitleColor}
               onChange={(e) => setCustomColors(prev => ({ ...prev, headerTitleColor: e.target.value }))}
-              className="w-10 h-10 rounded-lg cursor-pointer border-2 border-default"
+              className="w-10 h-10  cursor-pointer border-2 border-default"
             />
             <input
               type="text"
@@ -539,7 +539,7 @@ export default function ThemeCustomizer({
               type="color"
               value={customColors.buttonColor}
               onChange={(e) => setCustomColors(prev => ({ ...prev, buttonColor: e.target.value }))}
-              className="w-10 h-10 rounded-lg cursor-pointer border-2 border-default"
+              className="w-10 h-10  cursor-pointer border-2 border-default"
             />
             <input
               type="text"
@@ -564,7 +564,7 @@ export default function ThemeCustomizer({
               type="color"
               value={customColors.buttonTextColor}
               onChange={(e) => setCustomColors(prev => ({ ...prev, buttonTextColor: e.target.value }))}
-              className="w-10 h-10 rounded-lg cursor-pointer border-2 border-default"
+              className="w-10 h-10  cursor-pointer border-2 border-default"
             />
             <input
               type="text"
@@ -613,7 +613,7 @@ export default function ThemeCustomizer({
               {t('sample_text_preview') || 'Exemple de texte avec la police sélectionnée.'}
             </p>
             <button
-              className="px-6 py-2 rounded-lg !text-sm font-medium"
+              className="px-6 py-2  !text-sm font-medium"
               style={{ 
                 backgroundColor: customColors.buttonColor,
                 color: customColors.buttonTextColor,

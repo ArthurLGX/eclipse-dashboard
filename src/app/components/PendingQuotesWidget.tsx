@@ -89,13 +89,13 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-card border border-default rounded-xl overflow-hidden"
+        className="bg-card border border-default  overflow-hidden"
       >
         {/* Header */}
         <div className="px-6 py-4 border-b border-default bg-accent-light">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-accent-light rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-accent-light  flex items-center justify-center">
                 <IconFileDescription className="w-5 h-5 !text-primary" />
               </div>
               <div>
@@ -170,7 +170,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {/* Bouton Relancer */}
                         <button
                           onClick={() => handleFollowUp(quote)}
-                          className="p-2 !text-info hover:bg-info-light rounded-lg transition-colors"
+                          className="p-2 !text-info hover:bg-info-light  transition-colors"
                           title={t('follow_up') || 'Relancer'}
                         >
                           <IconMail className="w-4 h-4" />
@@ -179,7 +179,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {/* Bouton Accepté */}
                         <button
                           onClick={() => handleUpdateStatus(quote, 'accepted')}
-                          className="p-2 !text-success-text -text hover:bg-success-light rounded-lg transition-colors"
+                          className="p-2 !text-success-text -text hover:bg-success-light  transition-colors"
                           title={t('mark_accepted') || 'Marquer comme accepté'}
                         >
                           <IconCheck className="w-4 h-4" />
@@ -188,7 +188,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                         {/* Bouton Refusé */}
                         <button
                           onClick={() => handleUpdateStatus(quote, 'rejected')}
-                          className="p-2 !text-danger hover:bg-danger-light rounded-lg transition-colors"
+                          className="p-2 !text-danger hover:bg-danger-light  transition-colors"
                           title={t('mark_rejected') || 'Marquer comme refusé'}
                         >
                           <IconX className="w-4 h-4" />

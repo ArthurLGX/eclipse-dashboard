@@ -85,9 +85,9 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
 
   if (loading) {
     return (
-      <div className={`bg-card border border-default rounded-xl p-4 ${className}`}>
+      <div className={`bg-card border border-default  p-4 ${className}`}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-muted animate-pulse" />
+          <div className="w-10 h-10  bg-muted animate-pulse" />
           <div className="flex-1 space-y-2">
             <div className="h-4 w-24 bg-muted rounded animate-pulse" />
             <div className="h-3 w-32 bg-muted rounded animate-pulse" />
@@ -100,9 +100,9 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
   // No IDE sessions at all
   if (!activeSession && recentSessions.length === 0) {
     return (
-      <div className={`bg-card border border-default rounded-xl p-4 ${className}`}>
+      <div className={`bg-card border border-default  p-4 ${className}`}>
         <div className="flex items-center gap-3 !text-muted">
-          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+          <div className="w-10 h-10  bg-muted flex items-center justify-center">
             <IconCode size={15} />
           </div>
           <div>
@@ -154,7 +154,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
 
   // Full widget
   return (
-    <div className={`bg-card border border-default rounded-xl overflow-hidden ${className}`}>
+    <div className={`bg-card border border-default  overflow-hidden ${className}`}>
       {/* Header */}
       <div className="px-4 py-3 border-b border-default flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -165,7 +165,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
         </div>
         <button
           onClick={loadSessions}
-          className="p-1.5 hover:bg-hover rounded-lg transition-colors !text-muted hover:!text-primary"
+          className="p-1.5 hover:bg-hover  transition-colors !text-muted hover:!text-primary"
           title={t('refresh') || 'Actualiser'}
         >
           <IconRefresh size={16} />
@@ -184,7 +184,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
             <div className="p-4 bg-success-light">
               <div className="flex items-start gap-3">
                 {/* Live indicator */}
-                <div className="w-10 h-10 rounded-lg bg-success flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10  bg-success flex items-center justify-center flex-shrink-0">
                   <span className="relative flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
                     <span className="relative inline-flex rounded-full h-3 w-3 bg-white" />
@@ -257,9 +257,9 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
             {recentSessions.slice(0, 5).map((session) => (
               <div
                 key={session.id}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-hover transition-colors"
+                className="flex items-center gap-3 p-2  hover:bg-hover transition-colors"
               >
-                <div className="w-8 h-8 rounded-lg bg-accent-light flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8  bg-accent-light flex items-center justify-center flex-shrink-0">
                   <IconCode size={16} className="!text-accent" />
                 </div>
                 

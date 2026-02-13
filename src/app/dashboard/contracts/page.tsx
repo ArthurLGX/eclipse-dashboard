@@ -203,7 +203,7 @@ export default function ContractsPage() {
         <div className="flex items-center gap-3">
           <button 
             onClick={loadContracts}
-            className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+            className="p-2 !text-muted hover:!text-primary hover:bg-hover  transition-colors"
             title={t('refresh') || 'Actualiser'}
           >
             <IconRefresh size={15} />
@@ -212,7 +212,7 @@ export default function ContractsPage() {
           {/* Dropdown for creating contracts */}
           <div className="relative" ref={dropdownRef}>
             <button 
-              className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-accent !text-white  hover:opacity-90 transition-all"
               onClick={() => setShowCreateDropdown(!showCreateDropdown)}
             >
               <IconPlus size={18} />
@@ -227,7 +227,7 @@ export default function ContractsPage() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-2 w-64 bg-card rounded-xl border border-default shadow-lg z-50 overflow-hidden"
+                  className="absolute right-0 mt-2 w-64 bg-card  border border-default shadow-lg z-50 overflow-hidden"
                 >
                   <button
                     onClick={() => {
@@ -236,7 +236,7 @@ export default function ContractsPage() {
                     }}
                     className="w-full flex items-center gap-3 px-4 py-3 !text-left hover:bg-hover transition-colors"
                   >
-                    <div className="p-2 bg-info-light rounded-lg">
+                    <div className="p-2 bg-info-light ">
                       <IconPencil size={18} className="text-info" />
                     </div>
                     <div>
@@ -252,7 +252,7 @@ export default function ContractsPage() {
                     }}
                     className="w-full flex items-center gap-3 px-4 py-3 !text-left hover:bg-hover transition-colors"
                   >
-                    <div className="p-2 bg-muted rounded-lg">
+                    <div className="p-2 bg-muted ">
                       <Image 
                         src="/images/logo/eclipse-logo.png" 
                         alt="Eclipse Assistant" 
@@ -274,19 +274,19 @@ export default function ContractsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="p-4 bg-card rounded-xl border border-default">
+        <div className="p-4 bg-card  border border-default">
           <p className="text-sm !text-muted">{t('total') || 'Total'}</p>
           <p className="text-2xl font-bold !text-primary mt-1">{stats.total}</p>
         </div>
-        <div className="p-4 bg-success-light rounded-xl">
+        <div className="p-4 bg-success-light ">
           <p className="text-sm !text-success-text -text">{t('contract_signed') || 'Signés'}</p>
           <p className="text-2xl font-bold !text-success-text -text mt-1">{stats.signed}</p>
         </div>
-        <div className="p-4 bg-warning-light rounded-xl">
+        <div className="p-4 bg-warning-light ">
           <p className="text-sm !text-warning">{t('pending') || 'En attente'}</p>
           <p className="text-2xl font-bold !text-warning-text mt-1">{stats.pending}</p>
         </div>
-        <div className="p-4 bg-muted rounded-xl">
+        <div className="p-4 bg-muted ">
           <p className="text-sm !text-muted">{t('contract_drafts') || 'Brouillons'}</p>
           <p className="text-2xl font-bold !text-secondary mt-1">{stats.draft}</p>
         </div>
@@ -302,7 +302,7 @@ export default function ContractsPage() {
             placeholder={t('search') || 'Rechercher...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full !pl-10 !pr-4 py-2.5 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+            className="w-full !pl-10 !pr-4 py-2.5 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
           />
         </div>
 
@@ -312,7 +312,7 @@ export default function ContractsPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-            className="px-3 py-2.5 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent"
+            className="px-3 py-2.5 bg-input border border-default  focus:ring-1 focus:ring-accent"
           >
             <option value="all">{t('all_statuses') || 'Tous les statuts'}</option>
             <option value="draft">{t('draft') || 'Brouillon'}</option>
@@ -347,14 +347,14 @@ export default function ContractsPage() {
           {/* Two options */}
           <div className="flex flex-col sm:flex-row gap-4">
             <button 
-              className="flex items-center gap-2 px-6 py-3 bg-card border border-default !text-primary rounded-xl hover:bg-hover transition-all"
+              className="flex items-center gap-2 px-6 py-3 bg-card border border-default !text-primary  hover:bg-hover transition-all"
               onClick={() => setShowManualCreator(true)}
             >
               <IconPencil size={15} />
               {t('create_manually') || 'Créer manuellement'}
             </button>
             <button 
-              className="flex items-center gap-2 px-6 py-3 bg-accent !text-white rounded-xl hover:opacity-90 transition-all"
+              className="flex items-center gap-2 px-6 py-3 bg-accent !text-white  hover:opacity-90 transition-all"
               onClick={() => setShowAIGenerator(true)}
             >
               <Image 
@@ -386,13 +386,13 @@ export default function ContractsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ delay: index * 0.05 }}
-                  className="p-4 bg-card rounded-xl border border-default hover:border-accent transition-all group"
+                  className="p-4 bg-card  border border-default hover:border-accent transition-all group"
                 >
                   <div className="flex flex-col md:flex-row md:items-center gap-4">
                     {/* Main info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className={`p-2 rounded-lg ${statusConfig?.bgColor || 'bg-hover'}`}>
+                        <div className={`p-2  ${statusConfig?.bgColor || 'bg-hover'}`}>
                           {StatusIcon ? (
                             <StatusIcon className={`w-5 h-5 ${statusConfig?.color || 'text-muted'}`} />
                           ) : (
@@ -430,7 +430,7 @@ export default function ContractsPage() {
                         <Link
                           href={`/sign/contract/${contract.signature_token}`}
                           target="_blank"
-                          className="p-2 !text-info hover:bg-info-light rounded-lg transition-colors"
+                          className="p-2 !text-info hover:bg-info-light  transition-colors"
                           title={t('view_contract') || 'Voir le contrat'}
                         >
                           <IconEye className="w-5 h-5" />
@@ -440,7 +440,7 @@ export default function ContractsPage() {
                       {/* Download PDF */}
                       <button
                         onClick={() => handleDownloadPDF(contract)}
-                        className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+                        className="p-2 !text-muted hover:!text-primary hover:bg-hover  transition-colors"
                         title={t('download_pdf') || 'Télécharger PDF'}
                       >
                         <IconDownload className="w-5 h-5" />
@@ -450,7 +450,7 @@ export default function ContractsPage() {
                       <button
                         onClick={() => handleDeleteContract(contract.documentId)}
                         disabled={deletingId === contract.documentId}
-                        className="p-2 !text-danger hover:bg-danger-light rounded-lg transition-colors disabled:opacity-50"
+                        className="p-2 !text-danger hover:bg-danger-light  transition-colors disabled:opacity-50"
                         title={t('delete') || 'Supprimer'}
                       >
                         {deletingId === contract.documentId ? (

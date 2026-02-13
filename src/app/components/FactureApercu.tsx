@@ -23,7 +23,7 @@ export default function FactureApercu({
   t: (key: string) => string;
 }) {
   return (
-    <div className="p-8 bg-white rounded-lg flex flex-col gap-4">
+    <div className="p-8 bg-white  flex flex-col gap-4">
       {/* Champs principaux */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <div>
@@ -94,7 +94,7 @@ export default function FactureApercu({
         </div>
       </div>
       {/* Lignes de facture */}
-      <div className="bg-zinc-50 rounded-lg overflow-hidden mb-8 border border-zinc-100">
+      <div className="bg-zinc-50  overflow-hidden mb-8 border border-zinc-100">
         <div className="bg-zinc-700/20 prestation-header px-6 py-4 flex items-center justify-between">
           <h3 className="!text-xl font-semibold !text-black">
             {t('services')}
@@ -143,7 +143,7 @@ export default function FactureApercu({
         </div>
       </div>
       {/* Calculs et total */}
-      <div className="bg-zinc-50 rounded-lg p-6 border border-zinc-100">
+      <div className="bg-zinc-50  p-6 border border-zinc-100">
         <div className="flex items-center gap-2 mb-4">
           <h3 className="!text-lg font-semibold !text-black">
             {t('calculations')}

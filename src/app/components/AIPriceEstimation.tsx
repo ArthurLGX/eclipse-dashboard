@@ -144,10 +144,10 @@ export default function AIPriceEstimation({
       {/* Toggle Button */}
       <button
         onClick={handleToggle}
-        className="w-full flex items-center justify-between p-3 bg-muted rounded-xl border border-muted hover:opacity-90 transition-all group"
+        className="w-full flex items-center justify-between p-3 bg-muted  border border-muted hover:opacity-90 transition-all group"
       >
         <div className="flex items-center gap-3">
-          <div className="p-1.5 bg-muted rounded-lg">
+          <div className="p-1.5 bg-muted ">
             <Image 
               src="/images/logo/eclipse-logo.png" 
               alt="Eclipse" 
@@ -190,7 +190,7 @@ export default function AIPriceEstimation({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="mt-2 p-4 bg-card rounded-xl border border-muted">
+            <div className="mt-2 p-4 bg-card  border border-muted">
               {loading && (
                 <div className="flex items-center justify-center py-6">
                   <div className="text-center">
@@ -217,7 +217,7 @@ export default function AIPriceEstimation({
               {estimation && !loading && (
                 <div className="space-y-4">
                   {/* Main suggestion */}
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted ">
                     <div className="flex items-center gap-3">
                       <IconSparkles className="w-5 h-5 !text-muted" />
                       <div>
@@ -244,7 +244,7 @@ export default function AIPriceEstimation({
 
                   {/* Comparison */}
                   {getDifferenceText() && currentTotal > 0 && (
-                    <div className={`p-3 rounded-lg ${
+                    <div className={`p-3  ${
                       estimation.comparison === 'below' 
                         ? 'bg-success-light' 
                         : estimation.comparison === 'above'
@@ -280,7 +280,7 @@ export default function AIPriceEstimation({
 
                   {/* Recommendations */}
                   {estimation.recommendations && estimation.recommendations.length > 0 && (
-                      <div className="p-3 bg-muted rounded-lg">
+                      <div className="p-3 bg-muted ">
                       <p className="text-sm font-medium !text-muted flex items-center gap-2 mb-2">
                         <IconBulb className="w-4 h-4" />
                         {t('recommendations') || 'Recommandations'}
@@ -297,7 +297,7 @@ export default function AIPriceEstimation({
                   {onSuggestionApply && estimation.suggested_price !== currentTotal && (
                     <button
                       onClick={() => onSuggestionApply(estimation.suggested_price)}
-                        className="w-full py-2 bg-muted !text-primary rounded-lg !text-sm font-medium hover:opacity-90 transition-colors"
+                        className="w-full py-2 bg-muted !text-primary  !text-sm font-medium hover:opacity-90 transition-colors"
                     >
                       {t('apply_suggested_price') || 'Appliquer ce prix'}
                     </button>

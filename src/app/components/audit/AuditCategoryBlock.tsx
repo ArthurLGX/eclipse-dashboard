@@ -41,7 +41,7 @@ export default function AuditCategoryBlock({
       >
         <div className="flex items-center gap-3">
           {icon && (
-            <span className="p-1.5 bg-accent-light rounded-lg !text-accent">
+            <span className="p-1.5 bg-accent-light  !text-accent">
               {icon}
             </span>
           )}

@@ -84,7 +84,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-card rounded-2xl shadow-2xl"
+          className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-card  shadow-2xl"
         >
           {/* Header */}
           <div className="sticky top-0 z-10 bg-card border-b border-default p-6">
@@ -100,7 +100,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                className="p-2 hover:bg-secondary  transition-colors"
               >
                 <IconX className="w-6 h-6" />
               </button>
@@ -124,7 +124,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
               <div className="space-y-4">
                 <button
                   onClick={handleCreateNew}
-                  className="w-full p-4 border-2 border-dashed border-accent rounded-xl !text-accent hover:bg-accent/5 transition-colors flex items-center justify-center gap-2 font-medium"
+                  className="w-full p-4 border-2 border-dashed border-accent  !text-accent hover:bg-accent/5 transition-colors flex items-center justify-center gap-2 font-medium"
                 >
                   <IconPlus className="w-5 h-5" />
                   Créer une nouvelle règle
@@ -142,7 +142,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
                     {rules.sort((a, b) => b.priority - a.priority).map((rule) => (
                       <div
                         key={rule.id}
-                        className={`p-4 border rounded-xl transition-colors ${
+                        className={`p-4 border  transition-colors ${
                           rule.enabled
                             ? 'border-default bg-secondary'
                             : 'border-default bg-secondary/50 opacity-60'
@@ -185,7 +185,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleToggleRule(rule.id)}
-                              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                              className="p-2 hover:bg-secondary  transition-colors"
                               title={rule.enabled ? 'Désactiver' : 'Activer'}
                             >
                               {rule.enabled ? (
@@ -196,14 +196,14 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
                             </button>
                             <button
                               onClick={() => setEditingRule(rule)}
-                              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                              className="p-2 hover:bg-secondary  transition-colors"
                               title="Modifier"
                             >
                               <IconEdit className="w-5 h-5 !text-accent" />
                             </button>
                             <button
                               onClick={() => handleDeleteRule(rule.id)}
-                              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                              className="p-2 hover:bg-secondary  transition-colors"
                               title="Supprimer"
                             >
                               <IconTrash className="w-5 h-5 !text-error" />
@@ -230,7 +230,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
                 </button>
                 <button
                   onClick={handleSaveAll}
-                  className="px-6 py-2 bg-accent !text-white rounded-lg hover:opacity-90 transition-opacity"
+                  className="px-6 py-2 bg-accent !text-white  hover:opacity-90 transition-opacity"
                 >
                   Enregistrer toutes les règles
                 </button>

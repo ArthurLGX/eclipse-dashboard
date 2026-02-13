@@ -290,14 +290,14 @@ export default function AdminUsersPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={exportUsers}
-            className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-hover ease-in-out duration-300"
+            className="btn-secondary flex items-center gap-2 px-4 py-2  transition-colors hover:bg-hover ease-in-out duration-300"
           >
             <IconDownload className="w-4 h-4" />
             {t('export') || 'Exporter'}
           </button>
           <button
             onClick={() => fetchUsers()}
-            className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-hover ease-in-out duration-300"
+            className="btn-secondary flex items-center gap-2 px-4 py-2  transition-colors hover:bg-hover ease-in-out duration-300"
           >
             <IconRefresh className="w-4 h-4" />
             {t('refresh') || 'Actualiser'}
@@ -347,21 +347,21 @@ export default function AdminUsersPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-accent-light border border-accent-light rounded-xl p-4 flex items-center justify-between"
+          className="bg-accent-light border border-accent-light  p-4 flex items-center justify-between"
         >
           <span className="text-sm !text-accent font-medium">
             {selectedUsers.length} {t('users_selected') || 'utilisateur(s) sélectionné(s)'}
           </span>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-1.5 !text-sm bg-warning-light !text-warning-text rounded-lg hover:bg-warning-light">
+            <button className="px-3 py-1.5 !text-sm bg-warning-light !text-warning-text  hover:bg-warning-light">
               {t('block') || 'Bloquer'}
             </button>
-            <button className="px-3 py-1.5 !text-sm bg-danger-light !text-danger rounded-lg hover:bg-danger-light">
+            <button className="px-3 py-1.5 !text-sm bg-danger-light !text-danger  hover:bg-danger-light">
               {t('delete') || 'Supprimer'}
             </button>
             <button
               onClick={() => setSelectedUsers([])}
-              className="px-3 py-1.5 !text-sm bg-card !text-muted rounded-lg hover:bg-hover transition-colors ease-in-out duration-300"
+              className="px-3 py-1.5 !text-sm bg-card !text-muted  hover:bg-hover transition-colors ease-in-out duration-300"
             >
               {t('cancel') || 'Annuler'}
             </button>
@@ -485,28 +485,28 @@ export default function AdminUsersPage() {
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => setModalData({ user, action: 'view' })}
-                        className="p-2 rounded-lg hover:bg-hover transition-colors"
+                        className="p-2  hover:bg-hover transition-colors"
                         title={t('view_details') || 'Voir détails'}
                       >
                         <IconEye className="w-4 h-4 !text-muted" />
                       </button>
                       <button
                         onClick={() => openRoleModal(user)}
-                        className="p-2 rounded-lg hover:bg-hover transition-colors"
+                        className="p-2  hover:bg-hover transition-colors"
                         title={t('change_role') || 'Changer le rôle'}
                       >
                         <IconShield className="w-4 h-4 !text-muted" />
                       </button>
                       <button
                         onClick={() => setModalData({ user, action: 'block' })}
-                        className="p-2 rounded-lg hover:bg-hover transition-colors"
+                        className="p-2  hover:bg-hover transition-colors"
                         title={user.blocked ? t('unblock') || 'Débloquer' : t('block') || 'Bloquer'}
                       >
                         <IconBan className={`w-4 h-4 ${user.blocked ? 'text-warning' : 'text-muted'}`} />
                       </button>
                       <button
                         onClick={() => setModalData({ user, action: 'delete' })}
-                        className="p-2 rounded-lg hover:bg-danger-light transition-colors"
+                        className="p-2  hover:bg-danger-light transition-colors"
                         title={t('delete') || 'Supprimer'}
                       >
                         <IconTrash className="w-4 h-4 !text-danger" />
@@ -536,14 +536,14 @@ export default function AdminUsersPage() {
               <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2  hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <IconChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-lg hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2  hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <IconChevronRight className="w-5 h-5" />
               </button>
@@ -576,7 +576,7 @@ export default function AdminUsersPage() {
                     <h3 className="text-lg font-semibold !text-primary">{t('user_details') || 'Détails utilisateur'}</h3>
                     <button
                       onClick={() => setModalData({ user: null, action: null })}
-                      className="p-2 rounded-lg hover:bg-hover"
+                      className="p-2  hover:bg-hover"
                     >
                       <IconX className="w-5 h-5" />
                     </button>
@@ -638,7 +638,7 @@ export default function AdminUsersPage() {
                     <h3 className="text-lg font-semibold !text-primary">{t('change_role') || 'Changer le rôle'}</h3>
                     <button
                       onClick={() => setModalData({ user: null, action: null })}
-                      className="p-2 rounded-lg hover:bg-hover"
+                      className="p-2  hover:bg-hover"
                     >
                       <IconX className="w-5 h-5" />
                     </button>
@@ -665,13 +665,13 @@ export default function AdminUsersPage() {
                           <button
                             key={role.id}
                             onClick={() => setSelectedRole(role.id)}
-                            className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                            className={`w-full flex items-center gap-3 p-3  border transition-all ${
                               selectedRole === role.id
                                 ? 'border-accent bg-accent-light'
                                 : 'border-muted hover:border-accent'
                             }`}
                           >
-                            <div className={`p-2 rounded-lg ${
+                            <div className={`p-2  ${
                               role.name === 'Admin' ? 'bg-accent-light' : 'bg-info-light'
                             }`}>
                               {role.name === 'Admin' ? (
@@ -695,14 +695,14 @@ export default function AdminUsersPage() {
                     <div className="flex gap-3 pt-4">
                       <button
                         onClick={() => setModalData({ user: null, action: null })}
-                        className="flex-1 px-4 py-2 border border-muted rounded-lg hover:bg-hover"
+                        className="flex-1 px-4 py-2 border border-muted  hover:bg-hover"
                       >
                         {t('cancel') || 'Annuler'}
                       </button>
                       <button
                         onClick={() => selectedRole && handleChangeRole(modalData.user!, selectedRole)}
                         disabled={actionLoading || !selectedRole || selectedRole === modalData.user.role?.id}
-                        className="flex-1 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] disabled:opacity-50"
+                        className="flex-1 px-4 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] disabled:opacity-50"
                       >
                         {actionLoading ? t('loading') || 'Chargement...' : t('validate') || 'Valider'}
                       </button>
@@ -733,14 +733,14 @@ export default function AdminUsersPage() {
                   <div className="flex gap-3">
                     <button
                       onClick={() => setModalData({ user: null, action: null })}
-                      className="flex-1 px-4 py-2 border border-muted rounded-lg hover:bg-hover"
+                      className="flex-1 px-4 py-2 border border-muted  hover:bg-hover"
                     >
                       {t('cancel') || 'Annuler'}
                     </button>
                     <button
                       onClick={() => handleBlockUser(modalData.user!)}
                       disabled={actionLoading}
-                      className="flex-1 px-4 py-2 bg-warning !text-white rounded-lg hover:bg-[var(--color-warning)] disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-warning !text-white  hover:bg-[var(--color-warning)] disabled:opacity-50"
                     >
                       {actionLoading 
                         ? t('loading') || 'Chargement...' 
@@ -769,14 +769,14 @@ export default function AdminUsersPage() {
                   <div className="flex gap-3">
                     <button
                       onClick={() => setModalData({ user: null, action: null })}
-                      className="flex-1 px-4 py-2 border border-muted rounded-lg hover:bg-hover"
+                      className="flex-1 px-4 py-2 border border-muted  hover:bg-hover"
                     >
                       {t('cancel') || 'Annuler'}
                     </button>
                     <button
                       onClick={() => handleDeleteUser(modalData.user!)}
                       disabled={actionLoading}
-                      className="flex-1 px-4 py-2 bg-danger !text-white rounded-lg hover:bg-[var(--color-danger)] disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-danger !text-white  hover:bg-[var(--color-danger)] disabled:opacity-50"
                     >
                       {actionLoading ? t('deleting') || 'Suppression...' : t('delete') || 'Supprimer'}
                     </button>

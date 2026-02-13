@@ -17,7 +17,7 @@ export default function LanguageToggle() {
       <select
         value={language}
         onChange={handleLanguageChange}
-        className="px-2 py-1 cursor-pointer lg:w-fit w-full bg-card border border-default rounded-lg !text-primary !text-sm focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent hover:bg-hover transition-colors"
+        className="px-2 py-1 cursor-pointer lg:w-fit w-full bg-card border border-default  !text-primary !text-sm focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent hover:bg-hover transition-colors"
       >
         <option className="bg-card !text-primary" value="fr">
           FR

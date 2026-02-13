@@ -139,12 +139,12 @@ export default function AutomationActionDetailModal({
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-card border border-default rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+            className="relative bg-card border border-default  shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-default">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                <div className="w-12 h-12  bg-accent/10 flex items-center justify-center">
                   <IconBrain className="w-6 h-6 !text-accent" />
                 </div>
                 <div>
@@ -158,7 +158,7 @@ export default function AutomationActionDetailModal({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-hover rounded-lg transition-colors"
+                className="p-2 hover:bg-hover  transition-colors"
               >
                 <IconX className="w-5 h-5 !text-muted" />
               </button>
@@ -167,7 +167,7 @@ export default function AutomationActionDetailModal({
             {/* Content */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {/* AI Summary */}
-              <div className="bg-gradient-to-br from-purple-500/5 to-accent/5 border border-purple-500/20 rounded-xl p-5">
+              <div className="bg-gradient-to-br from-purple-500/5 to-accent/5 border border-purple-500/20  p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <IconBrain className="w-5 h-5 !text-purple-500" />
                   <h3 className="font-semibold !text-primary">
@@ -221,7 +221,7 @@ export default function AutomationActionDetailModal({
               </div>
 
               {/* Confidence Score */}
-              <div className="flex items-center gap-3 p-4 bg-secondary rounded-xl">
+              <div className="flex items-center gap-3 p-4 bg-secondary ">
                 <div className="flex items-center gap-2">
                   <span className="text-sm !text-muted">
                     {t('confidence_score') || 'Score de confiance'} :
@@ -267,7 +267,7 @@ export default function AutomationActionDetailModal({
                   <label className="text-xs !text-muted uppercase tracking-wide">
                     {t('email_subject') || 'Objet'}
                   </label>
-                  <div className="p-3 bg-secondary border border-default rounded-lg">
+                  <div className="p-3 bg-secondary border border-default ">
                     <p className="text-sm !text-primary font-medium">
                       {action.proposed_content.subject}
                     </p>
@@ -285,7 +285,7 @@ export default function AutomationActionDetailModal({
                         value={editedContent}
                         onChange={(e) => setEditedContent(e.target.value)}
                         rows={12}
-                        className="w-full p-4 bg-page border border-default rounded-lg !text-sm !text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent resize-none"
+                        className="w-full p-4 bg-page border border-default  !text-sm !text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent resize-none"
                       />
                       <div className="flex gap-2 justify-end">
                         <button
@@ -299,14 +299,14 @@ export default function AutomationActionDetailModal({
                         </button>
                         <button
                           onClick={() => setIsEditing(false)}
-                          className="px-4 py-2 !text-sm bg-accent !text-white rounded-lg hover:opacity-90"
+                          className="px-4 py-2 !text-sm bg-accent !text-white  hover:opacity-90"
                         >
                           {t('save_changes') || 'Enregistrer les modifications'}
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="p-4 bg-page border border-default rounded-lg">
+                    <div className="p-4 bg-page border border-default ">
                       <pre className="text-sm !text-primary whitespace-pre-wrap font-sans leading-relaxed">
                         {editedContent}
                       </pre>
@@ -322,7 +322,7 @@ export default function AutomationActionDetailModal({
                 <button
                   onClick={handleReject}
                   disabled={processing}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-error/10 !text-error rounded-xl hover:bg-error/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-error/10 !text-error  hover:bg-error/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <IconBan className="w-5 h-5" />
                   {t('reject_action') || 'Rejeter'}
@@ -330,7 +330,7 @@ export default function AutomationActionDetailModal({
                 <button
                   onClick={handleApproveAndSend}
                   disabled={processing}
-                  className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-accent to-purple-500 !text-white rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-accent to-purple-500 !text-white  hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >
                   {processing ? (
                     <>

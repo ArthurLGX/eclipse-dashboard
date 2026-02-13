@@ -64,8 +64,8 @@ function InfoCard({
   className?: string;
 }) {
   return (
-    <div className={`flex items-start gap-3 p-4 bg-muted rounded-xl border border-default ${className}`}>
-      <div className="p-2 rounded-lg bg-accent-light !text-accent">
+    <div className={`flex items-start gap-3 p-4 bg-muted  border border-default ${className}`}>
+      <div className="p-2  bg-accent-light !text-accent">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
@@ -132,7 +132,7 @@ function SubscriberItem({ subscriber }: { subscriber: Subscriber }) {
   };
 
   return (
-    <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-default hover:border-accent-light transition-colors">
+    <div className="flex items-center gap-3 p-3 bg-card  border border-default hover:border-accent-light transition-colors">
       <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center !text-accent font-semibold !text-sm">
         {getInitials()}
       </div>
@@ -237,7 +237,7 @@ export default function NewsletterDetailPage() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push('/dashboard/newsletters')}
-                className="p-2 rounded-lg hover:bg-hover !text-secondary hover:!text-primary transition-colors"
+                className="p-2  hover:bg-hover !text-secondary hover:!text-primary transition-colors"
               >
                 <IconArrowLeft className="w-5 h-5" />
               </button>
@@ -314,7 +314,7 @@ export default function NewsletterDetailPage() {
                   </div>
 
                   {/* Metadata */}
-                  <div className="bg-card rounded-xl border border-default p-4">
+                  <div className="bg-card  border border-default p-4">
                     <div className="flex items-center gap-4 !text-sm !text-muted">
                       <div className="flex items-center gap-1.5">
                         <IconClock className="w-4 h-4" />
@@ -332,7 +332,7 @@ export default function NewsletterDetailPage() {
                 {/* Sidebar - Right side */}
                 <div className="space-y-6">
                   {/* Subscribers list */}
-                  <div className="bg-card rounded-xl border border-default overflow-hidden">
+                  <div className="bg-card  border border-default overflow-hidden">
                     <div className="p-4 border-b border-default bg-muted/30">
                       <h2 className="font-semibold !text-primary flex items-center gap-2">
                         <IconUsers className="w-5 h-5 !text-accent" />
@@ -357,7 +357,7 @@ export default function NewsletterDetailPage() {
                   </div>
 
                   {/* Quick stats */}
-                  <div className="bg-active-border rounded-xl p-6 border border-input">
+                  <div className="bg-active-border  p-6 border border-input">
                     <h3 className="font-semibold !text-primary mb-4">{t('quick_stats') || 'Statistiques rapides'}</h3>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
@@ -378,7 +378,7 @@ export default function NewsletterDetailPage() {
               </div>
 
               {/* Email Preview Section - Mailbox Simulation */}
-              <div className="bg-card rounded-xl border border-default overflow-hidden">
+              <div className="bg-card  border border-default overflow-hidden">
                 <div className="p-4 border-b border-default bg-muted/30">
                   <h2 className="font-semibold !text-primary flex items-center gap-2">
                     <IconEye className="w-5 h-5 !text-accent" />

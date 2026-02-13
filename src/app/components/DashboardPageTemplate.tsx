@@ -132,7 +132,7 @@ export default function DashboardPageTemplate<T>({
           {additionalActions.map((action, index) => (
             <button
               key={index}
-              className={`flex items-center justify-center gap-2 rounded-lg px-4 py-2 transition-all duration-300 cursor-pointer lg:w-fit w-full ${
+              className={`flex items-center justify-center gap-2  px-4 py-2 transition-all duration-300 cursor-pointer lg:w-fit w-full ${
                 action.variant === 'outline' 
                   ? 'btn-outline border border-default !text-primary hover:bg-card-hover' 
                   : action.variant === 'primary'
@@ -147,7 +147,7 @@ export default function DashboardPageTemplate<T>({
           ))}
           {/* Main action button */}
           <button
-            className="btn-primary flex items-center justify-center gap-2 cursor-pointer lg:w-fit w-full rounded-lg px-4 py-2 transition-all duration-300"
+            className="btn-primary flex items-center justify-center gap-2 cursor-pointer lg:w-fit w-full  px-4 py-2 transition-all duration-300"
             onClick={onActionButtonClick || (() => {})}
           >
             <IconPlus size={18} color="white" />

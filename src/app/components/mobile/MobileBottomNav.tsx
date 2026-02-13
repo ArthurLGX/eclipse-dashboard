@@ -66,7 +66,7 @@ export default function MobileBottomNav({
   return (
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] px-4 pb-4 pt-2">
       {/* Container avec effet bombé violet (dark) ou glass (light) */}
-      <nav className="mobile-bottom-nav flex items-center justify-around rounded-2xl px-2 py-1.5">
+      <nav className="mobile-bottom-nav flex items-center justify-around  px-2 py-1.5">
         {BOTTOM_NAV_ITEMS.map(item => {
           const active = isActive(item.path);
           const icons = ICONS[item.id];
@@ -75,13 +75,13 @@ export default function MobileBottomNav({
             <button
               key={item.id}
               onClick={() => onNavigate(item.path)}
-              className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px] rounded-xl !shadow-none transition-all active:scale-95"
+              className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px]  !shadow-none transition-all active:scale-95"
             >
               {/* Background indicator pour item actif */}
               {active && (
                 <motion.div
                   layoutId="bottomNavIndicator"
-                  className="absolute inset-0 mobile-nav-indicator rounded-xl"
+                  className="absolute inset-0 mobile-nav-indicator "
                   transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                 />
               )}
@@ -102,7 +102,7 @@ export default function MobileBottomNav({
         {/* Bouton "Plus" pour ouvrir le drawer */}
         <button
           onClick={onMoreClick}
-          className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px] rounded-xl !shadow-none transition-all active:scale-95"
+          className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px]  !shadow-none transition-all active:scale-95"
         >
           <span className="mobile-nav-icon">
             <IconLayoutGrid size={22} stroke={1} />

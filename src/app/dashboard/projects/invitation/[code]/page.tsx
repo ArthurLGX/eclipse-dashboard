@@ -72,7 +72,7 @@ function ProjectsBackground({ userProjects }: { userProjects: Project[] }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            className="bg-card border border-default rounded-xl p-4 h-32"
+            className="bg-card border border-default  p-4 h-32"
           >
             <div className="flex items-center gap-2 mb-3">
               <IconFolder className="w-4 h-4 !text-accent" />
@@ -249,7 +249,7 @@ export default function InvitationPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-card border border-default rounded-2xl p-8 max-w-md w-full !text-center relative z-10 shadow-xl"
+          className="bg-card border border-default  p-8 max-w-md w-full !text-center relative z-10 shadow-xl"
         >
           <div className="w-16 h-16 rounded-full bg-danger-light flex items-center justify-center mx-auto mb-6">
             <IconAlertTriangle className="w-8 h-8 !text-danger" />
@@ -260,7 +260,7 @@ export default function InvitationPage() {
           <p className="text-secondary mb-6">{error}</p>
           <button
             onClick={() => router.push('/dashboard/projects')}
-            className="px-6 py-3 bg-muted hover:bg-muted !text-primary rounded-xl transition-colors"
+            className="px-6 py-3 bg-muted hover:bg-muted !text-primary  transition-colors"
           >
             {t('back_to_projects') || 'Retour aux projets'}
           </button>
@@ -291,7 +291,7 @@ export default function InvitationPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-card border border-default rounded-2xl p-8 max-w-lg w-full relative z-10 shadow-xl"
+        className="bg-card border border-default  p-8 max-w-lg w-full relative z-10 shadow-xl"
       >
         {/* Logo Eclipse */}
         <div className="flex justify-center mb-6">
@@ -320,7 +320,7 @@ export default function InvitationPage() {
         </p>
 
         {/* Projet */}
-        <div className="bg-muted rounded-xl p-5 mb-6 border border-default">
+        <div className="bg-muted  p-5 mb-6 border border-default">
           <h2 className="text-lg font-semibold !text-accent mb-1">
             {invitation.project?.title || 'Projet'}
           </h2>
@@ -364,7 +364,7 @@ export default function InvitationPage() {
           <button
             onClick={handleReject}
             disabled={processing}
-            className="flex-1 py-3 px-4 bg-muted hover:bg-muted disabled:opacity-50 !text-primary rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 px-4 bg-muted hover:bg-muted disabled:opacity-50 !text-primary  transition-colors flex items-center justify-center gap-2"
           >
             {processing ? (
               <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -378,7 +378,7 @@ export default function InvitationPage() {
           <button
             onClick={handleAccept}
             disabled={processing}
-            className="flex-1 py-3 px-4 bg-accent hover:bg-[var(--color-accent)] disabled:opacity-50 !text-white rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 px-4 bg-accent hover:bg-[var(--color-accent)] disabled:opacity-50 !text-white  transition-colors flex items-center justify-center gap-2"
           >
             {processing ? (
               <IconLoader2 className="w-5 h-5 animate-spin" />

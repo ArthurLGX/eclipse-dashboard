@@ -110,7 +110,7 @@ export default function AuditScoreCard({
       {/* Label and icon */}
       <div className="flex items-center gap-2">
         {icon && (
-          <span className={`${getScoreBgColor(score)} p-1.5 rounded-lg`}>
+          <span className={`${getScoreBgColor(score)} p-1.5 `}>
             {icon}
           </span>
         )}

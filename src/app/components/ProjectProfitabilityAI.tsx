@@ -293,7 +293,7 @@ export default function ProjectProfitabilityAI({
       >
         <div className="flex items-center gap-3">
           {/* Icon */}
-          <div className={`p-2 rounded-lg flex-shrink-0 ${
+          <div className={`p-2  flex-shrink-0 ${
             profitability?.profitability === 'positive' ? 'bg-success-light' :
             profitability?.profitability === 'negative' ? 'bg-danger-light' :
             'bg-warning-light'
@@ -356,14 +356,14 @@ export default function ProjectProfitabilityAI({
             <div className="p-4 pt-0 space-y-4 border-t border-default overflow-hidden">
               {/* Stats rapides - centré vertical pour éviter débordement */}
               <div className="grid grid-cols-2 gap-2 pt-4">
-                <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
+                <div className="flex flex-col items-center justify-center p-2.5  bg-muted min-w-0">
                   <div className="flex items-center gap-1.5 !text-muted">
                     <IconClock className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="!text-xs">{t('estimated') || 'Estimé'}</span>
                   </div>
                   <span className="font-bold !text-primary !text-lg">{estimatedHours}h</span>
                 </div>
-                <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
+                <div className="flex flex-col items-center justify-center p-2.5  bg-muted min-w-0">
                   <div className="flex items-center gap-1.5 !text-muted">
                     <IconClock className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="!text-xs">{t('actual') || 'Réel'}</span>
@@ -372,14 +372,14 @@ export default function ProjectProfitabilityAI({
                     {actualHours}h
                   </span>
                 </div>
-                <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
+                <div className="flex flex-col items-center justify-center p-2.5  bg-muted min-w-0">
                   <div className="flex items-center gap-1.5 !text-muted">
                     <IconCurrencyEuro className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="!text-xs truncate">{t('planned_rate') || 'Taux prévu'}</span>
                   </div>
                   <span className="font-bold !text-primary !text-lg">{hourlyRate}€</span>
                 </div>
-                <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-muted min-w-0">
+                <div className="flex flex-col items-center justify-center p-2.5  bg-muted min-w-0">
                   <div className="flex items-center gap-1.5 !text-muted">
                     <IconCurrencyEuro className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="!text-xs truncate">{t('effective_rate') || 'Taux effectif'}</span>
@@ -394,7 +394,7 @@ export default function ProjectProfitabilityAI({
 
               {/* Alerte en cours */}
               {!isCompleted && alert && alert.risk !== 'low' && (
-                <div className={`p-3 rounded-lg ${getRiskBgColor(alert.risk)} border ${
+                <div className={`p-3  ${getRiskBgColor(alert.risk)} border ${
                   alert.risk === 'high' ? 'border-danger' : 'border-warning'
                 }`}>
                   <div className="flex items-start gap-2">

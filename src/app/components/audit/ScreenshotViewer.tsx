@@ -125,7 +125,7 @@ export default function ScreenshotViewer({
         {/* Header */}
         <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">
           <div className="flex items-center gap-3">
-            <div className="p-1.5 bg-accent-light rounded-lg">
+            <div className="p-1.5 bg-accent-light ">
               <IconPhoto className="w-4 h-4 !text-accent" />
             </div>
             <div>
@@ -143,10 +143,10 @@ export default function ScreenshotViewer({
           {/* View Toggle */}
           <div className="flex items-center gap-2">
             {viewport && fullPage && (
-              <div className="flex bg-card rounded-lg p-1 border border-default">
+              <div className="flex bg-card  p-1 border border-default">
                 <button
                   onClick={() => setActiveView('viewport')}
-                  className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
+                  className={`px-3 py-1.5 !text-xs font-medium  transition-colors ${
                     activeView === 'viewport'
                       ? 'bg-accent !text-white'
                       : 'text-muted hover:!text-primary'
@@ -156,7 +156,7 @@ export default function ScreenshotViewer({
                 </button>
                 <button
                   onClick={() => setActiveView('fullPage')}
-                  className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors flex items-center gap-1 ${
+                  className={`px-3 py-1.5 !text-xs font-medium  transition-colors flex items-center gap-1 ${
                     activeView === 'fullPage'
                       ? 'bg-accent !text-white'
                       : 'text-muted hover:!text-primary'
@@ -170,7 +170,7 @@ export default function ScreenshotViewer({
 
             <button
               onClick={() => setIsFullscreen(true)}
-              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
+              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
               title={t('fullscreen') || 'Plein écran'}
             >
               <IconMaximize className="w-4 h-4" />
@@ -178,7 +178,7 @@ export default function ScreenshotViewer({
 
             <button
               onClick={handleDownload}
-              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
+              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
               title={t('download') || 'Télécharger'}
             >
               <IconDownload className="w-4 h-4" />
@@ -189,7 +189,7 @@ export default function ScreenshotViewer({
         {/* Preview */}
         <div className="p-4 bg-muted">
           <div 
-            className="relative overflow-hidden rounded-lg border border-default bg-card shadow-theme-sm cursor-pointer"
+            className="relative overflow-hidden  border border-default bg-card shadow-theme-sm cursor-pointer"
             onClick={() => setIsFullscreen(true)}
           >
             <img
@@ -228,10 +228,10 @@ export default function ScreenshotViewer({
               <div className="flex items-center gap-4">
                 {/* View Toggle */}
                 {viewport && fullPage && (
-                  <div className="flex bg-white/10 rounded-lg p-1">
+                  <div className="flex bg-white/10  p-1">
                     <button
                       onClick={() => { setActiveView('viewport'); handleResetZoom(); }}
-                      className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
+                      className={`px-3 py-1.5 !text-xs font-medium  transition-colors ${
                         activeView === 'viewport'
                           ? 'bg-accent !text-white'
                           : 'text-white/70 hover:!text-white'
@@ -241,7 +241,7 @@ export default function ScreenshotViewer({
                     </button>
                     <button
                       onClick={() => { setActiveView('fullPage'); handleResetZoom(); }}
-                      className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
+                      className={`px-3 py-1.5 !text-xs font-medium  transition-colors ${
                         activeView === 'fullPage'
                           ? 'bg-accent !text-white'
                           : 'text-white/70 hover:!text-white'
@@ -253,11 +253,11 @@ export default function ScreenshotViewer({
                 )}
 
                 {/* Zoom controls */}
-                <div className="flex items-center gap-2 bg-white/10 rounded-lg p-1">
+                <div className="flex items-center gap-2 bg-white/10  p-1">
                   <button
                     onClick={handleZoomOut}
                     disabled={zoom <= 0.5}
-                    className="p-2 !text-white/70 hover:!text-white disabled:opacity-30 disabled:cursor-not-allowed rounded-md transition-colors"
+                    className="p-2 !text-white/70 hover:!text-white disabled:opacity-30 disabled:cursor-not-allowed  transition-colors"
                   >
                     <IconZoomOut className="w-4 h-4" />
                   </button>
@@ -267,7 +267,7 @@ export default function ScreenshotViewer({
                   <button
                     onClick={handleZoomIn}
                     disabled={zoom >= 3}
-                    className="p-2 !text-white/70 hover:!text-white disabled:opacity-30 disabled:cursor-not-allowed rounded-md transition-colors"
+                    className="p-2 !text-white/70 hover:!text-white disabled:opacity-30 disabled:cursor-not-allowed  transition-colors"
                   >
                     <IconZoomIn className="w-4 h-4" />
                   </button>
@@ -277,13 +277,13 @@ export default function ScreenshotViewer({
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleDownload}
-                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10  transition-colors"
                 >
                   <IconDownload className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => { setIsFullscreen(false); handleResetZoom(); }}
-                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 !text-white/70 hover:!text-white hover:bg-white/10  transition-colors"
                 >
                   <IconX className="w-5 h-5" />
                 </button>
@@ -303,7 +303,7 @@ export default function ScreenshotViewer({
                 <motion.img
                   src={`data:image/png;base64,${currentImage}`}
                   alt={`Screenshot of ${url}`}
-                  className="max-w-none rounded-lg shadow-2xl"
+                  className="max-w-none  shadow-2xl"
                   style={{
                     transform: `scale(${zoom})`,
                     transformOrigin: 'top center',

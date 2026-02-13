@@ -62,12 +62,12 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative bg-card border border-default rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+          className="relative bg-card border border-default  shadow-2xl w-full max-w-md mx-4 overflow-hidden"
         >
           {/* Header */}
           <div className="p-6 border-b border-default">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+              <div className={`w-12 h-12  flex items-center justify-center ${
                 isLoading 
                   ? 'bg-accent/10' 
                   : result?.errors && result.errors.length > 0
@@ -123,14 +123,14 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
               <div className="space-y-4">
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="p-4 rounded-xl bg-success-light border border-success/20">
+                  <div className="p-4  bg-success-light border border-success/20">
                     <div className="flex items-center gap-2 mb-1">
                       <IconMail className="w-4 h-4 !text-success" />
                       <span className="!text-xs font-medium !text-success-text">Nouveaux</span>
                     </div>
                     <p className="text-2xl font-bold !text-success-text">{result.synced}</p>
                   </div>
-                  <div className="p-4 rounded-xl bg-secondary border border-default">
+                  <div className="p-4  bg-secondary border border-default">
                     <div className="flex items-center gap-2 mb-1">
                       <IconCheck className="w-4 h-4 !text-muted" />
                       <span className="!text-xs font-medium !text-muted">Ignorés</span>
@@ -141,7 +141,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
 
                 {/* Errors */}
                 {result.errors && result.errors.length > 0 && (
-                  <div className="p-4 rounded-xl bg-warning-light border border-warning">
+                  <div className="p-4  bg-warning-light border border-warning">
                     <div className="flex items-center gap-2 mb-2">
                       <IconAlertCircle className="w-4 h-4 !text-warning-text" />
                       <span className="text-sm font-medium !text-warning-text">
@@ -165,7 +165,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
 
                 {/* Unknown Senders (future feature) */}
                 {result.unknownSenders && result.unknownSenders.length > 0 && (
-                  <div className="p-4 rounded-xl bg-info-light border border-info">
+                  <div className="p-4  bg-info-light border border-info">
                     <div className="flex items-center gap-2 mb-3">
                       <IconUserPlus className="w-4 h-4 !text-info-text" />
                       <span className="text-sm font-medium !text-info-text">
@@ -181,7 +181,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                           <span className="text-info-text font-medium">
                             {sender.name || sender.email}
                           </span>
-                          <button className="px-2 py-1 bg-info !text-white rounded-lg !text-xs hover:opacity-90">
+                          <button className="px-2 py-1 bg-info !text-white  !text-xs hover:opacity-90">
                             Ajouter
                           </button>
                         </div>
@@ -208,7 +208,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
             <div className="p-6 border-t border-default flex justify-end">
               <button
                 onClick={onClose}
-                className="px-6 py-2 rounded-lg btn-primary"
+                className="px-6 py-2  btn-primary"
               >
                 Fermer
               </button>

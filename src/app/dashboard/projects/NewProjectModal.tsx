@@ -144,7 +144,7 @@ export default function NewProjectModal({
     <FloatingModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-3xl">
       {/* Header compact */}
       <div className="flex items-center gap-3 mb-5">
-        <div className="p-2 bg-accent-light rounded-lg border border-accent">
+        <div className="p-2 bg-accent-light  border border-accent">
           <IconFolderPlus size={22} className="!text-accent" />
         </div>
         <h2 className="text-xl font-bold !text-primary">
@@ -154,7 +154,7 @@ export default function NewProjectModal({
 
       {/* Message d'erreur */}
       {error && (
-        <div className="mb-3 p-2.5 bg-danger-light border border-danger rounded-lg !text-danger !text-sm">
+        <div className="mb-3 p-2.5 bg-danger-light border border-danger  !text-danger !text-sm">
           ⚠️ {error}
         </div>
       )}
@@ -278,7 +278,7 @@ export default function NewProjectModal({
         </div>
 
         {/* Technologies - compact */}
-        <div className="p-3 bg-muted rounded-lg border border-default">
+        <div className="p-3 bg-muted  border border-default">
           <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-2 font-medium">
             <IconCode size={14} className="text-muted" />
             {t('technologies') || 'Technologies'} 

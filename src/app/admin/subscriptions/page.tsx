@@ -244,7 +244,7 @@ export default function AdminSubscriptionsPage() {
         </div>
         <button
           onClick={fetchData}
-          className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-hover ease-in-out duration-300"
+          className="btn-secondary flex items-center gap-2 px-4 py-2  transition-colors hover:bg-hover ease-in-out duration-300"
         >
           <IconRefresh className="w-4 h-4" />
           {t('refresh') || 'Actualiser'}
@@ -260,7 +260,7 @@ export default function AdminSubscriptionsPage() {
           className="card p-6 bg-gradient-to-br from-accent to-accent-light border-accent"
         >
           <div className="flex items-center justify-between mb-4">
-            <div className="p-2 rounded-lg bg-accent-light">
+            <div className="p-2  bg-accent-light">
               <IconTrendingUp className="w-6 h-6 !text-accent" />
             </div>
             <span className="!text-xs !text-accent bg-accent-light px-2 py-1 rounded-full font-medium">MRR</span>
@@ -278,7 +278,7 @@ export default function AdminSubscriptionsPage() {
             className="card p-6"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className={`p-2 rounded-lg bg-muted ${stat.color}`}>
+              <div className={`p-2  bg-muted ${stat.color}`}>
                 {stat.icon}
               </div>
               <span className="!text-xs !text-muted">{stat.count} users</span>
@@ -296,13 +296,13 @@ export default function AdminSubscriptionsPage() {
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className="p-4 rounded-xl bg-muted border border-muted hover:bg-accent-light transition-all"
+              className="p-4  bg-muted border border-muted hover:bg-accent-light transition-all"
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="font-semibold !text-primary">{plan.name}</span>
                 <button 
                   onClick={() => setEditingPlan({ ...plan })}
-                  className="p-1.5 rounded-lg hover:bg-hover transition-colors"
+                  className="p-1.5  hover:bg-hover transition-colors"
                   title={t('edit_plan') || 'Modifier le plan'}
                 >
                   <IconEdit className="w-4 h-4 !text-muted hover:!text-accent" />
@@ -454,7 +454,7 @@ export default function AdminSubscriptionsPage() {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center justify-end">
-                      <button className="p-2 rounded-lg hover:bg-hover transition-colors">
+                      <button className="p-2  hover:bg-hover transition-colors">
                         <IconChevronRight className="w-4 h-4 !text-muted" />
                       </button>
                     </div>
@@ -497,7 +497,7 @@ export default function AdminSubscriptionsPage() {
                 </h2>
                 <button
                   onClick={() => setEditingPlan(null)}
-                  className="p-2 rounded-lg hover:bg-hover transition-colors"
+                  className="p-2  hover:bg-hover transition-colors"
                 >
                   <IconX className="w-5 h-5 !text-muted" />
                 </button>
@@ -563,10 +563,10 @@ export default function AdminSubscriptionsPage() {
                     <label className="block !text-sm font-medium !text-secondary mb-2">
                       {t('features') || 'Fonctionnalités'}
                     </label>
-                    <div className="bg-muted rounded-lg p-3 max-h-60 overflow-y-auto">
+                    <div className="bg-muted  p-3 max-h-60 overflow-y-auto">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {Object.entries(editingPlan.features).map(([key, value]) => (
-                          <div key={key} className="flex items-center justify-between p-2 rounded-lg bg-card border border-default">
+                          <div key={key} className="flex items-center justify-between p-2  bg-card border border-default">
                             <span className="text-sm !text-primary truncate capitalize" title={key}>
                               {key.replace(/_/g, ' ')}
                             </span>
@@ -614,14 +614,14 @@ export default function AdminSubscriptionsPage() {
               <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-muted">
                 <button
                   onClick={() => setEditingPlan(null)}
-                  className="btn-secondary px-4 py-2 rounded-lg"
+                  className="btn-secondary px-4 py-2 "
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
                 <button
                   onClick={handleSavePlan}
                   disabled={savingPlan}
-                  className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50"
                 >
                   {savingPlan ? (
                     <IconRefresh className="w-4 h-4 animate-spin" />

@@ -192,7 +192,7 @@ export default function CalendarIntegrationsPage() {
               <p className="text-secondary mb-3">
                 {t('oauth_setup_info') || 'Pour connecter vos calendriers, vous devez configurer les identifiants OAuth dans votre fichier .env.local:'}
               </p>
-              <div className="bg-card p-3 rounded-lg font-mono !text-xs space-y-1 overflow-x-auto">
+              <div className="bg-card p-3  font-mono !text-xs space-y-1 overflow-x-auto">
                 <p className="text-muted"># Google Calendar</p>
                 <p>GOOGLE_CLIENT_ID=votre_client_id</p>
                 <p>GOOGLE_CLIENT_SECRET=votre_client_secret</p>
@@ -216,7 +216,7 @@ export default function CalendarIntegrationsPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4">
                   <div 
-                    className="p-3 rounded-xl"
+                    className="p-3 "
                     style={{ backgroundColor: `${provider.color}20` }}
                   >
                     <div style={{ color: provider.color }}>
@@ -285,7 +285,7 @@ export default function CalendarIntegrationsPage() {
                     <button
                       onClick={() => handleConnect(provider.id)}
                       disabled={loading === provider.id}
-                      className="btn-primary px-4 py-2 !text-sm flex items-center gap-2 rounded-lg"
+                      className="btn-primary px-4 py-2 !text-sm flex items-center gap-2 "
                     >
                       {loading === provider.id ? (
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -311,7 +311,7 @@ export default function CalendarIntegrationsPage() {
               href="https://console.cloud.google.com/apis/credentials"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors"
+              className="flex items-center gap-3 p-3 bg-muted  hover:bg-muted transition-colors"
             >
               <IconBrandGoogle className="w-5 h-5 !text-[#4285F4]" />
               <div>
@@ -324,7 +324,7 @@ export default function CalendarIntegrationsPage() {
               href="https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors"
+              className="flex items-center gap-3 p-3 bg-muted  hover:bg-muted transition-colors"
             >
               <IconBrandWindows className="w-5 h-5 !text-[#0078D4]" />
               <div>

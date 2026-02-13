@@ -84,7 +84,7 @@ export default function EmailSentSuccessModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+            className="bg-card  shadow-2xl w-full max-w-md overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header with animation */}
@@ -152,7 +152,7 @@ export default function EmailSentSuccessModal({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className={`${config.lightBg} rounded-xl p-4 space-y-2`}
+                className={`${config.lightBg}  p-4 space-y-2`}
               >
                 {documentReference && (
                   <div className="flex items-center justify-between !text-sm">
@@ -180,7 +180,7 @@ export default function EmailSentSuccessModal({
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
                 onClick={onClose}
-                className={`w-full mt-6 py-3 ${config.bgColor} !text-white font-medium rounded-xl hover:opacity-90 transition-opacity`}
+                className={`w-full mt-6 py-3 ${config.bgColor} !text-white font-medium  hover:opacity-90 transition-opacity`}
               >
                 {t('continue') || 'Continuer'}
               </motion.button>

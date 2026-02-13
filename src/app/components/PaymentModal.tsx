@@ -134,7 +134,7 @@ const CheckoutForm: React.FC<{
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
-        <div className="bg-hover p-4 rounded-lg border border-default">
+        <div className="bg-hover p-4  border border-default">
           <h3 className="!text-lg font-semibold !text-primary mb-2">
             {plan.name.charAt(0).toUpperCase() + plan.name.slice(1)} Plan
           </h3>
@@ -157,13 +157,13 @@ const CheckoutForm: React.FC<{
           <label className="text-secondary !text-sm font-medium">
             {t('card_information')}
           </label>
-          <div className="bg-page border border-default rounded-lg p-4 min-h-[50px]">
+          <div className="bg-page border border-default  p-4 min-h-[50px]">
             <CardElement options={cardElementOptions} />
           </div>
         </div>
 
         {error && (
-          <div className="bg-danger-light border border-danger rounded-lg p-3">
+          <div className="bg-danger-light border border-danger  p-3">
             <p className="text-danger !text-sm">{error}</p>
           </div>
         )}
@@ -173,14 +173,14 @@ const CheckoutForm: React.FC<{
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 bg-muted !text-secondary px-4 py-3 rounded-lg hover:bg-card transition-colors"
+          className="flex-1 bg-muted !text-secondary px-4 py-3  hover:bg-card transition-colors"
         >
           {t('cancel')}
         </button>
         <button
           type="submit"
           disabled={!stripe || loading}
-          className="flex-1 bg-accent !text-white px-4 py-3 rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+          className="flex-1 bg-accent !text-white px-4 py-3  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
         >
           {loading
             ? t('processing')
@@ -227,7 +227,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative bg-card rounded-xl border border-default p-6 w-full max-w-md outline-none"
+            className="relative bg-card  border border-default p-6 w-full max-w-md outline-none"
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="!text-xl font-bold !text-primary">
@@ -266,7 +266,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-4 bg-muted !text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors"
+                  className="mt-4 bg-muted !text-secondary px-4 py-2  hover:bg-card transition-colors"
                 >
                   {t('close')}
                 </button>

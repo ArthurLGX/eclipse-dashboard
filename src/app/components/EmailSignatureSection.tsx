@@ -349,7 +349,7 @@ export default function EmailSignatureSection() {
   
   if (loading) {
     return (
-      <div className="bg-card border border-default rounded-xl p-6">
+      <div className="bg-card border border-default  p-6">
         <div className="flex items-center justify-center py-12">
           <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
         </div>
@@ -359,7 +359,7 @@ export default function EmailSignatureSection() {
   
   return (
     <>
-      <div className="bg-card border border-default rounded-xl p-6 space-y-6">
+      <div className="bg-card border border-default  p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
@@ -374,7 +374,7 @@ export default function EmailSignatureSection() {
           
           <div className="flex items-center gap-3">
             {/* Language Toggle */}
-            <div className="flex items-center gap-2 px-3 py-2 bg-secondary rounded-lg">
+            <div className="flex items-center gap-2 px-3 py-2 bg-secondary ">
               <IconLanguage className="w-4 h-4 !text-muted" />
               <button
                 onClick={() => setFooterLanguage('fr')}
@@ -400,7 +400,7 @@ export default function EmailSignatureSection() {
             
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-3 py-2 !text-sm bg-accent-light !text-accent hover:bg-accent hover:!text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 !text-sm bg-accent-light !text-accent hover:bg-accent hover:!text-white  transition-colors"
             >
               <IconEye className="w-4 h-4" />
               {t('preview') || 'Aperçu'}
@@ -419,7 +419,7 @@ export default function EmailSignatureSection() {
             <div className="flex items-center justify-center gap-2 mb-4">
               <button
                 onClick={() => setPreviewMode('desktop')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2  transition-colors ${
                   previewMode === 'desktop'
                     ? 'bg-accent !text-white'
                     : 'bg-muted !text-muted hover:bg-muted'
@@ -430,7 +430,7 @@ export default function EmailSignatureSection() {
               </button>
               <button
                 onClick={() => setPreviewMode('mobile')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2  transition-colors ${
                   previewMode === 'mobile'
                     ? 'bg-accent !text-white'
                     : 'bg-muted !text-muted hover:bg-muted'
@@ -445,7 +445,7 @@ export default function EmailSignatureSection() {
             <div className={`mx-auto transition-all duration-300 ${
               previewMode === 'mobile' ? 'max-w-[375px]' : 'max-w-full'
             }`}>
-                <div className="email-preview-light p-6 rounded-xl border border-muted">
+                <div className="email-preview-light p-6  border border-muted">
                 <SignaturePreview data={formData} language={footerLanguage} isMobile={previewMode === 'mobile'} />
               </div>
             </div>
@@ -473,7 +473,7 @@ export default function EmailSignatureSection() {
                     <img 
                       src={formData.logo_url} 
                       alt="Logo" 
-                      className="w-16 h-16 object-contain rounded-lg border border-default bg-white"
+                      className="w-16 h-16 object-contain  border border-default bg-white"
                     />
                     <button
                       onClick={() => updateField('logo_url', '')}
@@ -485,7 +485,7 @@ export default function EmailSignatureSection() {
                 ) : (
                   <button
                     onClick={() => setShowMediaPicker(true)}
-                    className="w-16 h-16 border-2 border-dashed border-default rounded-lg flex items-center justify-center !text-muted hover:border-accent hover:!text-accent transition-colors"
+                    className="w-16 h-16 border-2 border-dashed border-default  flex items-center justify-center !text-muted hover:border-accent hover:!text-accent transition-colors"
                   >
                     <IconPhoto className="w-6 h-6" />
                   </button>
@@ -607,7 +607,7 @@ export default function EmailSignatureSection() {
             </h4>
             <button
               onClick={addSocialLink}
-              className="flex items-center gap-1 px-3 py-1.5 !text-sm bg-accent-light !text-accent hover:bg-accent-light rounded-lg transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 !text-sm bg-accent-light !text-accent hover:bg-accent-light  transition-colors"
             >
               <IconPlus className="w-4 h-4" />
               {t('add_social') || 'Ajouter'}
@@ -627,7 +627,7 @@ export default function EmailSignatureSection() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center gap-3 p-3 bg-muted rounded-lg border border-default"
+                    className="flex items-center gap-3 p-3 bg-muted  border border-default"
                   >
                     {/* Drag handle */}
                     <div className="flex flex-col gap-0.5">
@@ -666,7 +666,7 @@ export default function EmailSignatureSection() {
                     
                     {/* Icon preview */}
                     <div 
-                      className="w-8 h-8 rounded-lg flex items-center justify-center"
+                      className="w-8 h-8  flex items-center justify-center"
                       style={{ backgroundColor: `${link.color}20` }}
                     >
                       <PlatformIcon className="w-4 h-4" style={{ color: link.color }} />
@@ -704,7 +704,7 @@ export default function EmailSignatureSection() {
                     {/* Remove button */}
                     <button
                       onClick={() => removeSocialLink(link.id)}
-                      className="p-2 !text-danger/70 hover:!text-danger hover:bg-danger-light rounded-lg transition-colors"
+                      className="p-2 !text-danger/70 hover:!text-danger hover:bg-danger-light  transition-colors"
                     >
                       <IconTrash className="w-4 h-4" />
                     </button>
@@ -725,7 +725,7 @@ export default function EmailSignatureSection() {
         <div className="pt-4 border-t border-default">
           <button
             onClick={() => setShowCustomization(!showCustomization)}
-              className="flex items-center justify-between w-full p-3 bg-accent-light hover:bg-accent rounded-lg transition-colors"
+              className="flex items-center justify-between w-full p-3 bg-accent-light hover:bg-accent  transition-colors"
           >
             <div className="flex items-center gap-2">
               <IconPalette className="w-5 h-5 !text-accent" />
@@ -761,7 +761,7 @@ export default function EmailSignatureSection() {
                       max="150"
                       value={formData.logo_size || 100}
                       onChange={(e) => updateField('logo_size', parseInt(e.target.value))}
-                      className="w-full h-2 bg-muted/20 rounded-lg appearance-none cursor-pointer accent-accent"
+                      className="w-full h-2 bg-muted/20  appearance-none cursor-pointer accent-accent"
                     />
                     <div className="flex justify-between !text-xs !text-muted mt-1">
                       <span>40px</span>
@@ -865,7 +865,7 @@ export default function EmailSignatureSection() {
                   </div>
                   
                   {/* Preview of customization */}
-                  <div className="p-4 bg-muted rounded-lg border border-default">
+                  <div className="p-4 bg-muted  border border-default">
                     <p className="text-sm !text-muted mb-2">{t('preview') || 'Aperçu des couleurs'}:</p>
                     <div className="flex items-center gap-4" style={{ fontFamily: formData.font_family }}>
                       <span style={{ color: formData.text_color, fontWeight: 'bold' }}>
@@ -900,7 +900,7 @@ export default function EmailSignatureSection() {
           </div>
           
           {/* Banner size recommendations */}
-          <div className="mb-4 p-3 rounded-lg bg-muted border border-info">
+          <div className="mb-4 p-3  bg-muted border border-info">
             <p className="!text-xs !text-info">
               <strong>{t('recommended_sizes') || 'Tailles recommandées'}</strong>:
               <br />• Desktop : 600×150 px (max)
@@ -920,7 +920,7 @@ export default function EmailSignatureSection() {
                   <img 
                     src={formData.banner_url} 
                     alt={formData.banner_alt || 'Banner'} 
-                    className="max-w-full h-auto max-h-32 object-contain rounded-lg border border-default bg-white"
+                    className="max-w-full h-auto max-h-32 object-contain  border border-default bg-white"
                   />
                   <button
                     onClick={() => updateField('banner_url', '')}
@@ -932,7 +932,7 @@ export default function EmailSignatureSection() {
               ) : (
                 <button
                   onClick={() => setShowBannerPicker(true)}
-                  className="w-full h-24 border-2 border-dashed border-default rounded-lg flex flex-col items-center justify-center !text-muted hover:border-accent hover:!text-accent transition-colors"
+                  className="w-full h-24 border-2 border-dashed border-default  flex flex-col items-center justify-center !text-muted hover:border-accent hover:!text-accent transition-colors"
                 >
                   <IconPhoto className="w-6 h-6 mb-1" />
                   <span className="text-sm">{t('add_banner') || 'Ajouter une bannière'}</span>
@@ -987,7 +987,7 @@ export default function EmailSignatureSection() {
           <button
             onClick={handleSave}
             disabled={saving}
-                className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white  hover:bg-accent transition-colors disabled:opacity-50"
           >
             {saving ? (
               <>

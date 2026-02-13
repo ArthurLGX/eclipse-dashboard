@@ -278,7 +278,7 @@ export default function NotificationBell() {
       <div ref={dropdownRef} className="hidden lg:block fixed top-5 right-5 z-[1002]">
         <button
           onClick={handleToggle}
-          className="relative p-3 rounded-xl bg-card backdrop-blur-sm border border-default hover:bg-hover !text-muted hover:!text-primary transition-all shadow-theme-lg"
+          className="relative p-3  bg-card backdrop-blur-sm border border-default hover:bg-hover !text-muted hover:!text-primary transition-all shadow-theme-lg"
         >
           <IconBell className="w-5 h-5" />
           
@@ -302,7 +302,7 @@ export default function NotificationBell() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 top-full mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-card border border-default rounded-xl shadow-2xl overflow-hidden"
+              className="absolute right-0 top-full mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-card border border-default  shadow-2xl overflow-hidden"
             >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-default">
@@ -381,7 +381,7 @@ export default function NotificationBell() {
                           <div className="flex gap-2 mt-2">
                             <button
                               onClick={handleUpgrade}
-                              className="btn-primary py-1 px-3 !text-xs font-medium rounded-lg flex items-center gap-1"
+                              className="btn-primary py-1 px-3 !text-xs font-medium  flex items-center gap-1"
                             >
                               {t('upgrade') || 'Mettre à niveau'}
                               <IconArrowRight className="w-3 h-3" />
@@ -442,14 +442,14 @@ export default function NotificationBell() {
                             <div className="flex gap-2 mt-3">
                               <button
                                 onClick={() => handleAcceptInvitation(notification)}
-                                className="btn-primary flex-1 py-2 px-3 !text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                                className="btn-primary flex-1 py-2 px-3 !text-xs font-medium  transition-colors flex items-center justify-center gap-1"
                               >
                                 <IconCheck className="w-4 h-4" />
                                 {t('accept') || 'Accepter'}
                               </button>
                               <button
                                 onClick={() => handleRejectInvitation(notification)}
-                                className="btn-ghost flex-1 py-2 px-3 !text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                                className="btn-ghost flex-1 py-2 px-3 !text-xs font-medium  transition-colors flex items-center justify-center gap-1"
                               >
                                 <IconX className="w-4 h-4" />
                                 {t('reject') || 'Refuser'}
@@ -462,7 +462,7 @@ export default function NotificationBell() {
                             <div className="flex gap-2 mt-3">
                               <button
                                 onClick={() => handleContractAction(notification)}
-                                className="btn-primary flex-1 py-2 px-3 !text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                                className="btn-primary flex-1 py-2 px-3 !text-xs font-medium  transition-colors flex items-center justify-center gap-1"
                               >
                                 <IconFileCheck className="w-4 h-4" />
                                 {t('view_contract') || 'Voir le contrat'}

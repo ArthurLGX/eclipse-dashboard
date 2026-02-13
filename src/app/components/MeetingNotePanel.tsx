@@ -221,7 +221,7 @@ export default function MeetingNotePanel({
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-2 hover:bg-hover rounded-lg transition-colors"
+        className="w-full flex items-center justify-between p-2 hover:bg-hover  transition-colors"
       >
         <div className="flex items-center gap-2">
           <IconNotes className="w-5 h-5 !text-accent" />
@@ -257,14 +257,14 @@ export default function MeetingNotePanel({
                   <>
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="btn-tertiary px-3 py-1.5 !text-sm rounded-lg flex items-center gap-1"
+                      className="btn-tertiary px-3 py-1.5 !text-sm  flex items-center gap-1"
                     >
                       <IconEdit className="w-4 h-4" />
                       {t('edit') || 'Modifier'}
                     </button>
                     <button
                       onClick={handleDelete}
-                      className="btn-tertiary px-3 py-1.5 !text-sm rounded-lg !text-error flex items-center gap-1"
+                      className="btn-tertiary px-3 py-1.5 !text-sm  !text-error flex items-center gap-1"
                     >
                       <IconTrash className="w-4 h-4" />
                     </button>
@@ -273,7 +273,7 @@ export default function MeetingNotePanel({
                 {!isEditing && !hasContent && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="btn-primary px-3 py-1.5 !text-sm rounded-lg flex items-center gap-1"
+                    className="btn-primary px-3 py-1.5 !text-sm  flex items-center gap-1"
                   >
                     <IconPlus className="w-4 h-4" />
                     {t('add_notes') || 'Ajouter des notes'}
@@ -286,7 +286,7 @@ export default function MeetingNotePanel({
                 <div className="space-y-4">
                   {/* Summary */}
                   {summary && (
-                    <div className="p-3 bg-accent-light rounded-lg">
+                    <div className="p-3 bg-accent-light ">
                       <div className="flex items-center gap-2 mb-2">
                         <IconSparkles className="w-4 h-4 !text-accent" />
                         <span className="text-sm font-medium !text-accent">
@@ -310,7 +310,7 @@ export default function MeetingNotePanel({
                         {actionItems.map((item) => (
                           <div
                             key={item.id}
-                            className={`flex items-center gap-2 p-2 rounded-lg ${
+                            className={`flex items-center gap-2 p-2  ${
                               item.completed ? 'bg-success-light' : 'bg-hover'
                             }`}
                           >
@@ -359,7 +359,7 @@ export default function MeetingNotePanel({
                           {t('transcription') || 'Transcription'}
                         </span>
                       </div>
-                      <div className="p-3 bg-muted rounded-lg max-h-40 overflow-y-auto">
+                      <div className="p-3 bg-muted  max-h-40 overflow-y-auto">
                         <p className="text-sm !text-secondary whitespace-pre-wrap">{transcription}</p>
                       </div>
                     </div>
@@ -445,7 +445,7 @@ export default function MeetingNotePanel({
                         <button
                           onClick={addActionItem}
                           disabled={!newActionItem.trim()}
-                          className="btn-tertiary p-2 rounded-lg"
+                          className="btn-tertiary p-2 "
                         >
                           <IconPlus className="w-4 h-4" />
                         </button>
@@ -486,7 +486,7 @@ export default function MeetingNotePanel({
                       <button
                         onClick={addAttendee}
                         disabled={!newAttendee.trim()}
-                        className="btn-tertiary p-2 rounded-lg"
+                        className="btn-tertiary p-2 "
                       >
                         <IconPlus className="w-4 h-4" />
                       </button>
@@ -556,7 +556,7 @@ export default function MeetingNotePanel({
                     <button
                       onClick={handleSave}
                       disabled={isSaving}
-                      className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2"
+                      className="btn-primary px-4 py-2  flex items-center gap-2"
                     >
                       {isSaving && <IconLoader2 className="w-4 h-4 animate-spin" />}
                       {t('save') || 'Enregistrer'}

@@ -508,7 +508,7 @@ function InboxView() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] bg-page rounded-xl overflow-hidden border border-default overscroll-contain">
+    <div className="flex h-[calc(100vh-80px)] bg-page  overflow-hidden border border-default overscroll-contain">
       {/* Gmail-style Sidebar */}
       <EmailSidebar
         activeView={activeView}
@@ -541,7 +541,7 @@ function InboxView() {
             <button
               onClick={handleSync}
               disabled={syncing}
-              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors disabled:opacity-50"
+              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors disabled:opacity-50"
               title={t('sync_inbox') || 'Synchroniser'}
             >
               <IconRefresh className={`w-5 h-5 ${syncing ? 'animate-spin' : ''}`} />
@@ -556,7 +556,7 @@ function InboxView() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('search_emails') || 'Rechercher...'}
-              className="w-full !pl-10 !pr-4 py-2 bg-page border border-default rounded-lg !text-sm !text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
+              className="w-full !pl-10 !pr-4 py-2 bg-page border border-default  !text-sm !text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
             />
           </div>
           
@@ -612,7 +612,7 @@ function InboxView() {
               <button
                 onClick={handleCategorizeAllWithAI}
                 disabled={categorizingAI}
-                className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 !text-white !text-xs font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 !text-white !text-xs font-medium  hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
                 {categorizingAI ? (
                   <>
@@ -834,7 +834,7 @@ function InboxView() {
             <div className="flex items-center justify-between p-4 border-b border-default bg-card">
               <button
                 onClick={() => setSelectedEmail(null)}
-                className="md:hidden p-2 !text-muted hover:!text-accent rounded-lg"
+                className="md:hidden p-2 !text-muted hover:!text-accent "
               >
                 <IconArrowLeft className="w-5 h-5" />
               </button>
@@ -845,21 +845,21 @@ function InboxView() {
                   <>
                     <button
                       onClick={() => handleReply(selectedEmail)}
-                      className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90"
+                      className="flex items-center gap-2 px-4 py-2 bg-accent !text-white  hover:opacity-90"
                     >
                       <IconSend className="w-4 h-4" color="white" />
                       Répondre
                     </button>
                     <button
                       onClick={(e) => handleArchive(selectedEmail, e)}
-                      className="p-2 !text-muted hover:!text-accent hover:bg-accent/10 rounded-lg"
+                      className="p-2 !text-muted hover:!text-accent hover:bg-accent/10 "
                       title={selectedEmail.is_archived ? 'Désarchiver' : 'Archiver'}
                     >
                       {selectedEmail.is_archived ? <IconArchiveOff className="w-5 h-5" /> : <IconArchive className="w-5 h-5" />}
                     </button>
                     <button
                       onClick={() => handleDelete(selectedEmail)}
-                      className="p-2 !text-muted hover:!text-danger hover:bg-danger/10 rounded-lg"
+                      className="p-2 !text-muted hover:!text-danger hover:bg-danger/10 "
                     >
                       <IconTrash className="w-5 h-5" color="red" />
                     </button>
@@ -897,7 +897,7 @@ function InboxView() {
                     </button>
                   </div>
                   {selectedEmail.has_attachments && selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
-                    <div className="mb-6 p-4 bg-page border border-default rounded-lg">
+                    <div className="mb-6 p-4 bg-page border border-default ">
                       <div className="flex items-center gap-2 mb-2">
                         <IconPaperclip className="w-4 h-4 !text-muted" />
                         <span className="text-sm font-medium !text-primary">{selectedEmail.attachments.length} pièce(s) jointe(s)</span>
@@ -941,7 +941,7 @@ function InboxView() {
                     </span>
                   </div>
                   {selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
-                    <div className="mb-6 p-4 bg-page border border-default rounded-lg">
+                    <div className="mb-6 p-4 bg-page border border-default ">
                       <div className="flex items-center gap-2 mb-2">
                         <IconPaperclip className="w-4 h-4 !text-muted" />
                         <span className="text-sm font-medium !text-primary">{selectedEmail.attachments.length} pièce(s) jointe(s)</span>
@@ -961,7 +961,7 @@ function InboxView() {
               ) : isEmailDraft(selectedEmail) ? (
                 /* Brouillon */
                 <>
-                  <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <div className="mb-4 p-4 bg-amber-50 border border-amber-200 ">
                     <p className="text-sm !text-amber-800">
                       📝 Brouillon • Dernière modification : {new Date(selectedEmail.updatedAt).toLocaleString('fr-FR')}
                     </p>
@@ -979,8 +979,8 @@ function InboxView() {
                     <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: selectedEmail.content }} />
                   )}
                   <div className="mt-6 flex gap-2">
-                    <button className="px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90">Continuer la rédaction</button>
-                    <button className="px-4 py-2 border border-default rounded-lg hover:bg-hover">Supprimer le brouillon</button>
+                    <button className="px-4 py-2 bg-accent !text-white  hover:opacity-90">Continuer la rédaction</button>
+                    <button className="px-4 py-2 border border-default  hover:bg-hover">Supprimer le brouillon</button>
                   </div>
                 </>
               ) : null}

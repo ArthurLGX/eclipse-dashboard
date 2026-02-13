@@ -421,7 +421,7 @@ export default function DataTable<T = unknown>({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: index * 0.02 }}
-              className={`flex items-center gap-3 py-3 px-4 mb-2 border-default border cursor-pointer transition-colors hover:bg-card-hover active:bg-card-hover rounded-xl ${
+              className={`flex items-center gap-3 py-3 px-4 mb-2 border-default border cursor-pointer transition-colors hover:bg-card-hover active:bg-card-hover  ${
                 isSelected ? 'bg-accent-light' : 'bg-muted'
               }`}
               onClick={() => handleRowClick(row, itemId)}
@@ -442,7 +442,7 @@ export default function DataTable<T = unknown>({
               
               {/* Logo client - affiché seulement si cardAvatarKey est configuré et a une valeur */}
 {!!avatarValue && (
-                  <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-card flex items-center justify-center">
+                  <div className="w-10 h-10  overflow-hidden flex-shrink-0 bg-card flex items-center justify-center">
                   <img 
                     src={typeof avatarValue === 'string' ? avatarValue : ''} 
                     alt="" 
@@ -554,7 +554,7 @@ export default function DataTable<T = unknown>({
                   {selectable && (
                     <button
                       onClick={(e) => toggleItem(itemId, e)}
-                      className={`p-1 rounded-lg transition-opacity ${
+                      className={`p-1  transition-opacity ${
                         isSelected ? 'bg-accent' : 'bg-card-hover backdrop-blur shadow-sm opacity-0 group-hover:opacity-100'
                       }`}
                     >
@@ -571,7 +571,7 @@ export default function DataTable<T = unknown>({
                 {statusValue !== null && statusValue !== undefined && (
                   <div className="absolute top-2 right-2">
                     {statusCol?.render ? statusCol.render(statusValue, row) : (
-                      <span className="px-2 py-1 rounded-lg bg-card/90 backdrop-blur !text-xs font-medium !text-primary shadow-sm">
+                      <span className="px-2 py-1  bg-card/90 backdrop-blur !text-xs font-medium !text-primary shadow-sm">
                         {String(statusValue)}
                       </span>
                     )}
@@ -636,7 +636,7 @@ export default function DataTable<T = unknown>({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex flex-wrap items-center justify-between gap-4 mb-4 p-3 rounded-xl bg-muted border border-muted"
+            className="flex flex-wrap items-center justify-between gap-4 mb-4 p-3  bg-muted border border-muted"
           >
             <div className="flex items-center gap-3">
               <span className="text-sm !text-primary font-medium">
@@ -673,7 +673,7 @@ export default function DataTable<T = unknown>({
                       await action.onClick(selectedItems);
                       clearSelection();
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    className={`flex items-center gap-2 px-4 py-2  transition-colors ${
                       action.className || variantClasses[action.variant || 'primary']
                     }`}
                   >
@@ -686,7 +686,7 @@ export default function DataTable<T = unknown>({
               {onDeleteSelected && (
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger !text-white hover:bg-[var(--color-danger)] transition-colors"
+                  className="flex items-center gap-2 px-4 py-2  bg-danger !text-white hover:bg-[var(--color-danger)] transition-colors"
                 >
                   <IconTrash className="w-4 h-4" />
                   {t('delete_selected') || 'Supprimer'} ({selectedIds.size})
@@ -966,12 +966,12 @@ export default function DataTable<T = unknown>({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card border border-muted rounded-2xl w-full max-w-lg overflow-hidden"
+              className="bg-card border border-muted  w-full max-w-lg overflow-hidden"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-muted">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-danger-light">
+                  <div className="p-2  bg-danger-light">
                     <IconTrash className="w-6 h-6 !text-danger" />
                   </div>
                   <div>
@@ -987,7 +987,7 @@ export default function DataTable<T = unknown>({
                 <button
                   onClick={() => setShowDeleteModal(false)}
                   disabled={isDeleting}
-                  className="p-2 rounded-lg hover:bg-card-hover transition-colors disabled:opacity-50"
+                  className="p-2  hover:bg-card-hover transition-colors disabled:opacity-50"
                 >
                   <IconX className="w-5 h-5 !text-secondary" />
                 </button>
@@ -995,7 +995,7 @@ export default function DataTable<T = unknown>({
 
               {/* Content */}
               <div className="p-6 space-y-4">
-                <div className="p-4 rounded-xl bg-muted border border-muted">
+                <div className="p-4  bg-muted border border-muted">
                   <p className="text-sm !text-danger">
                     {t('delete_multiple_warning') || 'Cette action est irréversible. Les éléments suivants seront définitivement supprimés :'}
                   </p>
@@ -1006,7 +1006,7 @@ export default function DataTable<T = unknown>({
                   {selectedItems.slice(0, 10).map((item) => (
                     <div
                       key={getItemId(item)}
-                      className="flex items-center gap-2 p-2 rounded-lg bg-card-hover"
+                      className="flex items-center gap-2 p-2  bg-card-hover"
                     >
                       <div className="w-2 h-2 rounded-full bg-danger" />
                       <span className="text-sm !text-primary truncate">
@@ -1028,14 +1028,14 @@ export default function DataTable<T = unknown>({
                 <button
                   onClick={() => setShowDeleteModal(false)}
                   disabled={isDeleting}
-                  className="px-4 py-2 rounded-lg !text-secondary hover:!text-primary hover:bg-card-hover transition-colors disabled:opacity-50"
+                  className="px-4 py-2  !text-secondary hover:!text-primary hover:bg-card-hover transition-colors disabled:opacity-50"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="flex items-center gap-2 px-6 py-2 rounded-lg bg-danger !text-white hover:bg-[var(--color-danger)] transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2  bg-danger !text-white hover:bg-[var(--color-danger)] transition-colors disabled:opacity-50"
                 >
                   {isDeleting ? (
                     <>

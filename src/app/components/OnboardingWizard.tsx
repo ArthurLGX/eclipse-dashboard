@@ -120,20 +120,20 @@ export default function OnboardingWizard() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-2xl bg-card border border-default rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-2xl bg-card border border-default  shadow-2xl overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
             <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent/20 via-accent-light to-transparent">
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 p-2 !text-muted hover:!text-primary rounded-lg hover:bg-white/10 transition-colors"
+                className="absolute top-4 right-4 p-2 !text-muted hover:!text-primary  hover:bg-white/10 transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
               
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-accent-light rounded-xl">
+                <div className="p-3 bg-accent-light ">
                   <IconSparkles className="w-8 h-8 !text-accent" />
                 </div>
                 <div>
@@ -175,7 +175,7 @@ export default function OnboardingWizard() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className={`
-                      relative flex items-center gap-4 p-4 rounded-xl border transition-all cursor-pointer
+                      relative flex items-center gap-4 p-4  border transition-all cursor-pointer
                       ${status === 'completed' 
                         ? 'bg-success-light border-success' 
                         : status === 'current'
@@ -187,7 +187,7 @@ export default function OnboardingWizard() {
                   >
                     {/* Step number/icon */}
                     <div className={`
-                      flex items-center justify-center w-12 h-12 rounded-xl shrink-0
+                      flex items-center justify-center w-12 h-12  shrink-0
                       ${status === 'completed'
                         ? 'bg-success !text-white'
                         : status === 'current'
@@ -256,7 +256,7 @@ export default function OnboardingWizard() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   onClick={handleClose}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white rounded-xl font-medium hover:bg-[var(--color-accent)] transition-colors"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white  font-medium hover:bg-[var(--color-accent)] transition-colors"
                 >
                   <IconRocket className="w-5 h-5" />
                   {t('start_using') || 'Commencer à utiliser Eclipse'}

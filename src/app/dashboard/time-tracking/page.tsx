@@ -274,14 +274,14 @@ export default function TimeTrackingPage() {
           <div className="flex items-center gap-2">
             <Link
               href="/dashboard/time-tracking/analytics"
-              className="px-4 py-2 flex items-center gap-2 rounded-lg border border-default !text-secondary hover:!text-primary hover:bg-hover transition-colors"
+              className="px-4 py-2 flex items-center gap-2  border border-default !text-secondary hover:!text-primary hover:bg-hover transition-colors"
             >
               <IconChartBar className="w-4 h-4" />
               {t('analytics') || 'Analyses'}
             </Link>
             <button
               onClick={() => setShowAddModal(true)}
-              className="btn-primary px-4 py-2 flex items-center gap-2 rounded-lg"
+              className="btn-primary px-4 py-2 flex items-center gap-2 "
             >
               <IconPlus className="w-4 h-4" color="white" />
               {t('start_task') || 'Démarrer une tâche'}
@@ -293,7 +293,7 @@ export default function TimeTrackingPage() {
         <div className={`card p-6 ${runningEntry ? 'border-2 border-accent bg-accent-light' : ''}`}>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-xl ${runningEntry ? 'bg-accent !text-white animate-pulse' : 'bg-muted'}`}>
+              <div className={`p-3  ${runningEntry ? 'bg-accent !text-white animate-pulse' : 'bg-muted'}`}>
                 <IconClock className="w-8 h-8" />
               </div>
               <div>
@@ -320,7 +320,7 @@ export default function TimeTrackingPage() {
               <button
                 onClick={handleStopTimer}
                 disabled={isTimerLoading}
-                className="btn-primary bg-error hover:bg-error/90 px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50"
+                className="btn-primary bg-error hover:bg-error/90 px-6 py-3  flex items-center gap-2 disabled:opacity-50"
               >
                 {isTimerLoading ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -337,7 +337,7 @@ export default function TimeTrackingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent-light rounded-lg">
+              <div className="p-2 bg-accent-light ">
                 <IconClock className="w-5 h-5 !text-accent" />
               </div>
               <div>
@@ -348,7 +348,7 @@ export default function TimeTrackingPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-success-light rounded-lg">
+              <div className="p-2 bg-success-light ">
                 <IconBriefcase className="w-5 h-5 !text-success-text -text" />
               </div>
               <div>
@@ -359,7 +359,7 @@ export default function TimeTrackingPage() {
           </div>
           <div className="card p-4">
             <div className="flex items-center gap-3">
-                <div className="p-2 bg-warning-light rounded-lg">
+                <div className="p-2 bg-warning-light ">
                 <IconCurrencyEuro className="w-5 h-5 !text-warning" />
               </div>
               <div>
@@ -372,12 +372,12 @@ export default function TimeTrackingPage() {
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-muted  p-1">
             {(['today', 'week', 'month', 'all'] as const).map((filter) => (
               <button
                 key={filter}
                 onClick={() => setDateFilter(filter)}
-                className={`px-3 py-1.5 rounded-md !text-sm font-medium transition-colors ${
+                className={`px-3 py-1.5  !text-sm font-medium transition-colors ${
                   dateFilter === filter
                     ? 'bg-accent !text-white'
                     : 'text-muted hover:!text-primary'
@@ -502,13 +502,13 @@ export default function TimeTrackingPage() {
                             <div className="flex items-center gap-1">
                               <button
                                 onClick={() => setEditingEntry(entry)}
-                                className="p-1.5 !text-muted hover:!text-primary hover:bg-hover rounded-lg"
+                                className="p-1.5 !text-muted hover:!text-primary hover:bg-hover "
                               >
                                 <IconEdit className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteModal({ isOpen: true, entry })}
-                                className="p-1.5 !text-muted hover:!text-error hover:bg-error/10 rounded-lg"
+                                className="p-1.5 !text-muted hover:!text-error hover:bg-error/10 "
                               >
                                 <IconTrash className="w-4 h-4" />
                               </button>
@@ -807,7 +807,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
             <button
               type="submit"
               disabled={saving}
-              className="btn-primary px-6 py-2 rounded-lg flex items-center gap-2"
+              className="btn-primary px-6 py-2  flex items-center gap-2"
             >
               {saving ? (
                 <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />

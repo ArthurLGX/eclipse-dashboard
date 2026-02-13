@@ -116,7 +116,7 @@ function SelectContactModal({
     >
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div 
-        className="relative bg-card border border-default rounded-xl shadow-xl w-full max-w-md m-4 max-h-[90vh] flex flex-col overscroll-contain"
+        className="relative bg-card border border-default  shadow-xl w-full max-w-md m-4 max-h-[90vh] flex flex-col overscroll-contain"
         onWheel={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-card border-b border-default p-4 rounded-t-xl">
@@ -125,7 +125,7 @@ function SelectContactModal({
               <IconUsers size={15} />
               {t('select_existing_contact') || 'Sélectionner un contact'}
             </h2>
-            <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
+            <button onClick={onClose} className="p-2 hover:bg-hover ">
               <IconX size={15} />
             </button>
           </div>
@@ -138,7 +138,7 @@ function SelectContactModal({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={t('search_contacts') || 'Rechercher...'}
-              className="w-full !pl-9 !pr-3 py-2 bg-page border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+              className="w-full !pl-9 !pr-3 py-2 bg-page border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
               autoFocus
             />
           </div>
@@ -161,7 +161,7 @@ function SelectContactModal({
                     onSelect(contact, targetStatus);
                     onClose();
                   }}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-hover transition-colors !text-left"
+                  className="w-full flex items-center gap-3 p-3  hover:bg-hover transition-colors !text-left"
                 >
                   {/* Avatar */}
                   {contact.image?.url ? (
@@ -316,14 +316,14 @@ function ContactModal({
     >
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div 
-        className="relative bg-card border border-default rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 overscroll-contain"
+        className="relative bg-card border border-default  shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 overscroll-contain"
         onWheel={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-card border-b border-default p-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold !text-primary">
             {contact ? t('edit_contact') || 'Modifier le contact' : t('new_contact') || 'Nouveau contact'}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
+          <button onClick={onClose} className="p-2 hover:bg-hover ">
             <IconX size={15} />
           </button>
         </div>
@@ -339,7 +339,7 @@ function ContactModal({
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
                 required
               />
             </div>
@@ -352,7 +352,7 @@ function ContactModal({
                 type="text"
                 value={formData.enterprise}
                 onChange={(e) => setFormData({ ...formData, enterprise: e.target.value })}
-                className="w-full px-3 py-2 bg-input border bord    er-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border bord    er-default  focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
           </div>
@@ -368,7 +368,7 @@ function ContactModal({
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
             <div>
@@ -380,7 +380,7 @@ function ContactModal({
                 type="tel"
                 value={formData.phone || ''}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                  className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
             <div>
@@ -392,7 +392,7 @@ function ContactModal({
                 type="url"
                 value={formData.website || ''}
                 onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
           </div>
@@ -406,7 +406,7 @@ function ContactModal({
               <select
                 value={formData.pipeline_status ?? 'new'}
                 onChange={(e) => setFormData({ ...formData, pipeline_status: e.target.value as PipelineStatus })}
-                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
               >
                 {PIPELINE_COLUMNS.map((col) => (
                   <option key={col.id} value={col.id}>
@@ -422,7 +422,7 @@ function ContactModal({
               <select
                 value={formData.source}
                 onChange={(e) => setFormData({ ...formData, source: e.target.value as ContactSource })}
-                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
               >
                 {sourceOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -437,7 +437,7 @@ function ContactModal({
               <select
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: e.target.value as ContactPriority })}
-                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
               >
                 {priorityOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -457,7 +457,7 @@ function ContactModal({
                 type="number"
                 value={formData.estimated_value || ''}
                 onChange={(e) => setFormData({ ...formData, estimated_value: e.target.value ? parseFloat(e.target.value) : undefined })}
-                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
                 placeholder="0"
               />
             </div>
@@ -469,7 +469,7 @@ function ContactModal({
                 type="number"
                 value={formData.budget || ''}
                 onChange={(e) => setFormData({ ...formData, budget: e.target.value ? parseFloat(e.target.value) : undefined })}
-                  className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                  className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
                 placeholder="0"
               />
             </div>
@@ -485,7 +485,7 @@ function ContactModal({
                 type="text"
                 value={formData.next_action}
                 onChange={(e) => setFormData({ ...formData, next_action: e.target.value })}
-                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
                 placeholder="Ex: Appeler pour relance"
               />
             </div>
@@ -498,7 +498,7 @@ function ContactModal({
                 type="date"
                 value={formData.next_action_date || ''}
                 onChange={(e) => setFormData({ ...formData, next_action_date: e.target.value })}
-                className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
               />
             </div>
           </div>
@@ -512,7 +512,7 @@ function ContactModal({
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent resize-none"
               rows={2}
               placeholder="Notes privées..."
             />
@@ -523,14 +523,14 @@ function ContactModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-default rounded-lg hover:bg-hover transition-colors"
+              className="px-4 py-2 border border-default  hover:bg-hover transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>
             <button
               type="submit"
               disabled={loading || !formData.name}
-              className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-accent !text-white  hover:bg-accent transition-colors disabled:opacity-50"
             >
               {loading ? '...' : (contact ? t('save') || 'Enregistrer' : t('create') || 'Créer')}
             </button>
@@ -953,7 +953,7 @@ export default function PipelinePage() {
           {onboardingCompleted && (
             <button
               onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
-              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-default !text-muted hover:!text-accent hover:bg-accent-light transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-2  border border-default !text-muted hover:!text-accent hover:bg-accent-light transition-colors"
               title={t('replay_tutorial') || 'Revoir le tutoriel'}
             >
               <IconPlayerPlay size={16} />
@@ -962,7 +962,7 @@ export default function PipelinePage() {
           )}
           <button
             onClick={() => setShowKPIs(!showKPIs)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+            className={`flex items-center gap-2 px-3 py-2  border transition-colors ${
               showKPIs 
                 ? 'bg-accent-light !text-accent border-accent' 
                 : 'bg-card !text-muted border-default hover:bg-hover'
@@ -974,7 +974,7 @@ export default function PipelinePage() {
           </button>
           <button
             onClick={() => setContactModal({ isOpen: true, contact: null })}
-            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white  hover:bg-accent transition-colors"
           >
             <IconPlus size={18} color="white" />
             {t('new_contact') || 'Nouveau contact'}
@@ -988,7 +988,7 @@ export default function PipelinePage() {
           {/* Cartes de stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {/* CA Potentiel (Tous devis actifs) */}
-            <div className="bg-card border border-default rounded-xl p-4">
+            <div className="bg-card border border-default  p-4">
               <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconReceipt size={16} />
                 <span className="!text-xs font-medium">{t('kpi_potential_revenue') || 'CA Potentiel'}</span>
@@ -1002,7 +1002,7 @@ export default function PipelinePage() {
             </div>
 
             {/* CA Gagné */}
-            <div className="bg-card border border-default rounded-xl p-4">
+            <div className="bg-card border border-default  p-4">
               <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconCheck size={16} />
                 <span className="!text-xs font-medium">{t('kpi_won_revenue') || 'CA Gagné'}</span>
@@ -1016,7 +1016,7 @@ export default function PipelinePage() {
             </div>
 
             {/* Taux de conversion */}
-            <div className="bg-card border border-default rounded-xl p-4">
+            <div className="bg-card border border-default  p-4">
               <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconTrendingUp size={16} />
                 <span className="!text-xs font-medium">{t('conversion_rate') || 'Conversion'}</span>
@@ -1030,7 +1030,7 @@ export default function PipelinePage() {
             </div>
 
             {/* Contacts dans le pipeline */}
-            <div className="bg-card border border-default rounded-xl p-4">
+            <div className="bg-card border border-default  p-4">
               <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconUsers size={16} />
                 <span className="!text-xs font-medium">{t('total_contacts') || 'Total contacts'}</span>
@@ -1044,7 +1044,7 @@ export default function PipelinePage() {
             </div>
 
             {/* En cours */}
-            <div className="bg-card border border-default rounded-xl p-4">
+            <div className="bg-card border border-default  p-4">
               <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconClock size={16} />
                 <span className="!text-xs font-medium">{t('in_progress') || 'En cours'}</span>
@@ -1058,7 +1058,7 @@ export default function PipelinePage() {
             </div>
 
             {/* Gagnés */}
-            <div className="bg-card border border-default rounded-xl p-4">
+            <div className="bg-card border border-default  p-4">
               <div className="flex items-center gap-2 !text-muted mb-2">
                 <IconCheck size={16} />
                 <span className="!text-xs font-medium">{t('won') || 'Gagnés'}</span>
@@ -1073,7 +1073,7 @@ export default function PipelinePage() {
           </div>
 
           {/* Graphique d'évolution */}
-          <div className="bg-card border border-default rounded-xl p-4">
+          <div className="bg-card border border-default  p-4">
             <h3 className="text-sm font-medium !text-primary mb-4 flex items-center gap-2">
               <IconChartLine size={18} />
               {t('kpi_revenue_evolution') || 'Évolution du CA (12 derniers mois)'}
@@ -1086,7 +1086,7 @@ export default function PipelinePage() {
       )}
 
       {/* Filtres */}
-      <div className="flex flex-wrap gap-3 p-4 bg-card rounded-lg border border-default">
+      <div className="flex flex-wrap gap-3 p-4 bg-card  border border-default">
         {/* Recherche */}
         <div className="relative flex-1 min-w-[200px]">
           <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted" />
@@ -1095,7 +1095,7 @@ export default function PipelinePage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t('search_contacts') || 'Rechercher...'}
-            className="w-full !pl-9 !pr-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+            className="w-full !pl-9 !pr-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
           />
         </div>
 
@@ -1103,7 +1103,7 @@ export default function PipelinePage() {
         <select
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value as ContactPriority | '')}
-          className="px-3 py-2 bg-input border     border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+          className="px-3 py-2 bg-input border     border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
         >
           <option value="">{t('all_priorities') || 'Toutes priorités'}</option>
           <option value="low">{t('priority_low') || 'Basse'}</option>
@@ -1115,7 +1115,7 @@ export default function PipelinePage() {
         <select
           value={sourceFilter}
           onChange={(e) => setSourceFilter(e.target.value as ContactSource | '')}
-          className="px-3 py-2 bg-input border border-default rounded-lg focus:ring-1 focus:ring-accent focus:border-transparent"
+          className="px-3 py-2 bg-input border border-default  focus:ring-1 focus:ring-accent focus:border-transparent"
         >
           <option value="">{t('all_sources') || 'Toutes sources'}</option>
           <option value="cold_outreach">{t('source_cold_outreach') || 'Prospection'}</option>

@@ -91,7 +91,7 @@ function ResetPasswordContent() {
   // Si pas de code, afficher un message d'erreur
   if (!code) {
     return (
-      <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
+      <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container ">
         <div className="auth-header z-100 w-full rounded-t-xl">
           <BackBtn />
         </div>
@@ -113,7 +113,7 @@ function ResetPasswordContent() {
             </p>
             <Link
               href="/forgot-password"
-              className="btn-primary inline-block font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+              className="btn-primary inline-block font-medium py-3 px-6  transition-colors duration-200"
             >
               Demander un nouveau lien
             </Link>
@@ -124,7 +124,7 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
+    <div className="flex flex-col h-fit md:w-3/4 w-full !my-32 auth-container ">
       <div className="auth-header z-100 w-full rounded-t-xl">
         <BackBtn />
       </div>
@@ -167,7 +167,7 @@ function ResetPasswordContent() {
                         setPassword(e.target.value);
                         setPasswordError(validatePassword(e.target.value));
                       }}
-                      className="w-full p-3 !pr-10 auth-input rounded-lg transition-all duration-200"
+                      className="w-full p-3 !pr-10 auth-input  transition-all duration-200"
                     />
                     <button
                       type="button"
@@ -197,7 +197,7 @@ function ResetPasswordContent() {
                           setConfirmError('');
                         }
                       }}
-                      className="w-full p-3 !pr-10 auth-input rounded-lg transition-all duration-200"
+                      className="w-full p-3 !pr-10 auth-input  transition-all duration-200"
                     />
                     <button
                       type="button"
@@ -215,7 +215,7 @@ function ResetPasswordContent() {
                 <motion.button
                   type="submit"
                   disabled={isLoading || !!passwordError || !!confirmError}
-                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed font-semibold py-3 px-6  transition-colors duration-200"
                 >
                   {isLoading ? 'Réinitialisation...' : 'Réinitialiser le mot de passe'}
                 </motion.button>
@@ -240,7 +240,7 @@ function ResetPasswordContent() {
               </p>
               <Link
                 href="/login"
-                className="btn-primary inline-block font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                className="btn-primary inline-block font-medium py-3 px-6  transition-colors duration-200"
               >
                 Se connecter maintenant
               </Link>
@@ -254,7 +254,7 @@ function ResetPasswordContent() {
 
 function ResetPasswordLoading() {
   return (
-    <div className="flex h-fit md:w-3/4 w-full !my-32 auth-container rounded-xl">
+    <div className="flex h-fit md:w-3/4 w-full !my-32 auth-container ">
       <div className="flex-1 flex items-center justify-center p-16">
         <div className="w-full max-w-md">
           <div className="!text-center mb-8">

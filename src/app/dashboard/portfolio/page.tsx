@@ -441,7 +441,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
+          className="w-full px-3 py-2 bg-input border border-input  !text-primary focus:outline-none focus:border-accent"
         >
           {settings.customFontName && settings.customFontUrl && (
             <optgroup label="🎨 Police personnalisée">
@@ -492,20 +492,20 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
           type="color"
           value={value || '#7C3AED'}
           onChange={(e) => onChange(e.target.value)}
-          className="w-10 h-10 rounded-lg border border-input cursor-pointer"
+          className="w-10 h-10  border border-input cursor-pointer"
         />
         <input
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Thème par défaut"
-          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm"
+          className="flex-1 px-3 py-2 bg-input border border-input  !text-primary !text-sm"
         />
         {value && (
           <button
             type="button"
             onClick={() => onChange('')}
-            className="px-2 py-2 !text-xs !text-muted hover:!text-primary border border-default rounded-lg hover:bg-hover transition-colors"
+            className="px-2 py-2 !text-xs !text-muted hover:!text-primary border border-default  hover:bg-hover transition-colors"
             title="Utiliser le thème par défaut"
           >
             Reset
@@ -537,7 +537,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: '-100%', opacity: 0 }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="fixed left-4 right-4 top-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-4xl bg-card border border-default z-[101] shadow-2xl rounded-2xl flex flex-col max-h-[90vh]"
+        className="fixed left-4 right-4 top-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-4xl bg-card border border-default z-[101] shadow-2xl  flex flex-col max-h-[90vh]"
       >
         {/* Header */}
         <div className="flex-shrink-0 bg-card border-b border-default p-4 flex items-center justify-between rounded-t-2xl">
@@ -545,7 +545,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
             <IconSettings size={15} />
             {t('portfolio_settings')}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg transition-colors">
+          <button onClick={onClose} className="p-2 hover:bg-hover  transition-colors">
             <IconX size={15} className="text-muted" />
           </button>
         </div>
@@ -590,7 +590,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                 type="text"
                 value={settings.portfolioName}
                 onChange={(e) => updateSetting('portfolioName', e.target.value)}
-                className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
+                className="w-full px-3 py-2 bg-input border border-input  !text-primary focus:outline-none focus:border-accent"
               />
             </div>
 
@@ -603,7 +603,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                 type="text"
                 value={settings.tagline}
                 onChange={(e) => updateSetting('tagline', e.target.value)}
-                className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
+                className="w-full px-3 py-2 bg-input border border-input  !text-primary focus:outline-none focus:border-accent"
               />
             </div>
 
@@ -629,7 +629,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     value={settings.customFontName || ''}
                     onChange={(e) => updateSetting('customFontName', e.target.value)}
                     placeholder="Ma Police"
-                    className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-3 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                   />
                 </div>
                 <div>
@@ -641,7 +641,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     value={settings.customFontUrl || ''}
                     onChange={(e) => updateSetting('customFontUrl', e.target.value)}
                     placeholder="https://fonts.googleapis.com/css2?family=..."
-                    className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-3 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                   />
                 </div>
                 <p className="!text-xs !text-muted">
@@ -670,7 +670,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <select
                     value={settings.animationType}
                     onChange={(e) => updateSetting('animationType', e.target.value as PortfolioSettings['animationType'])}
-                    className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
+                    className="w-full px-3 py-2 bg-input border border-input  !text-primary focus:outline-none focus:border-accent"
                   >
                     <option value="fade">Fade</option>
                     <option value="slide">Slide</option>
@@ -686,7 +686,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
         {activeTab === 'typography' && (
           <>
             {/* Font Search */}
-            <div className="bg-muted/30 rounded-lg p-3 border border-default">
+            <div className="bg-muted/30  p-3 border border-default">
               <label className="block !text-xs font-medium !text-secondary mb-2">{t('portfolio_search_font')}</label>
               <div className="relative">
                 <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted" />
@@ -695,7 +695,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   value={fontSearch}
                   onChange={(e) => setFontSearch(e.target.value)}
                   placeholder={t('portfolio_search_font_placeholder')}
-                  className="w-full !pl-9 !pr-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                  className="w-full !pl-9 !pr-3 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                 />
                 {fontSearch && (
                   <button
@@ -726,7 +726,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <select
                     value={settings.titleFontWeight}
                     onChange={(e) => updateSetting('titleFontWeight', Number(e.target.value))}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {FONT_WEIGHTS.map((w) => (
                       <option key={w.value} value={w.value}>{w.label} ({w.value})</option>
@@ -738,7 +738,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <select
                     value={settings.titleSize}
                     onChange={(e) => updateSetting('titleSize', e.target.value)}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {FONT_SIZES.map((s) => (
                       <option key={s.value} value={s.value}>{s.label}</option>
@@ -753,7 +753,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <select
                     value={settings.titleLetterSpacing}
                     onChange={(e) => updateSetting('titleLetterSpacing', e.target.value)}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {LETTER_SPACINGS.map((s) => (
                       <option key={s.value} value={s.value}>{s.label}</option>
@@ -765,7 +765,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <select
                     value={settings.titleTransform}
                     onChange={(e) => updateSetting('titleTransform', e.target.value as PortfolioSettings['titleTransform'])}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     <option value="none">{t('portfolio_case_normal')}</option>
                     <option value="uppercase">{t('portfolio_case_uppercase')}</option>
@@ -793,7 +793,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <select
                     value={settings.subtitleFontWeight}
                     onChange={(e) => updateSetting('subtitleFontWeight', Number(e.target.value))}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {FONT_WEIGHTS.map((w) => (
                       <option key={w.value} value={w.value}>{w.label} ({w.value})</option>
@@ -805,7 +805,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <select
                     value={settings.subtitleSize}
                     onChange={(e) => updateSetting('subtitleSize', e.target.value)}
-                    className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                    className="w-full px-2 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                   >
                     {FONT_SIZES.map((s) => (
                       <option key={s.value} value={s.value}>{s.label}</option>
@@ -831,7 +831,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                 <select
                   value={settings.projectTitleFontWeight}
                   onChange={(e) => updateSetting('projectTitleFontWeight', Number(e.target.value))}
-                  className="w-full px-2 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                  className="w-full px-2 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                 >
                   {FONT_WEIGHTS.map((w) => (
                     <option key={w.value} value={w.value}>{w.label} ({w.value})</option>
@@ -860,7 +860,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <button
                     key={num}
                     onClick={() => updateSetting('columns', num as 2 | 3 | 4)}
-                    className={`flex-1 py-2 rounded-lg !text-sm font-medium transition-colors ${
+                    className={`flex-1 py-2  !text-sm font-medium transition-colors ${
                       settings.columns === num
                         ? 'bg-accent !text-accent'
                         : 'bg-muted !text-secondary hover:bg-hover'
@@ -886,7 +886,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   <button
                     key={gap.id}
                     onClick={() => updateSetting('gap', gap.id as PortfolioSettings['gap'])}
-                    className={`flex-1 py-2 rounded-lg !text-sm font-medium transition-colors ${
+                    className={`flex-1 py-2  !text-sm font-medium transition-colors ${
                       settings.gap === gap.id
                         ? 'bg-accent !text-accent'
                         : 'bg-muted !text-secondary hover:bg-hover'
@@ -906,7 +906,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
               <select
                 value={settings.imageRatio}
                 onChange={(e) => updateSetting('imageRatio', e.target.value as PortfolioSettings['imageRatio'])}
-                className="w-full px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
+                className="w-full px-3 py-2 bg-input border border-input  !text-primary focus:outline-none focus:border-accent"
               >
                 <option value="auto">{t('portfolio_ratio_auto')}</option>
                 <option value="square">{t('portfolio_ratio_square')}</option>
@@ -953,9 +953,9 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                       type="text"
                       value={`${typeof window !== 'undefined' ? window.location.origin : ''}/portfolio/${settings.shareSlug || 'mon-portfolio'}`}
                       readOnly
-                      className="flex-1 px-3 py-2 bg-muted border border-input rounded-lg !text-primary !text-sm"
+                      className="flex-1 px-3 py-2 bg-muted border border-input  !text-primary !text-sm"
                     />
-                    <button className="px-3 py-2 bg-accent !text-accent rounded-lg hover:bg-accent transition-colors">
+                    <button className="px-3 py-2 bg-accent !text-accent  hover:bg-accent transition-colors">
                       <IconCopy size={18} />
                     </button>
                   </div>
@@ -973,7 +973,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                       value={settings.shareSlug}
                       onChange={(e) => updateSetting('shareSlug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                       placeholder="mon-portfolio"
-                      className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary focus:outline-none focus:border-accent"
+                      className="flex-1 px-3 py-2 bg-input border border-input  !text-primary focus:outline-none focus:border-accent"
                     />
                   </div>
                 </div>
@@ -1001,7 +1001,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                           value={settings.instagramUrl}
                           onChange={(e) => updateSetting('instagramUrl', e.target.value)}
                           placeholder="URL Instagram"
-                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                          className="flex-1 px-3 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                         />
                       </div>
                       <div className="flex items-center gap-2">
@@ -1011,7 +1011,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                           value={settings.linkedinUrl}
                           onChange={(e) => updateSetting('linkedinUrl', e.target.value)}
                           placeholder="URL LinkedIn"
-                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                          className="flex-1 px-3 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                         />
                       </div>
                       <div className="flex items-center gap-2">
@@ -1021,7 +1021,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                           value={settings.dribbbleUrl}
                           onChange={(e) => updateSetting('dribbbleUrl', e.target.value)}
                           placeholder="URL Dribbble"
-                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                          className="flex-1 px-3 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                         />
                       </div>
                       <div className="flex items-center gap-2">
@@ -1031,7 +1031,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                           value={settings.emailAddress}
                           onChange={(e) => updateSetting('emailAddress', e.target.value)}
                           placeholder="Email de contact"
-                          className="flex-1 px-3 py-2 bg-input border border-input rounded-lg !text-primary !text-sm focus:outline-none focus:border-accent"
+                          className="flex-1 px-3 py-2 bg-input border border-input  !text-primary !text-sm focus:outline-none focus:border-accent"
                         />
                       </div>
                     </div>
@@ -1189,13 +1189,13 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-card rounded-xl shadow-2xl border border-default w-full max-w-4xl max-h-[85vh] overflow-hidden"
+        className="bg-card  shadow-2xl border border-default w-full max-w-4xl max-h-[85vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-default">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-accent-light">
+            <div className="p-2  bg-accent-light">
               <IconDownload size={15} className="!text-accent" />
             </div>
             <div>
@@ -1207,7 +1207,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               )}
             </div>
           </div>
-          <button onClick={handleClose} className="p-2 hover:bg-hover rounded-lg transition-colors">
+          <button onClick={handleClose} className="p-2 hover:bg-hover  transition-colors">
             <IconX size={15} className="text-primary" />
           </button>
         </div>
@@ -1228,14 +1228,14 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
                       placeholder="https://monportfolio.com/projets"
-                      className="w-full !pl-10 !pr-4 py-3 bg-input border border-input rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:border-accent"
+                      className="w-full !pl-10 !pr-4 py-3 bg-input border border-input  !text-primary placeholder:!text-muted focus:outline-none focus:border-accent"
                       onKeyDown={(e) => e.key === 'Enter' && handleScrape()}
                     />
                   </div>
                   <button
                     onClick={handleScrape}
                     disabled={loading || !url.trim()}
-                    className="px-6 py-3 bg-accent !text-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                    className="px-6 py-3 bg-accent !text-accent  font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                   >
                     {loading ? (
                       <>
@@ -1253,7 +1253,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               </div>
 
               {error && (
-                <div className="p-4 bg-danger-light border border-danger rounded-lg space-y-3">
+                <div className="p-4 bg-danger-light border border-danger  space-y-3">
                   <p className="text-danger !text-sm font-medium">{error}</p>
                   <div className="!text-xs !text-secondary space-y-1">
                     <p>Conseils :</p>
@@ -1281,7 +1281,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                 </div>
               )}
 
-              <div className="bg-muted rounded-lg p-4">
+              <div className="bg-muted  p-4">
                 <h3 className="text-sm font-medium !text-primary mb-2">💡 {t('portfolio_import_how_title')}</h3>
                 <ul className="text-sm !text-secondary space-y-1">
                   <li>• {t('portfolio_import_how_1')}</li>
@@ -1291,7 +1291,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                 </ul>
               </div>
 
-              <div className="bg-muted rounded-lg p-4">
+              <div className="bg-muted  p-4">
                 <h3 className="text-sm font-medium !text-primary mb-2">🔗 {t('portfolio_import_supported_title')}</h3>
                 <p className="text-sm !text-secondary">
                   {t('portfolio_import_supported_desc')}
@@ -1322,7 +1322,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                   <div
                     key={project.id}
                     onClick={() => toggleProject(project.id)}
-                    className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                    className={`relative cursor-pointer  overflow-hidden border-2 transition-all ${
                       project.selected 
                         ? 'border-accent ring-1 ring-accent/20' 
                         : 'border-transparent hover:border-default'
@@ -1388,7 +1388,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
             <button
               onClick={handleImport}
               disabled={selectedCount === 0}
-              className="px-6 py-2 bg-accent !text-accent rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-accent !text-accent  font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
             >
               <IconDownload size={18} />
               {t('portfolio_import_btn')} {selectedCount} {t('portfolio_import_projects')}
@@ -1605,13 +1605,13 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
               <video
                 src={currentMedia.url}
                 controls
-                className="max-w-full max-h-[80vh] rounded-lg"
+                className="max-w-full max-h-[80vh] "
               />
             ) : (
               <img
                 src={currentMedia?.url}
                 alt={project.title}
-                className="max-w-full max-h-[80vh] object-contain rounded-lg"
+                className="max-w-full max-h-[80vh] object-contain "
               />
             )}
           </motion.div>
@@ -1691,7 +1691,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
               href={project.projectUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-lg bg-accent !text-accent font-medium transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3  bg-accent !text-accent font-medium transition-opacity hover:opacity-90"
             >
               <IconExternalLink size={18} />
               Voir le projet
@@ -1869,7 +1869,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-card border border-default rounded-2xl shadow-2xl"
+        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-card border border-default  shadow-2xl"
         style={{ overscrollBehavior: 'contain' }}
       >
         {/* Header */}
@@ -1879,7 +1879,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-hover !text-muted hover:!text-primary transition-colors"
+            className="p-2  hover:bg-hover !text-muted hover:!text-primary transition-colors"
           >
             <IconX size={15} />
           </button>
@@ -1894,7 +1894,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
             </label>
             <div className="grid grid-cols-4 gap-3">
               {media.map((item) => (
-                <div key={item.id} className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
+                <div key={item.id} className="relative aspect-square  overflow-hidden bg-muted group">
                   {item.type === 'video' ? (
                     <div className="w-full h-full flex items-center justify-center bg-muted">
                       <IconVideo size={24} className="text-primary" />
@@ -1916,7 +1916,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
               <button
                 type="button"
                 onClick={() => setShowMediaPicker(true)}
-                className="aspect-square rounded-lg border-2 border-dashed border-default flex flex-col items-center justify-center !text-muted hover:!text-accent hover:border-accent transition-colors"
+                className="aspect-square  border-2 border-dashed border-default flex flex-col items-center justify-center !text-muted hover:!text-accent hover:border-accent transition-colors"
               >
                 <IconPlus size={24} />
                 <span className="!text-xs mt-1">Ajouter</span>
@@ -1938,7 +1938,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                   initial={{ scale: 0.95, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.95, opacity: 0 }}
-                  className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden"
+                  className="bg-card border border-default  shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden"
                   style={{ overscrollBehavior: 'contain' }}
                 >
                   {/* Header */}
@@ -1950,7 +1950,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                     <button
                       type="button"
                       onClick={() => setShowMediaPicker(false)}
-                      className="p-2 rounded-lg hover:bg-hover transition-colors"
+                      className="p-2  hover:bg-hover transition-colors"
                     >
                       <IconX className="w-5 h-5 !text-secondary" />
                     </button>
@@ -1970,7 +1970,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accent !text-accent rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-accent !text-accent  hover:bg-accent transition-colors disabled:opacity-50"
                       >
                         {uploading ? (
                           <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -1985,7 +1985,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                           addMediaUrl('image');
                           setShowMediaPicker(false);
                         }}
-                        className="flex items-center gap-2 py-3 px-4 bg-muted !text-primary rounded-lg hover:bg-muted transition-colors"
+                        className="flex items-center gap-2 py-3 px-4 bg-muted !text-primary  hover:bg-muted transition-colors"
                       >
                         <IconLink className="w-5 h-5" />
                         URL
@@ -2013,7 +2013,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                             key={image.id}
                             type="button"
                             onClick={() => handleSelectFromLibrary(image)}
-                            className="relative aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-accent transition-all group"
+                            className="relative aspect-square  overflow-hidden border-2 border-transparent hover:border-accent transition-all group"
                           >
                             <Image
                               src={image.url}
@@ -2045,7 +2045,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value.toUpperCase() })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent uppercase font-bold tracking-wide"
+                className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder-placeholder focus:outline-none focus:border-accent uppercase font-bold tracking-wide"
                 placeholder="TITRE DU PROJET"
                 required
               />
@@ -2058,7 +2058,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                 type="text"
                 value={formData.subtitle}
                 onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
                 placeholder="Lieu ou description courte"
               />
             </div>
@@ -2073,7 +2073,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={4}
-              className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent resize-none"
+              className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder-placeholder focus:outline-none focus:border-accent resize-none"
               placeholder="Décrivez votre projet..."
             />
             <p className="!text-xs !text-muted mt-1">
@@ -2090,7 +2090,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input  !text-primary focus:outline-none focus:border-accent"
               >
                 {CATEGORIES.filter((c) => c.id !== 'all').map((cat) => (
                   <option key={cat.id} value={cat.id}>
@@ -2107,7 +2107,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
                 placeholder="Nature, Arctic, Landscape"
               />
             </div>
@@ -2123,7 +2123,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                 type="text"
                 value={formData.clientName}
                 onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
                 placeholder="Nom du client (optionnel)"
               />
             </div>
@@ -2135,7 +2135,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                 type="url"
                 value={formData.projectUrl}
                 onChange={(e) => setFormData({ ...formData, projectUrl: e.target.value })}
-                className="w-full px-4 py-3 bg-input border border-input rounded-xl !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
+                className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder-placeholder focus:outline-none focus:border-accent"
                 placeholder="https://..."
               />
             </div>
@@ -2146,13 +2146,13 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-default !text-secondary hover:bg-hover transition-colors"
+              className="px-5 py-2.5  border border-default !text-secondary hover:bg-hover transition-colors"
             >
               {t('cancel')}
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-accent !text-accent font-medium hover:bg-accent transition-colors"
+              className="px-5 py-2.5  bg-accent !text-accent font-medium hover:bg-accent transition-colors"
             >
               {project ? t('save') : t('portfolio_create')}
             </button>
@@ -2183,7 +2183,7 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
       </p>
       <button
         onClick={onAddProject}
-        className="flex items-center gap-2 px-6 py-3 bg-accent !text-accent font-medium rounded-xl hover:bg-accent transition-colors"
+        className="flex items-center gap-2 px-6 py-3 bg-accent !text-accent font-medium  hover:bg-accent transition-colors"
       >
         <IconPlus size={15} />
         {t('portfolio_add_first')}
@@ -2495,14 +2495,14 @@ export default function PortfolioPage() {
     >
       {/* Saving indicator */}
       {isSaving && (
-        <div className="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 bg-card rounded-lg shadow-lg border border-default">
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 bg-card  shadow-lg border border-default">
           <IconLoader2 size={16} className="animate-spin !text-accent" />
           <span className="text-sm !text-secondary">{t('portfolio_saving')}</span>
         </div>
       )}
 
       {/* Top Navigation Bar */}
-      <header className="px-6 lg:px-12 py-4 border border-default rounded-lg">
+      <header className="px-6 lg:px-12 py-4 border border-default ">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left - Site Name */}
           <span className="text-sm !text-secondary font-medium tracking-wide">

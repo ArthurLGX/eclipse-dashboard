@@ -215,12 +215,12 @@ export default function TaskNotificationEmailModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-card border border-default rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
+            className="bg-card border border-default  shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-default">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
+                <div className="w-10 h-10  bg-accent-light flex items-center justify-center">
                   <IconMail className="w-5 h-5 !text-accent" />
                 </div>
                 <div>
@@ -235,7 +235,7 @@ export default function TaskNotificationEmailModal({
               <button
                 onClick={onClose}
                 disabled={sending}
-                className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+                className="p-2 !text-muted hover:!text-primary hover:bg-hover  transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -252,7 +252,7 @@ export default function TaskNotificationEmailModal({
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-4 py-2 bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full px-4 py-2 bg-muted border border-default  !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                   placeholder="Objet..."
                 />
               </div>
@@ -266,7 +266,7 @@ export default function TaskNotificationEmailModal({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
+                  className="w-full px-4 py-3 bg-muted border border-default  !text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                   placeholder="Votre message..."
                 />
                 <p className="!text-xs !text-muted mt-1">
@@ -279,7 +279,7 @@ export default function TaskNotificationEmailModal({
                 <label className="block !text-sm font-medium !text-secondary mb-3">
                   {t('recipients_preview') || 'Destinataires et aperçu'}
                 </label>
-                <div className="bg-muted rounded-xl divide-y divide-default overflow-hidden">
+                <div className="bg-muted  divide-y divide-default overflow-hidden">
                   {recipients.map((recipient, idx) => (
                     <div key={idx} className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -298,7 +298,7 @@ export default function TaskNotificationEmailModal({
                         </span>
                         <button
                           onClick={() => openPreview(recipient)}
-                          className="p-2 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
+                          className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
                           title={t('preview') || 'Aperçu'}
                         >
                           <IconEye className="w-4 h-4" />
@@ -310,7 +310,7 @@ export default function TaskNotificationEmailModal({
               </div>
 
               {/* Info box */}
-              <div className="p-4 bg-info-light border border-info rounded-lg">
+              <div className="p-4 bg-info-light border border-info ">
                 <p className="text-sm !text-primary">
                   <strong>{t('email_info_title') || 'Un seul email par personne'}</strong>
                 </p>
@@ -333,7 +333,7 @@ export default function TaskNotificationEmailModal({
                 <button
                   onClick={() => recipients[0] && openPreview(recipients[0])}
                   disabled={sending || recipients.length === 0}
-                  className="px-4 py-2 bg-muted border border-default !text-primary rounded-lg hover:bg-hover transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-muted border border-default !text-primary  hover:bg-hover transition-colors flex items-center gap-2"
                 >
                   <IconEye className="w-4 h-4" />
                   {t('preview') || 'Aperçu'}
@@ -341,7 +341,7 @@ export default function TaskNotificationEmailModal({
                 <button
                   onClick={handleSend}
                   disabled={sending || !subject.trim()}
-                  className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {sending ? (
                     <IconLoader2 className="w-4 h-4 animate-spin" />

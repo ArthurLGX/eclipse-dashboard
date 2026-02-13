@@ -488,7 +488,7 @@ export default function NotificationsPage() {
           className="card p-4"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-info">
+            <div className="p-2  bg-info">
               <IconBell className="w-5 h-5 !text-white" />
             </div>
             <div>
@@ -505,7 +505,7 @@ export default function NotificationsPage() {
           className="card p-4"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-warning">
+            <div className="p-2  bg-warning">
               <IconBellOff className="w-5 h-5 !text-white" />
             </div>
             <div>
@@ -522,7 +522,7 @@ export default function NotificationsPage() {
           className="card p-4"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-accent">
+            <div className="p-2  bg-accent">
               <IconUsers className="w-5 h-5 !text-white" />
             </div>
             <div>
@@ -540,7 +540,7 @@ export default function NotificationsPage() {
             className="card p-4"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-danger">
+              <div className="p-2  bg-danger">
                 <IconAlertTriangle className="w-5 h-5 !text-white" />
               </div>
               <div>
@@ -558,7 +558,7 @@ export default function NotificationsPage() {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+            className={`flex items-center gap-2 px-3 py-2  border transition-colors ${
               showFilters 
                 ? 'bg-accent-light border-accent !text-accent' 
                 : 'btn-ghost border-default'
@@ -570,12 +570,12 @@ export default function NotificationsPage() {
           </button>
 
           {/* Filtres de statut rapides */}
-          <div className="flex items-center gap-1 p-1 rounded-lg bg-muted">
+          <div className="flex items-center gap-1 p-1  bg-muted">
             {(['all', 'unread', 'read'] as FilterType[]).map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
-                className={`px-3 py-1.5 rounded-md !text-sm font-medium transition-colors ${
+                className={`px-3 py-1.5  !text-sm font-medium transition-colors ${
                   filterStatus === status
                     ? 'bg-accent !text-white'
                     : 'text-secondary hover:!text-primary'
@@ -608,7 +608,7 @@ export default function NotificationsPage() {
             </button>
             <button
               onClick={handleDeleteSelected}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-danger-light !text-danger hover:opacity-80 !text-sm transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5  bg-danger-light !text-danger hover:opacity-80 !text-sm transition-colors"
             >
               <IconTrash className="w-4 h-4" />
               {t('delete') || 'Supprimer'}
@@ -814,7 +814,7 @@ export default function NotificationsPage() {
                       )}
                       <button
                         onClick={() => handleDelete(notification.documentId)}
-                        className="p-2 rounded-lg !text-secondary hover:!text-danger hover:bg-hover transition-colors"
+                        className="p-2  !text-secondary hover:!text-danger hover:bg-hover transition-colors"
                         title={t('delete') || 'Supprimer'}
                       >
                         <IconTrash className="w-4 h-4" />

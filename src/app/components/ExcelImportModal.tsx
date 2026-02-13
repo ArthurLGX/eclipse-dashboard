@@ -945,13 +945,13 @@ export default function ExcelImportModal({
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           onClick={(e) => e.stopPropagation()}
           onWheel={(e) => e.stopPropagation()}
-          className="bg-card border border-default rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden relative"
+          className="bg-card border border-default  shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden relative"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
               <div className="flex items-center -space-x-2">
-                <div className="w-10 h-10 rounded-lg bg-success-light flex items-center justify-center z-10">
+                <div className="w-10 h-10  bg-success-light flex items-center justify-center z-10">
                   <IconFileImport className="w-5 h-5 !text-success-text -text" />
                 </div>
               </div>
@@ -970,7 +970,7 @@ export default function ExcelImportModal({
             </div>
             <button
               onClick={handleClose}
-              className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+              className="p-2 !text-muted hover:!text-primary hover:bg-hover  transition-colors"
             >
               <IconX className="w-5 h-5" />
             </button>
@@ -995,7 +995,7 @@ export default function ExcelImportModal({
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
-                    className="bg-card rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-accent"
+                    className="bg-card  shadow-2xl max-w-md w-full overflow-hidden border border-accent"
                   >
                     {/* Header */}
                     <div className="bg-danger-light p-5 flex items-center gap-4 border-b border-danger">
@@ -1018,7 +1018,7 @@ export default function ExcelImportModal({
                       
                       {/* Instructions for Google Sheets */}
                       {error.includes('publiquement') && (
-                        <div className="bg-muted rounded-lg p-4 space-y-3">
+                        <div className="bg-muted  p-4 space-y-3">
                           <h4 className="text-sm font-medium !text-primary flex items-center gap-2">
                             <Image
                               src="/images/google-sheets-icon.png"
@@ -1044,7 +1044,7 @@ export default function ExcelImportModal({
                     <div className="p-5 pt-0 flex justify-end">
                       <button
                         onClick={() => setError(null)}
-                        className="px-5 py-2.5 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2"
+                        className="px-5 py-2.5 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2"
                       >
                         <IconCheck className="w-4 h-4" />
                         {t('understood') || 'Compris'}
@@ -1062,7 +1062,7 @@ export default function ExcelImportModal({
                 <div
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
-                  className="border-2 border-dashed border-default hover:border-accent rounded-xl p-8 !text-center transition-colors cursor-pointer"
+                  className="border-2 border-dashed border-default hover:border-accent  p-8 !text-center transition-colors cursor-pointer"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <input
@@ -1092,7 +1092,7 @@ export default function ExcelImportModal({
                   <p className="text-sm !text-muted mb-3">
                     {t('excel_or_click') || 'ou cliquez pour sélectionner'}
                   </p>
-                  <button className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors inline-flex items-center gap-2 !text-sm">
+                  <button className="px-4 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors inline-flex items-center gap-2 !text-sm">
                     <IconUpload className="w-4 h-4" />
                     {t('excel_select_file') || 'Sélectionner un fichier'}
                   </button>
@@ -1109,9 +1109,9 @@ export default function ExcelImportModal({
                 </div>
 
                 {/* Option 2: Lien Google Sheets */}
-                <div className="border border-default rounded-xl p-6">
+                <div className="border border-default  p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-success-light flex items-center justify-center">
+                    <div className="w-10 h-10  bg-success-light flex items-center justify-center">
                       <Image
                         src="/images/google-sheets-icon.png"
                         alt="Google Sheets"
@@ -1138,7 +1138,7 @@ export default function ExcelImportModal({
                         value={googleSheetUrl}
                         onChange={(e) => setGoogleSheetUrl(e.target.value)}
                         placeholder="https://docs.google.com/spreadsheets/d/..."
-                        className="w-full !pl-10 !pr-4 py-2.5 bg-muted border border-default rounded-lg !text-primary !text-sm placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent"
+                        className="w-full !pl-10 !pr-4 py-2.5 bg-muted border border-default  !text-primary !text-sm placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent"
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>
@@ -1148,7 +1148,7 @@ export default function ExcelImportModal({
                         handleGoogleSheetImport();
                       }}
                       disabled={loadingGoogleSheet || !googleSheetUrl.trim()}
-                      className="px-4 py-2.5 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 !text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                      className="px-4 py-2.5 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 !text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     >
                       {loadingGoogleSheet ? (
                         <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -1161,7 +1161,7 @@ export default function ExcelImportModal({
                   
                   {/* Détection des onglets en cours */}
                   {detectingTabs && (
-                    <div className="mt-4 p-4 bg-muted rounded-lg">
+                    <div className="mt-4 p-4 bg-muted ">
                       <div className="flex items-center gap-3">
                         <IconLoader2 className="w-5 h-5 !text-accent animate-spin" />
                         <div>
@@ -1178,7 +1178,7 @@ export default function ExcelImportModal({
 
                   {/* Sélection d'onglet si plusieurs détectés */}
                   {availableTabs.length > 1 && (
-                    <div className="mt-4 p-4 bg-accent-light border border-accent rounded-lg">
+                    <div className="mt-4 p-4 bg-accent-light border border-accent ">
                       <div className="flex items-center gap-2 mb-3">
                         <IconTable className="w-5 h-5 !text-accent" />
                         <h4 className="text-sm font-medium !text-primary">
@@ -1197,14 +1197,14 @@ export default function ExcelImportModal({
                               handleGoogleSheetImport(tab.gid);
                             }}
                             disabled={loadingGoogleSheet}
-                            className={`w-full p-3 rounded-lg border transition-all flex items-center justify-between ${
+                            className={`w-full p-3  border transition-all flex items-center justify-between ${
                               selectedTabGid === tab.gid
                                 ? 'border-accent bg-accent !text-white'
                                 : 'border-default bg-card hover:border-accent hover:bg-hover'
                             }`}
                           >
                             <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                              <div className={`w-8 h-8  flex items-center justify-center ${
                                 selectedTabGid === tab.gid ? 'bg-white/20' : 'bg-muted'
                               }`}>
                                 <IconTable className={`w-4 h-4 ${
@@ -1247,7 +1247,7 @@ export default function ExcelImportModal({
             {step === 'mapping' && (
               <div className="space-y-6">
                 {/* File info */}
-                <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-muted ">
                   <div className="flex items-center -space-x-1">
                     <Image
                       src="/images/excel-icon.png"
@@ -1271,7 +1271,7 @@ export default function ExcelImportModal({
                 {/* Mapping grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {TASK_FIELDS.map((field) => (
-                    <div key={field.key} className="p-4 bg-muted rounded-lg">
+                    <div key={field.key} className="p-4 bg-muted ">
                       <div className="flex items-center justify-between mb-2">
                         <label className="text-sm font-medium !text-primary flex items-center gap-1">
                           {t(field.label) || field.key}
@@ -1290,7 +1290,7 @@ export default function ExcelImportModal({
                             [field.key]: value === '' ? null : parseInt(value),
                           }));
                         }}
-                        className="w-full px-3 py-2 bg-card border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+                        className="w-full px-3 py-2 bg-card border border-default  !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                       >
                         <option value="">{t('excel_not_mapped') || '-- Non mappé --'}</option>
                         {headers.map((header, index) => (
@@ -1408,7 +1408,7 @@ export default function ExcelImportModal({
             {step === 'confirm_emails' && (
               <div className="space-y-6">
                 {/* Toggle pour l'envoi d'emails */}
-                <div className="p-4 bg-card border border-default rounded-lg">
+                <div className="p-4 bg-card border border-default ">
                   <label className="flex items-center justify-between cursor-pointer">
                     <div className="flex items-center gap-3">
                       <IconMail className="w-5 h-5 !text-accent" />
@@ -1449,7 +1449,7 @@ export default function ExcelImportModal({
                           type="text"
                           value={emailSubject}
                           onChange={(e) => setEmailSubject(e.target.value)}
-                          className="w-full px-4 py-2 bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+                          className="w-full px-4 py-2 bg-muted border border-default  !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                           placeholder="Nouvelles tâches assignées..."
                         />
                       </div>
@@ -1463,7 +1463,7 @@ export default function ExcelImportModal({
                           value={emailMessage}
                           onChange={(e) => setEmailMessage(e.target.value)}
                           rows={3}
-                          className="w-full px-4 py-3 bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
+                          className="w-full px-4 py-3 bg-muted border border-default  !text-primary focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                           placeholder="Votre message..."
                         />
                         <p className="!text-xs !text-muted mt-1">
@@ -1482,7 +1482,7 @@ export default function ExcelImportModal({
                           {t('one_email_per_person') || 'Un seul email par personne avec toutes ses tâches'}
                         </p>
                       </div>
-                      <div className="bg-muted rounded-xl divide-y divide-default overflow-hidden max-h-48 overflow-y-auto">
+                      <div className="bg-muted  divide-y divide-default overflow-hidden max-h-48 overflow-y-auto">
                         {uniqueAssignedEmails.map((email, idx) => {
                           const tasks = tasksWithAssignedEmails.filter(t => t.assigned_to_email === email);
                           const collaborator = collaborators.find(c => c.email === email);
@@ -1507,7 +1507,7 @@ export default function ExcelImportModal({
                                     setPreviewRecipientEmail(email || null);
                                     setShowEmailPreview(true);
                                   }}
-                                  className="p-1.5 !text-muted hover:!text-accent hover:bg-accent-light rounded-lg transition-colors"
+                                  className="p-1.5 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
                                   title={t('preview') || 'Aperçu'}
                                 >
                                   <IconEye className="w-4 h-4" />
@@ -1520,7 +1520,7 @@ export default function ExcelImportModal({
                     </div>
 
                     {/* Info box */}
-                    <div className="p-3 bg-info-light border border-info rounded-lg flex items-start gap-2">
+                    <div className="p-3 bg-info-light border border-info  flex items-start gap-2">
                       <IconMail className="w-4 h-4 !text-info flex-shrink-0 mt-0.5" />
                       <p className="!text-xs !text-primary">
                         {t('email_info_consolidated') || 'Chaque collaborateur recevra UN SEUL email contenant la liste de toutes ses tâches avec un bouton pour accéder au projet.'}
@@ -1531,7 +1531,7 @@ export default function ExcelImportModal({
 
                 {/* Message si emails désactivés */}
                 {!sendNotificationEmails && (
-                  <div className="p-4 bg-muted rounded-lg !text-center">
+                  <div className="p-4 bg-muted  !text-center">
                     <IconMail className="w-8 h-8 !text-muted mx-auto mb-2" />
                     <p className="text-sm !text-muted">
                       {t('no_emails_will_be_sent') || 'Aucun email ne sera envoyé. Les collaborateurs ne seront pas notifiés.'}
@@ -1592,9 +1592,9 @@ export default function ExcelImportModal({
                     animate={{ opacity: 1, y: 0 }}
                     className="max-w-md mx-auto"
                   >
-                    <div className="p-4 bg-muted rounded-xl border border-default">
+                    <div className="p-4 bg-muted  border border-default">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-accent-light flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8  bg-accent-light flex items-center justify-center flex-shrink-0">
                           <IconCheck className="w-4 h-4 !text-accent" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1631,7 +1631,7 @@ export default function ExcelImportModal({
                       setStep('preview');
                     }
                   }}
-                  className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover  transition-colors flex items-center gap-2"
                 >
                   <IconArrowLeft className="w-4 h-4" />
                   {t('back') || 'Retour'}
@@ -1643,7 +1643,7 @@ export default function ExcelImportModal({
                 <>
                   <button
                     onClick={() => autoMapColumns(headers)}
-                    className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
+                    className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover  transition-colors flex items-center gap-2"
                   >
                     <IconRefresh className="w-4 h-4" />
                     {t('excel_auto_map') || 'Auto-mapper'}
@@ -1651,7 +1651,7 @@ export default function ExcelImportModal({
                   <button
                     onClick={generatePreview}
                     disabled={columnMapping.title === null}
-                    className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {t('continue') || 'Continuer'}
                     <IconArrowRight className="w-4 h-4" />
@@ -1662,7 +1662,7 @@ export default function ExcelImportModal({
                 <button
                   onClick={handleProceedToImport}
                   disabled={importing || previewTasks.length === 0}
-                  className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   <IconArrowRight className="w-4 h-4" />
                   {uniqueAssignedEmails.length > 0 
@@ -1675,7 +1675,7 @@ export default function ExcelImportModal({
                 <button
                   onClick={handleImportFinal}
                   disabled={importing || (sendNotificationEmails && !emailSubject.trim())}
-                  className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {sendNotificationEmails ? (
                     <IconSend className="w-4 h-4" />

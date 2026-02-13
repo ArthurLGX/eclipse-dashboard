@@ -641,7 +641,7 @@ export default function RevenuePage() {
             <iframe
               src={pdfToShow}
               title={t('invoice_pdf')}
-              className="flex-1 w-full h-full rounded-lg border border-default bg-white"
+              className="flex-1 w-full h-full  border border-default bg-white"
             />
           </div>
         </FloatingModal>

@@ -204,7 +204,7 @@ export default function SharedProjectPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-card border border-default rounded-2xl p-8 max-w-md w-full !text-center"
+          className="bg-card border border-default  p-8 max-w-md w-full !text-center"
         >
           <div className="w-16 h-16 rounded-full bg-danger-light flex items-center justify-center mx-auto mb-6">
             <IconAlertTriangle className="w-8 h-8 !text-danger" />
@@ -401,7 +401,7 @@ export default function SharedProjectPage() {
                         onClick={() => setStatusFilter(option.value)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg !text-sm font-medium transition-all ${
+                        className={`flex items-center gap-2 px-3 py-1.5  !text-sm font-medium transition-all ${
                           isActive
                             ? 'bg-accent !text-white shadow-sm'
                             : 'bg-muted !text-primary hover:bg-hover hover:!text-primary'
@@ -611,7 +611,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed';
 
   return (
-    <div className={`p-4 rounded-lg bg-card hover:bg-hover transition-colors ${isOverdue ? 'border-l-2 border-danger' : ''}`}>
+    <div className={`p-4  bg-card hover:bg-hover transition-colors ${isOverdue ? 'border-l-2 border-danger' : ''}`}>
       <div className="flex items-start gap-4">
         {/* Status icon */}
         <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
@@ -1148,7 +1148,7 @@ function PublicGanttView({ tasks, projectName }: {
           onWheel={(e) => e.stopPropagation()}
         >
           <div 
-            className="bg-card border border-default rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col overscroll-contain"
+            className="bg-card border border-default  shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col overscroll-contain"
             onWheel={(e) => e.stopPropagation()}
           >
             <div className="p-4 border-b border-default flex items-center justify-between">
@@ -1174,7 +1174,7 @@ function PublicGanttView({ tasks, projectName }: {
                       type="text"
                       value={exportFileName}
                       onChange={(e) => setExportFileName(e.target.value)}
-                      className="flex-1 px-3 py-2 !text-sm bg-muted border border-default rounded-lg !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+                      className="flex-1 px-3 py-2 !text-sm bg-muted border border-default  !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                     />
                     <span className="text-primary !text-sm">.pdf</span>
                   </div>
@@ -1187,7 +1187,7 @@ function PublicGanttView({ tasks, projectName }: {
                   <div className="flex gap-2">
                     <button
                       onClick={() => setExportMode('light')}
-                      className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
+                      className={`flex-1 py-2 px-3  border-2 transition-all ${
                         exportMode === 'light' 
                           ? 'border-accent bg-accent-light' 
                           : 'border-default bg-muted hover:border-accent'
@@ -1202,7 +1202,7 @@ function PublicGanttView({ tasks, projectName }: {
                     </button>
                     <button
                       onClick={() => setExportMode('dark')}
-                      className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all ${
+                      className={`flex-1 py-2 px-3  border-2 transition-all ${
                         exportMode === 'dark' 
                           ? 'border-accent bg-accent-light' 
                           : 'border-default bg-muted hover:border-accent'
@@ -1222,7 +1222,7 @@ function PublicGanttView({ tasks, projectName }: {
                   <button
                     onClick={() => handleExportPDF(exportMode)}
                     disabled={isExporting}
-                    className="w-full py-2.5 px-4 bg-accent !text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 px-4 bg-accent !text-white  font-medium hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isExporting ? (
                       <>
@@ -1257,7 +1257,7 @@ function PublicGanttView({ tasks, projectName }: {
           onClick={scrollToToday}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex items-center gap-2 px-3 py-1.5 !text-sm bg-accent !text-white rounded-lg font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
+          className="flex items-center gap-2 px-3 py-1.5 !text-sm bg-accent !text-white  font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
         >
           <IconCalendar className="w-4 h-4" color="white" />
           {t('today') || "Aujourd'hui"}
@@ -1274,7 +1274,7 @@ function PublicGanttView({ tasks, projectName }: {
       </div>
 
       {/* Design Gantt style Gamma - Structure unifiée */}
-      <div className="bg-card rounded-xl border border-default overflow-hidden" ref={ganttRef}>
+      <div className="bg-card  border border-default overflow-hidden" ref={ganttRef}>
         <div className="overflow-x-auto" ref={timelineRef}>
           <table className="w-full border-collapse" style={{ minWidth: `${450 + dayHeaders.length * 32}px` }}>
             {/* En-tête */}
@@ -1447,7 +1447,7 @@ function PublicGanttView({ tasks, projectName }: {
                                   />
                                 )}
                                 <div
-                                  className="absolute top-1/2 -translate-y-1/2 h-7 rounded-md shadow-sm"
+                                  className="absolute top-1/2 -translate-y-1/2 h-7  shadow-sm"
                                   style={{
                                     left: `${startOffset * 32}px`,
                                     width: `${Math.max(duration * 32, 32)}px`,

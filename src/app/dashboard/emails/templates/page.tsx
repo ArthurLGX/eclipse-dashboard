@@ -265,12 +265,12 @@ function TemplateModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-card border border-muted rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
+      <div className="relative bg-card border border-muted  shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
         <div className="sticky top-0 bg-card border-b border-muted p-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">
             {template ? t('edit_template') || 'Modifier le template' : t('new_template') || 'Nouveau template'}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-hover rounded-lg">
+          <button onClick={onClose} className="p-2 hover:bg-hover ">
             <IconX size={15} />
           </button>
         </div>
@@ -283,7 +283,7 @@ function TemplateModal({
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted "
                 required
               />
             </div>
@@ -293,7 +293,7 @@ function TemplateModal({
               <select
                 value={formData.pipeline_stage}
                 onChange={(e) => setFormData({ ...formData, pipeline_stage: e.target.value as ProspectStatus })}
-                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted "
               >
                 {Object.entries(PIPELINE_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>
@@ -306,7 +306,7 @@ function TemplateModal({
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted "
               >
                 <option value="prospect">Prospect</option>
                 <option value="client">Client</option>
@@ -325,7 +325,7 @@ function TemplateModal({
                 type="text"
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                className="w-full px-3 py-2 bg-page border border-muted rounded-lg"
+                className="w-full px-3 py-2 bg-page border border-muted "
                 placeholder="Ex: Devis pour {{company_name}}"
                 required
               />
@@ -336,7 +336,7 @@ function TemplateModal({
               <textarea
                 value={formData.body}
                 onChange={(e) => setFormData({ ...formData, body: e.target.value })}
-                className="w-full px-3 py-2 bg-page border border-muted rounded-lg font-mono !text-sm"
+                className="w-full px-3 py-2 bg-page border border-muted  font-mono !text-sm"
                 rows={15}
                 placeholder="Utilisez {{variable}} pour les champs dynamiques"
                 required
@@ -344,20 +344,20 @@ function TemplateModal({
             </div>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+          <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800  p-3">
             <p className="text-sm !text-blue-700 dark:!text-blue-400">
               <strong>Variables disponibles :</strong> {'{{prospect_name}}'}, {'{{company_name}}'}, {'{{sender_name}}'}, {'{{quote_number}}'}, {'{{quote_amount}}'}, {'{{quote_link}}'}, etc.
             </p>
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-muted">
-            <button type="button" onClick={onClose} className="px-4 py-2 border border-muted rounded-lg hover:bg-hover">
+            <button type="button" onClick={onClose} className="px-4 py-2 border border-muted  hover:bg-hover">
               {t('cancel') || 'Annuler'}
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent disabled:opacity-50"
+              className="px-4 py-2 bg-accent !text-white  hover:bg-accent disabled:opacity-50"
             >
               {loading ? '...' : (template ? t('save') || 'Enregistrer' : t('create') || 'Créer')}
             </button>
@@ -530,7 +530,7 @@ export default function EmailTemplatesPage() {
           {templates.length === 0 && (
             <button
               onClick={initializeDefaults}
-              className="flex items-center gap-2 px-4 py-2 border border-muted rounded-lg hover:bg-hover"
+              className="flex items-center gap-2 px-4 py-2 border border-muted  hover:bg-hover"
             >
               <IconTemplate size={18} />
               {t('init_defaults') || 'Créer les templates par défaut'}
@@ -538,7 +538,7 @@ export default function EmailTemplatesPage() {
           )}
           <button
             onClick={() => { setEditingTemplate(null); setModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent"
+            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white  hover:bg-accent"
           >
             <IconPlus size={18} />
             {t('new_template') || 'Nouveau template'}
@@ -547,7 +547,7 @@ export default function EmailTemplatesPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 p-4 bg-card rounded-lg border border-muted">
+      <div className="flex flex-wrap gap-3 p-4 bg-card  border border-muted">
         <div className="relative flex-1 min-w-[200px]">
           <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground" />
           <input
@@ -555,13 +555,13 @@ export default function EmailTemplatesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t('search') || 'Rechercher...'}
-            className="w-full !pl-9 !pr-3 py-2 bg-page border border-muted rounded-lg"
+            className="w-full !pl-9 !pr-3 py-2 bg-page border border-muted "
           />
         </div>
         <select
           value={stageFilter}
           onChange={(e) => setStageFilter(e.target.value)}
-          className="px-3 py-2 bg-page border border-muted rounded-lg"
+          className="px-3 py-2 bg-page border border-muted "
         >
           <option value="">{t('all_stages') || 'Toutes les étapes'}</option>
           {Object.entries(PIPELINE_LABELS).map(([value, label]) => (
@@ -585,7 +585,7 @@ export default function EmailTemplatesPage() {
           {filteredTemplates.map((template) => (
             <div 
               key={template.documentId} 
-              className="bg-card border border-muted rounded-xl p-4 hover:shadow-md transition-shadow"
+              className="bg-card border border-muted  p-4 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-3">
                 <div>

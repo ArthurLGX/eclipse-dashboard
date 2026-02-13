@@ -452,7 +452,7 @@ export default function TimerIndicator() {
                 // Bouton reprendre pendant la pause
                 <button
                   onClick={handleResume}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-accent-light hover:bg-[var(--color-accent-bg)] !text-accent !text-sm font-semibold rounded-lg transition-colors shadow-sm"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-accent-light hover:bg-[var(--color-accent-bg)] !text-accent !text-sm font-semibold  transition-colors shadow-sm"
                 >
                   <IconPlayerPlay className="w-4 h-4" />
                   {t('resume') || 'Reprendre'}
@@ -463,7 +463,7 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer(isExceeded ? undefined : 'completed')}
                     disabled={loading}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white/25 hover:bg-white/35 !text-warning-text !text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white/25 hover:bg-white/35 !text-warning-text !text-sm font-semibold  transition-colors disabled:opacity-50 shadow-sm"
                   >
                     {loading ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -479,7 +479,7 @@ export default function TimerIndicator() {
                     onClick={handlePauseClick}
                     onMouseEnter={() => setIsPauseHovered(true)}
                     onMouseLeave={() => setIsPauseHovered(false)}
-                    className="relative flex items-center p-2 bg-white/25 hover:bg-white/35 !text-warning-text rounded-lg transition-colors shadow-sm overflow-hidden"
+                    className="relative flex items-center p-2 bg-white/25 hover:bg-white/35 !text-warning-text  transition-colors shadow-sm overflow-hidden"
                     title={t('coffee_break') || 'Pause café'}
                   >
                     <IconCoffee className="w-4 h-4 flex-shrink-0" />
@@ -501,7 +501,7 @@ export default function TimerIndicator() {
               )}
               <button
                 onClick={() => router.push('/dashboard/time-tracking')}
-                className={`p-2 rounded-lg transition-colors shadow-sm ${
+                className={`p-2  transition-colors shadow-sm ${
                   isPaused 
                     ? 'bg-accent-light hover:bg-[var(--color-accent-bg)] !text-accent' 
                     : 'bg-white/25 hover:bg-white/35 !text-warning'
@@ -530,7 +530,7 @@ export default function TimerIndicator() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card border border-default rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+              className="bg-card border border-default  shadow-2xl max-w-md w-full overflow-hidden"
             >
               {/* Header */}
               <div className="p-6 bg-warning-light border-b border-warning">
@@ -559,7 +559,7 @@ export default function TimerIndicator() {
                   {/* Continue */}
                   <button
                     onClick={handleContinue}
-                    className="w-full flex items-center gap-3 p-4 bg-warning-light group cursor-pointer hover:bg-[var(--warning)] border border-warning rounded-xl transition-colors !text-left"
+                    className="w-full flex items-center gap-3 p-4 bg-warning-light group cursor-pointer hover:bg-[var(--warning)] border border-warning  transition-colors !text-left"
                   >
                     <IconClock className="w-5 h-5 !text-warning-text group-hover:!text-white flex-shrink-0" />
                     <div>
@@ -572,7 +572,7 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer('exceeded_success')}
                     disabled={loading}
-                    className="w-full flex items-center gap-3 p-4 bg-success-light group cursor-pointer hover:bg-[var(--success)] border border-success rounded-xl transition-colors !text-left disabled:opacity-50"
+                    className="w-full flex items-center gap-3 p-4 bg-success-light group cursor-pointer hover:bg-[var(--success)] border border-success  transition-colors !text-left disabled:opacity-50"
                   >
                     <IconCheck className="w-5 h-5 !text-success-text -text group-hover:!text-white flex-shrink-0" />
                     <div>
@@ -585,7 +585,7 @@ export default function TimerIndicator() {
                   <button
                     onClick={() => handleStopTimer('exceeded_failed')}
                     disabled={loading}
-                    className="w-full flex items-center gap-3 p-4 bg-danger-light group cursor-pointer hover:bg-[var(--danger)] border border-danger rounded-xl transition-colors !text-left disabled:opacity-50"
+                    className="w-full flex items-center gap-3 p-4 bg-danger-light group cursor-pointer hover:bg-[var(--danger)] border border-danger  transition-colors !text-left disabled:opacity-50"
                   >
                     <IconX className="w-5 h-5 !text-danger group-hover:!text-white flex-shrink-0" />
                     <div>
@@ -615,7 +615,7 @@ export default function TimerIndicator() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card border border-default rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
+              className="bg-card border border-default  shadow-2xl max-w-sm w-full overflow-hidden"
             >
               {/* Header */}
               <div className="p-5 bg-accent-light border-b border-accent">
@@ -644,7 +644,7 @@ export default function TimerIndicator() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => startPause(option.minutes)}
-                      className="flex items-center justify-center gap-2 py-3 px-4 bg-accent-light/50 hover:bg-accent-light !text-accent font-semibold rounded-xl transition-colors border border-accent"
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-accent-light/50 hover:bg-accent-light !text-accent font-semibold  transition-colors border border-accent"
                     >
                       <IconClock className="w-4 h-4" />
                       {option.label}
@@ -664,7 +664,7 @@ export default function TimerIndicator() {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                   onClick={() => startPause(null)}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-muted/10 hover:bg-muted/20 !text-secondary font-medium rounded-xl transition-colors border border-default"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-muted/10 hover:bg-muted/20 !text-secondary font-medium  transition-colors border border-default"
                 >
                   <IconPlayerPlay className="w-4 h-4" />
                   {t('indefinite_pause') || 'Pause libre'}

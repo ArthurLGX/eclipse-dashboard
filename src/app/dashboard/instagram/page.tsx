@@ -477,7 +477,7 @@ function InstagramPlanner() {
       {/* Error Banner */}
       {error && (
         <div className="max-w-7xl mx-auto mb-4">
-          <div className="bg-danger-light border border-danger !text-danger px-4 py-3 rounded-lg flex items-center justify-between">
+          <div className="bg-danger-light border border-danger !text-danger px-4 py-3  flex items-center justify-between">
             <span>{error}</span>
             <button onClick={() => setError(null)} className="text-danger hover:!text-danger/80">
               <IconX className="w-5 h-5" />
@@ -489,7 +489,7 @@ function InstagramPlanner() {
       {/* Success Banner */}
       {success && (
         <div className="max-w-7xl mx-auto mb-4">
-          <div className="bg-success-light border border-success !text-success-text -text px-4 py-3 rounded-lg flex items-center justify-between">
+          <div className="bg-success-light border border-success !text-success-text -text px-4 py-3  flex items-center justify-between">
             <span className="flex items-center gap-2">
               <IconCheck className="w-5 h-5" />
               {success}
@@ -504,7 +504,7 @@ function InstagramPlanner() {
       {/* Connecting Overlay */}
       {isConnecting && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-card rounded-2xl p-8 shadow-xl flex flex-col items-center gap-4">
+          <div className="bg-card  p-8 shadow-xl flex flex-col items-center gap-4">
             <IconLoader2 className="w-12 h-12 !text-accent animate-spin" />
             <p className="text-primary font-medium">Connexion à Instagram en cours...</p>
             <p className="text-secondary !text-sm">Vous allez être redirigé vers Facebook</p>
@@ -517,7 +517,7 @@ function InstagramPlanner() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold !text-primary flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 rounded-xl">
+              <div className="p-2 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 ">
                 <IconCamera className="w-6 h-6 !text-white" />
               </div>
               {t('instagram_planner') || 'Instagram Planner'}
@@ -533,7 +533,7 @@ function InstagramPlanner() {
             <button
               onClick={loadPosts}
               disabled={isLoading}
-              className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+              className="p-2 !text-muted hover:!text-primary hover:bg-hover  transition-colors"
               title="Rafraîchir"
             >
               <IconRefresh className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
@@ -543,7 +543,7 @@ function InstagramPlanner() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as typeof filterStatus)}
-              className="px-3 py-2 bg-card border border-default rounded-lg !text-sm"
+              className="px-3 py-2 bg-card border border-default  !text-sm"
             >
               <option value="all">{t('all') || 'Tous'} ({stats.total})</option>
               <option value="draft">{t('drafts') || 'Brouillons'} ({stats.drafts})</option>
@@ -552,7 +552,7 @@ function InstagramPlanner() {
             </select>
 
             {/* Vue */}
-            <div className="flex items-center bg-card border border-default rounded-lg overflow-hidden">
+            <div className="flex items-center bg-card border border-default  overflow-hidden">
               <button
                 onClick={() => setViewMode('grid')}
                 className={`p-2 transition-colors ${viewMode === 'grid' ? 'bg-accent !text-white' : 'text-muted hover:!text-primary'}`}
@@ -577,14 +577,14 @@ function InstagramPlanner() {
             <div className="relative group">
               <button
                 onClick={() => openCreateModal('post')}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 !text-white rounded-lg hover:opacity-90 transition-opacity"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 !text-white  hover:opacity-90 transition-opacity"
               >
                 <IconPlus className="w-5 h-5" />
                 <span className="hidden sm:inline">{t('new_post') || 'Nouveau post'}</span>
               </button>
               
               {/* Dropdown pour types */}
-              <div className="absolute right-0 top-full mt-2 bg-card border border-default rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 min-w-[180px]">
+              <div className="absolute right-0 top-full mt-2 bg-card border border-default  shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 min-w-[180px]">
                 <button
                   onClick={() => openCreateModal('post')}
                   className="w-full flex items-center gap-3 px-4 py-3 !text-left hover:bg-hover transition-colors"
@@ -620,9 +620,9 @@ function InstagramPlanner() {
 
         {/* Stats rapides */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-          <div className="bg-card border border-default rounded-xl p-4">
+          <div className="bg-card border border-default  p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent-light rounded-lg">
+              <div className="p-2 bg-accent-light ">
                 <IconPhoto className="w-5 h-5 !text-accent" />
               </div>
               <div>
@@ -631,9 +631,9 @@ function InstagramPlanner() {
               </div>
             </div>
           </div>
-          <div className="bg-card border border-default rounded-xl p-4">
+          <div className="bg-card border border-default  p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-warning-light rounded-lg">
+              <div className="p-2 bg-warning-light ">
                 <IconClock className="w-5 h-5 !text-warning" />
               </div>
               <div>
@@ -642,9 +642,9 @@ function InstagramPlanner() {
               </div>
             </div>
           </div>
-          <div className="bg-card border border-default rounded-xl p-4">
+          <div className="bg-card border border-default  p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-danger-light rounded-lg">
+              <div className="p-2 bg-danger-light ">
                 <IconHeart className="w-5 h-5 !text-danger" />
               </div>
               <div>
@@ -653,9 +653,9 @@ function InstagramPlanner() {
               </div>
             </div>
           </div>
-          <div className="bg-card border border-default rounded-xl p-4">
+          <div className="bg-card border border-default  p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent-light rounded-lg">
+              <div className="p-2 bg-accent-light ">
                 <IconMessageCircle className="w-5 h-5 !text-accent" />
               </div>
               <div>
@@ -672,7 +672,7 @@ function InstagramPlanner() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Feed Preview (Instagram Grid) */}
           <div className="lg:col-span-2">
-            <div className="bg-card border border-default rounded-2xl overflow-hidden">
+            <div className="bg-card border border-default  overflow-hidden">
               {/* Instagram Profile Header */}
               <div className="p-4 border-b border-default">
                 <div className="flex items-center gap-4">
@@ -787,7 +787,7 @@ function InstagramPlanner() {
                   <p className="text-muted mb-4">Commencez à créer vos posts Instagram</p>
                   <button
                     onClick={() => openCreateModal('post')}
-                    className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-accent/90 transition-colors"
+                    className="px-4 py-2 bg-accent !text-white  hover:bg-accent/90 transition-colors"
                   >
                     Créer un post
                   </button>
@@ -799,7 +799,7 @@ function InstagramPlanner() {
           {/* Sidebar - Stories & Scheduled */}
           <div className="space-y-6">
             {/* Stories Preview */}
-            <div className="bg-card border border-default rounded-2xl p-4">
+            <div className="bg-card border border-default  p-4">
               <h3 className="font-semibold !text-primary mb-4 flex items-center gap-2">
                 <IconPlayerPlay className="w-5 h-5 !text-orange-500" />
                 {t('stories') || 'Stories'}
@@ -844,7 +844,7 @@ function InstagramPlanner() {
             </div>
 
             {/* Scheduled Posts */}
-            <div className="bg-card border border-default rounded-2xl p-4">
+            <div className="bg-card border border-default  p-4">
               <h3 className="font-semibold !text-primary mb-4 flex items-center gap-2">
                 <IconClock className="w-5 h-5 !text-amber-500" />
                 {t('upcoming_posts') || 'Posts à venir'}
@@ -854,10 +854,10 @@ function InstagramPlanner() {
                 {posts.filter(p => p.status === 'scheduled').slice(0, 5).map((post) => (
                   <div
                     key={post.documentId || post.id}
-                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-hover transition-colors cursor-pointer"
+                    className="flex items-center gap-3 p-2  hover:bg-hover transition-colors cursor-pointer"
                     onClick={() => openPreview(post)}
                   >
-                    <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                    <div className="w-12 h-12  overflow-hidden flex-shrink-0">
                       {post.mediaUrls[0] ? (
                         <img src={post.mediaUrls[0]} alt="" className="w-full h-full object-cover" />
                       ) : (
@@ -899,7 +899,7 @@ function InstagramPlanner() {
             </div>
 
             {/* Instagram Connection Card */}
-            <div className="bg-card border border-default rounded-2xl p-4">
+            <div className="bg-card border border-default  p-4">
               <h3 className="font-semibold !text-primary mb-4 flex items-center gap-2">
                 <IconBrandInstagram className="w-5 h-5 !text-pink-500" />
                 Compte Instagram
@@ -938,11 +938,11 @@ function InstagramPlanner() {
 
                   {/* Stats */}
                   <div className="grid grid-cols-3 gap-2 !text-center">
-                    <div className="p-2 bg-muted rounded-lg">
+                    <div className="p-2 bg-muted ">
                       <p className="text-lg font-bold !text-primary">{instagramConfig.media_count}</p>
                       <p className="!text-xs !text-muted">Posts</p>
                     </div>
-                    <div className="p-2 bg-muted rounded-lg">
+                    <div className="p-2 bg-muted ">
                       <p className="text-lg font-bold !text-primary">
                         {instagramConfig.followers_count >= 1000 
                           ? `${(instagramConfig.followers_count / 1000).toFixed(1)}k` 
@@ -950,7 +950,7 @@ function InstagramPlanner() {
                       </p>
                       <p className="!text-xs !text-muted">Followers</p>
                     </div>
-                    <div className="p-2 bg-muted rounded-lg">
+                    <div className="p-2 bg-muted ">
                       <p className="text-lg font-bold !text-primary">{instagramConfig.following_count}</p>
                       <p className="!text-xs !text-muted">Suivis</p>
                     </div>
@@ -960,14 +960,14 @@ function InstagramPlanner() {
                   <div className="flex gap-2">
                     <button
                       onClick={handleSyncStats}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 !text-sm !text-muted hover:!text-primary border border-default rounded-lg hover:bg-hover transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 !text-sm !text-muted hover:!text-primary border border-default  hover:bg-hover transition-colors"
                     >
                       <IconRefresh className="w-4 h-4" />
                       Sync
                     </button>
                     <button
                       onClick={handleDisconnectInstagram}
-                      className="flex items-center justify-center gap-2 px-3 py-2 !text-sm !text-danger hover:bg-danger-light border border-default rounded-lg transition-colors"
+                      className="flex items-center justify-center gap-2 px-3 py-2 !text-sm !text-danger hover:bg-danger-light border border-default  transition-colors"
                     >
                       <IconLinkOff className="w-4 h-4" />
                     </button>
@@ -982,7 +982,7 @@ function InstagramPlanner() {
                   <button
                     onClick={handleConnectInstagram}
                     disabled={isConnecting}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 !text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 !text-white  hover:opacity-90 transition-opacity disabled:opacity-50"
                   >
                     {isConnecting ? (
                       <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -1004,7 +1004,7 @@ function InstagramPlanner() {
             </div>
 
             {/* Quick Tips */}
-            <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-400/10 border border-accent rounded-2xl p-4">
+            <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-400/10 border border-accent  p-4">
               <h3 className="font-semibold !text-primary mb-3 flex items-center gap-2">
                 <IconSparkles className="w-5 h-5 !text-accent" />
                 Conseils
@@ -1042,7 +1042,7 @@ function InstagramPlanner() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-card border border-default rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+              className="bg-card border border-default  w-full max-w-4xl max-h-[90vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
@@ -1052,7 +1052,7 @@ function InstagramPlanner() {
                 </h2>
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className="p-2 !text-muted hover:!text-primary rounded-lg hover:bg-hover"
+                  className="p-2 !text-muted hover:!text-primary  hover:bg-hover"
                 >
                   <IconX className="w-5 h-5" />
                 </button>
@@ -1068,7 +1068,7 @@ function InstagramPlanner() {
                   {/* Media Grid */}
                   <div className="grid grid-cols-3 gap-2 mb-4">
                     {editingPost.mediaUrls?.map((url, index) => (
-                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden group">
+                      <div key={index} className="relative aspect-square  overflow-hidden group">
                         <img src={url} alt="" className="w-full h-full object-cover" />
                         <button
                           onClick={() => removeMedia(index)}
@@ -1086,7 +1086,7 @@ function InstagramPlanner() {
                     {(editingPost.mediaUrls?.length || 0) < 10 && (
                       <button
                         onClick={() => setShowMediaPicker(true)}
-                        className="aspect-square border-2 border-dashed border-default rounded-lg flex flex-col items-center justify-center gap-1 !text-muted hover:border-accent hover:!text-accent transition-colors"
+                        className="aspect-square border-2 border-dashed border-default  flex flex-col items-center justify-center gap-1 !text-muted hover:border-accent hover:!text-accent transition-colors"
                       >
                         <IconUpload className="w-6 h-6" />
                         <span className="!text-xs">Ajouter</span>
@@ -1204,7 +1204,7 @@ function InstagramPlanner() {
                       </label>
                       
                       {editingPost.music ? (
-                        <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <div className="flex items-center justify-between p-3 bg-muted ">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                               <IconMusic className="w-5 h-5 !text-white" />
@@ -1227,7 +1227,7 @@ function InstagramPlanner() {
                             <button
                               key={music.title}
                               onClick={() => setEditingPost(prev => ({ ...prev, music }))}
-                              className="flex items-center gap-2 p-2 !text-left bg-muted rounded-lg hover:bg-accent-light transition-colors"
+                              className="flex items-center gap-2 p-2 !text-left bg-muted  hover:bg-accent-light transition-colors"
                             >
                               <IconMusic className="w-4 h-4 !text-accent" />
                               <div className="min-w-0">
@@ -1267,7 +1267,7 @@ function InstagramPlanner() {
                   {editingPost.documentId && (
                     <button
                       onClick={() => handleDeletePost(editingPost.documentId!)}
-                      className="px-4 py-2 !text-danger hover:bg-danger-light rounded-lg transition-colors"
+                      className="px-4 py-2 !text-danger hover:bg-danger-light  transition-colors"
                     >
                       <IconTrash className="w-4 h-4 inline mr-1" />
                       Supprimer
@@ -1290,7 +1290,7 @@ function InstagramPlanner() {
                         setShowCreateModal(false);
                       }}
                       disabled={isPublishing || !editingPost.mediaUrls?.length}
-                      className="px-4 py-2 bg-success !text-white rounded-lg hover:bg-success/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+                      className="px-4 py-2 bg-success !text-white  hover:bg-success/90 transition-colors disabled:opacity-50 flex items-center gap-2"
                     >
                       {isPublishing ? (
                         <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -1304,7 +1304,7 @@ function InstagramPlanner() {
                   <button
                     onClick={savePost}
                     disabled={!editingPost.mediaUrls?.length || isSaving}
-                    className="px-6 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 !text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                    className="px-6 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 !text-white  hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                   >
                     {isSaving && <IconLoader2 className="w-4 h-4 animate-spin" />}
                     {editingPost.scheduledAt ? 'Planifier' : 'Enregistrer'}
@@ -1422,12 +1422,12 @@ function CalendarView({
   const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
   return (
-    <div className="bg-card border border-default rounded-2xl overflow-hidden mt-6">
+    <div className="bg-card border border-default  overflow-hidden mt-6">
       {/* Calendar Header */}
       <div className="flex items-center justify-between p-4 border-b border-default">
         <button
           onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1))}
-          className="p-2 hover:bg-hover rounded-lg transition-colors"
+          className="p-2 hover:bg-hover  transition-colors"
         >
           <IconChevronLeft className="w-5 h-5" />
         </button>
@@ -1436,7 +1436,7 @@ function CalendarView({
         </h3>
         <button
           onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1))}
-          className="p-2 hover:bg-hover rounded-lg transition-colors"
+          className="p-2 hover:bg-hover  transition-colors"
         >
           <IconChevronRight className="w-5 h-5" />
         </button>

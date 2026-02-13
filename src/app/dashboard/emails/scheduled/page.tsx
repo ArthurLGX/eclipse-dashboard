@@ -123,7 +123,7 @@ function ScheduledEmails() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard/emails"
-              className="p-2 !text-muted hover:!text-primary hover:bg-accent-light rounded-lg transition-colors"
+              className="p-2 !text-muted hover:!text-primary hover:bg-accent-light  transition-colors"
             >
               <IconArrowLeft className="w-5 h-5" />
             </Link>
@@ -136,7 +136,7 @@ function ScheduledEmails() {
           
           <Link
             href="/dashboard/emails/compose"
-            className="flex items-center gap-2 px-4 py-2 btn-primary !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 btn-primary !text-white  hover:bg-[var(--color-accent)] transition-colors"
           >
             <IconMail className="w-4 h-4" />
             {t('new_email') || 'Nouvel email'}
@@ -167,7 +167,7 @@ function ScheduledEmails() {
             </p>
             <Link
               href="/dashboard/emails/compose"
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 btn-primary !text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3 btn-primary !text-white  hover:bg-purple-700 transition-colors"
             >
               <IconClock className="w-5 h-5" />
               {t('schedule_email') || 'Planifier un email'}
@@ -186,12 +186,12 @@ function ScheduledEmails() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
-                  className="bg-card border border-default rounded-xl p-5 hover:border-purple-500/30 transition-colors"
+                  className="bg-card border border-default  p-5 hover:border-purple-500/30 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10  bg-purple-500/20 flex items-center justify-center flex-shrink-0">
                           <IconClock className="w-5 h-5 !text-purple-400" />
                         </div>
                         <div className="min-w-0">
@@ -211,13 +211,13 @@ function ScheduledEmails() {
                       
                       {email.scheduled_at && (
                         <div className="mt-3 flex items-center gap-4 !text-sm">
-                          <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 rounded-lg">
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 ">
                             <IconCalendar className="w-4 h-4 !text-purple-400" />
                             <span className="text-purple-300">
                               {formatDate(email.scheduled_at)}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 rounded-lg">
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 ">
                             <IconClock className="w-4 h-4 !text-purple-400" />
                             <span className="text-purple-300">
                               {formatTime(email.scheduled_at)}
@@ -232,7 +232,7 @@ function ScheduledEmails() {
                     
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {confirmCancel === email.documentId ? (
-                        <div className="flex items-center gap-2 p-2 bg-red-500/10 rounded-lg">
+                        <div className="flex items-center gap-2 p-2 bg-red-500/10 ">
                           <span className="text-sm !text-red-400">
                             {t('confirm_cancel') || 'Confirmer ?'}
                           </span>
@@ -258,7 +258,7 @@ function ScheduledEmails() {
                         <>
                           <button
                             onClick={() => setConfirmCancel(email.documentId)}
-                            className="flex items-center gap-2 px-3 py-2 !text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                            className="flex items-center gap-2 px-3 py-2 !text-red-400 hover:bg-red-500/10  transition-colors"
                             title={t('cancel_email') || 'Annuler l\'envoi'}
                           >
                             <IconTrash className="w-4 h-4" />
@@ -279,7 +279,7 @@ function ScheduledEmails() {
 
       {/* Info banner */}
       <div className="max-w-7xl mx-auto px-6 pb-6">
-        <div className="flex items-start gap-3 p-4 bg-purple-500/10 border border-purple-500/30 rounded-xl">
+        <div className="flex items-start gap-3 p-4 bg-purple-500/10 border border-purple-500/30 ">
           <IconAlertTriangle className="w-5 h-5 !text-purple-400 flex-shrink-0 mt-0.5" />
           <div className="text-sm !text-purple-300">
             <strong>{t('scheduled_info_title') || 'Comment ça marche ?'}</strong>

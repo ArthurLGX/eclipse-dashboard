@@ -737,7 +737,7 @@ export default function FacturePage() {
       className="min-h-screen p-6"
     >
       {/* Header avec actions */}
-      <div className="max-w-4xl mx-auto rounded-lg flex flex-col gap-4 overflow-hidden  rounded-full  ">
+      <div className="max-w-4xl mx-auto  flex flex-col gap-4 overflow-hidden  rounded-full  ">
         <div className="flex lg:flex-row flex-col gap-2 justify-between bg-accent-light h-fit rounded-full p-2">
           {/* Bouton paramètres de facturation */}
           <button
@@ -831,7 +831,7 @@ export default function FacturePage() {
 
         {/* Contenu de la facture */}
         <div ref={factureRef} className="print-area">
-          <div className="p-8 !bg-white rounded-lg flex flex-col gap-4 shadow-lg">
+          <div className="p-8 !bg-white  flex flex-col gap-4 shadow-lg">
             {/* Champs principaux modifiables */}
             <div className="flex items-center gap-2 mb-4">
               <label className="font-medium">{t('vat_applicable')}</label>
@@ -859,7 +859,7 @@ export default function FacturePage() {
                     name="reference"
                     value={formData?.reference || ''}
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
                   <p className="!text-zinc-800 !text-sm font-semibold">
@@ -877,7 +877,7 @@ export default function FacturePage() {
                       name="quote_status"
                       value={formData?.quote_status || ''}
                       onChange={handleInputChange}
-                      className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                      className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                     >
                       <option value="draft">{t('draft')}</option>
                       <option value="sent">{t('sent')}</option>
@@ -890,7 +890,7 @@ export default function FacturePage() {
                       name="facture_status"
                       value={formData?.facture_status || ''}
                       onChange={handleInputChange}
-                      className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                      className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                     >
                       <option value="draft">{t('draft')}</option>
                       <option value="sent">{t('sent')}</option>
@@ -913,7 +913,7 @@ export default function FacturePage() {
                     name="date"
                     value={formData?.date ? formData.date.slice(0, 10) : ''}
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
                   <p className="!text-zinc-800 !text-sm font-semibold">
@@ -936,7 +936,7 @@ export default function FacturePage() {
                         formData?.valid_until ? formData.valid_until.slice(0, 10) : ''
                       }
                       onChange={handleInputChange}
-                      className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                      className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                     />
                   ) : (
                     <input
@@ -946,7 +946,7 @@ export default function FacturePage() {
                         formData?.due_date ? formData.due_date.slice(0, 10) : ''
                       }
                       onChange={handleInputChange}
-                      className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                      className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                     />
                   )
                 ) : (
@@ -970,7 +970,7 @@ export default function FacturePage() {
                     name="currency"
                     value={formData?.currency || ''}
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   >
                     <option value="EUR">EUR</option>
                     <option value="USD">USD</option>
@@ -1004,7 +1004,7 @@ export default function FacturePage() {
                         project: shouldResetProject ? undefined : formData?.project
                       });
                     }}
-                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   >
                     <option value="">{t('select_client')}</option>
                     {clients.map(client => (
@@ -1034,7 +1034,7 @@ export default function FacturePage() {
                         );
                         setFormData({ ...formData!, project: project! });
                       }}
-                        className="input border flex-1 rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                        className="input border flex-1  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                     >
                       <option value="">{t('select_project')}</option>
                       {filteredProjects.map(project => (
@@ -1046,7 +1046,7 @@ export default function FacturePage() {
                     <button
                       type="button"
                       onClick={refreshProjects}
-                      className="p-2 bg-blue-500/10 !text-blue-600 border border-blue-500/30 rounded-lg hover:bg-blue-500/20 transition-colors"
+                      className="p-2 bg-blue-500/10 !text-blue-600 border border-blue-500/30  hover:bg-blue-500/20 transition-colors"
                       title={t('refresh_projects') || 'Rafraîchir les projets'}
                     >
                       <IconRefresh className="w-4 h-4" />
@@ -1054,7 +1054,7 @@ export default function FacturePage() {
                     <button
                       type="button"
                       onClick={() => window.open('/dashboard/projects?new=1', '_blank')}
-                      className="px-3 py-2 bg-emerald-500/10 !text-emerald-600 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/20 transition-colors !text-sm font-medium whitespace-nowrap"
+                      className="px-3 py-2 bg-emerald-500/10 !text-emerald-600 border border-emerald-500/30  hover:bg-emerald-500/20 transition-colors !text-sm font-medium whitespace-nowrap"
                       title={t('create_new_project') || 'Créer un nouveau projet'}
                     >
                       + {t('new_project') || 'Nouveau'}
@@ -1075,7 +1075,7 @@ export default function FacturePage() {
                     name="notes"
                     value={formData?.notes || ''}
                     onChange={handleInputChange}
-                    className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                   />
                 ) : (
                   <p className="!text-zinc-800 !text-sm font-semibold">
@@ -1086,7 +1086,7 @@ export default function FacturePage() {
             </div>
 
             {/* Lignes de facture modifiables */}
-            <div className="bg-zinc-50 rounded-lg overflow-hidden mb-8 border border-zinc-100">
+            <div className="bg-zinc-50  overflow-hidden mb-8 border border-zinc-100">
               <div className="bg-zinc-700/20 px-6 py-4 flex lg:flex-row flex-col items-center justify-between">
                 <h3 className="!text-xl font-semibold !text-black">
                   {t('services')}
@@ -1095,7 +1095,7 @@ export default function FacturePage() {
                   <button
                     type="button"
                     onClick={handleAddLine}
-                    className="bg-black !text-white border border-black px-3 py-1 rounded-lg hover:bg-black/80 transition-colors"
+                    className="bg-black !text-white border border-black px-3 py-1  hover:bg-black/80 transition-colors"
                   >
                     + {t('add_line')}
                   </button>
@@ -1162,7 +1162,7 @@ export default function FacturePage() {
                                   e.target.value
                                 )
                               }
-                              className="input border w-full rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                              className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                             />
                           ) : (
                             line.description
@@ -1179,7 +1179,7 @@ export default function FacturePage() {
                                   e.target.value
                                 )
                               }
-                              className="input border rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                              className="input border  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                             >
                               <option value="hour">{t('billing_hour')}</option>
                               <option value="day">{t('billing_day')}</option>
@@ -1203,7 +1203,7 @@ export default function FacturePage() {
                                   e.target.value
                                 )
                               }
-                              className="input border w-20 !text-right rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                              className="input border w-20 !text-right  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                             />
                           ) : (
                             line.unit === 'fixed' ? line.quantity : `${line.quantity}${getUnitLabel(line.unit)}`
@@ -1222,7 +1222,7 @@ export default function FacturePage() {
                                   e.target.value
                                 )
                               }
-                              className="input border w-24 !text-right rounded-lg p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
+                              className="input border w-24 !text-right  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
                             />
                           ) : (
                             `${line.unit_price}€`
@@ -1251,7 +1251,7 @@ export default function FacturePage() {
             </div>
 
             {/* Calculs et total */}
-            <div className="bg-zinc-50 rounded-lg p-6 border border-zinc-100">
+            <div className="bg-zinc-50  p-6 border border-zinc-100">
               <div className="flex items-center gap-2 mb-4">
                 <IconCalculator className="w-5 h-5 !text-orange-500" />
                 <h3 className="!text-lg font-semibold !text-black">
@@ -1299,7 +1299,7 @@ export default function FacturePage() {
 
             {/* Notes et conditions */}
             {facture?.notes && (
-              <div className="mt-8 bg-zinc-50 rounded-lg p-6 border border-zinc-100">
+              <div className="mt-8 bg-zinc-50  p-6 border border-zinc-100">
                 <h3 className="!text-lg font-semibold !text-black mb-3">
                   {t('notes')}
                 </h3>
@@ -1392,13 +1392,13 @@ export default function FacturePage() {
             <>
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 bg-green-500/10 !text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-colors"
+                className="flex items-center gap-2 bg-green-500/10 !text-green-500 border border-green-500/20 px-4 py-2  hover:bg-green-500/20 transition-colors"
               >
                 {t('save')}
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 bg-muted !text-secondary border border-default px-4 py-2 rounded-lg hover:bg-card transition-colors"
+                className="flex items-center gap-2 bg-muted !text-secondary border border-default px-4 py-2  hover:bg-card transition-colors"
               >
                 {t('cancel')}
               </button>
@@ -1450,7 +1450,7 @@ export default function FacturePage() {
           </p>
 
           {/* Option pour mettre à jour le statut du client */}
-          <div className="flex items-start gap-3 p-4 bg-muted rounded-lg">
+          <div className="flex items-start gap-3 p-4 bg-muted ">
             <input
               type="checkbox"
               id="updateClientStatus"
@@ -1479,7 +1479,7 @@ export default function FacturePage() {
             <button
               onClick={handleConvertToInvoice}
               disabled={isConverting}
-              className="flex items-center gap-2 px-4 py-2 bg-green-500 !text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-green-500 !text-white  hover:bg-green-600 transition-colors disabled:opacity-50"
             >
               {isConverting ? (
                 <>

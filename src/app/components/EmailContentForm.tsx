@@ -59,7 +59,7 @@ export default function EmailContentForm({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Title & Subject in same card */}
-      <div className="bg-card border border-default rounded-xl p-6 space-y-4">
+      <div className="bg-card border border-default  p-6 space-y-4">
         {/* Title field */}
         {showTitle && (
           <div>
@@ -100,7 +100,7 @@ export default function EmailContentForm({
       </div>
 
       {/* Message field */}
-      <div className="bg-card border border-default rounded-xl p-6">
+      <div className="bg-card border border-default  p-6">
         <label className="block !text-sm font-medium !text-secondary mb-3">
           {l.message} *
         </label>

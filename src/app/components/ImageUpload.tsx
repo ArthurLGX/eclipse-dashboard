@@ -529,7 +529,7 @@ export default function ImageUpload({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute top-full left-0 mt-2 w-64 bg-card border border-default rounded-xl shadow-xl shadow-black/50 z-50 overflow-hidden"
+              className="absolute top-full left-0 mt-2 w-64 bg-card border border-default  shadow-xl shadow-black/50 z-50 overflow-hidden"
             >
               {/* Message si mode lecture */}
               {disabled && (
@@ -549,7 +549,7 @@ export default function ImageUpload({
                     disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                   }`}
                 >
-                  <div className="w-8 h-8 rounded-lg bg-info-light border border-info flex items-center justify-center overflow-hidden">
+                  <div className="w-8 h-8  bg-info-light border border-info flex items-center justify-center overflow-hidden">
                     {faviconUrl ? (
                       <Image
                         src={faviconUrl}
@@ -581,7 +581,7 @@ export default function ImageUpload({
                   disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                 }`}
               >
-                <div className="w-8 h-8 rounded-lg bg-accent-light border border-accent-light flex items-center justify-center">
+                <div className="w-8 h-8  bg-accent-light border border-accent-light flex items-center justify-center">
                   <IconUpload size={18} className="!text-accent" />
                 </div>
                 <div>
@@ -598,7 +598,7 @@ export default function ImageUpload({
                   disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                 }`}
               >
-                <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center">
+                <div className="w-8 h-8  bg-purple-500/10 border border-purple-500/30 flex items-center justify-center">
                   <IconPhoto size={18} className="text-purple-400" />
                 </div>
                 <div>
@@ -615,7 +615,7 @@ export default function ImageUpload({
                   disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'
                 }`}
               >
-                <div className="w-8 h-8 rounded-lg bg-info-light border border-info flex items-center justify-center">
+                <div className="w-8 h-8  bg-info-light border border-info flex items-center justify-center">
                   <IconLink size={18} className="text-info" />
                 </div>
                 <div>
@@ -658,7 +658,7 @@ export default function ImageUpload({
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-2xl border border-default shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+              className="bg-card  border border-default shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
@@ -668,7 +668,7 @@ export default function ImageUpload({
                 </div>
                 <button
                   onClick={handleCancel}
-                  className="p-2 rounded-lg hover:bg-hover transition-colors"
+                  className="p-2  hover:bg-hover transition-colors"
                 >
                   <IconX className="w-5 h-5 !text-secondary" />
                 </button>
@@ -713,7 +713,7 @@ export default function ImageUpload({
                     step="0.1"
                     value={scale}
                     onChange={(e) => setScale(Number(e.target.value))}
-                    className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-accent"
+                    className="flex-1 h-2 bg-muted  appearance-none cursor-pointer accent-accent"
                   />
                   <div className="flex items-center gap-2 !text-secondary">
                     <IconZoomIn className="w-4 h-4" />
@@ -733,7 +733,7 @@ export default function ImageUpload({
                     step="1"
                     value={rotation}
                     onChange={(e) => setRotation(Number(e.target.value))}
-                    className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-accent"
+                    className="flex-1 h-2 bg-muted  appearance-none cursor-pointer accent-accent"
                   />
                   <span className="text-sm !text-muted w-12 !text-right">{rotation}°</span>
                   <button
@@ -748,14 +748,14 @@ export default function ImageUpload({
                 <div className="flex gap-2 justify-center">
                   <button
                     onClick={() => setRotation(r => r - 90)}
-                    className="px-3 py-1.5 !text-sm bg-muted !text-secondary rounded-lg hover:bg-card transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 !text-sm bg-muted !text-secondary  hover:bg-card transition-colors flex items-center gap-1"
                   >
                     <IconRotate className="w-4 h-4 -scale-x-100" />
                     -90°
                   </button>
                   <button
                     onClick={() => setRotation(r => r + 90)}
-                    className="px-3 py-1.5 !text-sm bg-muted !text-secondary rounded-lg hover:bg-card transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 !text-sm bg-muted !text-secondary  hover:bg-card transition-colors flex items-center gap-1"
                   >
                     <IconRotate className="w-4 h-4" />
                     +90°
@@ -768,14 +768,14 @@ export default function ImageUpload({
                 <button
                   onClick={handleCancel}
                   disabled={uploading}
-                  className="px-4 py-2 !text-secondary bg-muted rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                  className="px-4 py-2 !text-secondary bg-muted  hover:bg-card transition-colors disabled:opacity-50"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={handleConfirmCrop}
                   disabled={uploading || !completedCrop}
-                  className="px-4 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 flex items-center gap-2"
                 >
                   {uploading ? (
                     <>
@@ -809,7 +809,7 @@ export default function ImageUpload({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden"
+              className="bg-card border border-default  shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
@@ -819,7 +819,7 @@ export default function ImageUpload({
                 </h3>
                 <button
                   onClick={() => setShowLibrary(false)}
-                  className="p-2 rounded-lg hover:bg-hover transition-colors"
+                  className="p-2  hover:bg-hover transition-colors"
                 >
                   <IconX className="w-5 h-5 !text-secondary" />
                 </button>
@@ -843,7 +843,7 @@ export default function ImageUpload({
                         key={image.id}
                         onClick={() => handleSelectFromLibrary(image)}
                         disabled={uploading}
-                        className="relative aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-purple-500 transition-all group"
+                        className="relative aspect-square  overflow-hidden border-2 border-transparent hover:border-purple-500 transition-all group"
                       >
                         <Image
                           src={image.url}
@@ -879,7 +879,7 @@ export default function ImageUpload({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-card border border-default rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+              className="bg-card border border-default  shadow-2xl w-full max-w-md overflow-hidden"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
@@ -889,7 +889,7 @@ export default function ImageUpload({
                 </h3>
                 <button
                   onClick={() => setShowUrlInput(false)}
-                  className="p-2 rounded-lg hover:bg-hover transition-colors"
+                  className="p-2  hover:bg-hover transition-colors"
                 >
                   <IconX className="w-5 h-5 !text-secondary" />
                 </button>
@@ -910,7 +910,7 @@ export default function ImageUpload({
                     }}
                     onKeyDown={(e) => e.key === 'Enter' && handleSubmitUrl()}
                     placeholder="https://example.com/image.jpg"
-                    className="w-full px-4 py-3 bg-muted border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-info/50 focus:border-info"
+                    className="w-full px-4 py-3 bg-muted border border-default  !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-info/50 focus:border-info"
                   />
                   {urlError && (
                     <p className="mt-2 !text-sm !text-danger flex items-center gap-1">
@@ -923,7 +923,7 @@ export default function ImageUpload({
                 <button
                   onClick={handleSubmitUrl}
                   disabled={!urlInput.trim() || uploading}
-                  className="w-full px-4 py-3 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full px-4 py-3 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {uploading ? (
                     <>

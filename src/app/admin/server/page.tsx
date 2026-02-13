@@ -172,7 +172,7 @@ export default function AdminServerPage() {
 
           <button
             onClick={checkHealth}
-            className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-hover ease-in-out duration-300"
+            className="btn-secondary flex items-center gap-2 px-4 py-2  transition-colors hover:bg-hover ease-in-out duration-300"
           >
             <IconRefresh className="w-4 h-4" />
             {t('check') || 'Vérifier'}
@@ -214,23 +214,23 @@ export default function AdminServerPage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 !text-center">
-            <div className="p-4 bg-card rounded-lg border border-muted">
+            <div className="p-4 bg-card  border border-muted">
               <p className="!text-xs !text-muted mb-1">{t('uptime') || 'Uptime'}</p>
               <p className={`text-2xl font-bold ${uptime >= 99 ? 'text-success' : uptime >= 95 ? 'text-warning' : 'text-danger'}`}>
                 {uptime.toFixed(1)}%
               </p>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-muted">
+            <div className="p-4 bg-card  border border-muted">
               <p className="!text-xs !text-muted mb-1">{t('avg_response') || 'Réponse moy.'}</p>
               <p className={`text-2xl font-bold ${getResponseTimeColor(avgResponseTime)}`}>
                 {avgResponseTime}ms
               </p>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-muted">
+            <div className="p-4 bg-card  border border-muted">
               <p className="!text-xs !text-muted mb-1">{t('checks') || 'Checks'}</p>
               <p className="text-2xl font-bold !text-primary">{healthHistory.length}</p>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-muted">
+            <div className="p-4 bg-card  border border-muted">
               <p className="!text-xs !text-muted mb-1">{t('errors') || 'Erreurs'}</p>
               <p className={`text-2xl font-bold ${
                 healthHistory.filter(h => h.status === 'error').length > 0 ? 'text-danger' : 'text-success'
@@ -284,7 +284,7 @@ export default function AdminServerPage() {
               className="card p-5"
             >
               <div className="flex items-start justify-between mb-4">
-                <div className={`p-3 rounded-lg ${
+                <div className={`p-3  ${
                   service.status === 'ok' ? 'bg-success-light' : 'bg-danger-light'
                 }`}>
                   <Icon className={`w-6 h-6 ${
@@ -384,7 +384,7 @@ export default function AdminServerPage() {
           {healthHistory.slice(0, 10).map((h, i) => (
             <div
               key={i}
-              className={`flex items-center justify-between p-3 rounded-lg ${
+              className={`flex items-center justify-between p-3  ${
                 h.status === 'ok' ? 'bg-success-light' : 'bg-danger-light'
               }`}
             >
@@ -414,7 +414,7 @@ export default function AdminServerPage() {
       {/* API Endpoint */}
       <div className="card p-6">
         <h2 className="text-lg font-semibold !text-primary mb-4">{t('health_endpoint') || 'Endpoint de santé'}</h2>
-        <div className="flex items-center gap-4 p-4 bg-muted/5 rounded-lg border border-muted">
+        <div className="flex items-center gap-4 p-4 bg-muted/5  border border-muted">
           <code className="flex-1 !text-sm !text-accent font-mono">
             GET {API_URL}/api/health
           </code>

@@ -426,7 +426,7 @@ const PROJECT_TYPES = [
         <p className="text-muted">Ce projet n&apos;existe pas ou a été supprimé</p>
         <Link
           href="/dashboard/projects"
-          className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors mt-2"
+          className="flex items-center gap-2 px-4 py-2 btn-primary  transition-colors mt-2"
         >
           <IconArrowLeft className="w-4 h-4" />
           Retour aux projets
@@ -614,7 +614,7 @@ const PROJECT_TYPES = [
                 <>
                   <button
                     onClick={() => setShowDuplicateModal(true)}
-                    className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors !text-sm"
+                    className="flex items-center gap-2 px-3 py-2 btn-ghost  transition-colors !text-sm"
                     title={t('duplicate_project') || 'Dupliquer ce projet'}
                   >
                     <IconCopy className="w-4 h-4" />
@@ -622,7 +622,7 @@ const PROJECT_TYPES = [
                   </button>
                   <button
                     onClick={() => setShowShareModal(true)}
-                    className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors !text-sm"
+                    className="flex items-center gap-2 px-3 py-2 btn-ghost  transition-colors !text-sm"
                   >
                     <IconShare className="w-4 h-4" />
                     <span className="hidden sm:inline">{t('share') || 'Partager'}</span>
@@ -640,7 +640,7 @@ const PROJECT_TYPES = [
                           setIsEditMode(false);
                           setBannerColor('auto');
                         }}
-                        className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors !text-sm"
+                        className="flex items-center gap-2 px-3 py-2 btn-ghost  transition-colors !text-sm"
                       >
                         <IconX className="w-4 h-4" />
                         <span className="hidden sm:inline">{t('cancel') || 'Annuler'}</span>
@@ -649,7 +649,7 @@ const PROJECT_TYPES = [
                       <button
                         onClick={() => formRef.current?.requestSubmit()}
                         disabled={isSaving}
-                        className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors !text-sm disabled:opacity-50"
+                        className="flex items-center gap-2 px-4 py-2 btn-primary  transition-colors !text-sm disabled:opacity-50"
                       >
                         {isSaving ? (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -666,7 +666,7 @@ const PROJECT_TYPES = [
                         setEditNotes(project?.notes || '');
                         setIsEditMode(true);
                       }}
-                      className="flex items-center gap-2 px-3 py-2 btn-ghost rounded-lg transition-colors !text-sm"
+                      className="flex items-center gap-2 px-3 py-2 btn-ghost  transition-colors !text-sm"
                     >
                       <IconEdit className="w-4 h-4" />
                       <span className="hidden sm:inline">{t('edit') || 'Modifier'}</span>
@@ -681,7 +681,7 @@ const PROJECT_TYPES = [
           <div className="flex flex-col gap-4">
             {/* Row 1: Icon + Title */}
             <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-xl ${statusConfig.colors.bg} border ${statusConfig.colors.border} flex-shrink-0`}>
+              <div className={`p-3  ${statusConfig.colors.bg} border ${statusConfig.colors.border} flex-shrink-0`}>
                 <ProjectTypeIcon type={project.type} className={`w-6 h-6 ${statusConfig.colors.text}`} />
               </div>
               
@@ -770,7 +770,7 @@ const PROJECT_TYPES = [
 
             {/* Row 3: Quick Stats Cards */}
             <div className="flex gap-3 flex-wrap md:flex-nowrap mt-2">
-              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
+              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur  p-4 border border-default">
                 <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
                   <IconCurrencyEuro className="w-3.5 h-3.5" />
                   {t('billed') || 'Facturé'}
@@ -783,7 +783,7 @@ const PROJECT_TYPES = [
                 </p>
               </div>
               
-              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
+              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur  p-4 border border-default">
                 <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
                   <IconFileInvoice className="w-3.5 h-3.5" />
                   {t('invoices') || 'Factures'}
@@ -794,7 +794,7 @@ const PROJECT_TYPES = [
                 </p>
               </div>
 
-              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
+              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur  p-4 border border-default">
                 <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
                   <IconListCheck className="w-3.5 h-3.5" />
                   {t('tasks')}
@@ -809,7 +809,7 @@ const PROJECT_TYPES = [
                 </p>
               </div>
               
-              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur rounded-xl p-4 border border-default">
+              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur  p-4 border border-default">
                 <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
                   <IconCalendarEvent className="w-3.5 h-3.5" />
                   {t('due_date')}
@@ -946,7 +946,7 @@ const PROJECT_TYPES = [
                       <button
                         type="submit"
                         form="edit-form"
-                        className="px-6 py-2 btn-primary !text- rounded-lg transition-colors font-medium"
+                        className="px-6 py-2 btn-primary !text-  transition-colors font-medium"
                       >
                         {t('save_changes')}
                       </button>
@@ -1078,7 +1078,7 @@ const PROJECT_TYPES = [
                         {meetingNotes.map((note) => (
                           <div
                             key={note.documentId}
-                            className="p-4 bg-muted rounded-xl border border-transparent hover:border-default transition-all"
+                            className="p-4 bg-muted  border border-transparent hover:border-default transition-all"
                           >
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex-1 min-w-0">
@@ -1139,7 +1139,7 @@ const PROJECT_TYPES = [
                                     href={note.recording_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 rounded-lg bg-accent-light !text-accent hover:opacity-80 transition-colors"
+                                    className="p-2  bg-accent-light !text-accent hover:opacity-80 transition-colors"
                                     title="Voir l'enregistrement"
                                   >
                                     <IconPlayerPlay className="w-4 h-4" />
@@ -1155,7 +1155,7 @@ const PROJECT_TYPES = [
                                   <IconFileText className="w-4 h-4" />
                                   Voir la transcription
                                 </summary>
-                                <div className="mt-3 p-4 bg-page rounded-lg border border-default max-h-64 overflow-y-auto">
+                                <div className="mt-3 p-4 bg-page  border border-default max-h-64 overflow-y-auto">
                                   <p className="text-sm !text-primary whitespace-pre-wrap">
                                     {note.transcription}
                                   </p>
@@ -1174,7 +1174,7 @@ const PROJECT_TYPES = [
                                   {note.action_items.map((item) => (
                                     <div
                                       key={item.id}
-                                      className={`flex items-start gap-2 p-2 rounded-lg ${
+                                      className={`flex items-start gap-2 p-2  ${
                                         item.completed ? 'bg-success-light' : 'bg-warning-light'
                                       }`}
                                     >
@@ -1229,7 +1229,7 @@ const PROJECT_TYPES = [
                       </h2>
                       <Link
                         href={`/dashboard/factures/ajouter?projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}`}
-                        className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors !text-sm"
+                        className="flex items-center gap-2 px-4 py-2 btn-primary  transition-colors !text-sm"
                       >
                         <IconPlus className="w-4 h-4" />
                         {t('new_invoice')}
@@ -1246,10 +1246,10 @@ const PROJECT_TYPES = [
                           <Link
                             key={facture.documentId}
                             href={`/dashboard/factures/${generateSlug(`${facture.reference}-${facture.client_id?.name || 'facture'}`, facture.documentId)}`}
-                            className="flex items-center justify-between p-4 bg-muted rounded-xl hover:bg-muted transition-all group border border-transparent hover:border-default"
+                            className="flex items-center justify-between p-4 bg-muted  hover:bg-muted transition-all group border border-transparent hover:border-default"
                           >
                             <div className="flex items-center gap-4">
-                              <div className={`p-3 rounded-xl ${
+                              <div className={`p-3  ${
                                 facture.facture_status === 'paid' ? 'bg-success-light' :
                                 facture.facture_status === 'sent' ? 'bg-info-light' :
                                 'bg-warning-light'
@@ -1294,7 +1294,7 @@ const PROJECT_TYPES = [
                         <p className="text-muted mb-4">{t('no_invoices_for_this_project')}</p>
                         <Link
                           href={`/dashboard/factures/ajouter?projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}`}
-                          className="inline-flex items-center gap-2 px-4 py-2 btn-primary rounded-lg hover:opacity-80 transition-colors"
+                          className="inline-flex items-center gap-2 px-4 py-2 btn-primary  hover:opacity-80 transition-colors"
                         >
                           <IconPlus className="w-4 h-4" />
                           {t('create_invoice')}
@@ -1333,7 +1333,7 @@ const PROJECT_TYPES = [
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-success-light rounded-lg">
+                  <div className="p-2 bg-success-light ">
                     <IconCalendar className="w-4 h-4 !text-success-text -text" />
                   </div>
                   <div className="flex-1">
@@ -1355,7 +1355,7 @@ const PROJECT_TYPES = [
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-danger-light rounded-lg">
+                  <div className="p-2 bg-danger-light ">
                     <IconCalendar className="w-4 h-4 !text-danger" />
                   </div>
                   <div className="flex-1">
@@ -1400,7 +1400,7 @@ const PROJECT_TYPES = [
               ) : project.client ? (
                 <Link
                   href={`/dashboard/clients/${generateClientSlug(project.client.name, project.client.documentId)}`}
-                  className="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors group"
+                  className="flex items-center gap-3 p-3 bg-muted  hover:bg-muted transition-colors group"
                 >
                   <div className="w-10 h-10 bg-info-light rounded-full flex items-center justify-center">
                     <span className="text-info font-semibold">
@@ -1437,7 +1437,7 @@ const PROJECT_TYPES = [
               </div>
               <div className="space-y-2">
                 {/* Owner */}
-                <div className="flex items-center gap-3 p-2 bg-warning-light rounded-lg border border-warning">
+                <div className="flex items-center gap-3 p-2 bg-warning-light  border border-warning">
                   <div className="w-8 h-8 bg-warning rounded-full flex items-center justify-center">
                     <span className="text-accent !text-sm font-medium">
                       {project.user?.username?.[0]?.toUpperCase() || '?'}
@@ -1451,7 +1451,7 @@ const PROJECT_TYPES = [
                 
                 {/* Collaborators */}
                 {collaborators.filter(c => !c.is_owner).map(collab => (
-                  <div key={collab.documentId} className="flex items-center gap-3 p-2 bg-muted rounded-lg">
+                  <div key={collab.documentId} className="flex items-center gap-3 p-2 bg-muted ">
                     <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
                       <span className="text-accent !text-sm font-medium">
                         {collab.user?.username?.[0]?.toUpperCase() || '?'}

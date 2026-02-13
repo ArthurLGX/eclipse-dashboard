@@ -772,14 +772,14 @@ ${user?.username || 'L\'équipe'}`;
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-page rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col overscroll-contain"
+          className="bg-page  shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col overscroll-contain"
           onClick={e => e.stopPropagation()}
           onWheel={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-muted">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-xl ${manualMode ? 'bg-info-light' : 'bg-accent-light'}`}>
+              <div className={`p-2  ${manualMode ? 'bg-info-light' : 'bg-accent-light'}`}>
                 {manualMode ? (
                   <IconEdit className="w-6 h-6 !text-info" />
                 ) : (
@@ -809,7 +809,7 @@ ${user?.username || 'L\'équipe'}`;
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-hover rounded-lg transition-colors"
+              className="p-2 hover:bg-hover  transition-colors"
             >
               <IconX className="w-5 h-5 !text-muted" />
             </button>
@@ -817,7 +817,7 @@ ${user?.username || 'L\'équipe'}`;
 
           {/* Error display in header */}
           {error && (
-            <div className="mx-6 mt-4 p-3 bg-danger-light rounded-xl flex items-center gap-3 border border-danger">
+            <div className="mx-6 mt-4 p-3 bg-danger-light  flex items-center gap-3 border border-danger">
               <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
               <p className="text-sm !text-danger flex-1">{error}</p>
               <button onClick={() => setError(null)} className="text-danger hover:opacity-70">
@@ -881,7 +881,7 @@ ${user?.username || 'L\'équipe'}`;
                           setSelectedClientId(e.target.value || null);
                           setSelectedProjectId(null); // Reset project when client changes
                         }}
-                        className="w-full px-4 py-2.5 bg-muted border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary"
+                        className="w-full px-4 py-2.5 bg-muted border border-muted  appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary"
                         disabled={loadingData}
                       >
                         <option value="">{t('select_client') || 'Sélectionner un client'}</option>
@@ -905,7 +905,7 @@ ${user?.username || 'L\'équipe'}`;
                       <select
                         value={selectedProjectId || ''}
                         onChange={(e) => setSelectedProjectId(e.target.value || null)}
-                        className="w-full px-4 py-2.5 bg-muted border border-muted rounded-lg appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary"
+                        className="w-full px-4 py-2.5 bg-muted border border-muted  appearance-none focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary"
                         disabled={loadingData || !selectedClientId}
                       >
                         <option value="">{t('select_project') || 'Sélectionner un projet'}</option>
@@ -933,7 +933,7 @@ ${user?.username || 'L\'équipe'}`;
                       <button
                         key={type.id}
                         onClick={() => setContractType(type.id)}
-                        className={`p-4 !text-left rounded-xl border transition-colors ${
+                        className={`p-4 !text-left  border transition-colors ${
                           contractType === type.id
                             ? 'border-accent bg-accent-light'
                             : 'border-muted hover:border-accent'
@@ -960,7 +960,7 @@ ${user?.username || 'L\'équipe'}`;
                       onChange={(e) => setSignatureLocation(e.target.value)}
                       placeholder="Paris, France"
                       required
-                      className={`w-full px-4 py-2.5 bg-muted border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary ${
+                      className={`w-full px-4 py-2.5 bg-muted border  focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary ${
                         !signatureLocation ? 'border-warning' : 'border-muted'
                       }`}
                     />
@@ -976,7 +976,7 @@ ${user?.username || 'L\'équipe'}`;
                       value={signatureDate}
                       onChange={(e) => setSignatureDate(e.target.value)}
                       required
-                      className={`w-full px-4 py-2.5 bg-muted border rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary ${
+                      className={`w-full px-4 py-2.5 bg-muted border  focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none !text-primary ${
                         !signatureDate ? 'border-warning' : 'border-muted'
                       }`}
                     />
@@ -990,7 +990,7 @@ ${user?.username || 'L\'équipe'}`;
                       <button
                         type="button"
                         onClick={() => setContractLanguage('fr')}
-                        className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors !text-sm font-medium ${
+                        className={`flex-1 px-4 py-2.5  border transition-colors !text-sm font-medium ${
                           contractLanguage === 'fr'
                             ? 'border-accent bg-accent-light !text-accent'
                             : 'border-muted bg-muted !text-primary hover:!text-primary'
@@ -1001,7 +1001,7 @@ ${user?.username || 'L\'équipe'}`;
                       <button
                         type="button"
                         onClick={() => setContractLanguage('en')}
-                        className={`flex-1 px-4 py-2.5 rounded-lg border transition-colors !text-sm font-medium ${
+                        className={`flex-1 px-4 py-2.5  border transition-colors !text-sm font-medium ${
                           contractLanguage === 'en'
                             ? 'border-accent bg-accent-light !text-accent'
                             : 'border-muted bg-muted !text-primary hover:!text-primary'
@@ -1015,7 +1015,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Context info when project selected */}
                 {selectedProject && (
-                  <div className="p-4 bg-info-light rounded-xl space-y-2">
+                  <div className="p-4 bg-info-light  space-y-2">
                     <p className="text-sm font-medium !text-info flex items-center gap-2">
                       <IconSparkles className="w-4 h-4" />
                       {t('project_context') || 'L\'IA adaptera le contrat selon ce projet'}
@@ -1050,12 +1050,12 @@ ${user?.username || 'L\'équipe'}`;
                       onChange={e => setNewClause(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && handleAddClause()}
                       placeholder={t('add_clause_placeholder') || 'Ex: Clause de non-concurrence sur 6 mois...'}
-                      className="flex-1 px-4 py-2 bg-muted border border-muted rounded-lg focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none"
+                      className="flex-1 px-4 py-2 bg-muted border border-muted  focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none"
                     />
                     <button
                       onClick={handleAddClause}
                       disabled={!newClause.trim()}
-                      className="px-4 py-2 bg-accent !text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-colors"
+                      className="px-4 py-2 bg-accent !text-white  hover:opacity-90 disabled:opacity-50 transition-colors"
                     >
                       {t('add') || 'Ajouter'}
                     </button>
@@ -1065,7 +1065,7 @@ ${user?.username || 'L\'équipe'}`;
                       {customClauses.map((clause, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-2 p-3 bg-muted rounded-lg"
+                          className="flex items-center gap-2 p-3 bg-muted "
                         >
                           <span className="flex-1 !text-sm !text-primary">{clause}</span>
                           <button
@@ -1081,7 +1081,7 @@ ${user?.username || 'L\'équipe'}`;
                 </div>
 
                 {/* Warning */}
-                <div className="p-4 bg-warning-light rounded-xl flex items-start gap-3">
+                <div className="p-4 bg-warning-light  flex items-start gap-3">
                   <IconAlertTriangle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium !text-warning">
@@ -1100,7 +1100,7 @@ ${user?.username || 'L\'équipe'}`;
               <div className="space-y-6">
                 {/* Date validation warnings */}
                 {validatingDates && (
-                  <div className="p-4 bg-info-light rounded-xl flex items-center gap-3">
+                  <div className="p-4 bg-info-light  flex items-center gap-3">
                     <IconLoader2 className="w-5 h-5 !text-info animate-spin" />
                     <p className="text-sm !text-info">
                       {contractLanguage === 'fr' 
@@ -1111,7 +1111,7 @@ ${user?.username || 'L\'équipe'}`;
                 )}
                 
                 {dateWarnings.length > 0 && (
-                  <div className="p-4 bg-accent-light rounded-xl border border-warning">
+                  <div className="p-4 bg-accent-light  border border-warning">
                     <div className="flex items-start gap-3">
                       <IconAlertTriangle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
@@ -1140,10 +1140,10 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Toggle Edit/Preview mode */}
                 <div className="flex items-center justify-end">
-                  <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
+                  <div className="flex items-center gap-1 p-1 bg-muted ">
                     <button
                       onClick={() => setIsEditMode(false)}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md !text-sm transition-colors ${
+                      className={`flex items-center gap-2 px-3 py-1.5  !text-sm transition-colors ${
                         !isEditMode 
                           ? 'bg-card !text-primary shadow-sm' 
                           : 'text-muted hover:!text-primary'
@@ -1154,7 +1154,7 @@ ${user?.username || 'L\'équipe'}`;
                     </button>
                     <button
                       onClick={() => setIsEditMode(true)}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md !text-sm transition-colors ${
+                      className={`flex items-center gap-2 px-3 py-1.5  !text-sm transition-colors ${
                         isEditMode 
                           ? 'bg-card !text-primary shadow-sm' 
                           : 'text-muted hover:!text-primary'
@@ -1169,7 +1169,7 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Contract preview OR edit mode */}
                 {!isEditMode ? (
                   <div 
-                    className="p-6 bg-card rounded-xl border border-muted max-h-[60vh] overflow-y-auto"
+                    className="p-6 bg-card  border border-muted max-h-[60vh] overflow-y-auto"
                     onWheel={(e) => {
                       e.stopPropagation();
                     }}
@@ -1182,12 +1182,12 @@ ${user?.username || 'L\'équipe'}`;
                     {/* Parties */}
                     <div className="mb-6 !text-sm">
                       <p className="font-semibold !text-primary">ENTRE LES SOUSSIGNÉS :</p>
-                      <div className="mt-2 p-3 bg-muted rounded-lg">
+                      <div className="mt-2 p-3 bg-muted ">
                         <p className="font-medium !text-primary">{generatedContract.parties.provider.name}</p>
                         <p className="text-primary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
                       </div>
                       <p className="text-center my-2 !text-muted">ET</p>
-                      <div className="p-3 bg-muted rounded-lg">
+                      <div className="p-3 bg-muted ">
                         <p className="font-medium !text-primary">{generatedContract.parties.client.name}</p>
                         <p className="text-primary whitespace-pre-line">{generatedContract.parties.client.details}</p>
                       </div>
@@ -1220,7 +1220,7 @@ ${user?.username || 'L\'équipe'}`;
                       <div className="grid grid-cols-2 gap-8">
                         <div className="text-center">
                           <p className="font-medium !text-primary">Le Prestataire</p>
-                          <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
+                          <div className="mt-4 h-20 border border-dashed border-muted  flex items-center justify-center">
                             {signatures.provider ? (
                               <Image src={signatures.provider} alt="Signature prestataire" width={150} height={60} className="max-h-16 object-contain" />
                             ) : (
@@ -1230,7 +1230,7 @@ ${user?.username || 'L\'équipe'}`;
                         </div>
                         <div className="text-center">
                           <p className="font-medium !text-primary">Le Client</p>
-                          <div className="mt-4 h-20 border border-dashed border-muted rounded-lg flex items-center justify-center">
+                          <div className="mt-4 h-20 border border-dashed border-muted  flex items-center justify-center">
                             {signatures.client ? (
                               <Image src={signatures.client} alt="Signature client" width={150} height={60} className="max-h-16 object-contain" />
                             ) : (
@@ -1244,14 +1244,14 @@ ${user?.username || 'L\'équipe'}`;
                 ) : (
                   /* Edit Mode - Rich Text Editor */
                   <div className="space-y-4">
-                    <div className="p-4 bg-info-light rounded-xl">
+                    <div className="p-4 bg-info-light ">
                       <p className="text-sm !text-info flex items-center gap-2">
                         <IconEdit className="w-4 h-4" />
                         {t('edit_contract_info') || 'Vous pouvez modifier librement le contenu du contrat ci-dessous.'}
                       </p>
                     </div>
                     <div 
-                      className="bg-card rounded-xl border border-muted overflow-hidden"
+                      className="bg-card  border border-muted overflow-hidden"
                       onWheel={(e) => {
                         e.stopPropagation();
                       }}
@@ -1270,7 +1270,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Tips & Warnings */}
                 {generatedContract.tips && generatedContract.tips.length > 0 && (
-                  <div className="p-4 bg-info-light rounded-xl">
+                  <div className="p-4 bg-info-light ">
                     <p className="text-sm font-medium !text-info flex items-center gap-2 mb-2">
                       <IconBulb className="w-4 h-4" />
                       {t('tips') || 'Conseils'}
@@ -1284,7 +1284,7 @@ ${user?.username || 'L\'équipe'}`;
                 )}
 
                 {generatedContract.warnings && generatedContract.warnings.length > 0 && (
-                  <div className="p-4 bg-accent-light rounded-xl">
+                  <div className="p-4 bg-accent-light ">
                     <p className="text-sm font-medium !text-accent flex items-center gap-2 mb-2">
                       <IconAlertTriangle className="w-4 h-4" />
                       {t('warnings') || 'Points d\'attention'}
@@ -1304,7 +1304,7 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Signature areas */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Provider Signature */}
-                  <div className="p-4 bg-card rounded-xl border border-muted">
+                  <div className="p-4 bg-card  border border-muted">
                     <div className="flex items-center justify-between mb-3">
                       <p className="font-medium !text-primary flex items-center gap-2">
                         <IconSignature className="w-4 h-4" />
@@ -1321,13 +1321,13 @@ ${user?.username || 'L\'équipe'}`;
                       )}
                     </div>
                     {signatures.provider ? (
-                      <div className="h-32 border border-muted rounded-lg bg-white flex items-center justify-center">
+                      <div className="h-32 border border-muted  bg-white flex items-center justify-center">
                         <Image src={signatures.provider} alt="Signature" width={200} height={100} className="max-h-28 object-contain" />
                       </div>
                     ) : (
                       <button
                         onClick={() => setActiveSignature('provider')}
-                        className="w-full h-32 border-2 border-dashed border-muted rounded-lg hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 !text-muted hover:!text-accent"
+                        className="w-full h-32 border-2 border-dashed border-muted  hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 !text-muted hover:!text-accent"
                       >
                         <IconSignature className="w-8 h-8" />
                         <span className="text-sm">{t('click_to_sign') || 'Cliquer pour signer'}</span>
@@ -1336,14 +1336,14 @@ ${user?.username || 'L\'équipe'}`;
                   </div>
 
                   {/* Client Signature - Read only for provider */}
-                  <div className="p-4 bg-card rounded-xl border border-muted opacity-60">
+                  <div className="p-4 bg-card  border border-muted opacity-60">
                     <div className="flex items-center justify-between mb-3">
                       <p className="font-medium !text-primary flex items-center gap-2">
                         <IconSignature className="w-4 h-4" />
                         {t('client_signature') || 'Signature Client'}
                       </p>
                     </div>
-                    <div className="w-full h-32 border-2 border-dashed border-muted rounded-lg bg-muted flex flex-col items-center justify-center gap-2 !text-muted">
+                    <div className="w-full h-32 border-2 border-dashed border-muted  bg-muted flex flex-col items-center justify-center gap-2 !text-muted">
                       <IconSignature className="w-8 h-8" />
                       <span className="text-sm !text-center px-4">
                         {t('client_will_sign_here') || 'Le client signera ici après réception du contrat'}
@@ -1354,7 +1354,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Signature Pad Modal */}
                 {activeSignature && (
-                  <div className="p-6 bg-card rounded-xl border border-accent">
+                  <div className="p-6 bg-card  border border-accent">
                     <div className="flex items-center justify-between mb-4">
                       <p className="font-medium !text-primary">
                         {activeSignature === 'provider' 
@@ -1368,7 +1368,7 @@ ${user?.username || 'L\'équipe'}`;
                         <IconX className="w-5 h-5" />
                       </button>
                     </div>
-                    <div className="bg-white rounded-lg border border-muted overflow-hidden">
+                    <div className="bg-white  border border-muted overflow-hidden">
                       <canvas
                         ref={canvasRef}
                         width={500}
@@ -1393,7 +1393,7 @@ ${user?.username || 'L\'équipe'}`;
                       </button>
                       <button
                         onClick={saveSignature}
-                        className="px-6 py-2 bg-accent !text-white rounded-lg hover:opacity-90 flex items-center gap-2"
+                        className="px-6 py-2 bg-accent !text-white  hover:opacity-90 flex items-center gap-2"
                       >
                         <IconCheck className="w-4 h-4" />
                         {t('validate_signature') || 'Valider la signature'}
@@ -1404,7 +1404,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Alert for missing date/location */}
                 {(!signatureLocation || !signatureDate) && (
-                  <div className="p-4 bg-accent-light rounded-xl border border-warning">
+                  <div className="p-4 bg-accent-light  border border-warning">
                     <p className="text-sm !text-warning-text flex items-center gap-2">
                       <IconAlertTriangle className="w-4 h-4 flex-shrink-0" />
                       <span>
@@ -1415,7 +1415,7 @@ ${user?.username || 'L\'équipe'}`;
                 )}
 
                 {/* Contract Summary */}
-                <div className="p-4 bg-muted rounded-xl !text-sm">
+                <div className="p-4 bg-muted  !text-sm">
                   <p className="text-muted mb-2">{t('contract_summary') || 'Récapitulatif'}</p>
                   <div className="space-y-1 !text-primary">
                     <p><strong className="text-primary">Contrat:</strong> {generatedContract.title}</p>
@@ -1440,7 +1440,7 @@ ${user?.username || 'L\'équipe'}`;
             {step === 'send' && generatedContract && savedContract && (
               <div className="space-y-6">
                 {/* Success message */}
-                <div className="p-4 bg-success-light rounded-xl border border-success">
+                <div className="p-4 bg-success-light  border border-success">
                   <div className="flex items-start gap-3">
                     <IconCheck className="w-6 h-6 !text-success-text -text flex-shrink-0 mt-0.5" />
                     <div>
@@ -1455,7 +1455,7 @@ ${user?.username || 'L\'équipe'}`;
                 </div>
 
                 {/* Client info */}
-                <div className="p-4 bg-card rounded-xl border border-muted">
+                <div className="p-4 bg-card  border border-muted">
                   <p className="font-medium !text-primary mb-3 flex items-center gap-2">
                     <IconUser className="w-4 h-4" />
                     {t('recipient') || 'Destinataire'}
@@ -1472,7 +1472,7 @@ ${user?.username || 'L\'équipe'}`;
                     </div>
                   </div>
                   {!selectedClient?.email && (
-                    <div className="mt-3 p-3 bg-accent-light rounded-lg">
+                    <div className="mt-3 p-3 bg-accent-light ">
                       <p className="text-sm !text-accent flex items-center gap-2">
                         <IconAlertTriangle className="w-4 h-4" />
                         {t('client_no_email_warning') || 'Ce client n\'a pas d\'email. Ajoutez-en un pour pouvoir envoyer le contrat.'}
@@ -1483,7 +1483,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Signature link */}
                 {signatureLink && (
-                  <div className="p-4 bg-card rounded-xl border border-muted">
+                  <div className="p-4 bg-card  border border-muted">
                     <p className="font-medium !text-primary mb-3 flex items-center gap-2">
                       <IconLink className="w-4 h-4" />
                       {t('signature_link') || 'Lien de signature'}
@@ -1493,14 +1493,14 @@ ${user?.username || 'L\'équipe'}`;
                         type="text"
                         value={signatureLink}
                         readOnly
-                        className="flex-1 p-3 bg-muted rounded-lg !text-sm !text-primary border border-muted"
+                        className="flex-1 p-3 bg-muted  !text-sm !text-primary border border-muted"
                       />
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(signatureLink);
                           showGlobalPopup(t('link_copied') || 'Lien copié', 'success');
                         }}
-                        className="p-3 bg-accent !text-white rounded-lg hover:opacity-90"
+                        className="p-3 bg-accent !text-white  hover:opacity-90"
                       >
                         <IconCopy className="w-4 h-4" />
                       </button>
@@ -1512,14 +1512,14 @@ ${user?.username || 'L\'équipe'}`;
                 )}
 
                 {/* Email preview */}
-                <div className="p-4 bg-card rounded-xl border border-muted">
+                <div className="p-4 bg-card  border border-muted">
                   <p className="font-medium !text-primary mb-3 flex items-center gap-2">
                     <IconMail className="w-4 h-4" />
                     {t('email_preview') || 'Aperçu de l\'email'}
                   </p>
                   
                   {/* Email preview box */}
-                  <div className="border border-muted rounded-lg overflow-hidden bg-white">
+                  <div className="border border-muted  overflow-hidden bg-white">
                     {/* Email header */}
                     <div className="p-3 bg-slate-50 border-b border-slate-200">
                       <div className="flex items-center gap-2 !text-xs !text-slate-500 mb-1">
@@ -1553,7 +1553,7 @@ ${user?.username || 'L\'équipe'}`;
                 </div>
 
                 {/* Info */}
-                <div className="p-4 bg-info-light rounded-xl">
+                <div className="p-4 bg-info-light ">
                   <p className="text-sm !text-info flex items-start gap-2">
                     <IconBulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
                     <span>
@@ -1578,7 +1578,7 @@ ${user?.username || 'L\'équipe'}`;
                 <button
                   onClick={handleGenerate}
                   disabled={loading || !selectedClientId || !signatureLocation || !signatureDate}
-                  className={`flex items-center gap-2 px-6 py-2.5 !text-primary btn-primary rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
+                  className={`flex items-center gap-2 px-6 py-2.5 !text-primary btn-primary  hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
                     manualMode ? 'bg-info' : 'bg-accent'
                   }`}
                 >
@@ -1618,7 +1618,7 @@ ${user?.username || 'L\'équipe'}`;
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleCopyContract}
-                    className="flex items-center gap-2 px-4 py-2 bg-muted !text-primary rounded-lg hover:bg-card transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-muted !text-primary  hover:bg-card transition-colors"
                   >
                     <IconCopy className="w-4 h-4" />
                     {t('copy') || 'Copier'}
@@ -1634,7 +1634,7 @@ ${user?.username || 'L\'équipe'}`;
                       }
                       setStep('sign');
                     }}
-                    className="flex items-center gap-2 px-6 py-2.5 btn-primary !text-white rounded-xl hover:opacity-90 transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 btn-primary !text-white  hover:opacity-90 transition-colors"
                   >
                     <IconSignature className="w-4 h-4" color="white" />
                     {t('proceed_to_sign') || 'Passer à la signature'}
@@ -1655,7 +1655,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleConfirm}
                     disabled={!signatures.provider || saving || savedContract !== null}
-                    className="flex items-center gap-2 px-4 py-2 bg-muted !text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-muted !text-primary  hover:bg-card transition-colors disabled:opacity-50"
                   >
                     {savedContract ? (
                       <>
@@ -1672,7 +1672,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleProceedToSend}
                     disabled={!signatures.provider || saving}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-accent !text-white  hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {saving ? (
                       <>
@@ -1702,7 +1702,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleDownloadPDF}
                     disabled={!savedContract}
-                    className="flex items-center gap-2 px-4 py-2 bg-muted !text-primary rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-muted !text-primary  hover:bg-card transition-colors disabled:opacity-50"
                   >
                     <IconDownload className="w-4 h-4" />
                     {t('download_pdf') || 'PDF'}
@@ -1710,7 +1710,7 @@ ${user?.username || 'L\'équipe'}`;
                   <button
                     onClick={handleSendToClient}
                     disabled={saving || !selectedClient?.email}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-success !text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-success !text-white  hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {saving ? (
                       <>

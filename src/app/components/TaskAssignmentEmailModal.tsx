@@ -184,12 +184,12 @@ export default function TaskAssignmentEmailModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-card border border-default rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
+            className="bg-card border border-default  shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-default">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
+                <div className="w-10 h-10  bg-accent-light flex items-center justify-center">
                   <IconMail className="w-5 h-5 !text-accent" />
                 </div>
                 <div>
@@ -203,7 +203,7 @@ export default function TaskAssignmentEmailModal({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 !text-muted hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+                className="p-2 !text-muted hover:!text-primary hover:bg-hover  transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -249,7 +249,7 @@ export default function TaskAssignmentEmailModal({
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder={defaultSubject}
-                  className="w-full px-4 py-2.5 bg-muted border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full px-4 py-2.5 bg-muted border border-default  !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent"
                 />
               </div>
 
@@ -263,12 +263,12 @@ export default function TaskAssignmentEmailModal({
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={defaultMessage}
                   rows={5}
-                  className="w-full px-4 py-3 bg-muted border border-default rounded-lg !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent resize-none"
+                  className="w-full px-4 py-3 bg-muted border border-default  !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent resize-none"
                 />
               </div>
 
               {/* Options */}
-              <div className="p-4 bg-muted rounded-lg">
+              <div className="p-4 bg-muted ">
                 <label className="flex items-center justify-between cursor-pointer">
                   <div className="flex items-center gap-3">
                     <IconListCheck className="w-5 h-5 !text-accent" />
@@ -297,7 +297,7 @@ export default function TaskAssignmentEmailModal({
               </div>
 
               {/* Info */}
-              <div className="p-4 bg-info-light border border-info rounded-lg flex items-start gap-3">
+              <div className="p-4 bg-info-light border border-info  flex items-start gap-3">
                 <IconMail className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
                 <div className="text-sm !text-primary">
                   <p className="font-medium mb-1">
@@ -314,7 +314,7 @@ export default function TaskAssignmentEmailModal({
             <div className="flex items-center justify-between p-6 border-t border-default">
               <button
                 onClick={() => openPreview(assignedUsers[0])}
-                className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover  transition-colors flex items-center gap-2"
               >
                 <IconEye className="w-4 h-4" />
                 {t('preview') || 'Prévisualiser'}
@@ -322,14 +322,14 @@ export default function TaskAssignmentEmailModal({
               <div className="flex items-center gap-3">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover rounded-lg transition-colors"
+                  className="px-4 py-2 !text-secondary hover:!text-primary hover:bg-hover  transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
                 <button
                   onClick={handleSend}
                   disabled={sending}
-                  className="px-6 py-2 bg-accent !text-white rounded-lg hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 bg-accent !text-white  hover:bg-[var(--color-accent)] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {sending ? (
                     <>

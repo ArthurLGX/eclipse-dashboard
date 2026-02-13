@@ -207,7 +207,7 @@ export default function ContactAutocomplete({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-50 top-full left-0 right-0 mt-1 bg-card border border-default rounded-xl shadow-lg overflow-hidden"
+            className="absolute z-50 top-full left-0 right-0 mt-1 bg-card border border-default  shadow-lg overflow-hidden"
           >
             <div className="max-h-72 overflow-y-auto py-1">
               {filteredContacts.map((contact, index) => (

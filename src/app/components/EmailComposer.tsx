@@ -950,7 +950,7 @@ Cordialement`);
             <div className="flex items-center gap-4 p-4">
               <button
                 onClick={() => router.back()}
-                className="p-2 !text-muted hover:!text-primary hover:bg-accent-light rounded-lg transition-colors"
+                className="p-2 !text-muted hover:!text-primary hover:bg-accent-light  transition-colors"
               >
                 <IconArrowLeft className="w-5 h-5" />
               </button>
@@ -966,7 +966,7 @@ Cordialement`);
             <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 !text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:!text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 !text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:!text-white  transition-colors"
             >
               {showPreview ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
               {showPreview ? (t('edit') || 'Éditer') : (t('preview') || 'Aperçu')}
@@ -976,7 +976,7 @@ Cordialement`);
               <button
                 onClick={handleSaveDraft}
                 disabled={savingDraft}
-                className="flex items-center gap-2 px-4 py-2 !text-sm border border-default !text-secondary hover:bg-hover rounded-lg transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 !text-sm border border-default !text-secondary hover:bg-hover  transition-colors disabled:opacity-50"
               >
                 {savingDraft ? (
                   <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -990,7 +990,7 @@ Cordialement`);
             <button
               onClick={handleSend}
               disabled={sending || recipients.length === 0 || !subject.trim() || (activeFeatures.documentSelector && !selectedDocument)}
-              className={`flex items-center gap-2 px-5 py-2 !text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${config.buttonColor} ${config.hoverColor}`}
+              className={`flex items-center gap-2 px-5 py-2 !text-white  transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${config.buttonColor} ${config.hoverColor}`}
             >
               {sending ? (
                 <IconLoader2 className="w-4 h-4 animate-spin" />
@@ -1019,7 +1019,7 @@ Cordialement`);
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-accent-light border border-accent rounded-xl p-5"
+              className="bg-accent-light border border-accent  p-5"
             >
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
@@ -1047,7 +1047,7 @@ Cordialement`);
 
                   <p className="text-sm !text-muted mt-0.5">{replyToData.email}</p>
 
-                  <div className="mt-3 p-3 bg-page rounded-lg">
+                  <div className="mt-3 p-3 bg-page ">
                     <p className="text-sm font-medium !text-primary mb-1">{replyToData.subject}</p>
                     {replyToData.snippet && (
                       <p className="text-sm !text-muted line-clamp-3">{replyToData.snippet}</p>
@@ -1057,7 +1057,7 @@ Cordialement`);
 
                 <button
                   onClick={() => setReplyToData(null)}
-                  className="p-1.5 !text-muted hover:!text-primary hover:bg-page rounded-lg transition-colors"
+                  className="p-1.5 !text-muted hover:!text-primary hover:bg-page  transition-colors"
                 >
                   <IconX className="w-4 h-4" />
                 </button>
@@ -1067,16 +1067,16 @@ Cordialement`);
 
           {/* Document selector (quote/invoice) */}
           {activeFeatures.documentSelector && (
-            <div className="bg-card border border-default rounded-xl p-6">
+            <div className="bg-card border border-default  p-6">
               <label className="block !text-sm font-medium !text-secondary mb-3 flex items-center gap-2">
                 <IconFileText className={`w-4 h-4 !text-${config.color}`} />
                 {t(type === 'quote' ? 'select_quote' : 'select_invoice') || `Sélectionner un ${type === 'quote' ? 'devis' : 'facture'}`}
               </label>
 
               {selectedDocument ? (
-                <div className={`flex items-center justify-between p-4 bg-${config.color.replace('500', '50')} border border-${config.color.replace('500', '200')} rounded-lg`}>
+                <div className={`flex items-center justify-between p-4 bg-${config.color.replace('500', '50')} border border-${config.color.replace('500', '200')} `}>
                   <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 ${config.buttonColor} rounded-lg flex items-center justify-center`}>
+                    <div className={`w-12 h-12 ${config.buttonColor}  flex items-center justify-center`}>
                       <IconComponent className="w-6 h-6 !text-white" />
                     </div>
                     <div>
@@ -1088,7 +1088,7 @@ Cordialement`);
                   </div>
                   <button
                     onClick={() => setShowDocumentSelector(true)}
-                    className={`px-3 py-1.5 !text-sm !text-${config.color} hover:bg-${config.color.replace('500', '100')} rounded-lg transition-colors`}
+                    className={`px-3 py-1.5 !text-sm !text-${config.color} hover:bg-${config.color.replace('500', '100')}  transition-colors`}
                   >
                     {t('change') || 'Changer'}
                   </button>
@@ -1096,7 +1096,7 @@ Cordialement`);
               ) : (
                 <button
                   onClick={() => setShowDocumentSelector(true)}
-                  className={`w-full p-6 border-2 border-dashed border-default rounded-lg !text-center !text-muted hover:border-${config.color} hover:!text-${config.color} transition-colors`}
+                  className={`w-full p-6 border-2 border-dashed border-default  !text-center !text-muted hover:border-${config.color} hover:!text-${config.color} transition-colors`}
                 >
                   <IconComponent className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <span>{t('click_to_select') || 'Cliquez pour sélectionner'}</span>
@@ -1117,7 +1117,7 @@ Cordialement`);
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.9, opacity: 0 }}
-                      className="bg-card border border-default rounded-xl shadow-xl w-full max-w-lg max-h-[70vh] overflow-hidden"
+                      className="bg-card border border-default  shadow-xl w-full max-w-lg max-h-[70vh] overflow-hidden"
                       onClick={e => e.stopPropagation()}
                     >
                       <div className="p-4 border-b border-default">
@@ -1149,9 +1149,9 @@ Cordialement`);
                             <button
                               key={doc.documentId}
                               onClick={() => handleSelectDocument(doc)}
-                              className="w-full p-3 flex items-center gap-4 hover:bg-accent-light rounded-lg transition-colors !text-left"
+                              className="w-full p-3 flex items-center gap-4 hover:bg-accent-light  transition-colors !text-left"
                             >
-                              <div className={`w-10 h-10 bg-${config.color.replace('500', '100')} rounded-lg flex items-center justify-center`}>
+                              <div className={`w-10 h-10 bg-${config.color.replace('500', '100')}  flex items-center justify-center`}>
                                 <IconComponent className={`w-5 h-5 !text-${config.color}`} />
                               </div>
                               <div className="flex-1 min-w-0">
@@ -1177,7 +1177,7 @@ Cordialement`);
           )}
 
           {/* Recipients */}
-          <div className="bg-card border border-default rounded-xl p-6">
+          <div className="bg-card border border-default  p-6">
             <label className="block !text-sm font-medium !text-secondary mb-3 flex items-center gap-2">
               <IconUser className="w-4 h-4" />
               {t('recipients') || 'Destinataires'}
@@ -1192,7 +1192,7 @@ Cordialement`);
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.8, opacity: 0 }}
-                      className="flex items-center gap-2 px-3 py-2 bg-accent-light rounded-lg !text-sm group"
+                      className="flex items-center gap-2 px-3 py-2 bg-accent-light  !text-sm group"
                     >
                       <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center !text-white !text-xs font-semibold flex-shrink-0">
                         {recipient.name
@@ -1259,7 +1259,7 @@ Cordialement`);
                     addRecipientManual(input.value);
                     input.value = '';
                   }}
-                  className="px-4 py-2 bg-muted !text-primary rounded-lg hover:bg-muted transition-colors"
+                  className="px-4 py-2 bg-muted !text-primary  hover:bg-muted transition-colors"
                 >
                   <IconPlus className="w-5 h-5" />
                 </button>
@@ -1268,7 +1268,7 @@ Cordialement`);
           </div>
 
           {/* Title & Subject */}
-          <div className="bg-card border border-default rounded-xl p-6 space-y-4">
+          <div className="bg-card border border-default  p-6 space-y-4">
             {activeFeatures.title && (
               <div>
                 <label className="block !text-sm font-medium !text-secondary mb-2">
@@ -1302,7 +1302,7 @@ Cordialement`);
           </div>
 
           {/* Message */}
-          <div className="bg-card border border-default rounded-xl p-6">
+          <div className="bg-card border border-default  p-6">
             <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-medium !text-muted">
                 {t('message') || 'Message'} *
@@ -1313,7 +1313,7 @@ Cordialement`);
                   type="button"
                   onClick={handleGenerateAIContent}
                   disabled={generatingAI || !selectedDocument}
-                  className="flex items-center gap-2 px-3 py-1.5 !text-xs bg-muted !text-muted rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 !text-xs bg-muted !text-muted  hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {generatingAI ? (
                     <>
@@ -1358,7 +1358,7 @@ Cordialement`);
 
           {/* Attachments (compose only) */}
           {activeFeatures.attachments && (
-            <div className="bg-card border border-default rounded-xl p-6">
+            <div className="bg-card border border-default  p-6">
               <label className="block !text-sm font-medium !text-secondary mb-3 flex items-center gap-2">
                 <IconPaperclip className="w-4 h-4" />
                 {t('attachments') || 'Pièces jointes'}
@@ -1369,7 +1369,7 @@ Cordialement`);
                   {attachments.map(att => (
                     <div
                       key={att.id}
-                      className="flex items-center justify-between p-3 bg-page rounded-lg"
+                      className="flex items-center justify-between p-3 bg-page "
                     >
                       <div className="flex items-center gap-3">
                         <IconPaperclip className="w-5 h-5 !text-muted" />
@@ -1380,7 +1380,7 @@ Cordialement`);
                       </div>
                       <button
                         onClick={() => removeAttachment(att.id)}
-                        className="p-2 !text-danger hover:bg-danger-light rounded-lg transition-colors"
+                        className="p-2 !text-danger hover:bg-danger-light  transition-colors"
                       >
                         <IconTrash className="w-4 h-4" />
                       </button>
@@ -1400,7 +1400,7 @@ Cordialement`);
                     }}
                     className="hidden"
                   />
-                  <div className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-default rounded-lg !text-muted hover:border-accent hover:!text-accent cursor-pointer transition-colors">
+                  <div className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent cursor-pointer transition-colors">
                     {uploadingAttachment ? (
                       <IconLoader2 className="w-5 h-5 animate-spin" />
                     ) : (
@@ -1414,7 +1414,7 @@ Cordialement`);
 
                 <button
                   onClick={() => setShowMediaPicker(true)}
-                  className="px-4 py-3 border border-default rounded-lg !text-muted hover:border-accent hover:!text-accent transition-colors"
+                  className="px-4 py-3 border border-default  !text-muted hover:border-accent hover:!text-accent transition-colors"
                 >
                   {t('from_library') || 'Depuis la bibliothèque'}
                 </button>
@@ -1423,7 +1423,7 @@ Cordialement`);
           )}
 
           {/* Signature toggle */}
-          <div className="bg-card border border-default rounded-xl p-6">
+          <div className="bg-card border border-default  p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <IconSignature className="w-5 h-5 !text-accent" />
@@ -1462,7 +1462,7 @@ Cordialement`);
             )}
 
             {!signatureData && !loadingSignature && (
-              <div className="mt-4 p-3 bg-warning-light border border-warning rounded-lg flex items-start gap-2">
+              <div className="mt-4 p-3 bg-warning-light border border-warning  flex items-start gap-2">
                 <IconAlertCircle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                 <div className="text-sm !text-warning-text flex items-center gap-2 flex-wrap">
                   {t('no_signature_configured') || 'Aucune signature configurée. '}
@@ -1479,7 +1479,7 @@ Cordialement`);
 
           {/* Scheduling (compose only) */}
           {activeFeatures.scheduling && (
-            <div className="bg-card border border-default rounded-xl p-6">
+            <div className="bg-card border border-default  p-6">
               <EmailScheduler
                 onSchedule={setScheduledAt}
                 initialDate={scheduledAt}

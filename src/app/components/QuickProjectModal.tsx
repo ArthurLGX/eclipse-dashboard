@@ -327,7 +327,7 @@ export default function QuickProjectModal({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-2xl bg-card border border-default rounded-xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col outline-none overscroll-contain"
+        className="w-full max-w-2xl bg-card border border-default  shadow-xl max-h-[90vh] overflow-hidden flex flex-col outline-none overscroll-contain"
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
       >
@@ -344,7 +344,7 @@ export default function QuickProjectModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-hover transition-colors"
+            className="p-2  hover:bg-hover transition-colors"
           >
             <IconX className="w-5 h-5" />
           </button>
@@ -368,10 +368,10 @@ export default function QuickProjectModal({
                 {/* Option 1: Dupliquer (mise en avant) */}
                 <button
                   onClick={() => setStep('duplicate')}
-                  className="w-full p-4 rounded-xl border-2 border-accent bg-accent-light hover:bg-accent-light !text-left transition-all group"
+                  className="w-full p-4  border-2 border-accent bg-accent-light hover:bg-accent-light !text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-accent !text-white">
+                    <div className="p-3  bg-accent !text-white">
                       <IconCopy className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
@@ -400,10 +400,10 @@ export default function QuickProjectModal({
                 {/* Option 2: Template */}
                 <button
                   onClick={() => setStep('template')}
-                  className="w-full p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
+                  className="w-full p-4  border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent transition-colors">
+                    <div className="p-3  bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent transition-colors">
                       <IconTemplate className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
@@ -421,10 +421,10 @@ export default function QuickProjectModal({
                 {/* Option 3: Vide */}
                 <button
                   onClick={handleEmptyProject}
-                  className="w-full p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
+                  className="w-full p-4  border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent transition-colors">
+                    <div className="p-3  bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent transition-colors">
                       <IconFolderPlus className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
@@ -468,7 +468,7 @@ export default function QuickProjectModal({
                       <button
                         key={project.documentId}
                         onClick={() => handleSelectSourceProject(project)}
-                        className={`w-full p-3 rounded-lg border !text-left transition-all ${
+                        className={`w-full p-3  border !text-left transition-all ${
                           isLast 
                             ? 'border-accent bg-accent-light hover:bg-accent-light' 
                             : 'border-default hover:border-accent bg-card hover:bg-hover'
@@ -527,7 +527,7 @@ export default function QuickProjectModal({
                     <button
                       key={template.id}
                       onClick={() => handleSelectTemplate(template)}
-                      className="p-4 rounded-xl border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
+                      className="p-4  border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                     >
                       <div className="text-2xl mb-2">{template.icon}</div>
                       <h3 className="font-semibold !text-primary !text-sm">
@@ -567,7 +567,7 @@ export default function QuickProjectModal({
 
                 {/* Résumé de la source */}
                 {selectedSourceProject && (
-                  <div className="p-3 rounded-lg bg-accent-light border border-accent">
+                  <div className="p-3  bg-accent-light border border-accent">
                     <div className="flex items-center gap-2 !text-sm">
                       <IconCopy className="w-4 h-4 !text-accent" />
                       <span className="text-accent font-medium">
@@ -588,7 +588,7 @@ export default function QuickProjectModal({
                 )}
 
                 {selectedTemplate && (
-                  <div className="p-3 rounded-lg bg-accent-light border border-accent">
+                  <div className="p-3  bg-accent-light border border-accent">
                     <div className="flex items-center gap-2 !text-sm">
                       <IconTemplate className="w-4 h-4 !text-accent" />
                       <span className="text-accent font-medium">
@@ -650,7 +650,7 @@ export default function QuickProjectModal({
                   </div>
 
                   {/* Timing scope */}
-                  <div className="p-3 rounded-lg border border-default bg-muted space-y-3">
+                  <div className="p-3  border border-default bg-muted space-y-3">
                     <div className="flex items-center gap-2 !text-sm font-medium !text-secondary">
                       <IconClock className="w-4 h-4" />
                       {t('timing_scope') || 'Périmètre temporel'} *
@@ -659,7 +659,7 @@ export default function QuickProjectModal({
                       {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
-                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
+                      <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                         <input
                           type="radio"
                           name="timing_mode_quick"
@@ -669,7 +669,7 @@ export default function QuickProjectModal({
                         />
                         {t('timing_scope_duration') || 'Durée'}
                       </label>
-                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
+                      <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                         <input
                           type="radio"
                           name="timing_mode_quick"

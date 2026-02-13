@@ -431,7 +431,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-card border border-default rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-card border border-default  w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
@@ -447,7 +447,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
             </div>
             <button
               onClick={handleClose}
-              className="p-2 rounded-lg hover:bg-card-hover transition-colors"
+              className="p-2  hover:bg-card-hover transition-colors"
             >
               <IconX className="w-5 h-5 !text-secondary" />
             </button>
@@ -457,7 +457,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {/* Error message */}
             {error && (
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-danger-light border border-danger">
+              <div className="flex items-center gap-3 p-4  bg-danger-light border border-danger">
                 <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
                 <p className="text-danger !text-sm">{error}</p>
               </div>
@@ -475,7 +475,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                       key={option.value}
                       onClick={() => setImportMode(option.value)}
                       className={`
-                        flex flex-col items-center gap-2 p-4 rounded-xl border transition-all !text-center
+                        flex flex-col items-center gap-2 p-4  border transition-all !text-center
                         ${importMode === option.value 
                           ? 'bg-accent-light border-accent !text-accent' 
                           : 'bg-card border-default hover:border-accent !text-secondary hover:!text-primary'
@@ -499,7 +499,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                 onDragLeave={handleDragLeave}
                 onClick={() => fileInputRef.current?.click()}
                 className={`
-                  border-2 border-dashed rounded-2xl p-12 !text-center cursor-pointer transition-all
+                  border-2 border-dashed  p-12 !text-center cursor-pointer transition-all
                   ${isDragging 
                     ? 'border-accent bg-accent-light scale-[1.02]' 
                     : 'border-default hover:border-accent hover:bg-card-hover'
@@ -514,7 +514,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                   className="hidden"
                 />
                 <div className="flex flex-col items-center gap-4">
-                  <div className={`p-4 rounded-2xl ${isDragging ? 'bg-accent-light' : 'bg-card-hover'}`}>
+                  <div className={`p-4  ${isDragging ? 'bg-accent-light' : 'bg-card-hover'}`}>
                     <IconUpload className={`w-8 h-8 ${isDragging ? 'text-accent' : 'text-secondary'}`} />
                   </div>
                   <div>
@@ -543,7 +543,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                     value={emailListText}
                     onChange={(e) => setEmailListText(e.target.value)}
                     placeholder={t('import_email_placeholder') || 'jean@example.com, marie@example.com\nou un email par ligne...'}
-                    className="w-full h-40 p-4 rounded-xl bg-page border border-default focus:border-accent focus:outline-none resize-none !text-primary placeholder:!text-secondary/50"
+                    className="w-full h-40 p-4  bg-page border border-default focus:border-accent focus:outline-none resize-none !text-primary placeholder:!text-secondary/50"
                   />
                   <p className="!text-xs !text-secondary">
                     {t('import_email_hint') || 'Séparez les emails par des virgules, points-virgules ou retours à la ligne'}
@@ -552,7 +552,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                 <button
                   onClick={() => processEmailList(emailListText)}
                   disabled={!emailListText.trim()}
-                  className="btn-primary px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary px-6 py-2  disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {t('import_parse_emails') || 'Analyser les emails'}
                 </button>
@@ -561,11 +561,11 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
 
             {/* Format hints */}
             {importedClients.length === 0 && importMode === 'json' && (
-              <div className="p-4 rounded-xl bg-info-light border border-info">
+              <div className="p-4  bg-info-light border border-info">
                 <p className="text-sm !text-secondary mb-2">
                   {t('import_list') || 'Format JSON attendu :'}
                 </p>
-                <pre className="!text-xs !text-secondary bg-page p-3 rounded-lg overflow-x-auto">
+                <pre className="!text-xs !text-secondary bg-page p-3  overflow-x-auto">
 {`[
   {
     "name": "John Doe",
@@ -579,11 +579,11 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
             )}
 
             {importedClients.length === 0 && importMode === 'csv' && (
-              <div className="p-4 rounded-xl bg-info-light border border-info">
+              <div className="p-4  bg-info-light border border-info">
                 <p className="text-sm !text-secondary mb-2">
                   {t('import_csv_format') || 'Format CSV attendu :'}
                 </p>
-                <pre className="!text-xs !text-secondary bg-page p-3 rounded-lg overflow-x-auto">
+                <pre className="!text-xs !text-secondary bg-page p-3  overflow-x-auto">
 {`email,name,company,website
 john@example.com,John Doe,Acme Inc,www.acme.com
 marie@example.com,Marie Dupont,Tech Corp,tech.com`}
@@ -614,7 +614,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                       setImportedClients([]);
                       setError(null);
                     }}
-                    className="ml-auto flex items-center gap-2 !text-sm !text-secondary btn-secondary px-4 py-2 rounded-lg hover:!text-primary transition-colors"
+                    className="ml-auto flex items-center gap-2 !text-sm !text-secondary btn-secondary px-4 py-2  hover:!text-primary transition-colors"
                   >
                     <IconReload
                       className="w-4 h-4"
@@ -624,7 +624,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 </div>
 
                 {/* Table */}
-                <div className="overflow-x-auto rounded-xl border border-default">
+                <div className="overflow-x-auto  border border-default">
                   <table className="w-full">
                     <thead className="bg-card-hover">
                       <tr>
@@ -707,7 +707,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                           <td className="px-4 py-3 !text-center">
                             <button
                               onClick={() => removeClient(index)}
-                              className="p-1.5 rounded-lg hover:bg-danger-light !text-secondary hover:!text-danger transition-colors"
+                              className="p-1.5  hover:bg-danger-light !text-secondary hover:!text-danger transition-colors"
                               title={t('remove') || 'Supprimer'}
                             >
                               <IconTrash className="w-4 h-4" />
@@ -721,7 +721,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
 
                 {/* Error list */}
                 {invalidCount > 0 && (
-                  <div className="p-4 rounded-xl bg-warning-light border border-warning">
+                  <div className="p-4  bg-warning-light border border-warning">
                     <p className="text-sm !text-warning-text font-medium mb-2">
                       {t('import_errors_found') || 'Erreurs détectées :'}
                     </p>
@@ -741,7 +741,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 )}
 
                 {/* Duplicate action selector */}
-                <div className="p-4 rounded-xl bg-card-hover border border-default">
+                <div className="p-4  bg-card-hover border border-default">
                   <div className="flex items-center gap-2 mb-3">
                     <IconAlertCircle className="w-5 h-5 !text-warning" />
                     <p className="text-sm font-medium !text-primary">
@@ -753,7 +753,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                       <label
                         key={option.value}
                         className={`
-                          flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all border
+                          flex items-start gap-3 p-3  cursor-pointer transition-all border
                           ${duplicateAction === option.value 
                             ? 'bg-warning-light border-warning' 
                             : 'bg-card border-default hover:border-warning'
@@ -787,7 +787,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 </div>
 
                 {/* Duplicate check mode selector */}
-                <div className="p-4 rounded-xl bg-card-hover border border-default">
+                <div className="p-4  bg-card-hover border border-default">
                   <div className="flex items-center gap-2 mb-3">
                     <IconInfoCircle className="w-5 h-5 !text-accent" />
                     <p className="text-sm font-medium !text-primary">
@@ -799,7 +799,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                       <label
                         key={option.value}
                         className={`
-                          flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all border
+                          flex items-start gap-3 p-3  cursor-pointer transition-all border
                           ${duplicateCheckMode === option.value 
                             ? 'bg-accent-light border-accent' 
                             : 'bg-card border-default hover:border-accent'
@@ -839,14 +839,14 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
           <div className="flex items-center justify-end gap-3 p-6 border-t border-default bg-card-hover">
             <button
               onClick={handleClose}
-              className="px-4 py-2 rounded-lg !text-secondary hover:!text-primary hover:bg-card-hover transition-colors"
+              className="px-4 py-2  !text-secondary hover:!text-primary hover:bg-card-hover transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>
             <button
               onClick={handleImport}
               disabled={validCount === 0 || isImporting}
-              className="btn-primary px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary px-6 py-2  flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isImporting ? (
                 <>

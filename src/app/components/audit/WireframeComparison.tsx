@@ -69,7 +69,7 @@ export default function WireframeComparison({
       {/* Header */}
       <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">
         <div className="flex items-center gap-3">
-          <div className="p-1.5 bg-accent-light rounded-lg">
+          <div className="p-1.5 bg-accent-light ">
             <IconLayoutGrid className="w-4 h-4 !text-accent" />
           </div>
           <div>
@@ -83,10 +83,10 @@ export default function WireframeComparison({
         </div>
 
         {/* Tab Toggle */}
-        <div className="flex bg-card rounded-lg p-1 border border-default">
+        <div className="flex bg-card  p-1 border border-default">
           <button
             onClick={() => setActiveTab('comparison')}
-            className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 !text-xs font-medium  transition-colors ${
               activeTab === 'comparison'
                 ? 'bg-accent !text-white'
                 : 'text-muted hover:!text-primary'
@@ -96,7 +96,7 @@ export default function WireframeComparison({
           </button>
           <button
             onClick={() => setActiveTab('overlay')}
-            className={`px-3 py-1.5 !text-xs font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 !text-xs font-medium  transition-colors ${
               activeTab === 'overlay'
                 ? 'bg-accent !text-white'
                 : 'text-muted hover:!text-primary'
@@ -123,7 +123,7 @@ export default function WireframeComparison({
                 </span>
               </div>
               
-              <div className="relative bg-muted rounded-lg p-4 min-h-[400px] border border-default">
+              <div className="relative bg-muted  p-4 min-h-[400px] border border-default">
                 {/* Wireframe blocks - Current */}
                 <div className="space-y-2">
                   {detectedSections
@@ -139,7 +139,7 @@ export default function WireframeComparison({
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.05 }}
-                          className={`${colors.bg} border ${colors.border} rounded-lg p-3 flex items-center justify-between`}
+                          className={`${colors.bg} border ${colors.border}  p-3 flex items-center justify-between`}
                           style={{ minHeight: `${Math.min(height * 0.5, 60)}px` }}
                         >
                           <div className="flex items-center gap-2">
@@ -159,7 +159,7 @@ export default function WireframeComparison({
                   
                   {/* Missing sections indicator */}
                   {missingCritical.length > 0 && (
-                    <div className="border-2 border-dashed border-danger rounded-lg p-3 mt-4">
+                    <div className="border-2 border-dashed border-danger  p-3 mt-4">
                       <div className="flex items-center gap-2 !text-danger mb-2">
                         <IconX className="w-4 h-4" />
                         <span className="text-sm font-medium">
@@ -190,7 +190,7 @@ export default function WireframeComparison({
                 </span>
               </div>
               
-              <div className="relative bg-muted rounded-lg p-4 min-h-[400px] border border-success">
+              <div className="relative bg-muted  p-4 min-h-[400px] border border-success">
                 {/* Wireframe blocks - Ideal */}
                 <div className="space-y-2">
                   {idealSections
@@ -205,7 +205,7 @@ export default function WireframeComparison({
                           initial={{ opacity: 0, x: 10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.05 }}
-                          className={`${colors.bg} border ${colors.border} rounded-lg p-3`}
+                          className={`${colors.bg} border ${colors.border}  p-3`}
                         >
                           <div className="flex items-center justify-between mb-1">
                             <div className="flex items-center gap-2">
@@ -239,7 +239,7 @@ export default function WireframeComparison({
           /* Overlay View */
           <div className="relative">
             {screenshotViewport ? (
-              <div className="relative rounded-lg overflow-hidden">
+              <div className="relative  overflow-hidden">
                 {/* Screenshot */}
                 <img
                   src={`data:image/png;base64,${screenshotViewport}`}
@@ -250,7 +250,7 @@ export default function WireframeComparison({
                 {/* Toggle overlay button */}
                 <button
                   onClick={() => setShowOverlay(!showOverlay)}
-                  className="absolute top-3 right-3 px-3 py-1.5 bg-black/70 !text-white !text-sm rounded-lg flex items-center gap-2 hover:bg-black/80 transition-colors"
+                  className="absolute top-3 right-3 px-3 py-1.5 bg-black/70 !text-white !text-sm  flex items-center gap-2 hover:bg-black/80 transition-colors"
                 >
                   {showOverlay ? (
                     <>
@@ -294,7 +294,7 @@ export default function WireframeComparison({
                 )}
               </div>
             ) : (
-              <div className="bg-muted rounded-lg p-12 !text-center">
+              <div className="bg-muted  p-12 !text-center">
                 <IconEyeOff className="w-12 h-12 mx-auto mb-3 !text-muted opacity-50" />
                 <p className="text-muted">
                   {t('no_screenshot_for_overlay') || 'Capture d\'écran requise pour l\'overlay'}
@@ -331,7 +331,7 @@ export default function WireframeComparison({
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-4 bg-warning-light border border-warning rounded-lg"
+            className="mt-4 p-4 bg-warning-light border border-warning "
           >
             <div className="flex items-start gap-3">
               <IconArrowRight className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />

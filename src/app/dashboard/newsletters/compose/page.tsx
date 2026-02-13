@@ -182,7 +182,7 @@ function EmailPreview({
   const fontStyle = { fontFamily: emailFontFamily };
 
   return (
-    <div className="bg-white rounded-lg shadow-xl overflow-hidden w-full !text-gray-800" style={fontStyle}>
+    <div className="bg-white  shadow-xl overflow-hidden w-full !text-gray-800" style={fontStyle}>
       {/* Header with template-specific styling */}
       <div 
         className={`text-center ${isAnnouncement ? 'py-12' : 'py-8'}`}
@@ -239,7 +239,7 @@ function EmailPreview({
           <div className="text-center my-8">
             <a 
               href={ctaUrl}
-              className={`inline-block px-8 py-4 rounded-lg font-bold shadow-lg ${
+              className={`inline-block px-8 py-4  font-bold shadow-lg ${
                 isPromo ? 'text-lg' : ''
               }`}
               style={{ 
@@ -363,17 +363,17 @@ function EmailPreview({
                 <img 
                   src={footerLogoUrl} 
                   alt="Logo" 
-                  className="w-16 h-16 rounded-lg object-cover"
+                  className="w-16 h-16  object-cover"
                 />
               ) : userProfilePicture ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img 
                   src={userProfilePicture}
                   alt="Profile"
-                  className="w-16 h-16 rounded-lg object-cover"
+                  className="w-16 h-16  object-cover"
                 />
               ) : (
-                <div className="w-16 h-16 rounded-lg bg-gray-300 flex items-center justify-center">
+                <div className="w-16 h-16  bg-gray-300 flex items-center justify-center">
                   <IconUser className="w-8 h-8 !text-info " />
                 </div>
               )}
@@ -454,7 +454,7 @@ function EmailPreview({
               <img 
                 src={bannerImageUrl || signatureData?.banner_url || ''} 
                 alt="Bannière" 
-                className="w-full rounded-lg object-contain max-h-48"
+                className="w-full  object-contain max-h-48"
               />
             </a>
           ) : (
@@ -462,7 +462,7 @@ function EmailPreview({
             <img 
               src={bannerImageUrl || signatureData?.banner_url || ''} 
               alt="Bannière" 
-              className="w-full rounded-lg object-contain max-h-48"
+              className="w-full  object-contain max-h-48"
             />
           )}
         </div>
@@ -828,7 +828,7 @@ function RichTextEditor({
   const colors = ['#000000', '#374151', '#7C3AED', '#EC4899', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
 
   return (
-    <div className="border border-default rounded-xl overflow-hidden bg-card">
+    <div className="border border-default  overflow-hidden bg-card">
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-1 p-2 bg-muted border-b border-default">
         {/* Text Style */}
@@ -942,7 +942,7 @@ function RichTextEditor({
             <IconColorSwatch className="w-4 h-4" />
           </button>
           {showColorPicker && (
-            <div className="absolute top-full left-0 mt-1 p-2 bg-card border border-default rounded-lg shadow-lg z-10 flex gap-1">
+            <div className="absolute top-full left-0 mt-1 p-2 bg-card border border-default  shadow-lg z-10 flex gap-1">
               {colors.map(color => (
                 <button
                   key={color}
@@ -974,7 +974,7 @@ function RichTextEditor({
             <IconLink className="w-4 h-4" />
           </button>
           {showLinkInput && (
-            <div className="absolute top-full left-0 mt-1 p-2 bg-card border border-default rounded-lg shadow-lg z-10 flex gap-2">
+            <div className="absolute top-full left-0 mt-1 p-2 bg-card border border-default  shadow-lg z-10 flex gap-2">
               <input
                 type="url"
                 value={linkUrl}
@@ -1016,7 +1016,7 @@ function RichTextEditor({
             </button>
             
             {showImagePicker && (
-              <div className="absolute top-full right-0 mt-1 w-48 bg-card border border-default rounded-lg shadow-xl z-20 overflow-hidden">
+              <div className="absolute top-full right-0 mt-1 w-48 bg-card border border-default  shadow-xl z-20 overflow-hidden">
                 {!showImageUrlInput ? (
                   <>
                     <button
@@ -1103,7 +1103,7 @@ function RichTextEditor({
             </button>
             
             {showVideoPicker && (
-              <div className="absolute top-full right-0 mt-1 w-48 bg-card border border-default rounded-lg shadow-xl z-20 overflow-hidden">
+              <div className="absolute top-full right-0 mt-1 w-48 bg-card border border-default  shadow-xl z-20 overflow-hidden">
                 {!showVideoUrlInput ? (
                   <>
                     <button
@@ -1176,7 +1176,7 @@ function RichTextEditor({
         {/* Media Toolbar - appears when media is selected */}
         {selectedMedia && !isResizing && (
           <div 
-            className="absolute z-20 flex items-center gap-1 p-1.5 bg-gray-900 rounded-lg shadow-xl"
+            className="absolute z-20 flex items-center gap-1 p-1.5 bg-gray-900  shadow-xl"
             style={{ 
               top: mediaToolbarPosition.top,
               left: mediaToolbarPosition.left,
@@ -1264,7 +1264,7 @@ function RichTextEditor({
           <>
             {/* Corner handles for resizing */}
             <div
-              className="absolute w-3 h-3 bg-accent border-2 border-white rounded-sm cursor-se-resize z-30 shadow"
+              className="absolute w-3 h-3 bg-accent border-2 border-white  cursor-se-resize z-30 shadow"
               style={{
                 top: (selectedMedia.offsetTop || 0) + selectedMedia.offsetHeight - 6,
                 left: (selectedMedia.offsetLeft || 0) + selectedMedia.offsetWidth - 6,
@@ -1301,7 +1301,7 @@ function RichTextEditor({
         {/* Selection indicator */}
         {selectedMedia && (
           <div
-            className="absolute pointer-events-none border-2 border-accent rounded-lg"
+            className="absolute pointer-events-none border-2 border-accent "
             style={{
               top: selectedMedia.offsetTop,
               left: selectedMedia.offsetLeft,
@@ -2635,7 +2635,7 @@ export default function ComposeNewsletterPage() {
               <div className="flex items-center gap-4">
                 <Link 
                   href="/dashboard/newsletters"
-                  className="p-2 rounded-lg hover:bg-hover transition-colors !text-secondary"
+                  className="p-2  hover:bg-hover transition-colors !text-secondary"
                 >
                   <IconArrowLeft className="w-5 h-5" />
                 </Link>
@@ -2659,7 +2659,7 @@ export default function ComposeNewsletterPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setShowPreview(!showPreview)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
+                  className={`flex items-center gap-2 px-4 py-2  transition-colors
                     ${showPreview ? 'bg-accent !text-white' : 'bg-muted hover:bg-hover !text-secondary'}`}
                 >
                   <IconEye className="w-4 h-4" />
@@ -2670,7 +2670,7 @@ export default function ComposeNewsletterPage() {
                   <button
                     onClick={handleSend}
                     disabled={sending || selectedRecipients.length === 0}
-                    className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium
+                    className={`flex items-center gap-2 px-6 py-2  font-medium
                       hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed
                       ${scheduledAt ? 'bg-purple-600' : 'bg-accent'}`}
                   >
@@ -2703,7 +2703,7 @@ export default function ComposeNewsletterPage() {
                         setCurrentStep(step.id);
                       }
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all
+                    className={`flex items-center gap-2 px-4 py-2  transition-all
                       ${currentStep === step.id 
                         ? 'bg-accent-light !text-white' 
                         : index < stepIndex 
@@ -2755,7 +2755,7 @@ export default function ComposeNewsletterPage() {
                             onClick={() => handleSelectTemplate(template.id)}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className={`relative p-5 rounded-2xl border transition-all !text-left
+                            className={`relative p-5  border transition-all !text-left
                               ${isSelected 
                                 ? 'border-default !shadow-lg !shadow-accent/20' 
                                 : 'border-default hover:border-accent-light'
@@ -2773,7 +2773,7 @@ export default function ComposeNewsletterPage() {
                             )}
                             
                             <div 
-                              className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${
+                              className={`w-12 h-12  flex items-center justify-center mb-3 ${
                                 isSelected ? 'bg-white/40' : ''
                               }`}
                               style={isSelected ? { color: '#374151' } : { 
@@ -2833,7 +2833,7 @@ export default function ComposeNewsletterPage() {
                               <motion.div
                                 key={template.documentId}
                                 whileHover={{ scale: 1.02 }}
-                                className={`relative p-4 rounded-xl border transition-all !text-left bg-card group ${
+                                className={`relative p-4  border transition-all !text-left bg-card group ${
                                   isActive 
                                     ? 'border-accent border-2 border-accent' 
                                     : 'border-default hover:border-accent'
@@ -2866,7 +2866,7 @@ export default function ComposeNewsletterPage() {
                                   <div className="flex items-center gap-2 mb-2">
                                     {/* Gradient preview */}
                                     <div 
-                                      className="w-10 h-6 rounded-md border border-default flex-shrink-0"
+                                      className="w-10 h-6  border border-default flex-shrink-0"
                                       style={{
                                         background: template.gradient_stops?.length > 0
                                           ? `linear-gradient(${template.gradient_angle}deg, ${
@@ -2915,7 +2915,7 @@ export default function ComposeNewsletterPage() {
                                       handleUpdateTemplate(template.documentId);
                                     }}
                                     disabled={isUpdating || isDeleting}
-                                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 !text-xs rounded-lg bg-accent-light !text-accent hover:border-accent-light transition-colors disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 !text-xs  bg-accent-light !text-accent hover:border-accent-light transition-colors disabled:opacity-50"
                                     title={t('update_theme') || 'Mettre à jour avec les paramètres actuels'}
                                   >
                                     {isUpdating ? (
@@ -2935,7 +2935,7 @@ export default function ComposeNewsletterPage() {
                                       }
                                     }}
                                     disabled={isUpdating || isDeleting}
-                                    className="flex items-center justify-center p-1.5 !text-xs rounded-lg bg-red-500/10 !text-red-500 hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                                    className="flex items-center justify-center p-1.5 !text-xs  bg-red-500/10 !text-red-500 hover:bg-red-500/20 transition-colors disabled:opacity-50"
                                     title={t('delete_theme') || 'Supprimer ce thème'}
                                   >
                                     {isDeleting ? (
@@ -3003,7 +3003,7 @@ export default function ComposeNewsletterPage() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setShowThemeSettings(!showThemeSettings)}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
+                          className={`flex items-center gap-2 px-4 py-2  transition-colors
                             ${showThemeSettings ? 'bg-accent !text-white' : 'bg-muted hover:bg-hover !text-secondary'}`}
                         >
                           <IconPalette className="w-4 h-4 !text-primary" />
@@ -3011,7 +3011,7 @@ export default function ComposeNewsletterPage() {
                         </button>
                         <button
                           onClick={() => setShowFooterSettings(!showFooterSettings)}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
+                          className={`flex items-center gap-2 px-4 py-2  transition-colors
                             ${showFooterSettings ? 'bg-accent !text-white' : 'bg-muted hover:bg-hover !text-secondary'}`}
                         >
                           <IconSettings className="w-4 h-4" />
@@ -3029,7 +3029,7 @@ export default function ComposeNewsletterPage() {
                           exit={{ opacity: 0, height: 0 }}
                           className="overflow-hidden"
                         >
-                          <div className="bg-muted rounded-xl p-6 space-y-4 border border-default">
+                          <div className="bg-muted  p-6 space-y-4 border border-default">
                             <h3 className="font-semibold !text-primary flex items-center gap-2">
                               <IconSettings className="w-5 h-5" />
                               {t('customize_footer')}
@@ -3204,7 +3204,7 @@ export default function ComposeNewsletterPage() {
                     </AnimatePresence>
 
                     {/* Title */}
-                    <div className="bg-card rounded-xl p-6 border border-default space-y-4">
+                    <div className="bg-card  p-6 border border-default space-y-4">
                       <div>
                         <label className="block !text-sm font-medium !text-secondary mb-2">
                           {t('email_title_label')} *
@@ -3233,7 +3233,7 @@ export default function ComposeNewsletterPage() {
                     </div>
 
                     {/* Rich Text Editor */}
-                    <div className="bg-card rounded-xl p-6 border border-default space-y-4">
+                    <div className="bg-card  p-6 border border-default space-y-4">
                       <h3 className="font-semibold !text-primary">{t('message_label')} *</h3>
                       
                       {/* Hidden file inputs for content media */}
@@ -3302,7 +3302,7 @@ export default function ComposeNewsletterPage() {
                                 {contentImages.map((img, idx) => (
                                   <div key={idx} className="relative group">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={img} alt="" className="w-24 h-24 object-cover rounded-lg" />
+                                    <img src={img} alt="" className="w-24 h-24 object-cover " />
                                     <button
                                       onClick={() => removeImage(img, idx)}
                                       className="absolute -top-2 -right-2 p-1 bg-danger !text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -3327,7 +3327,7 @@ export default function ComposeNewsletterPage() {
                                   <div key={idx} className="relative group">
                                     <video 
                                       src={video} 
-                                      className="w-32 h-24 object-cover rounded-lg bg-gray-900"
+                                      className="w-32 h-24 object-cover  bg-gray-900"
                                       preload="metadata"
                                     />
                                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -3351,7 +3351,7 @@ export default function ComposeNewsletterPage() {
                     </div>
 
                     {/* CTA */}
-                    <div className="bg-card rounded-xl p-6 border border-default space-y-4">
+                    <div className="bg-card  p-6 border border-default space-y-4">
                       <h3 className="font-semibold !text-primary">{t('cta_section_title')}</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -3382,7 +3382,7 @@ export default function ComposeNewsletterPage() {
                     </div>
 
                     {/* Banner Image */}
-                    <div className="bg-card rounded-xl p-6 border border-default space-y-4">
+                    <div className="bg-card  p-6 border border-default space-y-4">
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold !text-primary">{t('banner_section_title') || 'Bannière de fin'}</h3>
                         {signatureData?.banner_url && !bannerImageUrl && (
@@ -3398,7 +3398,7 @@ export default function ComposeNewsletterPage() {
                       
                       {bannerImageUrl ? (
                         <div className="relative">
-                          <div className="relative rounded-xl overflow-hidden border border-default">
+                          <div className="relative  overflow-hidden border border-default">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img 
                               src={bannerImageUrl} 
@@ -3409,14 +3409,14 @@ export default function ComposeNewsletterPage() {
                           <div className="absolute top-3 right-3 flex gap-2">
                             <button
                               onClick={openBannerPicker}
-                              className="p-2 rounded-lg bg-white/90 hover:bg-white !text-gray-700 shadow-lg transition-all"
+                              className="p-2  bg-white/90 hover:bg-white !text-gray-700 shadow-lg transition-all"
                               title={t('change_image') || 'Changer l\'image'}
                             >
                               <IconPhoto className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => setBannerImageUrl('')}
-                              className="p-2 rounded-lg bg-red-500/90 hover:bg-red-500 !text-white shadow-lg transition-all"
+                              className="p-2  bg-red-500/90 hover:bg-red-500 !text-white shadow-lg transition-all"
                               title={t('remove_image') || 'Supprimer'}
                             >
                               <IconX className="w-4 h-4" />
@@ -3433,7 +3433,7 @@ export default function ComposeNewsletterPage() {
                       ) : (
                         <div 
                           onClick={openBannerPicker}
-                          className="border-2 border-dashed border-default rounded-xl p-6 !text-center 
+                          className="border-2 border-dashed border-default  p-6 !text-center 
                             hover:border-accent hover:bg-accent-light/30 transition-all cursor-pointer group"
                         >
                           <IconUpload className="w-8 h-8 mx-auto mb-2 !text-muted group-hover:!text-accent transition-colors" />
@@ -3468,7 +3468,7 @@ export default function ComposeNewsletterPage() {
                     <p className="text-secondary mb-6">{t('select_recipients_desc')}</p>
 
                     {/* Manual email input with suggestions */}
-                    <div className="bg-card rounded-xl border border-default p-4 mb-4">
+                    <div className="bg-card  border border-default p-4 mb-4">
                       <h3 className="font-semibold !text-primary mb-3 flex items-center gap-2">
                         <IconMail className="w-5 h-5 !text-accent" />
                         {t('add_recipient_manually') || 'Ajouter un destinataire'}
@@ -3499,7 +3499,7 @@ export default function ComposeNewsletterPage() {
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: -10 }}
-                                  className="absolute bottom-full left-0 right-0 mb-2 bg-card border border-default rounded-xl shadow-xl z-20 overflow-hidden"
+                                  className="absolute bottom-full left-0 right-0 mb-2 bg-card border border-default  shadow-xl z-20 overflow-hidden"
                                 >
                                   {filteredSuggestions.length > 0 ? (
                                     <div className="max-h-[200px] overflow-y-auto">
@@ -3565,7 +3565,7 @@ export default function ComposeNewsletterPage() {
                             type="button"
                             onClick={() => handleAddManualEmail(emailInput)}
                             disabled={!emailInput.includes('@')}
-                            className="px-4 py-2 rounded-lg bg-accent !text-white font-medium 
+                            className="px-4 py-2  bg-accent !text-white font-medium 
                               hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                           >
                             {t('add') || 'Ajouter'}
@@ -3604,7 +3604,7 @@ export default function ComposeNewsletterPage() {
                     </div>
 
                     {/* Existing clients list */}
-                    <div className="bg-card rounded-xl border border-default overflow-hidden">
+                    <div className="bg-card  border border-default overflow-hidden">
                       <div className="p-4 bg-muted border-b border-default flex items-center justify-between">
                         <label className="flex items-center gap-3 cursor-pointer">
                           <input
@@ -3682,9 +3682,9 @@ export default function ComposeNewsletterPage() {
 
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-card rounded-xl p-5 border border-default">
+                        <div className="bg-card  p-5 border border-default">
                           <div className="flex items-center gap-3 mb-3">
-                            <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center">
+                            <div className="w-10 h-10  bg-accent-light flex items-center justify-center">
                               <IconTemplate className="w-5 h-5 !text-accent" />
                             </div>
                             <span className="text-sm !text-secondary">{t('step_template')}</span>
@@ -3694,9 +3694,9 @@ export default function ComposeNewsletterPage() {
                           </p>
                         </div>
 
-                        <div className="bg-card rounded-xl p-5 border border-default">
+                        <div className="bg-card  p-5 border border-default">
                           <div className="flex items-center gap-3 mb-3">
-                            <div className="w-10 h-10 rounded-lg bg-info-light flex items-center justify-center">
+                            <div className="w-10 h-10  bg-info-light flex items-center justify-center">
                               <IconMail className="w-5 h-5 !text-info" />
                             </div>
                             <span className="text-sm !text-secondary">{t('subject')}</span>
@@ -3706,9 +3706,9 @@ export default function ComposeNewsletterPage() {
                           </p>
                         </div>
 
-                        <div className="bg-card rounded-xl p-5 border border-default">
+                        <div className="bg-card  p-5 border border-default">
                           <div className="flex items-center gap-3 mb-3">
-                            <div className="w-10 h-10 rounded-lg bg-success-light flex items-center justify-center">
+                            <div className="w-10 h-10  bg-success-light flex items-center justify-center">
                               <IconUsers className="w-5 h-5 !text-success-text -text" />
                             </div>
                             <span className="text-sm !text-secondary">{t('step_recipients')}</span>
@@ -3719,7 +3719,7 @@ export default function ComposeNewsletterPage() {
                         </div>
                       </div>
 
-                      <div className="bg-card rounded-xl p-5 border border-default">
+                      <div className="bg-card  p-5 border border-default">
                         <h3 className="font-semibold !text-primary mb-3">{t('step_recipients')}</h3>
                         <div className="flex flex-wrap gap-2">
                           {/* Clients sélectionnés */}
@@ -3780,7 +3780,7 @@ export default function ComposeNewsletterPage() {
                           <button
                             onClick={handleSend}
                             disabled={sending}
-                            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-page hover:bg-accent-light !text-primary font-semibold
+                            className="flex items-center gap-2 px-8 py-3  bg-page hover:bg-accent-light !text-primary font-semibold
                               hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-accent/25"
                           >
                             {sending ? (
@@ -3811,7 +3811,7 @@ export default function ComposeNewsletterPage() {
                 <button
                   onClick={handlePrevStep}
                   disabled={currentStep === 'template'}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg !text-secondary hover:!text-primary
+                  className="flex items-center gap-2 px-4 py-2  !text-secondary hover:!text-primary
                     disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <IconChevronLeft className="w-5 h-5" />
@@ -3822,7 +3822,7 @@ export default function ComposeNewsletterPage() {
                   <button
                     onClick={handleNextStep}
                     disabled={!canProceed()}
-                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-accent !text-accent font-medium
+                    className="flex items-center gap-2 px-6 py-2  bg-accent !text-accent font-medium
                       hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     <span>{t('next')}</span>
@@ -3850,10 +3850,10 @@ export default function ComposeNewsletterPage() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-card rounded-2xl p-6 max-w-md w-full shadow-2xl border border-default"
+                className="bg-card  p-6 max-w-md w-full shadow-2xl border border-default"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-warning-light flex items-center justify-center">
+                  <div className="w-12 h-12  bg-warning-light flex items-center justify-center">
                     <IconSettings className="w-6 h-6 !text-warning" />
                   </div>
                   <div>
@@ -3866,7 +3866,7 @@ export default function ComposeNewsletterPage() {
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-xl bg-warning-light border border-warning mb-6">
+                <div className="p-4  bg-warning-light border border-warning mb-6">
                   <p className="text-sm !text-secondary">
                     {smtpConfig ? (
                       t('smtp_not_verified_warning') || 'Votre configuration SMTP n\'a pas été vérifiée. Testez la connexion et enregistrez pour continuer.'
@@ -3879,13 +3879,13 @@ export default function ComposeNewsletterPage() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setShowSmtpWarning(false)}
-                    className="flex-1 px-4 py-2.5 rounded-xl border border-default !text-secondary hover:bg-muted transition-colors"
+                    className="flex-1 px-4 py-2.5  border border-default !text-secondary hover:bg-muted transition-colors"
                   >
                     {t('cancel') || 'Annuler'}
                   </button>
                   <Link
                     href="/dashboard/settings?tab=email"
-                    className="flex-1 px-4 py-2.5 rounded-xl btn-primary flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-2.5  btn-primary flex items-center justify-center gap-2"
                   >
                     <IconSettings className="w-4 h-4" />
                     {t('configure_smtp') || 'Configurer'}
@@ -3910,7 +3910,7 @@ export default function ComposeNewsletterPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+                className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white  shadow-2xl overflow-hidden flex flex-col"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Mailbox Header */}
@@ -3924,12 +3924,12 @@ export default function ComposeNewsletterPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button className="p-2 hover:bg-gray-200 rounded-lg !text-gray-600">
+                    <button className="p-2 hover:bg-gray-200  !text-gray-600">
                       <IconRefresh className="w-5 h-5" />
                     </button>
                     <button 
                       onClick={() => setShowPreview(false)}
-                      className="p-2 hover:bg-gray-200 rounded-lg !text-gray-600"
+                      className="p-2 hover:bg-gray-200  !text-gray-600"
                     >
                       <IconX className="w-5 h-5" />
                     </button>
@@ -3940,24 +3940,24 @@ export default function ComposeNewsletterPage() {
                   {/* Sidebar - Folders */}
                   <div className="w-16 md:w-48 bg-gray-50 border-r border-gray-200 flex-shrink-0 hidden sm:block">
                     <div className="p-2 md:p-4 space-y-1">
-                      <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700 rounded-lg font-medium">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700  font-medium">
                         <IconInbox className="w-5 h-5" />
                         <span className="hidden md:inline">{t('inbox')}</span>
                         <span className="hidden md:inline ml-auto bg-blue-500 !text-white !text-xs px-2 py-0.5 rounded-full">1</span>
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
                         <IconStar className="w-5 h-5" />
                         <span className="hidden md:inline">{t('favorites')}</span>
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
                         <IconSend className="w-5 h-5" />
                         <span className="hidden md:inline">{t('sent_folder')}</span>
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
                         <IconArchive className="w-5 h-5" />
                         <span className="hidden md:inline">{t('archives')}</span>
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+                      <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
                         <IconTrash className="w-5 h-5" />
                         <span className="hidden md:inline">{t('trash')}</span>
                       </button>
@@ -3973,7 +3973,7 @@ export default function ComposeNewsletterPage() {
                         <input 
                           type="text" 
                           placeholder={t('search_placeholder')}
-                          className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg !text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
+                          className="w-full !pl-10 !pr-4 py-2 !bg-gray-100  !text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
                         />
                       </div>
                     </div>
@@ -4049,13 +4049,13 @@ export default function ComposeNewsletterPage() {
                           {emailSubject || t('email_subject_label')}
                         </h2>
                         <div className="flex items-center gap-2">
-                          <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
+                          <button className="p-2 hover:bg-gray-100  !text-info ">
                             <IconArchive className="w-5 h-5" />
                           </button>
-                          <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
+                          <button className="p-2 hover:bg-gray-100  !text-info ">
                             <IconTrash className="w-5 h-5" />
                           </button>
-                          <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
+                          <button className="p-2 hover:bg-gray-100  !text-info ">
                             <IconDots className="w-5 h-5" />
                           </button>
                         </div>
@@ -4136,7 +4136,7 @@ export default function ComposeNewsletterPage() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-card rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden"
+                className="bg-card  shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden"
               >
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-default">
@@ -4145,7 +4145,7 @@ export default function ComposeNewsletterPage() {
                   </h2>
                   <button
                     onClick={() => setShowLibraryModal({ type: 'image', isOpen: false })}
-                    className="p-2 rounded-lg hover:bg-hover transition-colors !text-secondary hover:!text-primary"
+                    className="p-2  hover:bg-hover transition-colors !text-secondary hover:!text-primary"
                   >
                     <IconX className="w-5 h-5" />
                   </button>
@@ -4164,7 +4164,7 @@ export default function ComposeNewsletterPage() {
                           <button
                             key={idx}
                             onClick={() => insertMediaFromLibrary(img)}
-                            className="relative aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-accent transition-all group"
+                            className="relative aspect-square  overflow-hidden border-2 border-transparent hover:border-accent transition-all group"
                           >
                             <Image 
                               src={img} 
@@ -4193,7 +4193,7 @@ export default function ComposeNewsletterPage() {
                           <button
                             key={idx}
                             onClick={() => insertMediaFromLibrary(video)}
-                            className="relative aspect-video rounded-lg overflow-hidden border-2 border-transparent hover:border-accent transition-all group bg-gray-900"
+                            className="relative aspect-video  overflow-hidden border-2 border-transparent hover:border-accent transition-all group bg-gray-900"
                           >
                             <video 
                               src={video}

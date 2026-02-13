@@ -263,7 +263,7 @@ export default function Plans() {
                   delay: 0.15 * index,
                   ease: 'easeInOut',
                 }}
-                className="flex relative flex-col items-center justify-between bg-card backdrop-blur-sm border border-default rounded-xl p-8 animate-pulse"
+                className="flex relative flex-col items-center justify-between bg-card backdrop-blur-sm border border-default  p-8 animate-pulse"
               >
                 {/* Badge skeleton */}
                 <div className="absolute top-4 right-1/2 translate-x-1/2">
@@ -290,7 +290,7 @@ export default function Plans() {
                 </div>
 
                 {/* Button skeleton */}
-                <div className="w-full h-12 bg-muted rounded-lg"></div>
+                <div className="w-full h-12 bg-muted "></div>
               </motion.div>
             ))}
           </>
@@ -310,7 +310,7 @@ export default function Plans() {
               >
                 <motion.div
                   onClick={() => handlePlanClick(plan.name)}
-                  className={`flex relative flex-col items-center justify-between backdrop-blur-sm border rounded-xl p-8 transition-all duration-300 cursor-pointer ${styles.card}`}
+                  className={`flex relative flex-col items-center justify-between backdrop-blur-sm border  p-8 transition-all duration-300 cursor-pointer ${styles.card}`}
                   whileHover={{ scale: 1.02 }}
                 >
                   {plan.name === 'pro' && (
@@ -360,7 +360,7 @@ export default function Plans() {
                       e.stopPropagation();
                       handleChoosePlan(plan);
                     }}
-                    className={`w-full cursor-pointer font-semibold py-3 px-6 rounded-lg border transition-all duration-200 ${styles.button}`}
+                    className={`w-full cursor-pointer font-semibold py-3 px-6  border transition-all duration-200 ${styles.button}`}
                   >
                     {t('choose_plan')}
                   </button>
@@ -407,7 +407,7 @@ export default function Plans() {
             </h2>
             <div
               id="pricing-table"
-              className="bg-card backdrop-blur-sm border border-default rounded-xl overflow-hidden"
+              className="bg-card backdrop-blur-sm border border-default  overflow-hidden"
             >
               <div className="overflow-x-auto">
                 <table className="w-full">

@@ -404,7 +404,7 @@ export default function ProjectsPage() {
                 handleScheduleMeeting(row);
               }}
               title={t('schedule_meeting') || 'Planifier une réunion'}
-              className="p-1.5 lg:w-fit w-full rounded-lg cursor-pointer hover:bg-accent-light !text-muted hover:!text-accent transition-colors"
+              className="p-1.5 lg:w-fit w-full  cursor-pointer hover:bg-accent-light !text-muted hover:!text-accent transition-colors"
             >
               <IconCalendarEvent className="w-4 h-4" />
             </button>
@@ -417,7 +417,7 @@ export default function ProjectsPage() {
             title={activeTab === 'active' 
               ? (t('archive_project') || 'Archiver') 
               : (t('unarchive_project') || 'Restaurer')}
-            className={`p-1.5 lg:w-fit w-full rounded-lg cursor-pointer transition-colors ${
+            className={`p-1.5 lg:w-fit w-full  cursor-pointer transition-colors ${
               activeTab === 'active' 
                 ? 'hover:bg-warning-light !text-muted hover:!text-warning' 
                 : 'hover:bg-success-light !text-muted hover:!text-success'
@@ -571,7 +571,7 @@ export default function ProjectsPage() {
       <div className="mb-6 flex items-center gap-2">
         <button
           onClick={() => setActiveTab('active')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2  font-medium transition-all ${
             activeTab === 'active'
               ? 'bg-accent !text-white shadow-md'
               : 'bg-card !text-primary hover:bg-hover border border-default'
@@ -587,7 +587,7 @@ export default function ProjectsPage() {
         </button>
         <button
           onClick={() => setActiveTab('archived')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2  font-medium transition-all ${
             activeTab === 'archived'
               ? 'bg-warning !text-white shadow-md'
               : 'bg-card !text-primary hover:bg-hover border border-default'

@@ -145,7 +145,7 @@ export default function EmailPreviewModal({
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none overscroll-contain"
+            className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white  shadow-2xl overflow-hidden flex flex-col outline-none overscroll-contain"
             onClick={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}
           >
@@ -160,12 +160,12 @@ export default function EmailPreviewModal({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button className="p-2 hover:bg-gray-200 rounded-lg !text-gray-600">
+                <button className="p-2 hover:bg-gray-200  !text-gray-600">
                   <IconRefresh className="w-5 h-5" />
                 </button>
                 <button 
                   onClick={onClose}
-                  className="p-2 hover:bg-gray-200 rounded-lg !text-gray-600"
+                  className="p-2 hover:bg-gray-200  !text-gray-600"
                 >
                   <IconX className="w-5 h-5" />
                 </button>
@@ -176,24 +176,24 @@ export default function EmailPreviewModal({
               {/* Sidebar - Folders */}
               <div className="w-16 md:w-48 bg-gray-50 border-r border-gray-200 flex-shrink-0 hidden sm:block">
                 <div className="p-2 md:p-4 space-y-1">
-                  <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700 rounded-lg font-medium">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700  font-medium">
                     <IconInbox className="w-5 h-5" />
                     <span className="hidden md:inline">{t.inbox}</span>
                     <span className="hidden md:inline ml-auto bg-blue-500 !text-white !text-xs px-2 py-0.5 rounded-full">1</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
                     <IconStar className="w-5 h-5" />
                     <span className="hidden md:inline">{t.favorites}</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
                     <IconSend className="w-5 h-5" />
                     <span className="hidden md:inline">{t.sent_folder}</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
                     <IconArchive className="w-5 h-5" />
                     <span className="hidden md:inline">{t.archives}</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <button className="w-full flex items-center gap-3 px-3 py-2 !text-gray-600 hover:bg-gray-100 ">
                     <IconTrash className="w-5 h-5" />
                     <span className="hidden md:inline">{t.trash}</span>
                   </button>
@@ -209,7 +209,7 @@ export default function EmailPreviewModal({
                     <input 
                       type="text" 
                       placeholder={t.search_placeholder}
-                      className="w-full !pl-10 !pr-4 py-2 !bg-gray-100 rounded-lg !text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
+                      className="w-full !pl-10 !pr-4 py-2 !bg-gray-100  !text-sm !text-gray-700 placeholder:!text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 !border-zinc-400"
                       readOnly
                     />
                   </div>
@@ -288,13 +288,13 @@ export default function EmailPreviewModal({
                       {emailData.subject || 'Objet de l\'email'}
                     </h2>
                     <div className="flex items-center gap-2">
-                      <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
+                      <button className="p-2 hover:bg-gray-100  !text-info ">
                         <IconArchive className="w-5 h-5" />
                       </button>
-                      <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
+                      <button className="p-2 hover:bg-gray-100  !text-info ">
                         <IconTrash className="w-5 h-5" />
                       </button>
-                      <button className="p-2 hover:bg-gray-100 rounded-lg !text-info ">
+                      <button className="p-2 hover:bg-gray-100  !text-info ">
                         <IconDots className="w-5 h-5" />
                       </button>
                     </div>
@@ -335,7 +335,7 @@ export default function EmailPreviewModal({
                 {/* Email body - scrollable */}
                 <div className="flex-1 overflow-y-auto p-4 bg-gray-50 min-w-0">
                   <div className="w-full max-w-2xl mx-auto">
-                    <div className="bg-white rounded-xl shadow-xl overflow-hidden !text-gray-800">
+                    <div className="bg-white  shadow-xl overflow-hidden !text-gray-800">
                       {/* Header with title (if provided) */}
                       {(emailData.title || headerBackground) && (
                         <div 

@@ -81,7 +81,7 @@ function MetricCard({ title, displayValue, score }: { title: string; displayValu
   const color = getScoreColor(score * 100);
   
   return (
-    <div className={`p-4 rounded-lg ${color.bg} border border-muted`}>
+    <div className={`p-4  ${color.bg} border border-muted`}>
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium">{title}</span>
         <div className={`w-3 h-3 rounded-full ${score >= 0.9 ? 'bg-green-500' : score >= 0.5 ? 'bg-amber-500' : 'bg-red-500'}`} />
@@ -228,7 +228,7 @@ export default function SEOAuditPage() {
       </div>
 
       {/* Search form */}
-      <div className="bg-card border border-muted rounded-xl p-6">
+      <div className="bg-card border border-muted  p-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <label className="block !text-sm font-medium mb-2">{t('website_url') || 'URL du site'}</label>
@@ -239,7 +239,7 @@ export default function SEOAuditPage() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full !pl-10 !pr-4 py-3 bg-page border border-muted rounded-lg focus:ring-1 focus:ring-accent"
+                className="w-full !pl-10 !pr-4 py-3 bg-page border border-muted  focus:ring-1 focus:ring-accent"
                 onKeyDown={(e) => e.key === 'Enter' && runAudit()}
               />
             </div>
@@ -250,7 +250,7 @@ export default function SEOAuditPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setStrategy('mobile')}
-                className={`flex items-center gap-2 px-4 py-3 rounded-lg border transition-colors ${
+                className={`flex items-center gap-2 px-4 py-3  border transition-colors ${
                   strategy === 'mobile' 
                     ? 'bg-accent !text-white border-accent' 
                     : 'border-muted hover:bg-hover'
@@ -261,7 +261,7 @@ export default function SEOAuditPage() {
               </button>
               <button
                 onClick={() => setStrategy('desktop')}
-                className={`flex items-center gap-2 px-4 py-3 rounded-lg border transition-colors ${
+                className={`flex items-center gap-2 px-4 py-3  border transition-colors ${
                   strategy === 'desktop' 
                     ? 'bg-accent !text-white border-accent' 
                     : 'border-muted hover:bg-hover'
@@ -277,7 +277,7 @@ export default function SEOAuditPage() {
             <button
               onClick={runAudit}
               disabled={!url || loading}
-              className="flex items-center gap-2 px-6 py-3 bg-accent !text-white rounded-lg hover:bg-accent disabled:opacity-50 transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-accent !text-white  hover:bg-accent disabled:opacity-50 transition-colors"
             >
               {loading ? (
                 <>
@@ -304,7 +304,7 @@ export default function SEOAuditPage() {
       {result && (
         <div className="space-y-6">
           {/* Scores overview */}
-          <div className="bg-card border border-muted rounded-xl p-6">
+          <div className="bg-card border border-muted  p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-semibold">{result.url}</h2>
@@ -335,7 +335,7 @@ export default function SEOAuditPage() {
           </div>
 
           {/* Core Web Vitals */}
-          <div className="bg-card border border-muted rounded-xl p-6">
+          <div className="bg-card border border-muted  p-6">
             <h2 className="text-lg font-semibold mb-4">Core Web Vitals</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <MetricCard 
@@ -368,14 +368,14 @@ export default function SEOAuditPage() {
 
           {/* Opportunities */}
           {result.opportunities.length > 0 && (
-            <div className="bg-card border border-muted rounded-xl p-6">
+            <div className="bg-card border border-muted  p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <IconRocket size={15} className="text-amber-500" />
                 Opportunités d&apos;amélioration
               </h2>
               <div className="space-y-3">
                 {result.opportunities.map((opp) => (
-                  <div key={opp.id} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
+                  <div key={opp.id} className="flex items-start gap-3 p-3 bg-muted ">
                     <div className={`w-2 h-2 rounded-full mt-2 ${
                       opp.score >= 0.9 ? 'bg-green-500' : opp.score >= 0.5 ? 'bg-amber-500' : 'bg-red-500'
                     }`} />
@@ -395,14 +395,14 @@ export default function SEOAuditPage() {
 
           {/* Diagnostics */}
           {result.diagnostics.length > 0 && (
-            <div className="bg-card border border-muted rounded-xl p-6">
+            <div className="bg-card border border-muted  p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <IconAlertTriangle size={15} className="text-amber-500" />
                 Diagnostics
               </h2>
               <div className="space-y-3">
                 {result.diagnostics.map((diag) => (
-                  <div key={diag.id} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
+                  <div key={diag.id} className="flex items-start gap-3 p-3 bg-muted ">
                     <div className={`w-2 h-2 rounded-full mt-2 ${
                       diag.score >= 0.9 ? 'bg-green-500' : diag.score >= 0.5 ? 'bg-amber-500' : 'bg-red-500'
                     }`} />

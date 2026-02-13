@@ -808,7 +808,7 @@ export default function ClientWorkflowMapView({
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-card border border-default rounded-lg shadow-lg !text-xs !text-secondary whitespace-nowrap z-30"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-card border border-default  shadow-lg !text-xs !text-secondary whitespace-nowrap z-30"
               >
                 {satellite.hoverTip}
               </motion.div>
@@ -858,7 +858,7 @@ export default function ClientWorkflowMapView({
                   >
                     <motion.div 
                       whileHover={{ scale: 1.05 }}
-                      className="px-3 py-2 bg-card border border-default rounded-xl shadow-lg !text-xs hover:shadow-xl cursor-pointer transition-colors min-w-[100px]"
+                      className="px-3 py-2 bg-card border border-default  shadow-lg !text-xs hover:shadow-xl cursor-pointer transition-colors min-w-[100px]"
                       onClick={(e) => {
                         e.stopPropagation();
                         if (dragMovedRef.current || isPanning) return;
@@ -893,7 +893,7 @@ export default function ClientWorkflowMapView({
       ref={wrapperRef}
       tabIndex={0}
       className={`relative w-full overflow-hidden border border-default bg-page outline-none ${
-        isFullscreen ? 'h-screen w-screen rounded-none border-0' : 'min-h-[75vh] rounded-xl'
+        isFullscreen ? 'h-screen w-screen rounded-none border-0' : 'min-h-[75vh] '
       }`}
       style={{ touchAction: 'none' }}
       onMouseEnter={() => wrapperRef.current?.focus()}
@@ -1307,7 +1307,7 @@ export default function ClientWorkflowMapView({
                             }
                             setActiveNode({ client, stageId: stage.id, stageLabel: stage.label, status: displayStatus });
                           }}
-                          className={`absolute w-[220px] min-h-[72px] rounded-2xl border border-default ${statusClasses.background} ${statusClasses.ring} hover:shadow-md transition-all ${
+                          className={`absolute w-[220px] min-h-[72px]  border border-default ${statusClasses.background} ${statusClasses.ring} hover:shadow-md transition-all ${
                             isCurrent
                               ? isLastStage
                                 ? 'border-success shadow-[0_0_0_6px_rgba(16,185,129,0.15)]'
@@ -1744,7 +1744,7 @@ export default function ClientWorkflowMapView({
       {/* Create modal (radial view) */}
       {createModal && radialClient && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-card border border-default rounded-xl shadow-2xl w-full max-w-md mx-4 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-card border border-default  shadow-2xl w-full max-w-md mx-4 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-5 border-b border-default">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
@@ -1760,7 +1760,7 @@ export default function ClientWorkflowMapView({
               </div>
               <button
                 onClick={() => setCreateModal(null)}
-                className="p-2 rounded-lg !text-muted hover:!text-primary hover:bg-hover"
+                className="p-2  !text-muted hover:!text-primary hover:bg-hover"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -1776,7 +1776,7 @@ export default function ClientWorkflowMapView({
                 <button
                   type="button"
                   onClick={() => setCreateModal(null)}
-                  className="px-4 py-2.5 rounded-lg border border-default !text-sm font-medium !text-secondary hover:!text-primary hover:bg-hover transition-colors"
+                  className="px-4 py-2.5  border border-default !text-sm font-medium !text-secondary hover:!text-primary hover:bg-hover transition-colors"
                 >
                   {t('cancel') || 'Annuler'}
                 </button>
@@ -1787,7 +1787,7 @@ export default function ClientWorkflowMapView({
                     setCreateModal(null);
                     router.push(route);
                   }}
-                  className="px-5 py-2.5 rounded-lg bg-accent !text-white !text-sm font-medium hover:opacity-90 transition-opacity"
+                  className="px-5 py-2.5  bg-accent !text-white !text-sm font-medium hover:opacity-90 transition-opacity"
                 >
                   {t('workflow_create_action') || 'Créer'} {creationLabels[createModal.type]}
                 </button>
@@ -1800,7 +1800,7 @@ export default function ClientWorkflowMapView({
       {/* Node details modal (timeline view) */}
       {activeNode && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-card border border-default rounded-xl shadow-2xl w-full max-w-lg mx-4">
+          <div className="bg-card border border-default  shadow-2xl w-full max-w-lg mx-4">
             <div className="flex items-center justify-between p-5 border-b border-default">
               <div>
                 <p className="!text-xs !text-muted">{t('workflow_node_details') || 'Détails du node'}</p>
@@ -1808,7 +1808,7 @@ export default function ClientWorkflowMapView({
               </div>
               <button
                 onClick={() => setActiveNode(null)}
-                className="p-2 rounded-lg !text-muted hover:!text-primary hover:bg-hover"
+                className="p-2  !text-muted hover:!text-primary hover:bg-hover"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -1832,7 +1832,7 @@ export default function ClientWorkflowMapView({
                   </span>
                 </div>
               ))}
-              <div className="p-3 rounded-lg bg-muted !text-sm !text-secondary">
+              <div className="p-3  bg-muted !text-sm !text-secondary">
                 {activeNode.client.notes || (t('workflow_node_placeholder') || 'Zone de détails du devis/contrat/projet/facture.')}
               </div>
               <div className="flex justify-end">
@@ -1842,7 +1842,7 @@ export default function ClientWorkflowMapView({
                     const slug = generateClientSlug(activeNode.client.name, activeNode.client.documentId);
                     router.push(`/dashboard/clients/${slug}`);
                   }}
-                  className="px-4 py-2 rounded-lg bg-accent !text-white !text-sm hover:opacity-90"
+                  className="px-4 py-2  bg-accent !text-white !text-sm hover:opacity-90"
                 >
                   {t('open_details') || 'Ouvrir la fiche'}
                 </button>

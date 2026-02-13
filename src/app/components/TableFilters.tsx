@@ -165,7 +165,7 @@ export default function TableFilters({
         {showAdvancedToggle && advancedFilters.length > 0 && (
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
+            className={`flex items-center justify-center gap-2 px-4 py-2.5  border transition-all ${
               showAdvanced || activeFiltersCount > 0
                 ? 'bg-accent-light border-accent !text-accent'
                 : 'bg-card border-default !text-primary hover:!text-secondary hover:border-accent'
@@ -184,7 +184,7 @@ export default function TableFilters({
 
         {/* View mode toggle */}
         {showViewToggle && onViewModeChange && (
-          <div className="flex items-center rounded-lg border border-default overflow-hidden bg-card">
+          <div className="flex items-center  border border-default overflow-hidden bg-card">
             <button
               onClick={() => onViewModeChange('table')}
               className={`flex items-center justify-center p-2.5 transition-all ${
@@ -225,7 +225,7 @@ export default function TableFilters({
         {hasActiveFilters && (
           <button
             onClick={clearAllFilters}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-danger !text-danger hover:bg-danger-light transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2.5  border border-danger !text-danger hover:bg-danger-light transition-colors"
           >
             <IconX className="w-4 h-4" />
             <span className="hidden sm:inline">{t('clear_filters') || 'Effacer'}</span>
@@ -242,7 +242,7 @@ export default function TableFilters({
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="p-4 lg:p-5 rounded-xl bg-card border border-default shadow-sm">
+            <div className="p-4 lg:p-5  bg-card border border-default shadow-sm">
               {/* Header */}
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-default">
                 <div className="p-1.5">
@@ -309,7 +309,7 @@ export default function TableFilters({
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -10 }}
-                              className="absolute z-50 top-full left-0 right-0 mt-1 bg-card border border-default rounded-lg shadow-lg max-h-48 overflow-y-auto"
+                              className="absolute z-50 top-full left-0 right-0 mt-1 bg-card border border-default  shadow-lg max-h-48 overflow-y-auto"
                             >
                               {filter.options.map(opt => {
                                 const isSelected = (filter.value as string[])?.includes(opt.value);

@@ -17,14 +17,14 @@ const PopupMessage = ({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -100, scale: 0.5 }}
         transition={{ duration: 0.5 }}
-        className="fixed left-1/2 bottom-2 -translate-x-1/2 z-[1000] flex flex-col lg:w-fit w-11/12 py-2 h-fit justify-center items-center px-4 rounded-xl bg-card border border-default"
+        className="fixed left-1/2 bottom-2 -translate-x-1/2 z-[1000] flex flex-col lg:w-fit w-11/12 py-2 h-fit justify-center items-center px-4  bg-card border border-default"
       >
         <p className="text-primary">{message}</p>
         <div className="flex gap-4 mt-4">
-          <button className="btn-success font-bold py-2 px-4 rounded-2xl hover:rounded-sm transition-all ease-in-out delay-50">
+          <button className="btn-success font-bold py-2 px-4  hover:rounded-sm transition-all ease-in-out delay-50">
             YES
           </button>
-          <button className="btn-danger font-bold py-2 px-4 rounded-2xl hover:rounded-sm transition-all ease-in-out delay-50">
+          <button className="btn-danger font-bold py-2 px-4  hover:rounded-sm transition-all ease-in-out delay-50">
             NO
           </button>
         </div>
@@ -38,7 +38,7 @@ const PopupMessage = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
-      className={`fixed lg:right-1/2 -translate-x-1/2 lg:-translate-x-0 lg:bottom-8 top-8 z-[1000] flex flex-col  w-11/12 flex-wrap lg:w-fit h-fit justify-center items-center px-4 py-2 rounded-lg backdrop-blur-xl overflow-hidden ${
+      className={`fixed lg:right-1/2 -translate-x-1/2 lg:-translate-x-0 lg:bottom-8 top-8 z-[1000] flex flex-col  w-11/12 flex-wrap lg:w-fit h-fit justify-center items-center px-4 py-2  backdrop-blur-xl overflow-hidden ${
         type === 'success'
           ? 'bg-success-light border border-success'
           : type === 'error'

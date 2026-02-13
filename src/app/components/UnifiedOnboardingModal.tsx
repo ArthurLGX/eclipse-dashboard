@@ -788,7 +788,7 @@ export default function UnifiedOnboardingModal() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-4xl bg-card border border-default rounded-2xl shadow-2xl max-h-[90vh] flex flex-col outline-none overflow-hidden"
+          className="relative w-full max-w-4xl bg-card border border-default  shadow-2xl max-h-[90vh] flex flex-col outline-none overflow-hidden"
         >
           {/* Scrollable content wrapper */}
           <div 
@@ -798,7 +798,7 @@ export default function UnifiedOnboardingModal() {
           {/* Header */}
           <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent via-accent-lightto-transparent">
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-accent rounded-xl">
+              <div className="p-3 bg-accent ">
                 <IconSparkles className="w-8 h-8 !text-white" />
               </div>
               <div>
@@ -890,7 +890,7 @@ export default function UnifiedOnboardingModal() {
                           transition={{ delay: index * 0.05 }}
                           onClick={() => handleSelectBusinessType(type)}
                           className={`
-                            relative flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all cursor-pointer
+                            relative flex flex-col items-center gap-3 p-5  border-2 transition-all cursor-pointer
                             ${isSelected 
                               ? 'border-accent bg-accent-light !text-accent shadow-lg' 
                               : 'border-default bg-card hover:border-accent hover:bg-accent-light'
@@ -907,7 +907,7 @@ export default function UnifiedOnboardingModal() {
                             </motion.div>
                           )}
                           <div className={`
-                            p-3 rounded-xl transition-colors
+                            p-3  transition-colors
                             ${isSelected ? 'bg-accent !text-white' : 'bg-muted !text-muted-foreground'}
                           `}>
                             {BUSINESS_ICONS[type]}
@@ -954,7 +954,7 @@ export default function UnifiedOnboardingModal() {
                           transition={{ delay: index * 0.1 }}
                           onClick={() => setSelectedObjective(objective)}
                           className={`
-                            relative flex flex-col items-start gap-3 p-5 rounded-xl border-2 transition-all cursor-pointer !text-left
+                            relative flex flex-col items-start gap-3 p-5  border-2 transition-all cursor-pointer !text-left
                             ${isSelected 
                               ? 'border-accent bg-accent-light !text-accent shadow-lg' 
                               : 'border-default bg-card hover:border-accent hover:bg-accent-light'
@@ -971,7 +971,7 @@ export default function UnifiedOnboardingModal() {
                             </motion.div>
                           )}
                           <div className={`
-                            p-3 rounded-xl transition-colors
+                            p-3  transition-colors
                             ${isSelected ? 'bg-accent !text-white' : 'bg-muted !text-muted-foreground'}
                           `}>
                             {objective.icon}
@@ -1034,7 +1034,7 @@ export default function UnifiedOnboardingModal() {
                           value={clientName}
                           onChange={(e) => setClientName(e.target.value)}
                           placeholder={t('client_name_placeholder') || 'Ex: Entreprise ABC'}
-                          className="w-full px-4 py-3 bg-page border border-default rounded-xl focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
+                          className="w-full px-4 py-3 bg-page border border-default  focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
                         />
                       </div>
 
@@ -1048,7 +1048,7 @@ export default function UnifiedOnboardingModal() {
                           value={projectName}
                           onChange={(e) => setProjectName(e.target.value)}
                           placeholder={language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
-                          className="w-full px-4 py-3 bg-page border border-default rounded-xl focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
+                          className="w-full px-4 py-3 bg-page border border-default  focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
                         />
                       </div>
 
@@ -1062,13 +1062,13 @@ export default function UnifiedOnboardingModal() {
                           value={hourlyRate}
                           onChange={(e) => setHourlyRate(Number(e.target.value))}
                           min={0}
-                          className="w-full px-4 py-3 bg-page border border-default rounded-xl focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
+                          className="w-full px-4 py-3 bg-page border border-default  focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
                         />
                       </div>
                     </div>
 
                     {/* Right: Template Preview */}
-                    <div className="bg-muted-light rounded-xl p-6 space-y-4">
+                    <div className="bg-muted-light  p-6 space-y-4">
                       <h4 className="font-semibold !text-primary flex items-center gap-2">
                         <IconTemplate className="w-5 h-5 !text-accent" />
                         {t('onboarding_template_preview') || 'Aperçu du template'}
@@ -1094,7 +1094,7 @@ export default function UnifiedOnboardingModal() {
                       </div>
 
                       {/* Estimated Value */}
-                        <div className="mt-4 p-4 bg-accent-light border border-accent rounded-xl">
+                        <div className="mt-4 p-4 bg-accent-light border border-accent ">
                         <div className="flex items-center justify-between">
                           <span className="text-sm !text-accent font-medium">
                             {t('onboarding_estimated_value') || 'Valeur estimée'}
@@ -1155,17 +1155,17 @@ export default function UnifiedOnboardingModal() {
 
                   {/* Summary cards */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                    <div className="p-5 bg-success-light !text-success-text -text border border-success rounded-xl">
+                    <div className="p-5 bg-success-light !text-success-text -text border border-success ">
                       <IconUser className="w-8 h-8 !text-success-text -text mx-auto mb-2" />
                       <p className="font-semibold !text-primary">{createdClient?.name || 'Client'}</p>
                       <p className="text-sm !text-muted">{t('client_created') || 'Client créé'}</p>
                     </div>
-                    <div className="p-5 bg-accent-light border border-accent rounded-xl">
+                    <div className="p-5 bg-accent-light border border-accent ">
                       <IconBriefcase className="w-8 h-8 !text-accent mx-auto mb-2" />
                       <p className="font-semibold !text-primary truncate">{createdProject?.title || 'Projet'}</p>
                       <p className="text-sm !text-muted">{t('project_created') || 'Projet créé'}</p>
                     </div>
-                    <div className="p-5 bg-info-light border border-info rounded-xl">
+                    <div className="p-5 bg-info-light border border-info ">
                       <IconTemplate className="w-8 h-8 !text-info mx-auto mb-2" />
                       <p className="font-semibold !text-primary">{createdTasksCount} {t('onboarding_tasks') || 'tâches'}</p>
                       <p className="text-sm !text-muted">{t('tasks_created') || 'Tâches créées'}</p>
@@ -1174,7 +1174,7 @@ export default function UnifiedOnboardingModal() {
 
                   {/* Estimated value highlight */}
                   {templateStats && (
-                    <div className="max-w-md mx-auto p-6 bg-accent-light border border-accent rounded-2xl">
+                    <div className="max-w-md mx-auto p-6 bg-accent-light border border-accent ">
                       <p className="text-sm !text-accent mb-1">{t('potential_revenue') || 'Chiffre d\'affaires potentiel'}</p>
                       <p className="text-4xl font-bold !text-accent">
                         {estimatedValue.toLocaleString('fr-FR')} €
@@ -1189,14 +1189,14 @@ export default function UnifiedOnboardingModal() {
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                     <button
                       onClick={handleGoToProject}
-                      className="flex items-center gap-2 px-6 py-3 bg-accent !text-white rounded-xl font-medium hover:bg-accent transition-colors"
+                      className="flex items-center gap-2 px-6 py-3 bg-accent !text-white  font-medium hover:bg-accent transition-colors"
                     >
                       <IconRocket className="w-5 h-5" />
                       {t('go_to_project') || 'Voir mon projet'}
                     </button>
                     <button
                       onClick={handleExploreDashboard}
-                      className="flex items-center gap-2 px-6 py-3 bg-muted !text-primary rounded-xl font-medium hover:bg-hover transition-colors"
+                      className="flex items-center gap-2 px-6 py-3 bg-muted !text-primary  font-medium hover:bg-hover transition-colors"
                     >
                       {t('explore_dashboard') || 'Explorer le dashboard'}
                       <IconArrowRight className="w-5 h-5" />
@@ -1240,7 +1240,7 @@ export default function UnifiedOnboardingModal() {
                   (step === 'objective' && !selectedObjective)
                 }
                 className={`
-                  flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium transition-all
+                  flex items-center gap-2 px-6 py-2.5  font-medium transition-all
                   ${(step === 'business' && selectedBusinessType) ||
                     (step === 'objective' && selectedObjective) ||
                     step === 'project'

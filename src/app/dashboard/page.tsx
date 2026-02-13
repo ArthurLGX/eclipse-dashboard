@@ -251,7 +251,7 @@ export default function DashboardPage() {
             className="card cursor-pointer p-4 bg-gradient-to-br from-violet-500/10 to-transparent border-violet-500/20"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-warning-light rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-warning-light  flex items-center justify-center">
                 <IconCurrencyEuro className="w-5 h-5 !text-warning-text" />
               </div>
               {stats.caTrend !== 0 && (
@@ -274,7 +274,7 @@ export default function DashboardPage() {
             className="card cursor-pointer p-4 bg-gradient-to-br from-success to-transparent border-success"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-success rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-success  flex items-center justify-center">
                 <IconUsers className="w-5 h-5 !text-success-text" />
               </div>
               {stats.newClientsThisMonth.length > 0 && (
@@ -296,7 +296,7 @@ export default function DashboardPage() {
             className="card cursor-pointer p-4 bg-gradient-to-br from-info to-transparent border-info"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-info rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-info  flex items-center justify-center">
                 <IconBriefcase className="w-5 h-5 !text-info" />
               </div>
               <div className="!text-xs !text-muted">
@@ -316,7 +316,7 @@ export default function DashboardPage() {
             className="card cursor-pointer p-4 bg-gradient-to-br from-purple-500/10 to-transparent border-purple-500/20"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-info rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-info  flex items-center justify-center">
                 <IconUserSearch className="w-5 h-5 !text-info" />
               </div>
               <div className="!text-xs font-medium !text-info">
@@ -336,7 +336,7 @@ export default function DashboardPage() {
             className={`card cursor-pointer p-4 ${stats.unpaidInvoices.length > 0 ? 'bg-gradient-to-br from-red-500/10 to-transparent border-red-500/20' : 'bg-gradient-to-br from-gray-500/10 to-transparent'}`}
           >
             <div className="flex items-start justify-between mb-2">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stats.unpaidInvoices.length > 0 ? 'bg-danger' : 'bg-info'}`}>
+              <div className={`w-10 h-10  flex items-center justify-center ${stats.unpaidInvoices.length > 0 ? 'bg-danger' : 'bg-info'}`}>
                 <IconFileInvoice className={`w-5 h-5 ${stats.unpaidInvoices.length > 0 ? 'text-red-500' : 'text-info'}`} />
               </div>
               {stats.unpaidInvoices.length > 0 && (
@@ -416,7 +416,7 @@ export default function DashboardPage() {
                 {recentActivities.map((activity, index) => {
                   const Icon = activity.icon;
                   return (
-                    <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-hover transition-colors">
+                    <div key={index} className="flex items-center gap-3 p-2  hover:bg-hover transition-colors">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                         activity.color === 'emerald' ? 'bg-success !text-success-text ' :
                         activity.color === 'blue' ? 'bg-info !text-info' :

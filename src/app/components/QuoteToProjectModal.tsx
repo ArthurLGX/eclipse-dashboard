@@ -219,7 +219,7 @@ export default function QuoteToProjectModal({
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden overscroll-contain"
+            className="bg-card  shadow-2xl w-full max-w-lg overflow-hidden overscroll-contain"
             onClick={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}
           >
@@ -233,7 +233,7 @@ export default function QuoteToProjectModal({
               </button>
               
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-white  flex items-center justify-center shadow-lg">
                   <IconCheck className="w-7 h-7 !text-green-500" stroke={1} />
                 </div>
                 <div>
@@ -261,7 +261,7 @@ export default function QuoteToProjectModal({
 
                   {/* Option: Créer le projet */}
                   <label
-                    className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    className={`flex items-start gap-4 p-4  border-2 cursor-pointer transition-all ${
                       createProjectOption
                         ? 'border-violet-500 bg-violet-50 dark:bg-violet-900/20'
                         : 'border-default hover:border-muted'
@@ -297,7 +297,7 @@ export default function QuoteToProjectModal({
                       className="ml-8"
                     >
                       <label
-                        className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                        className={`flex items-start gap-3 p-3  border cursor-pointer transition-all ${
                           importTasksOption
                             ? 'border-violet-300 bg-violet-50/50 dark:bg-violet-900/10'
                             : 'border-default hover:border-muted'
@@ -329,7 +329,7 @@ export default function QuoteToProjectModal({
 
                   {/* Option: Générer une facture d'acompte */}
                   <label
-                    className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    className={`flex items-start gap-4 p-4  border-2 cursor-pointer transition-all ${
                       createInvoiceOption
                         ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
                         : 'border-default hover:border-muted'
@@ -370,7 +370,7 @@ export default function QuoteToProjectModal({
                           <button
                             key={pct}
                             onClick={() => setDepositPercentage(pct)}
-                            className={`px-3 py-1.5 rounded-lg !text-sm font-medium transition-colors ${
+                            className={`px-3 py-1.5  !text-sm font-medium transition-colors ${
                               depositPercentage === pct
                                 ? 'bg-amber-500 !text-white'
                                 : 'bg-hover !text-secondary hover:bg-amber-100 dark:hover:bg-amber-900/30'
@@ -387,14 +387,14 @@ export default function QuoteToProjectModal({
                   <div className="flex gap-3 mt-6 pt-4 border-t border-default">
                     <button
                       onClick={onClose}
-                      className="flex-1 py-3 border border-default !text-secondary rounded-xl hover:bg-hover transition-colors"
+                      className="flex-1 py-3 border border-default !text-secondary  hover:bg-hover transition-colors"
                     >
                       {t('later') || 'Plus tard'}
                     </button>
                     <button
                       onClick={() => setStep('configure')}
                       disabled={!createProjectOption && !createInvoiceOption}
-                      className="flex-1 py-3 bg-violet-500 !text-white rounded-xl hover:bg-violet-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 py-3 bg-violet-500 !text-white  hover:bg-violet-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {t('next') || 'Suivant'}
                       <IconArrowRight className="w-4 h-4" />
@@ -442,7 +442,7 @@ export default function QuoteToProjectModal({
                   </div>
 
                   {/* Timing scope */}
-                  <div className="p-3 rounded-lg border border-default bg-muted space-y-3">
+                  <div className="p-3  border border-default bg-muted space-y-3">
                     <div className="flex items-center gap-2 !text-sm font-medium !text-secondary">
                       <IconClock className="w-4 h-4" />
                       {t('timing_scope') || 'Périmètre temporel'} *
@@ -451,7 +451,7 @@ export default function QuoteToProjectModal({
                       {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
-                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 !text-violet-600' : 'border-default !text-secondary'}`}>
+                      <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 !text-violet-600' : 'border-default !text-secondary'}`}>
                         <input
                           type="radio"
                           name="timing_mode_quote"
@@ -461,7 +461,7 @@ export default function QuoteToProjectModal({
                         />
                         {t('timing_scope_duration') || 'Durée'}
                       </label>
-                      <label className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 !text-violet-600' : 'border-default !text-secondary'}`}>
+                      <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 !text-violet-600' : 'border-default !text-secondary'}`}>
                         <input
                           type="radio"
                           name="timing_mode_quote"
@@ -520,7 +520,7 @@ export default function QuoteToProjectModal({
                         <IconListCheck className="w-4 h-4 inline mr-1" />
                         {t('tasks_preview') || 'Aperçu des tâches'} ({invoiceLines.length})
                       </label>
-                      <div className="bg-hover rounded-lg p-3 max-h-40 overflow-y-auto space-y-2">
+                      <div className="bg-hover  p-3 max-h-40 overflow-y-auto space-y-2">
                         {invoiceLines.map((line, index) => (
                           <div key={index} className="flex items-center gap-2 !text-sm">
                             <div className="w-5 h-5 rounded bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center !text-xs font-medium !text-violet-600">
@@ -543,14 +543,14 @@ export default function QuoteToProjectModal({
                   <div className="flex gap-3 mt-6 pt-4 border-t border-default">
                     <button
                       onClick={() => setStep('options')}
-                      className="flex-1 py-3 border border-default !text-secondary rounded-xl hover:bg-hover transition-colors"
+                      className="flex-1 py-3 border border-default !text-secondary  hover:bg-hover transition-colors"
                     >
                       {t('back') || 'Retour'}
                     </button>
                     <button
                       onClick={handleCreate}
                       disabled={!projectStartDate || !isTimingValid}
-                      className="flex-1 py-3 bg-violet-500 !text-white rounded-xl hover:bg-violet-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 py-3 bg-violet-500 !text-white  hover:bg-violet-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <IconCheck className="w-4 h-4" />
                       {t('create') || 'Créer'}
@@ -593,13 +593,13 @@ export default function QuoteToProjectModal({
                   <div className="flex gap-3">
                     <button
                       onClick={onClose}
-                      className="flex-1 py-3 border border-default !text-secondary rounded-xl hover:bg-hover transition-colors"
+                      className="flex-1 py-3 border border-default !text-secondary  hover:bg-hover transition-colors"
                     >
                       {t('close') || 'Fermer'}
                     </button>
                     <button
                       onClick={handleGoToProject}
-                      className="flex-1 py-3 bg-violet-500 !text-white rounded-xl hover:bg-violet-600 transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 py-3 bg-violet-500 !text-white  hover:bg-violet-600 transition-colors flex items-center justify-center gap-2"
                     >
                       <IconFolder className="w-4 h-4" />
                       {t('view_project') || 'Voir le projet'}

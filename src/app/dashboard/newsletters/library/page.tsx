@@ -173,9 +173,9 @@ export default function MediaLibraryPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-card rounded-xl p-4 border border-default">
+          <div className="bg-card  p-4 border border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent-light rounded-lg">
+              <div className="p-2 bg-accent-light ">
                 <IconPhoto className="w-5 h-5 !text-accent" />
               </div>
               <div>
@@ -185,9 +185,9 @@ export default function MediaLibraryPage() {
             </div>
           </div>
           
-          <div className="bg-card rounded-xl p-4 border border-default">
+          <div className="bg-card  p-4 border border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-warning-light rounded-lg">
+              <div className="p-2 bg-warning-light ">
                 <IconVideo className="w-5 h-5 !text-warning" />
               </div>
               <div>
@@ -197,9 +197,9 @@ export default function MediaLibraryPage() {
             </div>
           </div>
           
-          <div className="bg-card rounded-xl p-4 border border-default">
+          <div className="bg-card  p-4 border border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-success-light rounded-lg">
+              <div className="p-2 bg-success-light ">
                 <IconPhoto className="w-5 h-5 !text-success-text -text" />
               </div>
               <div>
@@ -209,9 +209,9 @@ export default function MediaLibraryPage() {
             </div>
           </div>
           
-          <div className="bg-card rounded-xl p-4 border border-default">
+          <div className="bg-card  p-4 border border-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-info-light rounded-lg">
+              <div className="p-2 bg-info-light ">
                 <IconDownload className="w-5 h-5 !text-info" />
               </div>
               <div>
@@ -239,7 +239,7 @@ export default function MediaLibraryPage() {
           {/* Type Filter */}
           <div className="flex items-center gap-2">
             <IconFilter className="w-5 h-5 !text-secondary" />
-            <div className="flex rounded-lg overflow-hidden border border-default">
+            <div className="flex  overflow-hidden border border-default">
               {(['all', 'image', 'video'] as MediaType[]).map((type) => (
                 <button
                   key={type}
@@ -265,7 +265,7 @@ export default function MediaLibraryPage() {
             <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
           </div>
         ) : filteredMedia.length === 0 ? (
-          <div className="text-center py-20 bg-card rounded-xl border border-default">
+          <div className="text-center py-20 bg-card  border border-default">
             <IconPhoto className="w-16 h-16 !text-muted mx-auto mb-4" />
             <h3 className="text-lg font-medium !text-primary mb-2">
               {t('no_media') || 'Aucun média'}
@@ -286,7 +286,7 @@ export default function MediaLibraryPage() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="group relative bg-card rounded-xl border border-default overflow-hidden hover:border-accent-light transition-colors"
+                className="group relative bg-card  border border-default overflow-hidden hover:border-accent-light transition-colors"
               >
                 {/* Preview */}
                 <div 
@@ -365,7 +365,7 @@ export default function MediaLibraryPage() {
 
                 {/* Type Badge */}
                 <div className="absolute top-2 left-2">
-                  <div className={`p-1.5 rounded-lg ${
+                  <div className={`p-1.5  ${
                     file.mime.startsWith('image/') ? 'bg-accent' : 'bg-warning'
                   }`}>
                     {file.mime.startsWith('image/') ? (
@@ -394,7 +394,7 @@ export default function MediaLibraryPage() {
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.9 }}
-                className="bg-card rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+                className="bg-card  max-w-4xl w-full max-h-[90vh] overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Header */}
@@ -413,7 +413,7 @@ export default function MediaLibraryPage() {
                   </div>
                   <button
                     onClick={() => setSelectedMedia(null)}
-                    className="p-2 hover:bg-muted rounded-lg transition-colors"
+                    className="p-2 hover:bg-muted  transition-colors"
                   >
                     <IconX className="w-5 h-5" />
                   </button>

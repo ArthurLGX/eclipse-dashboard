@@ -107,7 +107,7 @@ export default function FreePlanModal({
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-card border border-default rounded-xl p-6 max-w-md w-full"
+            className="bg-card border border-default  p-6 max-w-md w-full"
             onClick={e => e.stopPropagation()}
           >
             {/* En-tête */}
@@ -124,7 +124,7 @@ export default function FreePlanModal({
             </div>
 
             {/* Détails du plan */}
-            <div className="bg-hover rounded-lg p-4 mb-6">
+            <div className="bg-hover  p-4 mb-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-secondary font-medium capitalize">
                   {plan.name}
@@ -162,14 +162,14 @@ export default function FreePlanModal({
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="flex-1 bg-muted !text-secondary px-4 py-2 rounded-lg hover:bg-card transition-colors disabled:opacity-50"
+                className="flex-1 bg-muted !text-secondary px-4 py-2  hover:bg-card transition-colors disabled:opacity-50"
               >
                 {t('cancel')}
               </button>
               <button
                 onClick={handleConfirm}
                 disabled={loading}
-                className="flex-1 bg-accent !text-white px-4 py-2 rounded-lg hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 font-semibold"
+                className="flex-1 bg-accent !text-white px-4 py-2  hover:bg-[var(--color-accent)] transition-colors disabled:opacity-50 font-semibold"
               >
                 {loading ? t('activating') : t('activate_plan')}
               </button>

@@ -116,21 +116,21 @@ export default function BusinessSetupModal() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-3xl bg-card border border-default rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto outline-none"
+          className="relative w-full max-w-3xl bg-card border border-default  shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto outline-none"
         >
           {/* Header */}
             <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent-light via-accent-light to-muted">
             <button
               onClick={handleSkip}
               disabled={isSaving}
-              className="absolute top-4 right-4 p-2 !text-muted hover:!text-primary rounded-lg hover:bg-muted transition-colors"
+              className="absolute top-4 right-4 p-2 !text-muted hover:!text-primary  hover:bg-muted transition-colors"
               title={t('skip') || 'Passer'}
             >
               <IconX className="w-5 h-5" />
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-accent-light rounded-xl">
+              <div className="p-3 bg-accent-light ">
                 <IconSparkles className="w-8 h-8 !text-accent" />
               </div>
               <div>
@@ -225,7 +225,7 @@ export default function BusinessSetupModal() {
               <button
                 onClick={handleNext}
                 disabled={!selectedType}
-                className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+                className={`px-6 py-2.5  font-medium transition-all ${
                   selectedType
                     ? 'bg-accent !text-white hover:bg-[var(--color-accent)]'
                     : 'bg-muted !text-muted cursor-not-allowed'
@@ -237,7 +237,7 @@ export default function BusinessSetupModal() {
               <button
                 onClick={handleComplete}
                 disabled={isSaving || !selectedType}
-                className="px-6 py-2.5 rounded-xl font-medium bg-accent !text-white hover:bg-[var(--color-accent)] transition-all flex items-center gap-2"
+                className="px-6 py-2.5  font-medium bg-accent !text-white hover:bg-[var(--color-accent)] transition-all flex items-center gap-2"
               >
                 {isSaving ? (
                   <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />

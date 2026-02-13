@@ -96,7 +96,7 @@ export default function ImportProgressModal({
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-card border border-default rounded-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="bg-card border border-default  w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
       >
         {/* Header */}
         <div className="p-6 border-b border-default">
@@ -107,7 +107,7 @@ export default function ImportProgressModal({
             {isComplete && (
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg hover:bg-card-hover transition-colors"
+                className="p-2  hover:bg-card-hover transition-colors"
               >
                 <IconX className="w-5 h-5 !text-secondary" />
               </button>
@@ -173,7 +173,7 @@ export default function ImportProgressModal({
                   damping: 30
                 }}
                 className={`
-                  flex items-center gap-4 p-3 rounded-xl border transition-all
+                  flex items-center gap-4 p-3  border transition-all
                   ${item.status === 'success' 
                     ? 'bg-success-light border-success' 
                     : item.status === 'error'
@@ -263,7 +263,7 @@ export default function ImportProgressModal({
               </div>
               <button
                 onClick={onClose}
-                className="btn-primary px-6 py-2 rounded-lg"
+                className="btn-primary px-6 py-2 "
               >
                 {t('close') || 'Fermer'}
               </button>
