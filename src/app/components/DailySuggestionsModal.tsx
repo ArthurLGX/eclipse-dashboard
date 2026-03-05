@@ -22,6 +22,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
+import { useAIFeatures } from '@/app/context/AIFeaturesContext';
 
 interface Suggestion {
   id: string;
@@ -54,6 +55,7 @@ const STORAGE_KEY = 'eclipse_daily_suggestions_last_shown';
 export default function DailySuggestionsModal() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const { isFeatureEnabled } = useAIFeatures();
   
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -64,6 +66,11 @@ export default function DailySuggestionsModal() {
   useEffect(() => {
     if (!user?.id) return;
     
+    // Ne pas afficher si la feature est désactivée
+    if (!isFeatureEnabled('daily_suggestions')) {
+      return;
+    }
+    
     const lastShown = localStorage.getItem(STORAGE_KEY);
     const today = new Date().toDateString();
     
@@ -71,7 +78,7 @@ export default function DailySuggestionsModal() {
       setIsOpen(true);
       fetchSuggestions();
     }
-  }, [user?.id]);
+  }, [user?.id, isFeatureEnabled]);
 
   const fetchSuggestions = async () => {
     if (!user?.id) return;

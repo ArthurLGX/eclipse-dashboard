@@ -926,6 +926,27 @@ export default function SettingsPage() {
               </div>
             </Link>
             
+            {/* AI Features Management */}
+            <Link
+              href="/dashboard/settings/ai-features"
+              className="block p-4  border border-default hover:border-accent hover:bg-accent-light/50 transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12  bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <IconBrain className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold !text-primary group-hover:!text-accent transition-colors">
+                    {t('ai_features_management') || 'Gestion des fonctionnalités IA'}
+                  </h3>
+                  <p className="!text-sm !text-muted">
+                    {t('ai_features_subtitle') || 'Activez/désactivez les features IA pour économiser vos tokens OpenAI'}
+                  </p>
+                </div>
+                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
+              </div>
+            </Link>
+            
             {/* Fathom AI */}
             <Link
               href="/dashboard/settings/meeting-integrations"

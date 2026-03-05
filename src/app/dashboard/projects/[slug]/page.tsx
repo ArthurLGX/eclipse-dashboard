@@ -33,6 +33,7 @@ import {
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
 import { usePopup } from '@/app/context/PopupContext';
+import { useAIFeatures } from '@/app/context/AIFeaturesContext';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
 import { extractIdFromSlug, generateSlug, generateClientSlug } from '@/utils/slug';
 import { motion, AnimatePresence } from 'motion/react';
@@ -73,6 +74,7 @@ export default function ProjectDetailsPage() {
   const { user } = useAuth();
   const formRef = useRef<HTMLFormElement>(null);
   const { showGlobalPopup } = usePopup();
+  const { isFeatureEnabled } = useAIFeatures();
 
   // Extraire le documentId du slug
   const slug = params.slug as string;
@@ -1313,18 +1315,22 @@ const PROJECT_TYPES = [
             <ProjectProfitabilityCard tasks={tasks} hourlyRate={project.hourly_rate} />
 
             {/* Eclipse Insight - Analyse silencieuse du projet */}
-            <ProjectInsightCard
-              project={project}
-              tasks={tasks}
-              invoices={factures}
-            />
+            {isFeatureEnabled('project_insights') && (
+              <ProjectInsightCard
+                project={project}
+                tasks={tasks}
+                invoices={factures}
+              />
+            )}
 
             {/* Bilan IA - Analyse approfondie avec insights */}
-            <ProjectProfitabilityAI
-              project={project}
-              tasks={tasks}
-              invoicedAmount={factures.reduce((sum, inv) => sum + (inv.total_ht || 0), 0)}
-            />
+            {isFeatureEnabled('project_profitability') && (
+              <ProjectProfitabilityAI
+                project={project}
+                tasks={tasks}
+                invoicedAmount={factures.reduce((sum, inv) => sum + (inv.total_ht || 0), 0)}
+              />
+            )}
 
             {/* Dates Card */}
             <div className="card p-5">

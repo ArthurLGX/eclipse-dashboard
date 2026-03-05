@@ -33,6 +33,7 @@ import {
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
+import { useAIFeatures } from '@/app/context/AIFeaturesContext';
 import MediaPickerModal from '@/app/components/MediaPickerModal';
 import EmailScheduler from '@/app/components/EmailScheduler';
 import EmailPreviewModal from '@/app/components/EmailPreviewModal';
@@ -122,6 +123,7 @@ export default function EmailComposer({ type, features, onSuccess, compact = fal
   const { t } = useLanguage();
   const { user, token } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const { isFeatureEnabled } = useAIFeatures();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -170,7 +172,12 @@ export default function EmailComposer({ type, features, onSuccess, compact = fal
     }
   }, [type]);
 
-  const activeFeatures = { ...defaultFeatures, ...features };
+  const activeFeatures = { 
+    ...defaultFeatures, 
+    ...features, 
+    // Override aiGeneration based on AI Features settings
+    aiGeneration: features?.aiGeneration !== undefined ? features.aiGeneration : (defaultFeatures.aiGeneration && isFeatureEnabled('email_suggestions'))
+  };
 
   // ============================================================================
   // STATE

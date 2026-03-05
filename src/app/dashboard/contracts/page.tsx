@@ -3,6 +3,7 @@
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
+import { useAIFeatures } from '@/app/context/AIFeaturesContext';
 import { 
   IconFileText, 
   IconSearch,
@@ -43,6 +44,7 @@ export default function ContractsPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const { isFeatureEnabled } = useAIFeatures();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAIGenerator, setShowAIGenerator] = useState(false);
   const [showManualCreator, setShowManualCreator] = useState(false);
@@ -244,15 +246,17 @@ export default function ContractsPage() {
                       <p className="!text-xs !text-muted">{t('create_manually_desc') || 'Partir de zéro'}</p>
                     </div>
                   </button>
-                  <div className="border-t border-default" />
-                  <button
-                    onClick={() => {
-                      setShowAIGenerator(true);
-                      setShowCreateDropdown(false);
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-3 !text-left hover:bg-hover transition-colors"
-                  >
-                    <div className="p-2 bg-muted ">
+                  {isFeatureEnabled('contract_generation') && (
+                    <>
+                      <div className="border-t border-default" />
+                      <button
+                        onClick={() => {
+                          setShowAIGenerator(true);
+                          setShowCreateDropdown(false);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 !text-left hover:bg-hover transition-colors"
+                      >
+                        <div className="p-2 bg-muted ">
                       <Image 
                         src="/images/logo/eclipse-logo.png" 
                         alt="Eclipse Assistant" 
@@ -265,6 +269,8 @@ export default function ContractsPage() {
                       <p className="!text-xs !text-muted">{t('generate_with_ai_desc') || 'Eclipse Assistant'}</p>
                     </div>
                   </button>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -353,19 +359,21 @@ export default function ContractsPage() {
               <IconPencil size={15} />
               {t('create_manually') || 'Créer manuellement'}
             </button>
-            <button 
-              className="flex items-center gap-2 px-6 py-3 bg-accent !text-white  hover:opacity-90 transition-all"
-              onClick={() => setShowAIGenerator(true)}
-            >
-              <Image 
-                src="/images/logo/eclipse-logo.png" 
-                alt="Eclipse Assistant" 
-                width={20} 
-                height={20}
-                className="w-5 h-5"
-              />
-              {t('generate_with_ai') || 'Générer avec IA'}
-            </button>
+            {isFeatureEnabled('contract_generation') && (
+              <button 
+                className="flex items-center gap-2 px-6 py-3 bg-accent !text-white  hover:opacity-90 transition-all"
+                onClick={() => setShowAIGenerator(true)}
+              >
+                <Image 
+                  src="/images/logo/eclipse-logo.png" 
+                  alt="Eclipse Assistant" 
+                  width={20} 
+                  height={20}
+                  className="w-5 h-5"
+                />
+                {t('generate_with_ai') || 'Générer avec IA'}
+              </button>
+            )}
           </div>
         </div>
       )}

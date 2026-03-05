@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { OnboardingProvider } from '@/app/context/OnboardingContext';
 import { UserPreferencesProvider, useUserPreferencesOptional } from '@/app/context/UserPreferencesContext';
 import { EmailNotificationProvider } from '@/app/context/EmailNotificationContext';
+import { AIFeaturesProvider, useAIFeatures } from '@/app/context/AIFeaturesContext';
 import UnifiedOnboardingModal from '@/app/components/UnifiedOnboardingModal';
 import { LenisProvider } from '@/app/context/LenisContext';
 import {
@@ -88,13 +89,15 @@ export default function DashboardLayout({
       <TrialExpiredGuard>
         <LenisProvider>
           <UserPreferencesProvider>
-            <EmailNotificationProvider>
-              <OnboardingProvider>
-                <AIAssistantProvider>
-                  <DashboardLayoutContent>{children}</DashboardLayoutContent>
-                </AIAssistantProvider>
-              </OnboardingProvider>
-            </EmailNotificationProvider>
+            <AIFeaturesProvider>
+              <EmailNotificationProvider>
+                <OnboardingProvider>
+                  <AIAssistantProvider>
+                    <DashboardLayoutContent>{children}</DashboardLayoutContent>
+                  </AIAssistantProvider>
+                </OnboardingProvider>
+              </EmailNotificationProvider>
+            </AIFeaturesProvider>
           </UserPreferencesProvider>
         </LenisProvider>
       </TrialExpiredGuard>
@@ -114,6 +117,7 @@ function DashboardLayoutContent({
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [moduleStatuses, setModuleStatuses] = useState<ModuleStatusConfig[]>(DEFAULT_MODULE_STATUSES);
   const router = useRouter();
+  const { isFeatureEnabled } = useAIFeatures();
 
   const pathname = usePathname();
   const { user, logout } = useAuth();
@@ -584,7 +588,7 @@ function DashboardLayoutContent({
       <NotificationBell />
       
       {/* AI Chat Assistant - Fixed en bas à gauche */}
-      <AIChatAssistant />
+      {isFeatureEnabled('ai_assistant') && <AIChatAssistant />}
     
       <div className="dashboard-wrapper flex min-h-screen w-full">
           {/* Sidebar Desktop - Fixed */}

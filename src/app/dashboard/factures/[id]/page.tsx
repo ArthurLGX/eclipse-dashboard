@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import { usePreferences } from '@/app/context/PreferencesContext';
+import { useAIFeatures } from '@/app/context/AIFeaturesContext';
 import {
   fetchFacturesUserById,
   fetchCompanyUser,
@@ -58,6 +59,7 @@ export default function FacturePage() {
   const { showGlobalPopup } = usePopup();
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useLanguage();
+  const { isFeatureEnabled } = useAIFeatures();
   const { user } = useAuth();
   const { preferences } = usePreferences();
   
@@ -760,7 +762,7 @@ export default function FacturePage() {
           ) : (
             <>
               {/* Bouton AI - uniquement en mode création */}
-              {isCreationMode && (
+              {isCreationMode && (documentType === 'invoice' ? isFeatureEnabled('invoice_generation') : isFeatureEnabled('quote_generation')) && (
                 <button
                   onClick={() => setShowAIGenerator(true)}
                   className="flex items-center justify-center gap-2 bg-muted !text-primary border border-muted px-4 py-2 rounded-full hover:bg-hover transition-colors"
@@ -1283,7 +1285,7 @@ export default function FacturePage() {
             </div>
 
             {/* AI Price Estimation - Only for quotes in editing mode */}
-            {editing && documentType === 'quote' && (
+            {editing && documentType === 'quote' && isFeatureEnabled('price_estimation') && (
               <AIPriceEstimation
                 projectId={formData?.project && typeof formData.project === 'object' 
                   ? (formData.project as Project).documentId 
