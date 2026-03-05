@@ -556,7 +556,6 @@ const translations = {
     boost_responses_desc: 'Augmenter automatiquement le score des emails de réponse (+3 points)',
     detection_keywords_by_type: 'Mots-clés de détection par type',
     add_icp_keyword: 'Ajouter un mot-clé',
-    cancel: 'Annuler',
     sync_inbox: 'Synchroniser',
     emails_synced: 'email(s) synchronisé(s)',
     inbox_up_to_date: 'Boîte de réception à jour',
@@ -4067,7 +4066,6 @@ const translations = {
     boost_responses_desc: 'Automatically increase score for reply emails (+3 points)',
     detection_keywords_by_type: 'Detection keywords by type',
     add_icp_keyword: 'Add keyword',
-    cancel: 'Cancel',
     
     sync_inbox: 'Sync',
     emails_synced: 'email(s) synced',
