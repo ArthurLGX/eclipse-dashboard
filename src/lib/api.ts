@@ -2926,10 +2926,16 @@ export const countEmailDraftsByCategory = async (
 
 /** Récupère les libellés d'un utilisateur */
 export const fetchEmailLabels = async (userId: number): Promise<EmailLabel[]> => {
-  const response = await get<ApiResponse<EmailLabel[]>>(
-    `email-labels?filters[users][id][$eq]=${userId}&sort=name:asc`
-  );
-  return response.data || [];
+  try {
+    const response = await get<ApiResponse<EmailLabel[]>>(
+      `email-labels?filters[users][id][$eq]=${userId}&sort=name:asc`
+    );
+    return response.data || [];
+  } catch (error) {
+    // Retourner un tableau vide si l'endpoint n'existe pas ou si une erreur se produit
+    console.warn('Error loading labels:', error);
+    return [];
+  }
 };
 
 /** Récupère un libellé par son ID */
