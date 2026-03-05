@@ -8,7 +8,7 @@ import {
   IconDeviceFloppy,
   IconSparkles,
   IconChartBar,
-  IconLightbulb,
+  IconBulb,
   IconCheckbox,
   IconFileText,
   IconFileInvoice,
@@ -56,7 +56,7 @@ export default function AIFeaturesSettingsPage() {
       key: 'project_insights',
       label: 'Insights projets',
       description: 'Suggestions IA pour optimiser vos projets',
-      icon: IconLightbulb,
+      icon: IconBulb,
       tokenCost: '~400 tokens/projet',
       category: 'productivity',
     },
@@ -242,13 +242,13 @@ export default function AIFeaturesSettingsPage() {
             </h2>
             <div className="flex gap-2">
               <button
-                onClick={() => toggleAll(category as any, true)}
+                onClick={() => toggleAll(category as 'productivity' | 'automation' | 'generation', true)}
                 className="px-3 py-1.5 text-xs bg-success/10 text-success rounded-lg hover:bg-success/20 transition-colors"
               >
                 Tout activer
               </button>
               <button
-                onClick={() => toggleAll(category as any, false)}
+                onClick={() => toggleAll(category as 'productivity' | 'automation' | 'generation', false)}
                 className="px-3 py-1.5 text-xs bg-error/10 text-error rounded-lg hover:bg-error/20 transition-colors"
               >
                 Tout désactiver
