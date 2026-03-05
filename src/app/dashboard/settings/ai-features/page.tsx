@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   IconBrain, 
@@ -38,6 +38,11 @@ export default function AIFeaturesSettingsPage() {
   const { features, updateFeatures, loading } = useAIFeatures();
   const [saving, setSaving] = useState(false);
   const [localFeatures, setLocalFeatures] = useState(features);
+
+  // Sync localFeatures with features when they change
+  useEffect(() => {
+    setLocalFeatures(features);
+  }, [features]);
 
   const aiFeatures: AIFeatureInfo[] = [
     {
