@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { useAuth } from './AuthContext';
 import { syncInbox, type ReceivedEmail } from '@/lib/api';
 import { fetchAutomationActions } from '@/lib/smart-follow-up-api';
-import type { AutomationAction } from '@/types/smart-follow-up';
 import EmailReplyNotification from '@/app/components/EmailReplyNotification';
 
 interface EmailNotification {
