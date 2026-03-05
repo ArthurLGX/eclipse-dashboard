@@ -188,8 +188,8 @@ export default function SmartFollowUpPage() {
               disabled={togglingPause}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg font-medium transition-all ${
                 isSystemEnabled
-                  ? 'bg-warning/10 text-warning border border-warning/20 hover:bg-warning/20'
-                  : 'bg-success/10 text-success border border-success/20 hover:bg-success/20'
+                  ? 'badge-warning'
+                  : 'badge-success'
               } disabled:opacity-50`}
             >
               {isSystemEnabled ? <IconPlayerPause className="w-4 h-4" /> : <IconPlayerPlay className="w-4 h-4" />}
@@ -256,15 +256,7 @@ export default function SmartFollowUpPage() {
         </div>
       </div>
 
-      {/* Warning si système désactivé */}
-      {!isSystemEnabled && (
-        <div className="flex-shrink-0 mx-6 mt-3 p-3 bg-warning/10 border border-warning/20 rounded-lg flex items-center gap-2">
-          <IconAlertCircle className="w-4 h-4 text-warning flex-shrink-0" />
-          <p className="!text-xs text-warning">
-            Système en pause - Aucune nouvelle action ne sera créée
-          </p>
-        </div>
-      )}
+    
 
       {/* Tabs compacts */}
       <div className="flex-shrink-0 flex gap-1 px-6 pt-3 pb-2 bg-card">
