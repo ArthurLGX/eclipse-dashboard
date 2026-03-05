@@ -739,7 +739,7 @@ export default function FacturePage() {
       className="min-h-screen p-6"
     >
       {/* Header avec actions */}
-      <div className="max-w-4xl mx-auto  flex flex-col gap-4 overflow-hidden  rounded-full  ">
+      <div className="max-w-4xl mx-auto  flex flex-col gap-4 overflow-hidden  ">
         <div className="flex lg:flex-row flex-col gap-2 justify-between bg-accent-light h-fit rounded-full p-2">
           {/* Bouton paramètres de facturation */}
           <button

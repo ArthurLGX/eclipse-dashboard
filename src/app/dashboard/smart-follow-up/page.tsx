@@ -19,7 +19,7 @@ import {
   IconTarget,
   IconTrash,
 } from '@tabler/icons-react';
-import AutomationActionDetailModal from '@/app/components/AutomationActionDetailModal';
+import QuickEmailReplyModal from '@/app/components/QuickEmailReplyModal';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
 import { 
   useSmartFollowUpStats, 
@@ -561,16 +561,19 @@ export default function SmartFollowUpPage() {
         )}
       </div>
 
-      {/* Action Detail Modal */}
-      <AutomationActionDetailModal
+      {/* Quick Email Reply Modal */}
+      <QuickEmailReplyModal
         action={selectedAction}
         isOpen={showDetailModal}
         onClose={() => {
           setShowDetailModal(false);
           setSelectedAction(null);
         }}
-        onApprove={handleApprove}
-        onReject={handleReject}
+        onSuccess={() => {
+          mutateActions();
+          setShowDetailModal(false);
+          setSelectedAction(null);
+        }}
       />
 
       {/* Rule Management Modal */}

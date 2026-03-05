@@ -329,23 +329,6 @@ function DashboardLayoutContent({
           moduleId: 'newsletters',
           status: getModuleStatus('newsletters', moduleStatuses) || undefined,
         },
-        {
-          id: 'emails',
-          label: t('emails') || 'Emails',
-          icon: <IconSend size={15} stroke={1} />,
-          path: '/dashboard/emails',
-          moduleId: 'emails',
-          status: getModuleStatus('emails', moduleStatuses) || undefined,
-        },
-        {
-          id: 'inbox',
-          label: t('inbox') || 'Boîte de réception',
-          icon: <IconInbox size={15} stroke={1} />,
-          path: '/dashboard/emails/inbox',
-          moduleId: 'inbox',
-          badgeCount: emailUnreadCount > 0 ? emailUnreadCount : undefined,
-          status: getModuleStatus('inbox', moduleStatuses) || undefined,
-        },
         // Smart Follow-Up Engine
         {
           id: 'smart_follow_up',
