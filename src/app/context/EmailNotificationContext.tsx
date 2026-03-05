@@ -2,7 +2,9 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
-import { fetchInbox, syncInbox, type ReceivedEmail } from '@/lib/api';
+import { syncInbox, type ReceivedEmail } from '@/lib/api';
+import { fetchAutomationActions } from '@/lib/smart-follow-up-api';
+import type { AutomationAction } from '@/types/smart-follow-up';
 import EmailReplyNotification from '@/app/components/EmailReplyNotification';
 
 interface EmailNotification {
@@ -62,7 +64,7 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
     setNotifications([]);
   }, []);
 
-  // Sync inbox and check for new emails
+  // Sync inbox and check for new emails (ONLY from Smart Follow-Up)
   const syncNow = useCallback(async () => {
     // Ne pas faire d'appels API si l'utilisateur n'est pas authentifié
     if (!authenticated || !user?.id || isSyncing) return;
@@ -72,7 +74,7 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
     
     setIsSyncing(true);
     try {
-      // First, sync from IMAP
+      // First, sync from IMAP (this processes emails via backend ICP filter)
       await syncInbox();
       
       // Si on arrive ici, l'IMAP est configuré et fonctionne
@@ -80,27 +82,42 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
         setImapConfigured(true);
       }
       
-      // Then fetch recent unread emails
-      const response = await fetchInbox({
-        isRead: false,
-        isArchived: false,
-        pageSize: 10,
-      });
+      // Fetch ONLY emails that passed ICP filter (automation-actions with status 'pending')
+      const actions = await fetchAutomationActions('pending');
       
-      setUnreadCount(response.meta?.unreadCount || 0);
+      // Count pending actions as unread count
+      setUnreadCount(actions?.length || 0);
       
-      // Check for new emails (emails we haven't seen before)
-      if (response.data) {
-        for (const email of response.data) {
-          // Only show notification for emails received in the last 30 minutes
-          const emailDate = new Date(email.received_at).getTime();
+      // Check for new actions (we haven't notified about)
+      if (actions && actions.length > 0) {
+        for (const action of actions) {
+          // Convertir l'automation-action en format ReceivedEmail pour réutiliser le système de notification
+          const email: ReceivedEmail = {
+            id: action.id,
+            documentId: action.documentId,
+            from_email: action.client?.email || '',
+            from_name: action.client?.name || '',
+            subject: action.proposed_content?.subject || 'Sans objet',
+            content_text: action.proposed_content?.body || '',
+            content_html: action.proposed_content?.body || '',
+            received_at: action.createdAt,
+            is_read: false,
+            is_starred: false,
+            is_archived: false,
+            has_attachments: false,
+            createdAt: action.createdAt,
+            updatedAt: action.updatedAt,
+          };
+          
+          // Only show notification for actions created in the last 30 minutes
+          const actionDate = new Date(action.createdAt).getTime();
           const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
           
-          if (emailDate > thirtyMinutesAgo && !knownEmailIdsRef.current.has(email.id)) {
+          if (actionDate > thirtyMinutesAgo && !knownEmailIdsRef.current.has(action.id)) {
             addNotification(email);
           } else {
             // Mark as known without showing notification
-            knownEmailIdsRef.current.add(email.id);
+            knownEmailIdsRef.current.add(action.id);
           }
         }
       }
