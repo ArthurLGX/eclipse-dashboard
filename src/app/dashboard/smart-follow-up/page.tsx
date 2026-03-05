@@ -2,8 +2,20 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { IconSettings, IconPlayerPause, IconPlayerPlay, IconAlertCircle, IconFilter } from '@tabler/icons-react';
-import DataTable, { Column } from '@/app/components/DataTable';
+import { 
+  IconSettings, 
+  IconPlayerPause, 
+  IconPlayerPlay, 
+  IconAlertCircle, 
+  IconFilter,
+  IconCheck,
+  IconX,
+  IconUser,
+  IconBriefcase,
+  IconBuilding,
+  IconMail,
+  IconChevronRight,
+} from '@tabler/icons-react';
 import AutomationActionDetailModal from '@/app/components/AutomationActionDetailModal';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
 import { 
@@ -18,7 +30,7 @@ import {
   updateFollowUpTask,
   updateAutomationSettings 
 } from '@/lib/smart-follow-up-api';
-import type { AutomationAction, FollowUpTask } from '@/types/smart-follow-up';
+import type { AutomationAction } from '@/types/smart-follow-up';
 
 // Helper pour formater les dates relativement
 function formatRelativeTime(date: Date): string {
@@ -104,315 +116,327 @@ export default function SmartFollowUpPage() {
     }
   };
 
-  // Colonnes pour les actions
-  const actionColumns: Column<AutomationAction>[] = [
-    { 
-      key: 'contact', 
-      label: 'Contact',
-      render: (_value, row: AutomationAction) => (
-        <span className="font-medium">{row.client?.name || 'N/A'}</span>
-      ),
-    },
-    { 
-      key: 'type', 
-      label: 'Type',
-      render: (_value, row: AutomationAction) => {
-        const type = row.follow_up_task?.task_type || 'N/A';
-        const typeLabels: Record<string, string> = {
-          'payment_reminder': 'Rappel paiement',
-          'proposal_follow_up': 'Suivi devis',
-          'meeting_follow_up': 'Suivi réunion',
-          'thank_you': 'Remerciement',
-          'check_in': 'Prise de contact',
-          'custom': 'Personnalisé',
-        };
-        return typeLabels[type] || type;
-      },
-    },
-    { 
-      key: 'subject', 
-      label: 'Sujet',
-      render: (_value, row: AutomationAction) => (
-        <span className="max-w-xs truncate block">{row.proposed_content.subject}</span>
-      ),
-    },
-    { 
-      key: 'confidence', 
-      label: 'Confiance',
-      render: (_value, row: AutomationAction) => {
-        const score = (row.confidence_score * 100).toFixed(0);
-        return (
-          <span className={`badge font-medium ${
-            row.confidence_score >= 0.8 
-              ? 'badge-success' 
-              : row.confidence_score >= 0.6
-                ? 'badge-warning'
-                : 'badge-error'
-          }`}>
-            {score}%
-          </span>
-        );
-      },
-    },
-    {
-      key: 'created',
-      label: 'Créé',
-      render: (_value, row: AutomationAction) => formatRelativeTime(new Date(row.createdAt)),
-    },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_value, row: AutomationAction) => (
-        <div className="flex gap-2">
-          <button
-            onClick={() => handleApprove(row.id, row.documentId)}
-            className="px-3 py-1 bg-accent !text-white  !text-sm hover:opacity-90 transition-opacity"
-          >
-            Approuver
-          </button>
-          <button
-            onClick={() => handleReject(row.id, row.documentId)}
-            className="px-3 py-1 bg-error !text-primary  !text-sm hover:opacity-90 transition-opacity"
-          >
-            Rejeter
-          </button>
-        </div>
-      ),
-    },
-  ];
-
-  // Colonnes pour les tâches
-  const taskColumns: Column<FollowUpTask>[] = [
-    { 
-      key: 'contact', 
-      label: 'Contact',
-      render: (_value, row: FollowUpTask) => (
-        <span className="font-medium">{row.contact?.name || 'N/A'}</span>
-      ),
-    },
-    { 
-      key: 'type', 
-      label: 'Type',
-      render: (_value, row: FollowUpTask) => {
-        const typeLabels: Record<string, string> = {
-          'payment_reminder': 'Rappel paiement',
-          'proposal_follow_up': 'Suivi devis',
-          'meeting_follow_up': 'Suivi réunion',
-          'thank_you': 'Remerciement',
-          'check_in': 'Prise de contact',
-          'custom': 'Personnalisé',
-        };
-        return typeLabels[row.task_type] || row.task_type;
-      },
-    },
-    { 
-      key: 'priority', 
-      label: 'Priorité',
-      render: (_value, row: FollowUpTask) => {
-        const priorityLabels: Record<string, { label: string; badge: string }> = {
-          'urgent': { label: 'Urgent', badge: 'badge-danger' },
-          'high': { label: 'Haute', badge: 'badge-warning' },
-          'medium': { label: 'Moyenne', badge: 'badge-info' },
-          'low': { label: 'Basse', badge: 'badge-muted' },
-        };
-        const priority = priorityLabels[row.priority] || priorityLabels['medium'];
-        return (
-          <span className={`badge font-medium ${priority.badge}`}>
-            {priority.label}
-          </span>
-        );
-      },
-    },
-    {
-      key: 'scheduled',
-      label: 'Planifié pour',
-      render: (_value, row: FollowUpTask) => new Date(row.scheduled_for).toLocaleDateString('fr-FR', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      }),
-    },
-    { 
-      key: 'status', 
-      label: 'Statut',
-      render: (_value, row: FollowUpTask) => {
-        const statusLabels: Record<string, { label: string; badge: string }> = {
-          'pending': { label: 'En attente', badge: 'badge-info' },
-          'in_progress': { label: 'En cours', badge: 'badge-warning' },
-          'completed': { label: 'Terminé', badge: 'badge-success' },
-          'cancelled': { label: 'Annulé', badge: 'badge-muted' },
-          'failed': { label: 'Échoué', badge: 'badge-error' },
-        };
-        const status = statusLabels[row.status_follow_up] || statusLabels['pending'];
-        return (
-          <span className={`badge font-medium ${status.badge}`}>
-            {status.label}
-          </span>
-        );
-      },
-    },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_value, row: FollowUpTask) => (
-        <button
-          onClick={() => handlePauseTask(row.id, row.documentId)}
-          className="px-3 py-1 bg-muted !text-primary  !text-sm hover:bg-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={row.status_follow_up === 'cancelled' || row.status_follow_up === 'completed'}
-        >
-          Mettre en pause
-        </button>
-      ),
-    },
-  ];
-
   const isSystemEnabled = settings?.enabled ?? true;
 
+  // Qualifier un lead
+  const handleQualifyLead = async (action: AutomationAction, status: 'qualified' | 'rejected') => {
+    try {
+      if (status === 'qualified') {
+        await approveAutomationAction(action.documentId);
+        alert('✓ Lead qualifié avec succès !');
+      } else {
+        await rejectAutomationAction(action.documentId, 'Lead non qualifié');
+        alert('Lead rejeté');
+      }
+      mutateActions();
+    } catch (error) {
+      console.error('Erreur lors de la qualification:', error);
+      alert('Erreur lors de la qualification');
+    }
+  };
+
+  // Déterminer le type de contact
+  const getContactType = (action: AutomationAction) => {
+    const subject = action.proposed_content.subject.toLowerCase();
+    const body = action.proposed_content.body.toLowerCase();
+    const text = `${subject} ${body}`;
+    
+    if (text.includes('freelance') || text.includes('indépendant')) return { label: 'Freelance', icon: IconUser, color: 'text-blue-500' };
+    if (text.includes('agence') || text.includes('agency')) return { label: 'Agence', icon: IconBriefcase, color: 'text-purple-500' };
+    if (text.includes('b2b') || text.includes('entreprise')) return { label: 'B2B', icon: IconBuilding, color: 'text-green-500' };
+    return { label: 'B2C', icon: IconMail, color: 'text-orange-500' };
+  };
+
   return (
-    <div className="w-full max-w-full">
-      {/* Page Header */}
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold !text-primary">Smart Follow-Up</h1>
+    <div className="w-full h-screen flex flex-col overflow-hidden">
+      {/* Compact Header avec Breadcrumb et Actions */}
+      <div className="flex-shrink-0 border-b border-default bg-card px-6 py-3">
+        <div className="flex items-center justify-between">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-sm text-muted">
+            <span>Dashboard</span>
+            <IconChevronRight className="w-4 h-4" />
+            <span className="!text-accent font-medium">Smart Follow-Up</span>
             {settings && (
-              <span className={`px-3 py-1 rounded-full !text-sm font-medium ${
+              <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
                 isSystemEnabled 
-                  ? 'bg-success-light !text-success-text' 
-                  : 'bg-warning-light !text-warning-text'
+                  ? 'bg-success-light text-success-text' 
+                  : 'bg-warning-light text-warning-text'
               }`}>
-                {isSystemEnabled ? '● Actif' : '⏸ En pause'}
+                {isSystemEnabled ? '● Actif' : '⏸ Pause'}
               </span>
             )}
           </div>
-          <p className="text-muted">Gestion automatisée des relances clients</p>
+
+          {/* Actions compactes */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowRulesModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-purple-500/10 text-purple-600 rounded-lg hover:bg-purple-500/20 transition-colors border border-purple-500/20"
+              title="Règles"
+            >
+              <IconFilter className="w-4 h-4" />
+              {settings?.custom_rules && settings.custom_rules.filter(r => r.enabled).length > 0 && (
+                <span className="!text-xs font-medium">
+                  {settings.custom_rules.filter(r => r.enabled).length}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={handleToggleSystem}
+              disabled={togglingPause}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg font-medium transition-all ${
+                isSystemEnabled
+                  ? 'bg-warning/10 text-warning border border-warning/20 hover:bg-warning/20'
+                  : 'bg-success/10 text-success border border-success/20 hover:bg-success/20'
+              } disabled:opacity-50`}
+            >
+              {isSystemEnabled ? <IconPlayerPause className="w-4 h-4" /> : <IconPlayerPlay className="w-4 h-4" />}
+            </button>
+
+            <button
+              onClick={() => router.push('/dashboard/smart-follow-up/settings')}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-secondary text-primary rounded-lg hover:bg-hover transition-colors border border-default"
+            >
+              <IconSettings className="w-4 h-4" />
+            </button>
+          </div>
         </div>
+      </div>
 
-        <div className="flex gap-3">
-          <button
-            onClick={() => setShowRulesModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 !text-purple-600  hover:bg-purple-500/20 transition-colors border border-purple-500/20"
-            title="Gérer les règles de filtrage"
-          >
-            <IconFilter className="w-5 h-5" />
-            Règles
-            {settings?.custom_rules && settings.custom_rules.length > 0 && (
-              <span className="px-2 py-0.5 !text-xs bg-purple-500 !text-white rounded-full">
-                {settings.custom_rules.filter(r => r.enabled).length}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={handleToggleSystem}
-            disabled={togglingPause}
-            className={`flex items-center gap-2 px-4 py-2  font-medium transition-all ${
-              isSystemEnabled
-                ? 'bg-warning/10 !text-warning border border-warning/20 hover:bg-warning/20'
-                : 'bg-success/10 !text-success border border-success/20 hover:bg-success/20'
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            {isSystemEnabled ? (
-              <>
-                <IconPlayerPause className="w-5 h-5" />
-                Mettre en pause
-              </>
-            ) : (
-              <>
-                <IconPlayerPlay className="w-5 h-5" />
-                Activer
-              </>
-            )}
-          </button>
-
-          <button
-            onClick={() => router.push('/dashboard/smart-follow-up/settings')}
-            className="flex items-center gap-2 px-4 py-2 bg-secondary !text-primary  hover:bg-hover transition-colors border border-default"
-          >
-            <IconSettings className="w-5 h-5" />
-            Paramètres
-          </button>
+      {/* KPIs Compacts */}
+      <div className="flex-shrink-0 grid grid-cols-4 gap-3 px-6 py-3 bg-card/50 border-b border-default">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+            <IconAlertCircle className="w-5 h-5 text-accent" />
+          </div>
+          <div>
+            <div className="!text-xs text-muted">En attente</div>
+            <div className="!text-xl font-bold text-primary">
+              {statsLoading ? '...' : stats?.activeActions || 0}
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+            <IconMail className="w-5 h-5 text-warning" />
+          </div>
+          <div>
+            <div className="!text-xs text-muted">Aujourd&apos;hui</div>
+            <div className="!text-xl font-bold text-accent">
+              {statsLoading ? '...' : stats?.dueToday || 0}
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
+            <IconCheck className="w-5 h-5 text-success" />
+          </div>
+          <div>
+            <div className="!text-xs text-muted">Cette semaine</div>
+            <div className="!text-xl font-bold text-success">
+              {statsLoading ? '...' : stats?.sentThisWeek || 0}
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+            <span className="!text-lg font-bold text-purple-500">%</span>
+          </div>
+          <div>
+            <div className="!text-xs text-muted">Taux succès</div>
+            <div className="!text-xl font-bold text-primary">
+              {statsLoading ? '...' : `${stats?.successRate.toFixed(0) || 0}%`}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Warning si système désactivé */}
       {!isSystemEnabled && (
-        <div className="mb-6 p-4 bg-warning/10 border border-warning/20  flex items-start gap-3">
-          <IconAlertCircle className="w-5 h-5 !text-warning flex-shrink-0 mt-0.5" />
-          <div>
-            <h3 className="font-semibold !text-warning mb-1">Système en pause</h3>
-            <p className="text-sm !text-warning/80">
-              Le Smart Follow-Up est actuellement désactivé. Aucune nouvelle action ne sera créée.
-              Les actions existantes restent disponibles.
-            </p>
-          </div>
+        <div className="flex-shrink-0 mx-6 mt-3 p-3 bg-warning/10 border border-warning/20 rounded-lg flex items-center gap-2">
+          <IconAlertCircle className="w-4 h-4 text-warning flex-shrink-0" />
+          <p className="!text-xs text-warning">
+            Système en pause - Aucune nouvelle action ne sera créée
+          </p>
         </div>
       )}
 
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-card border border-default  p-6">
-          <div className="text-sm !text-muted mb-2">Actions en attente</div>
-          <div className="text-3xl font-bold !text-primary">
-            {statsLoading ? '...' : stats?.activeActions || 0}
-          </div>
-        </div>
-        
-        <div className="bg-card border border-default  p-6">
-          <div className="text-sm !text-muted mb-2">À traiter aujourd&apos;hui</div>
-          <div className="text-3xl font-bold !text-accent">
-            {statsLoading ? '...' : stats?.dueToday || 0}
-          </div>
-        </div>
-        
-        <div className="bg-card border border-default  p-6">
-          <div className="text-sm !text-muted mb-2">Envoyés (7 jours)</div>
-          <div className="text-3xl font-bold !text-success">
-            {statsLoading ? '...' : stats?.sentThisWeek || 0}
-          </div>
-        </div>
-        
-        <div className="bg-card border border-default  p-6">
-          <div className="text-sm !text-muted mb-2">Taux de succès</div>
-          <div className="text-3xl font-bold !text-primary">
-            {statsLoading ? '...' : `${stats?.successRate.toFixed(0) || 0}%`}
-          </div>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-4 mb-6 border-b border-default">
+      {/* Tabs compacts */}
+      <div className="flex-shrink-0 flex gap-1 px-6 pt-3 pb-2 bg-card">
         <button
-          className={`pb-3 px-2 font-medium transition-colors ${
+          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
             activeTab === 'actions'
-              ? 'text-accent border-b-2 border-accent'
-              : 'text-muted hover:!text-primary'
+              ? 'bg-accent text-white'
+              : 'text-muted hover:bg-secondary'
           }`}
           onClick={() => setActiveTab('actions')}
         >
-          Actions en attente ({actions?.length || 0})
+          Leads ({actions?.length || 0})
         </button>
         <button
-          className={`pb-3 px-2 font-medium transition-colors ${
+          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
             activeTab === 'tasks'
-              ? 'text-accent border-b-2 border-accent'
-              : 'text-muted hover:!text-primary'
+              ? 'bg-accent text-white'
+              : 'text-muted hover:bg-secondary'
           }`}
           onClick={() => setActiveTab('tasks')}
         >
-          Tâches planifiées ({tasks?.length || 0})
+          Tâches ({tasks?.length || 0})
         </button>
       </div>
 
-      {/* Actions Table */}
-      {activeTab === 'actions' && (
-        <DataTable<AutomationAction>
-          data={actions || []}
-          columns={actionColumns}
-          emptyMessage="Aucune action en attente"
-          onRowClick={handleRowClick}
-        />
-      )}
+      {/* Liste des conversations (style Walego) */}
+      <div className="flex-1 overflow-y-auto px-6 pb-6">
+        {activeTab === 'actions' && (
+          <div className="space-y-2">
+            {!actions || actions.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-64 text-center">
+                <IconMail className="w-16 h-16 text-muted opacity-50 mb-4" />
+                <p className="!text-muted">Aucun lead en attente de qualification</p>
+              </div>
+            ) : (
+              actions.map((action) => {
+                const contactType = getContactType(action);
+                const ContactIcon = contactType.icon;
+                
+                return (
+                  <div
+                    key={action.id}
+                    className="group bg-card border border-default rounded-xl p-4 hover:border-accent/50 hover:shadow-lg transition-all cursor-pointer"
+                    onClick={() => handleRowClick(action)}
+                  >
+                    <div className="flex items-start gap-4">
+                      {/* Avatar/Icon */}
+                      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                        <ContactIcon className={`w-6 h-6 ${contactType.color}`} />
+                      </div>
+
+                      {/* Contenu principal */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-4 mb-2">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold text-primary">
+                                {action.client?.name || 'Contact inconnu'}
+                              </h3>
+                              <span className={`px-2 py-0.5 text-xs font-medium rounded ${contactType.color} bg-current/10`}>
+                                {contactType.label}
+                              </span>
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                action.confidence_score >= 0.8 
+                                  ? 'bg-success-light text-success-text' 
+                                  : action.confidence_score >= 0.6
+                                    ? 'bg-warning-light text-warning-text'
+                                    : 'bg-error-light text-error-text'
+                              }`}>
+                                {(action.confidence_score * 100).toFixed(0)}% confiance
+                              </span>
+                            </div>
+                            <div className="!text-sm text-muted mb-1">
+                              {action.client?.email || 'Email non disponible'}
+                            </div>
+                          </div>
+                          <span className="!text-xs text-muted whitespace-nowrap">
+                            {formatRelativeTime(new Date(action.createdAt))}
+                          </span>
+                        </div>
+
+                        <div className="mb-3">
+                          <p className="!text-sm font-medium text-primary mb-1">
+                            {action.proposed_content.subject}
+                          </p>
+                          <p className="!text-sm text-muted line-clamp-2">
+                            {action.proposed_content.body}
+                          </p>
+                        </div>
+
+                        {/* Actions rapides */}
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleQualifyLead(action, 'qualified');
+                            }}
+                            className="px-3 py-1.5 bg-success text-white rounded-lg text-xs font-medium hover:opacity-90 transition-opacity flex items-center gap-1"
+                          >
+                            <IconCheck className="w-4 h-4" />
+                            Qualifier
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleQualifyLead(action, 'rejected');
+                            }}
+                            className="px-3 py-1.5 bg-error/10 text-error rounded-lg text-xs font-medium hover:bg-error/20 transition-colors flex items-center gap-1"
+                          >
+                            <IconX className="w-4 h-4" />
+                            Rejeter
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        )}
+
+        {/* Tasks Table (mode compact) */}
+        {activeTab === 'tasks' && (
+          <div className="space-y-2">
+            {!tasks || tasks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-64 text-center">
+                <IconAlertCircle className="w-16 h-16 text-muted opacity-50 mb-4" />
+                <p className="!text-muted">Aucune tâche planifiée</p>
+              </div>
+            ) : (
+              tasks.map((task) => (
+                <div
+                  key={task.id}
+                  className="bg-card border border-default rounded-xl p-4 hover:border-accent/50 transition-all"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-semibold text-primary">
+                          {task.contact?.name || 'N/A'}
+                        </h3>
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                          task.status_follow_up === 'pending' ? 'bg-info-light text-info-text' :
+                          task.status_follow_up === 'in_progress' ? 'bg-warning-light text-warning-text' :
+                          task.status_follow_up === 'completed' ? 'bg-success-light text-success-text' :
+                          'bg-muted text-muted'
+                        }`}>
+                          {task.status_follow_up === 'pending' ? 'En attente' :
+                           task.status_follow_up === 'in_progress' ? 'En cours' :
+                           task.status_follow_up === 'completed' ? 'Terminé' :
+                           task.status_follow_up === 'cancelled' ? 'Annulé' : 'Échoué'}
+                        </span>
+                      </div>
+                      <div className="!text-sm text-muted">
+                        Planifié pour le {new Date(task.scheduled_for).toLocaleDateString('fr-FR')}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handlePauseTask(task.id, task.documentId)}
+                      disabled={task.status_follow_up === 'cancelled' || task.status_follow_up === 'completed'}
+                      className="px-3 py-1.5 bg-muted text-primary rounded-lg text-xs hover:bg-hover transition-colors disabled:opacity-50"
+                    >
+                      Pause
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Action Detail Modal */}
       <AutomationActionDetailModal
@@ -425,15 +449,6 @@ export default function SmartFollowUpPage() {
         onApprove={handleApprove}
         onReject={handleReject}
       />
-
-      {/* Tasks Table */}
-      {activeTab === 'tasks' && (
-        <DataTable<FollowUpTask>
-          data={tasks || []}
-          columns={taskColumns}
-          emptyMessage="Aucune tâche planifiée"
-        />
-      )}
 
       {/* Rule Management Modal */}
       <RuleManagementModal
