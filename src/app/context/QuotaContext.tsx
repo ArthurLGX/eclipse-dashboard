@@ -126,17 +126,28 @@ export function QuotaProvider({ children }: { children: React.ReactNode }) {
       setLimits(planLimits);
       setTrial(trialInfo);
 
-      const [projects, clients, prospects, mentors, newsletters] = await Promise.all([
+      // Fetch usage with individual error handling to prevent cascade failures
+      const [projects, clients, prospects, mentors, newsletters] = await Promise.allSettled([
         fetchNumberOfProjectsUser(user.id),
         fetchNumberOfClientsUser(user.id),
         fetchNumberOfProspectsUser(user.id),
         fetchNumberOfMentorsUser(user.id),
         fetchNumberOfNewslettersUser(user.id),
-      ]);
+      ]).then(results => results.map((r, idx) => {
+        if (r.status === 'fulfilled') {
+          return r.value;
+        } else {
+          const resourceNames = ['projects', 'clients', 'prospects', 'mentors', 'newsletters'];
+          console.warn(`Failed to fetch ${resourceNames[idx]} quota:`, r.reason);
+          return 0; // Return 0 on error
+        }
+      }));
 
       setUsage({ projects, clients, prospects, mentors, newsletters });
     } catch (error) {
       console.error('Error fetching quotas:', error);
+      // Set default values on error to prevent UI crashes
+      setUsage({ projects: 0, clients: 0, prospects: 0, mentors: 0, newsletters: 0 });
     } finally {
       setLoading(false);
     }
