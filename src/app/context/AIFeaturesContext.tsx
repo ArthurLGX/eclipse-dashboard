@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface AIFeaturesConfig {
+export interface AIFeaturesConfig {
   daily_suggestions: boolean;
   project_profitability: boolean;
   project_insights: boolean;

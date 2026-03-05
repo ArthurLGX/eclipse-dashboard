@@ -18,19 +18,23 @@ import {
   IconRobot,
   IconAlertCircle,
 } from '@tabler/icons-react';
-import { useAIFeatures } from '@/app/context/AIFeaturesContext';
+import { useAIFeatures, type AIFeaturesConfig } from '@/app/context/AIFeaturesContext';
+import { useLanguage } from '@/app/context/LanguageContext';
+
+type FeatureCategory = 'productivity' | 'automation' | 'generation';
 
 interface AIFeatureInfo {
-  key: keyof typeof import('@/app/context/AIFeaturesContext').AIFeaturesConfig;
+  key: keyof AIFeaturesConfig;
   label: string;
   description: string;
   icon: React.ComponentType<{ className?: string }>;
   tokenCost: string;
-  category: 'productivity' | 'automation' | 'generation';
+  category: FeatureCategory;
 }
 
 export default function AIFeaturesSettingsPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { features, updateFeatures, loading } = useAIFeatures();
   const [saving, setSaving] = useState(false);
   const [localFeatures, setLocalFeatures] = useState(features);
@@ -148,8 +152,8 @@ export default function AIFeaturesSettingsPage() {
     }
   };
 
-  const toggleAll = (category: 'productivity' | 'automation' | 'generation', enabled: boolean) => {
-    const updates = { ...localFeatures };
+  const toggleAll = (category: FeatureCategory, enabled: boolean) => {
+    const updates: AIFeaturesConfig = { ...localFeatures };
     aiFeatures
       .filter(f => f.category === category)
       .forEach(f => {
@@ -158,16 +162,16 @@ export default function AIFeaturesSettingsPage() {
     setLocalFeatures(updates);
   };
 
-  const getCategoryLabel = (category: string) => {
-    const labels = {
+  const getCategoryLabel = (category: FeatureCategory) => {
+    const labels: Record<FeatureCategory, string> = {
       productivity: 'Productivité',
       automation: 'Automatisation',
       generation: 'Génération de contenu',
     };
-    return labels[category] || category;
+    return labels[category];
   };
 
-  const getCategoryCount = (category: string) => {
+  const getCategoryCount = (category: FeatureCategory) => {
     return aiFeatures.filter(f => f.category === category && localFeatures[f.key]).length;
   };
 
@@ -231,7 +235,7 @@ export default function AIFeaturesSettingsPage() {
       </div>
 
       {/* Categories */}
-      {Object.entries(categoryGroups).map(([category, categoryFeatures]) => (
+      {(Object.entries(categoryGroups) as Array<[FeatureCategory, AIFeatureInfo[]]>).map(([category, categoryFeatures]) => (
         <div key={category} className="bg-card border border-default rounded-xl p-6 mb-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-primary">
@@ -242,13 +246,13 @@ export default function AIFeaturesSettingsPage() {
             </h2>
             <div className="flex gap-2">
               <button
-                onClick={() => toggleAll(category as 'productivity' | 'automation' | 'generation', true)}
+                onClick={() => toggleAll(category, true)}
                 className="px-3 py-1.5 text-xs bg-success/10 text-success rounded-lg hover:bg-success/20 transition-colors"
               >
                 Tout activer
               </button>
               <button
-                onClick={() => toggleAll(category as 'productivity' | 'automation' | 'generation', false)}
+                onClick={() => toggleAll(category, false)}
                 className="px-3 py-1.5 text-xs bg-error/10 text-error rounded-lg hover:bg-error/20 transition-colors"
               >
                 Tout désactiver
@@ -311,13 +315,13 @@ export default function AIFeaturesSettingsPage() {
       <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6">
         <h3 className="font-semibold text-blue-600 mb-2 flex items-center gap-2">
           <IconBrain className="w-5 h-5" />
-          Comment ça fonctionne ?
+          {t('ai_how_it_works') || 'Comment ça fonctionne ?'}
         </h3>
         <ul className="text-sm text-blue-600/80 space-y-2">
-          <li>• Les fonctionnalités désactivées ne consommeront aucun token OpenAI</li>
-          <li>• Les paramètres sont sauvegardés dans votre navigateur (localStorage)</li>
-          <li>• Vous pouvez activer/désactiver à tout moment selon vos besoins</li>
-          <li>• Les features critiques (génération docs) sont activées par défaut</li>
+          <li>• {t('ai_features_info_1')}</li>
+          <li>• {t('ai_features_info_2')}</li>
+          <li>• {t('ai_features_info_3')}</li>
+          <li>• {t('ai_features_info_4')}</li>
         </ul>
       </div>
     </div>
