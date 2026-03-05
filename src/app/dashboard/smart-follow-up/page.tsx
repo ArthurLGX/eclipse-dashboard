@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/app/context/LanguageContext';
 import { 
   IconSettings, 
   IconPlayerPause, 
@@ -16,6 +17,7 @@ import {
   IconMail,
   IconChevronRight,
   IconTarget,
+  IconTrash,
 } from '@tabler/icons-react';
 import AutomationActionDetailModal from '@/app/components/AutomationActionDetailModal';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
@@ -47,9 +49,10 @@ function formatRelativeTime(date: Date): string {
 
 export default function SmartFollowUpPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { data: stats, isLoading: statsLoading } = useSmartFollowUpStats();
   const { data: tasks, mutate: mutateTasks } = useFollowUpTasks();
-  const { data: actions, mutate: mutateActions } = useAutomationActions('pending');
+  const { data: allActions, mutate: mutateActions } = useAutomationActions('pending');
   const { data: settings, mutate: mutateSettings } = useAutomationSettings();
   
   const [activeTab, setActiveTab] = useState<'actions' | 'tasks'>('actions');
@@ -57,6 +60,14 @@ export default function SmartFollowUpPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [togglingPause, setTogglingPause] = useState(false);
   const [showRulesModal, setShowRulesModal] = useState(false);
+  const [showLowScoreEmails, setShowLowScoreEmails] = useState(false);
+  const [cleaningNonICP, setCleaningNonICP] = useState(false);
+  
+  // Filtrer les actions selon le seuil ICP configuré
+  const minScore = settings?.icp_settings?.min_score_threshold ?? 50;
+  const qualifiedActions = allActions?.filter(a => a.confidence_score >= minScore) ?? [];
+  const nonQualifiedActions = allActions?.filter(a => a.confidence_score < minScore) ?? [];
+  const actions = showLowScoreEmails ? allActions : qualifiedActions;
 
   const handleRowClick = (action: AutomationAction) => {
     setSelectedAction(action);
@@ -136,6 +147,37 @@ export default function SmartFollowUpPage() {
     }
   };
 
+  // Nettoyer automatiquement tous les emails non-ICP
+  const handleCleanNonICP = async () => {
+    if (!nonQualifiedActions || nonQualifiedActions.length === 0) {
+      alert('Aucun email non qualifié à nettoyer');
+      return;
+    }
+
+    const confirmMsg = `Voulez-vous rejeter automatiquement ${nonQualifiedActions.length} emails non qualifiés (score < ${minScore}) ?`;
+    if (!confirm(confirmMsg)) return;
+
+    setCleaningNonICP(true);
+    try {
+      let rejected = 0;
+      for (const action of nonQualifiedActions) {
+        try {
+          await rejectAutomationAction(action.documentId, `Score ICP insuffisant (${action.confidence_score})`);
+          rejected++;
+        } catch (error) {
+          console.error(`Erreur rejet action ${action.id}:`, error);
+        }
+      }
+      mutateActions();
+      alert(`✓ ${rejected} emails non qualifiés rejetés automatiquement`);
+    } catch (error) {
+      console.error('Erreur lors du nettoyage:', error);
+      alert('Erreur lors du nettoyage automatique');
+    } finally {
+      setCleaningNonICP(false);
+    }
+  };
+
   // Déterminer le type de contact
   const getContactType = (action: AutomationAction) => {
     const subject = action.proposed_content.subject.toLowerCase();
@@ -182,6 +224,21 @@ export default function SmartFollowUpPage() {
               </span>
             </button>
 
+            {/* Bouton nettoyage emails non-ICP */}
+            {nonQualifiedActions && nonQualifiedActions.length > 0 && (
+              <button
+                onClick={handleCleanNonICP}
+                disabled={cleaningNonICP}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/10 text-red-600 rounded-lg hover:bg-red-500/20 transition-colors border border-red-500/20 disabled:opacity-50"
+                title="Nettoyer les emails non qualifiés"
+              >
+                <IconTrash className="w-4 h-4" />
+                <span className="text-xs font-medium">
+                  {cleaningNonICP ? '...' : `Nettoyer (${nonQualifiedActions.length})`}
+                </span>
+              </button>
+            )}
+
             <button
               onClick={() => setShowRulesModal(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-purple-500/10 text-purple-600 rounded-lg hover:bg-purple-500/20 transition-colors border border-purple-500/20"
@@ -224,10 +281,15 @@ export default function SmartFollowUpPage() {
             <IconAlertCircle className="w-5 h-5 text-accent" />
           </div>
           <div>
-            <div className="!text-xs text-muted">En attente</div>
+            <div className="!text-xs text-muted">Qualifiés ICP</div>
             <div className="!text-xl font-bold text-primary">
-              {statsLoading ? '...' : stats?.activeActions || 0}
+              {qualifiedActions?.length || 0}
             </div>
+            {nonQualifiedActions && nonQualifiedActions.length > 0 && (
+              <div className="!text-xs text-red-500 font-medium">
+                {nonQualifiedActions.length} non qualifiés
+              </div>
+            )}
           </div>
         </div>
         
@@ -297,37 +359,94 @@ export default function SmartFollowUpPage() {
       {/* Liste des conversations (style Walego) */}
       <div className="flex-1 overflow-y-auto px-6 pb-6">
         {activeTab === 'actions' && (
-          <div className="space-y-2">
+          <div className="space-y-3">
+            {/* Bannière de filtrage ICP */}
+            {nonQualifiedActions && nonQualifiedActions.length > 0 && !showLowScoreEmails && (
+              <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-blue-600">
+                  <IconFilter className="w-4 h-4" />
+                  <span>
+                    {nonQualifiedActions.length} emails filtrés (score ICP &lt; {minScore})
+                  </span>
+                </div>
+                <button
+                  onClick={() => setShowLowScoreEmails(!showLowScoreEmails)}
+                  className="text-xs text-blue-600 hover:underline"
+                >
+                  Afficher les emails filtrés
+                </button>
+              </div>
+            )}
+
+            {showLowScoreEmails && nonQualifiedActions && nonQualifiedActions.length > 0 && (
+              <div className="p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-orange-600">
+                  <IconAlertCircle className="w-4 h-4" />
+                  <span>
+                    Affichage de tous les emails (y compris {nonQualifiedActions.length} non qualifiés)
+                  </span>
+                </div>
+                <button
+                  onClick={() => setShowLowScoreEmails(false)}
+                  className="text-xs text-orange-600 hover:underline"
+                >
+                  Masquer les emails filtrés
+                </button>
+              </div>
+            )}
+
             {!actions || actions.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-64 text-center">
                 <IconMail className="w-16 h-16 text-muted opacity-50 mb-4" />
-                <p className="!text-muted">Aucun lead en attente de qualification</p>
+                <p className="!text-muted">
+                  {showLowScoreEmails ? 'Aucun email' : 'Aucun lead qualifié en attente'}
+                </p>
+                {nonQualifiedActions && nonQualifiedActions.length > 0 && !showLowScoreEmails && (
+                  <button
+                    onClick={() => setShowLowScoreEmails(true)}
+                    className="mt-3 text-sm text-accent hover:underline"
+                  >
+                    Voir les {nonQualifiedActions.length} emails filtrés
+                  </button>
+                )}
               </div>
             ) : (
               actions.map((action) => {
                 const contactType = getContactType(action);
                 const ContactIcon = contactType.icon;
+                const isLowScore = action.confidence_score < minScore / 100;
                 
                 return (
                   <div
                     key={action.id}
-                    className="group bg-card border border-default rounded-xl p-4 hover:border-accent/50 hover:shadow-lg transition-all cursor-pointer"
+                    className={`group bg-card border rounded-xl p-4 hover:shadow-lg transition-all cursor-pointer ${
+                      isLowScore 
+                        ? 'border-red-300/50 opacity-60 hover:border-red-500/50' 
+                        : 'border-default hover:border-accent/50'
+                    }`}
                     onClick={() => handleRowClick(action)}
                   >
                     <div className="flex items-start gap-4">
                       {/* Avatar/Icon */}
-                      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
-                        <ContactIcon className={`w-6 h-6 ${contactType.color}`} />
+                      <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
+                        isLowScore ? 'bg-red-100' : 'bg-accent/10'
+                      }`}>
+                        <ContactIcon className={`w-6 h-6 ${isLowScore ? 'text-red-500' : contactType.color}`} />
                       </div>
 
                       {/* Contenu principal */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-4 mb-2">
                           <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
                               <h3 className="font-semibold text-primary">
                                 {action.client?.name || 'Contact inconnu'}
                               </h3>
+                              {isLowScore && (
+                                <span className="px-2 py-0.5 text-xs font-medium rounded bg-red-100 text-red-600">
+                                  🚫 Non qualifié
+                                </span>
+                              )}
                               <span className={`px-2 py-0.5 text-xs font-medium rounded ${contactType.color} bg-current/10`}>
                                 {contactType.label}
                               </span>
@@ -338,7 +457,7 @@ export default function SmartFollowUpPage() {
                                     ? 'bg-warning-light text-warning-text'
                                     : 'bg-error-light text-error-text'
                               }`}>
-                                {(action.confidence_score * 100).toFixed(0)}% confiance
+                                {(action.confidence_score * 100).toFixed(0)}% ICP
                               </span>
                             </div>
                             <div className="!text-sm text-muted mb-1">
