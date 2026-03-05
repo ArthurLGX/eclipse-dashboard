@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useLanguage } from '@/app/context/LanguageContext';
 import { 
   IconSettings, 
   IconPlayerPause, 
@@ -49,7 +48,6 @@ function formatRelativeTime(date: Date): string {
 
 export default function SmartFollowUpPage() {
   const router = useRouter();
-  const { t } = useLanguage();
   const { data: stats, isLoading: statsLoading } = useSmartFollowUpStats();
   const { data: tasks, mutate: mutateTasks } = useFollowUpTasks();
   const { data: allActions, mutate: mutateActions } = useAutomationActions('pending');
@@ -72,28 +70,6 @@ export default function SmartFollowUpPage() {
   const handleRowClick = (action: AutomationAction) => {
     setSelectedAction(action);
     setShowDetailModal(true);
-  };
-
-  const handleApprove = async (actionId: number, documentId: string) => {
-    try {
-      await approveAutomationAction(documentId);
-      mutateActions();
-      alert('✓ Action approuvée ! L\'email sera envoyé automatiquement dans les prochaines minutes.');
-    } catch (error) {
-      console.error('Erreur lors de l\'approbation:', error);
-      alert('Erreur lors de l\'approbation');
-    }
-  };
-
-  const handleReject = async (actionId: number, documentId: string) => {
-    try {
-      await rejectAutomationAction(documentId, 'Rejeté manuellement');
-      mutateActions();
-      alert('Action rejetée');
-    } catch (error) {
-      console.error('Erreur lors du rejet:', error);
-      alert('Erreur lors du rejet');
-    }
   };
 
   const handlePauseTask = async (taskId: number, documentId: string) => {

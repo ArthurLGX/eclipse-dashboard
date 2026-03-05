@@ -16,7 +16,6 @@ import {
   IconChartBar,
   IconBrain,
   IconMail,
-  IconSend,
   IconPin,
   IconPinFilled,
   IconLogout,
@@ -43,7 +42,6 @@ import {
   IconFileText,
   IconBell,
   IconBrandInstagram,
-  IconInbox,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';

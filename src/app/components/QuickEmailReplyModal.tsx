@@ -8,7 +8,6 @@ import {
   IconWand,
   IconLoader2,
 } from '@tabler/icons-react';
-import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { useAIFeatures } from '@/app/context/AIFeaturesContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -27,7 +26,6 @@ export default function QuickEmailReplyModal({
   action,
   onSuccess,
 }: QuickEmailReplyModalProps) {
-  const { t } = useLanguage();
   const { user } = useAuth();
   const { isFeatureEnabled } = useAIFeatures();
   const { showGlobalPopup } = usePopup();
