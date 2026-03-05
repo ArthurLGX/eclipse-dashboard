@@ -90,11 +90,11 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
           <div className="sticky top-0 z-10 bg-card border-b border-default p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold !text-primary flex items-center gap-2">
+                <h2 className="!text-2xl font-bold !text-primary flex items-center gap-2">
                   <IconFilter className="w-7 h-7 !text-accent" />
                   Règles de filtrage
                 </h2>
-                <p className="text-sm !text-muted mt-1">
+                <p className="!text-sm !text-muted mt-1">
                   Définissez des règles personnalisées pour automatiser le traitement des emails
                 </p>
               </div>
@@ -131,9 +131,9 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
                 </button>
 
                 {rules.length === 0 ? (
-                  <div className="text-center py-12">
+                  <div className="!text-center py-12">
                     <IconFilter className="w-16 h-16 !text-muted mx-auto mb-4 opacity-50" />
-                    <p className="text-muted">
+                    <p className="!text-muted">
                       Aucune règle définie. Créez votre première règle pour commencer.
                     </p>
                   </div>
@@ -166,7 +166,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
                               )}
                             </div>
                             {rule.description && (
-                              <p className="text-sm !text-muted mb-2">{rule.description}</p>
+                              <p className="!text-sm !text-muted mb-2">{rule.description}</p>
                             )}
                             <div className="flex flex-wrap gap-2 !text-xs">
                               {Object.keys(rule.conditions).length > 0 && (

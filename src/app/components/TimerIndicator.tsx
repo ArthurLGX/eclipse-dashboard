@@ -539,10 +539,10 @@ export default function TimerIndicator() {
                     <IconAlertTriangle className="w-6 h-6 !text-warning-light" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold !text-primary">
+                    <h3 className="!text-lg font-semibold !text-primary">
                       {t('time_exceeded') || 'Temps imparti écoulé'}
                     </h3>
-                    <p className="text-sm !text-muted">
+                    <p className="!text-sm !text-muted">
                       {formatMinutes(runningEntry?.estimated_duration || 0)} {t('elapsed') || 'écoulé(s)'}
                     </p>
                   </div>
@@ -551,7 +551,7 @@ export default function TimerIndicator() {
 
               {/* Content */}
               <div className="p-6">
-                <p className="text-secondary mb-6">
+                <p className="!text-secondary mb-6">
                   {t('time_exceeded_question') || 'Le temps imparti pour cette tâche est écoulé. Que souhaitez-vous faire ?'}
                 </p>
 
@@ -624,10 +624,10 @@ export default function TimerIndicator() {
                     <IconCoffee className="w-5 h-5 !text-accent" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold !text-primary">
+                    <h3 className="!text-lg font-semibold !text-primary">
                       {t('coffee_break') || 'Pause café'}
                     </h3>
-                    <p className="text-sm !text-muted">
+                    <p className="!text-sm !text-muted">
                       {t('select_pause_duration') || 'Choisir la durée de la pause'}
                     </p>
                   </div>
@@ -635,7 +635,7 @@ export default function TimerIndicator() {
               </div>
 
               {/* Duration Options */}
-              <div className="p-4 space-y-2">
+              <div className="p-4 !space-y-2">
                 {/* Timed options */}
                 <div className="grid grid-cols-2 gap-2">
                   {PAUSE_OPTIONS.map((option) => (

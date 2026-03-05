@@ -159,7 +159,7 @@ function EmailPreviewContent({
         </h1>
         
         {newsletter.subject && newsletter.subject !== newsletter.title && (
-          <p className="text-gray-700/80 px-6" style={{ fontFamily: emailFontFamily }}>
+          <p className="!text-gray-700/80 px-6" style={{ fontFamily: emailFontFamily }}>
             {newsletter.subject}
           </p>
         )}
@@ -191,7 +191,7 @@ function EmailPreviewContent({
             }}
           />
         ) : (
-          <p className="text-gray-400 italic !text-center py-8">
+          <p className="!text-gray-400 italic !text-center py-8">
             {translations.no_content}
           </p>
         )}
@@ -238,7 +238,7 @@ function EmailPreviewContent({
         {translations.unsubscribe && (
           <a 
             href="#" 
-            className="text-sm hover:underline"
+            className="!text-sm hover:underline"
             style={{ color: sigPrimaryColor }}
           >
             {translations.unsubscribe}
@@ -407,7 +407,7 @@ export default function MailboxPreview({
       <div className="flex flex-1 overflow-hidden min-h-0">
         {/* Sidebar - Folders */}
         <div className="w-16 md:w-48 bg-gray-50 border-r border-gray-200 flex-shrink-0 hidden sm:block">
-          <div className="p-2 md:p-4 space-y-1">
+          <div className="p-2 md:p-4 !space-y-1">
             <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700  font-medium">
               <IconInbox className="w-5 h-5" />
               <span className="hidden md:inline">{translations.inbox}</span>
@@ -488,7 +488,7 @@ export default function MailboxPreview({
                   <p className="font-medium !text-gray-800 !text-sm truncate mb-0.5">
                     {newsletter.subject}
                   </p>
-                  <p className="text-info !text-xs truncate">
+                  <p className="!text-info !text-xs truncate">
                     {newsletter.title}
                   </p>
                 </div>
@@ -514,7 +514,7 @@ export default function MailboxPreview({
                       <span className="font-medium !text-gray-700 truncate">{email.from}</span>
                       <span className="!text-xs !text-gray-400 flex-shrink-0 ml-2">{email.time}</span>
                     </div>
-                    <p className="text-gray-600 !text-sm truncate">{email.subject}</p>
+                    <p className="!text-gray-600 !text-sm truncate">{email.subject}</p>
                   </div>
                 </div>
               </div>
@@ -527,7 +527,7 @@ export default function MailboxPreview({
           {/* Email header */}
           <div className="p-4 border-b border-gray-200 flex-shrink-0">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold !text-gray-900">
+              <h2 className="!text-xl font-semibold !text-gray-900">
                 {newsletter.subject}
               </h2>
               <div className="flex items-center gap-2">
@@ -570,7 +570,7 @@ export default function MailboxPreview({
                   <span className="font-semibold !text-gray-900">
                     {signatureData?.company_name || `${sender.firstName} ${sender.lastName}`}
                   </span>
-                  <span className="text-gray-400 !text-sm">
+                  <span className="!text-gray-400 !text-sm">
                     &lt;{sender.email}&gt;
                   </span>
                 </div>

@@ -237,10 +237,10 @@ export default function QuoteToProjectModal({
                   <IconCheck className="w-7 h-7 !text-green-500" stroke={1} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold !text-white">
+                  <h2 className="!text-xl font-bold !text-white">
                     {t('quote_accepted_title') || 'Devis accepté !'}
                   </h2>
-                  <p className="text-white/80 !text-sm">
+                  <p className="!text-white/80 !text-sm">
                     {quote.reference} • {clientName}
                   </p>
                 </div>
@@ -255,7 +255,7 @@ export default function QuoteToProjectModal({
                   animate={{ opacity: 1 }}
                   className="space-y-4"
                 >
-                  <p className="text-secondary !text-center mb-6">
+                  <p className="!text-secondary !text-center mb-6">
                     {t('quote_accepted_description') || 'Félicitations ! Que souhaitez-vous faire maintenant ?'}
                   </p>
 
@@ -283,7 +283,7 @@ export default function QuoteToProjectModal({
                         <IconFolder className="w-5 h-5 !text-violet-500" />
                         {t('create_project_automatically') || 'Créer le projet automatiquement'}
                       </div>
-                      <p className="text-sm !text-muted mt-1">
+                      <p className="!text-sm !text-muted mt-1">
                         {t('project_from_quote_desc') || 'Un nouveau projet sera créé et lié à ce devis'}
                       </p>
                     </div>
@@ -351,7 +351,7 @@ export default function QuoteToProjectModal({
                         <IconReceipt className="w-5 h-5 !text-amber-500" />
                         {t('create_deposit_invoice') || 'Générer une facture d\'acompte'}
                       </div>
-                      <p className="text-sm !text-muted mt-1">
+                      <p className="!text-sm !text-muted mt-1">
                         {t('deposit_invoice_desc') || 'Créer automatiquement une facture d\'acompte'}
                       </p>
                     </div>
@@ -364,7 +364,7 @@ export default function QuoteToProjectModal({
                       animate={{ opacity: 1, height: 'auto' }}
                       className="ml-8 flex items-center gap-3"
                     >
-                      <span className="text-sm !text-muted">{t('deposit_percentage') || 'Pourcentage'} :</span>
+                      <span className="!text-sm !text-muted">{t('deposit_percentage') || 'Pourcentage'} :</span>
                       <div className="flex gap-2">
                         {[30, 50, 100].map((pct) => (
                           <button
@@ -442,7 +442,7 @@ export default function QuoteToProjectModal({
                   </div>
 
                   {/* Timing scope */}
-                  <div className="p-3  border border-default bg-muted space-y-3">
+                  <div className="p-3  border border-default bg-muted !space-y-3">
                     <div className="flex items-center gap-2 !text-sm font-medium !text-secondary">
                       <IconClock className="w-4 h-4" />
                       {t('timing_scope') || 'Périmètre temporel'} *
@@ -520,7 +520,7 @@ export default function QuoteToProjectModal({
                         <IconListCheck className="w-4 h-4 inline mr-1" />
                         {t('tasks_preview') || 'Aperçu des tâches'} ({invoiceLines.length})
                       </label>
-                      <div className="bg-hover  p-3 max-h-40 overflow-y-auto space-y-2">
+                      <div className="bg-hover  p-3 max-h-40 overflow-y-auto !space-y-2">
                         {invoiceLines.map((line, index) => (
                           <div key={index} className="flex items-center gap-2 !text-sm">
                             <div className="w-5 h-5 rounded bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center !text-xs font-medium !text-violet-600">
@@ -566,7 +566,7 @@ export default function QuoteToProjectModal({
                   className="py-12 !text-center"
                 >
                   <IconLoader2 className="w-12 h-12 !text-violet-500 animate-spin mx-auto mb-4" />
-                  <p className="text-primary">
+                  <p className="!text-primary">
                     {t('creating_project') || 'Création du projet en cours...'}
                   </p>
                 </motion.div>
@@ -581,10 +581,10 @@ export default function QuoteToProjectModal({
                   <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                     <IconCheck className="w-8 h-8 !text-green-500" stroke={1} />
                   </div>
-                  <h3 className="text-lg font-semibold !text-primary mb-2">
+                  <h3 className="!text-lg font-semibold !text-primary mb-2">
                     {t('project_created_success') || 'Projet créé avec succès !'}
                   </h3>
-                  <p className="text-secondary !text-sm mb-6">
+                  <p className="!text-secondary !text-sm mb-6">
                     {importTasksOption && invoiceLines.length > 0
                       ? `${invoiceLines.length} ${t('tasks_created') || 'tâches ont été créées'}`
                       : t('project_ready') || 'Le projet est prêt'}

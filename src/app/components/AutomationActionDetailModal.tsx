@@ -148,10 +148,10 @@ export default function AutomationActionDetailModal({
                   <IconBrain className="w-6 h-6 !text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold !text-primary">
+                  <h2 className="!text-xl font-bold !text-primary">
                     {t('action_details') || 'Détails de l\'action'}
                   </h2>
-                  <p className="text-sm !text-muted">
+                  <p className="!text-sm !text-muted">
                     {getTaskTypeLabel(action.follow_up_task?.task_type || 'custom')}
                   </p>
                 </div>
@@ -165,7 +165,7 @@ export default function AutomationActionDetailModal({
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-6 !space-y-6">
               {/* AI Summary */}
               <div className="bg-gradient-to-br from-purple-500/5 to-accent/5 border border-purple-500/20  p-5">
                 <div className="flex items-center gap-2 mb-3">
@@ -177,12 +177,12 @@ export default function AutomationActionDetailModal({
                 {loadingSummary ? (
                   <div className="flex items-center gap-2 !text-muted">
                     <IconLoader2 className="w-4 h-4 animate-spin" />
-                    <span className="text-sm">
+                    <span className="!text-sm">
                       {t('generating_summary') || 'Génération du résumé en cours...'}
                     </span>
                   </div>
                 ) : (
-                  <p className="text-sm !text-secondary leading-relaxed whitespace-pre-line">
+                  <p className="!text-sm !text-secondary leading-relaxed whitespace-pre-line">
                     {aiSummary}
                   </p>
                 )}
@@ -195,11 +195,11 @@ export default function AutomationActionDetailModal({
                     <IconUser className="w-4 h-4" />
                     <span>Contact</span>
                   </div>
-                  <p className="text-primary font-medium pl-6">
+                  <p className="!text-primary font-medium pl-6">
                     {action.client?.name || 'Contact inconnu'}
                   </p>
                   {action.client?.email && (
-                    <p className="text-sm !text-muted pl-6">{action.client.email}</p>
+                    <p className="!text-sm !text-muted pl-6">{action.client.email}</p>
                   )}
                 </div>
 
@@ -208,7 +208,7 @@ export default function AutomationActionDetailModal({
                     <IconCalendar className="w-4 h-4" />
                     <span>Créé</span>
                   </div>
-                  <p className="text-primary pl-6">
+                  <p className="!text-primary pl-6">
                     {new Date(action.createdAt).toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'long',
@@ -223,7 +223,7 @@ export default function AutomationActionDetailModal({
               {/* Confidence Score */}
               <div className="flex items-center gap-3 p-4 bg-secondary ">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm !text-muted">
+                  <span className="!text-sm !text-muted">
                     {t('confidence_score') || 'Score de confiance'} :
                   </span>
                   <span className={`px-3 py-1 rounded-full !text-sm font-bold ${
@@ -254,7 +254,7 @@ export default function AutomationActionDetailModal({
                   {!isEditing && (
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="text-sm !text-accent hover:!text-accent-light flex items-center gap-1"
+                      className="!text-sm !text-accent hover:!text-accent-light flex items-center gap-1"
                     >
                       <IconEdit className="w-4 h-4" />
                       {t('edit_content') || 'Modifier'}
@@ -264,11 +264,11 @@ export default function AutomationActionDetailModal({
 
                 {/* Subject */}
                 <div className="space-y-2">
-                  <label className="text-xs !text-muted uppercase tracking-wide">
+                  <label className="!text-xs !text-muted uppercase tracking-wide">
                     {t('email_subject') || 'Objet'}
                   </label>
                   <div className="p-3 bg-secondary border border-default ">
-                    <p className="text-sm !text-primary font-medium">
+                    <p className="!text-sm !text-primary font-medium">
                       {action.proposed_content.subject}
                     </p>
                   </div>
@@ -276,7 +276,7 @@ export default function AutomationActionDetailModal({
 
                 {/* Body */}
                 <div className="space-y-2">
-                  <label className="text-xs !text-muted uppercase tracking-wide">
+                  <label className="!text-xs !text-muted uppercase tracking-wide">
                     {t('email_body') || 'Message'}
                   </label>
                   {isEditing ? (
@@ -307,7 +307,7 @@ export default function AutomationActionDetailModal({
                     </div>
                   ) : (
                     <div className="p-4 bg-page border border-default ">
-                      <pre className="text-sm !text-primary whitespace-pre-wrap font-sans leading-relaxed">
+                      <pre className="!text-sm !text-primary whitespace-pre-wrap font-sans leading-relaxed">
                         {editedContent}
                       </pre>
                     </div>
@@ -345,7 +345,7 @@ export default function AutomationActionDetailModal({
                   )}
                 </button>
               </div>
-              <p className="text-xs !text-muted !text-center mt-3">
+              <p className="!text-xs !text-muted !text-center mt-3">
                 {t('email_will_be_sent') || 'L\'email sera envoyé automatiquement par le système dans les minutes suivant l\'approbation'}
               </p>
             </div>

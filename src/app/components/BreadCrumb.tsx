@@ -231,7 +231,7 @@ export const BreadCrumb = () => {
 
             {/* Afficher la flèche seulement si ce n'est pas le dernier élément */}
             {!item.isLast && (
-              <IconChevronRight className="text-accent-subtle" size={16} />
+              <IconChevronRight className="!text-accent-subtle" size={16} />
             )}
           </div>
         );

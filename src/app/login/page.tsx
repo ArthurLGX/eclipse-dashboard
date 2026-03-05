@@ -227,12 +227,12 @@ function LoginContent() {
                 transition={{ delay: 0.3 }}
                 className="flex items-center gap-2 mb-6"
               >
-                <span className="text-sm !text-muted">
+                <span className="!text-sm !text-muted">
                   {isLogin ? t("don_t_have_an_account") : t("already_have_an_account")}
                 </span>
                 <button
                   onClick={toggleMode}
-                  className="text-sm !text-accent hover:!text-accent/80 font-medium transition-colors underline"
+                  className="!text-sm !text-accent hover:!text-accent/80 font-medium transition-colors underline"
                 >
                   {isLogin ? t('sign_up') : t('login')}
                 </button>
@@ -264,7 +264,7 @@ function LoginContent() {
                   {isGoogleLoading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                      <span className="text-sm font-medium !text-secondary">Loading...</span>
+                      <span className="!text-sm font-medium !text-secondary">Loading...</span>
                     </>
                   ) : (
                     <>
@@ -275,7 +275,7 @@ function LoginContent() {
                         height={20}
                         className="w-5 h-5"
                       />
-                      <span className="text-sm font-medium !text-secondary group-hover:!text-primary">{t('google')}</span>
+                      <span className="!text-sm font-medium !text-secondary group-hover:!text-primary">{t('google')}</span>
                     </>
                   )}
                 </button>
@@ -286,7 +286,7 @@ function LoginContent() {
                   title={t('coming_soon') || 'Prochainement'}
                 >
                   <IconBrandGithub className="w-5 h-5 !text-secondary" />
-                  <span className="text-sm font-medium !text-secondary">{t('github')}</span>
+                  <span className="!text-sm font-medium !text-secondary">{t('github')}</span>
                 </button>
               </motion.div>
 
@@ -319,13 +319,13 @@ function LoginContent() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="p-3 bg-danger-bg border border-danger "
                   >
-                    <p className="text-sm !text-danger !text-center">{error}</p>
+                    <p className="!text-sm !text-danger !text-center">{error}</p>
                   </motion.div>
                 )}
 
                 {/* Email/Username */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium !text-secondary">
+                  <label className="!text-sm font-medium !text-secondary">
                     {isLogin ? t('username') : t('email')}
                   </label>
                   <input
@@ -347,7 +347,7 @@ function LoginContent() {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2"
                   >
-                    <label className="text-sm font-medium !text-secondary">{t('username')}</label>
+                    <label className="!text-sm font-medium !text-secondary">{t('username')}</label>
                     <input
                       type="text"
                       placeholder={t('choose_a_username')}
@@ -363,7 +363,7 @@ function LoginContent() {
                 {/* Password */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium !text-secondary">{t('password')}</label>
+                      <label className="!text-sm font-medium !text-secondary">{t('password')}</label>
                     {isLogin && (
                       <a
                         href="/forgot-password"
@@ -395,7 +395,7 @@ function LoginContent() {
                     </button>
                   </div>
                   {passwordError && !isLogin && (
-                    <p className="text-danger !text-xs">{passwordError}</p>
+                    <p className="!text-danger !text-xs">{passwordError}</p>
                   )}
                 </div>
 
@@ -407,7 +407,7 @@ function LoginContent() {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2"
                   >
-                    <label className="text-sm font-medium !text-secondary">{t('confirm_password')}</label>
+                    <label className="!text-sm font-medium !text-secondary">{t('confirm_password')}</label>
                     <div className="relative">
                       <input
                         type={showConfirmPassword ? 'text' : 'password'}
@@ -430,7 +430,7 @@ function LoginContent() {
                       </button>
                     </div>
                     {confirmPasswordError && (
-                      <p className="text-danger !text-xs">{confirmPasswordError}</p>
+                      <p className="!text-danger !text-xs">{confirmPasswordError}</p>
                     )}
                   </motion.div>
                 )}
@@ -447,11 +447,11 @@ function LoginContent() {
                 {!isLogin && (
                   <p className="!text-xs !text-center !text-muted">
                     {t('by_signing_up_you_agree_to_eclipse_s_terms_of_service')}
-                    <a href="#" className="text-accent hover:underline">
+                    <a href="#" className="!text-accent hover:underline">
                       {t('terms_of_service')}
                     </a>{' '}
                     and{' '}
-                    <a href="#" className="text-accent hover:underline">
+                    <a href="#" className="!text-accent hover:underline">
                       {t('privacy_policy')}
                     </a>
                   </p>
@@ -481,7 +481,7 @@ function LoginLoading() {
     <div className="min-h-screen w-full flex items-center justify-center bg-page">
       <div className="flex flex-col items-center gap-4">
         <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-          <p className="text-muted">{t('loading')}...</p>
+          <p className="!text-muted">{t('loading')}...</p>
       </div>
     </div>
   );

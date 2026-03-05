@@ -156,8 +156,8 @@ export default function AIPriceEstimation({
               className="w-5 h-5"
             />
           </div>
-          <div className="text-left">
-            <p className="text-sm font-medium !text-primary">
+          <div className="!text-left">
+            <p className="!text-sm font-medium !text-primary">
               {t('ai_price_estimation') || 'Estimation IA du prix'}
             </p>
             <p className="!text-xs !text-muted">
@@ -168,7 +168,7 @@ export default function AIPriceEstimation({
         <div className="flex items-center gap-2">
           {loading && <IconLoader2 className="w-4 h-4 !text-muted animate-spin" />}
           {estimation && !loading && (
-            <span className="text-sm font-bold !text-muted">
+            <span className="!text-sm font-bold !text-muted">
               {estimation.suggested_price.toLocaleString()}€
             </span>
           )}
@@ -193,9 +193,9 @@ export default function AIPriceEstimation({
             <div className="mt-2 p-4 bg-card  border border-muted">
               {loading && (
                 <div className="flex items-center justify-center py-6">
-                  <div className="text-center">
+                  <div className="!text-center">
                     <IconLoader2 className="w-8 h-8 !text-muted animate-spin mx-auto mb-2" />
-                    <p className="text-sm !text-muted">
+                    <p className="!text-sm !text-muted">
                       {t('analyzing_prices') || 'Analyse des prix en cours...'}
                     </p>
                   </div>
@@ -203,8 +203,8 @@ export default function AIPriceEstimation({
               )}
 
               {error && (
-                <div className="text-center py-4">
-                  <p className="text-sm !text-danger">{error}</p>
+                <div className="!text-center py-4">
+                  <p className="!text-sm !text-danger">{error}</p>
                   <button
                     onClick={() => { setHasFetched(false); fetchEstimation(); }}
                     className="mt-2 !text-sm !text-muted hover:underline"
@@ -221,15 +221,15 @@ export default function AIPriceEstimation({
                     <div className="flex items-center gap-3">
                       <IconSparkles className="w-5 h-5 !text-muted" />
                       <div>
-                        <p className="text-sm !text-muted">
+                        <p className="!text-sm !text-muted">
                           {t('suggested_price') || 'Prix suggéré'}
                         </p>
-                        <p className="text-xl font-bold !text-primary">
+                        <p className="!text-xl font-bold !text-primary">
                           {estimation.suggested_price.toLocaleString()}€
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="!text-right">
                       <div className="flex items-center gap-1 justify-end">
                         {getComparisonIcon()}
                         <span className={`text-sm ${getConfidenceColor()}`}>
@@ -265,7 +265,7 @@ export default function AIPriceEstimation({
 
                   {/* Average hourly rate */}
                   {estimation.avg_hourly_rate > 0 && (
-                    <div className="text-sm !text-muted">
+                    <div className="!text-sm !text-muted">
                       <span>{t('avg_hourly_rate') || 'Taux horaire moyen'}:</span>
                       <span className="font-medium !text-muted ml-2">
                         {estimation.avg_hourly_rate}€/h
@@ -274,18 +274,18 @@ export default function AIPriceEstimation({
                   )}
 
                   {/* Reasoning */}
-                  <div className="text-sm !text-muted">
+                  <div className="!text-sm !text-muted">
                     <p>{estimation.reasoning}</p>
                   </div>
 
                   {/* Recommendations */}
                   {estimation.recommendations && estimation.recommendations.length > 0 && (
                       <div className="p-3 bg-muted ">
-                      <p className="text-sm font-medium !text-muted flex items-center gap-2 mb-2">
+                      <p className="!text-sm font-medium !text-muted flex items-center gap-2 mb-2">
                         <IconBulb className="w-4 h-4" />
                         {t('recommendations') || 'Recommandations'}
                       </p>
-                      <ul className="!text-xs !text-muted space-y-1">
+                      <ul className="!text-xs !text-muted !space-y-1">
                         {estimation.recommendations.map((rec, i) => (
                           <li key={i}>• {rec}</li>
                         ))}

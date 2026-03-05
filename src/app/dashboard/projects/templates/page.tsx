@@ -295,7 +295,7 @@ export default function ProjectTemplatesPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 !space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -308,8 +308,8 @@ export default function ProjectTemplatesPage() {
           <div className="flex items-center gap-3">
             <IconTemplate size={28} className="!text-accent" />
             <div>
-              <h1 className="text-2xl font-bold">{t('project_templates') || 'Templates de projet'}</h1>
-              <p className="text-sm !text-muted-foreground">
+              <h1 className="!text-2xl font-bold">{t('project_templates') || 'Templates de projet'}</h1>
+              <p className="!text-sm !text-muted-foreground">
                 {t('project_templates_desc') || 'Tâches pré-définies pour démarrer rapidement vos projets'}
               </p>
             </div>
@@ -356,7 +356,7 @@ export default function ProjectTemplatesPage() {
           <div className="animate-spin h-8 w-8 border-2 border-accent border-t-transparent rounded-full" />
         </div>
       ) : filteredTemplates.length === 0 ? (
-        <div className="text-center py-12 !text-muted-foreground">
+        <div className="!text-center py-12 !text-muted-foreground">
           <IconTemplate size={48} className="mx-auto mb-4 opacity-30" />
           <p>Aucun template trouvé</p>
         </div>
@@ -401,7 +401,7 @@ export default function ProjectTemplatesPage() {
                 </div>
                 
                 {template.description && (
-                  <p className="text-sm !text-muted-foreground line-clamp-2 mb-2">
+                  <p className="!text-sm !text-muted-foreground line-clamp-2 mb-2">
                     {template.description}
                   </p>
                 )}
@@ -429,7 +429,7 @@ export default function ProjectTemplatesPage() {
                       </div>
                       <span className="truncate !text-foreground">{task.title}</span>
                       {task.estimated_hours && (
-                        <span className="text-muted-foreground ml-auto">{task.estimated_hours}h</span>
+                        <span className="!text-muted-foreground ml-auto">{task.estimated_hours}h</span>
                       )}
                     </div>
                   ))}

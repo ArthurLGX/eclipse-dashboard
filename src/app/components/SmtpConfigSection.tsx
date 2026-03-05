@@ -351,11 +351,11 @@ export default function SmtpConfigSection() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+          <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
             <IconMail className="w-5 h-5 !text-accent" />
             {t('smtp_config_title') || 'Configuration SMTP'}
           </h3>
-          <p className="text-sm !text-secondary mt-1">
+          <p className="!text-sm !text-secondary mt-1">
             {t('smtp_config_description') || 'Configurez votre serveur SMTP pour envoyer des newsletters depuis votre propre adresse email.'}
           </p>
         </div>
@@ -384,7 +384,7 @@ export default function SmtpConfigSection() {
       <div className="p-4  bg-info-light border border-info">
         <div className="flex gap-3">
           <IconInfoCircle className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
-          <div className="text-sm !text-secondary space-y-2">
+          <div className="!text-sm !text-secondary !space-y-2">
             <p>{t('smtp_info_1') || 'Les newsletters seront envoyées depuis votre adresse email personnelle.'}</p>
             <p>{t('smtp_info_2') || 'Pour Gmail, vous devez créer un "mot de passe d\'application" dans les paramètres de sécurité de votre compte Google.'}</p>
           </div>
@@ -393,7 +393,7 @@ export default function SmtpConfigSection() {
 
       {/* Presets */}
       <div className="space-y-3">
-        <p className="text-sm font-medium !text-primary">
+        <p className="!text-sm font-medium !text-primary">
           {t('smtp_presets') || 'Configurations prédéfinies'}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -422,7 +422,7 @@ export default function SmtpConfigSection() {
             <div className="flex items-start gap-3">
               <IconKey className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="text-sm !font-bold !text-warning-text font-medium mb-1">
+                <p className="!text-sm !font-bold !text-warning-text font-medium mb-1">
                   {t('smtp_app_password_title') || 'Mot de passe d\'application requis'}
                 </p>
                 <p className="!text-xs !text-warning-text mb-4">
@@ -447,7 +447,7 @@ export default function SmtpConfigSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* SMTP Host */}
         <div className="space-y-2">
-          <label className="text-sm font-medium !text-primary flex items-center gap-2">
+          <label className="!text-sm font-medium !text-primary flex items-center gap-2">
             <IconServer className="w-4 h-4 !text-secondary" />
             {t('smtp_host') || 'Serveur SMTP'} *
           </label>
@@ -462,7 +462,7 @@ export default function SmtpConfigSection() {
 
         {/* SMTP Port */}
         <div className="space-y-2">
-          <label className="text-sm font-medium !text-primary">
+          <label className="!text-sm font-medium !text-primary">
             {t('smtp_port') || 'Port'} *
           </label>
           <input
@@ -476,7 +476,7 @@ export default function SmtpConfigSection() {
 
         {/* Email */}
         <div className="space-y-2">
-          <label className="text-sm font-medium !text-primary flex items-center gap-2">
+          <label className="!text-sm font-medium !text-primary flex items-center gap-2">
             <IconMail className="w-4 h-4 !text-secondary" />
             {t('smtp_email') || 'Email'} *
           </label>
@@ -491,7 +491,7 @@ export default function SmtpConfigSection() {
 
         {/* Password */}
         <div className="space-y-2">
-          <label className="text-sm font-medium !text-primary flex items-center gap-2">
+          <label className="!text-sm font-medium !text-primary flex items-center gap-2">
             <IconLock className="w-4 h-4 !text-secondary" />
             {t('smtp_password') || 'Mot de passe'} {!existingConfig && '*'}
           </label>
@@ -520,7 +520,7 @@ export default function SmtpConfigSection() {
 
         {/* From Name */}
         <div className="space-y-2">
-          <label className="text-sm font-medium !text-primary">
+          <label className="!text-sm font-medium !text-primary">
             {t('smtp_from_name') || 'Nom d\'expéditeur'}
           </label>
           <input
@@ -537,7 +537,7 @@ export default function SmtpConfigSection() {
 
         {/* Secure */}
         <div className="space-y-2">
-          <label className="text-sm font-medium !text-primary">
+          <label className="!text-sm font-medium !text-primary">
             {t('smtp_security') || 'Sécurité'}
           </label>
           <div className="flex items-center gap-4">
@@ -548,7 +548,7 @@ export default function SmtpConfigSection() {
                 onChange={() => handleChange('smtp_secure', false)}
                 className="accent-accent"
               />
-              <span className="text-sm !text-primary">STARTTLS (Port 587)</span>
+              <span className="!text-sm !text-primary">STARTTLS (Port 587)</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -557,7 +557,7 @@ export default function SmtpConfigSection() {
                 onChange={() => handleChange('smtp_secure', true)}
                 className="accent-accent"
               />
-              <span className="text-sm !text-primary">SSL/TLS (Port 465)</span>
+              <span className="!text-sm !text-primary">SSL/TLS (Port 465)</span>
             </label>
           </div>
         </div>
@@ -592,11 +592,11 @@ export default function SmtpConfigSection() {
             <div className="w-10 h-10  bg-purple-500/10 flex items-center justify-center">
               <IconMessageCircle className="w-5 h-5 !text-purple-500" />
             </div>
-            <div className="text-left">
+            <div className="!text-left">
               <h4 className="font-medium !text-primary">
                 {t('imap_config_title') || 'Détection des réponses (IMAP)'}
               </h4>
-              <p className="text-sm !text-secondary">
+              <p className="!text-sm !text-secondary">
                 {t('imap_config_description') || 'Activez pour suivre les réponses à vos emails dans les analytics'}
               </p>
             </div>
@@ -624,12 +624,12 @@ export default function SmtpConfigSection() {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="pt-6 space-y-4">
+              <div className="pt-6 !space-y-4">
                 {/* IMAP Info */}
                 <div className="p-4  bg-purple-500/5 border border-purple-500/20">
                   <div className="flex gap-3">
                     <IconInbox className="w-5 h-5 !text-purple-500 flex-shrink-0 mt-0.5" />
-                    <div className="text-sm !text-secondary space-y-2">
+                    <div className="!text-sm !text-secondary !space-y-2">
                       <p>{t('imap_info_1') || 'IMAP permet de scanner votre boîte de réception pour détecter les réponses à vos emails.'}</p>
                       <p>{t('imap_info_2') || 'Les réponses détectées apparaîtront dans la page Analytics de vos emails.'}</p>
                     </div>
@@ -642,7 +642,7 @@ export default function SmtpConfigSection() {
                     <h5 className="font-medium !text-primary">
                       {t('enable_imap') || 'Activer la détection des réponses'}
                     </h5>
-                    <p className="text-sm !text-secondary">
+                    <p className="!text-sm !text-secondary">
                       {t('enable_imap_desc') || 'Scanne automatiquement votre boîte mail pour les réponses'}
                     </p>
                   </div>
@@ -679,7 +679,7 @@ export default function SmtpConfigSection() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* IMAP Host */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium !text-primary flex items-center gap-2">
+                        <label className="!text-sm font-medium !text-primary flex items-center gap-2">
                           <IconServer className="w-4 h-4 !text-secondary" />
                           {t('imap_host') || 'Serveur IMAP'} *
                         </label>
@@ -697,7 +697,7 @@ export default function SmtpConfigSection() {
 
                       {/* IMAP Port */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium !text-primary">
+                        <label className="!text-sm font-medium !text-primary">
                           {t('imap_port') || 'Port IMAP'}
                         </label>
                         <input
@@ -711,7 +711,7 @@ export default function SmtpConfigSection() {
 
                       {/* IMAP User */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium !text-primary flex items-center gap-2">
+                        <label className="!text-sm font-medium !text-primary flex items-center gap-2">
                           <IconMail className="w-4 h-4 !text-secondary" />
                           {t('imap_email') || 'Email IMAP'}
                         </label>
@@ -729,7 +729,7 @@ export default function SmtpConfigSection() {
 
                       {/* IMAP Password */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium !text-primary flex items-center gap-2">
+                        <label className="!text-sm font-medium !text-primary flex items-center gap-2">
                           <IconLock className="w-4 h-4 !text-secondary" />
                           {t('imap_password') || 'Mot de passe IMAP'}
                         </label>
@@ -757,7 +757,7 @@ export default function SmtpConfigSection() {
 
                     {/* IMAP Security */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium !text-primary">
+                      <label className="!text-sm font-medium !text-primary">
                         {t('imap_security') || 'Sécurité IMAP'}
                       </label>
                       <div className="flex items-center gap-4">
@@ -768,7 +768,7 @@ export default function SmtpConfigSection() {
                             onChange={() => handleChange('imap_secure', true)}
                             className="accent-purple-500"
                           />
-                          <span className="text-sm !text-primary">SSL/TLS (Port 993)</span>
+                          <span className="!text-sm !text-primary">SSL/TLS (Port 993)</span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                           <input
@@ -777,7 +777,7 @@ export default function SmtpConfigSection() {
                             onChange={() => handleChange('imap_secure', false)}
                             className="accent-purple-500"
                           />
-                          <span className="text-sm !text-primary">STARTTLS (Port 143)</span>
+                          <span className="!text-sm !text-primary">STARTTLS (Port 143)</span>
                         </label>
                       </div>
                     </div>

@@ -456,7 +456,7 @@ export default function ShareProjectModal({
             <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
               <p style="white-space: pre-wrap; margin: 0; color: #374151; line-height: 1.6;">${emailMessage}</p>
             </div>
-            <div style="text-align: center; margin: 30px 0;">
+            <div style="!text-align: center; margin: 30px 0;">
               <a href="${shareUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; !text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                 ${t('view_project_progress') || 'Voir l\'avancement du projet'}
               </a>
@@ -530,10 +530,10 @@ export default function ShareProjectModal({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div>
-              <h2 className="text-xl font-semibold !text-primary">
+              <h2 className="!text-xl font-semibold !text-primary">
                 {t('share_project') || 'Partager le projet'}
               </h2>
-              <p className="text-sm !text-muted mt-1">
+              <p className="!text-sm !text-muted mt-1">
                 {projectTitle}
               </p>
             </div>
@@ -670,7 +670,7 @@ export default function ShareProjectModal({
                   {linkCopied ? (
                     <>
                       <IconCheck className="w-5 h-5 !text-success-text -text" />
-                      <span className="text-success-text">{t('link_copied') || 'Lien copié !'}</span>
+                      <span className="!text-success-text">{t('link_copied') || 'Lien copié !'}</span>
                     </>
                   ) : (
                     <>
@@ -684,7 +684,7 @@ export default function ShareProjectModal({
                 {/* Invitations en attente */}
                 {pendingInvitations.length > 0 && (
                   <div className="mt-6">
-                    <h4 className="text-sm font-medium !text-secondary mb-3">
+                    <h4 className="!text-sm font-medium !text-secondary mb-3">
                       {t('pending_invitations') || 'Invitations en attente'}
                     </h4>
                     <div className="space-y-2">
@@ -698,7 +698,7 @@ export default function ShareProjectModal({
                               <IconMail className="w-4 h-4 !text-warning" />
                             </div>
                             <div>
-                              <p className="text-sm !text-primary">{invitation.recipient_email}</p>
+                              <p className="!text-sm !text-primary">{invitation.recipient_email}</p>
                               <p className="!text-xs !text-muted">
                                 {invitation.permission === 'edit' 
                                   ? t('can_edit') || 'Peut modifier' 
@@ -727,12 +727,12 @@ export default function ShareProjectModal({
                 <div className="flex items-center justify-between p-3 bg-warning-light border border-warning ">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-warning-light flex items-center justify-center">
-                      <span className="text-warning-text font-medium">
+                      <span className="!text-warning-text font-medium">
                         {ownerName?.[0]?.toUpperCase() || '?'}
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm !text-primary">
+                      <p className="!text-sm !text-primary">
                         {ownerName || ownerEmail || 'Propriétaire'}
                       </p>
                       <p className="!text-xs !text-warning-text font-medium">
@@ -744,8 +744,8 @@ export default function ShareProjectModal({
 
                 {/* Collaborateurs */}
                 {collaborators.length === 0 ? (
-                  <div className="text-center py-4">
-                    <p className="text-muted !text-sm">
+                  <div className="!text-center py-4">
+                    <p className="!text-muted !text-sm">
                       {t('no_collaborators_yet') || 'Aucun collaborateur pour le moment'}
                     </p>
                   </div>
@@ -757,12 +757,12 @@ export default function ShareProjectModal({
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-success-light flex items-center justify-center">
-                          <span className="text-success font-medium">
+                          <span className="!text-success font-medium">
                             {collab.user?.username?.[0]?.toUpperCase() || '?'}
                           </span>
                         </div>
                         <div>
-                          <p className="text-sm !text-primary">
+                          <p className="!text-sm !text-primary">
                             {collab.user?.username || collab.user?.email}
                           </p>
                           <p className="!text-xs !text-muted">
@@ -792,7 +792,7 @@ export default function ShareProjectModal({
                   <div className="flex items-start gap-3">
                     <IconTimeline className="w-5 h-5 !text-accent-light mt-0.5" />
                     <div>
-                      <h4 className="text-sm font-medium !text-primary mb-1">
+                      <h4 className="!text-sm font-medium !text-primary mb-1">
                         {t('public_share_title') || 'Partage public avec vos clients'}
                       </h4>
                       <p className="!text-xs !text-secondary">
@@ -804,8 +804,8 @@ export default function ShareProjectModal({
 
                 {/* Configuration du nouveau lien */}
                 {showPublicLinkConfig ? (
-                  <div className="bg-hover border border-default  p-4 space-y-4">
-                    <h4 className="text-sm font-medium !text-primary">
+                  <div className="bg-hover border border-default  p-4 !space-y-4">
+                    <h4 className="!text-sm font-medium !text-primary">
                       {t('configure_public_link') || 'Configurer le lien public'}
                     </h4>
 
@@ -820,7 +820,7 @@ export default function ShareProjectModal({
                         />
                         <div className="flex items-center gap-2">
                           <IconTimeline className="w-4 h-4 !text-accent-light" />
-                          <span className="text-sm !text-secondary group-hover:!text-primary">
+                          <span className="!text-sm !text-secondary group-hover:!text-primary">
                             {t('show_gantt') || 'Afficher le diagramme de Gantt'}
                           </span>
                         </div>
@@ -835,7 +835,7 @@ export default function ShareProjectModal({
                         />
                         <div className="flex items-center gap-2">
                           <IconChartBar className="w-4 h-4 !text-success-text -text" />
-                          <span className="text-sm !text-secondary group-hover:!text-primary">
+                          <span className="!text-sm !text-secondary group-hover:!text-primary">
                             {t('show_progress') || 'Afficher les statistiques de progression'}
                           </span>
                         </div>
@@ -850,7 +850,7 @@ export default function ShareProjectModal({
                         />
                         <div className="flex items-center gap-2">
                           <IconEye className="w-4 h-4 !text-info" />
-                          <span className="text-sm !text-secondary group-hover:!text-primary">
+                          <span className="!text-sm !text-secondary group-hover:!text-primary">
                             {t('show_tasks_list') || 'Afficher la liste des tâches'}
                           </span>
                         </div>
@@ -914,7 +914,7 @@ export default function ShareProjectModal({
                 {/* Liens existants */}
                 {publicLinks.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-medium !text-secondary mb-3">
+                    <h4 className="!text-sm font-medium !text-secondary mb-3">
                       {t('active_links') || 'Liens actifs'}
                     </h4>
                     <div className="space-y-2">
@@ -928,7 +928,7 @@ export default function ShareProjectModal({
                               <IconLink className="w-5 h-5 !text-accent-light" />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-sm !text-primary truncate">
+                              <p className="!text-sm !text-primary truncate">
                                 /share/project/{link.share_token.substring(0, 8)}...
                               </p>
                               <div className="flex items-center gap-2 !text-xs !text-muted">
@@ -936,7 +936,7 @@ export default function ShareProjectModal({
                                 {link.show_progress && <span className="px-1.5 py-0.5 bg-success-light !text-success-text -text rounded">Stats</span>}
                                 {link.show_tasks && <span className="px-1.5 py-0.5 bg-info-light !text-info rounded">Tâches</span>}
                                 {link.expires_at && (
-                                  <span className="text-muted">
+                                  <span className="!text-muted">
                                     Expire {new Date(link.expires_at).toLocaleDateString('fr-FR')}
                                   </span>
                                 )}
@@ -1012,7 +1012,7 @@ export default function ShareProjectModal({
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
-                <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+                <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
                   <IconMail className="w-5 h-5 !text-accent-light" />
                   {t('send_link_by_email') || 'Envoyer le lien par email'}
                 </h3>
@@ -1025,7 +1025,7 @@ export default function ShareProjectModal({
               </div>
 
               {/* Content */}
-              <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
+              <div className="p-4 !space-y-4 max-h-[70vh] overflow-y-auto">
                 {/* Email destinataire */}
                 <div>
                   <label className="block !text-sm font-medium !text-secondary mb-2">
@@ -1062,7 +1062,7 @@ export default function ShareProjectModal({
                   {/* Option bannière */}
                   <div className="bg-hover  p-4 border border-default">
                     <div className="flex items-center justify-between mb-3">
-                      <label className="text-sm font-medium !text-primary">
+                      <label className="!text-sm font-medium !text-primary">
                         {t('include_banner') || 'Inclure une bannière'}
                       </label>
                       <button
@@ -1092,7 +1092,7 @@ export default function ShareProjectModal({
                             }`}
                           >
                             <IconPalette className="w-4 h-4" />
-                            <span className="text-sm">{t('color') || 'Couleur'}</span>
+                            <span className="!text-sm">{t('color') || 'Couleur'}</span>
                           </button>
                           <button
                             type="button"
@@ -1104,7 +1104,7 @@ export default function ShareProjectModal({
                             }`}
                           >
                             <IconPhoto className="w-4 h-4" />
-                            <span className="text-sm">{t('image') || 'Image'}</span>
+                            <span className="!text-sm">{t('image') || 'Image'}</span>
                           </button>
                         </div>
 
@@ -1228,7 +1228,7 @@ export default function ShareProjectModal({
                               onChange={(e) => setShowBannerTitle(e.target.checked)}
                               className="w-4 h-4 !text-accent border-default rounded focus:ring-accent"
                             />
-                            <label htmlFor="showBannerTitle" className="text-sm !text-secondary">
+                            <label htmlFor="showBannerTitle" className="!text-sm !text-secondary">
                               {t('show_banner_title') || 'Afficher un titre'}
                             </label>
                           </div>
@@ -1287,7 +1287,7 @@ export default function ShareProjectModal({
                   {/* Option signature */}
                   <div className="bg-hover  p-4 border border-default">
                     <div className="flex items-center justify-between mb-3">
-                      <label className="text-sm font-medium !text-primary">
+                      <label className="!text-sm font-medium !text-primary">
                         {t('include_signature') || 'Inclure ma signature'}
                       </label>
                       <button
@@ -1336,7 +1336,7 @@ export default function ShareProjectModal({
                 {/* Aperçu du lien */}
                 <div className="bg-primary-light border border-primary  p-3">
                   <p className="!text-xs !text-secondary mb-1">{t('link_included') || 'Le lien suivant sera inclus :'}</p>
-                  <p className="text-sm !text-accent-light truncate">
+                  <p className="!text-sm !text-accent-light truncate">
                     {typeof window !== 'undefined' ? window.location.origin : ''}/share/project/{currentShareToken?.substring(0, 12)}...
                   </p>
                 </div>

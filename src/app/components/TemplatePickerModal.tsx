@@ -77,10 +77,10 @@ export default function TemplatePickerModal({
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-default shrink-0">
             <div>
-              <h2 className="text-xl font-bold !text-primary">
+              <h2 className="!text-xl font-bold !text-primary">
                 {t('choose_template') || 'Choisir un template'}
               </h2>
-              <p className="text-sm !text-muted">
+              <p className="!text-sm !text-muted">
                 {t('template_picker_desc') || 'Sélectionnez un design pour votre newsletter'}
               </p>
             </div>
@@ -159,7 +159,7 @@ export default function TemplatePickerModal({
                       </div>
 
                       {/* Fake content */}
-                      <div className="flex-1 bg-white/90  p-3 space-y-2">
+                      <div className="flex-1 bg-white/90  p-3 !space-y-2">
                         <div
                           className="h-2 w-full rounded"
                           style={{ backgroundColor: template.text_color, opacity: 0.3 }}

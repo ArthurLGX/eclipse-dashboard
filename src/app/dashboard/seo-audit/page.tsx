@@ -72,7 +72,7 @@ function ScoreCircle({ score, label, size = 'md' }: { score: number; label: stri
       <div className={`${sizes[size].outer} rounded-full ${color.bg} flex items-center justify-center ring-4 ${color.ring}`}>
         <span className={`${sizes[size].inner} font-bold ${color.text}`}>{score}</span>
       </div>
-      <span className="text-sm !text-muted-foreground">{label}</span>
+      <span className="!text-sm !text-muted-foreground">{label}</span>
     </div>
   );
 }
@@ -83,7 +83,7 @@ function MetricCard({ title, displayValue, score }: { title: string; displayValu
   return (
     <div className={`p-4  ${color.bg} border border-muted`}>
       <div className="flex items-center justify-between mb-1">
-        <span className="text-sm font-medium">{title}</span>
+        <span className="!text-sm font-medium">{title}</span>
         <div className={`w-3 h-3 rounded-full ${score >= 0.9 ? 'bg-green-500' : score >= 0.5 ? 'bg-amber-500' : 'bg-red-500'}`} />
       </div>
       <p className={`text-xl font-bold ${color.text}`}>{displayValue}</p>
@@ -215,13 +215,13 @@ export default function SEOAuditPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 !space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
         <IconRocket size={28} className="!text-accent" />
         <div>
-          <h1 className="text-2xl font-bold">{t('seo_audit') || 'Audit SEO & Performance'}</h1>
-          <p className="text-sm !text-muted-foreground">
+          <h1 className="!text-2xl font-bold">{t('seo_audit') || 'Audit SEO & Performance'}</h1>
+          <p className="!text-sm !text-muted-foreground">
             {t('seo_audit_desc') || 'Analysez les performances de n&apos;importe quel site web'}
           </p>
         </div>
@@ -307,8 +307,8 @@ export default function SEOAuditPage() {
           <div className="bg-card border border-muted  p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-lg font-semibold">{result.url}</h2>
-                <p className="text-sm !text-muted-foreground flex items-center gap-2">
+                <h2 className="!text-lg font-semibold">{result.url}</h2>
+                <p className="!text-sm !text-muted-foreground flex items-center gap-2">
                   <IconClock size={14} />
                   {new Date(result.fetchTime).toLocaleString('fr-FR')}
                   <span>•</span>
@@ -336,7 +336,7 @@ export default function SEOAuditPage() {
 
           {/* Core Web Vitals */}
           <div className="bg-card border border-muted  p-6">
-            <h2 className="text-lg font-semibold mb-4">Core Web Vitals</h2>
+            <h2 className="!text-lg font-semibold mb-4">Core Web Vitals</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <MetricCard 
                 title="FCP (First Contentful Paint)"
@@ -369,8 +369,8 @@ export default function SEOAuditPage() {
           {/* Opportunities */}
           {result.opportunities.length > 0 && (
             <div className="bg-card border border-muted  p-6">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <IconRocket size={15} className="text-amber-500" />
+              <h2 className="!text-lg font-semibold mb-4 flex items-center gap-2">
+                <IconRocket size={15} className="!text-amber-500" />
                 Opportunités d&apos;amélioration
               </h2>
               <div className="space-y-3">
@@ -382,7 +382,7 @@ export default function SEOAuditPage() {
                     <div className="flex-1">
                       <p className="font-medium">{opp.title}</p>
                       {opp.savings && (
-                        <p className="text-sm !text-green-600 dark:!text-green-400">
+                        <p className="!text-sm !text-green-600 dark:!text-green-400">
                           Économie potentielle : {opp.savings}
                         </p>
                       )}
@@ -396,8 +396,8 @@ export default function SEOAuditPage() {
           {/* Diagnostics */}
           {result.diagnostics.length > 0 && (
             <div className="bg-card border border-muted  p-6">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <IconAlertTriangle size={15} className="text-amber-500" />
+              <h2 className="!text-lg font-semibold mb-4 flex items-center gap-2">
+                <IconAlertTriangle size={15} className="!text-amber-500" />
                 Diagnostics
               </h2>
               <div className="space-y-3">

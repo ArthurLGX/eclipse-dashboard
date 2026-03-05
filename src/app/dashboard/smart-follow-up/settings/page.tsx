@@ -160,11 +160,11 @@ export default function SmartFollowUpSettingsPage() {
             <IconArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-3xl font-bold !text-primary mb-2 flex items-center gap-3">
+            <h1 className="!text-3xl font-bold !text-primary mb-2 flex items-center gap-3">
               <IconSettings className="w-8 h-8 !text-accent" />
               Paramètres Smart Follow-Up
             </h1>
-            <p className="text-muted">Configurez les règles d&apos;automatisation des relances</p>
+            <p className="!text-muted">Configurez les règles d&apos;automatisation des relances</p>
           </div>
         </div>
         
@@ -180,7 +180,7 @@ export default function SmartFollowUpSettingsPage() {
 
       {/* Section Activation */}
       <div className="bg-card border border-default  p-6 mb-6">
-        <h2 className="text-xl font-bold !text-primary mb-4 flex items-center gap-2">
+        <h2 className="!text-xl font-bold !text-primary mb-4 flex items-center gap-2">
           <IconShieldCheck className="w-6 h-6 !text-accent" />
           Activation du système
         </h2>
@@ -189,7 +189,7 @@ export default function SmartFollowUpSettingsPage() {
           <div className="flex items-center justify-between p-4 bg-secondary ">
             <div>
               <h3 className="font-semibold !text-primary">Smart Follow-Up activé</h3>
-              <p className="text-sm !text-muted">Activer ou désactiver le système de relances automatiques</p>
+              <p className="!text-sm !text-muted">Activer ou désactiver le système de relances automatiques</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -205,7 +205,7 @@ export default function SmartFollowUpSettingsPage() {
           <div className="flex items-center justify-between p-4 bg-secondary ">
             <div>
               <h3 className="font-semibold !text-primary">Approbation automatique</h3>
-              <p className="text-sm !text-muted">Les actions à haute confiance (&gt;80%) seront approuvées automatiquement</p>
+              <p className="!text-sm !text-muted">Les actions à haute confiance (&gt;80%) seront approuvées automatiquement</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -222,8 +222,8 @@ export default function SmartFollowUpSettingsPage() {
 
       {/* Section Domaines exclus */}
       <div className="bg-card border border-default  p-6 mb-6">
-        <h2 className="text-xl font-bold !text-primary mb-4">Domaines exclus</h2>
-        <p className="text-sm !text-muted mb-4">
+        <h2 className="!text-xl font-bold !text-primary mb-4">Domaines exclus</h2>
+        <p className="!text-sm !text-muted mb-4">
           Les emails provenant de ces domaines ne déclencheront pas de relances automatiques
         </p>
         
@@ -251,25 +251,25 @@ export default function SmartFollowUpSettingsPage() {
               key={domain}
               className="flex items-center gap-2 px-3 py-2 bg-secondary border border-default "
             >
-              <span className="text-sm !text-primary">{domain}</span>
+              <span className="!text-sm !text-primary">{domain}</span>
               <button
                 onClick={() => handleRemoveDomain(domain)}
-                className="text-error hover:!text-error-dark transition-colors"
+                className="!text-error hover:!text-error-dark transition-colors"
               >
                 <IconTrash className="w-4 h-4" />
               </button>
             </div>
           ))}
           {excludedDomains.length === 0 && (
-            <p className="text-sm !text-muted italic">Aucun domaine exclu</p>
+            <p className="!text-sm !text-muted italic">Aucun domaine exclu</p>
           )}
         </div>
       </div>
 
       {/* Section Mots-clés prioritaires */}
       <div className="bg-card border border-default  p-6 mb-6">
-        <h2 className="text-xl font-bold !text-primary mb-4">Mots-clés prioritaires</h2>
-        <p className="text-sm !text-muted mb-4">
+        <h2 className="!text-xl font-bold !text-primary mb-4">Mots-clés prioritaires</h2>
+        <p className="!text-sm !text-muted mb-4">
           Les emails contenant ces mots-clés seront traités en priorité
         </p>
         
@@ -297,24 +297,24 @@ export default function SmartFollowUpSettingsPage() {
               key={keyword}
               className="flex items-center gap-2 px-3 py-2 bg-accent/10 border border-accent/20 "
             >
-              <span className="text-sm !text-accent font-medium">{keyword}</span>
+              <span className="!text-sm !text-accent font-medium">{keyword}</span>
               <button
                 onClick={() => handleRemoveKeyword(keyword)}
-                className="text-error hover:!text-error-dark transition-colors"
+                className="!text-error hover:!text-error-dark transition-colors"
               >
                 <IconTrash className="w-4 h-4" />
               </button>
             </div>
           ))}
           {priorityKeywords.length === 0 && (
-            <p className="text-sm !text-muted italic">Aucun mot-clé prioritaire</p>
+            <p className="!text-sm !text-muted italic">Aucun mot-clé prioritaire</p>
           )}
         </div>
       </div>
 
       {/* Section Délais de relance */}
       <div className="bg-card border border-default  p-6 mb-6">
-        <h2 className="text-xl font-bold !text-primary mb-4 flex items-center gap-2">
+        <h2 className="!text-xl font-bold !text-primary mb-4 flex items-center gap-2">
           <IconClock className="w-6 h-6 !text-accent" />
           Délais de relance (en jours)
         </h2>
@@ -404,8 +404,8 @@ export default function SmartFollowUpSettingsPage() {
 
       {/* Section Heures de travail */}
       <div className="bg-card border border-default  p-6 mb-6">
-        <h2 className="text-xl font-bold !text-primary mb-4">Heures de travail</h2>
-        <p className="text-sm !text-muted mb-4">
+        <h2 className="!text-xl font-bold !text-primary mb-4">Heures de travail</h2>
+        <p className="!text-sm !text-muted mb-4">
           Les emails ne seront envoyés que pendant ces horaires
         </p>
         
@@ -461,11 +461,11 @@ export default function SmartFollowUpSettingsPage() {
       <div className="bg-card border border-default  p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-bold !text-primary flex items-center gap-2">
+            <h2 className="!text-xl font-bold !text-primary flex items-center gap-2">
               <IconFilter className="w-6 h-6 !text-accent" />
               Règles de filtrage personnalisées
             </h2>
-            <p className="text-sm !text-muted mt-2">
+            <p className="!text-sm !text-muted mt-2">
               Définissez des règles avancées pour contrôler précisément comment les emails sont traités
             </p>
           </div>
@@ -477,7 +477,7 @@ export default function SmartFollowUpSettingsPage() {
               <h3 className="font-semibold !text-primary">
                 {customRules.length} règle{customRules.length > 1 ? 's' : ''} configurée{customRules.length > 1 ? 's' : ''}
               </h3>
-              <p className="text-sm !text-muted">
+              <p className="!text-sm !text-muted">
                 {customRules.filter(r => r.enabled).length} active{customRules.filter(r => r.enabled).length > 1 ? 's' : ''} sur {customRules.length}
               </p>
             </div>
@@ -492,17 +492,17 @@ export default function SmartFollowUpSettingsPage() {
 
           {customRules.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-sm font-medium !text-muted">Règles actives :</h4>
+              <h4 className="!text-sm font-medium !text-muted">Règles actives :</h4>
               {customRules.filter(r => r.enabled).map(rule => (
                 <div key={rule.id} className="flex items-center gap-2 p-3 bg-secondary/50 ">
-                  <span className="text-sm !text-primary font-medium">{rule.name}</span>
+                  <span className="!text-sm !text-primary font-medium">{rule.name}</span>
                   <span className="px-2 py-1 !text-xs bg-accent/10 !text-accent rounded">
                     Priorité {rule.priority}
                   </span>
                 </div>
               ))}
               {customRules.filter(r => r.enabled).length === 0 && (
-                <p className="text-sm !text-muted italic">Aucune règle active</p>
+                <p className="!text-sm !text-muted italic">Aucune règle active</p>
               )}
             </div>
           )}
@@ -511,7 +511,7 @@ export default function SmartFollowUpSettingsPage() {
 
       {/* Section Notifications */}
       <div className="bg-card border border-default  p-6 mb-6">
-        <h2 className="text-xl font-bold !text-primary mb-4 flex items-center gap-2">
+        <h2 className="!text-xl font-bold !text-primary mb-4 flex items-center gap-2">
           <IconBell className="w-6 h-6 !text-accent" />
           Préférences de notification
         </h2>
@@ -520,7 +520,7 @@ export default function SmartFollowUpSettingsPage() {
           <div className="flex items-center justify-between p-4 bg-secondary ">
             <div>
               <h3 className="font-semibold !text-primary">Notifications email</h3>
-              <p className="text-sm !text-muted">Recevoir un email pour chaque action</p>
+              <p className="!text-sm !text-muted">Recevoir un email pour chaque action</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -539,7 +539,7 @@ export default function SmartFollowUpSettingsPage() {
           <div className="flex items-center justify-between p-4 bg-secondary ">
             <div>
               <h3 className="font-semibold !text-primary">Notifications dashboard</h3>
-              <p className="text-sm !text-muted">Afficher les notifications dans l&apos;interface</p>
+              <p className="!text-sm !text-muted">Afficher les notifications dans l&apos;interface</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input

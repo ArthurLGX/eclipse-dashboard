@@ -110,7 +110,7 @@ export default function DeleteConfirmModal({
                 <IconAlertTriangle className="w-6 h-6 !text-danger" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-semibold !text-primary">{title}</h3>
+                <h3 className="!text-lg font-semibold !text-primary">{title}</h3>
                 <p className="mt-1 !text-sm !text-muted">
                   Cette action est irréversible. Êtes-vous sûr de vouloir supprimer {typeInfo.article} {typeInfo.fr} ?
                 </p>
@@ -127,14 +127,14 @@ export default function DeleteConfirmModal({
             {/* Item Name */}
             {displayName && (
               <div className="mt-4 p-3 bg-muted  border border-default">
-                <p className="text-primary font-medium truncate">{displayName}</p>
+                <p className="!text-primary font-medium truncate">{displayName}</p>
               </div>
             )}
 
             {/* Warning */}
             {warningMessage && (
               <div className="mt-4 p-3 bg-warning-light border border-warning ">
-                <p className="text-warning-text !text-sm">{warningMessage}</p>
+                <p className="!text-warning-text !text-sm">{warningMessage}</p>
               </div>
             )}
 
@@ -179,7 +179,7 @@ export default function DeleteConfirmModal({
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-4 p-3 bg-danger-light border border-danger "
               >
-                <p className="text-danger !text-sm">{error}</p>
+                <p className="!text-danger !text-sm">{error}</p>
               </motion.div>
             )}
 

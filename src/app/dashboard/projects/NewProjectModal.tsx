@@ -147,7 +147,7 @@ export default function NewProjectModal({
         <div className="p-2 bg-accent-light  border border-accent">
           <IconFolderPlus size={22} className="!text-accent" />
         </div>
-        <h2 className="text-xl font-bold !text-primary">
+        <h2 className="!text-xl font-bold !text-primary">
           {t('new_project') || 'Nouveau projet'}
         </h2>
       </div>
@@ -164,7 +164,7 @@ export default function NewProjectModal({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconFolder size={14} className="text-muted" />
+              <IconFolder size={14} className="!text-muted" />
               {t('title') || 'Titre'} <span className="!text-accent">*</span>
             </label>
             <input
@@ -180,7 +180,7 @@ export default function NewProjectModal({
 
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconCode size={14} className="text-muted" />
+              <IconCode size={14} className="!text-muted" />
               {t('type') || 'Type'} <span className="!text-accent">*</span>
             </label>
             <select
@@ -197,8 +197,8 @@ export default function NewProjectModal({
 
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconUsers size={14} className="text-muted" />
-              {t('client') || 'Client'} <span className="text-muted">(optionnel)</span>
+              <IconUsers size={14} className="!text-muted" />
+              {t('client') || 'Client'} <span className="!text-muted">(optionnel)</span>
             </label>
             <select
               value={selectedClient || ''}
@@ -216,7 +216,7 @@ export default function NewProjectModal({
         {/* Description - compact */}
         <div>
           <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-            <IconFileDescription size={14} className="text-muted" />
+            <IconFileDescription size={14} className="!text-muted" />
             {t('description') || 'Description'} <span className="!text-accent">*</span>
           </label>
           <textarea
@@ -232,7 +232,7 @@ export default function NewProjectModal({
         {/* Statut et Dates - 3 colonnes compact */}
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className="text-secondary !text-xs mb-1.5 font-medium block">
+            <label className="!text-secondary !text-xs mb-1.5 font-medium block">
               {t('status') || 'Statut'} <span className="!text-accent">*</span>
             </label>
             <select
@@ -249,7 +249,7 @@ export default function NewProjectModal({
 
           <div>
             <label className="flex items-center gap-1 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconCalendar size={12} className="text-muted" />
+              <IconCalendar size={12} className="!text-muted" />
               Début <span className="!text-accent">*</span>
             </label>
             <input
@@ -263,7 +263,7 @@ export default function NewProjectModal({
 
           <div>
             <label className="flex items-center gap-1 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconCalendar size={12} className="text-muted" />
+              <IconCalendar size={12} className="!text-muted" />
               Fin <span className="!text-accent">*</span>
             </label>
             <input
@@ -280,9 +280,9 @@ export default function NewProjectModal({
         {/* Technologies - compact */}
         <div className="p-3 bg-muted  border border-default">
           <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-2 font-medium">
-            <IconCode size={14} className="text-muted" />
+            <IconCode size={14} className="!text-muted" />
             {t('technologies') || 'Technologies'} 
-            <span className="text-muted">(optionnel)</span>
+            <span className="!text-muted">(optionnel)</span>
           </label>
           <div className="flex flex-wrap gap-1.5">
             {TECHNOLOGIES.map(tech => (
@@ -305,8 +305,8 @@ export default function NewProjectModal({
         {/* Notes - compact */}
         <div>
           <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-            <IconNote size={14} className="text-muted" />
-            {t('notes') || 'Notes'} <span className="text-muted">(optionnel)</span>
+            <IconNote size={14} className="!text-muted" />
+            {t('notes') || 'Notes'} <span className="!text-muted">(optionnel)</span>
           </label>
           <input
             type="text"

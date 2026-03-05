@@ -214,12 +214,12 @@ export default function AIContractGenerator({
 
   // Convert contract structure to HTML for editing
   const contractToHtml = useCallback((contract: GeneratedContract): string => {
-    let html = `<h1 style="text-align: center; !text-transform: uppercase;">${contract.title}</h1>\n\n`;
+    let html = `<h1 style="!text-align: center; !text-transform: uppercase;">${contract.title}</h1>\n\n`;
     
     html += `<h2>ENTRE LES SOUSSIGNÉS :</h2>\n`;
     html += `<p><strong>${contract.parties.provider.name}</strong></p>\n`;
     html += `<p>${contract.parties.provider.details.replace(/\n/g, '<br>')}</p>\n`;
-    html += `<p style="text-align: center;"><em>ET</em></p>\n`;
+    html += `<p style="!text-align: center;"><em>ET</em></p>\n`;
     html += `<p><strong>${contract.parties.client.name}</strong></p>\n`;
     html += `<p>${contract.parties.client.details.replace(/\n/g, '<br>')}</p>\n\n`;
     
@@ -233,10 +233,10 @@ export default function AIContractGenerator({
     });
     
     html += `\n<hr>\n`;
-    html += `<p style="text-align: center;">Fait à ${contract.signatures.location}, le ${contract.signatures.date}</p>\n`;
+    html += `<p style="!text-align: center;">Fait à ${contract.signatures.location}, le ${contract.signatures.date}</p>\n`;
     html += `<div style="display: flex; justify-content: space-between; margin-top: 20px;">\n`;
-    html += `  <div style="text-align: center;"><strong>Le Prestataire</strong><br><br><br>____________________</div>\n`;
-    html += `  <div style="text-align: center;"><strong>Le Client</strong><br><br><br>____________________</div>\n`;
+    html += `  <div style="!text-align: center;"><strong>Le Prestataire</strong><br><br><br>____________________</div>\n`;
+    html += `  <div style="!text-align: center;"><strong>Le Client</strong><br><br><br>____________________</div>\n`;
     html += `</div>`;
     
     return html;
@@ -793,13 +793,13 @@ ${user?.username || 'L\'équipe'}`;
                 )}
               </div>
               <div>
-                <h2 className="text-lg font-semibold !text-primary">
+                <h2 className="!text-lg font-semibold !text-primary">
                   {manualMode 
                     ? (t('manual_contract_creation') || 'Création manuelle')
                     : 'Eclipse Assistant'
                   }
                 </h2>
-                <p className="text-sm !text-muted">
+                <p className="!text-sm !text-muted">
                   {manualMode
                     ? (t('manual_contract_description') || 'Créez votre contrat de A à Z')
                     : (t('ai_contract_description') || 'Documents juridiques personnalisés')
@@ -819,8 +819,8 @@ ${user?.username || 'L\'équipe'}`;
           {error && (
             <div className="mx-6 mt-4 p-3 bg-danger-light  flex items-center gap-3 border border-danger">
               <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
-              <p className="text-sm !text-danger flex-1">{error}</p>
-              <button onClick={() => setError(null)} className="text-danger hover:opacity-70">
+              <p className="!text-sm !text-danger flex-1">{error}</p>
+              <button onClick={() => setError(null)} className="!text-danger hover:opacity-70">
                 <IconX className="w-4 h-4" />
               </button>
             </div>
@@ -841,7 +841,7 @@ ${user?.username || 'L\'équipe'}`;
                     }`}>
                       {['config', 'review', 'sign', 'send'].indexOf(step) > i ? <IconCheck className="w-4 h-4" /> : i + 1}
                     </div>
-                    <span className="text-sm font-medium hidden sm:inline">
+                    <span className="!text-sm font-medium hidden sm:inline">
                       {s === 'config' ? (t('configuration') || 'Configuration') :
                        s === 'review' ? (t('review') || 'Révision') :
                        s === 'sign' ? (t('signature') || 'Signature') :
@@ -952,7 +952,7 @@ ${user?.username || 'L\'équipe'}`;
                     <label className="block !text-sm font-medium !text-primary mb-2 flex items-center gap-2">
                       <IconMapPin className="w-4 h-4 !text-muted" />
                       {t('signature_location') || 'Lieu de signature'}
-                      <span className="text-danger">*</span>
+                      <span className="!text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -969,7 +969,7 @@ ${user?.username || 'L\'équipe'}`;
                     <label className="block !text-sm font-medium !text-primary mb-2 flex items-center gap-2">
                       <IconCalendar className="w-4 h-4 !text-muted" />
                       {t('signature_date') || 'Date de signature'}
-                      <span className="text-danger">*</span>
+                      <span className="!text-danger">*</span>
                     </label>
                     <input
                       type="date"
@@ -1015,12 +1015,12 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Context info when project selected */}
                 {selectedProject && (
-                  <div className="p-4 bg-info-light  space-y-2">
-                    <p className="text-sm font-medium !text-info flex items-center gap-2">
+                  <div className="p-4 bg-info-light  !space-y-2">
+                    <p className="!text-sm font-medium !text-info flex items-center gap-2">
                       <IconSparkles className="w-4 h-4" />
                       {t('project_context') || 'L\'IA adaptera le contrat selon ce projet'}
                     </p>
-                    <div className="text-sm !text-info-light space-y-1">
+                    <div className="!text-sm !text-info-light !space-y-1">
                       <p><strong>Projet:</strong> {selectedProject.title}</p>
                       {selectedProject.description && (
                         <div 
@@ -1070,7 +1070,7 @@ ${user?.username || 'L\'équipe'}`;
                           <span className="flex-1 !text-sm !text-primary">{clause}</span>
                           <button
                             onClick={() => handleRemoveClause(index)}
-                            className="text-danger hover:opacity-80"
+                            className="!text-danger hover:opacity-80"
                           >
                             <IconX className="w-4 h-4" />
                           </button>
@@ -1084,7 +1084,7 @@ ${user?.username || 'L\'équipe'}`;
                 <div className="p-4 bg-warning-light  flex items-start gap-3">
                   <IconAlertTriangle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium !text-warning">
+                    <p className="!text-sm font-medium !text-warning">
                       {t('contract_warning_title') || 'Important'}
                     </p>
                     <p className="!text-xs !text-warning-light mt-1">
@@ -1102,7 +1102,7 @@ ${user?.username || 'L\'équipe'}`;
                 {validatingDates && (
                   <div className="p-4 bg-info-light  flex items-center gap-3">
                     <IconLoader2 className="w-5 h-5 !text-info animate-spin" />
-                    <p className="text-sm !text-info">
+                    <p className="!text-sm !text-info">
                       {contractLanguage === 'fr' 
                         ? 'Vérification des dates du contrat...' 
                         : 'Validating contract dates...'}
@@ -1115,15 +1115,15 @@ ${user?.username || 'L\'équipe'}`;
                     <div className="flex items-start gap-3">
                       <IconAlertTriangle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium !text-accent mb-2">
+                        <p className="!text-sm font-medium !text-accent mb-2">
                           {contractLanguage === 'fr' 
                             ? 'Attention aux dates du contrat' 
                             : 'Contract date warnings'}
                         </p>
                         <ul className="space-y-1">
                           {dateWarnings.map((warning, index) => (
-                            <li key={index} className="text-sm !text-warning-light flex items-start gap-2">
-                              <span className="text-warning">•</span>
+                            <li key={index} className="!text-sm !text-warning-light flex items-start gap-2">
+                              <span className="!text-warning">•</span>
                               {warning}
                             </li>
                           ))}
@@ -1175,7 +1175,7 @@ ${user?.username || 'L\'équipe'}`;
                     }}
                   >
                     {/* Title */}
-                    <h3 className="text-xl font-bold !text-center !text-primary mb-6 uppercase">
+                    <h3 className="!text-xl font-bold !text-center !text-primary mb-6 uppercase">
                       {generatedContract.title}
                     </h3>
 
@@ -1184,41 +1184,41 @@ ${user?.username || 'L\'équipe'}`;
                       <p className="font-semibold !text-primary">ENTRE LES SOUSSIGNÉS :</p>
                       <div className="mt-2 p-3 bg-muted ">
                         <p className="font-medium !text-primary">{generatedContract.parties.provider.name}</p>
-                        <p className="text-primary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
+                        <p className="!text-primary whitespace-pre-line">{generatedContract.parties.provider.details}</p>
                       </div>
-                      <p className="text-center my-2 !text-muted">ET</p>
+                      <p className="!text-center my-2 !text-muted">ET</p>
                       <div className="p-3 bg-muted ">
                         <p className="font-medium !text-primary">{generatedContract.parties.client.name}</p>
-                        <p className="text-primary whitespace-pre-line">{generatedContract.parties.client.details}</p>
+                        <p className="!text-primary whitespace-pre-line">{generatedContract.parties.client.details}</p>
                       </div>
                     </div>
 
                     {/* Preamble */}
                     <div className="mb-6 !text-sm">
                       <p className="font-semibold !text-primary mb-2">PRÉAMBULE</p>
-                      <p className="text-primary whitespace-pre-line">{generatedContract.preamble}</p>
+                      <p className="!text-primary whitespace-pre-line">{generatedContract.preamble}</p>
                     </div>
 
                     {/* Articles */}
                     <div className="space-y-4">
                       <p className="font-semibold !text-primary !text-sm">IL A ÉTÉ CONVENU CE QUI SUIT :</p>
                       {generatedContract.articles.map(article => (
-                        <div key={article.number} className="text-sm">
+                        <div key={article.number} className="!text-sm">
                           <p className="font-semibold !text-primary">
                             Article {article.number} - {article.title}
                           </p>
-                          <p className="text-primary whitespace-pre-line mt-1">{article.content}</p>
+                          <p className="!text-primary whitespace-pre-line mt-1">{article.content}</p>
                         </div>
                       ))}
                     </div>
 
                     {/* Signatures preview */}
                     <div className="mt-8 pt-4 border-t border-muted !text-sm">
-                      <p className="text-center !text-muted mb-4">
+                      <p className="!text-center !text-muted mb-4">
                         Fait à {generatedContract.signatures.location}, le {generatedContract.signatures.date}
                       </p>
                       <div className="grid grid-cols-2 gap-8">
-                        <div className="text-center">
+                        <div className="!text-center">
                           <p className="font-medium !text-primary">Le Prestataire</p>
                           <div className="mt-4 h-20 border border-dashed border-muted  flex items-center justify-center">
                             {signatures.provider ? (
@@ -1228,7 +1228,7 @@ ${user?.username || 'L\'équipe'}`;
                             )}
                           </div>
                         </div>
-                        <div className="text-center">
+                        <div className="!text-center">
                           <p className="font-medium !text-primary">Le Client</p>
                           <div className="mt-4 h-20 border border-dashed border-muted  flex items-center justify-center">
                             {signatures.client ? (
@@ -1245,7 +1245,7 @@ ${user?.username || 'L\'équipe'}`;
                   /* Edit Mode - Rich Text Editor */
                   <div className="space-y-4">
                     <div className="p-4 bg-info-light ">
-                      <p className="text-sm !text-info flex items-center gap-2">
+                      <p className="!text-sm !text-info flex items-center gap-2">
                         <IconEdit className="w-4 h-4" />
                         {t('edit_contract_info') || 'Vous pouvez modifier librement le contenu du contrat ci-dessous.'}
                       </p>
@@ -1271,11 +1271,11 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Tips & Warnings */}
                 {generatedContract.tips && generatedContract.tips.length > 0 && (
                   <div className="p-4 bg-info-light ">
-                    <p className="text-sm font-medium !text-info flex items-center gap-2 mb-2">
+                    <p className="!text-sm font-medium !text-info flex items-center gap-2 mb-2">
                       <IconBulb className="w-4 h-4" />
                       {t('tips') || 'Conseils'}
                     </p>
-                    <ul className="!text-xs !text-info-light space-y-1">
+                    <ul className="!text-xs !text-info-light !space-y-1">
                       {generatedContract.tips.map((tip, i) => (
                         <li key={i}>• {tip}</li>
                       ))}
@@ -1285,11 +1285,11 @@ ${user?.username || 'L\'équipe'}`;
 
                 {generatedContract.warnings && generatedContract.warnings.length > 0 && (
                   <div className="p-4 bg-accent-light ">
-                    <p className="text-sm font-medium !text-accent flex items-center gap-2 mb-2">
+                    <p className="!text-sm font-medium !text-accent flex items-center gap-2 mb-2">
                       <IconAlertTriangle className="w-4 h-4" />
                       {t('warnings') || 'Points d\'attention'}
                     </p>
-                    <ul className="!text-xs !text-accent space-y-1">
+                    <ul className="!text-xs !text-accent !space-y-1">
                       {generatedContract.warnings.map((warning, i) => (
                         <li key={i}>• {warning}</li>
                       ))}
@@ -1313,7 +1313,7 @@ ${user?.username || 'L\'équipe'}`;
                       {signatures.provider && (
                         <button
                           onClick={() => setSignatures(prev => ({ ...prev, provider: null }))}
-                          className="text-danger hover:opacity-80 !text-xs flex items-center gap-1"
+                          className="!text-danger hover:opacity-80 !text-xs flex items-center gap-1"
                         >
                           <IconTrash className="w-3 h-3" />
                           {t('delete') || 'Supprimer'}
@@ -1330,7 +1330,7 @@ ${user?.username || 'L\'équipe'}`;
                         className="w-full h-32 border-2 border-dashed border-muted  hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 !text-muted hover:!text-accent"
                       >
                         <IconSignature className="w-8 h-8" />
-                        <span className="text-sm">{t('click_to_sign') || 'Cliquer pour signer'}</span>
+                        <span className="!text-sm">{t('click_to_sign') || 'Cliquer pour signer'}</span>
                       </button>
                     )}
                   </div>
@@ -1345,7 +1345,7 @@ ${user?.username || 'L\'équipe'}`;
                     </div>
                     <div className="w-full h-32 border-2 border-dashed border-muted  bg-muted flex flex-col items-center justify-center gap-2 !text-muted">
                       <IconSignature className="w-8 h-8" />
-                      <span className="text-sm !text-center px-4">
+                      <span className="!text-sm !text-center px-4">
                         {t('client_will_sign_here') || 'Le client signera ici après réception du contrat'}
                       </span>
                     </div>
@@ -1363,7 +1363,7 @@ ${user?.username || 'L\'équipe'}`;
                       </p>
                       <button
                         onClick={() => { setActiveSignature(null); clearCanvas(); }}
-                        className="text-muted hover:!text-primary"
+                        className="!text-muted hover:!text-primary"
                       >
                         <IconX className="w-5 h-5" />
                       </button>
@@ -1405,7 +1405,7 @@ ${user?.username || 'L\'équipe'}`;
                 {/* Alert for missing date/location */}
                 {(!signatureLocation || !signatureDate) && (
                   <div className="p-4 bg-accent-light  border border-warning">
-                    <p className="text-sm !text-warning-text flex items-center gap-2">
+                    <p className="!text-sm !text-warning-text flex items-center gap-2">
                       <IconAlertTriangle className="w-4 h-4 flex-shrink-0" />
                       <span>
                         {t('missing_signature_info') || 'Veuillez renseigner le lieu et la date de signature dans l\'étape de configuration.'}
@@ -1416,17 +1416,17 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Contract Summary */}
                 <div className="p-4 bg-muted  !text-sm">
-                  <p className="text-muted mb-2">{t('contract_summary') || 'Récapitulatif'}</p>
+                  <p className="!text-muted mb-2">{t('contract_summary') || 'Récapitulatif'}</p>
                   <div className="space-y-1 !text-primary">
-                    <p><strong className="text-primary">Contrat:</strong> {generatedContract.title}</p>
+                    <p><strong className="!text-primary">Contrat:</strong> {generatedContract.title}</p>
                     <p>
-                      <strong className="text-primary">Lieu:</strong>{' '}
+                      <strong className="!text-primary">Lieu:</strong>{' '}
                       <span className={!signatureLocation ? 'text-warning' : ''}>
                         {generatedContract.signatures.location || t('not_specified') || '[Non renseigné]'}
                       </span>
                     </p>
                     <p>
-                      <strong className="text-primary">Date:</strong>{' '}
+                      <strong className="!text-primary">Date:</strong>{' '}
                       <span className={!signatureDate ? 'text-warning' : ''}>
                         {generatedContract.signatures.date || t('not_specified') || '[Non renseigné]'}
                       </span>
@@ -1447,7 +1447,7 @@ ${user?.username || 'L\'équipe'}`;
                       <p className="font-medium !text-success-text -text">
                         {t('contract_saved') || 'Contrat sauvegardé avec succès !'}
                       </p>
-                      <p className="text-sm !text-success-text -text mt-1">
+                      <p className="!text-sm !text-success-text -text mt-1">
                         {t('contract_ready_to_send') || 'Le contrat est prêt à être envoyé au client pour signature.'}
                       </p>
                     </div>
@@ -1462,18 +1462,18 @@ ${user?.username || 'L\'équipe'}`;
                   </p>
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-accent-light rounded-full flex items-center justify-center">
-                      <span className="text-accent font-medium">
+                      <span className="!text-accent font-medium">
                         {selectedClient?.name?.charAt(0) || 'C'}
                       </span>
                     </div>
                     <div>
                       <p className="font-medium !text-primary">{selectedClient?.name}</p>
-                      <p className="text-sm !text-muted">{selectedClient?.email || t('no_email') || 'Pas d\'email'}</p>
+                      <p className="!text-sm !text-muted">{selectedClient?.email || t('no_email') || 'Pas d\'email'}</p>
                     </div>
                   </div>
                   {!selectedClient?.email && (
                     <div className="mt-3 p-3 bg-accent-light ">
-                      <p className="text-sm !text-accent flex items-center gap-2">
+                      <p className="!text-sm !text-accent flex items-center gap-2">
                         <IconAlertTriangle className="w-4 h-4" />
                         {t('client_no_email_warning') || 'Ce client n\'a pas d\'email. Ajoutez-en un pour pouvoir envoyer le contrat.'}
                       </p>
@@ -1524,11 +1524,11 @@ ${user?.username || 'L\'équipe'}`;
                     <div className="p-3 bg-slate-50 border-b border-slate-200">
                       <div className="flex items-center gap-2 !text-xs !text-slate-500 mb-1">
                         <span className="font-medium">À:</span>
-                        <span className="text-slate-700">{selectedClient?.email || 'client@email.com'}</span>
+                        <span className="!text-slate-700">{selectedClient?.email || 'client@email.com'}</span>
                       </div>
                       <div className="flex items-center gap-2 !text-xs !text-slate-500">
                         <span className="font-medium">Objet:</span>
-                        <span className="text-slate-700">Contrat à signer - {generatedContract?.title}</span>
+                        <span className="!text-slate-700">Contrat à signer - {generatedContract?.title}</span>
                       </div>
                     </div>
                     
@@ -1554,7 +1554,7 @@ ${user?.username || 'L\'équipe'}`;
 
                 {/* Info */}
                 <div className="p-4 bg-info-light ">
-                  <p className="text-sm !text-info flex items-start gap-2">
+                  <p className="!text-sm !text-info flex items-start gap-2">
                     <IconBulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
                     <span>
                       {t('send_contract_info') || 'Une fois l\'email envoyé, le client pourra signer le contrat en ligne. Vous serez notifié dès qu\'il aura signé.'}

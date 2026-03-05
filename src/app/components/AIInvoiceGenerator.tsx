@@ -274,10 +274,10 @@ export default function AIInvoiceGenerator({
                 />
               </div>
               <div>
-                <h2 className="text-lg font-semibold !text-primary">
+                <h2 className="!text-lg font-semibold !text-primary">
                   Eclipse Assistant
                 </h2>
-                <p className="text-sm !text-muted">
+                <p className="!text-sm !text-muted">
                   {documentType === 'quote' 
                     ? (t('ai_quote_description') || 'Génération de devis intelligente')
                     : (t('ai_invoice_description') || 'Génération de facture intelligente')
@@ -316,19 +316,19 @@ export default function AIInvoiceGenerator({
 
                 {/* Context info */}
                 {(existingClient || existingProjectTitle) && (
-                  <div className="p-4 bg-info-light  space-y-2">
-                    <p className="text-sm font-medium !text-info flex items-center gap-2">
+                  <div className="p-4 bg-info-light  !space-y-2">
+                    <p className="!text-sm font-medium !text-info flex items-center gap-2">
                       <IconSparkles className="w-4 h-4" />
                       {t('ai_context_info') || 'Contexte détecté'}
                     </p>
                     {existingClient && (
-                      <p className="text-sm !text-info-light flex items-center gap-2">
+                      <p className="!text-sm !text-info-light flex items-center gap-2">
                         <IconUser className="w-4 h-4" />
                         {existingClient.name} {existingClient.enterprise && `(${existingClient.enterprise})`}
                       </p>
                     )}
                     {existingProjectTitle && (
-                      <p className="text-sm !text-info-light flex items-center gap-2">
+                      <p className="!text-sm !text-info-light flex items-center gap-2">
                         <IconFileInvoice className="w-4 h-4" />
                         {existingProjectTitle}
                       </p>
@@ -364,7 +364,7 @@ export default function AIInvoiceGenerator({
                 {error && (
                   <div className="p-4 bg-danger-light  flex items-center gap-3">
                     <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
-                    <p className="text-sm !text-danger">{error}</p>
+                    <p className="!text-sm !text-danger">{error}</p>
                   </div>
                 )}
               </div>
@@ -387,7 +387,7 @@ export default function AIInvoiceGenerator({
                     />
                   </div>
                   <div>
-                    <p className="text-sm font-medium !text-primary">
+                    <p className="!text-sm font-medium !text-primary">
                       {t('ai_confidence') || 'Confiance IA'}: {Math.round(generatedData.confidence * 100)}%
                     </p>
                     {generatedData.reasoning && (
@@ -405,7 +405,7 @@ export default function AIInvoiceGenerator({
                           <IconUser className="w-3.5 h-3.5" />
                           {t('client') || 'Client'}
                         </p>
-                        <p className="text-sm font-medium !text-primary">{generatedData.client.name}</p>
+                        <p className="!text-sm font-medium !text-primary">{generatedData.client.name}</p>
                         {generatedData.client.enterprise && (
                           <p className="!text-xs !text-secondary">{generatedData.client.enterprise}</p>
                         )}
@@ -417,7 +417,7 @@ export default function AIInvoiceGenerator({
                           <IconFileInvoice className="w-3.5 h-3.5" />
                           {t('project') || 'Projet'}
                         </p>
-                        <p className="text-sm font-medium !text-primary">{generatedData.project.title}</p>
+                        <p className="!text-sm font-medium !text-primary">{generatedData.project.title}</p>
                       </div>
                     )}
                   </div>
@@ -426,7 +426,7 @@ export default function AIInvoiceGenerator({
                 {/* Invoice lines */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-medium !text-primary">
+                    <p className="!text-sm font-medium !text-primary">
                       {t('invoice_lines') || 'Lignes de facturation'}
                     </p>
                     <button
@@ -440,7 +440,7 @@ export default function AIInvoiceGenerator({
                   
                   <div className="space-y-3">
                     {editedLines.map((line, index) => (
-                      <div key={index} className="p-4 bg-muted  space-y-3">
+                      <div key={index} className="p-4 bg-muted  !space-y-3">
                         <div className="flex items-start gap-3">
                           <input
                             type="text"
@@ -501,14 +501,14 @@ export default function AIInvoiceGenerator({
                 </div>
 
                 {/* Totals */}
-                <div className="p-4 bg-accent-light  space-y-2">
+                <div className="p-4 bg-accent-light  !space-y-2">
                   <div className="flex justify-between !text-sm">
-                    <span className="text-primary">{t('total_ht') || 'Total HT'}</span>
+                    <span className="!text-primary">{t('total_ht') || 'Total HT'}</span>
                     <span className="font-medium !text-primary">{totalHT.toLocaleString('fr-FR')} €</span>
                   </div>
                   {generatedData.tva_applicable && (
                     <div className="flex justify-between !text-sm">
-                      <span className="text-primary">TVA ({generatedData.tva_rate}%)</span>
+                      <span className="!text-primary">TVA ({generatedData.tva_rate}%)</span>
                       <span className="font-medium !text-primary">{totalTVA.toLocaleString('fr-FR')} €</span>
                     </div>
                   )}
@@ -524,7 +524,7 @@ export default function AIInvoiceGenerator({
                     <p className="!text-xs !text-muted font-medium uppercase tracking-wider mb-2">
                       {t('notes') || 'Notes'}
                     </p>
-                    <p className="text-sm !text-secondary">{generatedData.notes}</p>
+                    <p className="!text-sm !text-secondary">{generatedData.notes}</p>
                   </div>
                 )}
               </div>

@@ -138,7 +138,7 @@ function ContactCard({
       {/* Header avec avatar, titre et menu */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2 min-w-0">
-          <IconGripVertical size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+          <IconGripVertical size={14} className="!text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
           
           {/* Avatar / Logo du client */}
           {imageUrl ? (
@@ -156,7 +156,7 @@ function ContactCard({
           <div className="min-w-0">
             <h4 className="font-medium !text-sm !text-foreground truncate">{contact.name}</h4>
             {contact.processStatus === 'client' && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-success-light !text-success-text">
+              <span className="!text-[10px] px-1.5 py-0.5 rounded bg-success-light !text-success-text">
                 Client
               </span>
             )}
@@ -200,7 +200,7 @@ function ContactCard({
             }}
             className="p-1 rounded hover:bg-hover opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <IconDots size={14} className="text-muted-foreground" />
+            <IconDots size={14} className="!text-muted-foreground" />
           </button>
           
           {showMenu && (
@@ -418,7 +418,7 @@ function KanbanColumn({
       </div>
 
       {/* Cards */}
-      <div className="flex-1 p-2 space-y-2 overflow-y-auto max-h-[calc(100vh-300px)] min-h-[200px]">
+      <div className="flex-1 p-2 !space-y-2 overflow-y-auto max-h-[calc(100vh-300px)] min-h-[200px]">
         {contacts.map((contact) => (
           <ContactCard
             key={contact.documentId}
@@ -560,15 +560,15 @@ export default function KanbanBoard({
       {/* Stats bar */}
       <div className="flex flex-wrap gap-4 p-4 bg-card  border border-muted">
         <div className="flex items-center gap-2">
-          <span className="text-sm !text-muted-foreground">{t('pipeline_total_contacts') || 'Total contacts'}:</span>
+          <span className="!text-sm !text-muted-foreground">{t('pipeline_total_contacts') || 'Total contacts'}:</span>
           <span className="font-semibold !text-foreground">{totalContacts}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm !text-muted-foreground">{t('pipeline_potential_value') || 'Valeur potentielle'}:</span>
+          <span className="!text-sm !text-muted-foreground">{t('pipeline_potential_value') || 'Valeur potentielle'}:</span>
           <span className="font-semibold !text-foreground">{formatCurrency(totalValue)}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm !text-muted-foreground">{t('pipeline_won_value') || 'Valeur gagnée'}:</span>
+          <span className="!text-sm !text-muted-foreground">{t('pipeline_won_value') || 'Valeur gagnée'}:</span>
           <span className="font-semibold !text-green-600 dark:!text-green-400">{formatCurrency(wonValue)}</span>
         </div>
       </div>

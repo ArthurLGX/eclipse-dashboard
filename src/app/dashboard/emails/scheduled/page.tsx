@@ -128,7 +128,7 @@ function ScheduledEmails() {
               <IconArrowLeft className="w-5 h-5" />
             </Link>
             
-            <h1 className="text-xl font-semibold !text-primary flex items-center gap-2">
+            <h1 className="!text-xl font-semibold !text-primary flex items-center gap-2">
               <IconClock className="w-6 h-6 !text-purple-500" />
               {t('scheduled_emails') || 'Emails planifiés'}
             </h1>
@@ -154,15 +154,15 @@ function ScheduledEmails() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center py-20"
+            className="!text-center py-20"
           >
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-purple-500/10 flex items-center justify-center">
               <IconCalendar className="w-10 h-10 !text-purple-400" />
             </div>
-            <h2 className="text-xl font-semibold !text-primary mb-2">
+            <h2 className="!text-xl font-semibold !text-primary mb-2">
               {t('no_scheduled_emails') || 'Aucun email planifié'}
             </h2>
-            <p className="text-muted max-w-7xl mx-auto">
+            <p className="!text-muted max-w-7xl mx-auto">
               {t('no_scheduled_emails_desc') || 'Vous n\'avez aucun email en attente d\'envoi. Créez un nouvel email et utilisez la planification pour l\'envoyer plus tard.'}
             </p>
             <Link
@@ -175,7 +175,7 @@ function ScheduledEmails() {
           </motion.div>
         ) : (
           <div className="space-y-4">
-            <div className="text-sm !text-muted mb-4">
+            <div className="!text-sm !text-muted mb-4">
               {scheduledEmails.length} {t('emails_scheduled') || 'email(s) planifié(s)'}
             </div>
             
@@ -213,17 +213,17 @@ function ScheduledEmails() {
                         <div className="mt-3 flex items-center gap-4 !text-sm">
                           <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 ">
                             <IconCalendar className="w-4 h-4 !text-purple-400" />
-                            <span className="text-purple-300">
+                            <span className="!text-purple-300">
                               {formatDate(email.scheduled_at)}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 ">
                             <IconClock className="w-4 h-4 !text-purple-400" />
-                            <span className="text-purple-300">
+                            <span className="!text-purple-300">
                               {formatTime(email.scheduled_at)}
                             </span>
                           </div>
-                          <div className="text-muted">
+                          <div className="!text-muted">
                             Dans {getTimeUntil(email.scheduled_at)}
                           </div>
                         </div>
@@ -233,7 +233,7 @@ function ScheduledEmails() {
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {confirmCancel === email.documentId ? (
                         <div className="flex items-center gap-2 p-2 bg-red-500/10 ">
-                          <span className="text-sm !text-red-400">
+                          <span className="!text-sm !text-red-400">
                             {t('confirm_cancel') || 'Confirmer ?'}
                           </span>
                           <button
@@ -281,7 +281,7 @@ function ScheduledEmails() {
       <div className="max-w-7xl mx-auto px-6 pb-6">
         <div className="flex items-start gap-3 p-4 bg-purple-500/10 border border-purple-500/30 ">
           <IconAlertTriangle className="w-5 h-5 !text-purple-400 flex-shrink-0 mt-0.5" />
-          <div className="text-sm !text-purple-300">
+          <div className="!text-sm !text-purple-300">
             <strong>{t('scheduled_info_title') || 'Comment ça marche ?'}</strong>
             <p className="mt-1 !text-purple-300/80">
               {t('scheduled_info_desc') || 'Les emails planifiés sont envoyés automatiquement à la date et l\'heure prévues. Vous pouvez annuler un email planifié à tout moment avant son envoi.'}

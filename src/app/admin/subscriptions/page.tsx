@@ -236,11 +236,11 @@ export default function AdminSubscriptionsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
+          <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
             <IconCreditCard className="w-7 h-7 !text-accent" />
             {t('subscriptions_management') || 'Gestion des Abonnements'}
           </h1>
-          <p className="text-sm !text-muted">{subscriptions.length} {t('subscriptions_total') || 'abonnements au total'}</p>
+          <p className="!text-sm !text-muted">{subscriptions.length} {t('subscriptions_total') || 'abonnements au total'}</p>
         </div>
         <button
           onClick={fetchData}
@@ -265,8 +265,8 @@ export default function AdminSubscriptionsPage() {
             </div>
             <span className="!text-xs !text-accent bg-accent-light px-2 py-1 rounded-full font-medium">MRR</span>
           </div>
-          <p className="text-3xl font-bold !text-primary">{totalMRR.toLocaleString()}€</p>
-          <p className="text-sm !text-muted">{t('monthly_recurring_revenue') || 'Revenu mensuel récurrent'}</p>
+          <p className="!text-3xl font-bold !text-primary">{totalMRR.toLocaleString()}€</p>
+          <p className="!text-sm !text-muted">{t('monthly_recurring_revenue') || 'Revenu mensuel récurrent'}</p>
         </motion.div>
 
         {planStats.slice(0, 3).map((stat, index) => (
@@ -283,15 +283,15 @@ export default function AdminSubscriptionsPage() {
               </div>
               <span className="!text-xs !text-muted">{stat.count} users</span>
             </div>
-            <p className="text-xl font-bold !text-primary">{stat.planName}</p>
-            <p className="text-sm !text-muted">{stat.revenue.toLocaleString()}€/{t('month') || 'mois'}</p>
+            <p className="!text-xl font-bold !text-primary">{stat.planName}</p>
+            <p className="!text-sm !text-muted">{stat.revenue.toLocaleString()}€/{t('month') || 'mois'}</p>
           </motion.div>
         ))}
       </div>
 
       {/* Plans Overview */}
       <div className="card p-6">
-        <h2 className="text-lg font-semibold !text-primary mb-4">{t('available_plans') || 'Plans disponibles'}</h2>
+        <h2 className="!text-lg font-semibold !text-primary mb-4">{t('available_plans') || 'Plans disponibles'}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {plans.map((plan) => (
             <div
@@ -308,12 +308,12 @@ export default function AdminSubscriptionsPage() {
                   <IconEdit className="w-4 h-4 !text-muted hover:!text-accent" />
                 </button>
               </div>
-              <p className="text-2xl font-bold !text-accent">
+              <p className="!text-2xl font-bold !text-accent">
                 {plan.price_monthly || 0}€
-                <span className="text-sm font-normal !text-muted">/{t('month') || 'mois'}</span>
+                <span className="!text-sm font-normal !text-muted">/{t('month') || 'mois'}</span>
               </p>
               {plan.price_yearly !== undefined && plan.price_yearly > 0 && (
-                <p className="text-sm !text-muted">
+                <p className="!text-sm !text-muted">
                   {plan.price_yearly}€/{t('year') || 'an'}
                 </p>
               )}
@@ -402,7 +402,7 @@ export default function AdminSubscriptionsPage() {
                     {sub.users && sub.users.length > 0 ? (
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center">
-                          <span className="text-accent font-medium !text-sm">
+                          <span className="!text-accent font-medium !text-sm">
                             {sub.users[0].username?.charAt(0).toUpperCase()}
                           </span>
                         </div>
@@ -412,7 +412,7 @@ export default function AdminSubscriptionsPage() {
                         </div>
                       </div>
                     ) : (
-                      <span className="text-muted">-</span>
+                      <span className="!text-muted">-</span>
                     )}
                   </td>
                   <td className="px-4 py-4">
@@ -466,9 +466,9 @@ export default function AdminSubscriptionsPage() {
         </div>
 
         {filteredSubscriptions.length === 0 && (
-          <div className="text-center py-12">
+          <div className="!text-center py-12">
             <IconCreditCard className="w-12 h-12 !text-muted mx-auto mb-4 opacity-50" />
-            <p className="text-muted">{t('no_subscription_found') || 'Aucun abonnement trouvé'}</p>
+            <p className="!text-muted">{t('no_subscription_found') || 'Aucun abonnement trouvé'}</p>
           </div>
         )}
       </div>
@@ -491,7 +491,7 @@ export default function AdminSubscriptionsPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold !text-primary flex items-center gap-2">
+                <h2 className="!text-xl font-bold !text-primary flex items-center gap-2">
                   <IconEdit className="w-5 h-5 !text-accent" />
                   {t('edit_plan') || 'Modifier le plan'}
                 </h2>
@@ -567,7 +567,7 @@ export default function AdminSubscriptionsPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {Object.entries(editingPlan.features).map(([key, value]) => (
                           <div key={key} className="flex items-center justify-between p-2  bg-card border border-default">
-                            <span className="text-sm !text-primary truncate capitalize" title={key}>
+                            <span className="!text-sm !text-primary truncate capitalize" title={key}>
                               {key.replace(/_/g, ' ')}
                             </span>
                             {typeof value === 'boolean' ? (

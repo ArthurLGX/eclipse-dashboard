@@ -236,10 +236,10 @@ export default function ClientWorkflowView({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold !text-primary">
+          <h2 className="!text-2xl font-bold !text-primary">
             {t('workflow_title') || 'Workflow Client'}
           </h2>
-          <p className="text-sm !text-muted">
+          <p className="!text-sm !text-muted">
             {t('workflow_description') || 'Vision chronologique de l’état réel du client'}
           </p>
         </div>
@@ -290,8 +290,8 @@ export default function ClientWorkflowView({
                       <span className="!text-xs !text-muted ml-auto">{formatDate(node.date)}</span>
                     )}
                   </div>
-                  <h3 className="text-base font-semibold !text-primary mb-1">{node.title}</h3>
-                  <p className="text-sm !text-secondary mb-3">{node.summary}</p>
+                  <h3 className="!text-base font-semibold !text-primary mb-1">{node.title}</h3>
+                  <p className="!text-sm !text-secondary mb-3">{node.summary}</p>
 
                   {node.alerts && node.alerts.length > 0 && (
                     <div className="space-y-1 mb-3">

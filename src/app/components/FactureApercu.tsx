@@ -30,7 +30,7 @@ export default function FactureApercu({
           <label className="block !text-sm font-medium mb-1">
             {t('reference')}
           </label>
-          <p className="text-zinc-700 !text-sm font-semibold">
+          <p className="!text-zinc-700 !text-sm font-semibold">
             {facture?.reference}
           </p>
         </div>
@@ -38,7 +38,7 @@ export default function FactureApercu({
           <label className="block !text-sm font-medium mb-1">
             {t('status')}
           </label>
-          <p className="text-zinc-700 !text-sm font-semibold">
+          <p className="!text-zinc-700 !text-sm font-semibold">
             {t(facture?.facture_status || '')}
           </p>
         </div>
@@ -46,7 +46,7 @@ export default function FactureApercu({
           <label className="block !text-sm font-medium mb-1">
             {t('emission_date')}
           </label>
-          <p className="text-zinc-700 !text-sm font-semibold">
+          <p className="!text-zinc-700 !text-sm font-semibold">
             {facture?.date
               ? new Date(facture.date).toLocaleDateString('fr-FR')
               : ''}
@@ -56,7 +56,7 @@ export default function FactureApercu({
           <label className="block !text-sm font-medium mb-1">
             {t('due_date')}
           </label>
-          <p className="text-zinc-700 !text-sm font-semibold">
+          <p className="!text-zinc-700 !text-sm font-semibold">
             {facture?.due_date
               ? new Date(facture.due_date).toLocaleDateString('fr-FR')
               : ''}
@@ -66,7 +66,7 @@ export default function FactureApercu({
           <label className="block !text-sm font-medium mb-1">
             {t('currency')}
           </label>
-          <p className="text-zinc-700 !text-sm font-semibold">
+          <p className="!text-zinc-700 !text-sm font-semibold">
             {facture?.currency}
           </p>
         </div>
@@ -74,7 +74,7 @@ export default function FactureApercu({
           <label className="block !text-sm font-medium mb-1">
             {t('client')}
           </label>
-          <p className="text-zinc-700 !text-sm font-semibold">
+          <p className="!text-zinc-700 !text-sm font-semibold">
             {facture?.client_id?.name}
           </p>
         </div>
@@ -82,13 +82,13 @@ export default function FactureApercu({
           <label className="block !text-sm font-medium mb-1">
             {t('project')}
           </label>
-          <p className="text-zinc-700 !text-sm font-semibold">
+          <p className="!text-zinc-700 !text-sm font-semibold">
             {facture?.project?.title}
           </p>
         </div>
         <div className="md:col-span-2">
           <label className="block !text-sm font-medium mb-1">{t('notes')}</label>
-          <p className="text-zinc-700 !text-sm font-semibold">
+          <p className="!text-zinc-700 !text-sm font-semibold">
             {facture?.notes}
           </p>
         </div>
@@ -150,7 +150,7 @@ export default function FactureApercu({
           </h3>
         </div>
         <div className="flex justify-end">
-          <div className="w-80 space-y-3">
+          <div className="w-80 !space-y-3">
             <div className="flex justify-between !text-zinc-400">
               <span>{t('subtotal')}:</span>
               <span>{subtotal}€</span>

@@ -104,7 +104,7 @@ export default function LoadTemplateModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
-            <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+            <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
               <IconPalette className="w-5 h-5 !text-accent" />
               {t('load_template') || 'Charger un thème'}
             </h3>
@@ -125,10 +125,10 @@ export default function LoadTemplateModal({
             ) : templates.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-48 !text-secondary">
                 <IconPalette className="w-12 h-12 mb-4 opacity-50" />
-                <p className="text-lg font-medium mb-2">
+                <p className="!text-lg font-medium mb-2">
                   {t('no_saved_templates') || 'Aucun thème sauvegardé'}
                 </p>
-                <p className="text-sm !text-muted !text-center">
+                <p className="!text-sm !text-muted !text-center">
                   {t('no_saved_templates_hint') || 'Personnalisez votre thème et sauvegardez-le pour le réutiliser'}
                 </p>
               </div>
@@ -195,7 +195,7 @@ export default function LoadTemplateModal({
                     {/* Template info */}
                     <h4 className="font-semibold !text-primary truncate">{template.name}</h4>
                     {template.description && (
-                      <p className="text-sm !text-muted mt-1 line-clamp-2">{template.description}</p>
+                      <p className="!text-sm !text-muted mt-1 line-clamp-2">{template.description}</p>
                     )}
                     
                     {/* Font */}
@@ -254,7 +254,7 @@ export default function LoadTemplateModal({
                         onClick={(e) => e.stopPropagation()}
                       >
                         <IconAlertTriangle className="w-8 h-8 !text-red-500 mb-2" />
-                        <p className="text-sm !text-primary !text-center mb-3">
+                        <p className="!text-sm !text-primary !text-center mb-3">
                           {t('confirm_delete_template') || 'Supprimer ce thème ?'}
                         </p>
                         <div className="flex gap-2">

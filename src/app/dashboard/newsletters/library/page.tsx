@@ -162,10 +162,10 @@ export default function MediaLibraryPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold !text-primary">
+            <h1 className="!text-2xl font-bold !text-primary">
               {t('media_library') || 'Bibliothèque de médias'}
             </h1>
-            <p className="text-secondary mt-1">
+            <p className="!text-secondary mt-1">
               {t('media_library_desc') || 'Gérez les images et vidéos utilisées dans vos newsletters'}
             </p>
           </div>
@@ -179,8 +179,8 @@ export default function MediaLibraryPage() {
                 <IconPhoto className="w-5 h-5 !text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold !text-primary">{stats.images}</p>
-                <p className="text-sm !text-secondary">{t('images') || 'Images'}</p>
+                <p className="!text-2xl font-bold !text-primary">{stats.images}</p>
+                <p className="!text-sm !text-secondary">{t('images') || 'Images'}</p>
               </div>
             </div>
           </div>
@@ -191,8 +191,8 @@ export default function MediaLibraryPage() {
                 <IconVideo className="w-5 h-5 !text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold !text-primary">{stats.videos}</p>
-                <p className="text-sm !text-secondary">{t('videos') || 'Vidéos'}</p>
+                <p className="!text-2xl font-bold !text-primary">{stats.videos}</p>
+                <p className="!text-sm !text-secondary">{t('videos') || 'Vidéos'}</p>
               </div>
             </div>
           </div>
@@ -203,8 +203,8 @@ export default function MediaLibraryPage() {
                 <IconPhoto className="w-5 h-5 !text-success-text -text" />
               </div>
               <div>
-                <p className="text-2xl font-bold !text-primary">{stats.total}</p>
-                <p className="text-sm !text-secondary">{t('total_files') || 'Total fichiers'}</p>
+                <p className="!text-2xl font-bold !text-primary">{stats.total}</p>
+                <p className="!text-sm !text-secondary">{t('total_files') || 'Total fichiers'}</p>
               </div>
             </div>
           </div>
@@ -215,8 +215,8 @@ export default function MediaLibraryPage() {
                 <IconDownload className="w-5 h-5 !text-info" />
               </div>
               <div>
-                <p className="text-2xl font-bold !text-primary">{formatSize(stats.totalSize)}</p>
-                <p className="text-sm !text-secondary">{t('storage_used') || 'Espace utilisé'}</p>
+                <p className="!text-2xl font-bold !text-primary">{formatSize(stats.totalSize)}</p>
+                <p className="!text-sm !text-secondary">{t('storage_used') || 'Espace utilisé'}</p>
               </div>
             </div>
           </div>
@@ -265,12 +265,12 @@ export default function MediaLibraryPage() {
             <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
           </div>
         ) : filteredMedia.length === 0 ? (
-          <div className="text-center py-20 bg-card  border border-default">
+          <div className="!text-center py-20 bg-card  border border-default">
             <IconPhoto className="w-16 h-16 !text-muted mx-auto mb-4" />
-            <h3 className="text-lg font-medium !text-primary mb-2">
+            <h3 className="!text-lg font-medium !text-primary mb-2">
               {t('no_media') || 'Aucun média'}
             </h3>
-            <p className="text-primary">
+            <p className="!text-primary">
               {searchQuery || filterType !== 'all'
                 ? (t('no_media_filter') || 'Aucun média ne correspond à vos critères')
                 : (t('no_media_yet') || 'Vous n\'avez pas encore uploadé de médias')
@@ -354,7 +354,7 @@ export default function MediaLibraryPage() {
 
                 {/* Info */}
                 <div className="p-3">
-                  <p className="text-sm font-medium !text-primary truncate" title={file.name}>
+                  <p className="!text-sm font-medium !text-primary truncate" title={file.name}>
                     {file.name}
                   </p>
                   <div className="flex items-center justify-between mt-1">
@@ -403,7 +403,7 @@ export default function MediaLibraryPage() {
                     {getMediaIcon(selectedMedia.mime)}
                     <div>
                       <h3 className="font-semibold !text-primary">{selectedMedia.name}</h3>
-                      <p className="text-sm !text-secondary">
+                      <p className="!text-sm !text-secondary">
                         {formatSize(selectedMedia.size)} • {formatDate(selectedMedia.createdAt)}
                         {selectedMedia.width && selectedMedia.height && (
                           <> • {selectedMedia.width}x{selectedMedia.height}</>
@@ -435,7 +435,7 @@ export default function MediaLibraryPage() {
                       className="max-w-full max-h-[55vh]"
                     />
                   ) : (
-                    <div className="text-center !text-muted py-20">
+                    <div className="!text-center !text-muted py-20">
                       {getMediaIcon(selectedMedia.mime)}
                       <p className="mt-2">{t('preview_not_available') || 'Aperçu non disponible'}</p>
                     </div>

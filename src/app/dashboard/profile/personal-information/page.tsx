@@ -150,7 +150,7 @@ export default function PersonalInformationPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
               <div className="card p-6">
-                <div className="flex flex-col items-center space-y-4">
+                <div className="flex flex-col items-center !space-y-4">
                   <div className="w-24 h-24 bg-muted rounded-full animate-pulse"></div>
                   <div className="h-6 bg-muted rounded w-32 animate-pulse"></div>
                   <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
@@ -158,7 +158,7 @@ export default function PersonalInformationPage() {
               </div>
             </div>
             <div className="lg:col-span-2">
-              <div className="card p-6 space-y-4">
+              <div className="card p-6 !space-y-4">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="space-y-2">
                     <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>
@@ -221,7 +221,7 @@ export default function PersonalInformationPage() {
         {/* Section Photo de profil */}
         <div className="lg:col-span-1">
           <div className="card lg:!p-6 !p-4">
-            <div className="flex flex-col items-center space-y-4">
+            <div className="flex flex-col items-center !space-y-4">
               <ImageUpload
                 currentImageUrl={profilePictureUrl}
                 onUpload={handleProfilePictureUpload}
@@ -239,7 +239,7 @@ export default function PersonalInformationPage() {
                 <h3 className="!text-lg font-semibold !text-primary">
                   {profile?.username}
                 </h3>
-                <p className="text-secondary !text-sm">
+                <p className="!text-secondary !text-sm">
                   Membre depuis{' '}
                   {profile?.createdAt
                     ? new Date(profile.createdAt).toLocaleDateString('fr-FR')
@@ -252,14 +252,14 @@ export default function PersonalInformationPage() {
 
         {/* Section Informations */}
         <div className="lg:col-span-2">
-          <div className="card p-6 space-y-6">
+          <div className="card p-6 !space-y-6">
             <h2 className="!text-xl font-semibold !text-primary mb-4">
               {t('personal_information')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-secondary !text-sm font-light">
+                <label className="!text-secondary !text-sm font-light">
                   {t('username')}
                 </label>
                 {editing ? (
@@ -270,14 +270,14 @@ export default function PersonalInformationPage() {
                     className="input w-full p-3"
                   />
                 ) : (
-                  <p className="text-primary p-3 bg-muted ">
+                  <p className="!text-primary p-3 bg-muted ">
                     {profile?.username}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-secondary !text-sm font-light">
+                <label className="!text-secondary !text-sm font-light">
                   {t('email')}
                 </label>
                 {editing ? (
@@ -288,31 +288,31 @@ export default function PersonalInformationPage() {
                     className="input w-full p-3"
                   />
                 ) : (
-                  <p className="text-primary p-3 bg-muted ">
+                  <p className="!text-primary p-3 bg-muted ">
                     {profile?.email}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-secondary !text-sm font-light">
+                <label className="!text-secondary !text-sm font-light">
                   {t('account_status')}
                 </label>
                 <div className="flex items-center gap-2 p-3 bg-muted ">
                   <div
                     className={`w-2 h-2 rounded-full ${profile?.confirmed ? 'bg-success' : 'bg-danger'}`}
                   ></div>
-                  <span className="text-primary">
+                  <span className="!text-primary">
                     {profile?.confirmed ? t('account_confirmed') : t('account_pending')}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-secondary !text-sm font-light">
+                <label className="!text-secondary !text-sm font-light">
                   {t('last_update')}
                 </label>
-                <p className="text-primary p-3 bg-muted ">
+                <p className="!text-primary p-3 bg-muted ">
                   {profile?.updatedAt
                     ? new Date(profile.updatedAt).toLocaleDateString('fr-FR')
                     : 'N/A'}
@@ -324,7 +324,7 @@ export default function PersonalInformationPage() {
       </div>
 
       {/* Section Mot de passe */}
-      <div className="card p-6 space-y-6">
+      <div className="card p-6 !space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="!text-xl font-semibold !text-primary">
             {t('change_password')}
@@ -343,7 +343,7 @@ export default function PersonalInformationPage() {
           <div className="space-y-4">
             {/* Current Password */}
             <div className="space-y-2">
-              <label className="text-secondary !text-sm font-light">
+              <label className="!text-secondary !text-sm font-light">
                 {t('current_password')}
               </label>
               <div className="relative">
@@ -366,7 +366,7 @@ export default function PersonalInformationPage() {
 
             {/* New Password */}
             <div className="space-y-2">
-              <label className="text-secondary !text-sm font-light">
+              <label className="!text-secondary !text-sm font-light">
                 {t('new_password')}
               </label>
               <div className="relative">
@@ -391,7 +391,7 @@ export default function PersonalInformationPage() {
 
             {/* Confirm Password */}
             <div className="space-y-2">
-              <label className="text-secondary !text-sm font-light">
+              <label className="!text-secondary !text-sm font-light">
                 {t('confirm_password')}
               </label>
               <div className="relative">
@@ -414,7 +414,7 @@ export default function PersonalInformationPage() {
             </div>
 
             {newPassword && confirmPassword && newPassword !== confirmPassword && (
-              <p className="text-danger !text-sm">{t('passwords_not_match')}</p>
+              <p className="!text-danger !text-sm">{t('passwords_not_match')}</p>
             )}
 
             <div className="flex gap-4 pt-2">
@@ -442,7 +442,7 @@ export default function PersonalInformationPage() {
         )}
 
         {!showPasswordSection && (
-          <p className="text-muted !text-sm">
+          <p className="!text-muted !text-sm">
             {t('password_hint')}
           </p>
         )}

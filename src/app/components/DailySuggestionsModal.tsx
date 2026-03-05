@@ -212,11 +212,11 @@ export default function DailySuggestionsModal() {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     {getTimeOfDayIcon()}
-                    <h2 className="text-xl font-bold !text-primary">
+                    <h2 className="!text-xl font-bold !text-primary">
                       {loading ? (t('loading') || 'Chargement...') : data?.greeting}
                     </h2>
                   </div>
-                  <p className="text-sm !text-muted">
+                  <p className="!text-sm !text-muted">
                     {loading 
                       ? (t('analyzing_data') || 'Analyse de vos données en cours...')
                       : data?.summary
@@ -257,7 +257,7 @@ export default function DailySuggestionsModal() {
             {error && (
               <div className="p-4 bg-danger-light  !text-center">
                 <IconAlertTriangle className="w-8 h-8 !text-danger mx-auto mb-2" />
-                <p className="text-sm !text-danger">{error}</p>
+                <p className="!text-sm !text-danger">{error}</p>
                 <button
                   onClick={fetchSuggestions}
                   className="mt-3 px-4 py-2 bg-danger !text-white  !text-sm hover:opacity-90"
@@ -270,20 +270,20 @@ export default function DailySuggestionsModal() {
             {!loading && !error && data && (
               <div className="space-y-4">
                 {data.suggestions.length === 0 ? (
-                  <div className="text-center py-8">
+                  <div className="!text-center py-8">
                     <div className="w-16 h-16 rounded-full bg-success-light flex items-center justify-center mx-auto mb-4">
                       <IconSparkles className="w-8 h-8 !text-success-text -text" />
                     </div>
-                    <p className="text-lg font-medium !text-primary mb-2">
+                    <p className="!text-lg font-medium !text-primary mb-2">
                       {t('all_caught_up') || 'Tout est à jour !'}
                     </p>
-                    <p className="text-sm !text-muted">
+                    <p className="!text-sm !text-muted">
                       {t('no_urgent_tasks') || 'Aucune tâche urgente pour le moment.'}
                     </p>
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm font-medium !text-primary mb-3">
+                    <p className="!text-sm font-medium !text-primary mb-3">
                       {t('suggested_actions') || 'Actions suggérées pour aujourd\'hui'}
                     </p>
                     
@@ -319,7 +319,7 @@ export default function DailySuggestionsModal() {
                                   </span>
                                 )}
                               </div>
-                              <p className="text-sm !text-muted line-clamp-2">
+                              <p className="!text-sm !text-muted line-clamp-2">
                                 {suggestion.description}
                               </p>
                               
@@ -344,7 +344,7 @@ export default function DailySuggestionsModal() {
                             
                             {/* Action */}
                             <div className="flex items-center gap-2 !text-muted opacity-0 group-hover:opacity-100 transition-opacity">
-                              <span className="text-sm font-medium hidden sm:inline">
+                              <span className="!text-sm font-medium hidden sm:inline">
                                 {suggestion.action.label}
                               </span>
                               <IconChevronRight className="w-5 h-5" />
@@ -365,12 +365,12 @@ export default function DailySuggestionsModal() {
                     className="mt-6 p-4 bg-muted "
                   >
                     <div className="flex items-start gap-3">
-                      <span className="text-2xl">💡</span>
+                      <span className="!text-2xl">💡</span>
                       <div>
-                        <p className="text-sm font-medium !text-primary mb-1">
+                        <p className="!text-sm font-medium !text-primary mb-1">
                           {t('tip_of_the_day') || 'Conseil du jour'}
                         </p>
-                        <p className="text-sm !text-muted">
+                        <p className="!text-sm !text-muted">
                           {data.motivational_tip}
                         </p>
                       </div>

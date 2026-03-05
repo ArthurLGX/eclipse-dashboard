@@ -793,7 +793,7 @@ export default function ClientWorkflowMapView({
             </div>
 
             {/* Label */}
-            <span className="text-[11px] font-medium !text-primary !text-center px-1">{satellite.label}</span>
+            <span className="!text-[11px] font-medium !text-primary !text-center px-1">{satellite.label}</span>
 
             {/* Anchor point indicator */}
             {!satellite.linked && (
@@ -871,9 +871,9 @@ export default function ClientWorkflowMapView({
                       }}
                     >
                       <div className="font-medium !text-primary whitespace-nowrap truncate max-w-[80px]">{item.label}</div>
-                      <div className="text-muted capitalize !text-[10px]">{item.status}</div>
+                      <div className="!text-muted capitalize !text-[10px]">{item.status}</div>
                       {item.amount && (
-                        <div className="text-success font-semibold mt-0.5 !text-[10px]">
+                        <div className="!text-success font-semibold mt-0.5 !text-[10px]">
                           {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(item.amount)}
                         </div>
                       )}
@@ -1215,7 +1215,7 @@ export default function ClientWorkflowMapView({
                   {/* Completeness percentage */}
                   {completeness < 1 && (
                     <div className="absolute -bottom-11 left-1/2 -translate-x-1/2 !text-[9px] !text-muted whitespace-nowrap">
-                      {Math.round(completeness * 100)}% • {completenessData.missing.length > 0 && <span className="text-warning">{completenessData.missing.length} {t(completenessData.missing.length > 1 ? 'workflow_missing_plural' : 'workflow_missing') || 'manquant'}</span>}
+                      {Math.round(completeness * 100)}% • {completenessData.missing.length > 0 && <span className="!text-warning">{completenessData.missing.length} {t(completenessData.missing.length > 1 ? 'workflow_missing_plural' : 'workflow_missing') || 'manquant'}</span>}
                       {completenessData.missing.length > 0 && completenessData.notDone.length > 0 && ' • '}
                       {completenessData.notDone.length > 0 && <span className="!text-accent">{completenessData.notDone.length} {t('workflow_in_progress') || 'en cours'}</span>}
                     </div>
@@ -1282,7 +1282,7 @@ export default function ClientWorkflowMapView({
                       style={{ top: 0, transform: 'translateY(-50%)' }}
                     >
                       <div className="!text-xs !text-muted mb-2">{client.enterprise || client.email}</div>
-                      <div className="text-sm font-semibold !text-primary">{client.name}</div>
+                      <div className="!text-sm font-semibold !text-primary">{client.name}</div>
                     </div>
 
                     {/* Nodes */}
@@ -1336,7 +1336,7 @@ export default function ClientWorkflowMapView({
                               <span className={`w-3.5 h-3.5 rounded-full ${statusClasses.dot}`} />
                             </span>
                             <Icon className="w-4 h-4 !text-muted" />
-                            <span className="text-sm font-medium !text-primary">{stage.label}</span>
+                            <span className="!text-sm font-medium !text-primary">{stage.label}</span>
                           </div>
                           <div className="px-3 pb-3">
                             <span className={`inline-flex items-center px-2 py-0.5 rounded-full !text-[11px] ${statusClasses.badge}`}>
@@ -1604,7 +1604,7 @@ export default function ClientWorkflowMapView({
                               </div>
 
                               {/* Label */}
-                              <span className="text-[11px] font-medium !text-primary !text-center px-1">{sat.label}</span>
+                              <span className="!text-[11px] font-medium !text-primary !text-center px-1">{sat.label}</span>
 
                               {/* Anchor point indicator if no items */}
                               {sat.count === 0 && (
@@ -1754,7 +1754,7 @@ export default function ClientWorkflowMapView({
                   {createModal.type === 'project' && <IconBriefcase className="w-5 h-5 !text-accent" />}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold !text-primary">{createModal.label}</h3>
+                  <h3 className="!text-lg font-semibold !text-primary">{createModal.label}</h3>
                   <p className="!text-xs !text-muted">{t('workflow_create_for_client') || 'Création pour'} {radialClient.name}</p>
                 </div>
               </div>
@@ -1766,7 +1766,7 @@ export default function ClientWorkflowMapView({
               </button>
             </div>
             <div className="p-5">
-              <p className="text-sm !text-secondary mb-6">
+              <p className="!text-sm !text-secondary mb-6">
                 {t('workflow_create_confirm') || 'Voulez-vous créer'}{' '}
                 <span className="font-medium !text-primary">{creationLabels[createModal.type]}</span>{' '}
                 {t('workflow_create_for') || 'pour'}{' '}
@@ -1804,7 +1804,7 @@ export default function ClientWorkflowMapView({
             <div className="flex items-center justify-between p-5 border-b border-default">
               <div>
                 <p className="!text-xs !text-muted">{t('workflow_node_details') || 'Détails du node'}</p>
-                <h3 className="text-lg font-semibold !text-primary">{activeNode.stageLabel}</h3>
+                <h3 className="!text-lg font-semibold !text-primary">{activeNode.stageLabel}</h3>
               </div>
               <button
                 onClick={() => setActiveNode(null)}
@@ -1813,7 +1813,7 @@ export default function ClientWorkflowMapView({
                 <IconX className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-5 space-y-3">
+            <div className="p-5 !space-y-3">
               {[
                 { label: t('client') || 'Client', value: activeNode.client.name },
                 { label: t('email') || 'Email', value: activeNode.client.email },
@@ -1826,7 +1826,7 @@ export default function ClientWorkflowMapView({
                 { label: t('estimated_value') || 'Valeur estimée', value: formatCurrency(activeNode.client.estimated_value) },
               ].map(item => (
                 <div key={item.label} className="flex items-center justify-between">
-                  <span className="text-sm !text-muted">{item.label}</span>
+                  <span className="!text-sm !text-muted">{item.label}</span>
                   <span className={`text-sm font-medium ${item.value ? 'text-primary' : 'text-primary opacity-50 italic !text-xs !font-light'}`}>
                     {item.value || (t('not_specified') || 'Non renseigné')}
                   </span>

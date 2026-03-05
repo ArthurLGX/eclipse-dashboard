@@ -255,8 +255,8 @@ export default function AdminOverviewPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold !text-primary">{t('admin_dashboard') || 'Dashboard Admin'}</h1>
-          <p className="text-sm !text-muted">{t('platform_overview') || 'Vue d\'ensemble de votre plateforme'}</p>
+          <h1 className="!text-2xl font-bold !text-primary">{t('admin_dashboard') || 'Dashboard Admin'}</h1>
+          <p className="!text-sm !text-muted">{t('platform_overview') || 'Vue d\'ensemble de votre plateforme'}</p>
         </div>
         <button
           onClick={refreshData}
@@ -276,7 +276,7 @@ export default function AdminOverviewPage() {
         className="card p-6"
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold !text-primary flex items-center gap-2">
+          <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
             <IconServer className="w-5 h-5 !text-accent" />
             {t('server_health') || 'Santé du Serveur'}
           </h2>
@@ -323,7 +323,7 @@ export default function AdminOverviewPage() {
               <IconServer className="w-4 h-4" />
               <span className="!text-xs">{t('strapi_version') || 'Version Strapi'}</span>
             </div>
-            <p className="text-sm font-medium !text-primary">
+            <p className="!text-sm font-medium !text-primary">
               {serverHealth.version || '-'}
             </p>
           </div>
@@ -333,7 +333,7 @@ export default function AdminOverviewPage() {
               <IconClock className="w-4 h-4" />
               <span className="!text-xs">{t('last_check') || 'Dernière vérification'}</span>
             </div>
-            <p className="text-sm font-medium !text-primary">
+            <p className="!text-sm font-medium !text-primary">
               {serverHealth.timestamp
                 ? new Date(serverHealth.timestamp).toLocaleTimeString('fr-FR')
                 : '-'}
@@ -406,10 +406,10 @@ export default function AdminOverviewPage() {
                   <span>{stat.trend}</span>
                 </div>
               </div>
-              <p className="text-2xl font-bold !text-primary mb-1">
+              <p className="!text-2xl font-bold !text-primary mb-1">
                 {stat.value.toLocaleString()}
               </p>
-              <p className="text-sm !text-muted">{stat.label}</p>
+              <p className="!text-sm !text-muted">{stat.label}</p>
             </motion.div>
           );
         })}
@@ -424,7 +424,7 @@ export default function AdminOverviewPage() {
           transition={{ delay: 0.6 }}
           className="card p-6"
         >
-          <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
+          <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconActivity className="w-5 h-5 !text-accent" />
             {t('recent_activity') || 'Activité récente'}
           </h2>
@@ -439,7 +439,7 @@ export default function AdminOverviewPage() {
                     {getActivityIcon(activity.type)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium !text-primary">
+                    <p className="!text-sm font-medium !text-primary">
                       {activity.message}
                     </p>
                     {activity.user && (
@@ -455,7 +455,7 @@ export default function AdminOverviewPage() {
                 </div>
               ))
             ) : (
-              <p className="text-center !text-muted py-8">{t('no_recent_activity') || 'Aucune activité récente'}</p>
+              <p className="!text-center !text-muted py-8">{t('no_recent_activity') || 'Aucune activité récente'}</p>
             )}
           </div>
         </motion.div>
@@ -467,7 +467,7 @@ export default function AdminOverviewPage() {
           transition={{ delay: 0.7 }}
           className="card p-6"
         >
-          <h2 className="text-lg font-semibold !text-primary mb-4">{t('quick_actions') || 'Actions rapides'}</h2>
+          <h2 className="!text-lg font-semibold !text-primary mb-4">{t('quick_actions') || 'Actions rapides'}</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: t('view_all_users') || 'Voir tous les utilisateurs', href: '/admin/users', icon: IconUsers },
@@ -483,7 +483,7 @@ export default function AdminOverviewPage() {
                   className="flex items-center gap-3 p-4  bg-muted/5 border border-muted hover:border-accent-light hover:bg-accent-light transition-all group"
                 >
                   <Icon className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
-                  <span className="text-sm font-medium !text-primary group-hover:!text-accent transition-colors">
+                  <span className="!text-sm font-medium !text-primary group-hover:!text-accent transition-colors">
                     {action.label}
                   </span>
                 </a>

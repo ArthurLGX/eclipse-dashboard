@@ -209,7 +209,7 @@ function EmailHistory() {
               <IconArrowLeft className="w-5 h-5" />
             </button>
             
-            <h1 className="text-xl font-semibold !text-primary flex items-center gap-2">
+            <h1 className="!text-xl font-semibold !text-primary flex items-center gap-2">
               <IconMail className="w-6 h-6 !text-accent" />
               {t('email_history') || 'Historique des emails'}
             </h1>
@@ -226,7 +226,7 @@ function EmailHistory() {
               className="flex-1 bg-transparent border-none outline-none !text-sm !text-primary placeholder:!text-muted"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="text-muted hover:!text-primary">
+              <button onClick={() => setSearchQuery('')} className="!text-muted hover:!text-primary">
                 <IconX className="w-4 h-4" />
               </button>
             )}
@@ -239,7 +239,7 @@ function EmailHistory() {
           {/* Sidebar - Categories */}
           <div className="w-64 flex-shrink-0">
             <div className="bg-card border border-default  p-4 sticky top-24">
-              <h3 className="text-sm font-medium !text-secondary mb-3 flex items-center gap-2">
+              <h3 className="!text-sm font-medium !text-secondary mb-3 flex items-center gap-2">
                 <IconFilter className="w-4 h-4" />
                 {t('categories') || 'Catégories'}
               </h3>
@@ -262,7 +262,7 @@ function EmailHistory() {
                     >
                       <div className="flex items-center gap-2">
                         <span style={{ color: cat.color }}>{cat.icon}</span>
-                        <span className="text-sm">{cat.label}</span>
+                        <span className="!text-sm">{cat.label}</span>
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         selectedCategory === cat.id
@@ -285,12 +285,12 @@ function EmailHistory() {
                 <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
               </div>
             ) : filteredEmails.length === 0 ? (
-              <div className="text-center py-20">
+              <div className="!text-center py-20">
                 <IconMail className="w-16 h-16 mx-auto !text-muted opacity-30 mb-4" />
-                <h3 className="text-lg font-medium !text-primary mb-2">
+                <h3 className="!text-lg font-medium !text-primary mb-2">
                   {t('no_emails_found') || 'Aucun email trouvé'}
                 </h3>
-                <p className="text-muted">
+                <p className="!text-muted">
                   {searchQuery 
                     ? (t('try_different_search') || 'Essayez une recherche différente')
                     : (t('no_emails_in_category') || 'Aucun email dans cette catégorie')
@@ -341,7 +341,7 @@ function EmailHistory() {
                             </span>
                           </div>
                           
-                          <p className="text-sm !text-secondary line-clamp-1">
+                          <p className="!text-sm !text-secondary line-clamp-1">
                             {stripHtml(email.content)}
                           </p>
                           
@@ -424,7 +424,7 @@ function EmailHistory() {
                       <div className="font-medium !text-red-700 dark:!text-red-300 mb-1">
                         {t('send_error') || 'Erreur d\'envoi'}
                       </div>
-                      <div className="text-sm !text-red-600 dark:!text-red-400">
+                      <div className="!text-sm !text-red-600 dark:!text-red-400">
                         {selectedEmail.error_message}
                       </div>
                     </div>
@@ -437,7 +437,7 @@ function EmailHistory() {
                 <div className="px-4 py-3 border-b border-default bg-page/50">
                   <div className="flex items-center gap-2 !text-sm">
                     <IconPaperclip className="w-4 h-4 !text-muted" />
-                    <span className="text-muted">{t('attachments') || 'Pièces jointes'}:</span>
+                    <span className="!text-muted">{t('attachments') || 'Pièces jointes'}:</span>
                     <div className="flex flex-wrap gap-2">
                       {selectedEmail.attachments.map((att, i) => (
                         <a

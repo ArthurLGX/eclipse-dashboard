@@ -82,11 +82,11 @@ export default function AdminModulesPage() {
     <div className="max-w-7xl mx-auto p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold !text-primary flex items-center gap-3">
+        <h1 className="!text-2xl font-bold !text-primary flex items-center gap-3">
           <IconSettings className="w-7 h-7 !text-accent" />
           {language === 'fr' ? 'Gestion des Modules' : 'Module Management'}
         </h1>
-        <p className="text-muted mt-2">
+        <p className="!text-muted mt-2">
           {language === 'fr' 
             ? 'Définissez le statut des modules (Beta, New) visibles dans la sidebar'
             : 'Set module status (Beta, New) visible in the sidebar'}
@@ -116,7 +116,7 @@ export default function AdminModulesPage() {
               >
                 <div className="flex items-center justify-start w-full  gap-3">
                   <div className="w-10 h-10  bg-accent-light flex items-center justify-center">
-                    <span className="text-accent !text-lg">
+                    <span className="!text-accent !text-lg">
                       {module.icon === 'IconTargetArrow' ? '🎯' : '📦'}
                     </span>
                   </div>
@@ -124,7 +124,7 @@ export default function AdminModulesPage() {
                     <p className="font-medium !text-primary">
                       {language === 'fr' ? module.label : module.labelEn}
                     </p>
-                    <p className="text-sm !text-muted">
+                    <p className="!text-sm !text-muted">
                       {module.path}
                     </p>
                   </div>
@@ -172,7 +172,7 @@ export default function AdminModulesPage() {
 
         {/* Save button */}
         <div className="p-4 border-t border-default bg-muted flex items-center justify-between">
-          <p className="text-sm !text-muted">
+          <p className="!text-sm !text-muted">
             {language === 'fr' 
               ? 'Les changements seront visibles après rechargement de la page'
               : 'Changes will be visible after page reload'}
@@ -204,7 +204,7 @@ export default function AdminModulesPage() {
         <h3 className="font-semibold !text-accent mb-2">
           {language === 'fr' ? 'Comment ça marche ?' : 'How does it work?'}
         </h3>
-        <ul className="text-sm !text-primary space-y-1">
+        <ul className="!text-sm !text-primary !space-y-1">
           <li className="flex items-center gap-2">
             <span className="px-1.5 py-0.5 !text-[10px] font-semibold bg-warning-light !text-warning-text border border-warning rounded-full">Beta</span>
             {language === 'fr' 

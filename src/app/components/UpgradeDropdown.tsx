@@ -140,12 +140,12 @@ export default function UpgradeDropdown({
               overflowY: 'auto',
             }}
           >
-            <div className="p-4 space-y-3">
+            <div className="p-4 !space-y-3">
               <div className="!text-center pb-2 border-b border-default">
-                <h3 className="text-primary font-semibold !text-sm">
+                <h3 className="!text-primary font-semibold !text-sm">
                   {t('choose_upgrade_plan')}
                 </h3>
-                <p className="text-secondary !text-xs mt-1">
+                <p className="!text-secondary !text-xs mt-1">
                   {t('current_plan')}: {currentPlan}
                 </p>
               </div>
@@ -202,24 +202,24 @@ export default function UpgradeDropdown({
                   className="w-full p-4  border border-default hover:border-accent hover:bg-hover transition-all duration-200 !text-left group"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-primary font-semibold capitalize group-hover:!text-accent transition-colors">
+                    <h4 className="!text-primary font-semibold capitalize group-hover:!text-accent transition-colors">
                       {plan.name}
                     </h4>
                     <div className="!text-right">
-                      <div className="text-accent font-bold">
+                      <div className="!text-accent font-bold">
                         {language === 'en' ? '€' : ''}
                         {togglePlan
                           ? plan.price_yearly.toFixed(2)
                           : plan.price_monthly.toFixed(2)}
                         {language === 'fr' ? '€' : ''}
                       </div>
-                      <div className="text-secondary !text-xs">
+                      <div className="!text-secondary !text-xs">
                         {t('per_month')}
                       </div>
                     </div>
                   </div>
                   {togglePlan && (
-                    <div className="text-secondary !text-xs">
+                    <div className="!text-secondary !text-xs">
                       {language === 'en' ? '€' : ''}
                       {(plan.price_yearly * 12).toFixed(2)}
                       {language === 'fr' ? '€ ' : ' '}
@@ -227,20 +227,20 @@ export default function UpgradeDropdown({
                     </div>
                   )}
 
-                  <p className="text-secondary !text-sm mb-3">
+                  <p className="!text-secondary !text-sm mb-3">
                     {plan.description}
                   </p>
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-accent !text-xs font-medium">
+                      <span className="!text-accent !text-xs font-medium">
                         {t('upgrade_to')}
                       </span>
-                      <span className="text-accent font-semibold capitalize">
+                      <span className="!text-accent font-semibold capitalize">
                         {plan.name}
                       </span>
                     </div>
-                    <div className="text-accent !text-xs">→</div>
+                    <div className="!text-accent !text-xs">→</div>
                   </div>
                 </motion.button>
               ))}
@@ -250,14 +250,14 @@ export default function UpgradeDropdown({
                 }}
                 className="flex items-center justify-center w-full"
               >
-                <p className="text-danger cursor-pointer bg-danger-light px-4 py-2 !text-center  !text-sm w-full hover:bg-danger-light transition-colors border border-danger hover:border-danger">
+                <p className="!text-danger cursor-pointer bg-danger-light px-4 py-2 !text-center  !text-sm w-full hover:bg-danger-light transition-colors border border-danger hover:border-danger">
                   {t('cancel_subscription')}
                 </p>
               </div>
 
               {upgradePlans.length === 0 && (
                 <div className="!text-center py-4">
-                  <p className="text-secondary !text-sm">
+                  <p className="!text-secondary !text-sm">
                     {t('no_upgrade_available')}
                   </p>
                 </div>

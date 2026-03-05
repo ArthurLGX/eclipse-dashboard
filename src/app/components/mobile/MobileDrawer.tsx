@@ -92,12 +92,12 @@ export default function MobileDrawer({
                   onClick={onClose}
                   className="w-9 h-9 flex items-center justify-center  bg-muted hover:bg-muted transition-colors active:scale-95"
                 >
-                  <IconX size={15} className="text-primary" />
+                  <IconX size={15} className="!text-primary" />
                 </button>
               </div>
 
               {/* Navigation */}
-              <nav className="flex-1 overflow-y-auto p-3 space-y-1 mobile-drawer-scroll">
+              <nav className="flex-1 overflow-y-auto p-3 !space-y-1 mobile-drawer-scroll">
                 {items.map(item => (
                   <div key={item.id}>
                     {item.isCategory ? (
@@ -112,7 +112,7 @@ export default function MobileDrawer({
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <span className="text-current">{item.icon}</span>
+                            <span className="!text-current">{item.icon}</span>
                             <span className="font-medium">{item.label}</span>
                           </div>
                           <IconChevronRight
@@ -133,7 +133,7 @@ export default function MobileDrawer({
                               transition={{ duration: 0.2 }}
                               className="overflow-hidden"
                             >
-                              <div className="ml-4 mt-1 space-y-1 border-l-2 border-default !pl-3">
+                              <div className="ml-4 mt-1 !space-y-1 border-l-2 border-default !pl-3">
                                 {item.menuItems.map(subItem => (
                                   <button
                                     key={subItem.id}
@@ -144,8 +144,8 @@ export default function MobileDrawer({
                                         : 'text-secondary hover:bg-hover hover:!text-primary'
                                     }`}
                                   >
-                                    <span className="text-current opacity-80">{subItem.icon}</span>
-                                    <span className="text-sm">{subItem.label}</span>
+                                    <span className="!text-current opacity-80">{subItem.icon}</span>
+                                    <span className="!text-sm">{subItem.label}</span>
                                     {subItem.status && (
                                       <span className={`ml-auto !text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                         subItem.status === 'beta'
@@ -172,7 +172,7 @@ export default function MobileDrawer({
                             : 'text-secondary hover:bg-hover hover:!text-primary'
                         }`}
                       >
-                        <span className="text-current">{item.icon}</span>
+                        <span className="!text-current">{item.icon}</span>
                         <span className="font-medium">{item.label}</span>
                       </button>
                     )}

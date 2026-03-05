@@ -168,15 +168,15 @@ export default function CalendarIntegrationsPage() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="max-w-4xl mx-auto space-y-6"
+        className="max-w-4xl mx-auto !space-y-6"
       >
         {/* Header */}
         <div className="pb-4">
-          <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
+          <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
             <IconCalendar className="w-7 h-7 !text-accent" />
             {t('calendar_integrations') || 'Intégrations calendrier'}
           </h1>
-          <p className="text-muted !text-sm mt-1">
+          <p className="!text-muted !text-sm mt-1">
             {t('calendar_integrations_desc') || 'Connectez vos calendriers externes pour synchroniser vos événements'}
           </p>
         </div>
@@ -185,18 +185,18 @@ export default function CalendarIntegrationsPage() {
         <div className="card p-4 bg-info-light border-info">
           <div className="flex items-start gap-3">
             <IconAlertCircle className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
-            <div className="text-sm">
+            <div className="!text-sm">
               <p className="font-medium !text-info mb-2">
                 {t('setup_required') || 'Configuration requise'}
               </p>
-              <p className="text-secondary mb-3">
+              <p className="!text-secondary mb-3">
                 {t('oauth_setup_info') || 'Pour connecter vos calendriers, vous devez configurer les identifiants OAuth dans votre fichier .env.local:'}
               </p>
-              <div className="bg-card p-3  font-mono !text-xs space-y-1 overflow-x-auto">
-                <p className="text-muted"># Google Calendar</p>
+              <div className="bg-card p-3  font-mono !text-xs !space-y-1 overflow-x-auto">
+                <p className="!text-muted"># Google Calendar</p>
                 <p>GOOGLE_CLIENT_ID=votre_client_id</p>
                 <p>GOOGLE_CLIENT_SECRET=votre_client_secret</p>
-                <p className="text-muted mt-2"># Microsoft/Outlook</p>
+                <p className="!text-muted mt-2"># Microsoft/Outlook</p>
                 <p>MICROSOFT_CLIENT_ID=votre_client_id</p>
                 <p>MICROSOFT_CLIENT_SECRET=votre_client_secret</p>
               </div>
@@ -233,14 +233,14 @@ export default function CalendarIntegrationsPage() {
                         </span>
                       )}
                     </h3>
-                    <p className="text-sm !text-muted mt-0.5">
+                    <p className="!text-sm !text-muted mt-0.5">
                       {provider.description}
                     </p>
                     {provider.connected && provider.email && (
                       <p className="!text-xs !text-secondary mt-2">
                         {provider.email}
                         {provider.lastSync && (
-                          <span className="text-muted ml-2">
+                          <span className="!text-muted ml-2">
                             • {t('last_sync') || 'Dernière sync'}: {new Date(provider.lastSync).toLocaleString('fr-FR')}
                           </span>
                         )}

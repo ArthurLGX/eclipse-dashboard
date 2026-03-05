@@ -218,7 +218,7 @@ export default function DraggableGanttBar({
       {isDragging && (dragMode === 'resize-left' || dragMode === 'resize-right') && (
         <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/80 !text-white !text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none z-20">
           {calculateDateFromOffset(currentStartOffset)} → {calculateDateFromOffset(currentStartOffset + currentDuration - 1)}
-          <div className="text-[10px] !text-white/70 mt-0.5">
+          <div className="!text-[10px] !text-white/70 mt-0.5">
             {currentDuration} {currentDuration > 1 ? 'jours' : 'jour'}
           </div>
         </div>

@@ -70,7 +70,7 @@ function InfoCard({
       </div>
       <div className="flex-1 min-w-0">
         <p className="!text-xs !text-muted uppercase tracking-wider mb-1">{label}</p>
-        <div className="text-primary font-medium">{value}</div>
+        <div className="!text-primary font-medium">{value}</div>
       </div>
     </div>
   );
@@ -141,7 +141,7 @@ function SubscriberItem({ subscriber }: { subscriber: Subscriber }) {
           {displayName || subscriber.email}
         </p>
         {displayName && (
-          <p className="text-sm !text-muted truncate">{subscriber.email}</p>
+          <p className="!text-sm !text-muted truncate">{subscriber.email}</p>
         )}
       </div>
     </div>
@@ -242,7 +242,7 @@ export default function NewsletterDetailPage() {
                 <IconArrowLeft className="w-5 h-5" />
               </button>
               <div className="flex-1 min-w-0 items-center justify-start">
-                <h1 className="text-xl font-bold !text-primary truncate items-center justify-start w-fit">
+                <h1 className="!text-xl font-bold !text-primary truncate items-center justify-start w-fit">
                   {loading ? (
                     <span className="flex items-center gap-2">
                       <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -265,19 +265,19 @@ export default function NewsletterDetailPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="text-center">
+              <div className="!text-center">
                 <IconLoader2 className="w-12 h-12 animate-spin !text-accent mx-auto mb-4" />
-                <p className="text-muted">{t('loading_newsletter') || 'Chargement de la newsletter...'}</p>
+                <p className="!text-muted">{t('loading_newsletter') || 'Chargement de la newsletter...'}</p>
               </div>
             </div>
           ) : error ? (
             <div className="flex items-center justify-center py-20">
-              <div className="text-center">
+              <div className="!text-center">
                 <IconMail className="w-12 h-12 !text-muted mx-auto mb-4" />
-                <p className="text-primary font-medium mb-2">{error}</p>
+                <p className="!text-primary font-medium mb-2">{error}</p>
                 <button
                   onClick={() => router.push('/dashboard/newsletters')}
-                  className="text-accent hover:underline"
+                  className="!text-accent hover:underline"
                 >
                   {t('back_to_newsletters') || 'Retour aux newsletters'}
                 </button>
@@ -288,7 +288,7 @@ export default function NewsletterDetailPage() {
               {/* Top section: Info + Sidebar */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main content - Left side */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 !space-y-6">
                   {/* Info cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InfoCard
@@ -342,13 +342,13 @@ export default function NewsletterDetailPage() {
                         </span>
                       </h2>
                     </div>
-                    <div className="p-4 max-h-[400px] overflow-y-auto space-y-2">
+                    <div className="p-4 max-h-[400px] overflow-y-auto !space-y-2">
                       {newsletter.subscribers && newsletter.subscribers.length > 0 ? (
                         newsletter.subscribers.map((subscriber) => (
                           <SubscriberItem key={subscriber.id} subscriber={subscriber} />
                         ))
                       ) : (
-                        <div className="text-center py-8 !text-muted">
+                        <div className="!text-center py-8 !text-muted">
                           <IconUsers className="w-10 h-10 mx-auto mb-2 opacity-50" />
                           <p>{t('no_subscribers') || 'Aucun destinataire'}</p>
                         </div>
@@ -361,15 +361,15 @@ export default function NewsletterDetailPage() {
                     <h3 className="font-semibold !text-primary mb-4">{t('quick_stats') || 'Statistiques rapides'}</h3>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-primary">{t('total_recipients') || 'Total destinataires'}</span>
+                        <span className="!text-primary">{t('total_recipients') || 'Total destinataires'}</span>
                         <span className="font-bold !text-primary">{newsletter.subscribers?.length || 0}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-primary">{t('status') || 'Statut'}</span>
+                        <span className="!text-primary">{t('status') || 'Statut'}</span>
                         <StatusBadge status={newsletter.n_status} t={t} />
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-primary">{t('template') || 'Template'}</span>
+                        <span className="!text-primary">{t('template') || 'Template'}</span>
                         <TemplateBadge template={newsletter.template} t={t} />
                       </div>
                     </div>

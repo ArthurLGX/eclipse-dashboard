@@ -157,7 +157,7 @@ export default function SupportDropdown({
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className="absolute lg:top-full lg:bottom-auto bottom-full left-0 right-0 mb-2 bg-card border border-default  shadow-lg z-50 overflow-hidden"
           >
-            <div className="p-2 space-y-1">
+            <div className="p-2 !space-y-1">
               {supportOptions.map((option, index) => (
                 <motion.button
                   key={option.type}
@@ -169,10 +169,10 @@ export default function SupportDropdown({
                 >
                   <span className="!text-lg">{option.icon}</span>
                   <div className="flex-1">
-                    <div className="text-primary font-medium !text-sm group-hover:!text-accent transition-colors">
+                    <div className="!text-primary font-medium !text-sm group-hover:!text-accent transition-colors">
                       {option.label}
                     </div>
-                    <div className="text-secondary !text-xs">
+                    <div className="!text-secondary !text-xs">
                       {option.description}
                     </div>
                   </div>

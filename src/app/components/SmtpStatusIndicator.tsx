@@ -43,7 +43,7 @@ export default function SmtpStatusIndicator({ className = '', showLabel = true }
     return (
       <div className={`flex items-center gap-2 ${className}`}>
         <IconLoader2 className="w-4 h-4 animate-spin !text-muted" />
-        {showLabel && <span className="text-sm !text-muted">{t('checking') || 'Vérification...'}</span>}
+        {showLabel && <span className="!text-sm !text-muted">{t('checking') || 'Vérification...'}</span>}
       </div>
     );
   }
@@ -57,7 +57,7 @@ export default function SmtpStatusIndicator({ className = '', showLabel = true }
         <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
           <IconCheck className="w-3 h-3 !text-green-500" />
         </div>
-        {showLabel && <span className="text-sm !text-green-500">{t('smtp_configured') || 'SMTP configuré'}</span>}
+        {showLabel && <span className="!text-sm !text-green-500">{t('smtp_configured') || 'SMTP configuré'}</span>}
       </div>
     );
   }
@@ -71,7 +71,7 @@ export default function SmtpStatusIndicator({ className = '', showLabel = true }
         <div className="w-5 h-5 rounded-full bg-warning-light flex items-center justify-center">
           <IconAlertTriangle className="w-3 h-3 !text-warning" />
         </div>
-        {showLabel && <span className="text-sm !text-warning">{t('smtp_not_verified') || 'SMTP non vérifié'}</span>}
+        {showLabel && <span className="!text-sm !text-warning">{t('smtp_not_verified') || 'SMTP non vérifié'}</span>}
       </Link>
     );
   }
@@ -84,7 +84,7 @@ export default function SmtpStatusIndicator({ className = '', showLabel = true }
       <div className="w-5 h-5 rounded-full bg-danger-light flex items-center justify-center">
         <IconX className="w-3 h-3 !text-danger" />
       </div>
-      {showLabel && <span className="text-sm !text-danger">{t('smtp_not_configured') || 'SMTP non configuré'}</span>}
+      {showLabel && <span className="!text-sm !text-danger">{t('smtp_not_configured') || 'SMTP non configuré'}</span>}
     </Link>
   );
 }
@@ -135,7 +135,7 @@ export function SmtpWarningBanner({ className = '' }: SmtpWarningBannerProps) {
         </div>
         <div className="flex-1">
           <h4 className="font-medium !text-warning">{t('smtp_not_verified_title') || 'Configuration SMTP non vérifiée'}</h4>
-          <p className="text-sm !text-warning">{t('smtp_not_verified_message') || 'Votre configuration SMTP n\'a pas été testée. Les emails pourraient ne pas être envoyés.'}</p>
+          <p className="!text-sm !text-warning">{t('smtp_not_verified_message') || 'Votre configuration SMTP n\'a pas été testée. Les emails pourraient ne pas être envoyés.'}</p>
         </div>
         <Link
           href="/dashboard/settings?tab=email"
@@ -156,7 +156,7 @@ export function SmtpWarningBanner({ className = '' }: SmtpWarningBannerProps) {
       </div>
       <div className="flex-1">
         <h4 className="font-medium !text-danger">{t('smtp_config_required_title') || 'Configuration SMTP requise'}</h4>
-        <p className="text-sm !text-danger">
+        <p className="!text-sm !text-danger">
           {t('smtp_config_required_message') || 'Vous devez configurer votre serveur SMTP pour pouvoir envoyer des emails.'}
         </p>
       </div>

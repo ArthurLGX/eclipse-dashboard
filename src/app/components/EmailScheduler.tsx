@@ -115,8 +115,8 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
             <IconClock className="w-5 h-5 !text-warning" />
           </div>
           <div>
-            <h3 className="text-primary font-medium">Planifier l&apos;envoi</h3>
-            <p className="text-muted !text-sm">Programmer l&apos;envoi pour plus tard</p>
+            <h3 className="!text-primary font-medium">Planifier l&apos;envoi</h3>
+            <p className="!text-muted !text-sm">Programmer l&apos;envoi pour plus tard</p>
           </div>
         </div>
         
@@ -192,7 +192,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
                 className="flex items-center gap-2 p-3 bg-success-light border border success "
               >
                 <IconCheck className="w-5 h-5 !text-success-text -text" />
-                <span className="text-success !text-sm">
+                <span className="!text-success !text-sm">
                   Envoi programmé le{' '}
                   <strong>
                     {new Date(`${scheduledDate}T${scheduledTime}`).toLocaleDateString('fr-FR', {
@@ -216,7 +216,7 @@ export default function EmailScheduler({ onSchedule, initialDate, disabled }: Em
                 className="flex items-center gap-2 p-3 bg-danger-light border border-danger "
               >
                 <IconAlertTriangle className="w-5 h-5 !text-danger" />
-                <span className="text-danger !text-sm">
+                <span className="!text-danger !text-sm">
                   La date/heure doit être dans le futur
                 </span>
               </motion.div>

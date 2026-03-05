@@ -107,7 +107,7 @@ export default function SaveTemplateModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
-            <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+            <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
               <IconDeviceFloppy className="w-5 h-5 !text-accent" />
               {t('save_template') || 'Sauvegarder le thème'}
             </h3>
@@ -121,7 +121,7 @@ export default function SaveTemplateModal({
           </div>
 
           {/* Content */}
-          <div className="p-4 space-y-4">
+          <div className="p-4 !space-y-4">
             {/* Aperçu du template */}
             <div className="p-4  border border-default bg-muted/30">
               <p className="!text-xs !text-muted mb-3 uppercase tracking-wide">
@@ -161,7 +161,7 @@ export default function SaveTemplateModal({
                   />
                 </div>
                 {/* Font */}
-                <div className="text-sm !text-secondary">
+                <div className="!text-sm !text-secondary">
                   <span style={{ fontFamily: templateData.fontFamily }}>
                     {templateData.fontFamily.split(',')[0]}
                   </span>
@@ -233,7 +233,7 @@ export default function SaveTemplateModal({
               ) : (
                 <IconStar className="w-5 h-5 !text-secondary" />
               )}
-              <div className="text-left">
+              <div className="!text-left">
                 <p className={`font-medium ${isDefault ? 'text-yellow-500' : 'text-primary'}`}>
                   {t('set_as_default') || 'Définir comme thème par défaut'}
                 </p>
@@ -245,7 +245,7 @@ export default function SaveTemplateModal({
 
             {/* Error */}
             {error && (
-              <p className="text-sm !text-red-400 !text-center">{error}</p>
+              <p className="!text-sm !text-red-400 !text-center">{error}</p>
             )}
           </div>
 

@@ -399,12 +399,12 @@ export default function RevenuePage() {
     {
       key: 'reference',
       label: t('reference') || 'Réf.',
-      render: v => <span className="text-sm">{v as string}</span>,
+      render: v => <span className="!text-sm">{v as string}</span>,
     },
     {
       key: 'number',
       label: t('amount') || 'Montant',
-      render: v => <span className="text-sm font-medium">{formatCurrency(v as number)}</span>,
+      render: v => <span className="!text-sm font-medium">{formatCurrency(v as number)}</span>,
     },
     {
       key: 'facture_status',
@@ -440,17 +440,17 @@ export default function RevenuePage() {
     {
       key: 'date',
       label: t('date') || 'Date',
-      render: v => <span className="text-sm !text-muted">{v ? formatDate(v as string) : '-'}</span>,
+      render: v => <span className="!text-sm !text-muted">{v ? formatDate(v as string) : '-'}</span>,
     },
     {
       key: 'client_id',
       label: t('client') || 'Client',
       render: (_v, row) => {
         const client = row.client_id;
-        if (!client?.name) return <span className="text-sm">-</span>;
+        if (!client?.name) return <span className="!text-sm">-</span>;
         return (
           <span
-            className="text-sm cursor-pointer hover:!text-accent transition-colors"
+            className="!text-sm cursor-pointer hover:!text-accent transition-colors"
             onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/clients/${generateClientSlug(client.name, client.documentId)}`); }}
           >
             {client.name}
@@ -496,12 +496,12 @@ export default function RevenuePage() {
     <div className="w-full mx-auto flex flex-col gap-4">
       {/* Header + Objectif */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold !text-primary !uppercase">{t('global_revenue_stats')}</h1>
+        <h1 className="!text-2xl font-bold !text-primary !uppercase">{t('global_revenue_stats')}</h1>
         <form
           onSubmit={e => { e.preventDefault(); if (inputRef.current) { const val = Number(inputRef.current.value); if (!isNaN(val) && val > 0) setMaxCA(val); } }}
           className="flex items-center gap-2"
         >
-          <span className="text-sm !text-muted">{t('target_revenue') || 'Objectif'}:</span>
+          <span className="!text-sm !text-muted">{t('target_revenue') || 'Objectif'}:</span>
           <input
             ref={inputRef}
             type="number"
@@ -568,7 +568,7 @@ export default function RevenuePage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartLine className="w-4 h-4 !text-accent" />
-            <span className="text-sm font-medium !text-primary">{t('revenue_evolution') || 'Évolution CA'}</span>
+            <span className="!text-sm font-medium !text-primary">{t('revenue_evolution') || 'Évolution CA'}</span>
           </div>
           <div className="h-40">
             {!loading && <Line data={lineChartData} options={lineChartOptions} />}
@@ -584,7 +584,7 @@ export default function RevenuePage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartBar className="w-4 h-4 !text-accent" />
-            <span className="text-sm font-medium !text-primary">{t('invoices_by_month') || 'Factures/mois'}</span>
+            <span className="!text-sm font-medium !text-primary">{t('invoices_by_month') || 'Factures/mois'}</span>
           </div>
           <div className="h-40">
             {!loading && <Bar data={barChartData} options={barChartOptions} />}
@@ -600,7 +600,7 @@ export default function RevenuePage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartPie className="w-4 h-4 !text-accent" />
-            <span className="text-sm font-medium !text-primary">{t('revenue_by_client') || 'CA/client'}</span>
+            <span className="!text-sm font-medium !text-primary">{t('revenue_by_client') || 'CA/client'}</span>
           </div>
           <div className="h-40">
             {!loading && clientChartData.data.length > 0 ? (
@@ -623,7 +623,7 @@ export default function RevenuePage() {
       >
         <div className="flex items-center gap-2 mb-3">
           <IconReceipt className="w-4 h-4 !text-info" />
-          <span className="text-sm font-medium !text-primary">{t('invoices')}</span>
+          <span className="!text-sm font-medium !text-primary">{t('invoices')}</span>
           <span className="!text-xs !text-muted">({factures.length})</span>
         </div>
         <DataTable

@@ -601,7 +601,7 @@ function DashboardLayoutContent({
             <div className="flex flex-col items-center w-full justify-between gap-4 p-4">
               <div
                 onClick={() => router.push('/')}
-                className="text-primary cursor-pointer font-semibold !text-lg"
+                className="!text-primary cursor-pointer font-semibold !text-lg"
               >
                 <SidebarLogo />
               </div>
@@ -699,7 +699,7 @@ function DashboardLayoutContent({
                               animate={{ opacity: 1, height: 'auto' }}
                               exit={{ opacity: 0, height: 0 }}
                               transition={{ duration: 0.2 }}
-                              className="ml-6 space-y-0.5 overflow-hidden"
+                              className="ml-6 !space-y-0.5 overflow-hidden"
                             >
                                               {item.menuItems.map(menuItem => (
                                 <motion.button

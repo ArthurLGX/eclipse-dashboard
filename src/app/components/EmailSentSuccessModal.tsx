@@ -121,7 +121,7 @@ export default function EmailSentSuccessModal({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="text-2xl font-bold !text-white !text-center"
+                  className="!text-2xl font-bold !text-white !text-center"
                 >
                   {config.title}
                 </motion.h2>
@@ -142,7 +142,7 @@ export default function EmailSentSuccessModal({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="text-center !text-secondary mb-4"
+                className="!text-center !text-secondary mb-4"
               >
                 {config.description}
               </motion.p>
@@ -152,22 +152,22 @@ export default function EmailSentSuccessModal({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className={`${config.lightBg}  p-4 space-y-2`}
+                className={`${config.lightBg}  p-4 !space-y-2`}
               >
                 {documentReference && (
                   <div className="flex items-center justify-between !text-sm">
-                    <span className="text-muted">{t('reference') || 'Référence'}</span>
+                    <span className="!text-muted">{t('reference') || 'Référence'}</span>
                     <span className={`font-medium ${config.textColor}`}>{documentReference}</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between !text-sm">
-                  <span className="text-muted">{t('recipients_count') || 'Destinataires'}</span>
+                  <span className="!text-muted">{t('recipients_count') || 'Destinataires'}</span>
                   <span className="font-medium !text-primary">
                     {recipientCount} {recipientCount > 1 ? (t('people') || 'personnes') : (t('person') || 'personne')}
                   </span>
                 </div>
                 <div className="flex items-center justify-between !text-sm">
-                  <span className="text-muted">{t('sent_at') || 'Envoyé à'}</span>
+                  <span className="!text-muted">{t('sent_at') || 'Envoyé à'}</span>
                   <span className="font-medium !text-primary">
                     {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                   </span>

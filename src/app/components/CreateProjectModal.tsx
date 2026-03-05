@@ -332,12 +332,12 @@ export default function CreateProjectModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-default flex-shrink-0">
           <div>
-            <h2 className="text-xl font-bold !text-primary">
+            <h2 className="!text-xl font-bold !text-primary">
               {step === 'template' 
                 ? (t('choose_template') || 'Choisir un template')
                 : (t('project_details') || 'Détails du projet')}
             </h2>
-            <p className="text-sm !text-muted mt-1">
+            <p className="!text-sm !text-muted mt-1">
               {step === 'template'
                 ? (t('choose_template_desc') || 'Sélectionnez un template pour démarrer rapidement')
                 : (t('project_details_desc') || 'Personnalisez votre projet')}
@@ -385,7 +385,7 @@ export default function CreateProjectModal({
                       <h3 className="font-semibold !text-primary mb-1">
                         {language === 'en' ? template.nameEn : template.name}
                       </h3>
-                      <p className="text-sm !text-muted mb-3">
+                      <p className="!text-sm !text-muted mb-3">
                         {language === 'en' ? template.descriptionEn : template.description}
                       </p>
                       
@@ -499,7 +499,7 @@ export default function CreateProjectModal({
                   ) : (
                     <div className="space-y-3 p-4  bg-muted border border-default">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium !text-primary flex items-center gap-2">
+                        <span className="!text-sm font-medium !text-primary flex items-center gap-2">
                           <IconUser className="w-4 h-4" />
                           {t('new_client') || 'Nouveau client'}
                         </span>
@@ -510,7 +510,7 @@ export default function CreateProjectModal({
                             setNewClientName('');
                             setNewClientEmail('');
                           }}
-                          className="text-sm !text-secondary hover:!text-primary"
+                          className="!text-sm !text-secondary hover:!text-primary"
                         >
                           {t('cancel') || 'Annuler'}
                         </button>
@@ -574,7 +574,7 @@ export default function CreateProjectModal({
                 </div>
 
                 {/* Timing scope */}
-                <div className="p-4  border border-default bg-muted space-y-3">
+                <div className="p-4  border border-default bg-muted !space-y-3">
                   <div className="flex items-center gap-2 !text-sm font-medium !text-secondary">
                     <IconClock className="w-4 h-4" />
                     {t('timing_scope') || 'Périmètre temporel'} *
@@ -649,10 +649,10 @@ export default function CreateProjectModal({
                 {selectedTemplate && selectedTemplate.tasks.length > 0 && (
                   <div className="p-4  bg-success-light border border success">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm !text-secondary">
+                      <span className="!text-sm !text-secondary">
                         {t('estimated_value') || 'Valeur estimée'}
                       </span>
-                      <span className="text-lg font-bold !text-success-text -text">
+                      <span className="!text-lg font-bold !text-success-text -text">
                         {(calculateTemplateTotals(selectedTemplate).totalHours * hourlyRate).toLocaleString('fr-FR')} €
                       </span>
                     </div>
@@ -699,7 +699,7 @@ export default function CreateProjectModal({
               >
                 {t('cancel') || 'Annuler'}
               </button>
-              <span className="text-sm !text-muted">
+              <span className="!text-sm !text-muted">
                 {t('select_template_hint') || 'Sélectionnez un template pour continuer'}
               </span>
             </>

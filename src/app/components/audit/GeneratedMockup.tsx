@@ -263,14 +263,14 @@ export default function GeneratedMockup({
         <div className="p-4">
           {!mockup && !isGenerating && !error && (
             /* Initial State - Generate Button */
-            <div className="text-center py-12">
+            <div className="!text-center py-12">
               <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-accent-light flex items-center justify-center">
                 <IconSparkles className="w-10 h-10 !text-accent" />
               </div>
-              <h4 className="text-lg font-semibold !text-primary mb-2">
+              <h4 className="!text-lg font-semibold !text-primary mb-2">
                 {t('generate_ideal_mockup') || 'Générer la maquette idéale'}
               </h4>
-              <p className="text-sm !text-muted max-w-md mx-auto mb-6">
+              <p className="!text-sm !text-muted max-w-md mx-auto mb-6">
                 {t('mockup_explanation') || 'L\'IA va créer une maquette optimisée basée sur les sections manquantes et les meilleures pratiques.'}
               </p>
               <button
@@ -288,19 +288,19 @@ export default function GeneratedMockup({
 
           {(isGenerating || isImageLoading) && (
             /* Loading State */
-            <div className="text-center py-12">
+            <div className="!text-center py-12">
               <div className="relative w-20 h-20 mx-auto mb-4">
                 <div className="absolute inset-0 rounded-full border-4 border-accent opacity-20" />
                 <div className="absolute inset-0 rounded-full border-4 border-accent border-t-transparent animate-spin" />
                 <IconSparkles className="absolute inset-0 m-auto w-8 h-8 !text-accent animate-pulse" />
               </div>
-              <p className="text-lg font-medium !text-primary">
+              <p className="!text-lg font-medium !text-primary">
                 {isImageLoading 
                   ? (t('loading_image') || 'Chargement de l\'image...')
                   : (t('generating_mockup') || 'Génération en cours...')
                 }
               </p>
-              <p className="text-sm !text-muted mt-2">
+              <p className="!text-sm !text-muted mt-2">
                 {isImageLoading
                   ? (t('image_being_created') || 'L\'image est en cours de création')
                   : (t('ai_creating_design') || 'L\'IA crée votre maquette optimisée')
@@ -311,16 +311,16 @@ export default function GeneratedMockup({
 
           {error && (
             /* Error State */
-            <div className="text-center py-12">
+            <div className="!text-center py-12">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-warning-light flex items-center justify-center">
                 <IconAlertTriangle className="w-8 h-8 !text-warning" />
               </div>
-              <h4 className="text-lg font-semibold !text-warning-text mb-2">
+              <h4 className="!text-lg font-semibold !text-warning-text mb-2">
                 {error === 'rate_limit'
                   ? (t('rate_limit_title') || 'Limite de requêtes atteinte')
                   : (t('generation_error') || 'Erreur de génération')}
               </h4>
-              <p className="text-sm !text-muted max-w-md mx-auto mb-4">
+              <p className="!text-sm !text-muted max-w-md mx-auto mb-4">
                 {error === 'rate_limit'
                   ? (t('rate_limit_desc') || 'Trop de requêtes. Veuillez patienter quelques instants.')
                   : error}
@@ -332,7 +332,7 @@ export default function GeneratedMockup({
                     href="https://pollinations.ai"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-accent hover:underline !text-sm"
+                    className="!text-accent hover:underline !text-sm"
                   >
                     → {t('check_pollinations') || 'Voir le statut de Pollinations.ai'}
                   </a>
@@ -373,7 +373,7 @@ export default function GeneratedMockup({
                     ) : (
                       <div className="rounded-lg border border-default bg-muted p-12 !text-center">
                         <IconPhoto className="w-8 h-8 mx-auto mb-2 !text-muted opacity-50" />
-                        <p className="text-sm !text-muted">{t('no_screenshot') || 'Pas de capture'}</p>
+                        <p className="!text-sm !text-muted">{t('no_screenshot') || 'Pas de capture'}</p>
                       </div>
                     )}
                   </div>
@@ -508,7 +508,7 @@ export default function GeneratedMockup({
                 {comparisonMode === 'side-by-side' ? (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
-                      <p className="text-white/60 !text-sm mb-2 !text-center">{t('current') || 'Actuel'}</p>
+                      <p className="!text-white/60 !text-sm mb-2 !text-center">{t('current') || 'Actuel'}</p>
                       {currentScreenshot ? (
                         <img
                           src={`data:image/png;base64,${currentScreenshot}`}
@@ -517,12 +517,12 @@ export default function GeneratedMockup({
                         />
                       ) : (
                         <div className="bg-white/10  p-20 !text-center">
-                          <p className="text-white/40">{t('no_screenshot') || 'Pas de capture'}</p>
+                          <p className="!text-white/40">{t('no_screenshot') || 'Pas de capture'}</p>
                         </div>
                       )}
                     </div>
                     <div>
-                      <p className="text-white/60 !text-sm mb-2 !text-center">{t('ideal') || 'Idéal'}</p>
+                      <p className="!text-white/60 !text-sm mb-2 !text-center">{t('ideal') || 'Idéal'}</p>
                       <img
                         src={loadedImageUrl}
                         alt="Ideal"

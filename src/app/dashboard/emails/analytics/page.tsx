@@ -147,11 +147,11 @@ function EmailAnalytics() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold !text-primary flex items-center gap-3">
+          <h1 className="!text-2xl font-bold !text-primary flex items-center gap-3">
             <IconChartBar className="w-7 h-7 !text-accent" />
             {t('email_analytics') || 'Analytics Email'}
           </h1>
-          <p className="text-muted mt-1">
+          <p className="!text-muted mt-1">
             {t('email_analytics_desc') || 'Suivez les performances de vos emails et newsletters'}
           </p>
         </div>
@@ -231,7 +231,7 @@ function EmailAnalytics() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Liste des emails récents */}
         <div className="bg-card border border-default  p-6">
-          <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
+          <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconMail className="w-5 h-5 !text-accent" />
             {t('recent_emails') || 'Emails récents'}
           </h2>
@@ -246,7 +246,7 @@ function EmailAnalytics() {
             ))}
 
             {filteredEmails.length === 0 && (
-              <p className="text-muted !text-center py-8">
+              <p className="!text-muted !text-center py-8">
                 {t('no_emails_found') || 'Aucun email trouvé pour cette période'}
               </p>
             )}
@@ -255,7 +255,7 @@ function EmailAnalytics() {
 
         {/* Top liens cliqués */}
         <div className="bg-card border border-default  p-6">
-          <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
+          <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconClick className="w-5 h-5 !text-accent" />
             {t('top_clicked_links') || 'Liens les plus cliqués'}
           </h2>
@@ -274,22 +274,22 @@ function EmailAnalytics() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm !text-primary hover:!text-accent truncate block flex items-center gap-1"
+                    className="!text-sm !text-primary hover:!text-accent truncate block flex items-center gap-1"
                   >
                     {new URL(link.url).hostname}
                     <IconExternalLink className="w-3 h-3 shrink-0" />
                   </a>
                   <p className="!text-xs !text-muted truncate">{link.url}</p>
                 </div>
-                <div className="text-right">
-                  <div className="text-lg font-bold !text-primary">{link.count}</div>
+                <div className="!text-right">
+                  <div className="!text-lg font-bold !text-primary">{link.count}</div>
                   <div className="!text-xs !text-muted">clics</div>
                 </div>
               </div>
             ))}
 
             {topLinks.length === 0 && (
-              <p className="text-muted !text-center py-8">
+              <p className="!text-muted !text-center py-8">
                 {t('no_clicks_yet') || 'Aucun clic enregistré'}
               </p>
             )}
@@ -337,8 +337,8 @@ function StatCard({
       <div className={`w-10 h-10  ${colorClasses[color]} flex items-center justify-center mb-3`}>
         {icon}
       </div>
-      <div className="text-2xl font-bold !text-primary">{value}</div>
-      <div className="text-sm !text-muted">{label}</div>
+      <div className="!text-2xl font-bold !text-primary">{value}</div>
+      <div className="!text-sm !text-muted">{label}</div>
     </motion.div>
   );
 }
@@ -388,14 +388,14 @@ function EmailRow({ email, onClick }: { email: SentEmail; onClick?: () => void }
       </div>
 
       <div className="flex items-center gap-4 !text-sm">
-        <div className="text-center">
+        <div className="!text-center">
           <div className="flex items-center gap-1 !text-green-500">
             <IconEye className="w-4 h-4" />
             <span className="font-medium">{email.opens_count || 0}</span>
           </div>
           <div className="!text-xs !text-muted">{openRate.toFixed(0)}%</div>
         </div>
-        <div className="text-center">
+        <div className="!text-center">
           <div className="flex items-center gap-1 !text-orange-500">
             <IconClick className="w-4 h-4" />
             <span className="font-medium">{email.clicks_count || 0}</span>
@@ -479,7 +479,7 @@ function EmailDetailModal({
           <div className="p-5 border-b border-default">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
-                <h2 className="text-lg font-semibold !text-primary truncate">
+                <h2 className="!text-lg font-semibold !text-primary truncate">
                   {email.subject}
                 </h2>
                 <div className="flex items-center gap-4 mt-2 !text-sm !text-muted">
@@ -514,28 +514,28 @@ function EmailDetailModal({
 
             {/* Stats rapides */}
             <div className="grid grid-cols-4 gap-4 mt-4">
-              <div className="text-center p-3 bg-page ">
+              <div className="!text-center p-3 bg-page ">
                 <div className="flex items-center justify-center gap-1 !text-blue-500 mb-1">
                   <IconSend className="w-4 h-4" />
                   <span className="font-bold">{email.recipients.length}</span>
                 </div>
                 <div className="!text-xs !text-muted">{t('recipients') || 'Destinataires'}</div>
               </div>
-              <div className="text-center p-3 bg-page ">
+              <div className="!text-center p-3 bg-page ">
                 <div className="flex items-center justify-center gap-1 !text-green-500 mb-1">
                   <IconEye className="w-4 h-4" />
                   <span className="font-bold">{openedCount}</span>
                 </div>
                 <div className="!text-xs !text-muted">{t('opened') || 'Ouvert'}</div>
               </div>
-              <div className="text-center p-3 bg-page ">
+              <div className="!text-center p-3 bg-page ">
                 <div className="flex items-center justify-center gap-1 !text-orange-500 mb-1">
                   <IconClick className="w-4 h-4" />
                   <span className="font-bold">{clickedCount}</span>
                 </div>
                 <div className="!text-xs !text-muted">{t('clicked') || 'Cliqué'}</div>
               </div>
-              <div className="text-center p-3 bg-page ">
+              <div className="!text-center p-3 bg-page ">
                 <div className="flex items-center justify-center gap-1 !text-purple-500 mb-1">
                   <IconMessageCircle className="w-4 h-4" />
                   <span className="font-bold">{replies.length}</span>
@@ -654,7 +654,7 @@ function EmailDetailModal({
                 ))}
 
                 {recipientTracking.length === 0 && (
-                  <div className="text-center py-8 !text-muted">
+                  <div className="!text-center py-8 !text-muted">
                     {t('no_recipients') || 'Aucun destinataire'}
                   </div>
                 )}
@@ -693,16 +693,16 @@ function EmailDetailModal({
                         <p className="!text-xs !text-muted truncate mt-1">{click.url}</p>
                       </div>
 
-                      <div className="text-right">
-                        <div className="text-xl font-bold !text-primary">{click.count}</div>
+                      <div className="!text-right">
+                        <div className="!text-xl font-bold !text-primary">{click.count}</div>
                         <div className="!text-xs !text-muted">{t('clicks') || 'clics'}</div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-12">
+                  <div className="!text-center py-12">
                     <IconClick className="w-12 h-12 mx-auto !text-muted opacity-30 mb-3" />
-                    <p className="text-muted">{t('no_clicks_recorded') || 'Aucun clic enregistré'}</p>
+                    <p className="!text-muted">{t('no_clicks_recorded') || 'Aucun clic enregistré'}</p>
                     <p className="!text-xs !text-muted mt-1">
                       {t('clicks_info') || 'Les clics sont enregistrés quand les destinataires cliquent sur les liens de votre email'}
                     </p>
@@ -730,12 +730,12 @@ function EmailDetailModal({
                         
                         <div className="flex-1 min-w-0">
                           <div className="font-medium !text-primary">{reply.from}</div>
-                          <div className="text-sm !text-muted truncate">
+                          <div className="!text-sm !text-muted truncate">
                             {reply.snippet || reply.subject || reply.content.substring(0, 100)}
                           </div>
                         </div>
 
-                        <div className="text-right flex items-center gap-2">
+                        <div className="!text-right flex items-center gap-2">
                           <div className="!text-xs !text-muted">
                             {formatDateTime(reply.received_at)}
                           </div>
@@ -760,7 +760,7 @@ function EmailDetailModal({
                               <div className="!text-xs !text-muted mb-2">
                                 <strong>{t('subject') || 'Sujet'}:</strong> {reply.subject}
                               </div>
-                              <div className="text-sm !text-primary whitespace-pre-wrap">
+                              <div className="!text-sm !text-primary whitespace-pre-wrap">
                                 {reply.content}
                               </div>
                             </div>
@@ -770,9 +770,9 @@ function EmailDetailModal({
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-12">
+                  <div className="!text-center py-12">
                     <IconMessageCircle className="w-12 h-12 mx-auto !text-muted opacity-30 mb-3" />
-                    <p className="text-muted">{t('no_replies_yet') || 'Aucune réponse reçue'}</p>
+                    <p className="!text-muted">{t('no_replies_yet') || 'Aucune réponse reçue'}</p>
                     <p className="!text-xs !text-muted mt-2 max-w-md mx-auto">
                       {t('replies_info') || 'Les réponses seront affichées ici lorsque vos destinataires répondront à cet email. Cette fonctionnalité nécessite une intégration avec votre service email.'}
                     </p>

@@ -449,11 +449,11 @@ export default function ProjectWorkflowView({
             )}
             <Link 
               href={`/dashboard/clients/${client.documentId}`}
-              className="text-muted hover:!text-accent transition-colors"
+              className="!text-muted hover:!text-accent transition-colors"
             >
               {client.name}
             </Link>
-            <IconChevronRight size={14} className="text-muted" />
+            <IconChevronRight size={14} className="!text-muted" />
             <span className="font-medium !text-primary">{project.title}</span>
             <span className={`ml-2 px-2 py-0.5 rounded-full !text-xs font-medium ${
               project.project_status === 'completed' ? 'bg-success-light !text-success-text ' :
@@ -638,7 +638,7 @@ export default function ProjectWorkflowView({
                               href={item.href || '#'}
                               className="flex items-center justify-between p-2  hover:bg-hover !text-sm"
                             >
-                              <span className="text-primary truncate">{item.label}</span>
+                              <span className="!text-primary truncate">{item.label}</span>
                               <span className={`px-1.5 py-0.5 rounded !text-xs ${
                                 item.status === 'paid' || item.status === 'accepted' || item.status === 'signed' 
                                   ? 'bg-success-light !text-success-text '
@@ -719,23 +719,23 @@ export default function ProjectWorkflowView({
         </div>
 
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 bg-card border border-default  p-3 !text-xs space-y-1.5">
+        <div className="absolute bottom-4 left-4 bg-card border border-default  p-3 !text-xs !space-y-1.5">
           <div className="font-medium !text-primary mb-2">{t('legend') || 'Légende'}</div>
           <div className="flex items-center gap-2">
-            <IconCheck size={14} className="text-success-text" />
-            <span className="text-primary">{t('status_done') || 'Fait'}</span>
+            <IconCheck size={14} className="!text-success-text" />
+            <span className="!text-primary">{t('status_done') || 'Fait'}</span>
           </div>
           <div className="flex items-center gap-2">
-            <IconClock size={14} className="text-warning" />
-            <span className="text-primary">{t('status_in_progress') || 'En cours'}</span>
+            <IconClock size={14} className="!text-warning" />
+            <span className="!text-primary">{t('status_in_progress') || 'En cours'}</span>
           </div>
           <div className="flex items-center gap-2">
-            <IconAlertTriangle size={14} className="text-danger" />
-            <span className="text-primary">{t('status_blocked') || 'Bloqué'}</span>
+            <IconAlertTriangle size={14} className="!text-danger" />
+            <span className="!text-primary">{t('status_blocked') || 'Bloqué'}</span>
           </div>
           <div className="flex items-center gap-2">
-            <IconCircleDashed size={14} className="text-muted" />
-            <span className="text-primary">{t('status_to_create') || 'À créer'}</span>
+            <IconCircleDashed size={14} className="!text-muted" />
+            <span className="!text-primary">{t('status_to_create') || 'À créer'}</span>
           </div>
         </div>
       </div>
@@ -789,11 +789,11 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
     <div className="flex flex-col items-center justify-center p-8" style={{ minHeight: '80vh' }}>
       <div className="max-w-2xl w-full">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold !text-primary mb-2">
+        <div className="!text-center mb-8">
+          <h2 className="!text-2xl font-bold !text-primary mb-2">
             {t('select_project_title') || 'Sélectionnez un projet'}
           </h2>
-          <p className="text-primary">
+          <p className="!text-primary">
             {t('select_project_desc') || `${client.name} a ${projects.length} projets. Choisissez celui dont vous voulez voir le workflow.`}
           </p>
         </div>
@@ -815,7 +815,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
                   <div className="flex-1 min-w-0 !pr-4">
                     <h3 className="font-semibold !text-primary">{project.title}</h3>
                     {cleanDescription && (
-                      <p className="text-sm !text-secondary mt-1 truncate">
+                      <p className="!text-sm !text-secondary mt-1 truncate">
                         {cleanDescription.slice(0, 100)}
                         {cleanDescription.length > 100 ? '...' : ''}
                       </p>
@@ -830,7 +830,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
                     }`}>
                       {getStatusLabel(project.project_status)}
                     </span>
-                    <IconChevronRight size={15} className="text-muted" />
+                    <IconChevronRight size={15} className="!text-muted" />
                   </div>
                 </div>
               </motion.button>
@@ -839,7 +839,7 @@ export function ProjectSelector({ client, projects, onSelectProject }: ProjectSe
         </div>
 
         {/* Info message */}
-        <p className="text-center !text-xs !text-muted mt-6">
+        <p className="!text-center !text-xs !text-muted mt-6">
           {t('workflow_project_info') || '👉 Un workflow représente l\'exécution concrète d\'un projet, pas la relation client globale.'}
         </p>
       </div>

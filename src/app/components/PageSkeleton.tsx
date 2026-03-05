@@ -51,7 +51,7 @@ export default function PageSkeleton({
           {/* Grille de contenu */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Colonne principale */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="lg:col-span-2 !space-y-4">
               {[1, 2, 3].map(i => (
                 <div
                   key={i}
@@ -69,7 +69,7 @@ export default function PageSkeleton({
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="card p-6 space-y-4">
+              <div className="card p-6 !space-y-4">
                 <div className="h-6 bg-muted rounded w-32 animate-pulse mb-4"></div>
                 {[1, 2, 3].map(i => (
                   <div
@@ -87,7 +87,7 @@ export default function PageSkeleton({
       {showFooter && (
         <div className="bg-card backdrop-blur-sm border-t border-default mt-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex flex-col md:flex-row justify-between items-center !space-y-4 md:space-y-0">
               <div className="h-6 bg-muted rounded w-48 animate-pulse"></div>
               <div className="flex space-x-4">
                 <div className="h-6 bg-muted rounded w-20 animate-pulse"></div>

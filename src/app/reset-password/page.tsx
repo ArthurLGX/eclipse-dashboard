@@ -102,12 +102,12 @@ function ResetPasswordContent() {
             className="!text-center max-w-md"
           >
             <div className="w-20 h-20 bg-danger-light rounded-full flex items-center justify-center mx-auto mb-6">
-              <IconAlertTriangle size={40} className="text-danger" />
+              <IconAlertTriangle size={40} className="!text-danger" />
             </div>
             <h2 className="!text-2xl font-bold !text-primary mb-4">
               Lien invalide
             </h2>
-            <p className="text-secondary mb-6">
+            <p className="!text-secondary mb-6">
               Ce lien de réinitialisation est invalide ou a expiré.
               Veuillez demander un nouveau lien.
             </p>
@@ -178,7 +178,7 @@ function ResetPasswordContent() {
                     </button>
                   </div>
                   {passwordError && (
-                    <p className="text-danger !text-xs">{passwordError}</p>
+                    <p className="!text-danger !text-xs">{passwordError}</p>
                   )}
                 </div>
 
@@ -208,7 +208,7 @@ function ResetPasswordContent() {
                     </button>
                   </div>
                   {confirmError && (
-                    <p className="text-danger !text-xs">{confirmError}</p>
+                    <p className="!text-danger !text-xs">{confirmError}</p>
                   )}
                 </div>
 
@@ -229,12 +229,12 @@ function ResetPasswordContent() {
               className="!text-center"
             >
               <div className="w-20 h-20 bg-success-light rounded-full flex items-center justify-center mx-auto mb-6">
-                <IconCheck size={40} className="text-success-text" />
+                <IconCheck size={40} className="!text-success-text" />
               </div>
               <h2 className="!text-2xl font-bold !text-primary mb-4">
                 Mot de passe réinitialisé !
               </h2>
-              <p className="text-secondary mb-6">
+              <p className="!text-secondary mb-6">
                 Votre mot de passe a été modifié avec succès.
                 Vous allez être redirigé vers la page de connexion...
               </p>

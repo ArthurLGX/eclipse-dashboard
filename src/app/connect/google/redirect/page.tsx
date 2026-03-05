@@ -66,15 +66,15 @@ export default function GoogleRedirectPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center p-8  bg-card border-default min-w-md"
+          className="!text-center p-8  bg-card border-default min-w-md"
         >
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
             <IconAlertCircle className="w-8 h-8 !text-red-500" />
           </div>
-          <h1 className="text-xl font-bold !text-center !text-primary mb-2">
+          <h1 className="!text-xl font-bold !text-center !text-primary mb-2">
             {t('error_connecting')}
           </h1>
-            <p className="text-center !text-primary mb-6">{error}</p>
+            <p className="!text-center !text-primary mb-6">{error}</p>
           <button
             onClick={() => router.push('/login')}
             className="px-6 py-2 bg-accent !text-white  hover:opacity-90 transition-opacity"
@@ -91,7 +91,7 @@ export default function GoogleRedirectPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="text-center p-8"
+        className="!text-center p-8"
       >
         <div className="relative w-20 h-20 mx-auto mb-6">
           <motion.div
@@ -103,10 +103,10 @@ export default function GoogleRedirectPage() {
             <IconBrandGoogle className="w-8 h-8 !text-primary" />
           </div>
         </div>
-        <h1 className="text-xl font-semibold !text-primary mb-2">
+        <h1 className="!text-xl font-semibold !text-primary mb-2">
           {t('connecting')}...
         </h1>
-        <p className="text-primary">
+        <p className="!text-primary">
           {t('please_wait_while_we_connect_you')}
         </p>
       </motion.div>

@@ -102,14 +102,14 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
                 <h3 className="font-semibold !text-primary">
                   {t('pending_quotes_widget_title') || 'Devis en attente de réponse'}
                 </h3>
-                <p className="text-sm !text-muted">
+                <p className="!text-sm !text-muted">
                   {pendingQuotes.length} {pendingQuotes.length > 1 ? (t('quotes_plural') || 'devis') : (t('quote_singular') || 'devis')} {t('awaiting_response') || 'en attente'}
                 </p>
               </div>
             </div>
             <button
               onClick={() => router.push('/dashboard/factures?type=quote')}
-              className="text-sm !text-secondary hover:!text-primary flex items-center gap-1 !shadow-none"
+              className="!text-sm !text-secondary hover:!text-primary flex items-center gap-1 !shadow-none"
             >
               {t('view_all') || 'Voir tout'}
               <IconChevronRight className="w-4 h-4 !text-secondary" style={{ color: 'var(--color-secondary)' }} />
@@ -207,7 +207,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
           <div className="px-6 py-3 border-t border-default bg-muted !text-center">
             <button
               onClick={() => router.push('/dashboard/factures?type=quote')}
-                className="text-sm !text-accent hover:!text-primary"
+                className="!text-sm !text-accent hover:!text-primary"
             >
               {`+ ${pendingQuotes.length - 5} ${t('other_quotes') || 'autres devis'}`}
             </button>

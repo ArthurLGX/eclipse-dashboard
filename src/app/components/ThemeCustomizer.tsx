@@ -127,7 +127,7 @@ function CompatibilityInfo({
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         onClick={() => setShowTooltip(!showTooltip)}
-        className="text-muted hover:!text-accent transition-colors p-1 rounded-full hover:bg-accent-light"
+        className="!text-muted hover:!text-accent transition-colors p-1 rounded-full hover:bg-accent-light"
       >
         <IconInfoCircle className="w-4 h-4" />
       </button>
@@ -151,17 +151,17 @@ function CompatibilityInfo({
           
           <div className="mb-3">
             <p className="font-semibold !text-green-500 mb-1.5 flex items-center gap-1.5">
-              <span className="text-base">✓</span> {t('supported_clients') || 'Clients supportés'}
+              <span className="!text-base">✓</span> {t('supported_clients') || 'Clients supportés'}
             </p>
-            <p className="text-secondary leading-relaxed">
+            <p className="!text-secondary leading-relaxed">
               {compatibility.supported.join(', ')}
             </p>
           </div>
           <div>
             <p className="font-semibold !text-red-500 mb-1.5 flex items-center gap-1.5">
-              <span className="text-base">✗</span> {t('unsupported_clients') || 'Non supportés'}
+              <span className="!text-base">✗</span> {t('unsupported_clients') || 'Non supportés'}
             </p>
-            <p className="text-secondary leading-relaxed">
+            <p className="!text-secondary leading-relaxed">
               {compatibility.notSupported.join(', ')}
             </p>
           </div>
@@ -223,7 +223,7 @@ export default function ThemeCustomizer({
   void bannerUrl;
   
   return (
-    <div className="bg-muted  p-6 space-y-6 border border-default">
+    <div className="bg-muted  p-6 !space-y-6 border border-default">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold !text-primary flex items-center gap-2">
           <IconPalette className="w-5 h-5" />
@@ -271,7 +271,7 @@ export default function ThemeCustomizer({
       {/* Font Family Selection */}
       <div className="space-y-3 relative">
         <div className="flex items-center">
-          <label className="text-sm font-medium !text-secondary">
+          <label className="!text-sm font-medium !text-secondary">
             {t('font_family') || 'Police de caractères'}
           </label>
           <CompatibilityInfo feature="fonts" t={t} />
@@ -304,7 +304,7 @@ export default function ThemeCustomizer({
       {/* Gradient / Colors Section */}
       <div className="space-y-4 pt-4 border-t border-default">
         <div className="flex items-center">
-          <h4 className="text-sm font-medium !text-secondary">
+          <h4 className="!text-sm font-medium !text-secondary">
             {t('header_colors') || 'Couleurs du header'}
           </h4>
           <CompatibilityInfo feature="gradients" t={t} />
@@ -321,7 +321,7 @@ export default function ThemeCustomizer({
         {/* Type selector + Angle */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 px-3 py-1.5 bg-card  border border-default w-fit">
-            <span className="text-sm !text-primary">{t('linear') || 'Linéaire'}</span>
+            <span className="!text-sm !text-primary">{t('linear') || 'Linéaire'}</span>
           </div>
           <div className="flex items-center gap-2 flex-1">
             <input
@@ -341,7 +341,7 @@ export default function ThemeCustomizer({
                 onChange={(e) => setCustomColors(prev => ({ ...prev, gradientAngle: parseInt(e.target.value) || 0 }))}
                 className="w-fit min-w-[4ch] !text-center font-mono !text-sm py-1.5 bg-transparent !text-primary border-none outline-none"
               />
-              <span className="text-sm !text-muted px-2">°</span>
+              <span className="!text-sm !text-muted px-2">°</span>
             </div>
           </div>
         </div>
@@ -349,13 +349,13 @@ export default function ThemeCustomizer({
         {/* Stops */}
         <div className="space-y-2">
           <div className="flex items-center justify-between pb-2 border-b border-default w-1/2">
-            <span className="text-sm font-medium !text-primary">{t('stops') || 'Stops'}</span>
+            <span className="!text-sm font-medium !text-primary">{t('stops') || 'Stops'}</span>
             <button
               type="button"
               onClick={addGradientStop}
               className="w-6 h-6 flex items-center justify-center rounded hover:bg-card transition-colors !text-primary"
             >
-              <span className="text-xl leading-none">+</span>
+              <span className="!text-xl leading-none">+</span>
             </button>
           </div>
           <div className="space-y-1">
@@ -375,7 +375,7 @@ export default function ThemeCustomizer({
                     onChange={(e) => updateGradientStop(stop.id, { position: Math.max(0, Math.min(100, parseInt(e.target.value) || 0)) })}
                     className="w-fit min-w-[3ch]  !text-right font-mono !text-sm py-1 bg-transparent !text-primary border-none outline-none"
                   />
-                  <span className="text-sm !text-muted">%</span>
+                  <span className="!text-sm !text-muted">%</span>
                 </div>
                 <div className="relative">
                   <input
@@ -410,7 +410,7 @@ export default function ThemeCustomizer({
                     onChange={(e) => updateGradientStop(stop.id, { opacity: Math.max(0, Math.min(100, parseInt(e.target.value) || 0)) })}
                     className="w-fit min-w-[3ch]  !text-right font-mono !text-sm py-1 bg-transparent !text-primary border-none outline-none"
                   />
-                  <span className="text-sm !text-muted">%</span>
+                  <span className="!text-sm !text-muted">%</span>
                 </div>
                 <button
                   type="button"
@@ -422,7 +422,7 @@ export default function ThemeCustomizer({
                       : 'text-muted hover:!text-primary'
                   }`}
                 >
-                  <span className="text-xl leading-none">−</span>
+                  <span className="!text-xl leading-none">−</span>
                 </button>
               </div>
             ))}
@@ -433,7 +433,7 @@ export default function ThemeCustomizer({
       {/* Header Background Image */}
       <div className="pt-4 border-t border-default">
         <div className="flex items-center mb-2">
-          <label className="text-sm font-medium !text-secondary">
+          <label className="!text-sm font-medium !text-secondary">
             {t('header_background_image') || 'Image de fond du header'}
           </label>
           <CompatibilityInfo feature="backgroundImages" t={t} />
@@ -579,7 +579,7 @@ export default function ThemeCustomizer({
 
       {/* Live Preview */}
       <div className="pt-4 border-t border-default">
-        <p className="text-sm !text-secondary mb-3">{t('color_preview') || 'Aperçu'}</p>
+        <p className="!text-sm !text-secondary mb-3">{t('color_preview') || 'Aperçu'}</p>
         <div 
           className="rounded-xl overflow-hidden border border-default"
         >
@@ -607,7 +607,7 @@ export default function ThemeCustomizer({
           </div>
           <div className="bg-card p-4 flex flex-col items-center justify-center gap-2">
             <p 
-              className="text-sm !text-primary m-0"
+              className="!text-sm !text-primary m-0"
               style={{ fontFamily: `'${customColors.fontFamily}', Arial, sans-serif` }}
             >
               {t('sample_text_preview') || 'Exemple de texte avec la police sélectionnée.'}

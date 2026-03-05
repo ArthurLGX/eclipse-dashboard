@@ -282,14 +282,14 @@ function ProjectCard({ project, settings, onClick, index }: ProjectCardProps) {
             {coverMedia.type === 'video' && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                 <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
-                  <IconPlayerPlay size={24} className="text-gray-900 ml-0.5" />
+                  <IconPlayerPlay size={24} className="!text-gray-900 ml-0.5" />
                 </div>
               </div>
             )}
           </>
         ) : (
           <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-            <IconPhoto size={32} className="text-gray-400" />
+            <IconPhoto size={32} className="!text-gray-400" />
           </div>
         )}
       </div>
@@ -297,7 +297,7 @@ function ProjectCard({ project, settings, onClick, index }: ProjectCardProps) {
       {/* Title */}
       <div className="mt-3">
         <h3
-          className="text-sm"
+          className="!text-sm"
           style={{ 
             color: settings.projectTitleColor || '#1a1a1a', 
             fontFamily: projectTitleFont,
@@ -409,19 +409,19 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
 
           {/* Info Section */}
           <div className="lg:w-96 p-6 lg:p-8 overflow-y-auto">
-            <h2 className="text-2xl font-bold !text-gray-900 mb-2">
+            <h2 className="!text-2xl font-bold !text-gray-900 mb-2">
               {project.title}
             </h2>
             {project.subtitle && (
-              <p className="text-gray-600 mb-4">{project.subtitle}</p>
+              <p className="!text-gray-600 mb-4">{project.subtitle}</p>
             )}
             {project.description && (
-              <p className="text-gray-700 mb-6 leading-relaxed">
+              <p className="!text-gray-700 mb-6 leading-relaxed">
                 {project.description}
               </p>
             )}
             {project.clientName && (
-              <p className="text-sm !text-info  mb-2">
+              <p className="!text-sm !text-info  mb-2">
                 <span className="font-medium">Client:</span> {project.clientName}
               </p>
             )}
@@ -598,9 +598,9 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
   if (error) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold !text-gray-900 mb-2">{t('portfolio_not_found')}</h1>
-          <p className="text-gray-600">{t('portfolio_not_found_desc')}</p>
+        <div className="!text-center">
+          <h1 className="!text-2xl font-bold !text-gray-900 mb-2">{t('portfolio_not_found')}</h1>
+          <p className="!text-gray-600">{t('portfolio_not_found_desc')}</p>
         </div>
       </div>
     );
@@ -615,7 +615,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
       <header className="px-6 lg:px-12 py-4 border-b border-gray-200">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left - Site Name */}
-          <span className="text-sm !text-info  font-medium tracking-wide">
+          <span className="!text-sm !text-info  font-medium tracking-wide">
             {settings.portfolioName.toLowerCase().replace(/\s+/g, '-')}.com
           </span>
 
@@ -623,16 +623,16 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
           <div className="flex items-center gap-6">
             {/* Navigation Links */}
             <nav className="hidden md:flex items-center gap-6 !text-sm">
-              <span className="text-info hover:!text-gray-900 cursor-pointer transition-colors">
+              <span className="!text-info hover:!text-gray-900 cursor-pointer transition-colors">
                 {t('portfolio_nav_home')}
               </span>
-              <span className="text-info hover:!text-gray-900 cursor-pointer transition-colors">
+              <span className="!text-info hover:!text-gray-900 cursor-pointer transition-colors">
                 {t('portfolio_nav_about')}
               </span>
-              <span className="text-gray-900 font-medium cursor-pointer border-b border-gray-900 pb-0.5">
+              <span className="!text-gray-900 font-medium cursor-pointer border-b border-gray-900 pb-0.5">
                 {t('portfolio_nav_portfolio')}
               </span>
-              <span className="text-info hover:!text-gray-900 cursor-pointer transition-colors">
+              <span className="!text-info hover:!text-gray-900 cursor-pointer transition-colors">
                 {t('portfolio_nav_contact')}
               </span>
             </nav>
@@ -708,8 +708,8 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
       <main className="px-6 lg:px-12 pb-24 !bg-white">
         <div className="max-w-7xl mx-auto">
           {projects.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-info">{t('portfolio_no_projects')}</p>
+            <div className="!text-center py-20">
+              <p className="!text-info">{t('portfolio_no_projects')}</p>
             </div>
           ) : (
             <div className={getGridClasses()}>

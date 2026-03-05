@@ -655,7 +655,7 @@ export default function ClientsPage() {
             size="sm"
           />
           <div className="flex items-center gap-2">
-            <p className="text-primary font-medium">{value as string}</p>
+            <p className="!text-primary font-medium">{value as string}</p>
             {row._isCollaborative && row._collaborativeProjects && (
               <span 
                 className="inline-flex items-center gap-1 px-1.5 py-0.5  !text-[10px] font-semibold bg-accent-light !text-accent border border-accent"
@@ -672,7 +672,7 @@ export default function ClientsPage() {
     {
       key: 'email',
       label: t('email'),
-      render: (value) => <p className="text-primary">{value as string}</p>,
+      render: (value) => <p className="!text-primary">{value as string}</p>,
     },
     {
       key: 'enterprise',

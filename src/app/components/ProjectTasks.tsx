@@ -1038,7 +1038,7 @@ export default function ProjectTasks({
         </thead>
         <tbody>${taskListHtml}</tbody>
       </table>
-      <div style="text-align: center; margin: 32px 0;">
+      <div style="!text-align: center; margin: 32px 0;">
         <a href="${projectUrl}" style="display: inline-block; background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); color: white; !text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);">Voir mes tâches →</a>
       </div>
       <p style="color: #9CA3AF; font-size: 13px; !text-align: center; margin: 24px 0 0; padding-top: 20px; border-top: 1px solid #E5E7EB;">Cet email a été envoyé automatiquement depuis Eclipse Dashboard.</p>
@@ -1301,11 +1301,11 @@ export default function ProjectTasks({
       {/* Header avec stats */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+          <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
             <IconProgress className="w-5 h-5 !text-primary" />
             {t('project_tasks')}
           </h3>
-          <p className="text-sm !text-muted mt-1">
+          <p className="!text-sm !text-muted mt-1">
             {taskStats.completed}/{taskStats.total} {t('tasks_completed')} • {overallProgress}% {t('progress')}
           </p>
         </div>
@@ -1369,8 +1369,8 @@ export default function ProjectTasks({
       {tasks.length > 0 && (
         <div className="bg-muted  p-4 border border-default">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm !text-primary">{t('overall_progress') || 'Progression globale'}</span>
-            <span className="text-sm font-medium !text-muted">{overallProgress}%</span>
+            <span className="!text-sm !text-primary">{t('overall_progress') || 'Progression globale'}</span>
+            <span className="!text-sm font-medium !text-muted">{overallProgress}%</span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <motion.div
@@ -1485,12 +1485,12 @@ export default function ProjectTasks({
             className="flex flex-wrap items-center justify-between gap-3 p-3 bg-accent-light border border-accent "
           >
             <div className="flex items-center gap-3">
-              <span className="text-sm font-medium !text-accent">
+              <span className="!text-sm font-medium !text-accent">
                 {selectedTasks.size} {t('selected_tasks') || 'tâche(s) sélectionnée(s)'}
               </span>
               <button
                 onClick={selectAllVisibleTasks}
-                className="text-sm !text-accent hover:underline flex items-center gap-1"
+                className="!text-sm !text-accent hover:underline flex items-center gap-1"
               >
                 <IconSelectAll className="w-4 h-4" />
                 {t('select_all') || 'Tout sélectionner'}
@@ -1543,7 +1543,7 @@ export default function ProjectTasks({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             onSubmit={handleCreateTask}
-            className={`bg-card border border-default  p-4 space-y-4 ${parentTaskForSubtask ? 'ml-8' : ''}`}
+            className={`bg-card border border-default  p-4 !space-y-4 ${parentTaskForSubtask ? 'ml-8' : ''}`}
             style={parentTaskForSubtask ? { 
               borderLeftWidth: '4px', 
               borderLeftColor: parentTaskForSubtask.color || TASK_COLORS[0],
@@ -1564,7 +1564,7 @@ export default function ProjectTasks({
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="!text-xs !text-muted">{t('subtask_of') || 'Sous-tâche de'}</p>
-                  <p className="text-sm font-medium !text-primary truncate">{parentTaskForSubtask.title}</p>
+                  <p className="!text-sm font-medium !text-primary truncate">{parentTaskForSubtask.title}</p>
                 </div>
                 <div className="flex items-center gap-2 !text-xs !text-muted">
                   {parentTaskForSubtask.assigned_to && (
@@ -1752,9 +1752,9 @@ export default function ProjectTasks({
 
       {/* Liste des tâches selon la vue */}
       {filteredTasks.length === 0 ? (
-        <div className="text-center py-12 bg-muted  border border-default">
+        <div className="!text-center py-12 bg-muted  border border-default">
           <IconProgress className="w-12 h-12 !text-muted mx-auto mb-3" />
-          <p className="text-muted">
+          <p className="!text-muted">
             {filter === 'all' 
               ? (t('no_tasks') || 'Aucune tâche pour ce projet')
               : (t('no_tasks_filter') || 'Aucune tâche avec ce statut')}
@@ -2270,7 +2270,7 @@ function TaskCard({
             >
               {task.description && (
                 <div 
-                  className="text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert px-1 mb-3
+                  className="!text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert px-1 mb-3
                     [&_h1]:!text-lg [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:!text-primary
                     [&_h2]:!text-base [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:!text-primary
                     [&_p]:mb-2 [&_p]:!text-primary
@@ -2497,11 +2497,11 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             style={!isSubtask ? { borderLeftWidth: '4px', borderLeftColor: formData.color } : undefined}
           >
             <div>
-              <h2 className="text-xl font-semibold !text-primary">
+              <h2 className="!text-xl font-semibold !text-primary">
                 {isSubtask ? (t('edit_subtask') || 'Modifier la sous-tâche') : (t('edit_task') || 'Modifier la tâche')}
               </h2>
               {isSubtask && task.parent_task && (
-                <p className="text-sm !text-muted flex items-center gap-1 mt-1">
+                <p className="!text-sm !text-muted flex items-center gap-1 mt-1">
                   <IconSubtask className="w-4 h-4" />
                   {t('subtask_of') || 'Sous-tâche de'} <strong>{task.parent_task.title}</strong>
                 </p>
@@ -2509,7 +2509,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
               {task.assigned_to && (
                 <div className="flex items-center gap-2 mt-2">
                   <UserAvatar user={task.assigned_to} size="sm" />
-                  <span className="text-sm !text-primary">
+                  <span className="!text-sm !text-primary">
                     {t('assigned_to') || 'Assigné à'}: {task.assigned_to.username || task.assigned_to.email}
                   </span>
                 </div>
@@ -2524,7 +2524,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             </button>
           </div>
 
-          <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+          <div className="p-6 !space-y-4 max-h-[60vh] overflow-y-auto">
             <div>
               <label className="block !text-sm font-medium !text-primary mb-1">
                 {t('title') || 'Titre'} *
@@ -2699,10 +2699,10 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
             {!isSubtask && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium !text-primary flex items-center gap-1">
+                  <label className="!text-sm font-medium !text-primary flex items-center gap-1">
                     <IconSubtask className="w-4 h-4" />
                     {t('subtasks') || 'Sous-tâches'}
-                    {hasSubtasks && <span className="text-muted">({task.subtasks?.length})</span>}
+                    {hasSubtasks && <span className="!text-muted">({task.subtasks?.length})</span>}
                   </label>
                   <button
                     type="button"
@@ -2750,7 +2750,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-4 !text-muted !text-sm  bg-muted border border-default">
+                  <div className="!text-center py-4 !text-muted !text-sm  bg-muted border border-default">
                     {t('no_subtasks') || 'Aucune sous-tâche'}
                   </div>
                 )}
@@ -2865,7 +2865,7 @@ function KanbanTaskCard({
       {/* Header avec titre et menu */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2 min-w-0">
-          <IconGripVertical size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+          <IconGripVertical size={14} className="!text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
           <h4 className="font-medium !text-sm !text-foreground line-clamp-2">{task.title}</h4>
         </div>
         
@@ -2877,7 +2877,7 @@ function KanbanTaskCard({
             }}
             className="p-1 rounded hover:bg-hover opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <IconDots size={14} className="text-muted-foreground" />
+            <IconDots size={14} className="!text-muted-foreground" />
           </button>
           
           {showMenu && (
@@ -2931,7 +2931,7 @@ function KanbanTaskCard({
       {/* Sous-tâches */}
       {subtasksProgress && (
         <div className="flex items-center gap-2 mb-2 !text-xs">
-          <IconSubtask size={12} className="text-muted-foreground" />
+          <IconSubtask size={12} className="!text-muted-foreground" />
           <span className={subtasksProgress.completed === subtasksProgress.total ? 'text-emerald-400' : 'text-muted-foreground'}>
             {subtasksProgress.completed}/{subtasksProgress.total}
           </span>
@@ -3057,7 +3057,7 @@ function KanbanColumn({
       </div>
 
       {/* Cards */}
-      <div className="flex-1 p-2 space-y-2 overflow-y-auto min-h-[200px]">
+      <div className="flex-1 p-2 !space-y-2 overflow-y-auto min-h-[200px]">
         <AnimatePresence mode="popLayout">
           {tasks.map((task) => (
             <motion.div
@@ -3164,20 +3164,20 @@ function TaskKanbanView({
       {/* Stats bar */}
       <div className="flex flex-wrap gap-4 p-4 bg-card  border border-muted">
         <div className="flex items-center gap-2">
-          <span className="text-sm !text-muted-foreground">{t('total_tasks') || 'Total tâches'}:</span>
+          <span className="!text-sm !text-muted-foreground">{t('total_tasks') || 'Total tâches'}:</span>
           <span className="font-semibold !text-foreground">{totalTasks}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm !text-muted-foreground">{t('in_progress') || 'En cours'}:</span>
+          <span className="!text-sm !text-muted-foreground">{t('in_progress') || 'En cours'}:</span>
           <span className="font-semibold !text-blue-400">{inProgressTasks}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm !text-muted-foreground">{t('completed') || 'Terminées'}:</span>
+          <span className="!text-sm !text-muted-foreground">{t('completed') || 'Terminées'}:</span>
           <span className="font-semibold !text-emerald-400">{completedTasks}</span>
         </div>
         {totalTasks > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-sm !text-muted-foreground">{t('completion') || 'Complétion'}:</span>
+            <span className="!text-sm !text-muted-foreground">{t('completion') || 'Complétion'}:</span>
             <span className="font-semibold !text-accent">{Math.round((completedTasks / totalTasks) * 100)}%</span>
           </div>
         )}
@@ -3280,13 +3280,13 @@ function TaskTableView({
       <table className="w-full">
         <thead>
           <tr className="border-b border-default">
-            <th className="text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Tâche</th>
-            <th className="text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Statut</th>
-            <th className="text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Priorité</th>
-            <th className="text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Progression</th>
-            <th className="text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Échéance</th>
-            <th className="text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Heures</th>
-            {canEdit && <th className="text-right py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Actions</th>}
+            <th className="!text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Tâche</th>
+            <th className="!text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Statut</th>
+            <th className="!text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Priorité</th>
+            <th className="!text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Progression</th>
+            <th className="!text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Échéance</th>
+            <th className="!text-left py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Heures</th>
+            {canEdit && <th className="!text-right py-3 px-4 !text-xs font-medium !text-muted uppercase tracking-wider">Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -3297,7 +3297,7 @@ function TaskTableView({
             >
               <td className="py-3 px-4">
                 <div>
-                  <p className="text-primary font-medium">{task.title}</p>
+                  <p className="!text-primary font-medium">{task.title}</p>
                   {task.description && (
                     <div 
                       className="!text-xs !text-muted mt-0.5 line-clamp-1 [&_*]:inline"
@@ -3349,7 +3349,7 @@ function TaskTableView({
                 </span>
               </td>
               <td className="py-3 px-4">
-                <span className="text-sm !text-primary">
+                <span className="!text-sm !text-primary">
                   {task.actual_hours || 0}/{task.estimated_hours || 0}h
                 </span>
               </td>
@@ -3925,9 +3925,9 @@ function TaskGanttView({
   // Early return si pas de données Gantt (après tous les hooks)
   if (!ganttData) {
     return (
-      <div className="text-center py-12 bg-muted  border border-default">
+      <div className="!text-center py-12 bg-muted  border border-default">
         <IconTimeline className="w-12 h-12 !text-muted mx-auto mb-3" />
-        <p className="text-muted">{t('no_tasks_with_dates_for_gantt') || 'Aucune tâche avec des dates pour afficher le Gantt'}</p>
+        <p className="!text-muted">{t('no_tasks_with_dates_for_gantt') || 'Aucune tâche avec des dates pour afficher le Gantt'}</p>
         <p className="!text-xs !text-muted mt-1">{t('add_dates_to_tasks') || 'Ajoutez des dates de début et d&apos;échéance à vos tâches'}</p>
       </div>
     );
@@ -3949,7 +3949,7 @@ function TaskGanttView({
           >
             {/* Header */}
             <div className="p-4 border-b border-default flex items-center justify-between">
-              <h3 className="text-lg font-semibold !text-primary">
+              <h3 className="!text-lg font-semibold !text-primary">
                 {t('export_pdf') || 'Export PDF'}
               </h3>
               <button
@@ -3963,7 +3963,7 @@ function TaskGanttView({
             {/* Content */}
             <div className="flex-1 overflow-hidden flex">
               {/* Options panel */}
-              <div className="w-72 flex-shrink-0 p-4 border-r border-default space-y-4 overflow-y-auto">
+              <div className="w-72 flex-shrink-0 p-4 border-r border-default !space-y-4 overflow-y-auto">
                 {/* Nom du fichier */}
                 <div>
                   <label className="block !text-sm font-medium !text-primary mb-2">
@@ -3976,7 +3976,7 @@ function TaskGanttView({
                       onChange={(e) => setExportFileName(e.target.value)}
                       className="flex-1 px-3 py-2 !text-sm bg-muted border border-default  !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                     />
-                    <span className="text-primary !text-sm">.pdf</span>
+                    <span className="!text-primary !text-sm">.pdf</span>
                   </div>
                 </div>
 
@@ -4020,7 +4020,7 @@ function TaskGanttView({
                 </div>
 
                 {/* Actions */}
-                <div className="pt-4 space-y-2">
+                <div className="pt-4 !space-y-2">
                   <button
                     onClick={() => handleExportPDF(exportMode)}
                     disabled={isExporting}
@@ -4088,13 +4088,13 @@ function TaskGanttView({
             <thead className="sticky top-0 z-20">
               <tr>
                 {/* Colonnes fixes */}
-                <th className="text-left py-3 px-4 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
+                <th className="!text-left py-3 px-4 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
                   {t('task_name') || 'Task Name'}
                 </th>
-                <th className="text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
+                <th className="!text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
                   {t('due_range') || 'Due Range'}
                 </th>
-                <th className="text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                <th className="!text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
                   {t('duration') || 'Duration'}
                 </th>
                 {/* Timeline header - Mois */}
@@ -4102,7 +4102,7 @@ function TaskGanttView({
                   <th 
                     key={i}
                     colSpan={month.days}
-                    className="text-center py-2 !text-xs font-semibold !text-primary bg-muted border-b border-muted"
+                    className="!text-center py-2 !text-xs font-semibold !text-primary bg-muted border-b border-muted"
                   >
                     {month.label}
                   </th>
@@ -4235,7 +4235,7 @@ function TaskGanttView({
                             {/* Due Range - utilise les dates effectives */}
                             <td className="py-2 px-1 !text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                               <span 
-                                className="text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
+                                className="!text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
                                 style={{ backgroundColor: group.color + '20', color: group.color }}
                               >
                                 {formatDateRange(effectiveStartDate, effectiveEndDate)}
@@ -4280,12 +4280,12 @@ function TaskGanttView({
                                     onDateChange={handleTaskDateChange}
                                   >
                                     <div className="flex items-center justify-between px-2 overflow-hidden h-full">
-                                      <span className="text-[11px] !text-white font-medium truncate">
+                                      <span className="!text-[11px] !text-white font-medium truncate">
                                         {duration > 3 ? task.title : ''}
                                       </span>
                                       {/* Afficher le pourcentage effectif (moyenne des sous-tâches si présentes) */}
                                       {duration > 2 && (
-                                        <span className="text-[10px] !text-white/90 font-semibold ml-1 flex-shrink-0">
+                                        <span className="!text-[10px] !text-white/90 font-semibold ml-1 flex-shrink-0">
                                           {effectiveProgress}%
                                         </span>
                                       )}
@@ -4323,10 +4323,10 @@ function TaskGanttView({
                                   </div>
                                 </td>
                                 <td className="py-1 px-1 !text-center sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
-                                  <span className="text-[9px] !text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
+                                  <span className="!text-[9px] !text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
                                 </td>
                                 <td className="py-1 px-1 !text-center sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
-                                  <span className="text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
+                                  <span className="!text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
                                 </td>
                                 <td colSpan={dayHeaders.length} className="h-[34px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <div className="relative w-full h-full">

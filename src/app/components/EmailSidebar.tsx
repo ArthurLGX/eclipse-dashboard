@@ -114,7 +114,7 @@ export default function EmailSidebar({
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors !text-left"
                   >
                     <IconMail className="w-5 h-5 !text-blue-500" />
-                    <span className="text-sm !text-primary">Email classique</span>
+                    <span className="!text-sm !text-primary">Email classique</span>
                   </button>
                   <button
                     onClick={() => {
@@ -124,7 +124,7 @@ export default function EmailSidebar({
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors !text-left"
                   >
                     <IconFileDescription className="w-5 h-5 !text-green-500" />
-                    <span className="text-sm !text-primary">Devis</span>
+                    <span className="!text-sm !text-primary">Devis</span>
                   </button>
                   <button
                     onClick={() => {
@@ -134,7 +134,7 @@ export default function EmailSidebar({
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors !text-left"
                   >
                     <IconFileInvoice className="w-5 h-5 !text-orange-500" />
-                    <span className="text-sm !text-primary">Facture</span>
+                    <span className="!text-sm !text-primary">Facture</span>
                   </button>
                   {onNewNewsletter && (
                     <button
@@ -145,7 +145,7 @@ export default function EmailSidebar({
                       className="w-full flex items-center gap-3 px-4 py-3 hover:bg-hover transition-colors !text-left"
                     >
                       <IconTag className="w-5 h-5 !text-purple-500" />
-                      <span className="text-sm !text-primary">Newsletter</span>
+                      <span className="!text-sm !text-primary">Newsletter</span>
                     </button>
                   )}
                 </motion.div>
@@ -195,7 +195,7 @@ export default function EmailSidebar({
             ) : (
               <IconChevronRight className="w-5 h-5 !text-muted" />
             )}
-            <span className="text-sm">Plus</span>
+            <span className="!text-sm">Plus</span>
           </button>
 
           <AnimatePresence>
@@ -249,7 +249,7 @@ export default function EmailSidebar({
               ) : (
                 <IconChevronRight className="w-5 h-5 !text-muted" />
               )}
-              <span className="text-sm font-medium">Libellés</span>
+              <span className="!text-sm font-medium">Libellés</span>
             </button>
 
             <AnimatePresence>
@@ -274,7 +274,7 @@ export default function EmailSidebar({
                   ))}
                   <button className="w-full flex items-center gap-3 px-4 py-2 pl-11 hover:bg-hover rounded-r-full transition-colors !text-left !text-muted">
                     <IconPlus className="w-4 h-4" />
-                    <span className="text-sm">Créer un libellé</span>
+                    <span className="!text-sm">Créer un libellé</span>
                   </button>
                 </motion.div>
               )}

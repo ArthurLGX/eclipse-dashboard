@@ -54,7 +54,7 @@ function CallbackContent() {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="text-center"
+        className="!text-center"
       >
         <div className="w-16 h-16 mx-auto mb-6">
           <motion.div
@@ -63,8 +63,8 @@ function CallbackContent() {
             className="w-full h-full border-4 border-accent border-t-transparent rounded-full"
           />
         </div>
-        <h2 className="text-xl font-semibold mb-2">Connexion en cours...</h2>
-        <p className="text-primary">Veuillez patienter</p>
+        <h2 className="!text-xl font-semibold mb-2">Connexion en cours...</h2>
+        <p className="!text-primary">Veuillez patienter</p>
       </motion.div>
     </div>
   );
@@ -73,11 +73,11 @@ function CallbackContent() {
 function CallbackLoading() {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
+      <div className="!text-center">
         <div className="w-16 h-16 mx-auto mb-6">
           <div className="w-full h-full border-4 border-accent border-t-transparent rounded-full animate-spin" />
         </div>
-        <h2 className="text-xl font-semibold mb-2">Chargement...</h2>
+        <h2 className="!text-xl font-semibold mb-2">Chargement...</h2>
       </div>
     </div>
   );

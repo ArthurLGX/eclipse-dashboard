@@ -351,7 +351,7 @@ export default function FacturesPage() {
                 <IconFileInvoice className="w-4 h-4 !text-amber-500" />
               )}
             </div>
-            <p className="text-primary font-medium">{value as string}</p>
+            <p className="!text-primary font-medium">{value as string}</p>
           </div>
         ),
       },
@@ -359,7 +359,7 @@ export default function FacturesPage() {
         key: 'date',
         label: t('date'),
         render: (value) => (
-          <p className="text-primary">
+          <p className="!text-primary">
             {value ? formatDate(value as string) : '-'}
           </p>
         ),
@@ -372,7 +372,7 @@ export default function FacturesPage() {
         key: 'valid_until',
         label: t('valid_until') || 'Valide jusqu\'au',
         render: (value) => (
-          <p className="text-primary">
+          <p className="!text-primary">
             {value ? formatDate(value as string) : '-'}
           </p>
         ),
@@ -404,7 +404,7 @@ export default function FacturesPage() {
         key: 'due_date',
         label: t('due_date'),
         render: (value) => (
-          <p className="text-primary">
+          <p className="!text-primary">
             {value ? formatDate(value as string) : '-'}
           </p>
         ),
@@ -448,7 +448,7 @@ export default function FacturesPage() {
         render: (value, row) => {
           const clientData = value || row.client_id;
           return (
-            <p className="text-primary">
+            <p className="!text-primary">
               {clientData && typeof clientData === 'object' ? (clientData as Client).name : '-'}
             </p>
           );
@@ -458,7 +458,7 @@ export default function FacturesPage() {
         key: 'project',
         label: t('project'),
         render: (value) => (
-          <p className="text-primary">
+          <p className="!text-primary">
             {value && typeof value === 'object' ? (value as Project).title : '-'}
           </p>
         ),
@@ -712,22 +712,22 @@ export default function FacturesPage() {
 
       {/* Modal de confirmation de conversion devis → facture */}
       <Modal open={convertModal.isOpen} onClose={() => setConvertModal({ isOpen: false, quote: null })}>
-        <div className="p-6 space-y-6">
+        <div className="p-6 !space-y-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
               <IconFileInvoice className="w-6 h-6 !text-green-500" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold !text-primary">
+              <h3 className="!text-lg font-semibold !text-primary">
                 {t('convert_quote_to_invoice') || 'Convertir ce devis en facture'}
               </h3>
-              <p className="text-sm !text-muted">
+              <p className="!text-sm !text-muted">
                 {convertModal.quote?.reference}
               </p>
             </div>
           </div>
 
-          <p className="text-primary">
+          <p className="!text-primary">
             {t('convert_quote_confirm_desc') || 'Le devis sera marqué comme "accepté" et une nouvelle facture sera créée avec les mêmes informations.'}
           </p>
 
@@ -741,7 +741,7 @@ export default function FacturesPage() {
               className="mt-1 w-4 h-4 rounded border-default !text-accent focus:ring-accent"
             />
             <div>
-              <label htmlFor="updateClientStatusTable" className="text-sm font-medium !text-primary cursor-pointer">
+              <label htmlFor="updateClientStatusTable" className="!text-sm font-medium !text-primary cursor-pointer">
                 {t('update_client_status') || 'Mettre à jour le statut du client'}
               </label>
               <p className="!text-xs !text-muted mt-1">

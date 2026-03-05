@@ -541,12 +541,12 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
       >
         {/* Header */}
         <div className="flex-shrink-0 bg-card border-b border-default p-4 flex items-center justify-between rounded-t-2xl">
-          <h2 className="text-lg font-semibold !text-primary flex items-center gap-2">
+          <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
             <IconSettings size={15} />
             {t('portfolio_settings')}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover  transition-colors">
-            <IconX size={15} className="text-muted" />
+            <IconX size={15} className="!text-muted" />
           </button>
         </div>
 
@@ -575,7 +575,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
         {/* Content - Scrollable */}
         <div 
-          className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6 scrollbar-visible"
+          className="flex-1 min-h-0 overflow-y-auto p-6 !space-y-6 scrollbar-visible"
           style={{ overscrollBehavior: 'contain' }}
         >
         {/* Branding Tab */}
@@ -615,7 +615,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
             {/* Custom Font Import */}
             <div className="border-t border-default pt-4">
-              <h4 className="text-sm font-semibold !text-primary mb-3 flex items-center gap-2">
+              <h4 className="!text-sm font-semibold !text-primary mb-3 flex items-center gap-2">
                 <IconCloudUpload size={16} />
                 {t('portfolio_import_custom_font')}
               </h4>
@@ -659,7 +659,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   onChange={(e) => updateSetting('enableAnimations', e.target.checked)}
                   className="w-5 h-5 rounded border-input bg-input !text-accent focus:ring-accent"
                 />
-                <span className="text-sm !text-secondary flex items-center gap-2">
+                <span className="!text-sm !text-secondary flex items-center gap-2">
                   <IconSparkles size={16} />
                   {t('portfolio_enable_animations')}
                 </span>
@@ -713,7 +713,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
             {/* Title Typography */}
             <div className="space-y-4">
-              <h4 className="text-sm font-semibold !text-primary flex items-center gap-2 border-b border-default pb-2">
+              <h4 className="!text-sm font-semibold !text-primary flex items-center gap-2 border-b border-default pb-2">
                 <IconBold size={16} />
                 {t('portfolio_title_typography')}
               </h4>
@@ -780,7 +780,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
             {/* Subtitle Typography */}
             <div className="space-y-4 border-t border-default pt-4">
-              <h4 className="text-sm font-semibold !text-primary flex items-center gap-2 border-b border-default pb-2">
+              <h4 className="!text-sm font-semibold !text-primary flex items-center gap-2 border-b border-default pb-2">
                 <IconBold size={16} />
                 {t('portfolio_subtitle_typography')}
               </h4>
@@ -819,7 +819,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
 
             {/* Project Card Typography */}
             <div className="space-y-4 border-t border-default pt-4">
-              <h4 className="text-sm font-semibold !text-primary flex items-center gap-2 border-b border-default pb-2">
+              <h4 className="!text-sm font-semibold !text-primary flex items-center gap-2 border-b border-default pb-2">
                 <IconBold size={16} />
                 {t('portfolio_card_typography')}
               </h4>
@@ -929,7 +929,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   onChange={(e) => updateSetting('isPublic', e.target.checked)}
                   className="w-5 h-5 rounded border-input bg-input !text-accent focus:ring-accent"
                 />
-                <span className="text-sm !text-secondary flex items-center gap-2">
+                <span className="!text-sm !text-secondary flex items-center gap-2">
                   {settings.isPublic ? <IconWorld size={16} /> : <IconLock size={16} />}
                   {t('portfolio_public')}
                 </span>
@@ -967,7 +967,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                     {t('portfolio_custom_slug')}
                   </label>
                   <div className="flex items-center gap-2">
-                    <span className="text-muted !text-sm">/portfolio/</span>
+                    <span className="!text-muted !text-sm">/portfolio/</span>
                     <input
                       type="text"
                       value={settings.shareSlug}
@@ -987,7 +987,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                       onChange={(e) => updateSetting('showSocialLinks', e.target.checked)}
                       className="w-5 h-5 rounded border-input bg-input !text-accent focus:ring-accent"
                     />
-                    <span className="text-sm !text-secondary">
+                    <span className="!text-sm !text-secondary">
                       {t('portfolio_show_social')}
                     </span>
                   </label>
@@ -995,7 +995,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                   {settings.showSocialLinks && (
                     <div className="space-y-3 ml-8">
                       <div className="flex items-center gap-2">
-                        <IconBrandInstagram size={18} className="text-muted" />
+                        <IconBrandInstagram size={18} className="!text-muted" />
                         <input
                           type="text"
                           value={settings.instagramUrl}
@@ -1005,7 +1005,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        <IconBrandLinkedin size={18} className="text-muted" />
+                        <IconBrandLinkedin size={18} className="!text-muted" />
                         <input
                           type="text"
                           value={settings.linkedinUrl}
@@ -1015,7 +1015,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        <IconBrandDribbble size={18} className="text-muted" />
+                        <IconBrandDribbble size={18} className="!text-muted" />
                         <input
                           type="text"
                           value={settings.dribbbleUrl}
@@ -1025,7 +1025,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        <IconMail size={18} className="text-muted" />
+                        <IconMail size={18} className="!text-muted" />
                         <input
                           type="email"
                           value={settings.emailAddress}
@@ -1199,16 +1199,16 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               <IconDownload size={15} className="!text-accent" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold !text-primary">
+              <h2 className="!text-lg font-semibold !text-primary">
                 {step === 'url' ? t('portfolio_import_title') : t('portfolio_import_select')}
               </h2>
               {siteName && step === 'select' && (
-                <p className="text-sm !text-secondary">{t('portfolio_import_from')} {siteName}</p>
+                <p className="!text-sm !text-secondary">{t('portfolio_import_from')} {siteName}</p>
               )}
             </div>
           </div>
           <button onClick={handleClose} className="p-2 hover:bg-hover  transition-colors">
-            <IconX size={15} className="text-primary" />
+            <IconX size={15} className="!text-primary" />
           </button>
         </div>
 
@@ -1253,11 +1253,11 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               </div>
 
               {error && (
-                <div className="p-4 bg-danger-light border border-danger  space-y-3">
-                  <p className="text-danger !text-sm font-medium">{error}</p>
-                  <div className="!text-xs !text-secondary space-y-1">
+                <div className="p-4 bg-danger-light border border-danger  !space-y-3">
+                  <p className="!text-danger !text-sm font-medium">{error}</p>
+                  <div className="!text-xs !text-secondary !space-y-1">
                     <p>Conseils :</p>
-                    <ul className="list-disc list-inside space-y-0.5">
+                    <ul className="list-disc list-inside !space-y-0.5">
                       <li>{t('portfolio_tips_url')}</li>
                       <li>{t('portfolio_tips_direct')}</li>
                       <li>{t('portfolio_tips_js')}</li>
@@ -1282,8 +1282,8 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               )}
 
               <div className="bg-muted  p-4">
-                <h3 className="text-sm font-medium !text-primary mb-2">💡 {t('portfolio_import_how_title')}</h3>
-                <ul className="text-sm !text-secondary space-y-1">
+                <h3 className="!text-sm font-medium !text-primary mb-2">💡 {t('portfolio_import_how_title')}</h3>
+                <ul className="!text-sm !text-secondary !space-y-1">
                   <li>• {t('portfolio_import_how_1')}</li>
                   <li>• {t('portfolio_import_how_2')}</li>
                   <li>• {t('portfolio_import_how_3')}</li>
@@ -1292,8 +1292,8 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               </div>
 
               <div className="bg-muted  p-4">
-                <h3 className="text-sm font-medium !text-primary mb-2">🔗 {t('portfolio_import_supported_title')}</h3>
-                <p className="text-sm !text-secondary">
+                <h3 className="!text-sm font-medium !text-primary mb-2">🔗 {t('portfolio_import_supported_title')}</h3>
+                <p className="!text-sm !text-secondary">
                   {t('portfolio_import_supported_desc')}
                 </p>
                 <p className="!text-xs !text-muted mt-2">
@@ -1307,11 +1307,11 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               <div className="flex items-center justify-between">
                 <button
                   onClick={toggleAll}
-                  className="text-sm !text-accent hover:underline"
+                  className="!text-sm !text-accent hover:underline"
                 >
                   {scrapedProjects.every(p => p.selected) ? t('portfolio_import_deselect_all') : t('portfolio_import_select_all')}
                 </button>
-                <span className="text-sm !text-secondary">
+                <span className="!text-sm !text-secondary">
                   {selectedCount} / {scrapedProjects.length} {t('portfolio_import_selected')}
                 </span>
               </div>
@@ -1341,7 +1341,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <IconPhoto size={32} className="text-muted" />
+                          <IconPhoto size={32} className="!text-muted" />
                         </div>
                       )}
                     </div>
@@ -1367,7 +1367,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
               {/* Back button */}
               <button
                 onClick={() => setStep('url')}
-                className="text-sm !text-secondary hover:!text-primary flex items-center gap-1"
+                className="!text-sm !text-secondary hover:!text-primary flex items-center gap-1"
               >
                 <IconChevronLeft size={16} />
                 {t('portfolio_import_back')}
@@ -1470,14 +1470,14 @@ function ProjectCard({ project, settings, onClick, onEdit, onDelete, index, allF
             {coverMedia.type === 'video' && (
               <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
                 <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center">
-                  <IconPlayerPlay size={24} className="text-page ml-0.5" />
+                  <IconPlayerPlay size={24} className="!text-page ml-0.5" />
                 </div>
               </div>
             )}
           </>
         ) : (
           <div className="w-full h-full bg-muted flex items-center justify-center">
-            <IconPhoto size={32} className="text-secondary/40" />
+            <IconPhoto size={32} className="!text-secondary/40" />
           </div>
         )}
 
@@ -1629,7 +1629,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
                   >
                     {media.type === 'video' ? (
                       <div className="w-full h-full bg-muted flex items-center justify-center">
-                        <IconVideo size={16} className="text-primary" />
+                        <IconVideo size={16} className="!text-primary" />
                       </div>
                     ) : (
                       <img src={media.url} alt="" className="w-full h-full object-cover" />
@@ -1643,7 +1643,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
         {/* Info Section */}
         <div className="lg:w-96 bg-card p-8 overflow-y-auto border-l border-default" style={{ overscrollBehavior: 'contain' }}>
           <h2
-            className="text-2xl tracking-wider !text-primary"
+            className="!text-2xl tracking-wider !text-primary"
             style={{ 
               fontFamily: titleFont,
               fontWeight: settings.projectTitleFontWeight,
@@ -1652,7 +1652,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
           >
             {project.title}
           </h2>
-          <p className="text-lg mt-2 !text-secondary">
+          <p className="!text-lg mt-2 !text-secondary">
             {project.subtitle}
           </p>
 
@@ -1679,7 +1679,7 @@ function ProjectDetailModal({ project, settings, onClose }: ProjectDetailModalPr
           {/* Meta */}
           {project.clientName && (
             <div className="mt-6 pt-6 border-t border-default">
-              <p className="text-sm !text-secondary">
+              <p className="!text-sm !text-secondary">
                 <span className="font-medium">Client:</span> {project.clientName}
               </p>
             </div>
@@ -1874,7 +1874,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
       >
         {/* Header */}
         <div className="sticky top-0 bg-card border-b border-default px-6 py-4 flex items-center justify-between z-10">
-          <h2 className="text-xl font-bold !text-primary">
+          <h2 className="!text-xl font-bold !text-primary">
             {project ? t('portfolio_edit_project') : t('portfolio_add_project')}
           </h2>
           <button
@@ -1886,7 +1886,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 !space-y-6">
           {/* Media Gallery */}
           <div>
             <label className="block !text-sm font-medium !text-secondary mb-3">
@@ -1897,7 +1897,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                 <div key={item.id} className="relative aspect-square  overflow-hidden bg-muted group">
                   {item.type === 'video' ? (
                     <div className="w-full h-full flex items-center justify-center bg-muted">
-                      <IconVideo size={24} className="text-primary" />
+                      <IconVideo size={24} className="!text-primary" />
                     </div>
                   ) : (
                     <img src={item.url} alt="" className="w-full h-full object-cover" />
@@ -1943,7 +1943,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b border-default">
-                    <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+                    <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
                       <IconPhoto className="w-5 h-5 !text-accent" />
                       Ajouter un média
                     </h3>
@@ -1995,7 +1995,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
 
                   {/* Library */}
                   <div className="flex-1 overflow-y-auto p-4" style={{ overscrollBehavior: 'contain' }}>
-                    <h4 className="text-sm font-medium !text-secondary mb-3">Ma bibliothèque</h4>
+                    <h4 className="!text-sm font-medium !text-secondary mb-3">Ma bibliothèque</h4>
                     {loadingLibrary ? (
                       <div className="flex items-center justify-center h-48">
                         <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
@@ -2175,10 +2175,10 @@ function EmptyState({ onAddProject }: { onAddProject: () => void }) {
       <div className="w-24 h-24 rounded-full bg-accent-light flex items-center justify-center mb-6">
         <IconPhoto size={48} className="!text-accent" />
       </div>
-      <h2 className="text-2xl font-bold !text-primary mb-2">
+      <h2 className="!text-2xl font-bold !text-primary mb-2">
         {t('portfolio_empty')}
       </h2>
-      <p className="text-secondary max-w-md mb-8">
+      <p className="!text-secondary max-w-md mb-8">
         {t('portfolio_empty_desc')}
       </p>
       <button
@@ -2482,7 +2482,7 @@ export default function PortfolioPage() {
       <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <IconLoader2 size={32} className="animate-spin !text-accent" />
-          <p className="text-primary">{t('portfolio_loading')}</p>
+          <p className="!text-primary">{t('portfolio_loading')}</p>
         </div>
       </div>
     );
@@ -2497,7 +2497,7 @@ export default function PortfolioPage() {
       {isSaving && (
         <div className="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 bg-card  shadow-lg border border-default">
           <IconLoader2 size={16} className="animate-spin !text-accent" />
-          <span className="text-sm !text-secondary">{t('portfolio_saving')}</span>
+          <span className="!text-sm !text-secondary">{t('portfolio_saving')}</span>
         </div>
       )}
 
@@ -2505,7 +2505,7 @@ export default function PortfolioPage() {
       <header className="px-6 lg:px-12 py-4 border border-default ">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left - Site Name */}
-          <span className="text-sm !text-secondary font-medium tracking-wide">
+          <span className="!text-sm !text-secondary font-medium tracking-wide">
             {settings.portfolioName.toLowerCase().replace(/\s+/g, '-')}.com
           </span>
 
@@ -2513,19 +2513,19 @@ export default function PortfolioPage() {
           <div className="flex items-center gap-6">
             {/* Navigation Links */}
             <nav className="hidden md:flex items-center gap-6 !text-sm">
-              <span className="text-secondary hover:!text-primary cursor-pointer transition-colors">
+              <span className="!text-secondary hover:!text-primary cursor-pointer transition-colors">
                 {t('portfolio_nav_home')}
               </span>
-              <span className="text-secondary hover:!text-primary cursor-pointer transition-colors">
+              <span className="!text-secondary hover:!text-primary cursor-pointer transition-colors">
                 {t('portfolio_nav_about')}
               </span>
-              <span className="text-primary font-medium cursor-pointer border-b border-primary pb-0.5">
+              <span className="!text-primary font-medium cursor-pointer border-b border-primary pb-0.5">
                 {t('portfolio_nav_portfolio')}
               </span>
-              <span className="text-secondary hover:!text-primary cursor-pointer transition-colors">
+              <span className="!text-secondary hover:!text-primary cursor-pointer transition-colors">
                 {t('portfolio_nav_blog')}
               </span>
-              <span className="text-secondary hover:!text-primary cursor-pointer transition-colors">
+              <span className="!text-secondary hover:!text-primary cursor-pointer transition-colors">
                 {t('portfolio_nav_contact')}
               </span>
             </nav>
@@ -2559,7 +2559,7 @@ export default function PortfolioPage() {
                   {linkCopied ? (
                     <IconCheck size={18} className="!text-accent" />
                   ) : (
-                    <IconShare size={18} className="text-primary" />
+                    <IconShare size={18} className="!text-primary" />
                   )}
                 </button>
               )}
@@ -2568,21 +2568,21 @@ export default function PortfolioPage() {
                 className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
                 title={t('portfolio_preview')}
               >
-                <IconEye size={18} className="text-primary" />
+                <IconEye size={18} className="!text-primary" />
               </button>
               <button
                 onClick={() => setIsImportModalOpen(true)}
                 className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
                 title={t('portfolio_import_from_site')}
               >
-                <IconDownload size={18} className="text-primary" />
+                <IconDownload size={18} className="!text-primary" />
               </button>
               <button
                 onClick={() => setIsSettingsOpen(true)}
                 className="p-3 rounded-full bg-card shadow-lg border border-default hover:bg-hover transition-colors"
                 title={t('portfolio_settings')}
               >
-                <IconSettings size={18} className="text-primary" />
+                <IconSettings size={18} className="!text-primary" />
               </button>
               <button
                 onClick={() => {
@@ -2671,8 +2671,8 @@ export default function PortfolioPage() {
 
               {/* Grid */}
               {filteredProjects.length === 0 ? (
-                <div className="text-center py-20">
-                  <p className="text-primary">
+                <div className="!text-center py-20">
+                  <p className="!text-primary">
                     {t('portfolio_no_category')}
                   </p>
                 </div>

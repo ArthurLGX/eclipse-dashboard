@@ -133,7 +133,7 @@ const ProgressRing: React.FC<{
         fill="none"
         stroke="currentColor"
         strokeWidth={strokeWidth}
-        className="text-muted opacity-20"
+        className="!text-muted opacity-20"
       />
       {/* Progress ring */}
       <circle
@@ -321,9 +321,9 @@ const TaskNode: React.FC<TaskNodeProps> = ({
           `}
         >
           {isExpanded ? (
-            <IconChevronDown size={12} className="text-primary" />
+            <IconChevronDown size={12} className="!text-primary" />
           ) : (
-            <IconChevronRight size={12} className="text-primary" />
+            <IconChevronRight size={12} className="!text-primary" />
           )}
         </button>
       )}
@@ -340,7 +340,7 @@ const TaskNode: React.FC<TaskNodeProps> = ({
           {task.title}
         </span>
         {!isSubtask && task.endDate && (
-          <span className="text-[10px] !text-muted flex items-center justify-center gap-0.5 mt-0.5">
+          <span className="!text-[10px] !text-muted flex items-center justify-center gap-0.5 mt-0.5">
             <IconCalendar size={10} />
             {new Date(task.endDate).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
           </span>
@@ -399,15 +399,15 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
             <IconX size={18} />
           </button>
         </div>
-        <h3 className="text-lg font-bold !text-primary mt-2">{task.title}</h3>
+        <h3 className="!text-lg font-bold !text-primary mt-2">{task.title}</h3>
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-4 overflow-y-auto" style={{ maxHeight: 'calc(100% - 120px)' }}>
+      <div className="p-4 !space-y-4 overflow-y-auto" style={{ maxHeight: 'calc(100% - 120px)' }}>
         {/* Progress */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm !text-secondary">{t('progress') || 'Progression'}</span>
+            <span className="!text-sm !text-secondary">{t('progress') || 'Progression'}</span>
             <span className={`text-sm font-bold ${config.color}`}>{task.progress}%</span>
           </div>
           <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
@@ -423,8 +423,8 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
         {/* Description */}
         {task.description && (
           <div>
-            <span className="text-sm !text-secondary block mb-1">{t('description') || 'Description'}</span>
-            <p className="text-sm !text-primary">{task.description}</p>
+            <span className="!text-sm !text-secondary block mb-1">{t('description') || 'Description'}</span>
+            <p className="!text-sm !text-primary">{task.description}</p>
           </div>
         )}
 
@@ -432,7 +432,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
         {priorityConfig && (
           <div className="flex items-center gap-2">
             <IconFlag size={16} className={priorityConfig.color} />
-            <span className="text-sm !text-secondary">{t('priority') || 'Priorité'}:</span>
+            <span className="!text-sm !text-secondary">{t('priority') || 'Priorité'}:</span>
             <span className={`text-sm font-medium ${priorityConfig.color}`}>
               {t(`priority_${task.priority}`) || priorityConfig.label}
             </span>
@@ -442,9 +442,9 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
         {/* Assignee */}
         {task.assignee && (
           <div className="flex items-center gap-2">
-            <IconUser size={16} className="text-muted" />
-            <span className="text-sm !text-secondary">{t('assignee') || 'Assigné à'}:</span>
-            <span className="text-sm !text-primary font-medium">{task.assignee}</span>
+            <IconUser size={16} className="!text-muted" />
+            <span className="!text-sm !text-secondary">{t('assignee') || 'Assigné à'}:</span>
+            <span className="!text-sm !text-primary font-medium">{task.assignee}</span>
           </div>
         )}
 
@@ -453,7 +453,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
           <div className="flex items-center gap-4">
             {task.startDate && (
               <div className="flex items-center gap-1">
-                <IconCalendar size={14} className="text-muted" />
+                <IconCalendar size={14} className="!text-muted" />
                 <span className="!text-xs !text-secondary">
                   {t('start') || 'Début'}: {new Date(task.startDate).toLocaleDateString('fr-FR')}
                 </span>
@@ -461,7 +461,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
             )}
             {task.endDate && (
               <div className="flex items-center gap-1">
-                <IconCalendar size={14} className="text-muted" />
+                <IconCalendar size={14} className="!text-muted" />
                 <span className="!text-xs !text-secondary">
                   {t('end') || 'Fin'}: {new Date(task.endDate).toLocaleDateString('fr-FR')}
                 </span>
@@ -474,7 +474,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
         {task.subtasks && task.subtasks.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm !text-secondary">
+              <span className="!text-sm !text-secondary">
                 {t('subtasks') || 'Sous-tâches'} ({task.subtasks.length})
               </span>
               {subtaskProgress !== null && (
@@ -508,7 +508,7 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ task, onClose, onSubtaskToggl
                         `}
                         title={isCompleted ? t('mark_incomplete') || 'Marquer comme non terminé' : t('mark_complete') || 'Marquer comme terminé'}
                       >
-                        {isCompleted && <IconCheck size={12} className="text-white" />}
+                        {isCompleted && <IconCheck size={12} className="!text-white" />}
                       </button>
                       <span className={`text-xs font-medium flex-1 truncate ${isCompleted ? 'text-muted line-through' : 'text-primary'}`}>
                         {subtask.title}
@@ -895,7 +895,7 @@ export default function TaskWorkflowView({
                     style={{ width: `${overallProgress}%` }}
                   />
                 </div>
-                <span className="text-sm font-bold !text-accent min-w-[3ch]">{overallProgress}%</span>
+                <span className="!text-sm font-bold !text-accent min-w-[3ch]">{overallProgress}%</span>
               </div>
             </div>
             {/* Task count */}
@@ -1028,14 +1028,14 @@ export default function TaskWorkflowView({
         </div>
 
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 bg-card border border-default  p-3 !text-xs space-y-1.5">
+        <div className="absolute bottom-4 left-4 bg-card border border-default  p-3 !text-xs !space-y-1.5">
           <div className="font-medium !text-primary mb-2">{t('legend') || 'Légende'}</div>
           {Object.entries(STATUS_CONFIG).map(([status, config]) => {
             const StatusIcon = config.icon;
             return (
               <div key={status} className="flex items-center gap-2">
                 <StatusIcon size={14} className={config.color} />
-                <span className="text-primary">
+                <span className="!text-primary">
                   {t(`task_status_${status}`) || status.replace('_', ' ')}
                 </span>
               </div>
@@ -1117,7 +1117,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
               >
                 <div className="flex items-center gap-3">
                   {!readOnly && (
-                    <IconGripVertical size={18} className="text-muted cursor-grab" />
+                    <IconGripVertical size={18} className="!text-muted cursor-grab" />
                   )}
                   
                   {/* Progress ring mini */}
@@ -1163,7 +1163,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="mt-3 pt-3 border-t border-default space-y-2"
+                      className="mt-3 pt-3 border-t border-default !space-y-2"
                     >
                       {task.subtasks!.map((subtask) => {
                         const stConfig = STATUS_CONFIG[subtask.status];
@@ -1174,7 +1174,7 @@ export function TaskWorkflowList({ tasks, onReorder, onTaskClick, readOnly }: Ta
                             className="flex items-center gap-3 p-2  bg-muted"
                           >
                             <StIcon size={14} className={stConfig.color} />
-                            <span className="text-sm !text-primary flex-1 truncate">{subtask.title}</span>
+                            <span className="!text-sm !text-primary flex-1 truncate">{subtask.title}</span>
                             <span className={`text-xs font-bold ${stConfig.color}`}>{subtask.progress}%</span>
                             <div className="w-16">
                               <SubtaskProgressBar progress={subtask.progress} status={subtask.status} />

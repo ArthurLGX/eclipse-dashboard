@@ -88,7 +88,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium !text-primary">Priorité :</label>
+            <label className="!text-sm font-medium !text-primary">Priorité :</label>
             <input
               type="number"
               min="1"
@@ -97,7 +97,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               onChange={(e) => setRule({ ...rule, priority: parseInt(e.target.value) || 1 })}
               className="w-20 px-3 py-1 bg-secondary border border-default  !text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             />
-            <span className="text-xs !text-muted">(1-10)</span>
+            <span className="!text-xs !text-muted">(1-10)</span>
           </div>
 
           <label className="flex items-center gap-2 cursor-pointer">
@@ -107,7 +107,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               onChange={(e) => setRule({ ...rule, enabled: e.target.checked })}
               className="w-4 h-4 !text-accent bg-secondary border-default rounded focus:ring-accent"
             />
-            <span className="text-sm font-medium !text-primary">Règle activée</span>
+            <span className="!text-sm font-medium !text-primary">Règle activée</span>
           </label>
         </div>
       </div>
@@ -159,7 +159,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
                   onChange={(e) => updateCondition('sender', { ...rule.conditions.sender, case_sensitive: e.target.checked })}
                   className="w-4 h-4"
                 />
-                <span className="text-xs !text-muted">Sensible à la casse</span>
+                <span className="!text-xs !text-muted">Sensible à la casse</span>
               </label>
             </div>
           ) : (
@@ -253,7 +253,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
                   onChange={(e) => updateCondition('subject', { ...rule.conditions.subject, case_sensitive: e.target.checked })}
                   className="w-4 h-4"
                 />
-                <span className="text-xs !text-muted">Sensible à la casse</span>
+                <span className="!text-xs !text-muted">Sensible à la casse</span>
               </label>
             </div>
           ) : (
@@ -319,7 +319,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
                   onChange={(e) => updateCondition('has_contact', e.target.checked)}
                   className="w-4 h-4"
                 />
-                <span className="text-sm font-medium !text-primary">A un contact associé</span>
+                <span className="!text-sm font-medium !text-primary">A un contact associé</span>
               </label>
             </div>
           ) : (
@@ -351,7 +351,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               onChange={(e) => updateAction('skip_automation', e.target.checked)}
               className="w-4 h-4"
             />
-            <span className="text-sm font-medium !text-primary">Ignorer l&apos;automatisation (ne pas créer de follow-up)</span>
+            <span className="!text-sm font-medium !text-primary">Ignorer l&apos;automatisation (ne pas créer de follow-up)</span>
           </label>
 
           {/* Set Priority */}
@@ -419,7 +419,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               onChange={(e) => updateAction('auto_approve', e.target.checked)}
               className="w-4 h-4"
             />
-            <span className="text-sm font-medium !text-primary">Approuver automatiquement</span>
+            <span className="!text-sm font-medium !text-primary">Approuver automatiquement</span>
           </label>
         </div>
       </div>

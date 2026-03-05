@@ -31,7 +31,7 @@ export default function Home() {
       <div className="min-h-screen flex items-center justify-center bg-page w-full">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-          <p className="text-muted">Chargement...</p>
+          <p className="!text-muted">Chargement...</p>
         </div>
       </div>
     );

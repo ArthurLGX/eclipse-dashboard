@@ -236,7 +236,7 @@ export default function MeetingIntegrationsPage() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="max-w-4xl mx-auto space-y-6"
+        className="max-w-4xl mx-auto !space-y-6"
       >
         {/* Header */}
         <div className="flex items-center gap-4 pb-4">
@@ -247,11 +247,11 @@ export default function MeetingIntegrationsPage() {
             <IconArrowLeft className="w-5 h-5 !text-muted" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
+            <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
               <FathomLogo size={28} />
               {t('fathom_ai') || 'Fathom AI - Notes de réunion'}
             </h1>
-            <p className="text-muted !text-sm mt-1">
+            <p className="!text-muted !text-sm mt-1">
               {t('meeting_integrations_desc') || 'Configurez Fathom pour recevoir automatiquement les transcriptions et résumés de vos réunions'}
             </p>
           </div>
@@ -280,7 +280,7 @@ export default function MeetingIntegrationsPage() {
         {/* Tutorial Steps */}
         {showTutorial && (
           <div className="card p-6">
-            <h2 className="text-lg font-semibold !text-primary mb-6 flex items-center gap-2">
+            <h2 className="!text-lg font-semibold !text-primary mb-6 flex items-center gap-2">
               <IconSettings className="w-5 h-5 !text-accent" />
               {t('setup_guide') || 'Guide de configuration'}
             </h2>
@@ -323,15 +323,15 @@ export default function MeetingIntegrationsPage() {
                       }`}>
                         {step.title}
                       </h3>
-                      <p className="text-sm !text-muted mt-1">
+                      <p className="!text-sm !text-muted mt-1">
                         {step.description}
                       </p>
 
                       {/* Step 1: API Key */}
                       {step.id === 1 && currentStep >= 1 && (
-                        <div className="mt-4 space-y-3">
+                        <div className="mt-4 !space-y-3">
                           <div>
-                            <label className="text-sm !text-secondary block mb-1">
+                            <label className="!text-sm !text-secondary block mb-1">
                               Clé API Fathom
                             </label>
                             <input
@@ -347,9 +347,9 @@ export default function MeetingIntegrationsPage() {
 
                       {/* Step 2: Webhook Config */}
                       {step.id === 2 && currentStep >= 2 && (
-                        <div className="mt-4 space-y-4">
+                        <div className="mt-4 !space-y-4">
                           <div>
-                            <label className="text-sm !text-secondary block mb-1">
+                            <label className="!text-sm !text-secondary block mb-1">
                               URL du Webhook (à copier dans Fathom)
                             </label>
                             <div className="flex items-center gap-2">
@@ -366,7 +366,7 @@ export default function MeetingIntegrationsPage() {
                           </div>
 
                           <div>
-                            <label className="text-sm !text-secondary block mb-1">
+                            <label className="!text-sm !text-secondary block mb-1">
                               Secret du Webhook (généré par Fathom)
                             </label>
                             <input
@@ -379,10 +379,10 @@ export default function MeetingIntegrationsPage() {
                           </div>
 
                           <div className="p-4 bg-info-light  border border-info">
-                            <h4 className="text-sm font-medium !text-info mb-2">
+                            <h4 className="!text-sm font-medium !text-info mb-2">
                               📋 Instructions dans Fathom :
                             </h4>
-                            <ol className="text-sm !text-secondary space-y-1 list-decimal list-inside">
+                            <ol className="!text-sm !text-secondary !space-y-1 list-decimal list-inside">
                               <li>Allez dans <strong>Settings → API Access</strong></li>
                               <li>Cliquez sur <strong>Manage → Add Webhook</strong></li>
                               <li>Collez l&apos;URL ci-dessus dans <strong>Destination URL</strong></li>
@@ -453,7 +453,7 @@ export default function MeetingIntegrationsPage() {
 
         {/* How it works */}
         <div className="card p-6">
-          <h2 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
+          <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconNotes className="w-5 h-5 !text-accent" />
             Comment ça marche ?
           </h2>
@@ -481,7 +481,7 @@ export default function MeetingIntegrationsPage() {
                 desc: 'Retrouve les notes dans l\'onglet Réunions du projet',
               },
             ].map((item, i) => (
-              <div key={i} className="text-center p-4">
+              <div key={i} className="!text-center p-4">
                 <div className="w-12 h-12 rounded-full bg-accent-light flex items-center justify-center mx-auto mb-3">
                   <item.icon className="w-6 h-6 !text-accent" />
                 </div>
@@ -494,7 +494,7 @@ export default function MeetingIntegrationsPage() {
 
         {/* Pro Tips */}
         <div className="card p-6 bg-accent-light border border-accent">
-          <h2 className="text-lg font-semibold !text-primary mb-4">
+          <h2 className="!text-lg font-semibold !text-primary mb-4">
             💡 Conseils pour un matching parfait
           </h2>
           <ul className="space-y-2 !text-sm !text-secondary">

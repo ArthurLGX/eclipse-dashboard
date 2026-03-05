@@ -274,8 +274,8 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
         className="card p-8 !text-center"
       >
         <IconActivity className="w-12 h-12 mx-auto mb-4 !text-muted opacity-50" />
-        <p className="text-muted">{t('no_monitoring_data') || 'Aucune donnée de monitoring disponible'}</p>
-        <p className="text-sm !text-muted mt-2">{t('monitoring_data_hint') || 'Les données apparaîtront après les premières vérifications'}</p>
+        <p className="!text-muted">{t('no_monitoring_data') || 'Aucune donnée de monitoring disponible'}</p>
+        <p className="!text-sm !text-muted mt-2">{t('monitoring_data_hint') || 'Les données apparaîtront après les premières vérifications'}</p>
       </motion.div>
     );
   }
@@ -352,7 +352,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartLine className="w-4 h-4 !text-accent" />
-            <span className="text-sm font-medium !text-primary">{t('response_time_chart') || 'Temps de réponse'}</span>
+            <span className="!text-sm font-medium !text-primary">{t('response_time_chart') || 'Temps de réponse'}</span>
           </div>
           <div className="h-40">
             <ResponsiveContainer width="100%" height="100%">
@@ -410,7 +410,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartBar className="w-4 h-4 !text-success-text -text" />
-            <span className="text-sm font-medium !text-primary">{t('uptime_timeline') || 'Uptime par heure'}</span>
+            <span className="!text-sm font-medium !text-primary">{t('uptime_timeline') || 'Uptime par heure'}</span>
           </div>
           <div className="h-40">
             <ResponsiveContainer width="100%" height="100%">
@@ -463,7 +463,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartPie className="w-4 h-4 !text-info" />
-            <span className="text-sm font-medium !text-primary">{t('status_distribution') || 'Statuts'}</span>
+            <span className="!text-sm font-medium !text-primary">{t('status_distribution') || 'Statuts'}</span>
           </div>
           <div className="h-40 flex items-center">
             <ResponsiveContainer width="60%" height="100%">
@@ -500,7 +500,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
                     className="w-2 h-2 rounded-full" 
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-muted">{item.name}: {item.value}</span>
+                  <span className="!text-muted">{item.name}: {item.value}</span>
                 </div>
               ))}
             </div>
@@ -517,7 +517,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
       >
         <div className="flex items-center gap-2 mb-3">
           <IconClock className="w-4 h-4 !text-warning" />
-          <span className="text-sm font-medium !text-primary">{t('response_distribution') || 'Distribution temps de réponse (ms)'}</span>
+          <span className="!text-sm font-medium !text-primary">{t('response_distribution') || 'Distribution temps de réponse (ms)'}</span>
         </div>
         <div className="h-32">
           <ResponsiveContainer width="100%" height="100%">
@@ -567,7 +567,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
         >
           <div className="flex items-center gap-2 mb-3">
             <IconX className="w-4 h-4 !text-danger" />
-            <span className="text-sm font-medium !text-primary">{t('recent_incidents') || 'Incidents récents'}</span>
+            <span className="!text-sm font-medium !text-primary">{t('recent_incidents') || 'Incidents récents'}</span>
             <span className="!text-xs !text-muted">({recentIncidents.length})</span>
           </div>
           <div className="space-y-2">

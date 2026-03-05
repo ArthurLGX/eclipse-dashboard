@@ -124,7 +124,7 @@ export default function AssignProjectDropdown({
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-default bg-muted flex-shrink-0 rounded-t-xl">
-              <p className="text-sm font-medium !text-primary">
+              <p className="!text-sm font-medium !text-primary">
                 {t('choose_project') || 'Choisir un projet'}
               </p>
               <p className="!text-xs !text-muted mt-0.5">
@@ -136,8 +136,8 @@ export default function AssignProjectDropdown({
             <div className="max-h-48 overflow-y-hidden flex-shrink-0 z-[100]">
               {unassignedProjects.length === 0 ? (
                 <div className="px-4 flex lg:flex-row flex-col gap-2 items-center justify-center py-6 !text-center">
-                  <IconFolder size={32} className="text-muted" />
-                  <p className="text-muted !text-sm">
+                  <IconFolder size={32} className="!text-muted" />
+                  <p className="!text-muted !text-sm">
                     {t('no_unassigned_projects') || 'Aucun projet disponible'}
                   </p>
                 
@@ -152,9 +152,9 @@ export default function AssignProjectDropdown({
                       transition-colors !text-left border-b border-muted last:border-b-0
                       disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <span className="text-lg">{getTypeEmoji(project.type)}</span>
+                    <span className="!text-lg">{getTypeEmoji(project.type)}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-primary font-medium truncate">{project.title}</p>
+                      <p className="!text-primary font-medium truncate">{project.title}</p>
                       <p className={`text-xs ${getStatusColor(project.project_status)}`}>
                         {project.project_status === 'completed' && '✓ Terminé'}
                         {project.project_status === 'in_progress' && '◐ En cours'}
@@ -163,11 +163,11 @@ export default function AssignProjectDropdown({
                       </p>
                     </div>
                     {assigningId === project.id ? (
-                      <IconLoader2 size={18} className="text-info animate-spin" />
+                      <IconLoader2 size={18} className="!text-info animate-spin" />
                     ) : successId === project.id ? (
-                      <IconCheck size={18} className="text-success-text" />
+                      <IconCheck size={18} className="!text-success-text" />
                     ) : (
-                      <IconPlus size={18} className="text-muted" />
+                      <IconPlus size={18} className="!text-muted" />
                     )}
                   </button>
                 ))
@@ -186,10 +186,10 @@ export default function AssignProjectDropdown({
                   <IconPlus size={18} className="!text-accent" />
                 </div>
                 <div>
-                  <p className="text-accent font-medium !text-sm">
+                  <p className="!text-accent font-medium !text-sm">
                     {t('create_new_project') || 'Créer un nouveau projet'}
                   </p>
-                  <p className="text-muted !text-xs">
+                  <p className="!text-muted !text-xs">
                     {t('go_to_projects_page') || 'Aller à la page projets'}
                   </p>
                 </div>

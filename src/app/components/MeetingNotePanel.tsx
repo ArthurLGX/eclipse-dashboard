@@ -250,7 +250,7 @@ export default function MeetingNotePanel({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="p-3 space-y-4">
+            <div className="p-3 !space-y-4">
               {/* Actions */}
               <div className="flex items-center gap-2 justify-end">
                 {!isEditing && hasContent && (
@@ -289,11 +289,11 @@ export default function MeetingNotePanel({
                     <div className="p-3 bg-accent-light ">
                       <div className="flex items-center gap-2 mb-2">
                         <IconSparkles className="w-4 h-4 !text-accent" />
-                        <span className="text-sm font-medium !text-accent">
+                        <span className="!text-sm font-medium !text-accent">
                           {t('summary') || 'Résumé'}
                         </span>
                       </div>
-                      <p className="text-sm !text-primary whitespace-pre-wrap">{summary}</p>
+                      <p className="!text-sm !text-primary whitespace-pre-wrap">{summary}</p>
                     </div>
                   )}
 
@@ -302,7 +302,7 @@ export default function MeetingNotePanel({
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <IconListCheck className="w-4 h-4 !text-success-text -text" />
-                        <span className="text-sm font-medium !text-primary">
+                        <span className="!text-sm font-medium !text-primary">
                           {t('action_items') || 'Actions à faire'} ({actionItems.filter(i => !i.completed).length}/{actionItems.length})
                         </span>
                       </div>
@@ -333,7 +333,7 @@ export default function MeetingNotePanel({
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <IconUsers className="w-4 h-4 !text-info" />
-                        <span className="text-sm font-medium !text-primary">
+                        <span className="!text-sm font-medium !text-primary">
                           {t('attendees') || 'Participants'} ({attendees.length})
                         </span>
                       </div>
@@ -355,12 +355,12 @@ export default function MeetingNotePanel({
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <IconFileText className="w-4 h-4 !text-muted" />
-                        <span className="text-sm font-medium !text-primary">
+                        <span className="!text-sm font-medium !text-primary">
                           {t('transcription') || 'Transcription'}
                         </span>
                       </div>
                       <div className="p-3 bg-muted  max-h-40 overflow-y-auto">
-                        <p className="text-sm !text-secondary whitespace-pre-wrap">{transcription}</p>
+                        <p className="!text-sm !text-secondary whitespace-pre-wrap">{transcription}</p>
                       </div>
                     </div>
                   )}
@@ -567,9 +567,9 @@ export default function MeetingNotePanel({
 
               {/* Empty State */}
               {!isEditing && !hasContent && (
-                <div className="text-center py-6">
+                <div className="!text-center py-6">
                   <IconNotes className="w-10 h-10 !text-muted mx-auto mb-2 opacity-50" />
-                  <p className="text-sm !text-muted">
+                  <p className="!text-sm !text-muted">
                     {t('no_meeting_notes') || 'Aucune note pour cette réunion'}
                   </p>
                   <p className="!text-xs !text-muted mt-1">

@@ -296,7 +296,7 @@ export default function ProjectGuidedTour({
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-bold !text-primary !text-center">
+                  <h2 className="!text-xl font-bold !text-primary !text-center">
                     {title}
                   </h2>
 
@@ -310,7 +310,7 @@ export default function ProjectGuidedTour({
                   )}
 
                   {/* Description */}
-                  <p className="text-secondary !text-center leading-relaxed">
+                  <p className="!text-secondary !text-center leading-relaxed">
                     {description}
                   </p>
 
@@ -349,7 +349,7 @@ export default function ProjectGuidedTour({
                 {t('previous') || 'Précédent'}
               </button>
 
-              <span className="text-sm !text-secondary">
+              <span className="!text-sm !text-secondary">
                 {currentStep + 1} / {TOUR_STEPS.length}
               </span>
 
@@ -379,7 +379,7 @@ export default function ProjectGuidedTour({
             <div className="px-4 pb-4 !text-center">
               <button
                 onClick={handleSkip}
-                className="text-sm !text-secondary hover:!text-primary transition-colors underline"
+                className="!text-sm !text-secondary hover:!text-primary transition-colors underline"
               >
                 {t('skip_tour') || 'Ne plus afficher ce guide'}
               </button>

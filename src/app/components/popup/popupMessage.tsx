@@ -19,7 +19,7 @@ const PopupMessage = ({
         transition={{ duration: 0.5 }}
         className="fixed left-1/2 bottom-2 -translate-x-1/2 z-[1000] flex flex-col lg:w-fit w-11/12 py-2 h-fit justify-center items-center px-4  bg-card border border-default"
       >
-        <p className="text-primary">{message}</p>
+        <p className="!text-primary">{message}</p>
         <div className="flex gap-4 mt-4">
           <button className="btn-success font-bold py-2 px-4  hover:rounded-sm transition-all ease-in-out delay-50">
             YES

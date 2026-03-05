@@ -217,7 +217,7 @@ export default function DashboardPage() {
               className="w-full bg-warning rounded-t transition-all hover:bg-violet-500"
               style={{ height: `${(month.value / maxValue) * 100}%`, minHeight: month.value > 0 ? '4px' : '2px' }}
             />
-            <span className="text-[10px] !text-muted">{month.month}</span>
+            <span className="!text-[10px] !text-muted">{month.month}</span>
           </div>
         ))}
       </div>
@@ -262,7 +262,7 @@ export default function DashboardPage() {
               )}
             </div>
             <p className="!text-xs !text-muted mb-1">{t('revenue_this_month')}</p>
-            <p className="text-xl font-bold !text-primary">
+            <p className="!text-xl font-bold !text-primary">
               {loading ? '...' : stats.caThisMonth.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
             </p>
           </motion.div>
@@ -284,7 +284,7 @@ export default function DashboardPage() {
               )}
             </div>
             <p className="!text-xs !text-muted mb-1">{t('clients')}</p>
-            <p className="text-xl font-bold !text-primary">
+            <p className="!text-xl font-bold !text-primary">
               {loading ? '...' : stats.clientsCount}
             </p>
           </motion.div>
@@ -304,7 +304,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <p className="!text-xs !text-muted mb-1">{t('projects')}</p>
-            <p className="text-xl font-bold !text-primary">
+            <p className="!text-xl font-bold !text-primary">
               {loading ? '...' : stats.projectsCount}
             </p>
           </motion.div>
@@ -324,7 +324,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <p className="!text-xs !text-muted mb-1">{t('prospects')}</p>
-            <p className="text-xl font-bold !text-primary">
+            <p className="!text-xl font-bold !text-primary">
               {loading ? '...' : stats.prospectsCount}
             </p>
           </motion.div>
@@ -370,7 +370,7 @@ export default function DashboardPage() {
               renderMiniChart()
             )}
             <div className="mt-3 pt-3 border-t border-default flex justify-between !text-sm">
-              <span className="text-muted">{t('total_revenue')}</span>
+              <span className="!text-muted">{t('total_revenue')}</span>
               <span className="font-semibold !text-secondary">
                 {stats.totalCA.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
               </span>
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : recentActivities.length === 0 ? (
-              <div className="text-center py-8 !text-muted">
+              <div className="!text-center py-8 !text-muted">
                 <IconCalendarEvent className="w-12 h-12 mx-auto mb-2 opacity-30" />
                 <p>{t('no_recent_activity')}</p>
               </div>
@@ -426,7 +426,7 @@ export default function DashboardPage() {
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm !text-primary truncate">{activity.message}</p>
+                        <p className="!text-sm !text-primary truncate">{activity.message}</p>
                         {activity.time && (
                           <p className="!text-xs !text-muted">{activity.time}</p>
                         )}

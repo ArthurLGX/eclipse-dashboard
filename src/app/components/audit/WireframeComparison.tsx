@@ -162,7 +162,7 @@ export default function WireframeComparison({
                     <div className="border-2 border-dashed border-danger  p-3 mt-4">
                       <div className="flex items-center gap-2 !text-danger mb-2">
                         <IconX className="w-4 h-4" />
-                        <span className="text-sm font-medium">
+                        <span className="!text-sm font-medium">
                           {t('missing_critical') || 'Sections critiques manquantes'}
                         </span>
                       </div>
@@ -296,7 +296,7 @@ export default function WireframeComparison({
             ) : (
               <div className="bg-muted  p-12 !text-center">
                 <IconEyeOff className="w-12 h-12 mx-auto mb-3 !text-muted opacity-50" />
-                <p className="text-muted">
+                <p className="!text-muted">
                   {t('no_screenshot_for_overlay') || 'Capture d\'écran requise pour l\'overlay'}
                 </p>
               </div>
@@ -307,20 +307,20 @@ export default function WireframeComparison({
         {/* Summary Stats */}
         <div className="mt-6 pt-4 border-t border-default">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold !text-primary">{structureScore}%</p>
+            <div className="!text-center">
+              <p className="!text-2xl font-bold !text-primary">{structureScore}%</p>
               <p className="!text-xs !text-muted">{t('structure_score') || 'Score structure'}</p>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold !text-success-text -text">{detectedSections.filter(s => s.detected).length}</p>
+            <div className="!text-center">
+              <p className="!text-2xl font-bold !text-success-text -text">{detectedSections.filter(s => s.detected).length}</p>
               <p className="!text-xs !text-muted">{t('detected_sections') || 'Sections détectées'}</p>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold !text-danger">{missingCritical.length}</p>
+            <div className="!text-center">
+              <p className="!text-2xl font-bold !text-danger">{missingCritical.length}</p>
               <p className="!text-xs !text-muted">{t('missing_critical') || 'Critiques manquantes'}</p>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold !text-warning">{missingImportant.length}</p>
+            <div className="!text-center">
+              <p className="!text-2xl font-bold !text-warning">{missingImportant.length}</p>
               <p className="!text-xs !text-muted">{t('missing_important') || 'Importantes manquantes'}</p>
             </div>
           </div>
@@ -336,10 +336,10 @@ export default function WireframeComparison({
             <div className="flex items-start gap-3">
               <IconArrowRight className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium !text-warning-text mb-1">
+                <p className="!text-sm font-medium !text-warning-text mb-1">
                   {t('priority_improvements') || 'Améliorations prioritaires'}
                 </p>
-                <p className="text-sm !text-secondary">
+                <p className="!text-sm !text-secondary">
                   {t('add_missing_sections') || 'Ajoutez les sections critiques manquantes pour améliorer la conversion :'}{' '}
                   <strong>{missingCritical.map(s => s.name).join(', ')}</strong>
                 </p>

@@ -302,7 +302,7 @@ export default function OnboardingTour({
                 <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
                   <IconSparkles size={15} className="!text-accent" />
                 </div>
-                <span className="text-sm !text-secondary font-medium">
+                <span className="!text-sm !text-secondary font-medium">
                   {currentStep + 1} / {steps.length}
                 </span>
               </div>
@@ -317,14 +317,14 @@ export default function OnboardingTour({
 
             {/* Content */}
             <div className="px-6 pb-5">
-              <h3 className="text-xl font-bold !text-primary mb-3">
+              <h3 className="!text-xl font-bold !text-primary mb-3">
                 {step.title}
               </h3>
-              <p className="text-base !text-secondary leading-relaxed">
+              <p className="!text-base !text-secondary leading-relaxed">
                 {step.description}
               </p>
               {step.microCopy && (
-                <p className="text-sm !text-muted mt-3 italic">
+                <p className="!text-sm !text-muted mt-3 italic">
                   {step.microCopy}
                 </p>
               )}
@@ -334,7 +334,7 @@ export default function OnboardingTour({
             <div className="px-6 pb-6 flex items-center justify-between">
               <button
                 onClick={handleSkip}
-                className="text-sm !text-muted hover:!text-primary transition-colors"
+                className="!text-sm !text-muted hover:!text-primary transition-colors"
               >
                 {step.skipText || t('skip_tutorial') || 'Passer le tutoriel'}
               </button>

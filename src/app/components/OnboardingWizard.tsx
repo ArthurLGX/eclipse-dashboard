@@ -137,10 +137,10 @@ export default function OnboardingWizard() {
                   <IconSparkles className="w-8 h-8 !text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold !text-primary">
+                  <h2 className="!text-2xl font-bold !text-primary">
                     {t('onboarding_welcome') || 'Bienvenue sur Eclipse !'}
                   </h2>
-                  <p className="text-muted">
+                  <p className="!text-muted">
                     {t('onboarding_subtitle') || 'Configurons votre espace en quelques étapes'}
                   </p>
                 </div>
@@ -164,7 +164,7 @@ export default function OnboardingWizard() {
             </div>
 
             {/* Steps */}
-            <div className="p-8 space-y-4">
+            <div className="p-8 !space-y-4">
               {steps.map((step, index) => {
                 const status = getStepStatus(step.id);
                 
@@ -223,7 +223,7 @@ export default function OnboardingWizard() {
                     {/* Action */}
                     <div className="shrink-0">
                       {status === 'completed' ? (
-                        <span className="text-sm !text-success-text -text font-medium">
+                        <span className="!text-sm !text-success-text -text font-medium">
                           {t('completed') || 'Terminé'}
                         </span>
                       ) : (

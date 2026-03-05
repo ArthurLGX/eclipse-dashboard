@@ -138,7 +138,7 @@ const CheckoutForm: React.FC<{
           <h3 className="!text-lg font-semibold !text-primary mb-2">
             {plan.name.charAt(0).toUpperCase() + plan.name.slice(1)} Plan
           </h3>
-          <p className="text-secondary !text-sm mb-3">{plan.description}</p>
+          <p className="!text-secondary !text-sm mb-3">{plan.description}</p>
           <div className="flex items-center justify-between">
             <span className="!text-2xl font-bold !text-accent">
               {language === 'fr' ? '' : '€'}
@@ -147,14 +147,14 @@ const CheckoutForm: React.FC<{
                 : plan.price_monthly.toFixed(2)}
               {language === 'fr' ? '€' : ''}
             </span>
-            <span className="text-secondary !text-sm">
+            <span className="!text-secondary !text-sm">
               {billingType === 'yearly' ? t('per_year') : t('per_month')}
             </span>
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-secondary !text-sm font-medium">
+          <label className="!text-secondary !text-sm font-medium">
             {t('card_information')}
           </label>
           <div className="bg-page border border-default  p-4 min-h-[50px]">
@@ -164,7 +164,7 @@ const CheckoutForm: React.FC<{
 
         {error && (
           <div className="bg-danger-light border border-danger  p-3">
-            <p className="text-danger !text-sm">{error}</p>
+            <p className="!text-danger !text-sm">{error}</p>
           </div>
         )}
       </div>
@@ -235,7 +235,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               </h2>
               <button
                 onClick={onClose}
-                className="text-secondary hover:!text-primary transition-colors"
+                className="!text-secondary hover:!text-primary transition-colors"
               >
                 <svg
                   className="w-6 h-6"
@@ -254,14 +254,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             </div>
 
             {!stripePublishableKey ? (
-              <div className="text-center py-8">
+              <div className="!text-center py-8">
                 <div className="w-16 h-16 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">⚠️</span>
+                  <span className="!text-2xl">⚠️</span>
                 </div>
-                <p className="text-primary font-medium mb-2">
+                <p className="!text-primary font-medium mb-2">
                   {t('stripe_not_configured') || 'Stripe non configuré'}
                 </p>
-                <p className="text-secondary !text-sm">
+                <p className="!text-secondary !text-sm">
                   {t('stripe_config_message') || 'La clé Stripe n\'est pas définie. Contactez l\'administrateur.'}
                 </p>
                 <button

@@ -509,14 +509,14 @@ export default function ImageUpload({
           {/* Overlay on hover */}
           {!disabled && !uploading && (
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-              <IconCamera className="text-white" size={size === 'sm' ? 16 : 24} />
+              <IconCamera className="!text-white" size={size === 'sm' ? 16 : 24} />
             </div>
           )}
 
           {/* Loading spinner */}
           {uploading && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <IconLoader2 className="text-white animate-spin" size={24} />
+              <IconLoader2 className="!text-white animate-spin" size={24} />
             </div>
           )}
         </div>
@@ -534,7 +534,7 @@ export default function ImageUpload({
               {/* Message si mode lecture */}
               {disabled && (
                 <div className="px-4 py-3 bg-muted border-b border-default !text-center">
-                  <p className="text-warning-text !text-xs font-medium">
+                  <p className="!text-warning-text !text-xs font-medium">
                     ⚠️ Passez en mode édition pour modifier l&apos;image
                   </p>
                 </div>
@@ -561,12 +561,12 @@ export default function ImageUpload({
                         onError={() => setFaviconError(true)}
                       />
                     ) : (
-                      <IconWorld size={18} className="text-info" />
+                      <IconWorld size={18} className="!text-info" />
                     )}
                   </div>
                   <div>
-                    <p className="text-primary font-medium !text-sm">Utiliser le favicon</p>
-                    <p className="text-muted !text-xs truncate max-w-[160px]">
+                    <p className="!text-primary font-medium !text-sm">Utiliser le favicon</p>
+                    <p className="!text-muted !text-xs truncate max-w-[160px]">
                       {extractDomain(website)}
                     </p>
                   </div>
@@ -585,8 +585,8 @@ export default function ImageUpload({
                   <IconUpload size={18} className="!text-accent" />
                 </div>
                 <div>
-                  <p className="text-primary font-medium !text-sm">Depuis l&apos;ordinateur</p>
-                  <p className="text-muted !text-xs">Importer un fichier</p>
+                  <p className="!text-primary font-medium !text-sm">Depuis l&apos;ordinateur</p>
+                  <p className="!text-muted !text-xs">Importer un fichier</p>
                 </div>
               </button>
 
@@ -599,11 +599,11 @@ export default function ImageUpload({
                 }`}
               >
                 <div className="w-8 h-8  bg-purple-500/10 border border-purple-500/30 flex items-center justify-center">
-                  <IconPhoto size={18} className="text-purple-400" />
+                  <IconPhoto size={18} className="!text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-primary font-medium !text-sm">Depuis la bibliothèque</p>
-                  <p className="text-muted !text-xs">Images déjà uploadées</p>
+                  <p className="!text-primary font-medium !text-sm">Depuis la bibliothèque</p>
+                  <p className="!text-muted !text-xs">Images déjà uploadées</p>
                 </div>
               </button>
 
@@ -616,11 +616,11 @@ export default function ImageUpload({
                 }`}
               >
                 <div className="w-8 h-8  bg-info-light border border-info flex items-center justify-center">
-                  <IconLink size={18} className="text-info" />
+                  <IconLink size={18} className="!text-info" />
                 </div>
                 <div>
-                  <p className="text-primary font-medium !text-sm">Depuis une URL</p>
-                  <p className="text-muted !text-xs">Lien vers une image</p>
+                  <p className="!text-primary font-medium !text-sm">Depuis une URL</p>
+                  <p className="!text-muted !text-xs">Lien vers une image</p>
                 </div>
               </button>
               
@@ -664,7 +664,7 @@ export default function ImageUpload({
               <div className="flex items-center justify-between p-4 border-b border-default">
                 <div className="flex items-center gap-2">
                   <IconCrop className="w-5 h-5 !text-accent" />
-                  <h3 className="text-lg font-semibold !text-primary">Éditer l&apos;image</h3>
+                  <h3 className="!text-lg font-semibold !text-primary">Éditer l&apos;image</h3>
                 </div>
                 <button
                   onClick={handleCancel}
@@ -700,7 +700,7 @@ export default function ImageUpload({
               </div>
 
               {/* Controls */}
-              <div className="p-4 border-t border-default space-y-4">
+              <div className="p-4 border-t border-default !space-y-4">
                 {/* Zoom */}
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2 !text-secondary">
@@ -718,7 +718,7 @@ export default function ImageUpload({
                   <div className="flex items-center gap-2 !text-secondary">
                     <IconZoomIn className="w-4 h-4" />
                   </div>
-                  <span className="text-sm !text-muted w-12 !text-right">{Math.round(scale * 100)}%</span>
+                  <span className="!text-sm !text-muted w-12 !text-right">{Math.round(scale * 100)}%</span>
                 </div>
 
                 {/* Rotation */}
@@ -735,7 +735,7 @@ export default function ImageUpload({
                     onChange={(e) => setRotation(Number(e.target.value))}
                     className="flex-1 h-2 bg-muted  appearance-none cursor-pointer accent-accent"
                   />
-                  <span className="text-sm !text-muted w-12 !text-right">{rotation}°</span>
+                  <span className="!text-sm !text-muted w-12 !text-right">{rotation}°</span>
                   <button
                     onClick={() => setRotation(0)}
                     className="px-2 py-1 !text-xs !text-secondary hover:!text-primary border border-default rounded hover:bg-hover transition-colors"
@@ -813,7 +813,7 @@ export default function ImageUpload({
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
-                <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+                <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
                   <IconPhoto className="w-5 h-5 !text-purple-400" />
                   Bibliothèque d&apos;images
                 </h3>
@@ -883,7 +883,7 @@ export default function ImageUpload({
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-default">
-                <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+                <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
                   <IconLink className="w-5 h-5 !text-info" />
                   Image depuis URL
                 </h3>
@@ -896,7 +896,7 @@ export default function ImageUpload({
               </div>
 
               {/* Content */}
-              <div className="p-4 space-y-4">
+              <div className="p-4 !space-y-4">
                 <div>
                   <label className="block !text-sm font-medium !text-secondary mb-2">
                     URL de l&apos;image

@@ -83,10 +83,10 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                 )}
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold !text-primary">
+                <h3 className="!text-lg font-semibold !text-primary">
                   {isLoading ? 'Synchronisation en cours' : 'Synchronisation terminée'}
                 </h3>
-                <p className="text-sm !text-muted">
+                <p className="!text-sm !text-muted">
                   {isLoading 
                     ? 'Récupération des emails depuis votre boîte de réception...' 
                     : 'Vos emails ont été synchronisés'}
@@ -96,13 +96,13 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
           </div>
 
           {/* Content */}
-          <div className="p-6 space-y-6">
+          <div className="p-6 !space-y-6">
             {/* Progress Bar */}
             {isLoading && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between !text-sm">
-                  <span className="text-muted">Progression</span>
-                  <span className="text-accent font-medium">{Math.round(progress)}%</span>
+                  <span className="!text-muted">Progression</span>
+                  <span className="!text-accent font-medium">{Math.round(progress)}%</span>
                 </div>
                 <div className="h-2 bg-secondary rounded-full overflow-hidden">
                   <motion.div
@@ -128,14 +128,14 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                       <IconMail className="w-4 h-4 !text-success" />
                       <span className="!text-xs font-medium !text-success-text">Nouveaux</span>
                     </div>
-                    <p className="text-2xl font-bold !text-success-text">{result.synced}</p>
+                    <p className="!text-2xl font-bold !text-success-text">{result.synced}</p>
                   </div>
                   <div className="p-4  bg-secondary border border-default">
                     <div className="flex items-center gap-2 mb-1">
                       <IconCheck className="w-4 h-4 !text-muted" />
                       <span className="!text-xs font-medium !text-muted">Ignorés</span>
                     </div>
-                    <p className="text-2xl font-bold !text-primary">{result.skipped}</p>
+                    <p className="!text-2xl font-bold !text-primary">{result.skipped}</p>
                   </div>
                 </div>
 
@@ -144,7 +144,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                   <div className="p-4  bg-warning-light border border-warning">
                     <div className="flex items-center gap-2 mb-2">
                       <IconAlertCircle className="w-4 h-4 !text-warning-text" />
-                      <span className="text-sm font-medium !text-warning-text">
+                      <span className="!text-sm font-medium !text-warning-text">
                         Avertissements ({result.errors.length})
                       </span>
                     </div>
@@ -168,7 +168,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                   <div className="p-4  bg-info-light border border-info">
                     <div className="flex items-center gap-2 mb-3">
                       <IconUserPlus className="w-4 h-4 !text-info-text" />
-                      <span className="text-sm font-medium !text-info-text">
+                      <span className="!text-sm font-medium !text-info-text">
                         Expéditeurs inconnus ({result.unknownSenders.length})
                       </span>
                     </div>
@@ -178,7 +178,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                     <div className="space-y-2 max-h-32 overflow-y-auto">
                       {result.unknownSenders.slice(0, 3).map((sender, idx) => (
                         <div key={idx} className="flex items-center justify-between !text-xs">
-                          <span className="text-info-text font-medium">
+                          <span className="!text-info-text font-medium">
                             {sender.name || sender.email}
                           </span>
                           <button className="px-2 py-1 bg-info !text-white  !text-xs hover:opacity-90">
@@ -192,9 +192,9 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
 
                 {/* Success Message */}
                 {result.synced === 0 && result.errors.length === 0 && (
-                  <div className="text-center py-4">
+                  <div className="!text-center py-4">
                     <IconCheck className="w-12 h-12 !text-success mx-auto mb-2" />
-                    <p className="text-sm !text-muted">
+                    <p className="!text-sm !text-muted">
                       Votre boîte de réception est à jour
                     </p>
                   </div>

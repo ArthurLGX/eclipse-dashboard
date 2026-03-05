@@ -248,7 +248,7 @@ export default function TableFilters({
                 <div className="p-1.5">
                   <IconFilter className="w-4 h-4 !text-accent" />
                 </div>
-                <span className="text-sm font-semibold !text-primary">
+                <span className="!text-sm font-semibold !text-primary">
                   {t('filter_by') || 'Filtrer par'}
                 </span>
                 {activeFiltersCount > 0 && (
@@ -264,7 +264,7 @@ export default function TableFilters({
                 {/* Select Filters */}
                 {selectFilters.map(filter => (
                   <div key={filter.id} className="flex flex-col sm:flex-row sm:items-center gap-2 lg:gap-3">
-                    <label className="text-sm font-medium !text-secondary whitespace-nowrap min-w-fit">
+                    <label className="!text-sm font-medium !text-secondary whitespace-nowrap min-w-fit">
                       {filter.label}
                     </label>
                     
@@ -374,7 +374,7 @@ export default function TableFilters({
                 {/* Date Range Filters */}
                 {dateFilters.map(filter => (
                   <div key={filter.id} className="flex flex-col sm:flex-row sm:items-center gap-2 lg:gap-3">
-                    <label className="text-sm font-medium !text-secondary whitespace-nowrap min-w-fit">
+                    <label className="!text-sm font-medium !text-secondary whitespace-nowrap min-w-fit">
                       {filter.label}
                     </label>
                     <div className="flex items-center gap-2">
@@ -389,7 +389,7 @@ export default function TableFilters({
                           className="input cursor-pointer !pr-2 py-2 !text-sm min-w-[140px]"
                         />
                       </div>
-                      <span className="text-muted !text-sm">→</span>
+                      <span className="!text-muted !text-sm">→</span>
                       <div className="relative">
                         <input
                           type="date"

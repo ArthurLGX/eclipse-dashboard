@@ -121,7 +121,7 @@ function SelectContactModal({
       >
         <div className="sticky top-0 bg-card border-b border-default p-4 rounded-t-xl">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold !text-primary flex items-center gap-2">
+            <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
               <IconUsers size={15} />
               {t('select_existing_contact') || 'Sélectionner un contact'}
             </h2>
@@ -150,7 +150,7 @@ function SelectContactModal({
             <div className="p-8 !text-center !text-muted-foreground">
               <IconUsers size={48} className="mx-auto mb-2 opacity-30" />
               <p>{t('no_contacts_available') || 'Aucun contact disponible'}</p>
-              <p className="text-sm mt-1">{t('all_contacts_in_pipeline') || 'Tous vos contacts sont déjà dans le pipeline'}</p>
+              <p className="!text-sm mt-1">{t('all_contacts_in_pipeline') || 'Tous vos contacts sont déjà dans le pipeline'}</p>
             </div>
           ) : (
             <div className="space-y-1">
@@ -172,7 +172,7 @@ function SelectContactModal({
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
-                      <span className="text-sm font-medium !text-accent">{getInitials(contact.name)}</span>
+                      <span className="!text-sm font-medium !text-accent">{getInitials(contact.name)}</span>
                     </div>
                   )}
                   
@@ -181,12 +181,12 @@ function SelectContactModal({
                     <div className="flex items-center gap-2">
                       <span className="font-medium !text-foreground truncate">{contact.name}</span>
                       {contact.processStatus === 'client' && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 !text-green-700 dark:!text-green-400 flex-shrink-0">
+                        <span className="!text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 !text-green-700 dark:!text-green-400 flex-shrink-0">
                           Client
                         </span>
                       )}
                       {contact.processStatus === 'prospect' && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 !text-blue-700 dark:!text-blue-400 flex-shrink-0">
+                        <span className="!text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 !text-blue-700 dark:!text-blue-400 flex-shrink-0">
                           Prospect
                         </span>
                       )}
@@ -320,7 +320,7 @@ function ContactModal({
         onWheel={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-card border-b border-default p-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold !text-primary">
+          <h2 className="!text-lg font-semibold !text-primary">
             {contact ? t('edit_contact') || 'Modifier le contact' : t('new_contact') || 'Nouveau contact'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover ">
@@ -328,7 +328,7 @@ function ContactModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 !space-y-4">
           {/* Infos principales */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -930,16 +930,16 @@ export default function PipelinePage() {
   }, [onboardingCompleted, pipelineContacts]);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 !space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
           <IconChartBar size={28} className="!text-accent" />
           <div>
-            <h1 className="text-2xl font-bold !text-primary">
+            <h1 className="!text-2xl font-bold !text-primary">
               {t('pipeline') || 'Pipeline commercial'}
             </h1>
-            <p className="text-sm !text-muted">
+            <p className="!text-sm !text-muted">
               {t('pipeline_description') || 'Vue globale de vos opportunités'}
             </p>
             <p className="!text-xs !text-muted/70 mt-0.5">
@@ -993,7 +993,7 @@ export default function PipelinePage() {
                 <IconReceipt size={16} />
                 <span className="!text-xs font-medium">{t('kpi_potential_revenue') || 'CA Potentiel'}</span>
               </div>
-              <p className="text-xl font-bold !text-violet-500">
+              <p className="!text-xl font-bold !text-violet-500">
                 {formatCurrency(kpis.potentialValue)}
               </p>
               <p className="!text-xs !text-muted mt-1">
@@ -1007,7 +1007,7 @@ export default function PipelinePage() {
                 <IconCheck size={16} />
                 <span className="!text-xs font-medium">{t('kpi_won_revenue') || 'CA Gagné'}</span>
               </div>
-              <p className="text-xl font-bold !text-success-text -text">
+              <p className="!text-xl font-bold !text-success-text -text">
                 {formatCurrency(kpis.wonValue)}
               </p>
               <p className="!text-xs !text-muted mt-1">
@@ -1021,7 +1021,7 @@ export default function PipelinePage() {
                 <IconTrendingUp size={16} />
                 <span className="!text-xs font-medium">{t('conversion_rate') || 'Conversion'}</span>
               </div>
-              <p className="text-xl font-bold !text-accent">
+              <p className="!text-xl font-bold !text-accent">
                 {kpis.conversionRate.toFixed(1)}%
               </p>
               <p className="!text-xs !text-muted mt-1">
@@ -1035,7 +1035,7 @@ export default function PipelinePage() {
                 <IconUsers size={16} />
                 <span className="!text-xs font-medium">{t('total_contacts') || 'Total contacts'}</span>
               </div>
-              <p className="text-xl font-bold !text-primary">
+              <p className="!text-xl font-bold !text-primary">
                 {kpis.totalContacts}
               </p>
               <p className="!text-xs !text-muted mt-1">
@@ -1049,7 +1049,7 @@ export default function PipelinePage() {
                 <IconClock size={16} />
                 <span className="!text-xs font-medium">{t('in_progress') || 'En cours'}</span>
               </div>
-              <p className="text-xl font-bold !text-warning">
+              <p className="!text-xl font-bold !text-warning">
                 {kpis.inProgressCount}
               </p>
               <p className="!text-xs !text-muted mt-1">
@@ -1063,7 +1063,7 @@ export default function PipelinePage() {
                 <IconCheck size={16} />
                 <span className="!text-xs font-medium">{t('won') || 'Gagnés'}</span>
               </div>
-              <p className="text-xl font-bold !text-success-text -text">
+              <p className="!text-xl font-bold !text-success-text -text">
                 {kpis.wonCount}
               </p>
               <p className="!text-xs !text-muted mt-1">
@@ -1074,7 +1074,7 @@ export default function PipelinePage() {
 
           {/* Graphique d'évolution */}
           <div className="bg-card border border-default  p-4">
-            <h3 className="text-sm font-medium !text-primary mb-4 flex items-center gap-2">
+            <h3 className="!text-sm font-medium !text-primary mb-4 flex items-center gap-2">
               <IconChartLine size={18} />
               {t('kpi_revenue_evolution') || 'Évolution du CA (12 derniers mois)'}
             </h3>

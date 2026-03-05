@@ -155,7 +155,7 @@ export default function YourCompanyPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
               <div className="card p-6">
-                <div className="flex flex-col items-center space-y-4">
+                <div className="flex flex-col items-center !space-y-4">
                   <div className="w-24 h-24 bg-muted rounded-full animate-pulse"></div>
                   <div className="h-6 bg-muted rounded w-32 animate-pulse"></div>
                   <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
@@ -163,7 +163,7 @@ export default function YourCompanyPage() {
               </div>
             </div>
             <div className="lg:col-span-2">
-              <div className="card p-6 space-y-4">
+              <div className="card p-6 !space-y-4">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="space-y-2">
                     <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>
@@ -275,7 +275,7 @@ export default function YourCompanyPage() {
         <div className="grid grid-cols-1 gap-6">
           {/* Section Informations */}
           <div className="lg:col-span-2">
-            <div className="card p-6 space-y-6">
+            <div className="card p-6 !space-y-6">
               <h2 className="!text-xl font-semibold !text-primary mb-4">
                 {t('personal_information')}
               </h2>
@@ -283,7 +283,7 @@ export default function YourCompanyPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Section générale */}
                 <div className="space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                  <label className="!text-secondary !text-sm font-light">
                     {t('enterprise_name')}
                   </label>
                   {editing ? (
@@ -297,13 +297,13 @@ export default function YourCompanyPage() {
                       className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-primary p-3 bg-muted ">
+                    <p className="!text-primary p-3 bg-muted ">
                       {companyProfile?.name}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                  <label className="!text-secondary !text-sm font-light">
                     Email
                   </label>
                   {editing ? (
@@ -319,19 +319,19 @@ export default function YourCompanyPage() {
                         className={`input w-full p-3 ${emailError ? '!border-danger' : ''}`}
                       />
                       {emailError && (
-                        <p className="text-danger !text-xs mt-1">
+                        <p className="!text-danger !text-xs mt-1">
                           {emailError}
                         </p>
                       )}
                     </>
                   ) : (
-                    <p className="text-primary p-3 bg-muted ">
+                    <p className="!text-primary p-3 bg-muted ">
                       {companyProfile?.email}
                     </p>
                   )}
                 </div>
-                <div className="md:col-span-2 space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                <div className="md:col-span-2 !space-y-2">
+                  <label className="!text-secondary !text-sm font-light">
                     {t('enterprise_description')}
                   </label>
                   {editing ? (
@@ -347,14 +347,14 @@ export default function YourCompanyPage() {
                       className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-primary p-3 bg-muted ">
+                    <p className="!text-primary p-3 bg-muted ">
                       {companyProfile?.description}
                     </p>
                   )}
                 </div>
                 {/* Section légale */}
                 <div className="space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                  <label className="!text-secondary !text-sm font-light">
                     {t('siret')}
                   </label>
                   {editing ? (
@@ -368,13 +368,13 @@ export default function YourCompanyPage() {
                       className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-primary p-3 bg-muted ">
+                    <p className="!text-primary p-3 bg-muted ">
                       {companyProfile?.siret}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                  <label className="!text-secondary !text-sm font-light">
                     {t('siren')}
                   </label>
                   {editing ? (
@@ -388,13 +388,13 @@ export default function YourCompanyPage() {
                       className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-primary p-3 bg-muted ">
+                    <p className="!text-primary p-3 bg-muted ">
                       {companyProfile?.siren}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                  <label className="!text-secondary !text-sm font-light">
                     {t('vat')}
                   </label>
                   {editing ? (
@@ -408,14 +408,14 @@ export default function YourCompanyPage() {
                       className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-primary p-3 bg-muted ">
+                    <p className="!text-primary p-3 bg-muted ">
                       {companyProfile?.vat}
                     </p>
                   )}
                 </div>
                 {/* Section contact */}
                 <div className="space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                  <label className="!text-secondary !text-sm font-light">
                     {t('phone_number')}
                   </label>
                   {editing ? (
@@ -432,13 +432,13 @@ export default function YourCompanyPage() {
                       className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-primary p-3 bg-muted ">
+                    <p className="!text-primary p-3 bg-muted ">
                       {companyProfile?.phoneNumber}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                  <label className="!text-secondary !text-sm font-light">
                     {t('address')}
                   </label>
                   {editing ? (
@@ -452,13 +452,13 @@ export default function YourCompanyPage() {
                       className="input w-full p-3"
                     />
                   ) : (
-                    <p className="text-primary p-3 bg-muted ">
+                    <p className="!text-primary p-3 bg-muted ">
                       {companyProfile?.location}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                  <label className="!text-secondary !text-sm font-light">
                     {t('activity_domain')}
                   </label>
                   {editing ? (
@@ -477,13 +477,13 @@ export default function YourCompanyPage() {
                       ))}
                     </select>
                   ) : (
-                    <p className="text-primary p-3 bg-muted ">
+                    <p className="!text-primary p-3 bg-muted ">
                       {companyProfile?.domaine}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-secondary !text-sm font-light">
+                  <label className="!text-secondary !text-sm font-light">
                     {t('website')}
                   </label>
                   {editing ? (
@@ -513,7 +513,7 @@ export default function YourCompanyPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center min-h-[50vh] !my-10">
-          <p className="text-primary">{t('no_enterprise_profile')}</p>
+          <p className="!text-primary">{t('no_enterprise_profile')}</p>
         </div>
       )}
     </motion.div>

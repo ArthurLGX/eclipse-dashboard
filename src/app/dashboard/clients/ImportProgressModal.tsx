@@ -101,7 +101,7 @@ export default function ImportProgressModal({
         {/* Header */}
         <div className="p-6 border-b border-default">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold !text-primary flex items-center gap-3">
+            <h2 className="!text-xl font-bold !text-primary flex items-center gap-3">
               {t('import_progress_title') || 'Import en cours...'}
             </h2>
             {isComplete && (
@@ -117,10 +117,10 @@ export default function ImportProgressModal({
           {/* Progress bar */}
           <div className="space-y-2">
             <div className="flex justify-between !text-sm">
-              <span className="text-primary">
+              <span className="!text-primary">
                 {currentIndex} / {totalCount} {t('clients') || 'clients'}
               </span>
-              <span className="text-primary font-medium">{progressPercent}%</span>
+              <span className="!text-primary font-medium">{progressPercent}%</span>
             </div>
             <div className="h-2 bg-zinc-700 rounded-full overflow-hidden">
               <motion.div
@@ -156,7 +156,7 @@ export default function ImportProgressModal({
         {/* Scrollable list with animation */}
         <div 
           ref={listRef}
-          className="flex-1 overflow-y-auto p-4 space-y-2 min-h-[300px] max-h-[400px]"
+          className="flex-1 overflow-y-auto p-4 !space-y-2 min-h-[300px] max-h-[400px]"
         >
           <AnimatePresence mode="popLayout">
             {items.map((item, index) => (
@@ -208,7 +208,7 @@ export default function ImportProgressModal({
                 </div>
 
                 {/* Status text */}
-                <div className="text-right">
+                <div className="!text-right">
                   <p className={`text-sm ${
                     item.status === 'success' 
                       ? 'text-success' 
@@ -248,16 +248,16 @@ export default function ImportProgressModal({
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-primary font-medium">
+                <p className="!text-primary font-medium">
                   {t('import_complete') || 'Import terminé !'}
                 </p>
-                <p className="text-sm !text-secondary">
-                  <span className="text-success-text">{successCount} {t('import_clients_added') || 'ajouté(s)'}</span>
+                <p className="!text-sm !text-secondary">
+                  <span className="!text-success-text">{successCount} {t('import_clients_added') || 'ajouté(s)'}</span>
                   {skippedCount > 0 && (
-                    <span className="text-warning">, {skippedCount} {t('import_clients_skipped') || 'ignoré(s)'}</span>
+                    <span className="!text-warning">, {skippedCount} {t('import_clients_skipped') || 'ignoré(s)'}</span>
                   )}
                   {errorCount > 0 && (
-                    <span className="text-danger">, {errorCount} {t('import_clients_failed') || 'erreur(s)'}</span>
+                    <span className="!text-danger">, {errorCount} {t('import_clients_failed') || 'erreur(s)'}</span>
                   )}
                 </p>
               </div>

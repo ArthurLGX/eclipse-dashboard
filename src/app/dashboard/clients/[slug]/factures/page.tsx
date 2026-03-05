@@ -66,7 +66,7 @@ export default function ClientFacturesPage() {
       label: t('reference'),
       render: (v, row) => (
         <span
-          className="text-primary font-medium cursor-pointer hover:!text-accent transition-colors"
+          className="!text-primary font-medium cursor-pointer hover:!text-accent transition-colors"
           onClick={() => router.push(`/dashboard/factures/${getFactureSlug(row)}`)}
         >
           {v as string}
@@ -77,7 +77,7 @@ export default function ClientFacturesPage() {
       key: 'number',
       label: t('amount'),
       render: v => (
-        <span className="text-primary">
+        <span className="!text-primary">
           {(v as number)?.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) || '-'}
         </span>
       ),
@@ -135,7 +135,7 @@ export default function ClientFacturesPage() {
       key: 'date',
       label: t('date'),
       render: v => (
-        <span className="text-muted">
+        <span className="!text-muted">
           {v ? new Date(v as string).toLocaleDateString('fr-FR') : '-'}
         </span>
       ),
@@ -144,7 +144,7 @@ export default function ClientFacturesPage() {
       key: 'due_date',
       label: t('due_date'),
       render: v => (
-        <span className="text-muted">
+        <span className="!text-muted">
           {v ? new Date(v as string).toLocaleDateString('fr-FR') : '-'}
         </span>
       ),
@@ -184,7 +184,7 @@ export default function ClientFacturesPage() {
                 </a>
               </>
             )}
-            {!pdfUrl && <span className="text-muted !text-xs">-</span>}
+            {!pdfUrl && <span className="!text-muted !text-xs">-</span>}
           </div>
         );
       },
@@ -209,12 +209,7 @@ export default function ClientFacturesPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold !text-primary">{t('invoices')}</h1>
-          <p className="text-secondary mt-1">
-            {clientName} • {factures.length} {factures.length > 1 ? 'factures' : 'facture'}
-          </p>
-        </div>
+        
         <button
           className="flex items-center gap-2 btn-primary px-4 py-2.5  font-semibold"
           onClick={handleAddInvoice}

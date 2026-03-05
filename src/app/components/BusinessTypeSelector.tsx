@@ -103,7 +103,7 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
     <div className="space-y-6">
       {/* Modules recommandés */}
       <div>
-        <h4 className="text-sm font-medium !text-muted mb-3">
+        <h4 className="!text-sm font-medium !text-muted mb-3">
           {t('recommended_modules') || 'Modules recommandés'}
         </h4>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -131,7 +131,7 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
       {/* Modules optionnels */}
       {BUSINESS_CONFIGS[businessType].availableModules.length > 0 && (
         <div>
-          <h4 className="text-sm font-medium !text-muted mb-3">
+          <h4 className="!text-sm font-medium !text-muted mb-3">
             {t('optional_modules') || 'Modules optionnels'}
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -277,11 +277,11 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
       {/* Content */}
       {step === 'business' ? (
         <div className="space-y-6">
-          <div className="text-center">
-            <h3 className="text-xl font-bold !text-primary">
+          <div className="!text-center">
+            <h3 className="!text-xl font-bold !text-primary">
               {t('what_is_your_business') || 'Quel est votre métier ?'}
             </h3>
-            <p className="text-muted mt-2">
+            <p className="!text-muted mt-2">
               {t('business_type_desc') || 'Nous adapterons votre interface en conséquence'}
             </p>
           </div>
@@ -292,11 +292,11 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="text-center">
-            <h3 className="text-xl font-bold !text-primary">
+          <div className="!text-center">
+            <h3 className="!text-xl font-bold !text-primary">
               {t('select_your_modules') || 'Sélectionnez vos modules'}
             </h3>
-            <p className="text-muted mt-2">
+            <p className="!text-muted mt-2">
               {t('modules_desc') || 'Vous pourrez les modifier plus tard dans les paramètres'}
             </p>
           </div>

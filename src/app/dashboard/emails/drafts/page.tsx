@@ -171,11 +171,11 @@ function DraftsContent() {
           {t('back_to_emails') || 'Retour aux emails'}
         </Link>
         
-        <h1 className="text-3xl font-bold !text-primary flex items-center gap-3">
+        <h1 className="!text-3xl font-bold !text-primary flex items-center gap-3">
           <IconDeviceFloppy className="w-8 h-8 !text-accent" />
           {t('drafts') || 'Brouillons'}
         </h1>
-        <p className="text-muted mt-2">
+        <p className="!text-muted mt-2">
           {t('drafts_page_desc') || 'Retrouvez tous vos brouillons d\'emails'}
         </p>
       </motion.div>
@@ -226,9 +226,9 @@ function DraftsContent() {
             <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
           </div>
         ) : filteredDrafts.length === 0 ? (
-          <div className="text-center py-16 !text-muted">
+          <div className="!text-center py-16 !text-muted">
             <IconDeviceFloppy className="w-16 h-16 mx-auto mb-4 opacity-30" />
-            <h3 className="text-lg font-medium !text-primary mb-2">
+            <h3 className="!text-lg font-medium !text-primary mb-2">
               {t('no_drafts_found') || 'Aucun brouillon trouvé'}
             </h3>
             <p>{t('no_drafts_message') || 'Vos brouillons apparaîtront ici'}</p>
@@ -269,7 +269,7 @@ function DraftsContent() {
                           {getCategoryLabel(draft.category)}
                         </span>
                       </div>
-                      <p className="text-sm !text-muted truncate mb-1">
+                      <p className="!text-sm !text-muted truncate mb-1">
                         {draft.subject || t('no_subject') || 'Sans objet'}
                       </p>
                       <p className="!text-xs !text-muted">
@@ -280,8 +280,8 @@ function DraftsContent() {
                       </p>
                     </div>
                     
-                    <div className="text-right shrink-0">
-                      <span className="text-sm !text-muted">
+                    <div className="!text-right shrink-0">
+                      <span className="!text-sm !text-muted">
                         {formatDate(draft.updatedAt)}
                       </span>
                     </div>
@@ -314,7 +314,7 @@ function DraftsContent() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-center !text-muted mt-4"
+          className="!text-center !text-muted mt-4"
         >
           {filteredDrafts.length} {t('drafts_count') || 'brouillon(s)'}
         </motion.p>

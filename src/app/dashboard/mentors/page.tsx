@@ -49,10 +49,10 @@ export default function MentorsPage() {
             </span>
           </div>
           <div>
-            <p className="text-zinc-200 font-medium">
+            <p className="!text-zinc-200 font-medium">
               {value as string} {row.lastName}
             </p>
-            <p className="text-zinc-500 !text-sm">{row.email}</p>
+            <p className="!text-zinc-500 !text-sm">{row.email}</p>
           </div>
         </div>
       ),

@@ -134,7 +134,7 @@ export default function GlobalScoreDisplay({
               fill="none"
               stroke="currentColor"
               strokeWidth="8"
-              className="text-hover"
+              className="!text-hover"
             />
             {/* Progress circle */}
             <motion.circle
@@ -177,7 +177,7 @@ export default function GlobalScoreDisplay({
           </div>
 
           {/* Summary message */}
-          <p className="text-secondary mb-4">
+          <p className="!text-secondary mb-4">
             {summaryMessages[scoreLevel.message]?.[language] || t(scoreLevel.message)}
           </p>
 

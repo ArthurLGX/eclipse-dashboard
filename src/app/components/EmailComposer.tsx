@@ -722,7 +722,7 @@ Cordialement`);
       if (activeFeatures.title && title.trim()) {
         const primaryColor = signatureData?.primary_color || '#10b981';
         htmlContent += `
-          <div style="text-align: center; padding: 24px 20px; background: linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd);">
+          <div style="!text-align: center; padding: 24px 20px; background: linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd);">
             <h1 style="margin: 0; font-size: 24px; font-weight: bold; color: #ffffff;">${title}</h1>
           </div>
         `;
@@ -955,7 +955,7 @@ Cordialement`);
                 <IconArrowLeft className="w-5 h-5" />
               </button>
 
-              <h1 className="text-xl font-semibold !text-primary flex items-center gap-2">
+              <h1 className="!text-xl font-semibold !text-primary flex items-center gap-2">
                 <IconComponent className={`w-6 h-6 !text-${config.color}`} />
                 {config.title}
               </h1>
@@ -1045,12 +1045,12 @@ Cordialement`);
                     )}
                   </div>
 
-                  <p className="text-sm !text-muted mt-0.5">{replyToData.email}</p>
+                  <p className="!text-sm !text-muted mt-0.5">{replyToData.email}</p>
 
                   <div className="mt-3 p-3 bg-page ">
-                    <p className="text-sm font-medium !text-primary mb-1">{replyToData.subject}</p>
+                    <p className="!text-sm font-medium !text-primary mb-1">{replyToData.subject}</p>
                     {replyToData.snippet && (
-                      <p className="text-sm !text-muted line-clamp-3">{replyToData.snippet}</p>
+                      <p className="!text-sm !text-muted line-clamp-3">{replyToData.snippet}</p>
                     )}
                   </div>
                 </div>
@@ -1081,7 +1081,7 @@ Cordialement`);
                     </div>
                     <div>
                       <div className="font-semibold !text-primary">{selectedDocument.reference}</div>
-                      <div className="text-sm !text-muted">
+                      <div className="!text-sm !text-muted">
                         {selectedDocument.client_id?.name || selectedDocument.client?.name || 'Client'} • {formatAmount(calculateTotal(selectedDocument), selectedDocument.currency)}
                       </div>
                     </div>
@@ -1140,7 +1140,7 @@ Cordialement`);
                             <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
                           </div>
                         ) : filteredDocuments.length === 0 ? (
-                          <div className="text-center py-12 !text-muted">
+                          <div className="!text-center py-12 !text-muted">
                             <IconComponent className="w-12 h-12 mx-auto mb-4 opacity-30" />
                             <p>{t('no_documents') || 'Aucun document trouvé'}</p>
                           </div>
@@ -1156,11 +1156,11 @@ Cordialement`);
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="font-medium !text-primary truncate">{doc.reference}</div>
-                                <div className="text-sm !text-muted truncate">
+                                <div className="!text-sm !text-muted truncate">
                                   {doc.client_id?.name || doc.client?.name || 'Client'} • {formatDate(doc.date)}
                                 </div>
                               </div>
-                              <div className="text-right">
+                              <div className="!text-right">
                                 <div className={`font-semibold !text-${config.color}`}>
                                   {formatAmount(calculateTotal(doc), doc.currency)}
                                 </div>
@@ -1268,13 +1268,13 @@ Cordialement`);
           </div>
 
           {/* Title & Subject */}
-          <div className="bg-card border border-default  p-6 space-y-4">
+          <div className="bg-card border border-default  p-6 !space-y-4">
             {activeFeatures.title && (
               <div>
                 <label className="block !text-sm font-medium !text-secondary mb-2">
                   <IconHeading className="w-4 h-4 inline mr-1.5 !text-accent" />
                   {t('email_title') || 'Titre de l\'email'}
-                  <span className="text-muted font-normal ml-2">({t('optional') || 'optionnel'})</span>
+                  <span className="!text-muted font-normal ml-2">({t('optional') || 'optionnel'})</span>
                 </label>
                 <input
                   type="text"
@@ -1304,7 +1304,7 @@ Cordialement`);
           {/* Message */}
           <div className="bg-card border border-default  p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium !text-muted">
+              <label className="!text-sm font-medium !text-muted">
                 {t('message') || 'Message'} *
               </label>
 
@@ -1374,7 +1374,7 @@ Cordialement`);
                       <div className="flex items-center gap-3">
                         <IconPaperclip className="w-5 h-5 !text-muted" />
                         <div>
-                          <div className="text-sm font-medium !text-primary">{att.name}</div>
+                          <div className="!text-sm font-medium !text-primary">{att.name}</div>
                           <div className="!text-xs !text-muted">{formatFileSize(att.size)}</div>
                         </div>
                       </div>
@@ -1431,7 +1431,7 @@ Cordialement`);
                   <div className="font-medium !text-primary">
                     {t('include_signature') || 'Inclure la signature'}
                   </div>
-                  <div className="text-sm !text-muted">
+                  <div className="!text-sm !text-muted">
                     {t('include_signature_desc') || 'Ajoute votre signature email à la fin du message'}
                   </div>
                 </div>
@@ -1464,7 +1464,7 @@ Cordialement`);
             {!signatureData && !loadingSignature && (
               <div className="mt-4 p-3 bg-warning-light border border-warning  flex items-start gap-2">
                 <IconAlertCircle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
-                <div className="text-sm !text-warning-text flex items-center gap-2 flex-wrap">
+                <div className="!text-sm !text-warning-text flex items-center gap-2 flex-wrap">
                   {t('no_signature_configured') || 'Aucune signature configurée. '}
                   <a
                     href="/dashboard/settings?tab=email"

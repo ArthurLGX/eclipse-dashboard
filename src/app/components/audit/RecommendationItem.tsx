@@ -99,7 +99,7 @@ export default function RecommendationItem({ text, priority, index = 0 }: Recomm
         <IconBulb className={`w-4 h-4 ${styles.icon}`} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm !text-primary">{displayText}</p>
+        <p className="!text-sm !text-primary">{displayText}</p>
       </div>
       <div className="flex items-center gap-2">
         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${styles.badge}`}>

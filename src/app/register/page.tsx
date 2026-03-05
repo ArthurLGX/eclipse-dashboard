@@ -16,7 +16,7 @@ export default function Register() {
     <div className="min-h-screen w-full flex items-center justify-center bg-page">
       <div className="flex flex-col items-center gap-4">
         <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-        <p className="text-muted">Redirection...</p>
+        <p className="!text-muted">Redirection...</p>
       </div>
     </div>
   );

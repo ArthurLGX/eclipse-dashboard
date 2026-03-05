@@ -201,7 +201,7 @@ export default function SettingsPage() {
 
   const Toggle = ({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) => (
     <label className="flex items-center justify-between cursor-pointer group">
-      <span className="text-sm !text-secondary group-hover:!text-primary transition-colors">{label}</span>
+      <span className="!text-sm !text-secondary group-hover:!text-primary transition-colors">{label}</span>
       <button
         type="button"
         onClick={() => onChange(!checked)}
@@ -221,10 +221,10 @@ export default function SettingsPage() {
     >
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold !text-primary">
+        <h1 className="!text-2xl font-semibold !text-primary">
           {t('settings') || 'Paramètres'}
         </h1>
-        <p className="text-sm !text-muted mt-1">
+        <p className="!text-sm !text-muted mt-1">
           {t('settings_description') || 'Gérez vos préférences et personnalisez votre expérience'}
         </p>
       </div>
@@ -261,7 +261,7 @@ export default function SettingsPage() {
               <div className="space-y-4">
                 {/* Style de thème */}
                 <div>
-                  <p className="text-sm !text-secondary mb-2">{t('theme_style') || 'Style'}</p>
+                  <p className="!text-sm !text-secondary mb-2">{t('theme_style') || 'Style'}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
                       { value: 'default', icon: <IconSettings className="w-4 h-4" />, label: t('theme_default') || 'Défaut' },
@@ -276,7 +276,7 @@ export default function SettingsPage() {
                 
                 {/* Mode clair/sombre */}
                 <div>
-                  <p className="text-sm !text-secondary mb-2">{t('theme_mode') || 'Mode'}</p>
+                  <p className="!text-sm !text-secondary mb-2">{t('theme_mode') || 'Mode'}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
                       { value: 'light', icon: <IconSun stroke={'#ffd700'} className="!text-warning-text w-4 h-4" />, label: t('theme_light') || 'Clair' },
@@ -378,7 +378,7 @@ export default function SettingsPage() {
                     onClick={() => updateFormat({ dateFormat: fmt.value })}
                   >
                     <span>{fmt.label}</span>
-                    <span className="text-muted !text-xs ml-1">({fmt.example})</span>
+                    <span className="!text-muted !text-xs ml-1">({fmt.example})</span>
                   </OptionButton>
                 ))}
               </div>
@@ -406,7 +406,7 @@ export default function SettingsPage() {
               title={t('timezone') || 'Fuseau horaire'} 
               description={t('timezone_desc') || 'Votre fuseau horaire actuel'}
             >
-              <p className="text-sm !text-primary bg-muted px-3 py-2  inline-block">
+              <p className="!text-sm !text-primary bg-muted px-3 py-2  inline-block">
                 🌍 {preferences.format.timezone}
               </p>
             </SettingsRow>
@@ -418,7 +418,7 @@ export default function SettingsPage() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
             {/* Section: Type de facturation */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
+              <h3 className="!text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('billing_type_section') || 'Type de facturation'}
               </h3>
               
@@ -457,7 +457,7 @@ export default function SettingsPage() {
                     min="0"
                     step="1"
                   />
-                  <span className="text-muted">€ / {t('hour') || 'heure'}</span>
+                  <span className="!text-muted">€ / {t('hour') || 'heure'}</span>
                 </div>
               </SettingsRow>
 
@@ -474,7 +474,7 @@ export default function SettingsPage() {
                     min="0"
                     step="1"
                   />
-                  <span className="text-muted">€ / {t('day') || 'jour'}</span>
+                  <span className="!text-muted">€ / {t('day') || 'jour'}</span>
                 </div>
               </SettingsRow>
 
@@ -498,7 +498,7 @@ export default function SettingsPage() {
 
             {/* Section: TVA */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
+              <h3 className="!text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('vat_section') || 'TVA'}
               </h3>
 
@@ -533,7 +533,7 @@ export default function SettingsPage() {
 
             {/* Section: Délais */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
+              <h3 className="!text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('deadlines_section') || 'Délais'}
               </h3>
 
@@ -574,7 +574,7 @@ export default function SettingsPage() {
 
             {/* Section: Numérotation */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
+              <h3 className="!text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('numbering_section') || 'Numérotation'}
               </h3>
 
@@ -624,7 +624,7 @@ export default function SettingsPage() {
 
             {/* Section: Informations légales */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
+              <h3 className="!text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('legal_info_section') || 'Informations légales'}
               </h3>
 
@@ -681,7 +681,7 @@ export default function SettingsPage() {
                       className="input px-3 py-2 !text-sm w-full"
                       placeholder="10 000"
                     />
-                    <span className="text-muted">€</span>
+                    <span className="!text-muted">€</span>
                   </div>
                 </SettingsRow>
 
@@ -703,7 +703,7 @@ export default function SettingsPage() {
 
             {/* Section: Mentions */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold !text-primary border-b border-default pb-2">
+              <h3 className="!text-lg font-semibold !text-primary border-b border-default pb-2">
                 {t('mentions_section') || 'Mentions'}
               </h3>
 
@@ -756,10 +756,10 @@ export default function SettingsPage() {
                 {/* Section : Type de métier */}
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold !text-primary">
+                    <h3 className="!text-lg font-semibold !text-primary">
                       {t('your_business') || 'Votre métier'}
                     </h3>
-                    <p className="text-sm !text-muted mt-1">
+                    <p className="!text-sm !text-muted mt-1">
                       {t('business_type_desc') || 'Nous adapterons votre interface en conséquence'}
                     </p>
                   </div>
@@ -773,10 +773,10 @@ export default function SettingsPage() {
                 {localBusinessType && (
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-lg font-semibold !text-primary">
+                      <h3 className="!text-lg font-semibold !text-primary">
                         {t('enabled_modules') || 'Modules activés'}
                       </h3>
-                      <p className="text-sm !text-muted mt-1">
+                      <p className="!text-sm !text-muted mt-1">
                         {t('modules_desc') || 'Sélectionnez les fonctionnalités que vous souhaitez utiliser'}
                       </p>
                     </div>
@@ -822,10 +822,10 @@ export default function SettingsPage() {
                 {/* Section : Relancer l'onboarding */}
                 <div className="space-y-4 pt-6 border-t border-default">
                   <div>
-                    <h3 className="text-lg font-semibold !text-primary">
+                    <h3 className="!text-lg font-semibold !text-primary">
                       {t('restart_onboarding') || 'Relancer l\'onboarding'}
                     </h3>
-                    <p className="text-sm !text-muted mt-1">
+                    <p className="!text-sm !text-muted mt-1">
                       {t('restart_onboarding_desc') || 'Reconfigurer votre profil et créer un nouveau projet guidé'}
                     </p>
                   </div>
@@ -901,7 +901,7 @@ export default function SettingsPage() {
         {/* INTÉGRATIONS */}
         {activeTab === 'integrations' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <div className="text-sm !text-muted mb-4">
+            <div className="!text-sm !text-muted mb-4">
               {t('integrations_desc') || 'Connectez des services externes pour automatiser votre workflow.'}
             </div>
             
@@ -918,7 +918,7 @@ export default function SettingsPage() {
                   <h3 className="font-semibold !text-primary group-hover:!text-accent transition-colors">
                     {t('api_tokens') || 'API Tokens & Webhooks'}
                   </h3>
-                  <p className="text-sm !text-muted">
+                  <p className="!text-sm !text-muted">
                     {t('api_tokens_integration_desc') || 'Connectez VS Code, Cursor et Typeform à Eclipse'}
                   </p>
                 </div>
@@ -946,7 +946,7 @@ export default function SettingsPage() {
                   <h3 className="font-semibold !text-primary group-hover:!text-accent transition-colors">
                     Fathom AI
                   </h3>
-                  <p className="text-sm !text-muted">
+                  <p className="!text-sm !text-muted">
                     {t('fathom_integration_desc') || 'Notes de réunion automatiques - Transcriptions, résumés et actions'}
                   </p>
                 </div>
@@ -956,7 +956,7 @@ export default function SettingsPage() {
 
             {/* Future integrations placeholder */}
             <div className="p-4  border border-dashed border-default !text-center">
-              <p className="text-sm !text-muted">
+              <p className="!text-sm !text-muted">
                 {t('more_integrations_soon') || 'D\'autres intégrations arrivent bientôt...'}
               </p>
             </div>
@@ -965,7 +965,7 @@ export default function SettingsPage() {
 
         {/* Footer info */}
         <div className="pt-4 border-t border-default !text-xs !text-muted flex items-center gap-2">
-          <span className="text-info">💡</span>
+          <span className="!text-info">💡</span>
           {t('settings_saved_locally') || 'Vos préférences sont enregistrées automatiquement.'}
         </div>
       </div>
@@ -978,7 +978,7 @@ function SettingsRow({ title, description, children }: { title: string; descript
   return (
     <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 pb-6 border-b border-default last:border-0">
       <div className="md:w-48 flex-shrink-0">
-        <h3 className="text-sm font-medium !text-primary">{title}</h3>
+        <h3 className="!text-sm font-medium !text-primary">{title}</h3>
         <p className="!text-xs !text-muted mt-0.5">{description}</p>
       </div>
       <div className="flex-1">{children}</div>

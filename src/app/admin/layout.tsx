@@ -207,9 +207,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <div className="w-12 h-12 border-4 border-accent-light rounded-full" />
             <div className="absolute inset-0 w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
           </div>
-          <div className="text-center">
+          <div className="!text-center">
             <p className="font-medium !text-primary">Vérification des accès</p>
-            <p className="text-sm !text-muted">Veuillez patienter...</p>
+            <p className="!text-sm !text-muted">Veuillez patienter...</p>
           </div>
         </motion.div>
       </div>
@@ -238,7 +238,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex flex-col items-center w-full justify-between gap-4 p-4">
             <div
               onClick={() => router.push('/admin')}
-              className="text-primary cursor-pointer font-semibold !text-lg flex items-center gap-2"
+              className="!text-primary cursor-pointer font-semibold !text-lg flex items-center gap-2"
             >
               {isExpanded || isPinned ? (
                 <div className="flex items-center gap-3">

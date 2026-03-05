@@ -76,7 +76,7 @@ function ProjectsBackground({ userProjects }: { userProjects: Project[] }) {
           >
             <div className="flex items-center gap-2 mb-3">
               <IconFolder className="w-4 h-4 !text-accent" />
-              <span className="text-sm font-medium !text-primary truncate">{project.title}</span>
+              <span className="!text-sm font-medium !text-primary truncate">{project.title}</span>
             </div>
             <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-2">
               <div 
@@ -234,9 +234,9 @@ export default function InvitationPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-page">
-        <div className="text-center">
+        <div className="!text-center">
           <IconLoader2 className="w-12 h-12 !text-accent animate-spin mx-auto mb-4" />
-          <p className="text-primary">{t('loading') || 'Chargement...'}</p>
+          <p className="!text-primary">{t('loading') || 'Chargement...'}</p>
         </div>
       </div>
     );
@@ -254,10 +254,10 @@ export default function InvitationPage() {
           <div className="w-16 h-16 rounded-full bg-danger-light flex items-center justify-center mx-auto mb-6">
             <IconAlertTriangle className="w-8 h-8 !text-danger" />
           </div>
-          <h1 className="text-xl font-semibold !text-primary mb-2">
+          <h1 className="!text-xl font-semibold !text-primary mb-2">
             {t('invitation_error') || 'Erreur d\'invitation'}
           </h1>
-          <p className="text-secondary mb-6">{error}</p>
+          <p className="!text-secondary mb-6">{error}</p>
           <button
             onClick={() => router.push('/dashboard/projects')}
             className="px-6 py-3 bg-muted hover:bg-muted !text-primary  transition-colors"
@@ -307,13 +307,13 @@ export default function InvitationPage() {
         </div>
 
         {/* Titre */}
-        <h1 className="text-2xl font-bold !text-accent !text-center mb-2">
+        <h1 className="!text-2xl font-bold !text-accent !text-center mb-2">
           {t('project_invitation') || 'Invitation À Collaborer'}
         </h1>
 
         {/* Message */}
-        <p className="text-secondary !text-center mb-6">
-          <span className="text-accent font-medium">
+        <p className="!text-secondary !text-center mb-6">
+          <span className="!text-accent font-medium">
             {invitation.sender?.username || 'Un utilisateur'}
           </span>{' '}
           {t('invites_you_to_collaborate') || 'vous invite à collaborer sur le projet'}
@@ -321,17 +321,17 @@ export default function InvitationPage() {
 
         {/* Projet */}
         <div className="bg-muted  p-5 mb-6 border border-default">
-          <h2 className="text-lg font-semibold !text-accent mb-1">
+          <h2 className="!text-lg font-semibold !text-accent mb-1">
             {invitation.project?.title || 'Projet'}
           </h2>
-          <p className="text-xl font-bold !text-primary mb-3 uppercase tracking-wide">
+          <p className="!text-xl font-bold !text-primary mb-3 uppercase tracking-wide">
             {invitation.project?.type === 'development' ? t('development') : 
              invitation.project?.type === 'design' ? t('design') : 
              invitation.project?.type || 'DASHBOARD'}
           </p>
           
           {/* Description rendue proprement */}
-          <p className="text-sm !text-secondary line-clamp-2 mb-4">
+          <p className="!text-sm !text-secondary line-clamp-2 mb-4">
             {getDescriptionPreview(invitation.project?.description)}
           </p>
           

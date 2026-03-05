@@ -448,10 +448,10 @@ export default function AITaskGenerator({
                 />
               </div>
               <div>
-                <h2 className="text-lg font-semibold !text-primary">
+                <h2 className="!text-lg font-semibold !text-primary">
                   Eclipse Assistant
                 </h2>
-                <p className="text-sm !text-muted">
+                <p className="!text-sm !text-muted">
                   {t('ai_tasks_description') || 'Génération de tâches intelligente'} • {projectTitle}
                 </p>
               </div>
@@ -533,7 +533,7 @@ export default function AITaskGenerator({
                       />
                     </div>
                     <div className="p-4 bg-muted ">
-                      <p className="text-sm !text-info">
+                      <p className="!text-sm !text-info">
                         💡 {t('fathom_tip') || 'Astuce : Exportez le résumé et les action items depuis Fathom pour de meilleurs résultats'}
                       </p>
                     </div>
@@ -545,10 +545,10 @@ export default function AITaskGenerator({
                   <p className="!text-xs !text-muted font-medium uppercase tracking-wider mb-2">
                     {t('project_context') || 'Contexte du projet'}
                   </p>
-                  <p className="text-sm font-medium !text-primary">{projectTitle}</p>
+                  <p className="!text-sm font-medium !text-primary">{projectTitle}</p>
                   {projectDescription && (
                     <div 
-                      className="text-sm !text-primary mt-1 line-clamp-2 prose prose-sm max-w-none"
+                      className="!text-sm !text-primary mt-1 line-clamp-2 prose prose-sm max-w-none"
                       dangerouslySetInnerHTML={{ __html: projectDescription }}
                     />
                   )}
@@ -563,7 +563,7 @@ export default function AITaskGenerator({
                 {error && (
                   <div className="p-4 bg-danger-light  flex items-center gap-3">
                     <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
-                    <p className="text-sm !text-danger">{error}</p>
+                    <p className="!text-sm !text-danger">{error}</p>
                   </div>
                 )}
               </div>
@@ -575,13 +575,13 @@ export default function AITaskGenerator({
                 <div className="flex items-center gap-4 p-4 bg-muted ">
                   <div className="flex items-center gap-2">
                     <IconListCheck className="w-5 h-5 !text-muted" />
-                    <span className="text-sm font-medium !text-primary">
+                    <span className="!text-sm font-medium !text-primary">
                       {totalSelectedTasks} {t('tasks') || 'tâches'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <IconClock className="w-5 h-5 !text-muted" />
-                    <span className="text-sm font-medium !text-primary">
+                    <span className="!text-sm font-medium !text-primary">
                       {totalSelectedHours}h {t('estimated') || 'estimées'}
                     </span>
                   </div>
@@ -624,7 +624,7 @@ export default function AITaskGenerator({
                           </button>
                         )}
                         
-                        <div className="flex-1 space-y-3">
+                        <div className="flex-1 !space-y-3">
                           <input
                             type="text"
                             value={task.title}
@@ -682,7 +682,7 @@ export default function AITaskGenerator({
 
                       {/* Subtasks */}
                       {task.subtasks && task.subtasks.length > 0 && expandedTasks.has(taskIndex) && (
-                        <div className="px-4 pb-4 ml-11 space-y-2">
+                        <div className="px-4 pb-4 ml-11 !space-y-2">
                           {task.subtasks.map((subtask, subtaskIndex) => (
                             <div
                               key={subtaskIndex}

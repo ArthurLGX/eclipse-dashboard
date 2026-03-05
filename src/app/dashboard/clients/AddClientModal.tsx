@@ -100,7 +100,7 @@ export default function AddClientModal({
         <div className="p-2 bg-accent-light  border border-accent">
           <IconUserPlus size={22} className="!text-white" />
         </div>
-        <h2 className="text-xl font-bold !text-primary">
+        <h2 className="!text-xl font-bold !text-primary">
           {t('add_client')}
         </h2>
       </div>
@@ -117,7 +117,7 @@ export default function AddClientModal({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconUser size={14} className="text-muted" />
+              <IconUser size={14} className="!text-muted" />
               {t('name')} <span className="!text-accent">*</span>
             </label>
             <input
@@ -132,7 +132,7 @@ export default function AddClientModal({
           </div>
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconMail size={14} className="text-muted" />
+              <IconMail size={14} className="!text-muted" />
               {t('email')}
             </label>
             <input
@@ -149,7 +149,7 @@ export default function AddClientModal({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconPhone size={14} className="text-muted" />
+              <IconPhone size={14} className="!text-muted" />
               {t('phone')}
             </label>
             <input
@@ -162,7 +162,7 @@ export default function AddClientModal({
           </div>
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconBuilding size={14} className="text-muted" />
+              <IconBuilding size={14} className="!text-muted" />
               {t('enterprise')}
             </label>
             <input
@@ -179,7 +179,7 @@ export default function AddClientModal({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconMapPin size={14} className="text-muted" />
+              <IconMapPin size={14} className="!text-muted" />
               {t('address')}
             </label>
             <input
@@ -192,7 +192,7 @@ export default function AddClientModal({
           </div>
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
-              <IconWorld size={14} className="text-muted" />
+              <IconWorld size={14} className="!text-muted" />
               {t('website')}
             </label>
             <input
@@ -209,7 +209,7 @@ export default function AddClientModal({
         <div className="flex items-center gap-4 p-3 bg-muted  border border-default">
           {/* Sélecteur de statut */}
           <div className="flex-1">
-            <label className="text-secondary !text-xs mb-2 font-medium block">
+            <label className="!text-secondary !text-xs mb-2 font-medium block">
               {t('status')}
             </label>
             <div className="flex gap-2">

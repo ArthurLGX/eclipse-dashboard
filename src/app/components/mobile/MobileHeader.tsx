@@ -24,7 +24,7 @@ export default function MobileHeader({
             className="w-10 h-10 flex items-center justify-center  hover:bg-hover transition-colors active:scale-95"
             aria-label="Ouvrir le menu"
           >
-            <IconMenu2 size={22} className="text-primary" />
+            <IconMenu2 size={22} className="!text-primary" />
           </button>
         </div>
 

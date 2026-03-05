@@ -175,7 +175,7 @@ export default function EmailPreviewModal({
             <div className="flex flex-1 overflow-hidden min-h-0">
               {/* Sidebar - Folders */}
               <div className="w-16 md:w-48 bg-gray-50 border-r border-gray-200 flex-shrink-0 hidden sm:block">
-                <div className="p-2 md:p-4 space-y-1">
+                <div className="p-2 md:p-4 !space-y-1">
                   <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700  font-medium">
                     <IconInbox className="w-5 h-5" />
                     <span className="hidden md:inline">{t.inbox}</span>
@@ -245,7 +245,7 @@ export default function EmailPreviewModal({
                         <p className="font-medium !text-gray-800 !text-sm truncate mb-0.5">
                           {emailData.subject || 'Objet de l\'email'}
                         </p>
-                        <p className="text-info !text-xs truncate">
+                        <p className="!text-info !text-xs truncate">
                           {emailData.title || emailData.content?.substring(0, 50) || 'Votre contenu apparaîtra ici...'}
                         </p>
                       </div>
@@ -271,7 +271,7 @@ export default function EmailPreviewModal({
                             <span className="font-medium !text-gray-700 truncate">{email.from}</span>
                             <span className="!text-xs !text-gray-400 flex-shrink-0 ml-2">{email.time}</span>
                           </div>
-                          <p className="text-gray-600 !text-sm truncate">{email.subject}</p>
+                          <p className="!text-gray-600 !text-sm truncate">{email.subject}</p>
                         </div>
                       </div>
                     </div>
@@ -284,7 +284,7 @@ export default function EmailPreviewModal({
                 {/* Email header */}
                 <div className="p-4 border-b border-gray-200 flex-shrink-0">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold !text-gray-900">
+                    <h2 className="!text-xl font-semibold !text-gray-900">
                       {emailData.subject || 'Objet de l\'email'}
                     </h2>
                     <div className="flex items-center gap-2">
@@ -320,7 +320,7 @@ export default function EmailPreviewModal({
                         <span className="font-semibold !text-gray-900">
                           {senderInfo.firstName} {senderInfo.lastName}
                         </span>
-                        <span className="text-gray-400 !text-sm">
+                        <span className="!text-gray-400 !text-sm">
                           &lt;{senderInfo.email || 'email@example.com'}&gt;
                         </span>
                       </div>
@@ -339,7 +339,7 @@ export default function EmailPreviewModal({
                       {/* Header with title (if provided) */}
                       {(emailData.title || headerBackground) && (
                         <div 
-                          className="text-center py-8"
+                          className="!text-center py-8"
                           style={{ 
                             backgroundImage: headerBackground?.url 
                               ? `url(${headerBackground.url})`
@@ -398,7 +398,7 @@ export default function EmailPreviewModal({
                                 </p>
                               ))
                             ) : (
-                              <p className="text-gray-400 italic !text-center py-8">
+                              <p className="!text-gray-400 italic !text-center py-8">
                                 Votre contenu apparaîtra ici...
                               </p>
                             )}
@@ -460,7 +460,7 @@ export default function EmailPreviewModal({
                           <div className="mt-6 pt-4 border-t border-gray-100 !text-center">
                             <a 
                               href="#" 
-                              className="text-sm hover:underline"
+                              className="!text-sm hover:underline"
                               style={{ color: sigPrimaryColor }}
                             >
                               {t.unsubscribe}

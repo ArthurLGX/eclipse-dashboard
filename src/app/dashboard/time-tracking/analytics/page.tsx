@@ -479,11 +479,11 @@ export default function TimeTrackingAnalyticsPage() {
               <IconArrowLeft className="w-5 h-5" />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
+              <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
                 <IconChartBar className="w-7 h-7 !text-accent" />
                 {t('time_analytics') || 'Analyse du temps'}
               </h1>
-              <p className="text-muted !text-sm mt-1">
+              <p className="!text-muted !text-sm mt-1">
                 {t('time_analytics_desc') || 'Évaluez la précision de vos estimations'}
               </p>
             </div>
@@ -524,7 +524,7 @@ export default function TimeTrackingAnalyticsPage() {
                     <IconClock className="w-6 h-6 !text-accent" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold !text-primary">{formatDuration(analytics.totalTime)}</p>
+                    <p className="!text-2xl font-bold !text-primary">{formatDuration(analytics.totalTime)}</p>
                     <p className="!text-xs !text-muted">{t('total_tracked') || 'Temps total suivi'}</p>
                   </div>
                 </div>
@@ -536,7 +536,7 @@ export default function TimeTrackingAnalyticsPage() {
                     <IconCalendar className="w-6 h-6 !text-warning" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold !text-warning">{formatDuration(analytics.totalEstimated)}</p>
+                    <p className="!text-2xl font-bold !text-warning">{formatDuration(analytics.totalEstimated)}</p>
                     <p className="!text-xs !text-muted">{t('total_estimated') || 'Temps estimé total'}</p>
                   </div>
                 </div>
@@ -571,7 +571,7 @@ export default function TimeTrackingAnalyticsPage() {
                     <IconTrendingUp className="w-6 h-6 !text-success-text -text" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold !text-success-text -text">{analytics.completedTasks}</p>
+                    <p className="!text-2xl font-bold !text-success-text -text">{analytics.completedTasks}</p>
                     <p className="!text-xs !text-muted">{t('tasks_completed') || 'Tâches terminées'}</p>
                   </div>
                 </div>
@@ -582,7 +582,7 @@ export default function TimeTrackingAnalyticsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Daily Time Chart */}
               <div className="card p-6">
-                <h3 className="text-lg font-semibold !text-primary mb-4">
+                <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('daily_comparison') || 'Comparaison journalière'}
                 </h3>
                 <div className="h-64">
@@ -592,7 +592,7 @@ export default function TimeTrackingAnalyticsPage() {
 
               {/* Project Time Chart */}
               <div className="card p-6">
-                <h3 className="text-lg font-semibold !text-primary mb-4">
+                <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('time_by_project') || 'Temps par projet'}
                 </h3>
                 <div className="h-64">
@@ -611,7 +611,7 @@ export default function TimeTrackingAnalyticsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Accuracy Distribution */}
               <div className="card p-6">
-                <h3 className="text-lg font-semibold !text-primary mb-4">
+                <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('estimation_accuracy') || 'Précision des estimations'}
                 </h3>
                 <div className="h-56">
@@ -619,15 +619,15 @@ export default function TimeTrackingAnalyticsPage() {
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-2 !text-center">
                   <div>
-                    <p className="text-lg font-bold !text-danger">{analytics.underestimatedCount}</p>
+                    <p className="!text-lg font-bold !text-danger">{analytics.underestimatedCount}</p>
                     <p className="!text-xs !text-muted">{t('underestimated') || 'Sous-estimées'}</p>
                   </div>
                   <div>
-                    <p className="text-lg font-bold !text-success-text -text">{analytics.accurateCount}</p>
+                    <p className="!text-lg font-bold !text-success-text -text">{analytics.accurateCount}</p>
                     <p className="!text-xs !text-muted">{t('accurate') || 'Précises'}</p>
                   </div>
                   <div>
-                    <p className="text-lg font-bold !text-info">{analytics.overestimatedCount}</p>
+                    <p className="!text-lg font-bold !text-info">{analytics.overestimatedCount}</p>
                     <p className="!text-xs !text-muted">{t('overestimated') || 'Sur-estimées'}</p>
                   </div>
                 </div>
@@ -635,7 +635,7 @@ export default function TimeTrackingAnalyticsPage() {
 
               {/* Status Distribution */}
               <div className="card p-6">
-                <h3 className="text-lg font-semibold !text-primary mb-4">
+                <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('task_status') || 'Statut des tâches'}
                 </h3>
                 <div className="h-56">
@@ -645,12 +645,12 @@ export default function TimeTrackingAnalyticsPage() {
 
               {/* Top Deviated Tasks - Regroupées par projet */}
               <div className="card p-6">
-                <h3 className="text-lg font-semibold !text-primary mb-4">
+                <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('biggest_deviations') || 'Plus grands écarts'}
                 </h3>
                 <div className="space-y-3 max-h-72 overflow-y-auto">
                   {analytics.groupedDeviations.length === 0 ? (
-                    <p className="text-muted !text-sm !text-center py-8">
+                    <p className="!text-muted !text-sm !text-center py-8">
                       {t('no_data') || 'Aucune donnée'}
                     </p>
                   ) : (
@@ -659,7 +659,7 @@ export default function TimeTrackingAnalyticsPage() {
                         <div className="flex items-center gap-2 min-w-0 flex-1">
                           {getAccuracyIcon(item.accuracy)}
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm !text-primary truncate font-medium">
+                            <p className="!text-sm !text-primary truncate font-medium">
                               {item.taskName || item.projectName || t('no_description')}
                             </p>
                             {item.projectName && item.taskName && (
@@ -667,7 +667,7 @@ export default function TimeTrackingAnalyticsPage() {
                                 <IconBriefcase className="w-3 h-3 flex-shrink-0" />
                                 <span className="truncate">{item.projectName}</span>
                                 {item.entryCount > 1 && (
-                                  <span className="text-muted/60">({item.entryCount} entrées)</span>
+                                  <span className="!text-muted/60">({item.entryCount} entrées)</span>
                                 )}
                               </p>
                             )}
@@ -690,7 +690,7 @@ export default function TimeTrackingAnalyticsPage() {
 
             {/* Insights */}
             <div className="card p-6 bg-gradient-to-r from-accent/5 to-transparent border-accent-light">
-              <h3 className="text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
+              <h3 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
                 <IconTarget className="w-5 h-5 !text-accent" />
                 {t('insights') || 'Conseils'}
               </h3>
@@ -699,7 +699,7 @@ export default function TimeTrackingAnalyticsPage() {
                   <div className="flex items-start gap-3 p-3 bg-danger-light ">
                     <IconTrendingUp className="w-5 h-5 !text-danger flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium !text-primary">
+                      <p className="!text-sm font-medium !text-primary">
                         {t('underestimating_time') || 'Vous sous-estimez vos tâches'}
                       </p>
                       <p className="!text-xs !text-muted mt-1">
@@ -712,7 +712,7 @@ export default function TimeTrackingAnalyticsPage() {
                   <div className="flex items-start gap-3 p-3 bg-info-light ">
                     <IconTrendingDown className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium !text-primary">
+                      <p className="!text-sm font-medium !text-primary">
                         {t('overestimating_time') || 'Vous surestimez vos tâches'}
                       </p>
                       <p className="!text-xs !text-muted mt-1">
@@ -725,7 +725,7 @@ export default function TimeTrackingAnalyticsPage() {
                   <div className="flex items-start gap-3 p-3 bg-success-light ">
                     <IconTarget className="w-5 h-5 !text-success-text -text flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium !text-primary">
+                      <p className="!text-sm font-medium !text-primary">
                         {t('good_estimation') || 'Excellente précision !'}
                       </p>
                       <p className="!text-xs !text-muted mt-1">
@@ -738,7 +738,7 @@ export default function TimeTrackingAnalyticsPage() {
                   <div className="flex items-start gap-3 p-3 bg-warning-light ">
                     <IconClock className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium !text-primary">
+                      <p className="!text-sm font-medium !text-primary">
                         {t('many_exceeded') || 'Beaucoup de dépassements'}
                       </p>
                       <p className="!text-xs !text-muted mt-1">

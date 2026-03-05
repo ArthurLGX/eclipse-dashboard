@@ -134,10 +134,10 @@ export default function BusinessSetupModal() {
                 <IconSparkles className="w-8 h-8 !text-accent" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold !text-primary">
+                <h2 className="!text-2xl font-bold !text-primary">
                   {t('setup_welcome') || 'Configurez votre espace'}
                 </h2>
-                <p className="text-muted">
+                <p className="!text-muted">
                   {t('setup_subtitle') || 'Personnalisez Eclipse selon votre activité'}
                 </p>
               </div>
@@ -165,11 +165,11 @@ export default function BusinessSetupModal() {
           <div className="p-8">
             {step === 'business' ? (
               <div className="space-y-6">
-                <div className="text-center">
-                  <h3 className="text-xl font-bold !text-primary">
+                <div className="!text-center">
+                  <h3 className="!text-xl font-bold !text-primary">
                     {t('what_is_your_business') || 'Quel est votre métier ?'}
                   </h3>
-                  <p className="text-muted mt-2">
+                  <p className="!text-muted mt-2">
                     {t('business_type_desc') || 'Nous adapterons votre interface en conséquence'}
                   </p>
                 </div>
@@ -180,12 +180,12 @@ export default function BusinessSetupModal() {
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="text-center">
-                  <h3 className="text-xl font-bold !text-primary">
+                <div className="!text-center">
+                  <h3 className="!text-xl font-bold !text-primary">
                     {t('select_your_modules') || 'Sélectionnez vos modules'}
                   </h3>
-                  <p className="text-muted mt-2">
-                    {t('modules_for') || 'Modules recommandés pour'} <span className="text-accent font-medium">{businessLabel}</span>
+                  <p className="!text-muted mt-2">
+                    {t('modules_for') || 'Modules recommandés pour'} <span className="!text-accent font-medium">{businessLabel}</span>
                   </p>
                 </div>
                 {selectedType && (

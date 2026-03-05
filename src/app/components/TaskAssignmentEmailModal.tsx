@@ -193,10 +193,10 @@ export default function TaskAssignmentEmailModal({
                   <IconMail className="w-5 h-5 !text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold !text-primary">
+                  <h2 className="!text-lg font-semibold !text-primary">
                     {t('compose_notification_email') || 'Rédiger l\'email de notification'}
                   </h2>
-                  <p className="text-sm !text-muted">
+                  <p className="!text-sm !text-muted">
                     {assignedUsers.length} {assignedUsers.length > 1 ? 'destinataires' : 'destinataire'} • {totalTasks} {totalTasks > 1 ? 'tâches' : 'tâche'}
                   </p>
                 </div>
@@ -210,7 +210,7 @@ export default function TaskAssignmentEmailModal({
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-auto p-6 space-y-6">
+            <div className="flex-1 overflow-auto p-6 !space-y-6">
               {/* Recipients */}
               <div>
                 <label className="block !text-sm font-medium !text-primary mb-2">
@@ -225,7 +225,7 @@ export default function TaskAssignmentEmailModal({
                       <div className="w-6 h-6 rounded-full bg-accent-light flex items-center justify-center !text-accent !text-xs font-medium">
                         {user.username.charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-sm !text-primary">{user.username}</span>
+                      <span className="!text-sm !text-primary">{user.username}</span>
                       <span className="!text-xs !text-muted">({user.tasks.length})</span>
                       <button
                         onClick={() => openPreview(user)}
@@ -273,7 +273,7 @@ export default function TaskAssignmentEmailModal({
                   <div className="flex items-center gap-3">
                     <IconListCheck className="w-5 h-5 !text-accent" />
                     <div>
-                      <p className="text-sm font-medium !text-primary">
+                      <p className="!text-sm font-medium !text-primary">
                         {t('include_task_list') || 'Inclure la liste des tâches'}
                       </p>
                       <p className="!text-xs !text-muted">
@@ -299,11 +299,11 @@ export default function TaskAssignmentEmailModal({
               {/* Info */}
               <div className="p-4 bg-info-light border border-info  flex items-start gap-3">
                 <IconMail className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
-                <div className="text-sm !text-primary">
+                <div className="!text-sm !text-primary">
                   <p className="font-medium mb-1">
                     {t('one_email_per_user') || 'Un email par utilisateur'}
                   </p>
-                  <p className="text-muted">
+                  <p className="!text-muted">
                     {t('one_email_per_user_hint') || 'Chaque collaborateur recevra un seul email récapitulatif avec toutes ses tâches assignées.'}
                   </p>
                 </div>

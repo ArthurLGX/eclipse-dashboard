@@ -44,9 +44,9 @@ export default function QuotaAlert() {
           >
             <div className="flex items-center gap-3">
               {notification.type === 'quota_exceeded' || notification.type === 'trial_expired' ? (
-                <IconAlertTriangle className="text-danger flex-shrink-0" size={24} />
+                <IconAlertTriangle className="!text-danger flex-shrink-0" size={24} />
               ) : (
-                <IconClock className="text-warning-text flex-shrink-0" size={24} />
+                <IconClock className="!text-warning-text flex-shrink-0" size={24} />
               )}
               <div>
                 <p className={`font-medium ${
@@ -57,7 +57,7 @@ export default function QuotaAlert() {
                   {notification.message}
                 </p>
                 {notification.type !== 'trial_ending' && (
-                  <p className="text-secondary !text-sm mt-1">
+                  <p className="!text-secondary !text-sm mt-1">
                     {t('upgrade_to_unlock') || 'Passez à un plan supérieur pour débloquer.'}
                   </p>
                 )}
@@ -76,7 +76,7 @@ export default function QuotaAlert() {
                 className="btn-ghost p-2"
                 title={t('dismiss') || 'Fermer'}
               >
-                <IconX size={18} className="text-muted" />
+                <IconX size={18} className="!text-muted" />
               </button>
             </div>
           </motion.div>

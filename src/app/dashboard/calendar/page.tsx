@@ -471,11 +471,11 @@ export default function CalendarPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
-            <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
+            <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
               <IconCalendar className="w-7 h-7 !text-accent" />
               {t('calendar') || 'Calendrier'}
             </h1>
-            <p className="text-muted !text-sm mt-1">
+            <p className="!text-muted !text-sm mt-1">
               {t('calendar_desc') || 'Gérez vos rendez-vous et deadlines'}
             </p>
           </div>
@@ -515,7 +515,7 @@ export default function CalendarPage() {
           </div>
         </div>
         <div className="flex items-center justify-center w-fit md:flex-row flex-col gap-4">
-          <p className="text-muted !text-sm">{t('integrate') || 'Intégrez'}</p>
+          <p className="!text-muted !text-sm">{t('integrate') || 'Intégrez'}</p>
           {/*TODO: afficher le favicon de fathom et le lien vers le site de fathom */}
           <div className="flex cursor-pointer items-center gap-2 bg-accent-light  p-2 group hover:bg-[var(--color-accent)] transition-colors">
           <Image
@@ -526,7 +526,7 @@ export default function CalendarPage() {
             className="rounded-sm"
             unoptimized
           />
-          <Link href="/dashboard/settings/meeting-integrations" target="_blank" className="text-primary group-hover:!text-accent transition-colors">
+          <Link href="/dashboard/settings/meeting-integrations" target="_blank" className="!text-primary group-hover:!text-accent transition-colors">
               Fathom AI
             </Link>
               {/*is user connected to fathom, afficher une pastille verte avec le texte "Connecté"*/}
@@ -536,7 +536,7 @@ export default function CalendarPage() {
           </div>
 
         
-                              <p className="text-muted !text-sm">{t('to_your_meetings') || 'Powered by'}</p>
+                              <p className="!text-muted !text-sm">{t('to_your_meetings') || 'Powered by'}</p>
 
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -548,7 +548,7 @@ export default function CalendarPage() {
                 <button onClick={prevMonth} className="p-2 hover:bg-hover ">
                   <IconChevronLeft className="w-5 h-5" />
                 </button>
-                <h2 className="text-lg font-semibold !text-primary min-w-[200px] !text-center">
+                <h2 className="!text-lg font-semibold !text-primary min-w-[200px] !text-center">
                   {currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
                 </h2>
                 <button onClick={nextMonth} className="p-2 hover:bg-hover ">
@@ -568,7 +568,7 @@ export default function CalendarPage() {
             {/* Days of week */}
             <div className="grid grid-cols-7 mb-2">
               {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((day) => (
-                <div key={day} className="text-center !text-xs font-medium !text-muted py-2">
+                <div key={day} className="!text-center !text-xs font-medium !text-muted py-2">
                   {day}
                 </div>
               ))}
@@ -646,7 +646,7 @@ export default function CalendarPage() {
                 {t('upcoming_events') || 'Événements à venir'}
               </h3>
               {upcomingEvents.length === 0 ? (
-                <p className="text-sm !text-muted">{t('no_upcoming_events') || 'Aucun événement'}</p>
+                <p className="!text-sm !text-muted">{t('no_upcoming_events') || 'Aucun événement'}</p>
               ) : (
                 <div className="space-y-3">
                   {upcomingEvents.map((event) => (
@@ -691,7 +691,7 @@ export default function CalendarPage() {
                                 className="rounded-sm"
                                 unoptimized
                               />
-                              <span className="text-[10px] font-medium">
+                              <span className="!text-[10px] font-medium">
                                 {t('notetaker_by_fathom') || 'Notetaker by Fathom'}
                               </span>
                             </div>
@@ -700,7 +700,7 @@ export default function CalendarPage() {
                           {(event.recurrence && event.recurrence !== 'none' || event.recurrence_parent_id) && (
                             <div className="flex items-center gap-1 mt-1.5 px-1.5 py-0.5 bg-accent-light rounded !text-accent w-fit">
                               <IconCalendarEvent className="w-3 h-3" />
-                              <span className="text-[10px] font-medium">
+                              <span className="!text-[10px] font-medium">
                                 {(() => {
                                   const rec = event.recurrence || 'weekly';
                                   switch (rec) {
@@ -747,7 +747,7 @@ export default function CalendarPage() {
                 </div>
                 
                 {getEventsForDay(selectedDate).length === 0 ? (
-                  <p className="text-sm !text-muted">{t('no_events') || 'Aucun événement'}</p>
+                  <p className="!text-sm !text-muted">{t('no_events') || 'Aucun événement'}</p>
                 ) : (
                   <div className="space-y-2">
                     {getEventsForDay(selectedDate).map((event) => (
@@ -1092,7 +1092,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
       >
         {/* Header fixe */}
         <div className="flex items-center justify-between p-4 border-b border-default bg-card rounded-t-xl sticky top-0 z-10">
-          <h2 className="text-lg font-semibold !text-primary">
+          <h2 className="!text-lg font-semibold !text-primary">
             {event ? (t('edit_event') || 'Modifier l\'événement') : (t('new_event') || 'Nouvel événement')}
           </h2>
           <div className="flex items-center gap-2">
@@ -1111,7 +1111,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
           </div>
         </div>
 
-        <form id="event-form" onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto flex-1" style={{ overscrollBehavior: 'contain' }}>
+        <form id="event-form" onSubmit={handleSubmit} className="p-6 !space-y-4 overflow-y-auto flex-1" style={{ overscrollBehavior: 'contain' }}>
           <div>
             <label className="block !text-sm font-medium !text-secondary mb-1">
               {t('title') || 'Titre'} *
@@ -1175,7 +1175,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
               onChange={(e) => setAllDay(e.target.checked)}
               className="w-4 h-4"
             />
-            <label htmlFor="allDay" className="text-sm !text-secondary">
+            <label htmlFor="allDay" className="!text-sm !text-secondary">
               {t('all_day') || 'Toute la journée'}
             </label>
           </div>
@@ -1195,7 +1195,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                 className={`input w-full ${errors.startDate ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
               />
               {errors.startDate && (
-                <p className="text-red-500 !text-sm mt-1">{errors.startDate}</p>
+                <p className="!text-red-500 !text-sm mt-1">{errors.startDate}</p>
               )}
             </div>
             {!allDay && (
@@ -1231,7 +1231,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                 <label className="block !text-sm font-medium !text-secondary mb-1">
                   {t('duration') || 'Durée'}
                 </label>
-                <div className="text-sm !text-muted py-2.5 px-3 bg-muted/30 ">
+                <div className="!text-sm !text-muted py-2.5 px-3 bg-muted/30 ">
                   {(() => {
                     const start = new Date(`2000-01-01T${startTime}`);
                     const end = new Date(`2000-01-01T${endTime}`);
@@ -1408,7 +1408,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
 
           {/* Section Notes de réunion - pour les événements de type meeting */}
           {eventType === 'meeting' && (
-            <div className="p-4  border border-default bg-muted space-y-3">
+            <div className="p-4  border border-default bg-muted !space-y-3">
               <div className="flex items-center gap-2 !text-sm font-medium !text-primary">
                 <IconNotes className="w-4 h-4 !text-accent" />
                 {t('meeting_notes') || 'Notes de réunion'}
@@ -1485,7 +1485,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
               {noteMode === 'fathom' && fathomConfigured && (
                 <div className="flex items-center gap-2 p-2  !bg-success-light border border-success">
                   <IconCheck className="w-4 h-4 !text-success-text -text" />
-                  <span className="text-sm !text-success-text -text">
+                  <span className="!text-sm !text-success-text -text">
                     {t('fathom_will_join') || 'Fathom rejoindra automatiquement votre réunion et prendra les notes'}
                   </span>
                 </div>

@@ -437,10 +437,10 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
           <div className="flex items-center justify-between p-6 border-b border-default">
             <div className="flex items-center gap-3">
               <div>
-                <h2 className="text-xl font-bold !text-primary">
+                <h2 className="!text-xl font-bold !text-primary">
                   {t('import_clients') || 'Importer des clients'}
                 </h2>
-                <p className="text-sm !text-secondary">
+                <p className="!text-sm !text-secondary">
                   {t('import_clients_subtitle_new') || 'Importez vos clients depuis JSON, CSV ou une liste d\'emails'}
                 </p>
               </div>
@@ -454,19 +454,19 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto p-6 !space-y-6">
             {/* Error message */}
             {error && (
               <div className="flex items-center gap-3 p-4  bg-danger-light border border-danger">
                 <IconAlertCircle className="w-5 h-5 !text-danger flex-shrink-0" />
-                <p className="text-danger !text-sm">{error}</p>
+                <p className="!text-danger !text-sm">{error}</p>
               </div>
             )}
 
             {/* Import mode selector */}
             {importedClients.length === 0 && (
               <div className="space-y-4">
-                <p className="text-sm font-medium !text-primary">
+                <p className="!text-sm font-medium !text-primary">
                   {t('import_mode_title') || 'Choisir le mode d\'import'}
                 </p>
                 <div className="grid grid-cols-3 gap-3">
@@ -518,13 +518,13 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
                     <IconUpload className={`w-8 h-8 ${isDragging ? 'text-accent' : 'text-secondary'}`} />
                   </div>
                   <div>
-                    <p className="text-primary font-medium mb-1">
+                    <p className="!text-primary font-medium mb-1">
                       {importMode === 'json' 
                         ? (t('import_drop_json') || 'Glissez votre fichier JSON ici')
                         : (t('import_drop_csv') || 'Glissez votre fichier CSV ici')
                       }
                     </p>
-                    <p className="text-secondary !text-sm">
+                    <p className="!text-secondary !text-sm">
                       {t('import_or_click') || 'ou cliquez pour parcourir'}
                     </p>
                   </div>
@@ -536,7 +536,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
             {importedClients.length === 0 && importMode === 'email_list' && (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium !text-primary">
+                  <label className="!text-sm font-medium !text-primary">
                     {t('import_paste_emails') || 'Collez votre liste d\'emails'}
                   </label>
                   <textarea
@@ -562,7 +562,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
             {/* Format hints */}
             {importedClients.length === 0 && importMode === 'json' && (
               <div className="p-4  bg-info-light border border-info">
-                <p className="text-sm !text-secondary mb-2">
+                <p className="!text-sm !text-secondary mb-2">
                   {t('import_list') || 'Format JSON attendu :'}
                 </p>
                 <pre className="!text-xs !text-secondary bg-page p-3  overflow-x-auto">
@@ -580,7 +580,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
 
             {importedClients.length === 0 && importMode === 'csv' && (
               <div className="p-4  bg-info-light border border-info">
-                <p className="text-sm !text-secondary mb-2">
+                <p className="!text-sm !text-secondary mb-2">
                   {t('import_csv_format') || 'Format CSV attendu :'}
                 </p>
                 <pre className="!text-xs !text-secondary bg-page p-3  overflow-x-auto">
@@ -690,12 +690,12 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-sm !text-secondary">
+                            <span className="!text-sm !text-secondary">
                               {client.enterprise || '-'}
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-sm !text-secondary">
+                            <span className="!text-sm !text-secondary">
                               {client.website || '-'}
                             </span>
                           </td>
@@ -722,15 +722,15 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 {/* Error list */}
                 {invalidCount > 0 && (
                   <div className="p-4  bg-warning-light border border-warning">
-                    <p className="text-sm !text-warning-text font-medium mb-2">
+                    <p className="!text-sm !text-warning-text font-medium mb-2">
                       {t('import_errors_found') || 'Erreurs détectées :'}
                     </p>
-                    <ul className="text-sm !text-secondary space-y-1">
+                    <ul className="!text-sm !text-secondary !space-y-1">
                       {importedClients
                         .filter(c => !c.isValid)
                         .map((client, idx) => (
                           <li key={idx} className="flex items-center gap-2">
-                            <span className="text-warning">•</span>
+                            <span className="!text-warning">•</span>
                             <span className="font-medium">{client.name || client.email || `Ligne ${idx + 1}`}:</span>
                             {client.error}
                           </li>
@@ -744,7 +744,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 <div className="p-4  bg-card-hover border border-default">
                   <div className="flex items-center gap-2 mb-3">
                     <IconAlertCircle className="w-5 h-5 !text-warning" />
-                    <p className="text-sm font-medium !text-primary">
+                    <p className="!text-sm font-medium !text-primary">
                       {t('duplicate_action_title') || 'Action en cas de doublon'}
                     </p>
                   </div>
@@ -790,7 +790,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 <div className="p-4  bg-card-hover border border-default">
                   <div className="flex items-center gap-2 mb-3">
                     <IconInfoCircle className="w-5 h-5 !text-accent" />
-                    <p className="text-sm font-medium !text-primary">
+                    <p className="!text-sm font-medium !text-primary">
                       {t('duplicate_check_mode') || 'Vérification des doublons'}
                     </p>
                   </div>

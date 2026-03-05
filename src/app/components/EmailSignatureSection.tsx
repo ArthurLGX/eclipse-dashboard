@@ -359,15 +359,15 @@ export default function EmailSignatureSection() {
   
   return (
     <>
-      <div className="bg-card border border-default  p-6 space-y-6">
+      <div className="bg-card border border-default  p-6 !space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+            <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
               <IconSignature className="w-5 h-5 !text-accent" />
               {t('email_signature') || 'Signature email'}
             </h3>
-            <p className="text-sm !text-muted mt-1">
+            <p className="!text-sm !text-muted mt-1">
               {t('email_signature_desc') || 'Cette signature sera utilisée dans le footer de vos newsletters et emails'}
             </p>
           </div>
@@ -493,7 +493,7 @@ export default function EmailSignatureSection() {
                 {!formData.logo_url && (
                   <button
                     onClick={() => setShowMediaPicker(true)}
-                    className="text-sm !text-accent hover:underline"
+                    className="!text-sm !text-accent hover:underline"
                   >
                     {t('add_logo') || 'Ajouter un logo'}
                   </button>
@@ -634,14 +634,14 @@ export default function EmailSignatureSection() {
                       <button
                         onClick={() => moveSocialLink(link.id, 'up')}
                         disabled={index === 0}
-                        className="text-muted hover:!text-primary disabled:opacity-30 transition-colors"
+                        className="!text-muted hover:!text-primary disabled:opacity-30 transition-colors"
                       >
                         <IconGripVertical className="w-4 h-4 rotate-180" />
                       </button>
                       <button
                         onClick={() => moveSocialLink(link.id, 'down')}
                         disabled={index === (formData.social_links?.length || 0) - 1}
-                        className="text-muted hover:!text-primary disabled:opacity-30 transition-colors"
+                        className="!text-muted hover:!text-primary disabled:opacity-30 transition-colors"
                       >
                         <IconGripVertical className="w-4 h-4" />
                       </button>
@@ -714,7 +714,7 @@ export default function EmailSignatureSection() {
             </AnimatePresence>
             
             {(!formData.social_links || formData.social_links.length === 0) && (
-              <p className="text-sm !text-muted !text-center py-4">
+              <p className="!text-sm !text-muted !text-center py-4">
                 {t('no_social_links') || 'Aucun réseau social ajouté. Cliquez sur "Ajouter" pour en ajouter un.'}
               </p>
             )}
@@ -749,7 +749,7 @@ export default function EmailSignatureSection() {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="pt-4 space-y-6">
+                <div className="pt-4 !space-y-6">
                   {/* Logo size */}
                   <div>
                     <label className="block !text-sm font-medium !text-secondary mb-2">
@@ -866,7 +866,7 @@ export default function EmailSignatureSection() {
                   
                   {/* Preview of customization */}
                   <div className="p-4 bg-muted  border border-default">
-                    <p className="text-sm !text-muted mb-2">{t('preview') || 'Aperçu des couleurs'}:</p>
+                    <p className="!text-sm !text-muted mb-2">{t('preview') || 'Aperçu des couleurs'}:</p>
                     <div className="flex items-center gap-4" style={{ fontFamily: formData.font_family }}>
                       <span style={{ color: formData.text_color, fontWeight: 'bold' }}>
                         Texte principal
@@ -935,7 +935,7 @@ export default function EmailSignatureSection() {
                   className="w-full h-24 border-2 border-dashed border-default  flex flex-col items-center justify-center !text-muted hover:border-accent hover:!text-accent transition-colors"
                 >
                   <IconPhoto className="w-6 h-6 mb-1" />
-                  <span className="text-sm">{t('add_banner') || 'Ajouter une bannière'}</span>
+                  <span className="!text-sm">{t('add_banner') || 'Ajouter une bannière'}</span>
                 </button>
               )}
               {formData.banner_url && (

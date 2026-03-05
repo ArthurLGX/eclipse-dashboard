@@ -306,7 +306,7 @@ export default function NotificationBell() {
             >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-default">
-              <h3 className="text-sm font-semibold !text-primary">
+              <h3 className="!text-sm font-semibold !text-primary">
                 {t('notifications') || 'Notifications'}
               </h3>
               {unreadCount > 0 && (
@@ -336,8 +336,8 @@ export default function NotificationBell() {
                       <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
                         <IconBell className="w-5 h-5 !text-white" />
                       </div>
-                      <div className="text-left">
-                        <p className="text-sm font-medium !text-primary">
+                      <div className="!text-left">
+                        <p className="!text-sm font-medium !text-primary">
                           {emailUnreadCount} {emailUnreadCount > 1 ? 'nouveaux emails' : 'nouvel email'}
                         </p>
                         <p className="!text-xs !text-muted">
@@ -407,7 +407,7 @@ export default function NotificationBell() {
               ) : filteredNotifications.length === 0 && visibleQuotaAlerts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 px-4">
                   <IconBell className="w-12 h-12 !text-muted mb-3" />
-                  <p className="text-muted !text-sm !text-center">
+                  <p className="!text-muted !text-sm !text-center">
                     {t('no_notifications') || 'Aucune notification'}
                   </p>
                 </div>
@@ -426,14 +426,14 @@ export default function NotificationBell() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
-                            <p className="text-sm font-medium !text-primary">
+                            <p className="!text-sm font-medium !text-primary">
                               {notification.title}
                             </p>
                             <span className="!text-xs !text-muted whitespace-nowrap">
                               {formatTimeAgo(notification.createdAt)}
                             </span>
                           </div>
-                          <p className="text-sm !text-secondary mt-1 line-clamp-2">
+                          <p className="!text-sm !text-secondary mt-1 line-clamp-2">
                             {notification.message}
                           </p>
 

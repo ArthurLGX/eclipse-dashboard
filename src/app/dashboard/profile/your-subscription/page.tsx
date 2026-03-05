@@ -168,7 +168,7 @@ export default function YourSubscriptionPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
               <div className="card p-6">
-                <div className="flex flex-col items-center space-y-4">
+                <div className="flex flex-col items-center !space-y-4">
                   <div className="w-24 h-24 bg-muted rounded-full animate-pulse"></div>
                   <div className="h-6 bg-muted rounded w-32 animate-pulse"></div>
                   <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
@@ -176,7 +176,7 @@ export default function YourSubscriptionPage() {
               </div>
             </div>
             <div className="lg:col-span-2">
-              <div className="card p-6 space-y-4">
+              <div className="card p-6 !space-y-4">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="space-y-2">
                     <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>
@@ -207,7 +207,7 @@ export default function YourSubscriptionPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Section Informations de l'abonnement */}
         <div className="lg:col-span-2">
-          <div className="card lg:!p-6 !p-4 space-y-6">
+          <div className="card lg:!p-6 !p-4 !space-y-6">
             <h2 className="!text-xl font-semibold !text-primary mb-4">
               {t('subscription_details')}
             </h2>
@@ -250,35 +250,35 @@ export default function YourSubscriptionPage() {
                     {/* Détails de l'abonnement */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="space-y-2">
-                        <label className="text-secondary !text-sm font-light">
+                        <label className="!text-secondary !text-sm font-light">
                           {t('billing_type')}
                         </label>
                         <div className="flex items-center gap-2 p-3 bg-muted ">
-                          <span className="text-primary font-medium capitalize">
+                          <span className="!text-primary font-medium capitalize">
                             {subscription.billing_type}
                           </span>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-secondary !text-sm font-light">
+                        <label className="!text-secondary !text-sm font-light">
                           {t('status')}
                         </label>
                         <div className="flex items-center gap-2 p-3 bg-muted ">
                           <div
                             className={`w-2 h-2 rounded-full ${subscription.trial ? 'bg-warning' : 'bg-success'}`}
                           ></div>
-                          <span className="text-primary">
+                          <span className="!text-primary">
                             {subscription.trial ? t('trial') : t('active')}
                           </span>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-secondary !text-sm font-light">
+                        <label className="!text-secondary !text-sm font-light">
                           {t('created_at')}
                         </label>
-                        <p className="text-primary p-3 bg-muted ">
+                        <p className="!text-primary p-3 bg-muted ">
                           {subscription.createdAt
                             ? new Date(
                                 subscription.createdAt
@@ -288,10 +288,10 @@ export default function YourSubscriptionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-secondary !text-sm font-light">
+                        <label className="!text-secondary !text-sm font-light">
                           {t('last_updated')}
                         </label>
-                        <p className="text-primary p-3 bg-muted ">
+                        <p className="!text-primary p-3 bg-muted ">
                           {subscription.updatedAt
                             ? new Date(
                                 subscription.updatedAt
@@ -304,22 +304,22 @@ export default function YourSubscriptionPage() {
                     {/* Description et fonctionnalités */}
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-secondary !text-sm font-light">
+                        <label className="!text-secondary !text-sm font-light">
                           {t('description')}
                         </label>
-                        <p className="text-primary p-3 bg-muted ">
+                        <p className="!text-primary p-3 bg-muted ">
                           {subscription.plan?.description ||
                             t('no_description')}
                         </p>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-secondary !text-sm font-light">
+                        <label className="!text-secondary !text-sm font-light">
                           {t('features')}
                         </label>
                         <div className="p-3 bg-muted ">
                           {subscription.plan?.features ? (
-                            <div className="text-primary space-y-2">
+                            <div className="!text-primary !space-y-2">
                               {(() => {
                                 try {
                                   const features =
@@ -373,7 +373,7 @@ export default function YourSubscriptionPage() {
                               })()}
                             </div>
                           ) : (
-                            <p className="text-muted italic">
+                            <p className="!text-muted italic">
                               {t('no_features_specified')}
                             </p>
                           )}
@@ -385,7 +385,7 @@ export default function YourSubscriptionPage() {
               </div>
             ) : (
               <div className="!text-center py-12">
-                <div className="text-secondary !text-lg mb-4">
+                <div className="!text-secondary !text-lg mb-4">
                   {t('no_subscription_found')}
                 </div>
                 <button
@@ -401,7 +401,7 @@ export default function YourSubscriptionPage() {
 
         {/* Section Actions rapides */}
         <div className="lg:col-span-1">
-          <div className="card p-6 space-y-6 relative overflow-visible">
+          <div className="card p-6 !space-y-6 relative overflow-visible">
             <h2 className="!text-xl font-semibold !text-primary mb-4">
               {t('quick_actions')}
             </h2>

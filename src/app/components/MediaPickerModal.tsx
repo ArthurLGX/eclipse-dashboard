@@ -271,7 +271,7 @@ export default function MediaPickerModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-default">
-            <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+            <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
               {mediaType === 'video' ? (
                 <IconVideo className="w-5 h-5 !text-accent" />
               ) : mediaType === 'document' ? (
@@ -348,17 +348,17 @@ export default function MediaPickerModal({
                   {uploading ? (
                     <>
                       <IconLoader2 className="w-12 h-12 !text-accent animate-spin mb-4" />
-                      <p className="text-primary font-medium">{t('uploading') || 'Upload en cours...'}</p>
+                      <p className="!text-primary font-medium">{t('uploading') || 'Upload en cours...'}</p>
                     </>
                   ) : (
                     <>
                       <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center mb-4 group-hover:bg-accent-light transition-colors">
                         <IconUpload className="w-8 h-8 !text-accent" />
                       </div>
-                      <p className="text-primary font-medium mb-2">
+                      <p className="!text-primary font-medium mb-2">
                         {t('click_to_upload') || 'Cliquez pour sélectionner'}
                       </p>
-                      <p className="text-secondary !text-sm !text-center">
+                      <p className="!text-secondary !text-sm !text-center">
                         {mediaType === 'image' && (t('supported_image_formats') || 'JPG, PNG, GIF, WebP, AVIF (max 5MB)')}
                         {mediaType === 'video' && (t('supported_video_formats') || 'MP4, WebM, OGG (max 50MB)')}
                         {mediaType === 'document' && (t('supported_document_formats') || 'PDF, Word, TXT (max 10MB)')}
@@ -454,7 +454,7 @@ export default function MediaPickerModal({
             {/* Tab: URL */}
             {activeTab === 'url' && (
               <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-                <div className="w-full max-w-md space-y-4">
+                <div className="w-full max-w-md !space-y-4">
                   <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center mx-auto mb-4">
                     <IconLink className="w-8 h-8 !text-accent" />
                   </div>
@@ -508,8 +508,8 @@ export default function MediaPickerModal({
           {/* Footer fixe avec bouton de sélection (pour la bibliothèque) */}
           {activeTab === 'library' && selectedLibraryItem && (
             <div className="border-t border-default bg-card p-4 flex items-center justify-between">
-              <p className="text-sm !text-muted">
-                {t('selected') || 'Sélectionné'}: <span className="text-primary font-medium">{selectedLibraryItem.name || 'Media'}</span>
+              <p className="!text-sm !text-muted">
+                {t('selected') || 'Sélectionné'}: <span className="!text-primary font-medium">{selectedLibraryItem.name || 'Media'}</span>
               </p>
               <button
                 onClick={handleLibrarySelect}

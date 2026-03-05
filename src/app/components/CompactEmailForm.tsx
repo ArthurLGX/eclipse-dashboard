@@ -271,7 +271,7 @@ export default function CompactEmailForm({
   return (
     <div className="h-full flex flex-col bg-card">
       {/* Form */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 !space-y-4">
         {/* Recipients */}
         <div>
           <div className="flex items-center gap-2 !text-xs !text-muted mb-2">
@@ -351,7 +351,7 @@ export default function CompactEmailForm({
                 className="!text-xs !text-muted border-l-2 border-muted pl-3 py-2"
               >
                 <div className="mb-2">
-                  <strong className="text-primary">{replyToEmail.from_name || replyToEmail.from_email}</strong>
+                  <strong className="!text-primary">{replyToEmail.from_name || replyToEmail.from_email}</strong>
                   <div className="!text-xs !text-muted">
                     {new Date(replyToEmail.received_at).toLocaleDateString('fr-FR', {
                       day: 'numeric',
@@ -390,12 +390,12 @@ export default function CompactEmailForm({
           {sending ? (
             <>
               <IconLoader2 className="w-4 h-4 animate-spin" />
-              <span className="text-sm">{t('sending') || 'Envoi...'}</span>
+              <span className="!text-sm">{t('sending') || 'Envoi...'}</span>
             </>
           ) : (
             <>
               <IconSend className="w-4 h-4" />
-              <span className="text-sm">{t('send') || 'Envoyer'}</span>
+              <span className="!text-sm">{t('send') || 'Envoyer'}</span>
             </>
           )}
         </button>

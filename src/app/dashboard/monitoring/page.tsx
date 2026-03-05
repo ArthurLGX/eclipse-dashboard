@@ -155,11 +155,11 @@ export default function MonitoringPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
-            <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
+            <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
               <IconServer className="w-7 h-7 !text-accent" />
               {t('monitoring') || 'Monitoring'}
             </h1>
-            <p className="text-muted !text-sm mt-1">
+            <p className="!text-muted !text-sm mt-1">
               {t('monitoring_desc') || 'Surveillez la disponibilité de vos sites web'}
             </p>
           </div>
@@ -190,7 +190,7 @@ export default function MonitoringPage() {
                 <IconWorld className="w-5 h-5 !text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold !text-primary">{stats.total}</p>
+                <p className="!text-2xl font-bold !text-primary">{stats.total}</p>
                 <p className="!text-xs !text-muted">{t('total_sites') || 'Sites surveillés'}</p>
               </div>
             </div>
@@ -201,7 +201,7 @@ export default function MonitoringPage() {
                 <IconCheck className="w-5 h-5 !text-success-text -text" />
               </div>
               <div>
-                <p className="text-2xl font-bold !text-success-text -text">{stats.up}</p>
+                <p className="!text-2xl font-bold !text-success-text -text">{stats.up}</p>
                 <p className="!text-xs !text-muted">{t('sites_up') || 'En ligne'}</p>
               </div>
             </div>
@@ -212,7 +212,7 @@ export default function MonitoringPage() {
                 <IconX className="w-5 h-5 !text-error" />
               </div>
               <div>
-                <p className="text-2xl font-bold !text-error">{stats.down}</p>
+                <p className="!text-2xl font-bold !text-error">{stats.down}</p>
                 <p className="!text-xs !text-muted">{t('sites_down') || 'Hors ligne'}</p>
               </div>
             </div>
@@ -223,7 +223,7 @@ export default function MonitoringPage() {
                 <IconClock className="w-5 h-5 !text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold !text-warning">{stats.slow}</p>
+                <p className="!text-2xl font-bold !text-warning">{stats.slow}</p>
                 <p className="!text-xs !text-muted">{t('sites_slow') || 'Lent'}</p>
               </div>
             </div>
@@ -266,7 +266,7 @@ export default function MonitoringPage() {
           ) : !filteredSites?.length ? (
             <div className="p-8 !text-center">
               <IconServer className="w-12 h-12 !text-muted mx-auto mb-4" />
-              <p className="text-muted">{t('no_sites') || 'Aucun site surveillé'}</p>
+              <p className="!text-muted">{t('no_sites') || 'Aucun site surveillé'}</p>
               <button
                 onClick={() => setShowAddModal(true)}
                 className="mt-4 btn-primary px-4 py-2 "
@@ -385,7 +385,7 @@ export default function MonitoringPage() {
                               {sslDays}j
                             </span>
                           ) : (
-                            <span className="text-muted !text-xs">---</span>
+                            <span className="!text-muted !text-xs">---</span>
                           )}
                         </td>
                         <td className="px-4 py-3">
@@ -575,12 +575,12 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
         className="w-full max-w-lg bg-card border border-default  shadow-xl max-h-[90vh] overflow-y-auto"
       >
         <div className="p-6 border-b border-default sticky top-0 bg-card z-10">
-          <h2 className="text-lg font-semibold !text-primary">
+          <h2 className="!text-lg font-semibold !text-primary">
             {site ? (t('edit_site') || 'Modifier le site') : (t('add_site') || 'Ajouter un site')}
           </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 !space-y-4">
           {/* Basic Info */}
           <div>
             <label className="block !text-sm font-medium !text-secondary mb-1">
@@ -678,7 +678,7 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
               onChange={(e) => setAlertEmail(e.target.checked)}
               className="w-4 h-4 rounded border-default accent-accent"
             />
-            <label htmlFor="alertEmail" className="text-sm !text-secondary">
+            <label htmlFor="alertEmail" className="!text-sm !text-secondary">
               {t('alert_by_email') || 'M\'alerter par email si le site est down'}
             </label>
           </div>

@@ -267,7 +267,7 @@ function TemplateModal({
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-card border border-muted  shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
         <div className="sticky top-0 bg-card border-b border-muted p-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">
+          <h2 className="!text-lg font-semibold">
             {template ? t('edit_template') || 'Modifier le template' : t('new_template') || 'Nouveau template'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover ">
@@ -275,7 +275,7 @@ function TemplateModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 !space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
               <label className="block !text-sm font-medium mb-1">{t('template_name') || 'Nom du template'}</label>
@@ -345,7 +345,7 @@ function TemplateModal({
           </div>
 
           <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800  p-3">
-            <p className="text-sm !text-blue-700 dark:!text-blue-400">
+            <p className="!text-sm !text-blue-700 dark:!text-blue-400">
               <strong>Variables disponibles :</strong> {'{{prospect_name}}'}, {'{{company_name}}'}, {'{{sender_name}}'}, {'{{quote_number}}'}, {'{{quote_amount}}'}, {'{{quote_link}}'}, etc.
             </p>
           </div>
@@ -513,14 +513,14 @@ export default function EmailTemplatesPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 !space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
           <IconTemplate size={28} className="!text-accent" />
           <div>
-            <h1 className="text-2xl font-bold">{t('email_templates') || 'Templates d\'emails'}</h1>
-            <p className="text-sm !text-muted-foreground">
+            <h1 className="!text-2xl font-bold">{t('email_templates') || 'Templates d\'emails'}</h1>
+            <p className="!text-sm !text-muted-foreground">
               {t('email_templates_desc') || 'Emails pré-écrits pour chaque étape du pipeline'}
             </p>
           </div>
@@ -576,7 +576,7 @@ export default function EmailTemplatesPage() {
           <div className="animate-spin h-8 w-8 border-2 border-accent border-t-transparent rounded-full" />
         </div>
       ) : filteredTemplates.length === 0 ? (
-        <div className="text-center py-12 !text-muted-foreground">
+        <div className="!text-center py-12 !text-muted-foreground">
           <IconTemplate size={48} className="mx-auto mb-4 opacity-30" />
           <p>{t('no_templates') || 'Aucun template trouvé'}</p>
         </div>
@@ -619,7 +619,7 @@ export default function EmailTemplatesPage() {
                 </div>
               </div>
               
-              <p className="text-sm !text-muted-foreground mb-2">
+              <p className="!text-sm !text-muted-foreground mb-2">
                 <strong>{t('subject') || 'Objet'}:</strong> {template.subject}
               </p>
               

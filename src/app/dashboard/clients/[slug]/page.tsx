@@ -118,7 +118,7 @@ export default function ClientDetailsPage() {
           <span className="font-semibold !text-primary">{value as string}</span>
           <div className="flex items-center gap-2 mt-1">
             <ProjectTypeIcon type={row.type} className="w-4 h-4 !text-muted" />
-            <span className="text-muted !text-xs">{row.type}</span>
+            <span className="!text-muted !text-xs">{row.type}</span>
           </div>
         </div>
       ),
@@ -145,7 +145,7 @@ export default function ClientDetailsPage() {
       key: 'start_date',
       label: 'Début',
       render: (value) => (
-        <span className="text-primary">
+        <span className="!text-primary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </span>
       ),
@@ -154,7 +154,7 @@ export default function ClientDetailsPage() {
       key: 'end_date',
       label: 'Fin',
       render: (value) => (
-        <span className="text-primary">
+        <span className="!text-primary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </span>
       ),
@@ -244,7 +244,7 @@ export default function ClientDetailsPage() {
   if (clientLoading && !client) {
     return (
       <div className="max-w-7xl mx-auto p-6">
-        <div className="animate-pulse space-y-6">
+        <div className="animate-pulse !space-y-6">
           <div className="h-48 bg-card "></div>
           <div className="h-64 bg-card "></div>
         </div>
@@ -255,7 +255,7 @@ export default function ClientDetailsPage() {
   if (!client) {
     return (
       <div className="max-w-7xl mx-auto p-6">
-        <div className="text-center !text-secondary">
+        <div className="!text-center !text-secondary">
           {t('client_not_found') || 'Client non trouvé'}
         </div>
       </div>
@@ -295,7 +295,7 @@ export default function ClientDetailsPage() {
         />
         <div className="flex-1 flex flex-col gap-2">
           <div className="flex flex-col-reverse md:flex-row gap-4 items-center justify-between">
-            <h1 className="text-3xl font-extrabold !text-primary mb-2 flex items-center gap-2">
+            <h1 className="!text-3xl font-extrabold !text-primary mb-2 flex items-center gap-2">
               {client.name}
             </h1>
           </div>
@@ -382,7 +382,7 @@ export default function ClientDetailsPage() {
       {/* Edit Form */}
       {isEditMode && (
         <div className="bg-card border border-default p-6 mb-8 ">
-          <h2 className="text-2xl capitalize font-bold !text-primary mb-4">
+          <h2 className="!text-2xl capitalize font-bold !text-primary mb-4">
             {t('edit')} {client.name}
           </h2>
           <form
@@ -396,27 +396,27 @@ export default function ClientDetailsPage() {
               <input id="name" name="name" defaultValue={client.name} required className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="email" className="text-primary font-medium">Email</label>
+              <label htmlFor="email" className="!text-primary font-medium">Email</label>
               <input id="email" name="email" type="email" defaultValue={client.email} required className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="enterprise" className="text-primary font-medium">{t('enterprise')}</label>
+              <label htmlFor="enterprise" className="!text-primary font-medium">{t('enterprise')}</label>
               <input id="enterprise" name="enterprise" defaultValue={client.enterprise} className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="address" className="text-primary font-medium">{t('address')}</label>
+              <label htmlFor="address" className="!text-primary font-medium">{t('address')}</label>
               <input id="address" name="address" defaultValue={client.adress || ''} className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="number" className="text-primary font-medium">{t('number')}</label>
+              <label htmlFor="number" className="!text-primary font-medium">{t('number')}</label>
               <input id="number" name="number" defaultValue={client.number} className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="website" className="text-primary font-medium">{t('website')}</label>
+              <label htmlFor="website" className="!text-primary font-medium">{t('website')}</label>
               <input id="website" name="website" defaultValue={client.website || ''} className="input px-3 py-2 " />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="processStatus" className="text-primary font-medium">{t('status')}</label>
+              <label htmlFor="processStatus" className="!text-primary font-medium">{t('status')}</label>
               <select id="processStatus" name="processStatus" defaultValue={client.processStatus} className="input px-3 py-2 ">
                 <option value="client">Client</option>
                 <option value="prospect">Prospect</option>
@@ -459,7 +459,7 @@ export default function ClientDetailsPage() {
 
       {activeTab === 'projects' && (
         <div className="bg-card border border-default p-6 ">
-          <h2 className="text-2xl font-bold !text-primary mb-4">{t('projects')}</h2>
+          <h2 className="!text-2xl font-bold !text-primary mb-4">{t('projects')}</h2>
           <TableFilters
             searchPlaceholder={t('search_project') || 'Rechercher un projet'}
             statusOptions={[]}
@@ -502,12 +502,12 @@ export default function ClientDetailsPage() {
             /* Aucun projet → message */
             <div className="h-full flex flex-col items-center justify-center p-8 !text-center">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                <IconRoute size={32} className="text-muted" />
+                <IconRoute size={32} className="!text-muted" />
               </div>
-              <h3 className="text-lg font-semibold !text-primary mb-2">
+              <h3 className="!text-lg font-semibold !text-primary mb-2">
                 {t('no_projects_for_workflow') || 'Aucun projet pour ce client'}
               </h3>
-              <p className="text-secondary !text-sm max-w-md">
+              <p className="!text-secondary !text-sm max-w-md">
                 {t('workflow_needs_project') || 'Le workflow représente l\'exécution concrète d\'un projet. Créez d\'abord un projet pour ce client.'}
               </p>
               <Link

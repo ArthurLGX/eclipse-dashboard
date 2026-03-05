@@ -1259,7 +1259,7 @@ export default function FacturePage() {
                 </h3>
               </div>
               <div className="flex justify-end">
-                <div className="w-80 space-y-3">
+                <div className="w-80 !space-y-3">
                   <div className="flex justify-between !text-zinc-400">
                     <span>{t('subtotal')}:</span>
                     <span>{subtotal}€</span>
@@ -1430,22 +1430,22 @@ export default function FacturePage() {
 
       {/* Modal de confirmation de conversion devis → facture */}
       <Modal open={showConvertModal} onClose={() => setShowConvertModal(false)}>
-        <div className="p-6 space-y-6">
+        <div className="p-6 !space-y-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
               <IconFileInvoice className="w-6 h-6 !text-green-500" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold !text-primary">
+              <h3 className="!text-lg font-semibold !text-primary">
                 {t('convert_quote_to_invoice') || 'Convertir ce devis en facture'}
               </h3>
-              <p className="text-sm !text-muted">
+              <p className="!text-sm !text-muted">
                 {facture?.reference}
               </p>
             </div>
           </div>
 
-          <p className="text-primary">
+          <p className="!text-primary">
             {t('convert_quote_confirm_desc') || 'Le devis sera marqué comme "accepté" et une nouvelle facture sera créée avec les mêmes informations.'}
           </p>
 
@@ -1459,7 +1459,7 @@ export default function FacturePage() {
               className="mt-1 w-4 h-4 rounded border-default !text-accent focus:ring-accent"
             />
             <div>
-              <label htmlFor="updateClientStatus" className="text-sm font-medium !text-primary cursor-pointer">
+              <label htmlFor="updateClientStatus" className="!text-sm font-medium !text-primary cursor-pointer">
                 {t('update_client_status') || 'Mettre à jour le statut du client'}
               </label>
               <p className="!text-xs !text-muted mt-1">

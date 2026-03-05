@@ -200,7 +200,7 @@ export default function ProjectInsightCard({
             height={18}
             className="w-4.5 h-4.5"
           />
-          <span className="text-sm font-medium !text-primary">
+          <span className="!text-sm font-medium !text-primary">
             Eclipse Insight
           </span>
         </div>
@@ -237,7 +237,7 @@ export default function ProjectInsightCard({
               <div className={`p-1.5  flex-shrink-0 ${getStatusStyles(insight.status).iconBg}`}>
                 {getStatusStyles(insight.status).icon}
               </div>
-              <p className="text-sm !text-primary leading-snug flex-1">
+              <p className="!text-sm !text-primary leading-snug flex-1">
                 {insight.summary}
               </p>
             </div>
@@ -247,7 +247,7 @@ export default function ProjectInsightCard({
               <div className="flex items-center justify-between gap-3 p-2.5 bg-muted ">
                 <span className="!text-xs !text-muted whitespace-nowrap">{insight.key_metric.label}</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-bold !text-primary whitespace-nowrap">
+                  <span className="!text-sm font-bold !text-primary whitespace-nowrap">
                     {insight.key_metric.value}
                   </span>
                   {getTrendIcon(insight.key_metric.trend)}
@@ -266,7 +266,7 @@ export default function ProjectInsightCard({
         )}
 
         {!loading && !error && !insight && (
-          <div className="text-sm !text-muted !text-center py-2">
+          <div className="!text-sm !text-muted !text-center py-2">
             Aucune analyse disponible
           </div>
         )}

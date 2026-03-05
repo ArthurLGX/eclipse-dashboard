@@ -193,10 +193,10 @@ export default function ContractsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold !text-primary">
+          <h1 className="!text-2xl font-bold !text-primary">
             {t('contracts') || 'Contrats'}
           </h1>
-          <p className="text-secondary mt-1">
+          <p className="!text-secondary mt-1">
             {t('contracts_description') || 'Gérez vos contrats, CGV et documents légaux'}
           </p>
         </div>
@@ -237,7 +237,7 @@ export default function ContractsPage() {
                     className="w-full flex items-center gap-3 px-4 py-3 !text-left hover:bg-hover transition-colors"
                   >
                     <div className="p-2 bg-info-light ">
-                      <IconPencil size={18} className="text-info" />
+                      <IconPencil size={18} className="!text-info" />
                     </div>
                     <div>
                       <p className="font-medium !text-primary">{t('create_manually') || 'Créer manuellement'}</p>
@@ -275,20 +275,20 @@ export default function ContractsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="p-4 bg-card  border border-default">
-          <p className="text-sm !text-muted">{t('total') || 'Total'}</p>
-          <p className="text-2xl font-bold !text-primary mt-1">{stats.total}</p>
+          <p className="!text-sm !text-muted">{t('total') || 'Total'}</p>
+          <p className="!text-2xl font-bold !text-primary mt-1">{stats.total}</p>
         </div>
         <div className="p-4 bg-success-light ">
-          <p className="text-sm !text-success-text -text">{t('contract_signed') || 'Signés'}</p>
-          <p className="text-2xl font-bold !text-success-text -text mt-1">{stats.signed}</p>
+          <p className="!text-sm !text-success-text -text">{t('contract_signed') || 'Signés'}</p>
+          <p className="!text-2xl font-bold !text-success-text -text mt-1">{stats.signed}</p>
         </div>
         <div className="p-4 bg-warning-light ">
-          <p className="text-sm !text-warning">{t('pending') || 'En attente'}</p>
-          <p className="text-2xl font-bold !text-warning-text mt-1">{stats.pending}</p>
+          <p className="!text-sm !text-warning">{t('pending') || 'En attente'}</p>
+          <p className="!text-2xl font-bold !text-warning-text mt-1">{stats.pending}</p>
         </div>
         <div className="p-4 bg-muted ">
-          <p className="text-sm !text-muted">{t('contract_drafts') || 'Brouillons'}</p>
-          <p className="text-2xl font-bold !text-secondary mt-1">{stats.draft}</p>
+          <p className="!text-sm !text-muted">{t('contract_drafts') || 'Brouillons'}</p>
+          <p className="!text-2xl font-bold !text-secondary mt-1">{stats.draft}</p>
         </div>
       </div>
 
@@ -308,7 +308,7 @@ export default function ContractsPage() {
 
         {/* Status filter */}
         <div className="flex items-center gap-2">
-          <IconFilter className="text-muted" size={18} />
+          <IconFilter className="!text-muted" size={18} />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
@@ -335,12 +335,12 @@ export default function ContractsPage() {
       {!loading && contracts.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <div className="w-20 h-20 bg-info-light rounded-full flex items-center justify-center mb-6">
-            <IconFileText size={40} className="text-info" />
+            <IconFileText size={40} className="!text-info" />
           </div>
-          <h3 className="text-xl font-semibold !text-primary mb-2">
+          <h3 className="!text-xl font-semibold !text-primary mb-2">
             {t('no_contracts') || 'Aucun contrat'}
           </h3>
-          <p className="text-secondary !text-center max-w-md mb-8">
+          <p className="!text-secondary !text-center max-w-md mb-8">
             {t('no_contracts_description') || 'Créez votre premier contrat manuellement ou avec l\'aide de l\'IA'}
           </p>
           
@@ -403,7 +403,7 @@ export default function ContractsPage() {
                           <h3 className="font-medium !text-primary truncate">
                             {contract.title || contract.content?.title || t('untitled_contract') || 'Contrat sans titre'}
                           </h3>
-                          <p className="text-sm !text-muted">
+                          <p className="!text-sm !text-muted">
                             {contract.client?.name || t('no_client') || 'Sans client'}
                             {contract.project?.title && ` • ${contract.project.title}`}
                           </p>
@@ -470,9 +470,9 @@ export default function ContractsPage() {
 
       {/* No results after filter */}
       {!loading && contracts.length > 0 && filteredContracts.length === 0 && (
-        <div className="text-center py-12">
+        <div className="!text-center py-12">
           <IconSearch className="w-12 h-12 !text-muted mx-auto mb-4" />
-          <p className="text-primary">
+          <p className="!text-primary">
             {t('no_contracts_match') || 'Aucun contrat ne correspond à votre recherche'}
           </p>
         </div>

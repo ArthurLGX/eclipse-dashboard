@@ -118,7 +118,7 @@ export default function FreePlanModal({
               <h2 className="!text-xl font-bold !text-primary mb-2">
                 {t('activate_free_plan')}
               </h2>
-              <p className="text-secondary !text-sm">
+              <p className="!text-secondary !text-sm">
                 {t('free_plan_confirmation_message')}
               </p>
             </div>
@@ -126,12 +126,12 @@ export default function FreePlanModal({
             {/* Détails du plan */}
             <div className="bg-hover  p-4 mb-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-secondary font-medium capitalize">
+                <span className="!text-secondary font-medium capitalize">
                   {plan.name}
                 </span>
-                <span className="text-accent font-bold">Gratuit</span>
+                <span className="!text-accent font-bold">Gratuit</span>
               </div>
-              <p className="text-secondary !text-sm">{plan.description}</p>
+              <p className="!text-secondary !text-sm">{plan.description}</p>
             </div>
 
             {/* Barre de progression du trial */}

@@ -178,14 +178,14 @@ export default function ProspectsPage() {
       key: 'title',
       label: t('name'),
       render: (value) => (
-        <p className="text-primary font-medium">{value as string}</p>
+        <p className="!text-primary font-medium">{value as string}</p>
       ),
     },
     {
       key: 'email',
       label: t('email'),
       render: (value) => (
-        <p className="text-primary">{value as string}</p>
+        <p className="!text-primary">{value as string}</p>
       ),
     },
     {
@@ -210,7 +210,7 @@ export default function ProspectsPage() {
       key: 'createdAt',
       label: t('creation_date'),
       render: (value) => (
-        <p className="text-primary">
+        <p className="!text-primary">
           {value ? new Date(value as string).toLocaleDateString('fr-FR') : '-'}
         </p>
       ),

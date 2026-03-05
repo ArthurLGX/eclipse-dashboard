@@ -321,7 +321,7 @@ export default function NotificationsPage() {
         .slice(0, 2);
       return (
         <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-          <span className="text-sm font-boldtext-accent">{initials}</span>
+          <span className="!text-sm font-boldtext-accent">{initials}</span>
         </div>
       );
     }
@@ -344,7 +344,7 @@ export default function NotificationsPage() {
           .slice(0, 2);
         return (
           <div className="w-10 h-10 rounded-full bg-warning-light flex items-center justify-center">
-            <span className="text-sm font-bold !text-warning">{initials}</span>
+            <span className="!text-sm font-bold !text-warning">{initials}</span>
           </div>
         );
       }
@@ -402,9 +402,9 @@ export default function NotificationsPage() {
               >
                 <div className="flex items-center gap-3">
                   {alert.type === 'quota_exceeded' || alert.type === 'trial_expired' ? (
-                    <IconAlertTriangle className="text-danger flex-shrink-0" size={24} />
+                    <IconAlertTriangle className="!text-danger flex-shrink-0" size={24} />
                   ) : (
-                    <IconClock className="text-warning-text flex-shrink-0" size={24} />
+                    <IconClock className="!text-warning-text flex-shrink-0" size={24} />
                   )}
                   <div>
                     <p className={`font-medium ${
@@ -415,7 +415,7 @@ export default function NotificationsPage() {
                       {alert.message}
                     </p>
                     {alert.type !== 'trial_ending' && (
-                      <p className="text-secondary !text-sm mt-1">
+                      <p className="!text-secondary !text-sm mt-1">
                         {t('upgrade_to_unlock') || 'Passez à un plan supérieur pour débloquer.'}
                       </p>
                     )}
@@ -434,7 +434,7 @@ export default function NotificationsPage() {
                     className="btn-ghost p-2"
                     title={t('dismiss') || 'Fermer'}
                   >
-                    <IconX size={18} className="text-muted" />
+                    <IconX size={18} className="!text-muted" />
                   </button>
                 </div>
               </motion.div>
@@ -447,10 +447,10 @@ export default function NotificationsPage() {
       <div className="mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold !text-primary mb-2">
+            <h1 className="!text-3xl font-bold !text-primary mb-2">
               {t('notifications') || 'Notifications'}
             </h1>
-            <p className="text-primary">
+            <p className="!text-primary">
               {t('notifications_description') || 'Gérez vos notifications et invitations'}
             </p>
           </div>
@@ -470,7 +470,7 @@ export default function NotificationsPage() {
                 className="btn-secondary px-4 py-2"
               >
                 <IconCheckbox className="w-4 h-4" />
-                <span className="text-sm font-medium">
+                <span className="!text-sm font-medium">
                   {t('mark_all_read') || 'Tout marquer comme lu'}
                 </span>
               </button>
@@ -492,8 +492,8 @@ export default function NotificationsPage() {
               <IconBell className="w-5 h-5 !text-white" />
             </div>
             <div>
-              <p className="text-sm !text-secondary">{t('total') || 'Total'}</p>
-              <p className="text-2xl font-bold !text-primary">{stats.total}</p>
+              <p className="!text-sm !text-secondary">{t('total') || 'Total'}</p>
+              <p className="!text-2xl font-bold !text-primary">{stats.total}</p>
             </div>
           </div>
         </motion.div>
@@ -509,8 +509,8 @@ export default function NotificationsPage() {
               <IconBellOff className="w-5 h-5 !text-white" />
             </div>
             <div>
-              <p className="text-sm !text-secondary">{t('unread') || 'Non lues'}</p>
-              <p className="text-2xl font-bold !text-primary">{stats.unread}</p>
+              <p className="!text-sm !text-secondary">{t('unread') || 'Non lues'}</p>
+              <p className="!text-2xl font-bold !text-primary">{stats.unread}</p>
             </div>
           </div>
         </motion.div>
@@ -526,8 +526,8 @@ export default function NotificationsPage() {
               <IconUsers className="w-5 h-5 !text-white" />
             </div>
             <div>
-              <p className="text-sm !text-secondary">{t('invitations') || 'Invitations'}</p>
-              <p className="text-2xl font-bold !text-primary">{stats.invitations}</p>
+              <p className="!text-sm !text-secondary">{t('invitations') || 'Invitations'}</p>
+              <p className="!text-2xl font-bold !text-primary">{stats.invitations}</p>
             </div>
           </div>
         </motion.div>
@@ -544,8 +544,8 @@ export default function NotificationsPage() {
                 <IconAlertTriangle className="w-5 h-5 !text-white" />
               </div>
               <div>
-                <p className="text-sm !text-secondary">{t('alerts') || 'Alertes'}</p>
-                <p className="text-2xl font-bold !text-danger">{stats.quotaAlerts}</p>
+                <p className="!text-sm !text-secondary">{t('alerts') || 'Alertes'}</p>
+                <p className="!text-2xl font-bold !text-danger">{stats.quotaAlerts}</p>
               </div>
             </div>
           </motion.div>
@@ -565,7 +565,7 @@ export default function NotificationsPage() {
             }`}
           >
             <IconFilter className="w-4 h-4" />
-            <span className="text-sm">{t('filters') || 'Filtres'}</span>
+            <span className="!text-sm">{t('filters') || 'Filtres'}</span>
             <IconChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
           </button>
 
@@ -596,7 +596,7 @@ export default function NotificationsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex items-center gap-2"
           >
-            <span className="text-sm !text-secondary">
+            <span className="!text-sm !text-secondary">
               {selectedNotifications.size} {t('selected') || 'sélectionnée(s)'}
             </span>
             <button
@@ -667,7 +667,7 @@ export default function NotificationsPage() {
                 <IconCheck className="w-3 h-3 !text-white" />
               )}
             </button>
-            <span className="text-sm !text-secondary">
+            <span className="!text-sm !text-secondary">
               {filteredNotifications.length} {t('notifications') || 'notification(s)'}
             </span>
           </div>
@@ -681,10 +681,10 @@ export default function NotificationsPage() {
         ) : filteredNotifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
             <IconInbox className="w-16 h-16 !text-muted mb-4" />
-            <h3 className="text-lg font-medium !text-secondary mb-2">
+            <h3 className="!text-lg font-medium !text-secondary mb-2">
               {t('no_notifications') || 'Aucune notification'}
             </h3>
-            <p className="text-sm !text-muted !text-center">
+            <p className="!text-sm !text-muted !text-center">
               {t('no_notifications_desc') || 'Vous n\'avez aucune notification pour le moment.'}
             </p>
           </div>
@@ -744,7 +744,7 @@ export default function NotificationsPage() {
                         </span>
                       </div>
 
-                      <p className="text-sm !text-secondary mb-2">
+                      <p className="!text-sm !text-secondary mb-2">
                         {notification.message}
                       </p>
 

@@ -82,7 +82,7 @@ export default function FloatingPricingHeader({
             <div className="overflow-x-auto">
               {isMinimized ? (
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between">
-                  <p className="text-primary font-semibold">
+                  <p className="!text-primary font-semibold">
                     {t('plans_associated')}
                   </p>
                 </div>
@@ -112,7 +112,7 @@ export default function FloatingPricingHeader({
                             >
                               {plan.name}
                             </span>
-                            <span className="text-sm !text-accent font-bold">
+                            <span className="!text-sm !text-accent font-bold">
                               {language === 'en' ? '€' : ''}
                               {togglePlan
                                 ? plan.price_yearly

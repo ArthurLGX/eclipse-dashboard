@@ -173,11 +173,11 @@ export default function GrowthAuditPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className='relative'>
-          <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
+          <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
             <IconSearch className="w-7 h-7 !text-accent" />
             {t('growth_audit')}
           </h1>
-          <p className="text-muted !text-sm mt-1">
+          <p className="!text-muted !text-sm mt-1">
             {t('growth_audit_desc')}
           </p>
         </div>
@@ -229,7 +229,7 @@ export default function GrowthAuditPage() {
                   }`}
                 >
                   {type.icon}
-                  <span className="text-sm font-medium !text-accent">{t(type.labelKey)}</span>
+                  <span className="!text-sm font-medium !text-accent">{t(type.labelKey)}</span>
                 </button>
               ))}
             </div>
@@ -279,11 +279,11 @@ export default function GrowthAuditPage() {
             className="card p-8"
           >
             {/* Header */}
-            <div className="text-center mb-8">
-              <h3 className="text-xl font-bold !text-primary mb-2">
+            <div className="!text-center mb-8">
+              <h3 className="!text-xl font-bold !text-primary mb-2">
                 {t('analysis_in_progress') || 'Analyse en cours'}
               </h3>
-              <p className="text-sm !text-muted">{url}</p>
+              <p className="!text-sm !text-muted">{url}</p>
             </div>
 
             {/* Progress Steps */}
@@ -362,14 +362,14 @@ export default function GrowthAuditPage() {
                 key={currentStep}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-center"
+                className="!text-center"
               >
-                <p className="text-lg font-medium !text-primary">
+                <p className="!text-lg font-medium !text-primary">
                   {t(ANALYSIS_STEPS[currentStep]?.labelKey) || 'Processing...'}
                 </p>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                  <span className="text-sm !text-muted">
+                  <span className="!text-sm !text-muted">
                     {t('step_x_of_y')?.replace('{x}', String(currentStep + 1)).replace('{y}', String(ANALYSIS_STEPS.length)) || 
                      `Étape ${currentStep + 1} sur ${ANALYSIS_STEPS.length}`}
                   </span>
@@ -378,7 +378,7 @@ export default function GrowthAuditPage() {
 
               {/* Overall progress percentage */}
               <div className="mt-6 !text-center">
-                <span className="text-3xl font-bold !text-accent">
+                <span className="!text-3xl font-bold !text-accent">
                   {Math.round(((currentStep + (stepProgress / 100)) / ANALYSIS_STEPS.length) * 100)}%
                 </span>
               </div>
@@ -471,7 +471,7 @@ export default function GrowthAuditPage() {
                 <div className="space-y-3">
                   {/* Title */}
                   <div className="flex items-center justify-between p-3 bg-muted ">
-                    <span className="text-sm !text-secondary">Title</span>
+                    <span className="!text-sm !text-secondary">Title</span>
                     <span className={`flex items-center gap-2 !text-sm ${result.seo.title ? 'text-success' : 'text-danger'}`}>
                       {result.seo.title ? (
                         <>
@@ -489,7 +489,7 @@ export default function GrowthAuditPage() {
 
                   {/* Meta Description */}
                   <div className="flex items-center justify-between p-3 bg-muted ">
-                    <span className="text-sm !text-secondary">Meta Description</span>
+                    <span className="!text-sm !text-secondary">Meta Description</span>
                     <span className={`flex items-center gap-2 !text-sm ${result.seo.metaDescription ? 'text-success' : 'text-danger'}`}>
                       {result.seo.metaDescription ? (
                         <>
@@ -507,7 +507,7 @@ export default function GrowthAuditPage() {
 
                   {/* H1 */}
                   <div className="flex items-center justify-between p-3 bg-muted ">
-                    <span className="text-sm !text-secondary">H1</span>
+                    <span className="!text-sm !text-secondary">H1</span>
                     <span className={`flex items-center gap-2 !text-sm ${
                       result.structure.hasH1 && result.structure.h1Count === 1 ? 'text-success' :
                       result.structure.h1Count > 1 ? 'text-warning' : 'text-danger'
@@ -534,11 +534,11 @@ export default function GrowthAuditPage() {
                   <div className="flex gap-3">
                     <div className={`flex-1 flex items-center gap-2 p-3  ${result.seo.hasCanonical ? 'bg-success-light' : 'bg-danger-light'}`}>
                       {result.seo.hasCanonical ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 !text-danger" />}
-                      <span className="text-sm">Canonical</span>
+                      <span className="!text-sm">Canonical</span>
                     </div>
                     <div className={`flex-1 flex items-center gap-2 p-3  ${result.seo.hasOpenGraph ? 'bg-success-light' : 'bg-danger-light'}`}>
                       {result.seo.hasOpenGraph ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 !text-danger" />}
-                      <span className="text-sm">Open Graph</span>
+                      <span className="!text-sm">Open Graph</span>
                     </div>
                   </div>
 
@@ -547,12 +547,12 @@ export default function GrowthAuditPage() {
                     <div className={`flex-1 flex items-center gap-2 p-3  ${result.seo.hasTwitterCards ? 'bg-success-light' : 'bg-danger-light'}`}>
                       {result.seo.hasTwitterCards ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 !text-danger" />}
                       <IconBrandTwitter className="w-4 h-4" />
-                      <span className="text-sm">Twitter Cards</span>
+                      <span className="!text-sm">Twitter Cards</span>
                     </div>
                     <div className={`flex-1 flex items-center gap-2 p-3  ${result.seo.hasStructuredData ? 'bg-success-light' : 'bg-danger-light'}`}>
                       {result.seo.hasStructuredData ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 !text-danger" />}
                       <IconDeviceDesktopAnalytics className="w-4 h-4" />
-                      <span className="text-sm">Schema.org</span>
+                      <span className="!text-sm">Schema.org</span>
                     </div>
                   </div>
 
@@ -561,11 +561,11 @@ export default function GrowthAuditPage() {
                     <div className={`flex-1 flex items-center gap-2 p-3  ${result.seo.language ? 'bg-success-light' : 'bg-warning-light'}`}>
                       {result.seo.language ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 !text-warning" />}
                       <IconLanguage className="w-4 h-4" />
-                      <span className="text-sm">{result.seo.language || t('missing_lang') || 'Lang manquant'}</span>
+                      <span className="!text-sm">{result.seo.language || t('missing_lang') || 'Lang manquant'}</span>
                     </div>
                     <div className={`flex-1 flex items-center gap-2 p-3  ${result.seo.viewport ? 'bg-success-light' : 'bg-danger-light'}`}>
                       {result.seo.viewport ? <IconCheck className="w-4 h-4 !text-success-text -text" /> : <IconX className="w-4 h-4 !text-danger" />}
-                      <span className="text-sm">Viewport</span>
+                      <span className="!text-sm">Viewport</span>
                     </div>
                   </div>
 
@@ -574,15 +574,15 @@ export default function GrowthAuditPage() {
                     <div className="p-3 bg-muted ">
                       <div className="flex items-center gap-2 mb-2">
                         <IconPhoto className="w-4 h-4 !text-muted" />
-                        <span className="text-sm font-medium !text-primary">{t('images_analysis') || 'Analyse des images'}</span>
+                        <span className="!text-sm font-medium !text-primary">{t('images_analysis') || 'Analyse des images'}</span>
                       </div>
                       <div className="grid grid-cols-3 gap-2 !text-center">
                         <div className="p-2 bg-card rounded">
-                          <p className="text-lg font-bold !text-primary">{result.seo.images.total}</p>
+                          <p className="!text-lg font-bold !text-primary">{result.seo.images.total}</p>
                           <p className="!text-xs !text-muted">{t('total') || 'Total'}</p>
                         </div>
                         <div className="p-2 bg-success-light rounded">
-                          <p className="text-lg font-bold !text-success-text -text">{result.seo.images.withAlt}</p>
+                          <p className="!text-lg font-bold !text-success-text -text">{result.seo.images.withAlt}</p>
                           <p className="!text-xs !text-muted">{t('with_alt') || 'Avec alt'}</p>
                         </div>
                         <div className={`p-2 rounded ${result.seo.images.withoutAlt > 0 ? 'bg-danger-light' : 'bg-success-light'}`}>
@@ -597,7 +597,7 @@ export default function GrowthAuditPage() {
                           <summary className="!text-xs !text-muted cursor-pointer hover:!text-primary">
                             {t('show_images_without_alt') || 'Voir les images sans alt'}
                           </summary>
-                          <div className="mt-2 max-h-32 overflow-y-auto !text-xs !text-muted space-y-1">
+                          <div className="mt-2 max-h-32 overflow-y-auto !text-xs !text-muted !space-y-1">
                             {result.seo.images.missingAltList.map((src, i) => (
                               <div key={i} className="truncate">• {src}</div>
                             ))}
@@ -612,20 +612,20 @@ export default function GrowthAuditPage() {
                     <div className="p-3 bg-muted ">
                       <div className="flex items-center gap-2 mb-2">
                         <IconLink className="w-4 h-4 !text-muted" />
-                        <span className="text-sm font-medium !text-primary">{t('links_analysis') || 'Analyse des liens'}</span>
+                        <span className="!text-sm font-medium !text-primary">{t('links_analysis') || 'Analyse des liens'}</span>
                       </div>
                       <div className="grid grid-cols-2 gap-2 !text-center">
                         <div className="p-2 bg-card rounded flex items-center justify-center gap-2">
                           <IconLink className="w-4 h-4 !text-accent" />
                           <div>
-                            <p className="text-lg font-bold !text-primary">{result.seo.links.internal}</p>
+                            <p className="!text-lg font-bold !text-primary">{result.seo.links.internal}</p>
                             <p className="!text-xs !text-muted">{t('internal_links') || 'Internes'}</p>
                           </div>
                         </div>
                         <div className="p-2 bg-card rounded flex items-center justify-center gap-2">
                           <IconExternalLink className="w-4 h-4 !text-muted" />
                           <div>
-                            <p className="text-lg font-bold !text-primary">{result.seo.links.external}</p>
+                            <p className="!text-lg font-bold !text-primary">{result.seo.links.external}</p>
                             <p className="!text-xs !text-muted">{t('external_links') || 'Externes'}</p>
                           </div>
                         </div>
@@ -638,7 +638,7 @@ export default function GrowthAuditPage() {
                     <div className="p-3 bg-success-light ">
                       <div className="flex items-center gap-2 mb-2">
                         <IconRobot className="w-4 h-4 !text-success-text -text" />
-                        <span className="text-sm font-medium !text-success-text -text">{t('structured_data_found') || 'Données structurées trouvées'}</span>
+                        <span className="!text-sm font-medium !text-success-text -text">{t('structured_data_found') || 'Données structurées trouvées'}</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {result.seo.structuredDataTypes.map((type, i) => (
@@ -653,7 +653,7 @@ export default function GrowthAuditPage() {
                   {/* Robots Meta */}
                   {result.seo.robotsMeta && (
                     <div className="p-3 bg-muted  flex items-center justify-between">
-                      <span className="text-sm !text-secondary flex items-center gap-2">
+                      <span className="!text-sm !text-secondary flex items-center gap-2">
                         <IconRobot className="w-4 h-4" /> Robots
                       </span>
                       <code className="!text-xs bg-card px-2 py-1 rounded">{result.seo.robotsMeta}</code>
@@ -681,7 +681,7 @@ export default function GrowthAuditPage() {
                 <div className="space-y-4">
                   {/* Detected Sections */}
                   <div>
-                    <h5 className="text-sm font-medium !text-primary mb-2">{t('detected_sections')}</h5>
+                    <h5 className="!text-sm font-medium !text-primary mb-2">{t('detected_sections')}</h5>
                     <div className="flex flex-wrap gap-2">
                       {['hero', 'problem', 'solution', 'proof', 'cta'].map((section) => {
                         const detected = result.structure.detectedSections.includes(section);
@@ -705,7 +705,7 @@ export default function GrowthAuditPage() {
                   {/* Missing Sections Alert */}
                   {result.structure.missingSections.length > 0 && (
                     <div className="p-3 bg-warning-light border border-warning ">
-                      <p className="text-sm !text-warning">
+                      <p className="!text-sm !text-warning">
                         <strong>{t('missing_sections')}:</strong>{' '}
                         {result.structure.missingSections.map(s => t(`${s}_section`)).join(', ')}
                       </p>
@@ -724,18 +724,18 @@ export default function GrowthAuditPage() {
                   {/* Word counts */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-3 bg-muted  !text-center">
-                      <p className="text-2xl font-bold !text-primary">{result.message.benefitWordCount}</p>
+                      <p className="!text-2xl font-bold !text-primary">{result.message.benefitWordCount}</p>
                       <p className="!text-xs !text-muted">Mots bénéfices</p>
                     </div>
                     <div className="p-3 bg-muted  !text-center">
-                      <p className="text-2xl font-bold !text-primary">{result.message.featureWordCount}</p>
+                      <p className="!text-2xl font-bold !text-primary">{result.message.featureWordCount}</p>
                       <p className="!text-xs !text-muted">Mots features</p>
                     </div>
                   </div>
 
                   {/* Average sentence length */}
                   <div className="p-3 bg-muted  flex items-center justify-between">
-                    <span className="text-sm !text-secondary">Longueur moyenne des phrases</span>
+                    <span className="!text-sm !text-secondary">Longueur moyenne des phrases</span>
                     <span className={`text-sm font-medium ${
                       result.message.avgSentenceLength <= 20 ? 'text-success' :
                       result.message.avgSentenceLength <= 30 ? 'text-warning' : 'text-danger'
@@ -747,7 +747,7 @@ export default function GrowthAuditPage() {
                   {/* Jargon */}
                   {result.message.jargonWords.length > 0 && (
                     <div className="p-3 bg-warning-light border border-warning ">
-                      <p className="text-sm !text-warning-text mb-2">
+                      <p className="!text-sm !text-warning-text mb-2">
                         <strong>{t('technical_jargon')}:</strong>
                       </p>
                       <div className="flex flex-wrap gap-1">
@@ -786,7 +786,7 @@ export default function GrowthAuditPage() {
                       />
                     ))
                   ) : (
-                    <div className="text-center py-6 !text-muted">
+                    <div className="!text-center py-6 !text-muted">
                       <IconCheck className="w-8 h-8 mx-auto mb-2 !text-success-text -text" />
                       <p>Aucune recommandation majeure</p>
                     </div>
@@ -808,10 +808,10 @@ export default function GrowthAuditPage() {
           <div className="w-20 h-20 rounded-full bg-accent-light flex items-center justify-center mb-4">
             <IconTarget className="w-10 h-10 !text-accent" />
           </div>
-          <h3 className="text-lg font-semibold !text-primary mb-2">
+          <h3 className="!text-lg font-semibold !text-primary mb-2">
             {t('analyze_page')}
           </h3>
-          <p className="text-muted max-w-md">
+          <p className="!text-muted max-w-md">
             Entrez l&apos;URL d&apos;une page pour obtenir un audit SEO et structure complet avec des recommandations actionnables.
           </p>
         </motion.div>

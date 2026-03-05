@@ -190,9 +190,9 @@ export default function SharedProjectPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-page">
-        <div className="text-center">
+        <div className="!text-center">
           <IconLoader2 className="w-12 h-12 !text-accent-light animate-spin mx-auto mb-4" />
-          <p className="text-primary">{t('loading_project')}</p>
+          <p className="!text-primary">{t('loading_project')}</p>
         </div>
       </div>
     );
@@ -209,11 +209,11 @@ export default function SharedProjectPage() {
           <div className="w-16 h-16 rounded-full bg-danger-light flex items-center justify-center mx-auto mb-6">
             <IconAlertTriangle className="w-8 h-8 !text-danger" />
           </div>
-          <h1 className="text-xl font-semibold !text-primary mb-2">
+          <h1 className="!text-xl font-semibold !text-primary mb-2">
             {t('invalid_link')}
           </h1>
-          <p className="text-primary mb-6">{error || t('link_expired_or_not_found')}</p>
-          <p className="text-sm !text-muted">
+          <p className="!text-primary mb-6">{error || t('link_expired_or_not_found')}</p>
+          <p className="!text-sm !text-muted">
             {t('contact_owner_for_new_link')}
           </p>
         </motion.div>
@@ -261,18 +261,18 @@ export default function SharedProjectPage() {
           {/* Titre et infos du projet */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:!text-3xl font-bold !text-primary mb-2">{project.title}</h1>
+              <h1 className="!text-2xl sm:!text-3xl font-bold !text-primary mb-2">{project.title}</h1>
               <div className="flex items-center gap-3 flex-wrap">
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full !text-sm font-medium border ${statusConfig.colorClass}`}>
                   {statusConfig.label}
                 </span>
                 {project.user?.username && (
-                  <span className="text-primary !text-sm">
+                  <span className="!text-primary !text-sm">
                     {t('by')} {project.user.username}
                   </span>
                 )}
                 {project.end_date && (
-                  <span className="text-muted !text-sm flex items-center gap-1">
+                  <span className="!text-muted !text-sm flex items-center gap-1">
                     <IconCalendar className="w-4 h-4" />
                     {t('deadline')}: {new Date(project.end_date).toLocaleDateString('fr-FR')}
                   </span>
@@ -305,7 +305,7 @@ export default function SharedProjectPage() {
             className="card p-6 mb-6"
           >
             <div 
-              className="text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
+              className="!text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
                 [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
                 [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
@@ -328,7 +328,7 @@ export default function SharedProjectPage() {
                 <IconChartBar className="w-4 h-4" />
                 {t('progression')}
               </div>
-              <div className="text-3xl font-bold !text-primary mb-2">{overallProgress}%</div>
+              <div className="!text-3xl font-bold !text-primary mb-2">{overallProgress}%</div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-accent rounded-full transition-all duration-500"
@@ -342,8 +342,8 @@ export default function SharedProjectPage() {
                 <IconCheck className="w-4 h-4" />
                 {t('tasks_completed')}
               </div>
-              <div className="text-3xl font-bold !text-success-text -text">{completedTasks}</div>
-              <div className="text-sm !text-muted">{t('on_tasks')} {parentTasks.length} {t('tasks_label')}</div>
+              <div className="!text-3xl font-bold !text-success-text -text">{completedTasks}</div>
+              <div className="!text-sm !text-muted">{t('on_tasks')} {parentTasks.length} {t('tasks_label')}</div>
             </div>
 
             <div className="card p-5">
@@ -351,10 +351,10 @@ export default function SharedProjectPage() {
                 <IconProgress className="w-4 h-4" />
                 {t('in_progress')}
               </div>
-              <div className="text-3xl font-bold !text-info">
+              <div className="!text-3xl font-bold !text-info">
                 {parentTasks.filter(task => task.task_status === 'in_progress').length}
               </div>
-              <div className="text-sm !text-muted">{t('active_tasks')}</div>
+              <div className="!text-sm !text-muted">{t('active_tasks')}</div>
             </div>
 
             <div className="card p-5">
@@ -370,7 +370,7 @@ export default function SharedProjectPage() {
                   daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : `${daysRemaining}j`
                 ) : '—'}
               </div>
-              <div className="text-sm !text-muted">
+              <div className="!text-sm !text-muted">
                 {daysRemaining !== null && daysRemaining < 0 ? t('days_late') : t('days_remaining')}
               </div>
             </div>
@@ -429,7 +429,7 @@ export default function SharedProjectPage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="mt-3 pt-3 border-t border-default"
                 >
-                  <p className="text-sm !text-primary">
+                  <p className="!text-sm !text-primary">
                     {t('showing') || 'Affichage de'}{' '}
                     <span className="font-semibold !text-primary">{filteredTasks.length}</span>{' '}
                     {t('tasks_on') || 'tâche(s) sur'}{' '}
@@ -437,7 +437,7 @@ export default function SharedProjectPage() {
                     {' • '}
                     <button 
                       onClick={() => setStatusFilter('all')}
-                      className="text-accent hover:underline"
+                      className="!text-accent hover:underline"
                     >
                       {t('show_all') || 'Voir toutes'}
                     </button>
@@ -456,11 +456,11 @@ export default function SharedProjectPage() {
             transition={{ delay: 0.2 }}
             className="mb-8"
           >
-            <h2 className="text-xl font-semibold !text-primary mb-4 flex items-center gap-2">
+            <h2 className="!text-xl font-semibold !text-primary mb-4 flex items-center gap-2">
               <IconTimeline className="w-5 h-5 !text-accent-light" />
               {t('gantt_diagram')}
               {statusFilter !== 'all' && (
-                <span className="text-sm font-normal !text-muted">
+                <span className="!text-sm font-normal !text-muted">
                   ({filteredTasks.length} {t('tasks') || 'tâches'})
                 </span>
               )}
@@ -473,7 +473,7 @@ export default function SharedProjectPage() {
             ) : (
               <div className="card p-8 !text-center">
                 <IconTimeline className="w-12 h-12 !text-muted mx-auto mb-3" />
-                <p className="text-primary">
+                <p className="!text-primary">
                   {statusFilter !== 'all' 
                     ? (t('no_tasks_with_status') || 'Aucune tâche avec ce statut')
                     : (t('no_tasks_yet') || 'Aucune tâche dans ce projet pour le moment')}
@@ -490,11 +490,11 @@ export default function SharedProjectPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <h2 className="text-xl font-semibold !text-primary mb-4 flex items-center gap-2">
+            <h2 className="!text-xl font-semibold !text-primary mb-4 flex items-center gap-2">
               <IconProgress className="w-5 h-5 !text-accent-light" />
               {t('tasks_list')}
               {statusFilter !== 'all' && (
-                <span className="text-sm font-normal !text-muted">
+                <span className="!text-sm font-normal !text-muted">
                   ({filteredTasks.length} {t('tasks') || 'tâches'})
                 </span>
               )}
@@ -514,7 +514,7 @@ export default function SharedProjectPage() {
             ) : (
               <div className="card p-8 !text-center">
                 <IconProgress className="w-12 h-12 !text-muted mx-auto mb-3" />
-                <p className="text-primary">
+                <p className="!text-primary">
                   {t('no_tasks_with_status') || 'Aucune tâche avec ce statut'}
                 </p>
               </div>
@@ -531,11 +531,11 @@ export default function SharedProjectPage() {
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex-1">
-              <h3 className="text-xl font-bold !text-primary mb-2 flex items-center gap-2">
+              <h3 className="!text-xl font-bold !text-primary mb-2 flex items-center gap-2">
                 <IconUserPlus className="w-6 h-6" color="white" />
                 {t('want_to_collaborate')}
               </h3>
-              <p className="text-primary">
+              <p className="!text-primary">
                 {t('collaborate_description')}
               </p>
             </div>
@@ -1130,9 +1130,9 @@ function PublicGanttView({ tasks, projectName }: {
 
   if (!ganttData || tasksWithDates.length === 0) {
     return (
-      <div className="text-center py-12 card">
+      <div className="!text-center py-12 card">
         <IconTimeline className="w-12 h-12 !text-muted mx-auto mb-3" />
-        <p className="text-primary">{t('no_tasks_for_gantt')}</p>
+        <p className="!text-primary">{t('no_tasks_for_gantt')}</p>
       </div>
     );
   }
@@ -1152,7 +1152,7 @@ function PublicGanttView({ tasks, projectName }: {
             onWheel={(e) => e.stopPropagation()}
           >
             <div className="p-4 border-b border-default flex items-center justify-between">
-              <h3 className="text-lg font-semibold !text-primary">
+              <h3 className="!text-lg font-semibold !text-primary">
                 {t('export_pdf') || 'Export PDF'}
               </h3>
               <button
@@ -1164,7 +1164,7 @@ function PublicGanttView({ tasks, projectName }: {
             </div>
 
             <div className="flex-1 overflow-hidden flex flex-col sm:flex-row">
-              <div className="w-full sm:w-72 flex-shrink-0 p-4 border-b sm:border-b-0 sm:border-r border-default space-y-4 overflow-y-auto">
+              <div className="w-full sm:w-72 flex-shrink-0 p-4 border-b sm:border-b-0 sm:border-r border-default !space-y-4 overflow-y-auto">
                 <div>
                   <label className="block !text-sm font-medium !text-primary mb-2">
                     {t('file_name') || 'Nom du fichier'}
@@ -1176,7 +1176,7 @@ function PublicGanttView({ tasks, projectName }: {
                       onChange={(e) => setExportFileName(e.target.value)}
                       className="flex-1 px-3 py-2 !text-sm bg-muted border border-default  !text-primary focus:outline-none focus:ring-1 focus:ring-accent"
                     />
-                    <span className="text-primary !text-sm">.pdf</span>
+                    <span className="!text-primary !text-sm">.pdf</span>
                   </div>
                 </div>
 
@@ -1218,7 +1218,7 @@ function PublicGanttView({ tasks, projectName }: {
                   </div>
                 </div>
 
-                <div className="pt-4 space-y-2">
+                <div className="pt-4 !space-y-2">
                   <button
                     onClick={() => handleExportPDF(exportMode)}
                     disabled={isExporting}
@@ -1281,13 +1281,13 @@ function PublicGanttView({ tasks, projectName }: {
             <thead className="sticky top-0 z-20">
               <tr>
                 {/* Colonnes fixes */}
-                <th className="text-left py-3 px-4 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
+                <th className="!text-left py-3 px-4 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
                   {t('task_name') || 'Tâche'}
                 </th>
-                <th className="text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
+                <th className="!text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
                   {t('due_range') || 'Échéance'}
                 </th>
-                <th className="text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                <th className="!text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
                   {t('duration') || 'Durée'}
                 </th>
                 {/* Timeline header - Mois */}
@@ -1295,7 +1295,7 @@ function PublicGanttView({ tasks, projectName }: {
                   <th 
                     key={i}
                     colSpan={month.days}
-                    className="text-center py-2 !text-xs font-semibold !text-primary bg-muted/10 border-b border-muted/30"
+                    className="!text-center py-2 !text-xs font-semibold !text-primary bg-muted/10 border-b border-muted/30"
                   >
                     {month.label}
                   </th>
@@ -1417,7 +1417,7 @@ function PublicGanttView({ tasks, projectName }: {
                             {/* Due Range - utilise les dates effectives */}
                             <td className="py-2 px-1 !text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                               <span 
-                                className="text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
+                                className="!text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
                                 style={{ backgroundColor: group.color + '20', color: group.color }}
                               >
                                 {formatDateRange(effectiveStartDate, effectiveEndDate)}
@@ -1456,12 +1456,12 @@ function PublicGanttView({ tasks, projectName }: {
                                 >
                                   <div className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md" style={{ width: `${effectiveProgress}%` }} />
                                   <div className="relative h-full flex items-center justify-between px-2 overflow-hidden">
-                                    <span className="text-[11px] !text-white font-medium truncate">
+                                    <span className="!text-[11px] !text-white font-medium truncate">
                                       {duration > 3 ? task.title : ''}
                                     </span>
                                     {/* Afficher le pourcentage effectif */}
                                     {duration > 2 && (
-                                      <span className="text-[10px] !text-white/90 font-semibold ml-1 flex-shrink-0">
+                                      <span className="!text-[10px] !text-white/90 font-semibold ml-1 flex-shrink-0">
                                         {effectiveProgress}%
                                       </span>
                                     )}
@@ -1496,10 +1496,10 @@ function PublicGanttView({ tasks, projectName }: {
                                   </div>
                                 </td>
                                 <td className="py-1 px-1 !text-center sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
-                                  <span className="text-[9px] !text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
+                                  <span className="!text-[9px] !text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
                                 </td>
                                 <td className="py-1 px-1 !text-center sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
-                                  <span className="text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'j'}</span>
+                                  <span className="!text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'j'}</span>
                                 </td>
                                 <td colSpan={dayHeaders.length} className="h-[34px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <div className="relative w-full h-full">

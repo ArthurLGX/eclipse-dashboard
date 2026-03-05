@@ -132,21 +132,21 @@ export default function TrialExpiredModal({
             onClick={e => e.stopPropagation()}
           >
             {/* En-tête */}
-            <div className="text-center mb-6">
+            <div className="!text-center mb-6">
               <div className="w-16 h-16 bg-danger-light rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">⏰</span>
+                <span className="!text-2xl">⏰</span>
               </div>
-              <h2 className="text-2xl font-bold !text-primary mb-2">
+              <h2 className="!text-2xl font-bold !text-primary mb-2">
                 {t('trial_expired_title')}
               </h2>
-              <p className="text-secondary !text-sm leading-relaxed">
+              <p className="!text-secondary !text-sm leading-relaxed">
                 {t('trial_expired_message')}
               </p>
             </div>
 
             {/* Plans disponibles */}
             <div className="space-y-4 mb-6">
-              <h3 className="text-lg font-semibold !text-primary !text-center">
+              <h3 className="!text-lg font-semibold !text-primary !text-center">
                 {t('choose_plan_to_continue')}
               </h3>
 
@@ -163,30 +163,30 @@ export default function TrialExpiredModal({
                       className="bg-hover border border-default  p-4 hover:border-accent hover:bg-hover transition-all duration-200 !text-left group"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-primary font-semibold capitalize group-hover:!text-accent transition-colors">
+                        <h4 className="!text-primary font-semibold capitalize group-hover:!text-accent transition-colors">
                           {plan.name}
                         </h4>
-                        <div className="text-right">
-                          <div className="text-accent font-bold">
+                        <div className="!text-right">
+                          <div className="!text-accent font-bold">
                             {language === 'en' ? '€' : ''}
                             {plan.price_monthly.toFixed(2)}
                             {language === 'fr' ? '€' : ''}
                           </div>
-                          <div className="text-secondary !text-xs">
+                          <div className="!text-secondary !text-xs">
                             {t('per_month')}
                           </div>
                         </div>
                       </div>
 
-                      <p className="text-secondary !text-sm mb-3 line-clamp-2">
+                      <p className="!text-secondary !text-sm mb-3 line-clamp-2">
                         {plan.description}
                       </p>
 
                       <div className="flex items-center justify-between">
-                        <span className="text-accent !text-xs font-medium">
+                        <span className="!text-accent !text-xs font-medium">
                           {t('select_plan')}
                         </span>
-                        <div className="text-accent !text-xs">→</div>
+                        <div className="!text-accent !text-xs">→</div>
                       </div>
                     </motion.button>
                   ))}

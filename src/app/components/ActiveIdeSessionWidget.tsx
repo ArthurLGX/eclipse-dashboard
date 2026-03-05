@@ -88,7 +88,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
       <div className={`bg-card border border-default  p-4 ${className}`}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10  bg-muted animate-pulse" />
-          <div className="flex-1 space-y-2">
+          <div className="flex-1 !space-y-2">
             <div className="h-4 w-24 bg-muted rounded animate-pulse" />
             <div className="h-3 w-32 bg-muted rounded animate-pulse" />
           </div>
@@ -106,7 +106,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
             <IconCode size={15} />
           </div>
           <div>
-            <p className="text-sm font-medium !text-secondary">
+            <p className="!text-sm font-medium !text-secondary">
               {t('no_ide_session') || 'Aucune session IDE'}
             </p>
             <p className="!text-xs !text-muted">
@@ -142,7 +142,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
         </AnimatePresence>
         {!isLive && recentSessions.length > 0 && (
           <div className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full">
-            <IconCode size={14} className="text-muted" />
+            <IconCode size={14} className="!text-muted" />
             <span className="!text-xs !text-muted">
               {formatDuration(getTotalTodayMinutes())} {t('today') || "aujourd'hui"}
             </span>
@@ -204,8 +204,8 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
                       href={`/dashboard/projects/${activeSession.project.documentId}`}
                       className="flex items-center gap-1.5 mt-1 group"
                     >
-                      <IconFolder size={14} className="text-success-text" />
-                      <span className="text-sm font-medium !text-primary group-hover:!text-accent transition-colors truncate">
+                      <IconFolder size={14} className="!text-success-text" />
+                      <span className="!text-sm font-medium !text-primary group-hover:!text-accent transition-colors truncate">
                         {activeSession.project.title}
                       </span>
                     </Link>
@@ -217,7 +217,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
                       href={`/dashboard/clients/${generateClientSlug(activeSession.client.name, activeSession.client.documentId)}`}
                       className="flex items-center gap-1.5 mt-0.5 group"
                     >
-                      <IconUser size={14} className="text-muted" />
+                      <IconUser size={14} className="!text-muted" />
                       <span className="!text-xs !text-muted group-hover:!text-accent transition-colors truncate">
                         {activeSession.client.name}
                       </span>
@@ -226,7 +226,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
                   
                   {/* Duration */}
                   <div className="flex items-center gap-1.5 mt-2">
-                    <IconClock size={14} className="text-muted" />
+                    <IconClock size={14} className="!text-muted" />
                     <span className="!text-xs !text-secondary">
                       {formatDuration(activeSession.duration || 0)}
                       {' • '}
@@ -246,7 +246,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
           <span className="!text-xs font-medium !text-muted uppercase tracking-wider">
             {t('today') || "Aujourd'hui"}
           </span>
-          <span className="text-sm font-semibold !text-primary">
+          <span className="!text-sm font-semibold !text-primary">
             {formatDuration(getTotalTodayMinutes())}
           </span>
         </div>
@@ -264,7 +264,7 @@ export default function ActiveIdeSessionWidget({ className = '', compact = false
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm !text-primary truncate">
+                  <p className="!text-sm !text-primary truncate">
                     {session.project?.title || session.description || 'Session IDE'}
                   </p>
                   <p className="!text-xs !text-muted">

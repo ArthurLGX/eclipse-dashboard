@@ -133,16 +133,16 @@ export default function QuotaExceededModal<T>({
               />
             </div>
             <div className="flex-1">
-              <h2 className="text-xl font-bold !text-primary">
+              <h2 className="!text-xl font-bold !text-primary">
                 {t('quota_exceeded_title') || 'Quota dépassé'}
               </h2>
-              <p className="text-muted mt-1">
+              <p className="!text-muted mt-1">
                 {t('quota_exceeded_description') || 'Votre plan a changé. Vous avez'}{' '}
                 <span className="font-bold !text-danger">{items.length}</span>{' '}
                 {entityName} {t('but_your_limit_is') || 'mais votre limite est de'}{' '}
                 <span className="font-bold !text-accent">{quota}</span>.
               </p>
-              <p className="text-sm !text-muted mt-2">
+              <p className="!text-sm !text-muted mt-2">
                 {t('select_items_to_keep') || 'Sélectionnez les éléments à conserver. Les autres seront désactivés.'}
               </p>
             </div>
@@ -158,11 +158,11 @@ export default function QuotaExceededModal<T>({
           {/* Stats bar */}
           <div className="flex items-center justify-between gap-4 p-3  bg-muted/10 mb-4">
             <div className="flex items-center gap-4 !text-sm">
-              <span className="text-muted">
+              <span className="!text-muted">
                 {t('selected') || 'Sélectionnés'}: <span className={`font-bold ${canConfirm ? 'text-success' : 'text-warning'}`}>{selectedItems.size}</span> / {quota}
               </span>
               {remainingToSelect > 0 && (
-                <span className="text-warning">
+                <span className="!text-warning">
                   {t('remaining_to_select') || 'Encore'} {remainingToSelect} {t('to_select') || 'à sélectionner'}
                 </span>
               )}
@@ -196,7 +196,7 @@ export default function QuotaExceededModal<T>({
           </div>
 
           {/* Items list */}
-          <div className="flex-1 overflow-y-auto space-y-2 min-h-[200px] max-h-[400px]">
+          <div className="flex-1 overflow-y-auto !space-y-2 min-h-[200px] max-h-[400px]">
             {filteredItems.map((item) => {
               const itemId = getItemId(item);
               const isSelected = selectedItems.has(itemId);
@@ -261,8 +261,8 @@ export default function QuotaExceededModal<T>({
 
           {/* Footer */}
           <div className="flex items-center justify-between gap-4 mt-6 pt-4 border-t border-muted">
-            <p className="text-sm !text-muted">
-              <span className="text-danger font-medium">{mustRemove}</span> {entityName}{' '}
+            <p className="!text-sm !text-muted">
+              <span className="!text-danger font-medium">{mustRemove}</span> {entityName}{' '}
               {t('will_be_deactivated_plural') || 'seront désactivés'}
             </p>
             <div className="flex items-center gap-3">

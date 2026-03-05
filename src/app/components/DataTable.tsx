@@ -395,7 +395,7 @@ export default function DataTable<T = unknown>({
   const renderMobileListView = () => (
     <div className="space-y-0">
       {displayData.length === 0 ? (
-        <div className="text-center py-12 !text-secondary">
+        <div className="!text-center py-12 !text-secondary">
           {emptyMessage}
         </div>
       ) : (
@@ -457,7 +457,7 @@ export default function DataTable<T = unknown>({
                   {titleCol?.render ? titleCol.render(titleValue, row) : String(titleValue || '')}
                 </div>
                 {subtitleValue !== undefined && subtitleValue !== null && subtitleValue !== '' && (
-                  <div className="text-sm !text-muted truncate">
+                  <div className="!text-sm !text-muted truncate">
                     {subtitleCol?.render ? subtitleCol.render(subtitleValue, row) : String(subtitleValue)}
                   </div>
                 )}
@@ -542,7 +542,7 @@ export default function DataTable<T = unknown>({
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted-light to-muted">
-                    <span className="text-5xl font-bold !text-secondary">
+                    <span className="!text-5xl font-bold !text-secondary">
                       {String(titleValue || '').charAt(0).toUpperCase()}
                     </span>
                   </div>
@@ -639,20 +639,20 @@ export default function DataTable<T = unknown>({
             className="flex flex-wrap items-center justify-between gap-4 mb-4 p-3  bg-muted border border-muted"
           >
             <div className="flex items-center gap-3">
-              <span className="text-sm !text-primary font-medium">
+              <span className="!text-sm !text-primary font-medium">
                 {selectedIds.size} {t('items_selected') || 'élément(s) sélectionné(s)'}
               </span>
               {!allSelected && (
                 <button
                   onClick={selectAll}
-                  className="text-sm !text-accent hover:underline"
+                  className="!text-sm !text-accent hover:underline"
                 >
                   {t('select_all') || 'Tout sélectionner'} ({allIds.length})
                 </button>
               )}
               <button
                 onClick={clearSelection}
-                className="text-sm !text-secondary hover:!text-primary"
+                className="!text-sm !text-secondary hover:!text-primary"
               >
                 {t('clear_selection') || 'Annuler la sélection'}
               </button>
@@ -975,10 +975,10 @@ export default function DataTable<T = unknown>({
                     <IconTrash className="w-6 h-6 !text-danger" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold !text-primary">
+                    <h2 className="!text-xl font-bold !text-primary">
                       {t('delete_multiple_title') || 'Supprimer les éléments'}
                     </h2>
-                    <p className="text-sm !text-secondary">
+                    <p className="!text-sm !text-secondary">
                       {t('delete_multiple_subtitle')?.replace('{count}', selectedIds.size.toString()) || 
                         `${selectedIds.size} élément(s) sélectionné(s)`}
                     </p>
@@ -994,28 +994,28 @@ export default function DataTable<T = unknown>({
               </div>
 
               {/* Content */}
-              <div className="p-6 space-y-4">
+              <div className="p-6 !space-y-4">
                 <div className="p-4  bg-muted border border-muted">
-                  <p className="text-sm !text-danger">
+                  <p className="!text-sm !text-danger">
                     {t('delete_multiple_warning') || 'Cette action est irréversible. Les éléments suivants seront définitivement supprimés :'}
                   </p>
                 </div>
 
                 {/* List of items to delete */}
-                <div className="max-h-48 overflow-y-auto space-y-2">
+                <div className="max-h-48 overflow-y-auto !space-y-2">
                   {selectedItems.slice(0, 10).map((item) => (
                     <div
                       key={getItemId(item)}
                       className="flex items-center gap-2 p-2  bg-card-hover"
                     >
                       <div className="w-2 h-2 rounded-full bg-danger" />
-                      <span className="text-sm !text-primary truncate">
+                      <span className="!text-sm !text-primary truncate">
                         {getItemName(item) || getItemId(item)}
                       </span>
                     </div>
                   ))}
                   {selectedItems.length > 10 && (
-                    <p className="text-sm !text-secondary !text-center py-2">
+                    <p className="!text-sm !text-secondary !text-center py-2">
                       ... {t('and_more')?.replace('{count}', (selectedItems.length - 10).toString()) || 
                         `et ${selectedItems.length - 10} autre(s)`}
                     </p>

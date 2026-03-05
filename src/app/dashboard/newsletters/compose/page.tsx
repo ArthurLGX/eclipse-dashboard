@@ -236,7 +236,7 @@ function EmailPreview({
         
         {/* CTA Button */}
         {ctaText && ctaUrl && (
-          <div className="text-center my-8">
+          <div className="!text-center my-8">
             <a 
               href={ctaUrl}
               className={`inline-block px-8 py-4  font-bold shadow-lg ${
@@ -399,7 +399,7 @@ function EmailPreview({
               {footerSettings.website && (
                 <p className="flex items-center gap-2 mb-0.5">
                   <IconWorld className="w-4 h-4" />
-                  <a href={footerSettings.website} className="text-blue-600 hover:underline">
+                  <a href={footerSettings.website} className="!text-blue-600 hover:underline">
                     {footerSettings.website.replace(/^https?:\/\//, '')}
                   </a>
                 </p>
@@ -408,22 +408,22 @@ function EmailPreview({
               {/* Social Links */}
               <div className="flex items-center gap-3 mt-3">
                 {footerSettings.linkedin && (
-                  <a href={footerSettings.linkedin} className="text-info hover:!text-blue-600">
+                  <a href={footerSettings.linkedin} className="!text-info hover:!text-blue-600">
                     <IconBrandLinkedin className="w-5 h-5" />
                   </a>
                 )}
                 {footerSettings.twitter && (
-                  <a href={footerSettings.twitter} className="text-info hover:!text-sky-500">
+                  <a href={footerSettings.twitter} className="!text-info hover:!text-sky-500">
                     <IconBrandTwitter className="w-5 h-5" />
                   </a>
                 )}
                 {footerSettings.instagram && (
-                  <a href={footerSettings.instagram} className="text-info hover:!text-pink-600">
+                  <a href={footerSettings.instagram} className="!text-info hover:!text-pink-600">
                     <IconBrandInstagram className="w-5 h-5" />
                   </a>
                 )}
                 {footerSettings.facebook && (
-                  <a href={footerSettings.facebook} className="text-info hover:!text-blue-700">
+                  <a href={footerSettings.facebook} className="!text-info hover:!text-blue-700">
                     <IconBrandFacebook className="w-5 h-5" />
                   </a>
                 )}
@@ -433,7 +433,7 @@ function EmailPreview({
 
           {/* Custom text */}
           {footerSettings.customText && (
-            <p className="text-sm !text-gray-600 mt-4 pt-4 border-t border-gray-200">
+            <p className="!text-sm !text-gray-600 mt-4 pt-4 border-t border-gray-200">
               {footerSettings.customText}
             </p>
           )}
@@ -1051,7 +1051,7 @@ function RichTextEditor({
                     </button>
                   </>
                 ) : (
-                  <div className="p-3 space-y-2">
+                  <div className="p-3 !space-y-2">
                     <input
                       type="url"
                       value={imageUrlInput}
@@ -1138,7 +1138,7 @@ function RichTextEditor({
                     </button>
                   </>
                 ) : (
-                  <div className="p-3 space-y-2">
+                  <div className="p-3 !space-y-2">
                     <input
                       type="url"
                       value={videoUrlInput}
@@ -2522,7 +2522,7 @@ export default function ComposeNewsletterPage() {
               </div>
               
               ${cta && ctaLink ? `
-              <div style="text-align: center; margin: 32px 0;">
+              <div style="!text-align: center; margin: 32px 0;">
                 <a href="${ctaLink}" style="display: inline-block; padding: 16px 32px; background-color: ${ctaButtonColor}; color: ${ctaButtonTextColor}; !text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
                   ${cta}${isPromo ? ' →' : ''}
                 </a>
@@ -2640,16 +2640,16 @@ export default function ComposeNewsletterPage() {
                   <IconArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex flex-col gap-1">
-                  <h1 className="text-lg font-semibold !text-primary">{t('create_newsletter')}</h1>
+                  <h1 className="!text-lg font-semibold !text-primary">{t('create_newsletter')}</h1>
                   {selectedTemplate ? (
                     <span 
-                      className="text-sm px-3 py-1 rounded-full !text-gray-800 font-medium w-fit my-2"
+                      className="!text-sm px-3 py-1 rounded-full !text-gray-800 font-medium w-fit my-2"
                       style={{ backgroundColor: templates.find(tp => tp.id === selectedTemplate)?.primaryColor }}
                     >
                       {templates.find(tp => tp.id === selectedTemplate)?.name}
                     </span>
                   ) : (
-                    <p className="text-sm !text-muted my-2">  
+                    <p className="!text-sm !text-muted my-2">  
                       {t('select_template')}
                     </p>
                   )}
@@ -2743,8 +2743,8 @@ export default function ComposeNewsletterPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                   >
-                    <h2 className="text-2xl font-bold !text-primary mb-2">{t('choose_template')}</h2>
-                    <p className="text-secondary mb-8">{t('choose_template_desc')}</p>
+                    <h2 className="!text-2xl font-bold !text-primary mb-2">{t('choose_template')}</h2>
+                    <p className="!text-secondary mb-8">{t('choose_template_desc')}</p>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                       {templates.map((template) => {
@@ -2814,11 +2814,11 @@ export default function ComposeNewsletterPage() {
                     {customTemplates.length > 0 && (
                       <div className="mt-8">
                         <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold !text-primary flex items-center gap-2">
+                          <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
                             <IconPalette className="w-5 h-5 !text-accent" />
                             {t('my_saved_themes') || 'Mes thèmes'}
                           </h3>
-                          <span className="text-sm !text-muted">
+                          <span className="!text-sm !text-muted">
                             {customTemplates.length} {customTemplates.length === 1 ? t('theme') || 'thème' : t('themes') || 'thèmes'}
                           </span>
                         </div>
@@ -2897,7 +2897,7 @@ export default function ComposeNewsletterPage() {
                                   </p>
                                   
                                   {/* Font */}
-                                  <p className="text-[10px] !text-muted truncate">
+                                  <p className="!text-[10px] !text-muted truncate">
                                     <span style={{ fontFamily: template.font_family }}>
                                       {template.font_family.split(',')[0]}
                                     </span>
@@ -2997,8 +2997,8 @@ export default function ComposeNewsletterPage() {
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h2 className="text-2xl font-bold !text-primary mb-2">{t('write_content')}</h2>
-                        <p className="text-primary">{t('write_content_desc')}</p>
+                        <h2 className="!text-2xl font-bold !text-primary mb-2">{t('write_content')}</h2>
+                        <p className="!text-primary">{t('write_content_desc')}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
@@ -3029,7 +3029,7 @@ export default function ComposeNewsletterPage() {
                           exit={{ opacity: 0, height: 0 }}
                           className="overflow-hidden"
                         >
-                          <div className="bg-muted  p-6 space-y-4 border border-default">
+                          <div className="bg-muted  p-6 !space-y-4 border border-default">
                             <h3 className="font-semibold !text-primary flex items-center gap-2">
                               <IconSettings className="w-5 h-5" />
                               {t('customize_footer')}
@@ -3204,7 +3204,7 @@ export default function ComposeNewsletterPage() {
                     </AnimatePresence>
 
                     {/* Title */}
-                    <div className="bg-card  p-6 border border-default space-y-4">
+                    <div className="bg-card  p-6 border border-default !space-y-4">
                       <div>
                         <label className="block !text-sm font-medium !text-secondary mb-2">
                           {t('email_title_label')} *
@@ -3220,7 +3220,7 @@ export default function ComposeNewsletterPage() {
                       <div>
                         <label className="block !text-sm font-medium !text-secondary mb-2">
                           {t('email_subject_label')} *
-                          <span className="text-muted font-normal ml-2">({t('email_subject_hint')})</span>
+                          <span className="!text-muted font-normal ml-2">({t('email_subject_hint')})</span>
                         </label>
                         <input
                           type="text"
@@ -3233,7 +3233,7 @@ export default function ComposeNewsletterPage() {
                     </div>
 
                     {/* Rich Text Editor */}
-                    <div className="bg-card  p-6 border border-default space-y-4">
+                    <div className="bg-card  p-6 border border-default !space-y-4">
                       <h3 className="font-semibold !text-primary">{t('message_label')} *</h3>
                       
                       {/* Hidden file inputs for content media */}
@@ -3290,7 +3290,7 @@ export default function ComposeNewsletterPage() {
 
                       {/* Content Images & Videos Preview */}
                       {(contentImages.length > 0 || contentVideos.length > 0) && (
-                        <div className="pt-4 border-t border-default space-y-3">
+                        <div className="pt-4 border-t border-default !space-y-3">
                           {/* Images */}
                           {contentImages.length > 0 && (
                             <div>
@@ -3351,7 +3351,7 @@ export default function ComposeNewsletterPage() {
                     </div>
 
                     {/* CTA */}
-                    <div className="bg-card  p-6 border border-default space-y-4">
+                    <div className="bg-card  p-6 border border-default !space-y-4">
                       <h3 className="font-semibold !text-primary">{t('cta_section_title')}</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -3382,13 +3382,13 @@ export default function ComposeNewsletterPage() {
                     </div>
 
                     {/* Banner Image */}
-                    <div className="bg-card  p-6 border border-default space-y-4">
+                    <div className="bg-card  p-6 border border-default !space-y-4">
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold !text-primary">{t('banner_section_title') || 'Bannière de fin'}</h3>
                         {signatureData?.banner_url && !bannerImageUrl && (
                           <button
                             onClick={() => setBannerImageUrl(signatureData.banner_url || '')}
-                            className="text-sm !text-accent hover:!text-accent/80 transition-colors flex items-center gap-1"
+                            className="!text-sm !text-accent hover:!text-accent/80 transition-colors flex items-center gap-1"
                           >
                             <IconPhoto className="w-4 h-4" />
                             {t('use_signature_banner') || 'Utiliser la bannière de ma signature'}
@@ -3437,8 +3437,8 @@ export default function ComposeNewsletterPage() {
                             hover:border-accent hover:bg-accent-light/30 transition-all cursor-pointer group"
                         >
                           <IconUpload className="w-8 h-8 mx-auto mb-2 !text-muted group-hover:!text-accent transition-colors" />
-                          <p className="text-primary font-medium">{t('add_banner') || 'Ajouter une bannière'}</p>
-                          <p className="text-sm !text-muted">{t('banner_hint') || 'Image promotionnelle en fin d\'email'}</p>
+                          <p className="!text-primary font-medium">{t('add_banner') || 'Ajouter une bannière'}</p>
+                          <p className="!text-sm !text-muted">{t('banner_hint') || 'Image promotionnelle en fin d\'email'}</p>
                         </div>
                       )}
                       
@@ -3446,7 +3446,7 @@ export default function ComposeNewsletterPage() {
                       <div className="pt-2 border-t border-default">
                         <Link
                           href="/dashboard/settings?tab=email"
-                          className="text-sm !text-accent hover:!text-accent/80 transition-colors inline-flex items-center gap-1"
+                          className="!text-sm !text-accent hover:!text-accent/80 transition-colors inline-flex items-center gap-1"
                         >
                           <IconSettings className="w-3.5 h-3.5" />
                           {t('edit_signature_banner') || 'Modifier la bannière dans ma signature email'}
@@ -3464,8 +3464,8 @@ export default function ComposeNewsletterPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                   >
-                    <h2 className="text-2xl font-bold !text-primary mb-2">{t('select_recipients')}</h2>
-                    <p className="text-secondary mb-6">{t('select_recipients_desc')}</p>
+                    <h2 className="!text-2xl font-bold !text-primary mb-2">{t('select_recipients')}</h2>
+                    <p className="!text-secondary mb-6">{t('select_recipients_desc')}</p>
 
                     {/* Manual email input with suggestions */}
                     <div className="bg-card  border border-default p-4 mb-4">
@@ -3529,7 +3529,7 @@ export default function ComposeNewsletterPage() {
                                           )}
                                           <div className="flex-1 min-w-0">
                                             <p className="font-medium !text-primary truncate">{client.name}</p>
-                                            <p className="text-sm !text-muted truncate">{client.email}</p>
+                                            <p className="!text-sm !text-muted truncate">{client.email}</p>
                                           </div>
                                           <IconCheck className="w-5 h-5 !text-accent opacity-0 group-hover:opacity-100" />
                                         </button>
@@ -3547,7 +3547,7 @@ export default function ComposeNewsletterPage() {
                                       </div>
                                       <div className="flex-1 min-w-0">
                                         <p className="font-medium !text-primary">{t('add_new_recipient') || 'Ajouter ce destinataire'}</p>
-                                        <p className="text-sm !text-muted truncate">{emailInput}</p>
+                                        <p className="!text-sm !text-muted truncate">{emailInput}</p>
                                       </div>
                                       <IconChevronRight className="w-5 h-5 !text-muted" />
                                     </button>
@@ -3576,7 +3576,7 @@ export default function ComposeNewsletterPage() {
                       {/* Manual emails list */}
                       {manualEmails.length > 0 && (
                         <div className="mt-4 pt-4 border-t border-default">
-                          <p className="text-sm !text-secondary mb-2">
+                          <p className="!text-sm !text-secondary mb-2">
                             {t('manual_recipients') || 'Destinataires ajoutés'} ({manualEmails.length})
                           </p>
                           <div className="flex flex-wrap gap-2">
@@ -3588,7 +3588,7 @@ export default function ComposeNewsletterPage() {
                                 <div className="w-6 h-6 rounded-full border-accent-light flex items-center justify-center !text-accent !text-xs font-semibold">
                                   {getEmailInitials(manual.email)}
                                 </div>
-                                <span className="text-sm !text-primary">{manual.email}</span>
+                                <span className="!text-sm !text-primary">{manual.email}</span>
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveManualEmail(manual.email)}
@@ -3617,7 +3617,7 @@ export default function ComposeNewsletterPage() {
                             {t('select_all_clients')} ({clients.length})
                           </span>
                         </label>
-                        <span className="text-sm !text-secondary">
+                        <span className="!text-sm !text-secondary">
                           {selectedRecipients.length + manualEmails.length} {t('recipients_selected')}
                         </span>
                       </div>
@@ -3654,7 +3654,7 @@ export default function ComposeNewsletterPage() {
                               )}
                               <div className="flex-1">
                                 <p className="font-medium !text-primary">{client.name}</p>
-                                <p className="text-sm !text-muted">{client.email}</p>
+                                <p className="!text-sm !text-muted">{client.email}</p>
                               </div>
                               {client.enterprise && (
                                 <span className="!text-xs px-2 py-1 bg-muted rounded-full !text-secondary">
@@ -3677,8 +3677,8 @@ export default function ComposeNewsletterPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                   >
-                    <h2 className="text-2xl font-bold !text-primary mb-2">{t('review_and_send')}</h2>
-                    <p className="text-secondary mb-6">{t('review_and_send_desc')}</p>
+                    <h2 className="!text-2xl font-bold !text-primary mb-2">{t('review_and_send')}</h2>
+                    <p className="!text-secondary mb-6">{t('review_and_send_desc')}</p>
 
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -3687,7 +3687,7 @@ export default function ComposeNewsletterPage() {
                             <div className="w-10 h-10  bg-accent-light flex items-center justify-center">
                               <IconTemplate className="w-5 h-5 !text-accent" />
                             </div>
-                            <span className="text-sm !text-secondary">{t('step_template')}</span>
+                            <span className="!text-sm !text-secondary">{t('step_template')}</span>
                           </div>
                           <p className="font-semibold !text-primary">
                             {selectedTemplateData?.name || '-'}
@@ -3699,7 +3699,7 @@ export default function ComposeNewsletterPage() {
                             <div className="w-10 h-10  bg-info-light flex items-center justify-center">
                               <IconMail className="w-5 h-5 !text-info" />
                             </div>
-                            <span className="text-sm !text-secondary">{t('subject')}</span>
+                            <span className="!text-sm !text-secondary">{t('subject')}</span>
                           </div>
                           <p className="font-semibold !text-primary truncate">
                             {emailSubject || '-'}
@@ -3711,7 +3711,7 @@ export default function ComposeNewsletterPage() {
                             <div className="w-10 h-10  bg-success-light flex items-center justify-center">
                               <IconUsers className="w-5 h-5 !text-success-text -text" />
                             </div>
-                            <span className="text-sm !text-secondary">{t('step_recipients')}</span>
+                            <span className="!text-sm !text-secondary">{t('step_recipients')}</span>
                           </div>
                           <p className="font-semibold !text-primary">
                             {totalRecipients} {t('contacts')}
@@ -3770,7 +3770,7 @@ export default function ComposeNewsletterPage() {
                                 : t('ready_to_send')
                               }
                             </h3>
-                            <p className="text-sm !text-white/80">
+                            <p className="!text-sm !text-white/80">
                               {scheduledAt 
                                 ? `${t('newsletter_scheduled_for') || 'La newsletter sera envoyée le'} ${scheduledAt.toLocaleDateString('fr-FR')} à ${scheduledAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
                                 : `${t('newsletter_will_be_sent')} ${totalRecipients} ${t('recipients_count')}`
@@ -3857,17 +3857,17 @@ export default function ComposeNewsletterPage() {
                     <IconSettings className="w-6 h-6 !text-warning" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold !text-primary">
+                    <h3 className="!text-lg font-semibold !text-primary">
                       {t('smtp_config_required') || 'Configuration email requise'}
                     </h3>
-                    <p className="text-sm !text-secondary">
+                    <p className="!text-sm !text-secondary">
                       {t('smtp_config_required_desc') || 'Configurez votre SMTP pour envoyer des newsletters'}
                     </p>
                   </div>
                 </div>
                 
                 <div className="p-4  bg-warning-light border border-warning mb-6">
-                  <p className="text-sm !text-secondary">
+                  <p className="!text-sm !text-secondary">
                     {smtpConfig ? (
                       t('smtp_not_verified_warning') || 'Votre configuration SMTP n\'a pas été vérifiée. Testez la connexion et enregistrez pour continuer.'
                     ) : (
@@ -3939,7 +3939,7 @@ export default function ComposeNewsletterPage() {
                 <div className="flex flex-1 overflow-hidden min-h-0">
                   {/* Sidebar - Folders */}
                   <div className="w-16 md:w-48 bg-gray-50 border-r border-gray-200 flex-shrink-0 hidden sm:block">
-                    <div className="p-2 md:p-4 space-y-1">
+                    <div className="p-2 md:p-4 !space-y-1">
                       <button className="w-full flex items-center gap-3 px-3 py-2 bg-blue-100 !text-blue-700  font-medium">
                         <IconInbox className="w-5 h-5" />
                         <span className="hidden md:inline">{t('inbox')}</span>
@@ -3999,7 +3999,7 @@ export default function ComposeNewsletterPage() {
                             <p className="font-medium !text-gray-800 !text-sm truncate mb-0.5">
                               {emailSubject || t('email_subject_label')}
                             </p>
-                            <p className="text-info !text-xs truncate">
+                            <p className="!text-info !text-xs truncate">
                               {emailTitle || t('content_preview_placeholder')}
                             </p>
                           </div>
@@ -4032,7 +4032,7 @@ export default function ComposeNewsletterPage() {
                                 <span className="font-medium !text-gray-700 truncate">{email.from}</span>
                                 <span className="!text-xs !text-gray-400 flex-shrink-0 ml-2">{email.time}</span>
                               </div>
-                              <p className="text-gray-600 !text-sm truncate">{email.subject}</p>
+                              <p className="!text-gray-600 !text-sm truncate">{email.subject}</p>
                             </div>
                           </div>
                         </div>
@@ -4045,7 +4045,7 @@ export default function ComposeNewsletterPage() {
                     {/* Email header */}
                     <div className="p-4 border-b border-gray-200">
                       <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold !text-gray-900">
+                        <h2 className="!text-xl font-semibold !text-gray-900">
                           {emailSubject || t('email_subject_label')}
                         </h2>
                         <div className="flex items-center gap-2">
@@ -4072,7 +4072,7 @@ export default function ComposeNewsletterPage() {
                             <span className="font-semibold !text-gray-900">
                               {footerSettings.firstName} {footerSettings.lastName}
                             </span>
-                            <span className="text-gray-400 !text-sm">
+                            <span className="!text-gray-400 !text-sm">
                               &lt;{footerSettings.email || 'email@example.com'}&gt;
                             </span>
                           </div>
@@ -4108,9 +4108,9 @@ export default function ComposeNewsletterPage() {
                             translations={emailPreviewTranslations}
                           />
                         ) : (
-                          <div className="text-center py-12 !text-gray-400">
+                          <div className="!text-center py-12 !text-gray-400">
                             <IconTemplate className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                            <p className="text-lg">{t('select_template_preview')}</p>
+                            <p className="!text-lg">{t('select_template_preview')}</p>
                           </div>
                         )}
                       </div>
@@ -4140,7 +4140,7 @@ export default function ComposeNewsletterPage() {
               >
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-default">
-                  <h2 className="text-xl font-bold !text-primary">
+                  <h2 className="!text-xl font-bold !text-primary">
                     {t('select_from_library')} - {showLibraryModal.type === 'image' ? t('toolbar_insert_image') : t('toolbar_insert_video')}
                   </h2>
                   <button
@@ -4181,7 +4181,7 @@ export default function ComposeNewsletterPage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12 !text-secondary">
+                      <div className="!text-center py-12 !text-secondary">
                         <IconPhoto className="w-16 h-16 mx-auto mb-4 opacity-30" />
                         <p>{t('no_media_in_library')}</p>
                       </div>
@@ -4207,7 +4207,7 @@ export default function ComposeNewsletterPage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12 !text-secondary">
+                      <div className="!text-center py-12 !text-secondary">
                         <IconVideo className="w-16 h-16 mx-auto mb-4 opacity-30" />
                         <p>{t('no_media_in_library')}</p>
                       </div>

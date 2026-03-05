@@ -80,7 +80,7 @@ export default function AuditScoreCard({
             fill="none"
             stroke="currentColor"
             strokeWidth={circleConfig.strokeWidth}
-            className="text-hover"
+            className="!text-hover"
           />
           {/* Progress circle */}
           <motion.circle
@@ -114,7 +114,7 @@ export default function AuditScoreCard({
             {icon}
           </span>
         )}
-        <span className="text-sm font-medium !text-primary">{label}</span>
+        <span className="!text-sm font-medium !text-primary">{label}</span>
         {trend && (
           <span className={`${
             trend === 'up' ? 'text-success' :

@@ -286,9 +286,9 @@ export default function PublicContractSignPage() {
   if (loading) {
     return (
       <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="text-center">
+        <div className="!text-center">
           <IconLoader2 className="w-12 h-12 !text-violet-600 animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">{t.loading}</p>
+          <p className="!text-slate-600">{t.loading}</p>
         </div>
       </div>
     );
@@ -301,8 +301,8 @@ export default function PublicContractSignPage() {
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <IconAlertTriangle className="w-8 h-8 !text-red-500" />
           </div>
-          <h1 className="text-xl font-bold !text-slate-900 mb-2">{t.error}</h1>
-          <p className="text-slate-600">{error}</p>
+          <h1 className="!text-xl font-bold !text-slate-900 mb-2">{t.error}</h1>
+          <p className="!text-slate-600">{error}</p>
         </div>
       </div>
     );
@@ -319,14 +319,14 @@ export default function PublicContractSignPage() {
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <IconCheck className="w-10 h-10 !text-emerald-500" />
           </div>
-          <h1 className="text-2xl font-bold !text-slate-900 mb-2">
+          <h1 className="!text-2xl font-bold !text-slate-900 mb-2">
             {t.successTitle}
           </h1>
-          <p className="text-slate-600 mb-6">
+          <p className="!text-slate-600 mb-6">
             {t.successMessage}
           </p>
           <div className="p-4 bg-slate-50  !text-left">
-            <p className="text-sm !text-slate-500 mb-1">{t.contract}</p>
+            <p className="!text-sm !text-slate-500 mb-1">{t.contract}</p>
             <p className="font-medium !text-slate-900">{contract?.title}</p>
           </div>
         </motion.div>
@@ -409,7 +409,7 @@ export default function PublicContractSignPage() {
             /* Display structured content */
             <>
               {/* Title */}
-              <h2 className="text-xl sm:!text-2xl font-bold !text-center !text-slate-900 mb-8 pb-4 border-b-2 border-violet-200 uppercase tracking-wide">
+              <h2 className="!text-xl sm:!text-2xl font-bold !text-center !text-slate-900 mb-8 pb-4 border-b-2 border-violet-200 uppercase tracking-wide">
                 {content.title}
               </h2>
 
@@ -419,16 +419,16 @@ export default function PublicContractSignPage() {
                 
                 <div className="p-4 sm:p-5 bg-slate-50  mb-4">
                   <p className="font-semibold !text-slate-900 !text-base sm:!text-lg">{content.parties.provider.name}</p>
-                  <p className="text-sm !text-slate-600 whitespace-pre-line mt-3 leading-relaxed">
+                  <p className="!text-sm !text-slate-600 whitespace-pre-line mt-3 leading-relaxed">
                     {content.parties.provider.details}
                   </p>
                 </div>
                 
-                <p className="text-center !text-slate-400 my-4 font-medium">{t.and}</p>
+                <p className="!text-center !text-slate-400 my-4 font-medium">{t.and}</p>
                 
                 <div className="p-4 sm:p-5 bg-violet-50  border-2 border-violet-200">
                   <p className="font-semibold !text-slate-900 !text-base sm:!text-lg">{content.parties.client.name}</p>
-                  <p className="text-sm !text-slate-600 whitespace-pre-line mt-3 leading-relaxed">
+                  <p className="!text-sm !text-slate-600 whitespace-pre-line mt-3 leading-relaxed">
                     {content.parties.client.details}
                   </p>
                   <p className="!text-xs !text-violet-600 mt-3 font-medium">{t.thatsYou}</p>
@@ -438,7 +438,7 @@ export default function PublicContractSignPage() {
               {/* Preamble */}
               <div className="mb-10">
                 <h3 className="font-bold !text-slate-900 mb-4 !text-lg">{t.preamble}</h3>
-                <p className="text-slate-600 whitespace-pre-line leading-relaxed">
+                <p className="!text-slate-600 whitespace-pre-line leading-relaxed">
                   {content.preamble}
                 </p>
               </div>
@@ -453,7 +453,7 @@ export default function PublicContractSignPage() {
                       <h4 className="font-semibold !text-slate-900 mb-3 !text-base">
                         {t.article} {article.number} - {article.title}
                       </h4>
-                      <p className="text-slate-600 whitespace-pre-line leading-relaxed">
+                      <p className="!text-slate-600 whitespace-pre-line leading-relaxed">
                         {article.content}
                       </p>
                     </div>
@@ -465,13 +465,13 @@ export default function PublicContractSignPage() {
 
           {/* Signatures Section - Always shown */}
           <div className="mt-12 pt-8 border-t-2 border-slate-200">
-            <p className="text-center !text-slate-600 mb-8">
+            <p className="!text-center !text-slate-600 mb-8">
               {t.madeAt} {content.signatures?.location || contract.signature_location}, {t.on} {formatDate(content.signatures?.date || contract.signature_date, language)}
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
               {/* Provider Signature */}
-              <div className="text-center">
+              <div className="!text-center">
                 <p className="font-semibold !text-slate-900 mb-4">{t.provider}</p>
                 {contract.provider_signature ? (
                   <div className="border border-slate-200  p-4 bg-slate-50">
@@ -494,7 +494,7 @@ export default function PublicContractSignPage() {
               </div>
 
               {/* Client Signature */}
-              <div className="text-center">
+              <div className="!text-center">
                 <p className="font-semibold !text-slate-900 mb-4">{t.client}</p>
                 {signatureData ? (
                   <div className="border-2 border-violet-200  p-4 bg-violet-50">
@@ -531,10 +531,10 @@ export default function PublicContractSignPage() {
             className="bg-white  shadow-2xl w-full max-w-lg overflow-hidden"
           >
             <div className="p-5 sm:p-6 border-b border-slate-200">
-              <h3 className="text-lg font-bold !text-slate-900">
+              <h3 className="!text-lg font-bold !text-slate-900">
                 {t.signContractModal}
               </h3>
-              <p className="text-sm !text-slate-500 mt-1">
+              <p className="!text-sm !text-slate-500 mt-1">
                 {t.drawSignature}
               </p>
             </div>

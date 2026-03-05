@@ -107,7 +107,7 @@ export default function ScreenshotViewer({
         <h4 className="font-semibold !text-primary mb-2">
           {t('screenshot_unavailable') || 'Capture non disponible'}
         </h4>
-        <p className="text-sm !text-muted max-w-sm">
+        <p className="!text-sm !text-muted max-w-sm">
           {t('screenshot_unavailable_desc') || 'La capture d\'écran n\'a pas pu être effectuée pour cette page.'}
         </p>
       </div>
@@ -261,7 +261,7 @@ export default function ScreenshotViewer({
                   >
                     <IconZoomOut className="w-4 h-4" />
                   </button>
-                  <span className="text-white !text-sm w-16 !text-center">
+                  <span className="!text-white !text-sm w-16 !text-center">
                     {Math.round(zoom * 100)}%
                   </span>
                   <button
@@ -317,7 +317,7 @@ export default function ScreenshotViewer({
 
             {/* URL Bar */}
             <div className="p-3 bg-black/50 !text-center">
-              <p className="text-sm !text-white/60 truncate">{url}</p>
+              <p className="!text-sm !text-white/60 truncate">{url}</p>
             </div>
           </motion.div>
         )}

@@ -142,11 +142,11 @@ export default function AdminServerPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
+          <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
             <IconServer className="w-7 h-7 !text-accent" />
             {t('server_monitoring') || 'Monitoring Serveur'}
           </h1>
-          <p className="text-sm !text-muted">{t('realtime_monitoring') || 'Surveillance en temps réel de votre infrastructure'}</p>
+          <p className="!text-sm !text-muted">{t('realtime_monitoring') || 'Surveillance en temps réel de votre infrastructure'}</p>
         </div>
         <div className="flex items-center gap-4">
           {/* Auto-refresh toggle */}
@@ -205,7 +205,7 @@ export default function AdminServerPage() {
                  health.status === 'error' ? t('issue_detected') || 'Problème détecté' :
                  t('checking') || 'Vérification...'}
               </h2>
-              <p className="text-muted">
+              <p className="!text-muted">
                 {t('last_check') || 'Dernière vérification'} : {health.timestamp
                   ? new Date(health.timestamp).toLocaleString('fr-FR')
                   : t('in_progress') || 'En cours...'}
@@ -228,7 +228,7 @@ export default function AdminServerPage() {
             </div>
             <div className="p-4 bg-card  border border-muted">
               <p className="!text-xs !text-muted mb-1">{t('checks') || 'Checks'}</p>
-              <p className="text-2xl font-bold !text-primary">{healthHistory.length}</p>
+              <p className="!text-2xl font-bold !text-primary">{healthHistory.length}</p>
             </div>
             <div className="p-4 bg-card  border border-muted">
               <p className="!text-xs !text-muted mb-1">{t('errors') || 'Erreurs'}</p>
@@ -302,7 +302,7 @@ export default function AdminServerPage() {
                 </span>
               </div>
               <h3 className="font-semibold !text-primary mb-1">{service.name}</h3>
-              <p className="text-sm !text-muted mb-2">{service.detail}</p>
+              <p className="!text-sm !text-muted mb-2">{service.detail}</p>
               <p className={`text-lg font-bold ${getResponseTimeColor(
                 service.metric.includes('ms') ? parseInt(service.metric) : 0
               )}`}>
@@ -316,11 +316,11 @@ export default function AdminServerPage() {
       {/* Response Time Graph (Simple) */}
       <div className="card p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold !text-primary flex items-center gap-2">
+          <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
             <IconActivity className="w-5 h-5 !text-accent" />
             {t('response_time') || 'Temps de réponse'}
           </h2>
-          <span className="text-sm !text-muted">
+          <span className="!text-sm !text-muted">
             {healthHistory.length} {t('last_checks') || 'dernières vérifications'}
           </span>
         </div>
@@ -346,7 +346,7 @@ export default function AdminServerPage() {
                   <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block">
                     <div className="bg-card border border-muted rounded px-2 py-1 !text-xs whitespace-nowrap shadow-lg">
                       <p className="font-medium">{h.responseTime}ms</p>
-                      <p className="text-muted">
+                      <p className="!text-muted">
                         {new Date(h.timestamp).toLocaleTimeString('fr-FR', {
                           hour: '2-digit',
                           minute: '2-digit',
@@ -379,7 +379,7 @@ export default function AdminServerPage() {
 
       {/* Recent History */}
       <div className="card p-6">
-        <h2 className="text-lg font-semibold !text-primary mb-4">{t('recent_history') || 'Historique récent'}</h2>
+        <h2 className="!text-lg font-semibold !text-primary mb-4">{t('recent_history') || 'Historique récent'}</h2>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {healthHistory.slice(0, 10).map((h, i) => (
             <div
@@ -394,7 +394,7 @@ export default function AdminServerPage() {
                 ) : (
                   <IconX className="w-4 h-4 !text-danger" />
                 )}
-                <span className="text-sm !text-primary">
+                <span className="!text-sm !text-primary">
                   {h.status === 'ok' ? t('server_operational') || 'Serveur opérationnel' : t('error_detected') || 'Erreur détectée'}
                 </span>
               </div>
@@ -413,7 +413,7 @@ export default function AdminServerPage() {
 
       {/* API Endpoint */}
       <div className="card p-6">
-        <h2 className="text-lg font-semibold !text-primary mb-4">{t('health_endpoint') || 'Endpoint de santé'}</h2>
+        <h2 className="!text-lg font-semibold !text-primary mb-4">{t('health_endpoint') || 'Endpoint de santé'}</h2>
         <div className="flex items-center gap-4 p-4 bg-muted/5  border border-muted">
           <code className="flex-1 !text-sm !text-accent font-mono">
             GET {API_URL}/api/health

@@ -1464,7 +1464,7 @@ export default function RichTextEditor({
           >
             <div className="!text-xs !text-muted px-2 py-1 mb-1 flex items-center gap-2">
               <span>:{emojiSearch}</span>
-              <span className="text-muted/50">• ↑↓ naviguez • ↵ sélectionner</span>
+              <span className="!text-muted/50">• ↑↓ naviguez • ↵ sélectionner</span>
             </div>
             <div className="space-y-0.5">
               {emojiResults.map((emoji, index) => (
@@ -1479,8 +1479,8 @@ export default function RichTextEditor({
                       : 'hover:bg-hover !text-primary'
                   }`}
                 >
-                  <span className="text-xl">{emoji.emoji}</span>
-                  <span className="text-sm truncate">
+                  <span className="!text-xl">{emoji.emoji}</span>
+                  <span className="!text-sm truncate">
                     {emoji.names[0]}
                   </span>
                 </button>

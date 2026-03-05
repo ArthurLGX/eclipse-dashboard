@@ -114,7 +114,7 @@ function generateEmailHtml(
       </table>
       
       <!-- CTA Button -->
-      <div style="text-align: center; margin: 32px 0;">
+      <div style="!text-align: center; margin: 32px 0;">
         <a href="${projectUrl}" style="display: inline-block; background: linear-gradient(135deg, ${buttonColor} 0%, #5B21B6 100%); color: white; !text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px ${buttonColor}40;">
           Voir mes tâches →
         </a>
@@ -224,10 +224,10 @@ export default function TaskNotificationEmailModal({
                   <IconMail className="w-5 h-5 !text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold !text-primary">
+                  <h2 className="!text-lg font-semibold !text-primary">
                     {t('email_notification_compose') || 'Notification par email'}
                   </h2>
-                  <p className="text-sm !text-muted">
+                  <p className="!text-sm !text-muted">
                     {recipients.length} {t('recipients') || 'destinataire(s)'} • {totalTasks} {t('tasks') || 'tâches'}
                   </p>
                 </div>
@@ -242,7 +242,7 @@ export default function TaskNotificationEmailModal({
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-auto p-6 space-y-6">
+            <div className="flex-1 overflow-auto p-6 !space-y-6">
               {/* Subject */}
               <div>
                 <label className="block !text-sm font-medium !text-secondary mb-2">
@@ -287,7 +287,7 @@ export default function TaskNotificationEmailModal({
                           {recipient.username?.charAt(0).toUpperCase() || recipient.email?.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-sm font-medium !text-primary">{recipient.username}</p>
+                          <p className="!text-sm font-medium !text-primary">{recipient.username}</p>
                           <p className="!text-xs !text-muted">{recipient.email}</p>
                         </div>
                       </div>
@@ -311,10 +311,10 @@ export default function TaskNotificationEmailModal({
 
               {/* Info box */}
               <div className="p-4 bg-info-light border border-info ">
-                <p className="text-sm !text-primary">
+                <p className="!text-sm !text-primary">
                   <strong>{t('email_info_title') || 'Un seul email par personne'}</strong>
                 </p>
-                <p className="text-sm !text-muted mt-1">
+                <p className="!text-sm !text-muted mt-1">
                   {t('email_info_description') || 'Chaque collaborateur recevra un email unique contenant la liste de toutes ses tâches assignées.'}
                 </p>
               </div>

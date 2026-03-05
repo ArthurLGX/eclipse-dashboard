@@ -131,11 +131,11 @@ export default function ProjectProfitabilityCard({
           <IconClock className="w-4 h-4" />
           {t('profitability') || 'Rentabilité'}
         </h3>
-        <div className="text-center py-4">
+        <div className="!text-center py-4">
           <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-3">
             <IconClock className="w-6 h-6 !text-muted" />
           </div>
-          <p className="text-sm !text-muted mb-2">
+          <p className="!text-sm !text-muted mb-2">
             {t('no_time_estimates') || 'Aucune estimation de temps'}
           </p>
           <p className="!text-xs !text-muted">
@@ -189,7 +189,7 @@ export default function ProjectProfitabilityCard({
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-2">
           <span className="!text-xs !text-muted whitespace-nowrap">{t('estimated_time') || 'Temps estimé'}</span>
-          <span className="text-sm font-semibold !text-primary whitespace-nowrap">
+          <span className="!text-sm font-semibold !text-primary whitespace-nowrap">
             {formatHours(profitabilityData.estimatedHours)}
           </span>
         </div>
@@ -224,7 +224,7 @@ export default function ProjectProfitabilityCard({
             <div className="h-px bg-default my-1" />
             <div className="flex items-center justify-between gap-2">
               <span className="!text-xs !text-muted whitespace-nowrap">{t('estimated_value') || 'Valeur estimée'}</span>
-              <span className="text-sm font-semibold !text-primary whitespace-nowrap">
+              <span className="!text-sm font-semibold !text-primary whitespace-nowrap">
                 {profitabilityData.estimatedValue.toLocaleString('fr-FR')} €
               </span>
             </div>

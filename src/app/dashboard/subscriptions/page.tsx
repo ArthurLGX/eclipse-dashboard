@@ -150,7 +150,7 @@ function SubscriptionModal({
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-card border border-muted  shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto m-4">
         <div className="sticky top-0 bg-card border-b border-muted p-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">
+          <h2 className="!text-lg font-semibold">
             {subscription ? 'Modifier l&apos;abonnement' : 'Nouvel abonnement'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-hover ">
@@ -158,7 +158,7 @@ function SubscriptionModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 !space-y-4">
           <div>
             <label className="block !text-sm font-medium mb-1">Nom de l&apos;abonnement *</label>
             <input
@@ -269,7 +269,7 @@ function SubscriptionModal({
               onChange={(e) => setFormData({ ...formData, auto_invoice: e.target.checked })}
               className="w-4 h-4 !text-accent rounded"
             />
-            <span className="text-sm">Générer automatiquement les factures</span>
+            <span className="!text-sm">Générer automatiquement les factures</span>
           </label>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-muted">
@@ -421,14 +421,14 @@ export default function SubscriptionsPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 !space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
           <IconCreditCard size={28} className="!text-accent" />
           <div>
-            <h1 className="text-2xl font-bold">{t('subscriptions') || 'Abonnements clients'}</h1>
-            <p className="text-sm !text-muted-foreground">
+            <h1 className="!text-2xl font-bold">{t('subscriptions') || 'Abonnements clients'}</h1>
+            <p className="!text-sm !text-muted-foreground">
               Gérez vos abonnements de maintenance et accompagnement
             </p>
           </div>
@@ -446,20 +446,20 @@ export default function SubscriptionsPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card border border-muted  p-4">
-          <p className="text-sm !text-muted-foreground">Total abonnements</p>
-          <p className="text-2xl font-bold">{stats.total}</p>
+          <p className="!text-sm !text-muted-foreground">Total abonnements</p>
+          <p className="!text-2xl font-bold">{stats.total}</p>
         </div>
         <div className="bg-card border border-muted  p-4">
-          <p className="text-sm !text-muted-foreground">Actifs</p>
-          <p className="text-2xl font-bold !text-green-600">{stats.active}</p>
+          <p className="!text-sm !text-muted-foreground">Actifs</p>
+          <p className="!text-2xl font-bold !text-green-600">{stats.active}</p>
         </div>
         <div className="bg-card border border-muted  p-4">
-          <p className="text-sm !text-muted-foreground">Revenu mensuel</p>
-          <p className="text-2xl font-bold !text-accent">{formatCurrency(stats.monthlyRevenue)}</p>
+          <p className="!text-sm !text-muted-foreground">Revenu mensuel</p>
+          <p className="!text-2xl font-bold !text-accent">{formatCurrency(stats.monthlyRevenue)}</p>
         </div>
         <div className="bg-card border border-muted  p-4">
-          <p className="text-sm !text-muted-foreground">Revenu annuel</p>
-          <p className="text-2xl font-bold">{formatCurrency(stats.yearlyRevenue)}</p>
+          <p className="!text-sm !text-muted-foreground">Revenu annuel</p>
+          <p className="!text-2xl font-bold">{formatCurrency(stats.yearlyRevenue)}</p>
         </div>
       </div>
 
@@ -494,7 +494,7 @@ export default function SubscriptionsPage() {
           <div className="animate-spin h-8 w-8 border-2 border-accent border-t-transparent rounded-full" />
         </div>
       ) : filteredSubscriptions.length === 0 ? (
-        <div className="text-center py-12 !text-muted-foreground">
+        <div className="!text-center py-12 !text-muted-foreground">
           <IconCreditCard size={48} className="mx-auto mb-4 opacity-30" />
           <p>Aucun abonnement trouvé</p>
         </div>
@@ -512,7 +512,7 @@ export default function SubscriptionsPage() {
                     <div>
                       <h3 className="font-semibold">{sub.name}</h3>
                       {sub.client && (
-                        <p className="text-sm !text-muted-foreground flex items-center gap-1">
+                        <p className="!text-sm !text-muted-foreground flex items-center gap-1">
                           <IconBuilding size={12} />
                           {sub.client.name || sub.client.enterprise}
                         </p>
@@ -524,8 +524,8 @@ export default function SubscriptionsPage() {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold !text-accent">
-                      {formatCurrency(sub.monthly_amount)}<span className="text-sm font-normal !text-muted-foreground">/mois</span>
+                    <span className="!text-2xl font-bold !text-accent">
+                      {formatCurrency(sub.monthly_amount)}<span className="!text-sm font-normal !text-muted-foreground">/mois</span>
                     </span>
                     <div className="flex gap-1">
                       <button
@@ -546,9 +546,9 @@ export default function SubscriptionsPage() {
                   </div>
                 </div>
 
-                <div className="p-3 bg-muted/30 !text-sm space-y-2">
+                <div className="p-3 bg-muted/30 !text-sm !space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground flex items-center gap-1">
+                    <span className="!text-muted-foreground flex items-center gap-1">
                       <IconCalendar size={14} />
                       Début
                     </span>
@@ -556,7 +556,7 @@ export default function SubscriptionsPage() {
                   </div>
                   {sub.next_billing_date && (
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground flex items-center gap-1">
+                      <span className="!text-muted-foreground flex items-center gap-1">
                         <IconRefresh size={14} />
                         Prochaine facture
                       </span>
@@ -564,7 +564,7 @@ export default function SubscriptionsPage() {
                     </div>
                   )}
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground flex items-center gap-1">
+                    <span className="!text-muted-foreground flex items-center gap-1">
                       <IconCurrencyEuro size={14} />
                       Total facturé
                     </span>

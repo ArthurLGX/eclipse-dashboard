@@ -59,7 +59,7 @@ export default function EmailContentForm({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Title & Subject in same card */}
-      <div className="bg-card border border-default  p-6 space-y-4">
+      <div className="bg-card border border-default  p-6 !space-y-4">
         {/* Title field */}
         {showTitle && (
           <div>
@@ -86,7 +86,7 @@ export default function EmailContentForm({
             <IconMail className="w-4 h-4 inline mr-1.5 !text-accent" />
             {l.subject} *
             {l.subjectHint && (
-              <span className="text-muted font-normal ml-2">({l.subjectHint})</span>
+              <span className="!text-muted font-normal ml-2">({l.subjectHint})</span>
             )}
           </label>
           <input

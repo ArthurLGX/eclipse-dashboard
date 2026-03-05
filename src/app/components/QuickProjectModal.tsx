@@ -334,7 +334,7 @@ export default function QuickProjectModal({
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-default flex-shrink-0">
           <div>
-            <h2 className="text-lg font-bold !text-primary">
+            <h2 className="!text-lg font-bold !text-primary">
               {step === 'choice' && (t('how_to_start') || 'Comment veux-tu démarrer ce projet ?')}
               {step === 'duplicate' && (t('duplicate_project') || 'Dupliquer un projet')}
               {step === 'template' && (t('use_template') || 'Utiliser un template')}
@@ -383,7 +383,7 @@ export default function QuickProjectModal({
                           {t('recommended') || 'Recommandé'}
                         </span>
                       </div>
-                      <p className="text-sm !text-muted mt-0.5">
+                      <p className="!text-sm !text-muted mt-0.5">
                         {t('duplicate_desc') || 'Dupliquer phases, tâches et estimations'}
                       </p>
                     </div>
@@ -410,7 +410,7 @@ export default function QuickProjectModal({
                       <h3 className="font-semibold !text-primary">
                         {t('use_template') || 'Utiliser un template'}
                       </h3>
-                      <p className="text-sm !text-muted mt-0.5">
+                      <p className="!text-sm !text-muted mt-0.5">
                         {t('template_desc') || 'Démarrer avec un modèle prédéfini'}
                       </p>
                     </div>
@@ -431,7 +431,7 @@ export default function QuickProjectModal({
                       <h3 className="font-semibold !text-primary">
                         {t('empty_project') || 'Projet vide'}
                       </h3>
-                      <p className="text-sm !text-muted mt-0.5">
+                      <p className="!text-sm !text-muted mt-0.5">
                         {t('empty_project_desc') || 'Commencer de zéro'}
                       </p>
                     </div>
@@ -452,12 +452,12 @@ export default function QuickProjectModal({
               >
                 <button
                   onClick={() => setStep('choice')}
-                  className="text-sm !text-muted hover:!text-primary flex items-center gap-1 mb-2"
+                  className="!text-sm !text-muted hover:!text-primary flex items-center gap-1 mb-2"
                 >
                   ← {t('back') || 'Retour'}
                 </button>
                 
-                <p className="text-sm !text-muted mb-3">
+                <p className="!text-sm !text-muted mb-3">
                   {t('select_project_to_duplicate') || 'Sélectionne le projet à dupliquer :'}
                 </p>
                 
@@ -517,7 +517,7 @@ export default function QuickProjectModal({
               >
                 <button
                   onClick={() => setStep('choice')}
-                  className="text-sm !text-muted hover:!text-primary flex items-center gap-1 mb-2"
+                  className="!text-sm !text-muted hover:!text-primary flex items-center gap-1 mb-2"
                 >
                   ← {t('back') || 'Retour'}
                 </button>
@@ -529,7 +529,7 @@ export default function QuickProjectModal({
                       onClick={() => handleSelectTemplate(template)}
                       className="p-4  border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                     >
-                      <div className="text-2xl mb-2">{template.icon}</div>
+                      <div className="!text-2xl mb-2">{template.icon}</div>
                       <h3 className="font-semibold !text-primary !text-sm">
                         {language === 'en' ? template.nameEn : template.name}
                       </h3>
@@ -560,7 +560,7 @@ export default function QuickProjectModal({
               >
                 <button
                   onClick={() => setStep(selectedSourceProject ? 'duplicate' : selectedTemplate ? 'template' : 'choice')}
-                  className="text-sm !text-muted hover:!text-primary flex items-center gap-1 mb-2"
+                  className="!text-sm !text-muted hover:!text-primary flex items-center gap-1 mb-2"
                 >
                   ← {t('back') || 'Retour'}
                 </button>
@@ -570,7 +570,7 @@ export default function QuickProjectModal({
                   <div className="p-3  bg-accent-light border border-accent">
                     <div className="flex items-center gap-2 !text-sm">
                       <IconCopy className="w-4 h-4 !text-accent" />
-                      <span className="text-accent font-medium">
+                      <span className="!text-accent font-medium">
                         {t('duplicating_from') || 'Duplication de'} : {selectedSourceProject.title}
                       </span>
                     </div>
@@ -591,7 +591,7 @@ export default function QuickProjectModal({
                   <div className="p-3  bg-accent-light border border-accent">
                     <div className="flex items-center gap-2 !text-sm">
                       <IconTemplate className="w-4 h-4 !text-accent" />
-                      <span className="text-accent font-medium">
+                      <span className="!text-accent font-medium">
                         {t('template') || 'Template'} : {language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
                       </span>
                     </div>
@@ -650,7 +650,7 @@ export default function QuickProjectModal({
                   </div>
 
                   {/* Timing scope */}
-                  <div className="p-3  border border-default bg-muted space-y-3">
+                  <div className="p-3  border border-default bg-muted !space-y-3">
                     <div className="flex items-center gap-2 !text-sm font-medium !text-secondary">
                       <IconClock className="w-4 h-4" />
                       {t('timing_scope') || 'Périmètre temporel'} *

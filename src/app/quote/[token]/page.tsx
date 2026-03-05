@@ -155,8 +155,8 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
         <div className="bg-white  shadow-xl p-8 max-w-md !text-center">
           <IconAlertTriangle size={64} className="mx-auto !text-amber-500 mb-4" />
-          <h1 className="text-2xl font-bold !text-slate-800 mb-2">Devis introuvable</h1>
-          <p className="text-slate-600">{error || 'Ce lien de devis est invalide ou a expiré.'}</p>
+          <h1 className="!text-2xl font-bold !text-slate-800 mb-2">Devis introuvable</h1>
+          <p className="!text-slate-600">{error || 'Ce lien de devis est invalide ou a expiré.'}</p>
         </div>
       </div>
     );
@@ -169,22 +169,22 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
           {signSuccess === 'accepted' ? (
             <>
               <IconCircleCheck size={64} className="mx-auto !text-green-500 mb-4" />
-              <h1 className="text-2xl font-bold !text-slate-800 mb-2">Devis accepté !</h1>
-              <p className="text-slate-600 mb-4">
+              <h1 className="!text-2xl font-bold !text-slate-800 mb-2">Devis accepté !</h1>
+              <p className="!text-slate-600 mb-4">
                 Merci pour votre confiance. Nous avons bien enregistré votre acceptation et nous vous contacterons très prochainement.
               </p>
-              <p className="text-sm !text-slate-500">
+              <p className="!text-sm !text-slate-500">
                 Devis n°{quote.reference}
               </p>
             </>
           ) : (
             <>
               <IconCircleX size={64} className="mx-auto !text-red-500 mb-4" />
-              <h1 className="text-2xl font-bold !text-slate-800 mb-2">Devis refusé</h1>
-              <p className="text-slate-600 mb-4">
+              <h1 className="!text-2xl font-bold !text-slate-800 mb-2">Devis refusé</h1>
+              <p className="!text-slate-600 mb-4">
                 Nous avons bien pris note de votre décision. N&apos;hésitez pas à nous recontacter si vous changez d&apos;avis.
               </p>
-              <p className="text-sm !text-slate-500">
+              <p className="!text-sm !text-slate-500">
                 Devis n°{quote.reference}
               </p>
             </>
@@ -199,11 +199,11 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
         <div className="bg-white  shadow-xl p-8 max-w-md !text-center">
           <IconCircleCheck size={64} className="mx-auto !text-green-500 mb-4" />
-          <h1 className="text-2xl font-bold !text-slate-800 mb-2">Devis déjà signé</h1>
-          <p className="text-slate-600 mb-4">
+          <h1 className="!text-2xl font-bold !text-slate-800 mb-2">Devis déjà signé</h1>
+          <p className="!text-slate-600 mb-4">
             Ce devis a déjà été {quote.status === 'accepted' ? 'accepté' : 'traité'}.
           </p>
-          <p className="text-sm !text-slate-500">
+          <p className="!text-sm !text-slate-500">
             Signé le {formatDate(quote.signed_at || '')}
           </p>
         </div>
@@ -216,8 +216,8 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
         <div className="bg-white  shadow-xl p-8 max-w-md !text-center">
           <IconAlertTriangle size={64} className="mx-auto !text-amber-500 mb-4" />
-          <h1 className="text-2xl font-bold !text-slate-800 mb-2">Devis expiré</h1>
-          <p className="text-slate-600 mb-4">
+          <h1 className="!text-2xl font-bold !text-slate-800 mb-2">Devis expiré</h1>
+          <p className="!text-slate-600 mb-4">
             Ce devis a expiré le {formatDate(quote.valid_until)}. Veuillez nous contacter pour obtenir un nouveau devis.
           </p>
         </div>
@@ -235,13 +235,13 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
               <div className="flex items-center gap-3">
                 <IconFileInvoice size={32} />
                 <div>
-                  <h1 className="text-2xl font-bold">Devis n°{quote.reference}</h1>
-                  <p className="text-violet-200">Signature électronique</p>
+                  <h1 className="!text-2xl font-bold">Devis n°{quote.reference}</h1>
+                  <p className="!text-violet-200">Signature électronique</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold">{formatCurrency(quote.totals.total, quote.currency)}</p>
-                <p className="text-violet-200 !text-sm">TTC</p>
+              <div className="!text-right">
+                <p className="!text-3xl font-bold">{formatCurrency(quote.totals.total, quote.currency)}</p>
+                <p className="!text-violet-200 !text-sm">TTC</p>
               </div>
             </div>
           </div>
@@ -250,21 +250,21 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
           <div className="p-6 grid md:grid-cols-2 gap-6 border-b border-slate-200">
             {quote.provider && (
               <div>
-                <h3 className="text-sm font-semibold !text-slate-400 uppercase mb-2">Émetteur</h3>
+                <h3 className="!text-sm font-semibold !text-slate-400 uppercase mb-2">Émetteur</h3>
                 <div className="space-y-1">
                   <p className="font-semibold !text-slate-800">{quote.provider.name}</p>
                   {quote.provider.address && (
-                    <p className="text-sm !text-slate-600 flex items-center gap-1">
+                    <p className="!text-sm !text-slate-600 flex items-center gap-1">
                       <IconMapPin size={14} /> {quote.provider.address}
                     </p>
                   )}
                   {quote.provider.email && (
-                    <p className="text-sm !text-slate-600 flex items-center gap-1">
+                    <p className="!text-sm !text-slate-600 flex items-center gap-1">
                       <IconMail size={14} /> {quote.provider.email}
                     </p>
                   )}
                   {quote.provider.phone && (
-                    <p className="text-sm !text-slate-600 flex items-center gap-1">
+                    <p className="!text-sm !text-slate-600 flex items-center gap-1">
                       <IconPhone size={14} /> {quote.provider.phone}
                     </p>
                   )}
@@ -276,11 +276,11 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
             )}
             {quote.client && (
               <div>
-                <h3 className="text-sm font-semibold !text-slate-400 uppercase mb-2">Client</h3>
+                <h3 className="!text-sm font-semibold !text-slate-400 uppercase mb-2">Client</h3>
                 <div className="space-y-1">
                   <p className="font-semibold !text-slate-800">{quote.client.name}</p>
                   {quote.client.company && (
-                    <p className="text-sm !text-slate-600 flex items-center gap-1">
+                    <p className="!text-sm !text-slate-600 flex items-center gap-1">
                       <IconBuilding size={14} /> {quote.client.company}
                     </p>
                   )}
@@ -292,15 +292,15 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
           {/* Dates */}
           <div className="p-6 bg-slate-50 flex flex-wrap gap-6 border-b border-slate-200">
             <div className="flex items-center gap-2">
-              <IconCalendar size={18} className="text-slate-400" />
-              <span className="text-sm !text-slate-600">
+              <IconCalendar size={18} className="!text-slate-400" />
+              <span className="!text-sm !text-slate-600">
                 Date: <strong>{formatDate(quote.date)}</strong>
               </span>
             </div>
             {quote.valid_until && (
               <div className="flex items-center gap-2">
-                <IconCalendar size={18} className="text-amber-500" />
-                <span className="text-sm !text-slate-600">
+                <IconCalendar size={18} className="!text-amber-500" />
+                <span className="!text-sm !text-slate-600">
                   Valable jusqu&apos;au: <strong>{formatDate(quote.valid_until)}</strong>
                 </span>
               </div>
@@ -310,22 +310,22 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
           {/* Description */}
           {quote.description && (
             <div className="p-6 border-b border-slate-200">
-              <h3 className="text-sm font-semibold !text-slate-400 uppercase mb-2">Description</h3>
-              <p className="text-slate-600 whitespace-pre-wrap">{quote.description}</p>
+              <h3 className="!text-sm font-semibold !text-slate-400 uppercase mb-2">Description</h3>
+              <p className="!text-slate-600 whitespace-pre-wrap">{quote.description}</p>
             </div>
           )}
 
           {/* Lines */}
           <div className="p-6">
-            <h3 className="text-sm font-semibold !text-slate-400 uppercase mb-4">Détail des prestations</h3>
+            <h3 className="!text-sm font-semibold !text-slate-400 uppercase mb-4">Détail des prestations</h3>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-200">
-                    <th className="text-left py-3 !text-sm font-semibold !text-slate-600">Description</th>
-                    <th className="text-center py-3 !text-sm font-semibold !text-slate-600 w-24">Qté</th>
-                    <th className="text-right py-3 !text-sm font-semibold !text-slate-600 w-32">Prix unit.</th>
-                    <th className="text-right py-3 !text-sm font-semibold !text-slate-600 w-32">Total</th>
+                    <th className="!text-left py-3 !text-sm font-semibold !text-slate-600">Description</th>
+                    <th className="!text-center py-3 !text-sm font-semibold !text-slate-600 w-24">Qté</th>
+                    <th className="!text-right py-3 !text-sm font-semibold !text-slate-600 w-32">Prix unit.</th>
+                    <th className="!text-right py-3 !text-sm font-semibold !text-slate-600 w-32">Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -349,7 +349,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
 
             {/* Totals */}
             <div className="mt-6 flex justify-end">
-              <div className="w-64 space-y-2">
+              <div className="w-64 !space-y-2">
                 <div className="flex justify-between !text-slate-600">
                   <span>Sous-total HT</span>
                   <span>{formatCurrency(quote.totals.subtotal, quote.currency)}</span>
@@ -371,19 +371,19 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
           {/* Terms */}
           {quote.terms && (
             <div className="p-6 bg-slate-50 border-t border-slate-200">
-              <h3 className="text-sm font-semibold !text-slate-400 uppercase mb-2">Conditions</h3>
-              <p className="text-sm !text-slate-600 whitespace-pre-wrap">{quote.terms}</p>
+              <h3 className="!text-sm font-semibold !text-slate-400 uppercase mb-2">Conditions</h3>
+              <p className="!text-sm !text-slate-600 whitespace-pre-wrap">{quote.terms}</p>
             </div>
           )}
         </div>
 
         {/* Action buttons */}
         <div className="bg-white  shadow-xl p-6">
-          <h3 className="text-lg font-semibold !text-slate-800 mb-4 flex items-center gap-2">
-            <IconSignature size={24} className="text-violet-600" />
+          <h3 className="!text-lg font-semibold !text-slate-800 mb-4 flex items-center gap-2">
+            <IconSignature size={24} className="!text-violet-600" />
             Valider votre décision
           </h3>
-          <p className="text-slate-600 mb-6">
+          <p className="!text-slate-600 mb-6">
             Après avoir lu attentivement ce devis, vous pouvez l&apos;accepter ou le refuser en cliquant sur l&apos;un des boutons ci-dessous.
           </p>
           
@@ -411,7 +411,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50" onClick={() => setSignatureModal(null)} />
           <div className="relative bg-white  shadow-2xl w-full max-w-md p-6">
-            <h3 className="text-xl font-bold !text-slate-800 mb-4">
+            <h3 className="!text-xl font-bold !text-slate-800 mb-4">
               {signatureModal === 'accept' ? 'Accepter le devis' : 'Refuser le devis'}
             </h3>
 
@@ -460,7 +460,7 @@ export default function PublicQuotePage({ params }: { params: Promise<{ token: s
                     onChange={(e) => setAcceptTerms(e.target.checked)}
                     className="mt-1 w-4 h-4 !text-violet-600 rounded focus:ring-violet-500"
                   />
-                  <span className="text-sm !text-slate-600">
+                  <span className="!text-sm !text-slate-600">
                     J&apos;accepte ce devis et les conditions mentionnées. Je comprends que cette acceptation a valeur contractuelle.
                   </span>
                 </label>

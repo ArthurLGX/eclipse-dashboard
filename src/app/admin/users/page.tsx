@@ -281,11 +281,11 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold !text-primary flex items-center gap-2">
+          <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
             <IconUsers className="w-7 h-7 !text-accent" />
             {t('users_management') || 'Gestion des utilisateurs'}
           </h1>
-          <p className="text-sm !text-muted">{totalUsers} {t('users_total') || 'utilisateurs au total'}</p>
+          <p className="!text-sm !text-muted">{totalUsers} {t('users_total') || 'utilisateurs au total'}</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -349,7 +349,7 @@ export default function AdminUsersPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-accent-light border border-accent-light  p-4 flex items-center justify-between"
         >
-          <span className="text-sm !text-accent font-medium">
+          <span className="!text-sm !text-accent font-medium">
             {selectedUsers.length} {t('users_selected') || 'utilisateur(s) sélectionné(s)'}
           </span>
           <div className="flex items-center gap-2">
@@ -422,7 +422,7 @@ export default function AdminUsersPage() {
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center">
-                        <span className="text-accent font-medium !text-sm">
+                        <span className="!text-accent font-medium !text-sm">
                           {user.username?.charAt(0).toUpperCase() || '?'}
                         </span>
                       </div>
@@ -435,7 +435,7 @@ export default function AdminUsersPage() {
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <IconMail className="w-4 h-4 !text-muted" />
-                      <span className="text-sm !text-secondary">{user.email}</span>
+                      <span className="!text-sm !text-secondary">{user.email}</span>
                       {user.confirmed && (
                         <IconCheck className="w-4 h-4 !text-success-text -text" title={t('email_confirmed') || 'Email confirmé'} />
                       )}
@@ -520,16 +520,16 @@ export default function AdminUsersPage() {
         </div>
 
         {filteredUsers.length === 0 && (
-          <div className="text-center py-12">
+          <div className="!text-center py-12">
             <IconUsers className="w-12 h-12 !text-muted mx-auto mb-4" />
-            <p className="text-muted">{t('no_users_found') || 'Aucun utilisateur trouvé'}</p>
+            <p className="!text-muted">{t('no_users_found') || 'Aucun utilisateur trouvé'}</p>
           </div>
         )}
 
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-muted">
-            <p className="text-sm !text-muted">
+            <p className="!text-sm !text-muted">
               {t('page') || 'Page'} {currentPage} {t('of') || 'sur'} {totalPages}
             </p>
             <div className="flex items-center gap-2">
@@ -573,7 +573,7 @@ export default function AdminUsersPage() {
               {modalData.action === 'view' && (
                 <>
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold !text-primary">{t('user_details') || 'Détails utilisateur'}</h3>
+                    <h3 className="!text-lg font-semibold !text-primary">{t('user_details') || 'Détails utilisateur'}</h3>
                     <button
                       onClick={() => setModalData({ user: null, action: null })}
                       className="p-2  hover:bg-hover"
@@ -584,23 +584,23 @@ export default function AdminUsersPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center">
-                        <span className="text-2xl !text-accent font-bold">
+                        <span className="!text-2xl !text-accent font-bold">
                           {modalData.user.username?.charAt(0).toUpperCase()}
                         </span>
                       </div>
                       <div>
-                        <p className="text-xl font-semibold !text-primary">{modalData.user.username}</p>
-                        <p className="text-sm !text-muted">{modalData.user.email}</p>
+                        <p className="!text-xl font-semibold !text-primary">{modalData.user.username}</p>
+                        <p className="!text-sm !text-muted">{modalData.user.email}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-muted">
                       <div>
                         <p className="!text-xs !text-muted">ID</p>
-                        <p className="text-sm font-medium !text-primary">{modalData.user.id}</p>
+                        <p className="!text-sm font-medium !text-primary">{modalData.user.id}</p>
                       </div>
                       <div>
                         <p className="!text-xs !text-muted">{t('role') || 'Rôle'}</p>
-                        <p className="text-sm font-medium !text-primary">{modalData.user.role?.name || 'N/A'}</p>
+                        <p className="!text-sm font-medium !text-primary">{modalData.user.role?.name || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="!text-xs !text-muted">{t('status') || 'Statut'}</p>
@@ -616,13 +616,13 @@ export default function AdminUsersPage() {
                       </div>
                       <div>
                         <p className="!text-xs !text-muted">{t('registration') || 'Inscription'}</p>
-                        <p className="text-sm font-medium !text-primary">
+                        <p className="!text-sm font-medium !text-primary">
                           {new Date(modalData.user.createdAt).toLocaleDateString('fr-FR')}
                         </p>
                       </div>
                       <div>
                         <p className="!text-xs !text-muted">{t('last_update') || 'Dernière mise à jour'}</p>
-                        <p className="text-sm font-medium !text-primary">
+                        <p className="!text-sm font-medium !text-primary">
                           {new Date(modalData.user.updatedAt).toLocaleDateString('fr-FR')}
                         </p>
                       </div>
@@ -635,7 +635,7 @@ export default function AdminUsersPage() {
               {modalData.action === 'role' && (
                 <>
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold !text-primary">{t('change_role') || 'Changer le rôle'}</h3>
+                    <h3 className="!text-lg font-semibold !text-primary">{t('change_role') || 'Changer le rôle'}</h3>
                     <button
                       onClick={() => setModalData({ user: null, action: null })}
                       className="p-2  hover:bg-hover"
@@ -646,13 +646,13 @@ export default function AdminUsersPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-12 h-12 rounded-full bg-accent-light flex items-center justify-center">
-                        <span className="text-lg !text-accent font-bold">
+                        <span className="!text-lg !text-accent font-bold">
                           {modalData.user.username?.charAt(0).toUpperCase()}
                         </span>
                       </div>
                       <div>
                         <p className="font-semibold !text-primary">{modalData.user.username}</p>
-                        <p className="text-sm !text-muted">{modalData.user.email}</p>
+                        <p className="!text-sm !text-muted">{modalData.user.email}</p>
                       </div>
                     </div>
 
@@ -680,7 +680,7 @@ export default function AdminUsersPage() {
                                 <IconShield className="w-4 h-4 !text-info" />
                               )}
                             </div>
-                            <div className="text-left">
+                            <div className="!text-left">
                               <p className="font-medium !text-primary">{role.name}</p>
                               <p className="!text-xs !text-muted">{role.type}</p>
                             </div>
@@ -714,16 +714,16 @@ export default function AdminUsersPage() {
               {/* Block Modal */}
               {modalData.action === 'block' && (
                 <>
-                  <div className="text-center mb-6">
+                  <div className="!text-center mb-6">
                     <div className="w-16 h-16 rounded-full bg-warning-light flex items-center justify-center mx-auto mb-4">
                       <IconBan className="w-8 h-8 !text-warning" />
                     </div>
-                    <h3 className="text-lg font-semibold !text-primary">
+                    <h3 className="!text-lg font-semibold !text-primary">
                       {modalData.user.blocked 
                         ? t('unblock_user') || 'Débloquer cet utilisateur' 
                         : t('block_user') || 'Bloquer cet utilisateur'}
                     </h3>
-                    <p className="text-sm !text-muted mt-2">
+                    <p className="!text-sm !text-muted mt-2">
                       {modalData.user.blocked
                         ? `${modalData.user.username} ${t('will_be_able_to_login') || 'pourra de nouveau se connecter.'}`
                         : `${modalData.user.username} ${t('will_not_be_able_to_login') || 'ne pourra plus se connecter.'}`
@@ -755,14 +755,14 @@ export default function AdminUsersPage() {
               {/* Delete Modal */}
               {modalData.action === 'delete' && (
                 <>
-                  <div className="text-center mb-6">
+                  <div className="!text-center mb-6">
                     <div className="w-16 h-16 rounded-full bg-danger-light flex items-center justify-center mx-auto mb-4">
                       <IconTrash className="w-8 h-8 !text-danger" />
                     </div>
-                    <h3 className="text-lg font-semibold !text-primary">
+                    <h3 className="!text-lg font-semibold !text-primary">
                       {t('delete_user') || 'Supprimer cet utilisateur'} ?
                     </h3>
-                    <p className="text-sm !text-muted mt-2">
+                    <p className="!text-sm !text-muted mt-2">
                       {t('delete_user_warning') || 'Cette action est irréversible. Toutes les données de'} {modalData.user.username} {t('will_be_deleted') || 'seront supprimées.'}
                     </p>
                   </div>

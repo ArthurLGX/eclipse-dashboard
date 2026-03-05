@@ -51,12 +51,12 @@ function EmailConfirmationContent() {
               className="!text-center"
             >
               <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <IconLoader2 size={40} className="text-primary-foreground animate-spin" />
+                <IconLoader2 size={40} className="!text-primary-foreground animate-spin" />
               </div>
               <h2 className="!text-2xl font-bold !text-foreground mb-4">
                 {t('email_confirmation_loading')}
               </h2>
-              <p className="text-muted-foreground">
+              <p className="!text-muted-foreground">
                 {t('email_confirmation_loading_description')}
               </p>
             </motion.div>
@@ -70,12 +70,12 @@ function EmailConfirmationContent() {
               className="!text-center"
             >
               <div className="w-20 h-20 bg-success-light rounded-full flex items-center justify-center mx-auto mb-6">
-                <IconCheck size={40} className="text-success-text" />
+                <IconCheck size={40} className="!text-success-text" />
               </div>
               <h2 className="!text-2xl font-bold !text-foreground mb-4">
                 {t('email_confirmation_success')}
               </h2>
-              <p className="text-muted-foreground mb-8">
+              <p className="!text-muted-foreground mb-8">
                 {t('email_confirmation_success_description')}
               </p>
               <Link
@@ -95,12 +95,12 @@ function EmailConfirmationContent() {
               className="!text-center"
             >
               <div className="w-20 h-20 bg-danger-light rounded-full flex items-center justify-center mx-auto mb-6">
-                <IconAlertTriangle size={40} className="text-danger" />
+                <IconAlertTriangle size={40} className="!text-danger" />
               </div>
               <h2 className="!text-2xl font-bold !text-foreground mb-4">
                 {t('email_confirmation_error')}
               </h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="!text-muted-foreground mb-6">
                 {errorMessage || t('email_confirmation_error_description')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

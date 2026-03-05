@@ -101,17 +101,17 @@ const ToolResultCard: React.FC<{
   const getIcon = () => {
     switch (toolName) {
       case 'generateRelanceEmail':
-        return <IconMail size={16} className="text-info" />;
+        return <IconMail size={16} className="!text-info" />;
       case 'createTask':
-        return <IconListCheck size={16} className="text-success-text" />;
+        return <IconListCheck size={16} className="!text-success-text" />;
       case 'createQuote':
-        return <IconFileInvoice size={16} className="text-accent" />;
+        return <IconFileInvoice size={16} className="!text-accent" />;
       case 'createContract':
-        return <IconFileText size={16} className="text-warning" />;
+        return <IconFileText size={16} className="!text-warning" />;
       case 'suggestNextSteps':
-        return <IconArrowRight size={16} className="text-warning" />;
+        return <IconArrowRight size={16} className="!text-warning" />;
       default:
-        return <IconSparkles size={16} className="text-accent" />;
+        return <IconSparkles size={16} className="!text-accent" />;
     }
   };
 
@@ -142,8 +142,8 @@ const ToolResultCard: React.FC<{
     return (
       <div className="mt-2 p-3 bg-danger-light border border-danger ">
         <div className="flex items-center gap-2">
-          <IconX size={16} className="text-danger" />
-          <span className="text-sm !text-danger">{result.error || 'Une erreur est survenue'}</span>
+          <IconX size={16} className="!text-danger" />
+          <span className="!text-sm !text-danger">{result.error || 'Une erreur est survenue'}</span>
         </div>
       </div>
     );
@@ -153,7 +153,7 @@ const ToolResultCard: React.FC<{
     <div className="mt-2 p-3 bg-muted border border-default ">
       <div className="flex items-center gap-2 mb-2">
         {getIcon()}
-        <span className="text-sm font-medium !text-primary">{getTitle()}</span>
+        <span className="!text-sm font-medium !text-primary">{getTitle()}</span>
       </div>
       
       {/* Email Result */}
@@ -287,10 +287,10 @@ const ToolResultCard: React.FC<{
 
       {/* Next Steps Result */}
       {toolName === 'suggestNextSteps' && result.steps && (
-        <ul className="!text-xs !text-secondary space-y-1.5">
+        <ul className="!text-xs !text-secondary !space-y-1.5">
           {result.steps.map((step: string, i: number) => (
             <li key={i} className="flex items-start gap-2 p-1.5 rounded hover:bg-card cursor-pointer transition-colors">
-              <span className="text-accent font-bold min-w-[16px]">{i + 1}.</span>
+              <span className="!text-accent font-bold min-w-[16px]">{i + 1}.</span>
               <span>{step}</span>
             </li>
           ))}
@@ -346,7 +346,7 @@ const TypingIndicator: React.FC<{ toolName?: string }> = ({ toolName }) => {
               transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
             />
           </div>
-          <span className="text-sm !text-secondary">
+          <span className="!text-sm !text-secondary">
             {getToolLabel(toolName)}
           </span>
         </div>
@@ -365,17 +365,17 @@ const ToolLoadingCard: React.FC<{ toolName: string; args?: Record<string, unknow
   const getIcon = () => {
     switch (toolName) {
       case 'generateRelanceEmail':
-        return <IconMail size={18} className="text-info" />;
+        return <IconMail size={18} className="!text-info" />;
       case 'createTask':
-        return <IconListCheck size={18} className="text-success-text" />;
+        return <IconListCheck size={18} className="!text-success-text" />;
       case 'createQuote':
-        return <IconFileInvoice size={18} className="text-accent" />;
+        return <IconFileInvoice size={18} className="!text-accent" />;
       case 'createContract':
-        return <IconFileText size={18} className="text-warning" />;
+        return <IconFileText size={18} className="!text-warning" />;
       case 'suggestNextSteps':
-        return <IconArrowRight size={18} className="text-warning" />;
+        return <IconArrowRight size={18} className="!text-warning" />;
       default:
-        return <IconSparkles size={18} className="text-accent" />;
+        return <IconSparkles size={18} className="!text-accent" />;
     }
   };
 
@@ -418,7 +418,7 @@ const ToolLoadingCard: React.FC<{ toolName: string; args?: Record<string, unknow
           {getIcon()}
         </motion.div>
         <div className="flex-1">
-          <p className="text-sm font-medium !text-primary">{getLabel()}</p>
+          <p className="!text-sm font-medium !text-primary">{getLabel()}</p>
           <div className="mt-1.5 h-1.5 bg-muted rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-accent rounded-full"
@@ -751,18 +751,18 @@ export default function AIChatAssistant() {
 
             {/* Messages */}
             <div 
-              className="flex-1 overflow-y-auto p-4 space-y-4 bg-page overscroll-contain"
+              className="flex-1 overflow-y-auto p-4 !space-y-4 bg-page overscroll-contain"
               onWheel={(e) => e.stopPropagation()}
             >
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center !text-center p-4">
                     <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                    <IconSparkles size={32} className="text-muted" />
+                    <IconSparkles size={32} className="!text-muted" />
                   </div>
                   <h4 className="font-semibold !text-primary mb-2">
                     {t('ai_welcome_title') || 'Salut'} {user?.username || ''} ! 👋
                   </h4>
-                  <p className="text-sm !text-muted mb-6">
+                  <p className="!text-sm !text-muted mb-6">
                     {t('ai_welcome_message') || 'Je suis là pour t\'aider à avancer sur tes projets et clients. Pose-moi une question ou choisis une action rapide.'}
                   </p>
                   
@@ -773,9 +773,9 @@ export default function AIChatAssistant() {
                       className="w-full p-3 !text-left  bg-muted border border-default hover:border-muted transition-colors group"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">🚧</span>
+                        <span className="!text-xl">🚧</span>
                         <div>
-                          <p className="text-sm font-medium !text-primary group-hover:!text-muted">
+                          <p className="!text-sm font-medium !text-primary group-hover:!text-muted">
                             {t('ai_action_blocked') || 'Je suis bloqué'}
                           </p>
                           <p className="!text-xs !text-muted">
@@ -790,9 +790,9 @@ export default function AIChatAssistant() {
                       className="w-full p-3 !text-left  bg-muted border border-default hover:border-muted transition-colors group"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">📧</span>
+                        <span className="!text-xl">📧</span>
                         <div>
-                          <p className="text-sm font-medium !text-primary group-hover:!text-muted">
+                          <p className="!text-sm font-medium !text-primary group-hover:!text-muted">
                             {t('ai_action_relance') || 'Relances prioritaires'}
                           </p>
                           <p className="!text-xs !text-muted">
@@ -807,9 +807,9 @@ export default function AIChatAssistant() {
                       className="w-full p-3 !text-left  bg-muted border border-default hover:border-muted transition-colors group"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">🎯</span>
+                        <span className="!text-xl">🎯</span>
                         <div>
-                          <p className="text-sm font-medium !text-primary group-hover:!text-muted">
+                          <p className="!text-sm font-medium !text-primary group-hover:!text-muted">
                             {t('ai_action_next') || 'Quoi faire maintenant ?'}
                           </p>
                           <p className="!text-xs !text-muted">
@@ -838,7 +838,7 @@ export default function AIChatAssistant() {
                         {message.parts?.map((part, i) => {
                           if (part.type === 'text') {
                             return (
-                              <p key={i} className="text-sm whitespace-pre-wrap">
+                              <p key={i} className="!text-sm whitespace-pre-wrap">
                                 {part.text}
                               </p>
                             );
@@ -898,8 +898,8 @@ export default function AIChatAssistant() {
                   {error && (
                     <div className="flex justify-center">
                       <div className="bg-danger-light border border-danger  px-4 py-2 flex items-center gap-2">
-                        <span className="text-sm !text-danger">{error.message}</span>
-                        <button onClick={handleRetry} className="text-danger hover:underline">
+                        <span className="!text-sm !text-danger">{error.message}</span>
+                        <button onClick={handleRetry} className="!text-danger hover:underline">
                           <IconRefresh size={14} />
                         </button>
                       </div>

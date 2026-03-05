@@ -196,7 +196,7 @@ export default function Plans() {
       <motion.h1 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-4xl font-bold !text-center lg:max-w-2xl !text-primary mb-10"
+        className="!text-4xl font-bold !text-center lg:max-w-2xl !text-primary mb-10"
       >
         {t('pricing_page_title')}
       </motion.h1>
@@ -271,13 +271,13 @@ export default function Plans() {
                 </div>
 
                 {/* Title and description skeleton */}
-                <div className="text-center my-8 w-full">
+                <div className="!text-center my-8 w-full">
                   <div className="h-8 w-32 bg-muted rounded mb-4 mx-auto"></div>
                   <div className="h-4 w-48 bg-muted rounded mx-auto"></div>
                 </div>
 
                 {/* Price skeleton */}
-                <div className="text-center mb-8 w-full">
+                <div className="!text-center mb-8 w-full">
                   <div className="h-12 w-24 bg-muted rounded mb-4 mx-auto"></div>
                   <div className="h-4 w-32 bg-muted rounded mx-auto"></div>
                 </div>
@@ -321,7 +321,7 @@ export default function Plans() {
                     </div>
                   )}
 
-                  <div className="text-center my-8">
+                  <div className="!text-center my-8">
                     <h2 className={`text-2xl font-bold ${styles.title} mb-2 capitalize`}>
                       {plan.name}
                     </h2>
@@ -330,25 +330,25 @@ export default function Plans() {
                     </p>
                   </div>
 
-                  <div className="text-center mb-8">
+                  <div className="!text-center mb-8">
                     <div>
                       <span className={`text-4xl font-bold ${styles.price}`}>
                         {language === 'en' ? '€' : ''}
                         {togglePlan ? plan.price_yearly : plan.price_monthly}
                         {language === 'fr' ? '€' : ''}
                       </span>
-                      <span className="text-muted !text-sm ml-2">
+                      <span className="!text-muted !text-sm ml-2">
                         {t('per_month')}
                       </span>
                     </div>
                     {togglePlan && (
-                      <div className="text-sm flex flex-col items-center justify-center gap-2 mt-2">
-                        <span className="text-secondary font-medium">
+                      <div className="!text-sm flex flex-col items-center justify-center gap-2 mt-2">
+                        <span className="!text-secondary font-medium">
                           {t('billed_yearly')} {language === 'en' ? '€' : ''}
                           {(plan.price_yearly * 0.8 * 12).toFixed(2)}
                           {language === 'fr' ? '€' : ''}
                         </span>
-                        <span className="text-accent !text-xs font-medium">
+                        <span className="!text-accent !text-xs font-medium">
                           {t('save_20_percent')}
                         </span>
                       </div>
@@ -378,7 +378,7 @@ export default function Plans() {
           })
         ) : (
           <div className="col-span-full !text-center py-12">
-            <div className="text-secondary !text-lg">
+            <div className="!text-secondary !text-lg">
               {plans.length === 0
                 ? t('no_plans_available')
                 : t('loading_plans')}
@@ -402,7 +402,7 @@ export default function Plans() {
             transition={{ delay: 0.3 }}
             className="w-full max-w-6xl px-4 mt-16"
           >
-            <h2 className="text-2xl font-bold !text-center !text-primary mb-8">
+            <h2 className="!text-2xl font-bold !text-center !text-primary mb-8">
               {t('compare_plans')}
             </h2>
             <div
@@ -435,7 +435,7 @@ export default function Plans() {
                             >
                               {plan.name}
                             </span>
-                            <span className="text-sm !text-accent font-bold">
+                            <span className="!text-sm !text-accent font-bold">
                               {language === 'en' ? '€' : ''}
                               {togglePlan
                                 ? plan.price_yearly
@@ -556,7 +556,7 @@ export default function Plans() {
                                     {(() => {
                                       if (!plan.features)
                                         return (
-                                          <span className="text-muted">
+                                          <span className="!text-muted">
                                             -
                                           </span>
                                         );
@@ -578,7 +578,7 @@ export default function Plans() {
                                         } else if (typeof value === 'number') {
                                           if (featureKey === 'storage') {
                                             return (
-                                              <span className="text-primary font-medium">
+                                              <span className="!text-primary font-medium">
                                                 {value === 0
                                                   ? '∞'
                                                   : value === 100
@@ -588,26 +588,26 @@ export default function Plans() {
                                             );
                                           }
                                           return (
-                                            <span className="text-primary font-medium">
+                                            <span className="!text-primary font-medium">
                                               {value === 0 ? '∞' : value}
                                             </span>
                                           );
                                         } else if (typeof value === 'string') {
                                           return (
-                                            <span className="text-primary !text-sm">
+                                            <span className="!text-primary !text-sm">
                                               {value}
                                             </span>
                                           );
                                         }
 
                                         return (
-                                          <span className="text-muted">
+                                          <span className="!text-muted">
                                             -
                                           </span>
                                         );
                                       } catch {
                                         return (
-                                          <span className="text-muted">
+                                          <span className="!text-muted">
                                             -
                                           </span>
                                         );

@@ -153,7 +153,7 @@ export default function EmailReplyNotification({
                 <p className="font-semibold !text-primary truncate">
                   {getSenderName(notification.email)}
                 </p>
-                <p className="text-sm !text-muted truncate">
+                <p className="!text-sm !text-muted truncate">
                   {notification.email.subject || '(Sans objet)'}
                 </p>
                 <p className="!text-xs !text-muted mt-1 line-clamp-2">

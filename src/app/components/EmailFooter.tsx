@@ -217,7 +217,7 @@ export default function EmailFooter({
               </div>
             )}
             {data.sender_title && (
-              <div className="text-sm mb-1" style={{ color: secondaryColor }}>
+              <div className="!text-sm mb-1" style={{ color: secondaryColor }}>
                 {data.sender_title}
               </div>
             )}
@@ -231,7 +231,7 @@ export default function EmailFooter({
             
             {/* Contact */}
             {hasContactInfo && (
-              <div className={`${compact ? 'text-xs' : 'text-sm'} space-y-0.5`} style={{ color: secondaryColor }}>
+              <div className={`${compact ? 'text-xs' : 'text-sm'} !space-y-0.5`} style={{ color: secondaryColor }}>
                 {data.phone && (
                   <div className="flex items-center gap-1">
                     <IconPhone className="w-3.5 h-3.5" />
@@ -268,7 +268,7 @@ export default function EmailFooter({
                     <a 
                       key={link.id || index}
                       href={link.url}
-                      className="text-sm font-medium hover:underline"
+                      className="!text-sm font-medium hover:underline"
                       style={{ color }}
                     >
                       {label}
@@ -316,7 +316,7 @@ export default function EmailFooter({
         {/* Legal & Unsubscribe - Séparateur fin */}
         {(finalLegalText || unsubscribeUrl) && (
           <div 
-            className="text-center !text-xs mt-4 pt-4 border-t border-gray-100"
+            className="!text-center !text-xs mt-4 pt-4 border-t border-gray-100"
             style={{ color: secondaryColor, opacity: 0.7 }}
           >
             {finalLegalText && <p className="mb-1">{finalLegalText}</p>}

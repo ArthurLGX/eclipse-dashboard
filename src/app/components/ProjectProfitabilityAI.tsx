@@ -353,7 +353,7 @@ export default function ProjectProfitabilityAI({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="p-4 pt-0 space-y-4 border-t border-default overflow-hidden">
+            <div className="p-4 pt-0 !space-y-4 border-t border-default overflow-hidden">
               {/* Stats rapides - centré vertical pour éviter débordement */}
               <div className="grid grid-cols-2 gap-2 pt-4">
                 <div className="flex flex-col items-center justify-center p-2.5  bg-muted min-w-0">
@@ -401,7 +401,7 @@ export default function ProjectProfitabilityAI({
                     <IconAlertTriangle className={`w-5 h-5 ${getRiskColor(alert.risk)} flex-shrink-0 mt-0.5`} />
                     <div>
                       <p className={`font-medium ${getRiskColor(alert.risk)}`}>{alert.reason}</p>
-                      <p className="text-sm !text-secondary mt-1">{alert.recommendation}</p>
+                      <p className="!text-sm !text-secondary mt-1">{alert.recommendation}</p>
                       {alert.tasks_at_risk.length > 0 && (
                         <p className="!text-xs !text-muted mt-2">
                           Tâches concernées : {alert.tasks_at_risk.join(', ')}
@@ -415,13 +415,13 @@ export default function ProjectProfitabilityAI({
               {/* Causes principales (projet terminé) */}
               {isCompleted && profitability && profitability.main_causes.length > 0 && (
                 <div>
-                  <p className="text-sm font-medium !text-primary mb-2">
+                  <p className="!text-sm font-medium !text-primary mb-2">
                     {t('main_causes') || 'Causes principales'}
                   </p>
                   <ul className="space-y-1">
                     {profitability.main_causes.map((cause, i) => (
                       <li key={i} className="flex items-start gap-2 !text-sm !text-secondary">
-                        <span className="text-danger">•</span>
+                        <span className="!text-danger">•</span>
                         {cause}
                       </li>
                     ))}
@@ -432,7 +432,7 @@ export default function ProjectProfitabilityAI({
               {/* Recommandations */}
               {profitability && profitability.recommendations.length > 0 && (
                 <div>
-                  <p className="text-sm font-medium !text-primary mb-2 flex items-center gap-1">
+                  <p className="!text-sm font-medium !text-primary mb-2 flex items-center gap-1">
                     <IconBulb className="w-4 h-4 !text-warning" />
                     {t('recommendations') || 'Recommandations'}
                   </p>
