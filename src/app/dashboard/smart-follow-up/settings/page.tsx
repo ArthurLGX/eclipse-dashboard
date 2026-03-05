@@ -30,6 +30,29 @@ export default function SmartFollowUpSettingsPage() {
   const [showRulesModal, setShowRulesModal] = useState(false);
   const [customRules, setCustomRules] = useState<FilterRule[]>([]);
   
+  // États pour ICP
+  const [icpSettings, setICPSettings] = useState({
+    enabled: true,
+    min_score_threshold: 3,
+    types_enabled: {
+      freelance: true,
+      agence: true,
+      b2b: true,
+      b2c: true,
+    },
+    keywords: {
+      freelance: ['freelance', 'indépendant', 'auto-entrepreneur', 'consultant'],
+      agence: ['agence', 'agency', 'studio', 'équipe', 'team'],
+      b2b: ['entreprise', 'société', 'business', 'b2b', 'partenariat', 'collaboration'],
+      b2c: ['client', 'consommateur', 'b2c', 'particulier'],
+      professional: ['projet', 'devis', 'prestation', 'service', 'mission', 'collaboration', 'proposition'],
+    },
+    require_response_thread: false,
+    boost_responses: true,
+  });
+  const [editingICPType, setEditingICPType] = useState<string | null>(null);
+  const [newICPKeyword, setNewICPKeyword] = useState('');
+  
   // États pour les paramètres modifiables
   const [enabled, setEnabled] = useState(true);
   const [autoApprove, setAutoApprove] = useState(false);
@@ -65,6 +88,11 @@ export default function SmartFollowUpSettingsPage() {
       setWorkHours(settings.work_hours);
       setNotificationPreferences(settings.notification_preferences);
       setCustomRules(settings.custom_rules || []);
+      
+      // Charger ICP settings
+      if (settings.icp_settings) {
+        setICPSettings(settings.icp_settings);
+      }
     }
   }, [settings]);
 
@@ -82,6 +110,7 @@ export default function SmartFollowUpSettingsPage() {
         work_hours: workHours,
         notification_preferences: notificationPreferences,
         custom_rules: customRules,
+        icp_settings: icpSettings,
       };
 
       if (settings?.documentId) {
@@ -264,6 +293,191 @@ export default function SmartFollowUpSettingsPage() {
             <p className="!text-sm !text-muted italic">Aucun domaine exclu</p>
           )}
         </div>
+      </div>
+
+      {/* Section Configuration ICP */}
+      <div id="icp" className="bg-card border border-default p-6 mb-6">
+        <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
+          <IconFilter className="w-6 h-6 text-accent" />
+          Configuration Ideal Client Profile (ICP)
+        </h2>
+        <p className="text-sm text-muted mb-6">
+          Définissez les critères pour filtrer automatiquement les leads pertinents
+        </p>
+
+        {/* Toggle ICP */}
+        <div className="flex items-center justify-between p-4 bg-secondary rounded-lg mb-6">
+          <div>
+            <h3 className="font-semibold text-primary">Activer le filtrage ICP</h3>
+            <p className="text-sm text-muted">Ne traiter que les emails correspondant à votre profil client idéal</p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={icpSettings.enabled}
+              onChange={(e) => setICPSettings({ ...icpSettings, enabled: e.target.checked })}
+              className="sr-only peer"
+            />
+            <div className="w-14 h-7 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-accent"></div>
+          </label>
+        </div>
+
+        {icpSettings.enabled && (
+          <>
+            {/* Seuil de score minimum */}
+            <div className="mb-6 p-4 bg-secondary rounded-lg">
+              <label className="block text-sm font-medium text-primary mb-2">
+                Score minimum pour qualification
+              </label>
+              <p className="text-xs text-muted mb-3">
+                Un email doit atteindre ce score pour être considéré comme un lead (1-15 points)
+              </p>
+              <input
+                type="number"
+                min={1}
+                max={15}
+                value={icpSettings.min_score_threshold}
+                onChange={(e) => setICPSettings({ ...icpSettings, min_score_threshold: parseInt(e.target.value) || 3 })}
+                className="w-32 px-4 py-2 bg-card border border-default text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              />
+              <span className="ml-2 text-sm text-muted">/ 15 points</span>
+            </div>
+
+            {/* Types de clients acceptés */}
+            <div className="mb-6">
+              <h3 className="font-semibold text-primary mb-3">Types de clients à cibler</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {Object.entries(icpSettings.types_enabled).map(([type, enabled]) => (
+                  <label key={type} className="flex items-center gap-3 p-3 bg-secondary rounded-lg cursor-pointer hover:bg-hover transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={enabled}
+                      onChange={(e) => setICPSettings({
+                        ...icpSettings,
+                        types_enabled: { ...icpSettings.types_enabled, [type]: e.target.checked }
+                      })}
+                      className="w-5 h-5 accent-accent"
+                    />
+                    <span className="capitalize text-primary font-medium">{type}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Options avancées */}
+            <div className="space-y-3 mb-6">
+              <label className="flex items-center gap-3 p-3 bg-secondary rounded-lg cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={icpSettings.require_response_thread}
+                  onChange={(e) => setICPSettings({ ...icpSettings, require_response_thread: e.target.checked })}
+                  className="w-5 h-5 accent-accent"
+                />
+                <div>
+                  <span className="text-primary font-medium">Uniquement les threads de réponses</span>
+                  <p className="text-xs text-muted">Ne traiter que les emails qui sont des réponses (Re:, in_reply_to)</p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 p-3 bg-secondary rounded-lg cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={icpSettings.boost_responses}
+                  onChange={(e) => setICPSettings({ ...icpSettings, boost_responses: e.target.checked })}
+                  className="w-5 h-5 accent-accent"
+                />
+                <div>
+                  <span className="text-primary font-medium">Booster les réponses</span>
+                  <p className="text-xs text-muted">Augmenter automatiquement le score des emails de réponse (+3 points)</p>
+                </div>
+              </label>
+            </div>
+
+            {/* Mots-clés par type */}
+            <div>
+              <h3 className="font-semibold text-primary mb-3">Mots-clés de détection par type</h3>
+              <div className="space-y-4">
+                {Object.entries(icpSettings.keywords).map(([type, keywords]) => (
+                  <div key={type} className="border border-default rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="capitalize font-medium text-primary">{type}</h4>
+                      <button
+                        onClick={() => {
+                          setEditingICPType(type);
+                          setNewICPKeyword('');
+                        }}
+                        className="text-xs px-3 py-1 bg-accent text-white rounded hover:opacity-90"
+                      >
+                        <IconPlus className="w-3 h-3 inline mr-1" />
+                        Ajouter
+                      </button>
+                    </div>
+
+                    {editingICPType === type && (
+                      <div className="flex gap-2 mb-3">
+                        <input
+                          type="text"
+                          value={newICPKeyword}
+                          onChange={(e) => setNewICPKeyword(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter' && newICPKeyword.trim()) {
+                              const keyword = newICPKeyword.trim().toLowerCase();
+                              if (!keywords.includes(keyword)) {
+                                setICPSettings({
+                                  ...icpSettings,
+                                  keywords: {
+                                    ...icpSettings.keywords,
+                                    [type]: [...keywords, keyword],
+                                  },
+                                });
+                              }
+                              setNewICPKeyword('');
+                              setEditingICPType(null);
+                            }
+                          }}
+                          placeholder="Nouveau mot-clé..."
+                          className="flex-1 px-3 py-1.5 text-sm bg-card border border-default text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded"
+                          autoFocus
+                        />
+                        <button
+                          onClick={() => setEditingICPType(null)}
+                          className="px-3 py-1.5 text-sm bg-secondary text-primary rounded hover:bg-hover"
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-2">
+                      {keywords.map((keyword, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-1.5 px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 rounded text-xs"
+                        >
+                          <span className="text-purple-600 font-medium">{keyword}</span>
+                          <button
+                            onClick={() => {
+                              setICPSettings({
+                                ...icpSettings,
+                                keywords: {
+                                  ...icpSettings.keywords,
+                                  [type]: keywords.filter((_, i) => i !== idx),
+                                },
+                              });
+                            }}
+                            className="text-error hover:text-error-dark"
+                          >
+                            <IconTrash className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Section Mots-clés prioritaires */}

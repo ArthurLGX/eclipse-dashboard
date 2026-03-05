@@ -53,6 +53,26 @@ export interface FilterRule {
   actions: FilterAction;
 }
 
+export interface ICPSettings {
+  enabled: boolean;
+  min_score_threshold: number;
+  types_enabled: {
+    freelance: boolean;
+    agence: boolean;
+    b2b: boolean;
+    b2c: boolean;
+  };
+  keywords: {
+    freelance: string[];
+    agence: string[];
+    b2b: string[];
+    b2c: string[];
+    professional: string[];
+  };
+  require_response_thread: boolean;
+  boost_responses: boolean;
+}
+
 export interface AutomationSettings {
   id: number;
   documentId: string;
@@ -84,6 +104,7 @@ export interface AutomationSettings {
     frequency: string;
   };
   custom_rules: FilterRule[];
+  icp_settings: ICPSettings;
   createdAt: string;
   updatedAt: string;
 }

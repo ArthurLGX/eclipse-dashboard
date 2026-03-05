@@ -15,6 +15,7 @@ import {
   IconBuilding,
   IconMail,
   IconChevronRight,
+  IconTarget,
 } from '@tabler/icons-react';
 import AutomationActionDetailModal from '@/app/components/AutomationActionDetailModal';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
@@ -170,6 +171,17 @@ export default function SmartFollowUpPage() {
 
           {/* Actions compactes */}
           <div className="flex gap-2">
+            <button
+              onClick={() => router.push('/dashboard/smart-follow-up/settings#icp')}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-500/10 text-blue-600 rounded-lg hover:bg-blue-500/20 transition-colors border border-blue-500/20"
+              title="Configuration ICP"
+            >
+              <IconTarget className="w-4 h-4" />
+              <span className="text-xs">
+                {settings?.icp_settings?.enabled ? 'ICP' : 'ICP Off'}
+              </span>
+            </button>
+
             <button
               onClick={() => setShowRulesModal(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-purple-500/10 text-purple-600 rounded-lg hover:bg-purple-500/20 transition-colors border border-purple-500/20"
