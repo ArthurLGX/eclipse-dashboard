@@ -585,7 +585,7 @@
 
 :root.dark .card:hover,
 :root:not(.light) .card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(24, 24, 24);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
@@ -599,7 +599,7 @@
 }
 
 :root.light .card:hover {
-  background: rgba(0, 0, 0, 0.08);
+  background: rgb(231, 229, 229);
   border: 1px solid rgba(0, 0, 0, 0.2);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
 }
