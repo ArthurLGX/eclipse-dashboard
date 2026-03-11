@@ -199,7 +199,7 @@ function EmailHistory() {
   return (
     <div className="min-h-screen bg-page">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-card border-b border-default p-6">
+      <div className="sticky top-0 z-40 border-b border-default p-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button

@@ -549,7 +549,7 @@ const PROJECT_TYPES = [
       className="min-h-screen"
     >
       {/* Header moderne épuré */}
-      <div className="bg-card border-b border-default">
+      <div className="border-b border-default">
         <div className="relative px-8 py-4">
           {/* Breadcrumb & Actions */}
           <div className="flex items-center justify-between mb-4">

@@ -2629,7 +2629,7 @@ export default function ComposeNewsletterPage() {
     <ProtectedRoute>
       <div className="min-h-screen bg-page">
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-card border-b border-default py-8 rounded-t-xl">
+        <header className="sticky top-0 z-40 border-b border-default py-8 rounded-t-xl">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -2692,7 +2692,7 @@ export default function ComposeNewsletterPage() {
         </header>
 
         {/* Progress Steps */}
-        <div className="bg-card border-b border-default rounded-b-xl">
+        <div className="border-b border-default rounded-b-xl">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               {steps.map((step, index) => (

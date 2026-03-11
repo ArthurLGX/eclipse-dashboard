@@ -540,7 +540,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
         className="fixed left-4 right-4 top-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-4xl bg-card border border-default z-[101] shadow-2xl  flex flex-col max-h-[90vh]"
       >
         {/* Header */}
-        <div className="flex-shrink-0 bg-card border-b border-default p-4 flex items-center justify-between rounded-t-2xl">
+        <div className="flex-shrink-0 border-b border-default p-4 flex items-center justify-between rounded-t-2xl">
           <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
             <IconSettings size={15} />
             {t('portfolio_settings')}
@@ -551,7 +551,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
         </div>
 
         {/* Tabs */}
-        <div className="flex-shrink-0 flex border-b border-default">
+        <div className="flex-shrink-0 flex border-b border-default">q
           {[
             { id: 'branding', icon: IconPalette, label: t('portfolio_tab_branding') },
             { id: 'typography', icon: IconTypography, label: t('portfolio_tab_typography') },
@@ -1873,7 +1873,7 @@ function ProjectFormModal({ isOpen, onClose, project, onSave }: ProjectFormModal
         style={{ overscrollBehavior: 'contain' }}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-card border-b border-default px-6 py-4 flex items-center justify-between z-10">
+        <div className="sticky top-0 border-b border-default px-6 py-4 flex items-center justify-between z-10">
           <h2 className="!text-xl font-bold !text-primary">
             {project ? t('portfolio_edit_project') : t('portfolio_add_project')}
           </h2>

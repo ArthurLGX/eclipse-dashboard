@@ -205,7 +205,7 @@ export default function NewslettersPage() {
           </div>
 
           {/* Tableau */}
-          <div className="bg-card border border-default rounded-lg overflow-hidden">
+          <div className="overflow-hidden">
             <DataTable<Newsletter>
               columns={columns}
               data={filteredNewsletters}

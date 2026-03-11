@@ -436,7 +436,7 @@ export default function ProjectWorkflowView({
   return (
     <div className="flex flex-col" style={{ minHeight: '600px', height: '70vh' }}>
       {/* Breadcrumb contextuel */}
-      <div className="flex-shrink-0 px-4 py-3 bg-card border-b border-default">
+      <div className="flex-shrink-0 px-4 py-3 border-b border-default">
         <div className="flex items-center justify-between">
           <div data-onboarding="breadcrumb" className="flex items-center gap-2 !text-sm">
             {onBack && (

@@ -952,7 +952,7 @@ Cordialement`);
     <div className={compact ? 'h-full bg-card flex flex-col' : 'min-h-screen bg-page'}>
       {/* Header */}
       {!compact && (
-        <div className="sticky top-0 z-40 bg-card border-b border-default px-6 py-4">
+        <div className="sticky top-0 z-40 border-b border-default px-6 py-4">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4 p-4">
               <button

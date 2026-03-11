@@ -178,7 +178,7 @@ export default function MentorsPage() {
               </div>
 
               {/* Tableau */}
-              <div className="bg-card border border-default rounded-lg overflow-hidden">
+              <div className="overflow-hidden">
                 <DataTable<Mentor>
                   columns={columns}
                   data={filteredMentors}

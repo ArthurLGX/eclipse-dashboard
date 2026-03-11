@@ -87,7 +87,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
           className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-card  shadow-2xl"
         >
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-card border-b border-default p-6">
+          <div className="sticky top-0 z-10 border-b border-default p-6">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="!text-2xl font-bold !text-primary flex items-center gap-2">

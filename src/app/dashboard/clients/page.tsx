@@ -730,7 +730,7 @@ export default function ClientsPage() {
     <ProtectedRoute>
       <div className="min-h-screen">
         {/* Header épuré */}
-        <div className="bg-card border-b border-default">
+        <div className="border-b border-default">
           <div className="max-w-7xl mx-auto px-8 py-5">
             {/* Breadcrumb + Title Row */}
             <div className="flex items-start justify-between mb-5">
@@ -837,7 +837,7 @@ export default function ClientsPage() {
           </div>
 
           {/* Table */}
-          <div className="bg-card border border-default rounded-lg overflow-hidden">
+          <div className="overflow-hidden">
             <DataTable<Client>
               columns={columns}
               data={filteredClients}

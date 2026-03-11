@@ -119,7 +119,7 @@ function SelectContactModal({
         className="relative bg-card border border-default  shadow-xl w-full max-w-md m-4 max-h-[90vh] flex flex-col overscroll-contain"
         onWheel={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-card border-b border-default p-4 rounded-t-xl">
+        <div className="sticky top-0 border-b border-default p-4 rounded-t-xl">
           <div className="flex items-center justify-between mb-3">
             <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
               <IconUsers size={15} />
@@ -319,7 +319,7 @@ function ContactModal({
         className="relative bg-card border border-default  shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 overscroll-contain"
         onWheel={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-card border-b border-default p-4 flex items-center justify-between">
+        <div className="sticky top-0 border-b border-default p-4 flex items-center justify-between">
           <h2 className="!text-lg font-semibold !text-primary">
             {contact ? t('edit_contact') || 'Modifier le contact' : t('new_contact') || 'Nouveau contact'}
           </h2>
