@@ -5,9 +5,7 @@ import { updateProject, updateProjectStatusWithSync, fetchFacturesByProject, fet
 import { useEffect, useState, useRef, useCallback } from 'react';
 import {
   IconCalendar,
-  IconBuilding,
   IconEdit,
-  IconArrowLeft,
   IconFileText,
   IconCheck,
   IconProgress,
@@ -15,11 +13,8 @@ import {
   IconFileInvoice,
   IconPlus,
   IconShare,
-  IconCurrencyEuro,
   IconListCheck,
-  IconChartBar,
   IconX,
-  IconCalendarEvent,
   IconCode,
   IconPalette,
   IconTool,
@@ -28,12 +23,13 @@ import {
   IconUsers,
   IconPlayerPlay,
   IconCopy,
+  IconArrowLeft,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
 import { usePopup } from '@/app/context/PopupContext';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
-import { extractIdFromSlug, generateSlug, generateClientSlug } from '@/utils/slug';
+import { extractIdFromSlug, generateSlug } from '@/utils/slug';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useProjectByDocumentId, clearCache } from '@/hooks/useApi';
@@ -41,11 +37,9 @@ import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ShareProjectModal from '@/app/components/ShareProjectModal';
 import ProjectTasks from '@/app/components/ProjectTasks';
 import TaskWorkflowView, { type WorkflowTask } from '@/app/components/TaskWorkflowView';
-import { IconRoute } from '@tabler/icons-react';
 import RichTextEditor from '@/app/components/RichTextEditor';
 import ProjectGuidedTour, { useProjectGuidedTour } from '@/app/components/ProjectGuidedTour';
 import QuickProjectModal from '@/app/components/QuickProjectModal';
-import { ProfitabilityBadge, getProfitabilityStatus } from '@/app/components/StatusBadge';
 import { 
   canDeleteProject, 
   fetchProjectCollaborators, 
@@ -102,7 +96,6 @@ export default function ProjectDetailsPage() {
   const [isOwner, setIsOwner] = useState(true);
   const [collaborators, setCollaborators] = useState<ProjectCollaborator[]>([]);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
-  const [bannerColor, setBannerColor] = useState<string>('auto');
   const [isSaving, setIsSaving] = useState(false);
   
   // États pour les demandes de collaboration
@@ -125,16 +118,6 @@ const PROJECT_TYPES = [
     { value: 'maintenance', label: t('maintenance'), color: 'emerald', icon: IconTool },
 ];
 
-  // Options de couleurs de bannière - utilise les classes CSS définies dans globals.css
-  const BANNER_COLORS = [
-    { value: 'auto', label: t('automatic_status') || 'Automatique (selon statut)', className: '' },
-    { value: 'blue', label: t('blue') || 'Bleu', className: 'banner-blue' },
-    { value: 'emerald', label: t('emerald') || 'Émeraude', className: 'banner-emerald' },
-    { value: 'amber', label: t('amber') || 'Ambre', className: 'banner-amber' },
-    { value: 'purple', label: t('purple') || 'Violet', className: 'banner-purple' },
-    { value: 'rose', label: t('rose') || 'Rose', className: 'banner-rose' },
-    { value: 'cyan', label: t('cyan') || 'Cyan', className: 'banner-cyan' },
-  ];
 
   // Initialiser les valeurs d'édition quand le projet change
   useEffect(() => {
@@ -364,7 +347,6 @@ const PROJECT_TYPES = [
 
       showGlobalPopup(t('project_updated_success') || 'Projet mis à jour avec succès', 'success');
       setIsEditMode(false);
-      setBannerColor('auto');
 
       clearCache('project');
       clearCache('clients'); // Rafraîchir les clients si le pipeline a été mis à jour
@@ -385,15 +367,13 @@ const PROJECT_TYPES = [
   };
 
   // Calculs pour les stats
-  const totalFactures = factures.reduce((sum, f) => sum + (f.number || 0), 0);
-  const paidFactures = factures.filter(f => f.facture_status === 'paid').reduce((sum, f) => sum + (f.number || 0), 0);
   const daysRemaining = project?.end_date 
     ? Math.ceil((new Date(project.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
     : null;
   
   // Stats des tâches
+  const totalTasks = tasks.length;
   const completedTasks = tasks.filter(t => t.task_status === 'completed').length;
-  const pendingTasks = tasks.filter(t => t.task_status !== 'completed' && t.task_status !== 'cancelled').length;
   const tasksProgress = tasks.length > 0 
     ? Math.round(tasks.reduce((sum, t) => sum + (t.progress || 0), 0) / tasks.length)
     : 0;
@@ -479,7 +459,7 @@ const PROJECT_TYPES = [
           className="max-w-2xl mx-auto"
         >
           {/* En-tête du projet (infos basiques) */}
-          <div className="card p-8 !text-center mb-6">
+          <div className="bg-card p-8 !text-center mb-6">
             <div className="w-20 h-20 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
               <IconFileText className="w-10 h-10 !text-accent" />
             </div>
@@ -559,19 +539,7 @@ const PROJECT_TYPES = [
   }
 
   const statusConfig = getStatusConfig(project.project_status);
-  const StatusIcon = statusConfig.icon;
   const canEdit = isOwner || collaborators.some(c => c.user?.id === user?.id && c.permission === 'edit');
-
-  // Couleur de bannière - personnalisée ou basée sur le statut (utilise les classes CSS)
-  const statusBannerClasses: Record<string, string> = {
-    planning: 'banner-blue',
-    in_progress: 'banner-amber',
-    completed: 'banner-emerald',
-  };
-  
-  const currentBannerClass = bannerColor === 'auto' 
-    ? statusBannerClasses[selectedStatus] || statusBannerClasses.planning
-    : BANNER_COLORS.find(c => c.value === bannerColor)?.className || statusBannerClasses.planning;
 
   return (
     <motion.div
@@ -580,26 +548,19 @@ const PROJECT_TYPES = [
       transition={{ duration: 0.3 }}
       className="min-h-screen"
     >
-      {/* Hero Header - Couleur personnalisée selon le statut */}
-      <div className={`relative ${currentBannerClass} border-b border-default`}>
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-            backgroundSize: '32px 32px',
-          }} />
-        </div>
-
-        <div className="relative px-6 lg:px-10 py-3">
+      {/* Header moderne épuré */}
+      <div className="bg-card border-b border-default">
+        <div className="relative px-8 py-4">
           {/* Breadcrumb & Actions */}
-          <div className="flex items-center justify-between mb-3">
-            <Link
-              href="/dashboard/projects"
-              className="flex items-center gap-2 !text-primary hover:!text-primary transition-colors group"
-            >
-              <IconArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="!text-sm">{t('projects') || 'Projets'}</span>
-            </Link>
+          <div className="flex items-center justify-between mb-4">
+            {/* Breadcrumb simplifié */}
+            <div className="flex items-center gap-1.5">
+              <span className="!text-muted !text-xs">{t('projects') || 'Projets'}</span>
+              <span className="!text-border-default !text-xs">/</span>
+              <span className="!text-secondary !text-xs font-medium">
+                {PROJECT_TYPES.find(t => t.value === project.type)?.label}
+              </span>
+            </div>
 
             {/* Actions */}
             <div className="flex items-center gap-2">
@@ -631,7 +592,6 @@ const PROJECT_TYPES = [
                       <button
                         onClick={() => {
                           setIsEditMode(false);
-                          setBannerColor('auto');
                         }}
                         className="flex items-center gap-2 px-3 py-2 btn-ghost  transition-colors !text-sm"
                       >
@@ -670,180 +630,96 @@ const PROJECT_TYPES = [
             </div>
           </div>
 
-          {/* Project Header - Icône + Titre collés, infos en dessous */}
-          <div className="flex flex-col gap-4">
-            {/* Row 1: Icon + Title */}
-            <div className="flex items-center gap-3">
-              <div className={`p-3  flex-shrink-0`}>
-                <ProjectTypeIcon type={project.type} className={`w-6 h-6 ${statusConfig.colors.text}`} />
-              </div>
-              
-              {isEditMode ? (
-                <form ref={formRef} onSubmit={handleSave} id="edit-form" className="flex-1">
-                  <input
-                    type="text"
-                    name="title"
-                    defaultValue={project.title}
-                    className="!text-xl md:!text-2xl font-bold input px-3 py-1.5 w-full max-w-xl"
-                  />
-                </form>
-              ) : (
-                <h1 className="!text-xl md:!text-2xl font-bold !text-primary truncate">{project.title}</h1>
-              )}
+          {/* Title Row: Icon + Title + Badges */}
+          <div className="flex items-center gap-3 mb-5 flex-wrap">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+              <ProjectTypeIcon type={project.type} className="w-4 h-4 !text-white" />
+            </div>
+            
+            {isEditMode ? (
+              <form ref={formRef} onSubmit={handleSave} id="edit-form" className="flex-1">
+                <input
+                  type="text"
+                  name="title"
+                  defaultValue={project.title}
+                  className="!text-lg font-bold input px-3 py-1.5 w-full"
+                />
+              </form>
+            ) : (
+              <h1 className="!text-lg font-bold !text-primary tracking-tight">{project.title}</h1>
+            )}
+            
+            {!isEditMode && (
+              <>
+                <span className={`badge badge-status-${project.project_status} whitespace-nowrap`}>
+                  {statusConfig.label}
+                </span>
+                <span className="px-2 py-1 !text-xs font-medium rounded bg-muted !text-secondary whitespace-nowrap">
+                  {PROJECT_TYPES.find(t => t.value === project.type)?.label}
+                </span>
+              </>
+            )}
+          </div>
+
+          {/* Stats Row - Inline */}
+          <div className="flex items-center gap-6 flex-wrap pb-5">
+            <div className="flex items-center gap-2 !text-secondary !text-sm">
+              <IconCalendar className="w-3.5 h-3.5" />
+              <span>{t('due_date') || 'Échéance dans'}</span>
+              <span className={`font-semibold flex items-center gap-1 ${
+                daysRemaining !== null && daysRemaining < 0 ? '!text-danger' : '!text-primary'
+              }`}>
+                {daysRemaining !== null && daysRemaining < 0 && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-danger inline-block" />
+                )}
+                {daysRemaining !== null ? (daysRemaining < 0 ? `${Math.abs(daysRemaining)}j — En retard` : `${daysRemaining}j`) : t('no_date') || 'Non définie'}
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-2 !text-secondary !text-sm">
+              <IconListCheck className="w-3.5 h-3.5" />
+              <span>
+                <strong className="!text-primary">{completedTasks} / {totalTasks}</strong> {t('tasks') || 'tâches'} {t('tasks_completed') || 'terminées'}
+              </span>
             </div>
 
-            {/* Row 2: Status, Type, Client, Couleur - alignés à gauche */}
-            <div className="flex flex-wrap items-center gap-3">
-              {isEditMode ? (
-                <>
-                  <select
-                    value={selectedStatus}
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="input px-3 py-1.5 !text-sm"
-                  >
-                    {PROJECT_STATUS.map(status => (
-                      <option key={status.value} value={status.value}>{status.label}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={selectedType}
-                    onChange={(e) => setSelectedType(e.target.value)}
-                    className="input px-3 py-1.5 !text-sm"
-                  >
-                    {PROJECT_TYPES.map(type => (
-                      <option key={type.value} value={type.value}>{type.label}</option>
-                    ))}
-                  </select>
-                  <div className="flex items-center gap-2">
-                    <span className="!text-muted !text-sm">Couleur :</span>
-                    <select
-                      value={bannerColor}
-                      onChange={(e) => setBannerColor(e.target.value)}
-                      className="input px-3 py-1.5 !text-sm"
-                    >
-                      {BANNER_COLORS.map(color => (
-                        <option key={color.value} value={color.value}>{color.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              ) : (
-                <>
-                    <span className={`badge badge-status-${project.project_status}`}>
-                    <StatusIcon className="w-3.5 h-3.5" />
-                    {statusConfig.label}
-                  </span>
-                  <span className="!text-primary !text-sm flex items-center gap-1.5">
-                    <ProjectTypeIcon type={project.type} className="w-4 h-4" />
-                    {PROJECT_TYPES.find(t => t.value === project.type)?.label}
-                  </span>
-                  {project.client && (
-                    <Link 
-                      href={`/dashboard/clients/${generateClientSlug(project.client.name, project.client.documentId)}`}
-                      className="!text-primary hover:!text-accent !text-sm flex items-center gap-1.5 transition-colors"
-                    >
-                      <IconBuilding className="w-4 h-4" />
-                      {project.client.name}
-                    </Link>
-                  )}
-                  {/* Badges de rentabilité */}
-                  {(() => {
-                    const activeTasks = tasks.filter(t => t.task_status !== 'cancelled');
-                    const estimatedHours = activeTasks.reduce((sum, task) => sum + (task.estimated_hours || 0), 0);
-                    const actualHours = activeTasks.reduce((sum, task) => sum + (task.actual_hours || 0), 0);
-                    if (estimatedHours > 0) {
-                      const status = getProfitabilityStatus(actualHours, estimatedHours);
-                      return <ProfitabilityBadge status={status} />;
-                    }
-                    return null;
-                  })()}
-                </>
-              )}
-            </div>
-
-            {/* Row 3: Quick Stats Cards */}
-            <div className="flex gap-3 flex-wrap md:flex-nowrap mt-2">
-              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur  p-4 border border-default">
-                <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
-                  <IconCurrencyEuro className="w-3.5 h-3.5" />
-                  {t('billed') || 'Facturé'}
-                </div>
-                <p className="!text-xl font-bold !text-primary">
-                  {totalFactures.toLocaleString('fr-FR')} €
-                </p>
-                <p className="!text-xs !text-success-text -text">
-                  {paidFactures.toLocaleString('fr-FR')} € {t('paid') || 'payé'}
-                </p>
+            {/* Global progress inline */}
+            <div className="flex items-center gap-2.5 ml-auto">
+              <span className="!text-xs !text-muted">{t('progress') || 'Progression'}</span>
+              <div className="w-20 bg-muted rounded-full h-1.5 overflow-hidden">
+                <div
+                  className="h-full bg-primary rounded-full transition-all duration-300"
+                  style={{ width: `${tasksProgress}%` }}
+                />
               </div>
-              
-              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur  p-4 border border-default">
-                <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
-                  <IconFileInvoice className="w-3.5 h-3.5" />
-                  {t('invoices') || 'Factures'}
-                </div>
-                <p className="!text-xl font-bold !text-primary">{factures.length}</p>
-                <p className="!text-xs !text-muted">
-                  {factures.filter(f => f.facture_status === 'paid').length} {t('paid') || 'payées'}
-                </p>
-              </div>
-
-              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur  p-4 border border-default">
-                <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
-                  <IconListCheck className="w-3.5 h-3.5" />
-                  {t('tasks')}
-                </div>
-                <div className="flex items-center gap-2">
-                  {pendingTasks > 0 && (
-                    <p className="!text-xl font-bold !text-warning">{pendingTasks} {t('tasks_pending')}</p>
-                  )}
-                </div>
-                <p className="!text-xs !text-success-text -text">
-                  {completedTasks} {t('tasks_completed')} • {tasksProgress}% {t('progress')}
-                </p>
-              </div>
-              
-              <div className="flex-1 min-w-[120px] bg-muted backdrop-blur  p-4 border border-default">
-                <div className="flex items-center gap-2 !text-muted !text-xs mb-1">
-                  <IconCalendarEvent className="w-3.5 h-3.5" />
-                  {t('due_date')}
-                </div>
-                <p className={`text-xl font-bold ${daysRemaining !== null && daysRemaining < 0 ? 'text-danger' : daysRemaining !== null && daysRemaining < 7 ? 'text-warning' : 'text-primary'}`}>
-                  {daysRemaining !== null ? (daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : `${daysRemaining}j`) : t('no_date') || 'Aucune date' || '—'}
-                </p>
-                <p className="!text-xs !text-muted">
-                  {daysRemaining !== null && daysRemaining < 0 ? t('overdue') || 'En retard' : t('remaining') || 'Restant'}
-                </p> 
-              </div>
+              <span className="!text-sm font-semibold !text-primary min-w-[2.5rem] text-right">
+                {tasksProgress}%
+              </span>
             </div>
           </div>
 
-          {/* Tabs Navigation */}
-          <div className="flex gap-1 mt-8 -mb-px">
+          {/* Tabs - Pills style */}
+          <div className="flex gap-1 bg-muted rounded-lg p-1 w-fit overflow-x-auto">
             {[
-              { id: 'overview' as TabType, label: t('overview'), icon: IconChartBar },
-              { id: 'tasks' as TabType, label: t('tasks'), icon: IconListCheck, count: pendingTasks, isOrange: true },
-              { id: 'workflow' as TabType, label: t('task_workflow') || 'Workflow', icon: IconRoute },
-              { id: 'meetings' as TabType, label: t('meetings') || 'Réunions', icon: IconNotes, count: meetingNotes.length },
-              { id: 'invoices' as TabType, label: t('invoices'), icon: IconFileInvoice, count: factures.length },
+              { id: 'overview' as TabType, label: t('overview') || 'Aperçu' },
+              { id: 'tasks' as TabType, label: t('tasks') || 'Tâches', count: totalTasks },
+              { id: 'workflow' as TabType, label: t('task_workflow') || 'Workflow' },
+              { id: 'meetings' as TabType, label: t('meetings') || 'Réunions' },
+              { id: 'invoices' as TabType, label: t('invoices') || 'Factures' },
             ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 !text-sm font-medium rounded-t-lg transition-colors ${
+                className={`flex items-center gap-1.5 px-4 py-2 !text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-page !text-accent border-t border-x border-default'
-                    : 'text-primary hover:!text-primary hover:bg-hover'
+                    ? 'bg-card !text-primary shadow-sm'
+                    : '!text-secondary hover:!text-primary'
                 }`}
               >
-                <tab.icon className="w-4 h-4" />
                 {tab.label}
-                {tab.count !== undefined && tab.count > 0 && (
-                  <span className={`px-1.5 py-0.5 !text-xs rounded-full font-bold ${
-                    tab.isOrange 
-                      ? 'bg-warning-light !text-warning' 
-                      : activeTab === tab.id 
-                        ? 'bg-accent-light !text-accent' 
-                        : 'bg-muted !text-primary'
+                {tab.id === 'tasks' && tab.count !== undefined && tab.count > 0 && (
+                  <span className={`px-1.5 py-0.5 !text-[10px] font-bold rounded ${
+                    activeTab === tab.id ? 'bg-primary !text-white' : 'bg-secondary !text-secondary'
                   }`}>
                     {tab.count}
                   </span>
@@ -898,7 +774,7 @@ const PROJECT_TYPES = [
 
                   {/* Notes */}
                   {(project.notes || isEditMode) && (
-                    <div className="card p-4">
+                    <div className="bg-card p-4">
                       <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
                         <IconFileText className="w-5 h-5 !text-info" />
                         {t('internal_notes')}
@@ -953,7 +829,7 @@ const PROJECT_TYPES = [
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="card p-4">
+                  <div className="bg-card p-4">
                     <ProjectTasks
                       projectDocumentId={project.documentId}
                       userId={user?.id || 0}
@@ -1007,7 +883,7 @@ const PROJECT_TYPES = [
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="card overflow-hidden">
+                  <div className="bg-card overflow-hidden">
                     <TaskWorkflowView
                       onRefresh={loadTasks}
                       tasks={tasks.filter(t => !t.parent_task).map((task): WorkflowTask => ({
@@ -1052,7 +928,7 @@ const PROJECT_TYPES = [
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="card p-4">
+                  <div className="bg-card p-4">
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
                         <IconNotes className="w-5 h-5 !text-info" />
@@ -1212,7 +1088,7 @@ const PROJECT_TYPES = [
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="card p-4">
+                  <div className="bg-card p-4">
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
                         <IconFileInvoice className="w-5 h-5 !text-warning" />
