@@ -7,21 +7,11 @@ import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import UsageProgressBar from '@/app/components/UsageProgressBar';
-import PendingQuotesWidget from '@/app/components/PendingQuotesWidget';
 import ActiveIdeSessionWidget from '@/app/components/ActiveIdeSessionWidget';
 import DailySuggestionsModal from '@/app/components/DailySuggestionsModal';
-import { useClients, useProjects, useProspects, useFactures, clearCache } from '@/hooks/useApi';
+import { useClients, useProjects, useProspects, useFactures } from '@/hooks/useApi';
 import type { Client, Project, Prospect, Facture } from '@/types';
 import {
-  IconUsers,
-  IconBriefcase,
-  IconUserSearch,
-  IconCurrencyEuro,
-  IconTrendingUp,
-  IconTrendingDown,
-  IconFileInvoice,
-  IconAlertTriangle,
-  IconArrowUpRight,
   IconCalendarEvent,
   IconUserPlus,
   IconFolderPlus,
@@ -37,15 +27,9 @@ export default function DashboardPage() {
   const { data: clients, loading: loadingClients } = useClients(user?.id);
   const { data: projects, loading: loadingProjects } = useProjects(user?.id);
   const { data: prospects, loading: loadingProspects } = useProspects(user?.id);
-  const { data: factures, loading: loadingFactures, refetch: refetchFactures } = useFactures(user?.id);
+  const { data: factures, loading: loadingFactures } = useFactures(user?.id);
 
   const loading = loadingClients || loadingProjects || loadingProspects || loadingFactures;
-
-  // Callback pour rafraîchir les devis après mise à jour
-  const handleQuoteUpdated = () => {
-    clearCache('factures');
-    refetchFactures();
-  };
 
   // Calculs mémoïsés enrichis
   const stats = useMemo(() => {
@@ -206,24 +190,6 @@ export default function DashboardPage() {
     return activities.slice(0, 6);
   }, [clients, projects, factures, t]);
 
-  // Render du mini-graphique revenus
-  const renderMiniChart = () => {
-    const maxValue = Math.max(...stats.revenueByMonth.map(m => m.value), 1);
-    return (
-      <div className="flex items-end gap-1 h-12">
-        {stats.revenueByMonth.map((month, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1">
-            <div 
-              className="w-full bg-warning rounded-t transition-all hover:bg-violet-500"
-              style={{ height: `${(month.value / maxValue) * 100}%`, minHeight: month.value > 0 ? '4px' : '2px' }}
-            />
-            <span className="!text-[10px] !text-muted">{month.month}</span>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <ProtectedRoute>
       {/* Daily AI Suggestions Modal */}
@@ -233,213 +199,215 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-6 bg-page"
+        className="min-h-screen"
       >
-        <div className="flex items-center justify-between">
-          <h1 className="!text-3xl !uppercase font-extrabold !text-left !text-primary">
-            {t('dashboard')}
-          </h1>
+        {/* Header épuré */}
+        <div className="border-b border-default">
+          <div className="max-w-7xl mx-auto px-8 py-5">
+            <div className="mb-1">
+              <span className="!text-xs !text-muted">{t('dashboard') || 'Tableau De Bord'}</span>
+            </div>
+            <h1 className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
+              {user ? `Bonjour, ${user.username || user.email.split('@')[0]} 👋` : t('dashboard')}
+            </h1>
+            <p className="!text-sm !text-secondary">{t('dashboard_overview') || 'Voici un aperçu de votre activité'}</p>
+          </div>
         </div>
-        <UsageProgressBar />
 
-        {/* KPIs principaux avec tendances */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 kpi-grid">
-          {/* Revenus */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            onClick={() => router.push('/dashboard/revenue')}
-            className="card cursor-pointer p-4 bg-gradient-to-br from-violet-500/10 to-transparent border-violet-500/20"
-          >
-            <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-warning-light  flex items-center justify-center">
-                <IconCurrencyEuro className="w-5 h-5 !text-warning-text" />
-              </div>
-              {stats.caTrend !== 0 && (
-                <div className={`flex items-center gap-0.5 !text-xs font-medium ${stats.caTrend > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {stats.caTrend > 0 ? <IconTrendingUp className="w-3 h-3" /> : <IconTrendingDown className="w-3 h-3" />}
-                  {Math.abs(stats.caTrend)}%
-                </div>
-              )}
-            </div>
-            <p className="!text-xs !text-muted mb-1">{t('revenue_this_month')}</p>
-            <p className="!text-xl font-bold !text-primary">
-              {loading ? '...' : stats.caThisMonth.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
-            </p>
-          </motion.div>
+        <div className="max-w-7xl mx-auto px-8 py-6 space-y-5">
+          <UsageProgressBar />
 
-          {/* Clients */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            onClick={() => router.push('/dashboard/clients')}
-            className="card cursor-pointer p-4 bg-gradient-to-br from-success to-transparent border-success"
-          >
-            <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-success  flex items-center justify-center">
-                <IconUsers className="w-5 h-5 !text-success-text" />
+          {/* KPIs compacts avec dot coloré */}
+          <div className="flex gap-3 flex-wrap">
+            {/* CA ce mois */}
+            <div 
+              className="card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              onClick={() => router.push('/dashboard/revenue')}
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-violet-500 mb-2.5" />
+              <div className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
+                {loading ? '...' : stats.caThisMonth.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
               </div>
-              {stats.newClientsThisMonth.length > 0 && (
-                <div className="flex items-center gap-0.5 !text-xs font-medium !text-success-text">
-                  +{stats.newClientsThisMonth.length}
-                </div>
-              )}
-            </div>
-            <p className="!text-xs !text-muted mb-1">{t('clients')}</p>
-            <p className="!text-xl font-bold !text-primary">
-              {loading ? '...' : stats.clientsCount}
-            </p>
-          </motion.div>
-
-          {/* Projets */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            onClick={() => router.push('/dashboard/projects')}
-            className="card cursor-pointer p-4 bg-gradient-to-br from-info to-transparent border-info"
-          >
-            <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-info  flex items-center justify-center">
-                <IconBriefcase className="w-5 h-5 !text-info" />
-              </div>
+              <div className="!text-sm font-medium !text-secondary mb-0.5">{t('revenue_this_month') || 'CA ce mois'}</div>
               <div className="!text-xs !text-muted">
-                {stats.inProgressProjects.length} {t('in_progress_short')}
+                {loading ? '...' : `${stats.totalCA.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} € ${t('paid') || 'payé'}`}
               </div>
             </div>
-            <p className="!text-xs !text-muted mb-1">{t('projects')}</p>
-            <p className="!text-xl font-bold !text-primary">
-              {loading ? '...' : stats.projectsCount}
-            </p>
-          </motion.div>
 
-          {/* Prospects */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            onClick={() => router.push('/dashboard/prospects')}
-            className="card cursor-pointer p-4 bg-gradient-to-br from-purple-500/10 to-transparent border-purple-500/20"
-          >
-            <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-info  flex items-center justify-center">
-                <IconUserSearch className="w-5 h-5 !text-info" />
+            {/* Clients */}
+            <div 
+              className="card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              onClick={() => router.push('/dashboard/clients')}
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mb-2.5" />
+              <div className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
+                {loading ? '...' : stats.clientsCount}
               </div>
-              <div className="!text-xs font-medium !text-info">
-                {stats.conversionRate}% conv.
+              <div className="!text-sm font-medium !text-secondary mb-0.5">{t('clients')}</div>
+              <div className="!text-xs !text-muted">
+                +{stats.newClientsThisMonth.length} {t('this_month') || 'ce mois'}
               </div>
             </div>
-            <p className="!text-xs !text-muted mb-1">{t('prospects')}</p>
-            <p className="!text-xl font-bold !text-primary">
-              {loading ? '...' : stats.prospectsCount}
-            </p>
-          </motion.div>
 
-          {/* Factures impayées */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            onClick={() => router.push('/dashboard/factures')}
-            className={`card cursor-pointer p-4 ${stats.unpaidInvoices.length > 0 ? 'bg-gradient-to-br from-red-500/10 to-transparent border-red-500/20' : 'bg-gradient-to-br from-gray-500/10 to-transparent'}`}
-          >
-            <div className="flex items-start justify-between mb-2">
-              <div className={`w-10 h-10  flex items-center justify-center ${stats.unpaidInvoices.length > 0 ? 'bg-danger' : 'bg-info'}`}>
-                <IconFileInvoice className={`w-5 h-5 ${stats.unpaidInvoices.length > 0 ? 'text-red-500' : 'text-info'}`} />
+            {/* Projets actifs */}
+            <div 
+              className="card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              onClick={() => router.push('/dashboard/projects')}
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mb-2.5" />
+              <div className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
+                {loading ? '...' : stats.projectsCount}
               </div>
-              {stats.unpaidInvoices.length > 0 && (
-                <IconAlertTriangle className="w-4 h-4 !text-red-500" />
+              <div className="!text-sm font-medium !text-secondary mb-0.5">{t('projects') || 'Projets actifs'}</div>
+              <div className="!text-xs !text-muted">
+                {stats.inProgressProjects.length} {t('in_progress') || 'en cours'}
+              </div>
+            </div>
+
+            {/* Prospects */}
+            <div 
+              className="card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              onClick={() => router.push('/dashboard/prospects')}
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mb-2.5" />
+              <div className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
+                {loading ? '...' : stats.prospectsCount}
+              </div>
+              <div className="!text-sm font-medium !text-secondary mb-0.5">{t('prospects')}</div>
+              <div className="!text-xs !text-muted">
+                {stats.conversionRate}% {t('conversion') || 'conversion'}
+              </div>
+            </div>
+
+            {/* Factures en retard */}
+            <div 
+              className="card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              onClick={() => router.push('/dashboard/factures')}
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 mb-2.5" />
+              <div className={`!text-[22px] font-bold tracking-tight ${stats.unpaidInvoices.length > 0 ? '!text-danger' : '!text-primary'} mb-0.5`}>
+                {loading ? '...' : stats.unpaidInvoices.length}
+              </div>
+              <div className="!text-sm font-medium !text-secondary mb-0.5">{t('overdue_invoices') || 'Factures en retard'}</div>
+              <div className="!text-xs !text-muted">
+                {t('to_remind') || 'À relancer'}
+              </div>
+            </div>
+          </div>
+
+          {/* Graphique CA + Limites du plan */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Graphique CA simplifié */}
+            <div className="card p-5">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <div className="!text-sm font-semibold !text-primary">{t('revenue_evolution') || 'Évolution du CA'}</div>
+                  <div className="!text-xs !text-muted mt-0.5">{t('last_6_months') || '6 derniers mois'}</div>
+                </div>
+                <div className="!text-xl font-bold text-emerald-500">
+                  {loading ? '...' : stats.totalCA.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €
+                </div>
+              </div>
+              {loading ? (
+                <div className="h-20 bg-muted rounded animate-pulse" />
+              ) : (
+                <div className="flex items-end gap-2 h-[70px]">
+                  {stats.revenueByMonth.map((month, i) => {
+                    const maxValue = Math.max(...stats.revenueByMonth.map(m => m.value), 1);
+                    const heightPercent = (month.value / maxValue) * 100;
+                    const isCurrentMonth = i === stats.revenueByMonth.length - 1;
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                        <div 
+                          className={`w-full rounded-t transition-all ${isCurrentMonth ? 'bg-primary' : 'bg-muted'}`}
+                          style={{ height: `${Math.max(heightPercent * 0.7, month.value > 0 ? 4 : 2)}px` }}
+                        />
+                        <span className="!text-[10px] !text-muted">{month.month}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
             </div>
-            <p className="!text-xs !text-muted mb-1">{t('overdue_invoices')}</p>
-            <p className={`text-xl font-bold ${stats.unpaidInvoices.length > 0 ? 'text-red-500' : 'text-primary'}`}>
-              {loading ? '...' : stats.unpaidInvoices.length}
-            </p>
-          </motion.div>
-        </div>
 
-        {/* Ligne 2 : Mini-graphique + Devis en attente */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Mini-graphique revenus */}
-          <div className="card p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold !text-primary">{t('revenue_evolution')}</h3>
-              <button 
-                onClick={() => router.push('/dashboard/revenue')}
-                className="!text-xs !text-secondary hover:!text-primary flex items-center gap-1 !shadow-none"
-              >
-                {t('view_details')}
-                <IconArrowUpRight className="w-3 h-3 !text-secondary" style={{ color: 'var(--color-secondary)' }} />
-              </button>
-            </div>
-            {loading ? (
-              <div className="h-16 bg-muted rounded animate-pulse" />
-            ) : (
-              renderMiniChart()
-            )}
-            <div className="mt-3 pt-3 border-t border-default flex justify-between !text-sm">
-              <span className="!text-muted">{t('total_revenue')}</span>
-              <span className="font-semibold !text-secondary">
-                {stats.totalCA.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
-              </span>
-            </div>
-          </div>
-
-          {/* Widget Devis en attente - occupe 2 colonnes */}
-          <div className="lg:col-span-2">
-            {!loading && (
-              <PendingQuotesWidget 
-                quotes={(factures as Facture[]) || []} 
-                onQuoteUpdated={handleQuoteUpdated}
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Ligne 3 : Stats détaillées + Activité récente */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-
-          {/* Activité récente enrichie */}
-          <div className="card p-4">
-            <h3 className="font-semibold !text-primary mb-4">{t('recent_activity')}</h3>
-            {loading ? (
-              <div className="space-y-3">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-muted rounded-full animate-pulse"></div>
-                    <div className="flex-1">
-                      <div className="h-4 bg-muted rounded w-40 animate-pulse"></div>
+            {/* Limites du plan */}
+            <div className="card p-5">
+              <div className="!text-sm font-semibold !text-primary mb-4">{t('plan_limits') || 'Limites du plan'}</div>
+              <div className="flex flex-col gap-3.5">
+                {[
+                  { label: t('active_projects') || 'Projets actifs', used: stats.projectsCount, max: 50 },
+                  { label: t('active_clients') || 'Clients actifs', used: stats.clientsCount, max: 1000 },
+                  { label: t('newsletters') || 'Newsletters', used: 9, max: 100 },
+                ].map(limit => (
+                  <div key={limit.label}>
+                    <div className="flex justify-between mb-1.5">
+                      <span className="!text-sm !text-secondary">{limit.label}</span>
+                      <span className="!text-xs !text-muted font-mono">
+                        {loading ? '...' : limit.used} / {limit.max === Infinity ? '∞' : limit.max}
+                      </span>
+                    </div>
+                    <div className="bg-muted rounded-full h-1">
+                      <div 
+                        className={`h-full rounded-full ${limit.used / limit.max > 0.8 ? 'bg-red-500' : 'bg-primary'}`}
+                        style={{ width: `${Math.min((limit.used / limit.max) * 100, 100)}%` }}
+                      />
                     </div>
                   </div>
                 ))}
               </div>
-            ) : recentActivities.length === 0 ? (
-              <div className="!text-center py-8 !text-muted">
-                <IconCalendarEvent className="w-12 h-12 mx-auto mb-2 opacity-30" />
-                <p>{t('no_recent_activity')}</p>
+            </div>
+          </div>
+
+          {/* Activité récente + Session IDE */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Activité récente */}
+            <div className="card">
+              <div className="p-4 border-b border-default">
+                <div className="!text-sm font-semibold !text-primary">{t('recent_activity') || 'Activité récente'}</div>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {recentActivities.map((activity, index) => {
-                  const Icon = activity.icon;
-                  return (
-                    <div key={index} className="flex items-center gap-3 p-2  hover:bg-hover transition-colors">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        activity.color === 'emerald' ? 'bg-success !text-success-text ' :
-                        activity.color === 'blue' ? 'bg-info !text-info' :
-                        activity.color === 'green' ? 'bg-success !text-success-text ' :
-                        'bg-muted !text-muted'
-                      }`}>
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="!text-sm !text-primary truncate">{activity.message}</p>
-                        {activity.time && (
-                          <p className="!text-xs !text-muted">{activity.time}</p>
-                        )}
+              {loading ? (
+                <div className="space-y-0">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="flex items-center gap-2.5 p-3 border-b border-default last:border-b-0">
+                      <div className="w-1.5 h-1.5 rounded-full bg-muted animate-pulse" />
+                      <div className="flex-1">
+                        <div className="h-3.5 bg-muted rounded w-3/4 animate-pulse" />
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                  ))}
+                </div>
+              ) : recentActivities.length === 0 ? (
+                <div className="p-10 text-center !text-muted">
+                  <IconCalendarEvent className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                  <p className="!text-sm">{t('no_recent_activity')}</p>
+                </div>
+              ) : (
+                <div>
+                  {recentActivities.map((activity, index) => {
+                    const activityColor = 
+                      activity.color === 'emerald' || activity.color === 'green' ? 'bg-emerald-500' :
+                      activity.color === 'blue' ? 'bg-blue-500' :
+                      'bg-amber-500';
+                    return (
+                      <div 
+                        key={index} 
+                        className="flex items-center gap-2.5 p-3 border-b border-default last:border-b-0 hover:bg-hover transition-colors cursor-pointer"
+                      >
+                        <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${activityColor}`} />
+                        <div className="flex-1 min-w-0">
+                          <div className="!text-sm !text-secondary truncate">{activity.message}</div>
+                        </div>
+                        <div className="!text-xs !text-muted whitespace-nowrap">{activity.time}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Session IDE */}
+            <ActiveIdeSessionWidget />
           </div>
-          
-          {/* Widget IDE Tracker */}
-          <ActiveIdeSessionWidget />
         </div>
       </motion.div>
     </ProtectedRoute>

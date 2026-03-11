@@ -10,16 +10,13 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { usePreferences } from '@/app/context/PreferencesContext';
 import { useAuth } from '../../context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
-import { Column } from '@/app/components/DataTable';
-import { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
+import DataTable, { Column } from '@/app/components/DataTable';
+import TableFilters, { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
 import {
   IconCheck,
   IconClock,
   IconFileInvoice,
   IconFileDescription,
-  IconCurrencyEuro,
-  IconCalendar,
   IconHourglass,
   IconX,
 } from '@tabler/icons-react';
@@ -587,119 +584,135 @@ export default function FacturesPage() {
     }
   };
 
-  // Stats cards configuration selon le type de document
-  const statsCards = useMemo(() => {
-    if (isQuoteMode) {
-      return [
-        {
-          label: t('total_quotes') || 'Total des devis',
-          value: stats.total,
-          colorClass: 'text-violet-500',
-          icon: <IconFileDescription className="w-6 h-6 !text-violet-500" />,
-        },
-        {
-          label: t('accepted_quotes') || 'Devis acceptés',
-          value: stats.accepted || 0,
-          colorClass: 'text-success',
-          icon: <IconCheck className="w-6 h-6 !text-success-text -text" />,
-        },
-        {
-          label: t('pending_quotes') || 'En attente',
-          value: stats.pending || 0,
-          colorClass: 'text-info',
-          icon: <IconHourglass className="w-6 h-6 !text-info" />,
-        },
-        {
-          label: t('new_quotes_this_month') || 'Nouveaux ce mois',
-          value: stats.newThisMonth,
-          colorClass: 'text-violet-500',
-          icon: <IconCalendar className="w-6 h-6 !text-violet-500" />,
-        },
-      ];
-    } else {
-      return [
-        {
-          label: t('total_invoices'),
-          value: stats.total,
-          colorClass: 'text-amber-500',
-          icon: <IconFileInvoice className="w-6 h-6 !text-amber-500" />,
-        },
-        {
-          label: t('active_factures'),
-          value: stats.paid || 0,
-          colorClass: 'text-success',
-          icon: <IconCheck className="w-6 h-6 !text-success-text -text" />,
-        },
-        {
-          label: t('revenue'),
-          value: formatCurrency(stats.paidAmount || 0),
-          colorClass: 'text-success',
-          icon: <IconCurrencyEuro className="w-6 h-6 !text-success-text -text" />,
-        },
-        {
-          label: t('new_factures_this_month'),
-          value: stats.newThisMonth,
-          colorClass: 'text-amber-500',
-          icon: <IconCalendar className="w-6 h-6 !text-amber-500" />,
-        },
-      ];
-    }
-  }, [stats, isQuoteMode, t, formatCurrency]);
-
-  // Onglets pour basculer entre Factures et Devis
-  const tabs = (
-    <div className="flex w-fit gap-1 p-1 bg-muted  mb-6">
-      <button
-        onClick={() => router.push('/dashboard/factures')}
-        className={`flex items-center gap-2 px-4 py-2  !text-sm font-medium transition-all ${
-          !isQuoteMode
-            ? 'bg-card !text-amber-600 dark:!text-amber-400 shadow-sm'
-            : 'text-muted hover:!text-primary'
-        }`}
-      >
-        <IconFileInvoice className="w-4 h-4" />
-        {t('invoices') || 'Factures'}
-      </button>
-      <button
-        onClick={() => router.push('/dashboard/factures?type=quote')}
-        className={`flex items-center gap-2 px-4 py-2  !text-sm font-medium transition-all ${
-          isQuoteMode
-            ? 'bg-card !text-secondary shadow-sm'
-            : 'text-muted hover:!text-primary'
-        }`}
-      >
-        <IconFileDescription className="w-4 h-4" />
-        {t('quotes') || 'Devis'}
-      </button>
-    </div>
-  );
 
   return (
     <ProtectedRoute>
-      <DashboardPageTemplate<Facture>
-        title={t('invoices_and_quotes') || 'Factures / Devis'}
-        headerExtra={tabs}
-        onRowClick={row => router.push(`/dashboard/factures/${getFactureSlug(row)}${isQuoteMode ? '?type=quote' : ''}`)}
-        actionButtonLabel={isQuoteMode ? (t('create_quote') || 'Créer un devis') : t('create_facture')}
-        onActionButtonClick={() => router.push(`/dashboard/factures/new${isQuoteMode ? '?type=quote' : ''}`)}
-        stats={statsCards}
-        loading={loading}
-        filterOptions={statusOptions}
-        searchPlaceholder={isQuoteMode ? (t('search_placeholder_quotes') || 'Rechercher un devis...') : t('search_placeholder_factures')}
-        searchValue={searchTerm}
-        onSearchChange={setSearchTerm}
-        statusValue={statusFilter}
-        onStatusChange={setStatusFilter}
-        advancedFilters={advancedFilters}
-        onAdvancedFilterChange={handleAdvancedFilterChange}
-        columns={columns}
-        data={filteredFactures}
-        emptyMessage={isQuoteMode ? (t('no_quote_found') || 'Aucun devis trouvé') : t('no_invoice_found')}
-        selectable={true}
-        onDeleteSelected={handleDeleteMultipleFactures}
-        getItemId={(facture) => facture.documentId || ''}
-        getItemName={(facture) => facture.reference}
-      />
+      <div className="min-h-screen">
+        {/* Header épuré */}
+        <div className="bg-card border-b border-default">
+          <div className="max-w-7xl mx-auto px-8 py-5">
+            {/* Breadcrumb + Actions */}
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <div className="!text-xs !text-muted mb-1">
+                  <span>{t('dashboard') || 'Tableau de Bord'}</span>
+                  <span className="mx-1.5">→</span>
+                  <span>{t('invoices_and_quotes') || 'Factures / Devis'}</span>
+                </div>
+                <h1 className="!text-[22px] font-bold tracking-tight !text-primary">
+                  {t('invoices_and_quotes') || 'Factures & Devis'}
+                </h1>
+              </div>
+              <button
+                onClick={() => router.push(`/dashboard/factures/new${isQuoteMode ? '?type=quote' : ''}`)}
+                className="flex items-center gap-2 bg-primary !text-white border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
+              >
+                <IconFileInvoice className="w-4 h-4" />
+                {isQuoteMode ? (t('create_quote') || 'Créer un devis') : (t('create_facture') || 'Créer une facture')}
+              </button>
+            </div>
+
+            {/* Stats inline */}
+            <div className="flex gap-3 mb-5 flex-wrap">
+              {isQuoteMode ? (
+                <>
+                  <div className="card flex-1 min-w-[140px] p-3.5">
+                    <div className="!text-xs !text-muted mb-1">{t('total_quotes') || 'Total'}</div>
+                    <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : stats.total}</div>
+                  </div>
+                  <div className="card flex-1 min-w-[140px] p-3.5">
+                    <div className="!text-xs !text-muted mb-1">{t('accepted_quotes') || 'Acceptés'}</div>
+                    <div className="!text-[22px] font-bold tracking-tight text-emerald-500">{loading ? '...' : stats.accepted}</div>
+                  </div>
+                  <div className="card flex-1 min-w-[140px] p-3.5">
+                    <div className="!text-xs !text-muted mb-1">{t('pending_quotes') || 'En attente'}</div>
+                    <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : stats.pending}</div>
+                  </div>
+                  <div className="card flex-1 min-w-[140px] p-3.5">
+                    <div className="!text-xs !text-muted mb-1">{t('total_amount') || 'Montant'}</div>
+                    <div className="!text-[22px] font-bold tracking-tight text-violet-500">{loading ? '...' : formatCurrency(stats.totalAmount || 0)}</div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="card flex-1 min-w-[140px] p-3.5">
+                    <div className="!text-xs !text-muted mb-1">{t('total_invoices') || 'Total factures'}</div>
+                    <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : stats.total}</div>
+                  </div>
+                  <div className="card flex-1 min-w-[140px] p-3.5">
+                    <div className="!text-xs !text-muted mb-1">{t('paid_invoices') || 'Payées'}</div>
+                    <div className="!text-[22px] font-bold tracking-tight text-emerald-500">{loading ? '...' : stats.paid}</div>
+                  </div>
+                  <div className="card flex-1 min-w-[140px] p-3.5">
+                    <div className="!text-xs !text-muted mb-1">{t('revenue') || 'Chiffre d\'affaires'}</div>
+                    <div className="!text-[22px] font-bold tracking-tight text-violet-500">{loading ? '...' : formatCurrency(stats.paidAmount || 0)}</div>
+                  </div>
+                  <div className="card flex-1 min-w-[140px] p-3.5">
+                    <div className="!text-xs !text-muted mb-1">{t('this_month') || 'Ce mois'}</div>
+                    <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : stats.newThisMonth}</div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Tabs pills */}
+            <div className="flex gap-0.5 bg-muted rounded-lg p-0.5 w-fit">
+              <button
+                onClick={() => router.push('/dashboard/factures')}
+                className={`px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
+                  !isQuoteMode
+                    ? 'bg-card !text-primary shadow-sm'
+                    : '!text-muted hover:!text-primary'
+                }`}
+              >
+                {t('invoices') || 'Factures'}
+              </button>
+              <button
+                onClick={() => router.push('/dashboard/factures?type=quote')}
+                className={`px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
+                  isQuoteMode
+                    ? 'bg-card !text-primary shadow-sm'
+                    : '!text-muted hover:!text-primary'
+                }`}
+              >
+                {t('quotes') || 'Devis'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          {/* Filtres */}
+          <div className="mb-4">
+            <TableFilters
+              searchValue={searchTerm}
+              onSearchChangeAction={setSearchTerm}
+              searchPlaceholder={isQuoteMode ? (t('search_placeholder_quotes') || 'Rechercher un devis...') : (t('search_placeholder_factures') || 'Référence, client ou projet...')}
+              statusOptions={statusOptions}
+              statusValue={statusFilter}
+              onStatusChangeAction={setStatusFilter}
+              advancedFilters={advancedFilters}
+              onAdvancedFilterChange={handleAdvancedFilterChange}
+            />
+          </div>
+
+          {/* Tableau */}
+          <div className="bg-card border border-default rounded-lg overflow-hidden">
+            <DataTable<Facture>
+              columns={columns}
+              data={filteredFactures}
+              emptyMessage={isQuoteMode ? (t('no_quote_found') || 'Aucun devis trouvé') : (t('no_invoice_found') || 'Aucune facture trouvée')}
+              onRowClick={(row) => router.push(`/dashboard/factures/${getFactureSlug(row)}${isQuoteMode ? '?type=quote' : ''}`)}
+              selectable={true}
+              onDeleteSelected={handleDeleteMultipleFactures}
+              getItemId={(facture) => facture.documentId || ''}
+              getItemName={(facture) => facture.reference}
+              loading={loading}
+            />
+          </div>
+        </div>
+      </div>
 
       <DeleteConfirmModal
         isOpen={deleteModal.isOpen}
