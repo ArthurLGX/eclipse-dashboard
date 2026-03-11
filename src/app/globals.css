@@ -124,13 +124,13 @@
    ============================================ */
 :root.light {
   /* Backgrounds */
-  --bg-page:        #FAF0E6;   /* beige rosé principal */
+  --bg-page:        #F5F0E8;   /* beige écru style Anthropic */
   --bg-card:        #F5F5EE;   /* blanc cassé pour les cards */
   --bg-card-hover:  #EEF4F0;   /* légère teinte verte au hover */
   --bg-input:       #FFFFFF;   /* blanc pur pour les champs */
   --bg-sidebar:     #F5F5EE;
   --bg-hover:       rgba(123, 174, 127, 0.10);
-  --bg-muted:       #FAF0E6;
+  --bg-muted:       #F5F0E8;
 
   /* Borders */
   --border-default: rgba(123, 174, 127, 0.25);
@@ -203,15 +203,15 @@
   --shadow-accent: 0 8px 32px rgba(123, 174, 127, 0.20);
 
   /* Gradients */
-  --gradient-sidebar: linear-gradient(180deg, #FAF0E6 0%, #F5F5EE 100%);
+  --gradient-sidebar: linear-gradient(180deg, #F5F0E8 0%, #F5F5EE 100%);
 
   /* Banners — variations douces de la palette */
-  --banner-blue:    linear-gradient(to bottom right, #E0EAF4, #FAF0E6, #FAF0E6);
-  --banner-emerald: linear-gradient(to bottom right, #D6E8DF, #FAF0E6, #FAF0E6);
-  --banner-amber:   linear-gradient(to bottom right, #FDF0DC, #FAF0E6, #FAF0E6);
-  --banner-purple:  linear-gradient(to bottom right, #EDE0F4, #FAF0E6, #FAF0E6);
-  --banner-rose:    linear-gradient(to bottom right, #FAE0E0, #FAF0E6, #FAF0E6);
-  --banner-cyan:    linear-gradient(to bottom right, #DCF0F4, #FAF0E6, #FAF0E6);
+  --banner-blue:    linear-gradient(to bottom right, #E0EAF4, #F5F0E8, #F5F0E8);
+  --banner-emerald: linear-gradient(to bottom right, #D6E8DF, #F5F0E8, #F5F0E8);
+  --banner-amber:   linear-gradient(to bottom right, #FDF0DC, #F5F0E8, #F5F0E8);
+  --banner-purple:  linear-gradient(to bottom right, #EDE0F4, #F5F0E8, #F5F0E8);
+  --banner-rose:    linear-gradient(to bottom right, #FAE0E0, #F5F0E8, #F5F0E8);
+  --banner-cyan:    linear-gradient(to bottom right, #DCF0F4, #F5F0E8, #F5F0E8);
 }
 
 /* ============================================
@@ -2329,7 +2329,7 @@ nav button:hover svg, nav a:hover svg {
 :root.light .mobile-bottom-nav {
   background: linear-gradient(180deg,
     rgba(245, 245, 238, 0.95) 0%,
-    rgba(250, 240, 230, 0.98) 100%
+    rgba(245, 240, 232, 0.98) 100%
   );
   box-shadow:
     0 -4px 30px rgba(44, 58, 46, 0.06),
@@ -2345,7 +2345,7 @@ nav button:hover svg, nav a:hover svg {
 /* Mobile header — light */
 :root.light .mobile-header-glass {
   background: linear-gradient(180deg,
-    rgba(250, 240, 230, 0.97) 0%,
+    rgba(245, 240, 232, 0.97) 0%,
     rgba(245, 245, 238, 0.95) 100%
   );
   border-color: rgba(123, 174, 127, 0.20);
@@ -2355,7 +2355,7 @@ nav button:hover svg, nav a:hover svg {
 /* Mobile drawer — light */
 :root.light .mobile-drawer-glass {
   background: linear-gradient(180deg,
-    rgba(250, 240, 230, 0.99) 0%,
+    rgba(245, 240, 232, 0.99) 0%,
     rgba(245, 245, 238, 0.99) 100%
   );
   border-right-color: rgba(123, 174, 127, 0.20);
