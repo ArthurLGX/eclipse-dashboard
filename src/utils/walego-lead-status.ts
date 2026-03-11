@@ -3,6 +3,18 @@
  * Structure typique : Status, Reasoning, Tips (suggestions de l'IA Walego).
  */
 
+/**
+ * Extrait le nom du lead depuis le sujet d'un email Walego.
+ * Ex: "Prise de nouvelles - New Lead with Walego: Gaëtan Balawe from" → "Gaëtan Balawe"
+ */
+export function extractWalegoLeadName(subject: string): string | null {
+  if (!subject?.trim()) return null;
+  // "Prise de nouvelles - New Lead with Walego: Gaëtan Balawe from" → "Gaëtan Balawe"
+  const match = subject.match(/(?:New Lead with )?Walego\s*:\s*([^\n]+?)\s+from/i);
+  if (match) return match[1].trim();
+  return null;
+}
+
 export interface WalegoLeadStatus {
   status?: string;
   reasoning?: string;

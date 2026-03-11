@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconX,
@@ -11,6 +11,7 @@ import {
 import { useAuth } from '@/app/context/AuthContext';
 import { useAIFeatures } from '@/app/context/AIFeaturesContext';
 import { usePopup } from '@/app/context/PopupContext';
+import { extractWalegoLeadName, parseWalegoLeadStatus } from '@/utils/walego-lead-status';
 import type { AutomationAction } from '@/types/smart-follow-up';
 
 interface QuickEmailReplyModalProps {
@@ -33,6 +34,28 @@ export default function QuickEmailReplyModal({
   const [replyContent, setReplyContent] = useState('');
   const [generatingAI, setGeneratingAI] = useState(false);
   const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen || !action) return;
+    const body = action.proposed_content.body || '';
+    const parsed = parseWalegoLeadStatus(body);
+    if (parsed?.tips) {
+      setReplyContent(parsed.tips);
+    } else if (body.trim()) {
+      setReplyContent(body);
+    } else {
+      setReplyContent('');
+    }
+  }, [isOpen, action?.documentId, action?.proposed_content?.body]);
+
+  const displayName = action
+    ? action.client?.name ||
+      extractWalegoLeadName(action.proposed_content.subject) ||
+      'ce contact'
+    : '';
+  const walegoLeadStatus = action?.proposed_content?.body
+    ? parseWalegoLeadStatus(action.proposed_content.body)
+    : null;
 
   const handleGenerateAIReply = async () => {
     if (!action || !isFeatureEnabled('email_suggestions')) {
@@ -77,7 +100,8 @@ export default function QuickEmailReplyModal({
       return;
     }
 
-    if (!action?.client?.email) {
+    const recipientEmail = action?.client?.email || action?.proposed_content?.to?.[0];
+    if (!recipientEmail) {
       showGlobalPopup('Email du destinataire non trouvé', 'error');
       return;
     }
@@ -89,7 +113,7 @@ export default function QuickEmailReplyModal({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: [action.client.email],
+          to: [recipientEmail],
           subject: `Re: ${action.proposed_content.subject}`,
           body: replyContent,
           userId: user?.id,
@@ -139,10 +163,10 @@ export default function QuickEmailReplyModal({
             <div className="flex items-center justify-between p-6 border-b border-default">
               <div className="flex-1 min-w-0">
                 <h2 className="text-xl font-bold text-primary mb-1">
-                  Répondre à {action.client?.name || 'ce contact'}
+                  Répondre à {displayName}
                 </h2>
                 <p className="text-sm text-muted truncate">
-                  {action.client?.email}
+                  {action.client?.email || action.proposed_content?.to?.[0] || ''}
                 </p>
               </div>
               <button
@@ -153,12 +177,31 @@ export default function QuickEmailReplyModal({
               </button>
             </div>
 
-            {/* Email original (contexte) */}
-            <div className="px-6 py-4 bg-secondary/50 border-b border-default">
-              <p className="text-xs text-muted mb-1">Sujet original :</p>
-              <p className="text-sm font-medium text-primary">
-                {action.proposed_content.subject}
-              </p>
+            {/* Sujet + Réponse IA / Lead Status Walego */}
+            <div className="px-6 py-4 bg-secondary/50 border-b border-default space-y-3">
+              <div>
+                <p className="text-xs text-muted mb-1">Sujet original :</p>
+                <p className="text-sm font-medium text-primary">
+                  {action.proposed_content.subject}
+                </p>
+              </div>
+              {walegoLeadStatus && (walegoLeadStatus.reasoning || walegoLeadStatus.tips) && (
+                <div className="rounded-lg p-3 bg-accent/10 border border-accent/20">
+                  <p className="text-xs font-semibold text-accent uppercase mb-2">Lead Status (suggestions Walego)</p>
+                  {walegoLeadStatus.reasoning && (
+                    <p className="text-sm text-primary mb-2 whitespace-pre-wrap">{walegoLeadStatus.reasoning}</p>
+                  )}
+                  {walegoLeadStatus.tips && (
+                    <p className="text-sm font-medium text-primary whitespace-pre-wrap">{walegoLeadStatus.tips}</p>
+                  )}
+                </div>
+              )}
+              {!walegoLeadStatus && action.proposed_content.body?.trim() && (
+                <div className="rounded-lg p-3 bg-purple-500/10 border border-purple-500/20">
+                  <p className="text-xs font-semibold text-purple-600 uppercase mb-2">Réponse suggérée par l&apos;IA</p>
+                  <p className="text-sm text-primary whitespace-pre-wrap">{action.proposed_content.body}</p>
+                </div>
+              )}
             </div>
 
             {/* Corps du message */}

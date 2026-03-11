@@ -62,6 +62,7 @@ import type { MobileDrawerItem } from '@/app/components/mobile';
 import AIChatAssistant from '@/app/components/AIChatAssistant';
 import { AIAssistantProvider } from '@/app/context/AIAssistantContext';
 import { useEmailNotificationsOptional } from '@/app/context/EmailNotificationContext';
+import { useAutomationActions } from '@/hooks/useSmartFollowUp';
 
 interface SidebarItem {
   id: string;
@@ -125,6 +126,8 @@ function DashboardLayoutContent({
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
   const emailNotifications = useEmailNotificationsOptional();
   const emailUnreadCount = emailNotifications?.unreadCount || 0;
+  const { data: automationActions } = useAutomationActions('pending');
+  const smartFollowUpLeadsCount = automationActions?.length ?? 0;
 
   // Load module statuses from localStorage (admin-configurable)
   useEffect(() => {
@@ -274,7 +277,6 @@ function DashboardLayoutContent({
       label: t('category_management') || 'Gestion',
       icon: <IconBriefcase size={15} stroke={1} />,
       isCategory: true,
-      badgeCount: emailUnreadCount > 0 ? emailUnreadCount : undefined,
       menuItems: [
         // Facturation (Factures + Devis - page unifiée)
         {
@@ -335,6 +337,7 @@ function DashboardLayoutContent({
           path: '/dashboard/smart-follow-up',
           moduleId: 'smart_follow_up',
           status: getModuleStatus('smart_follow_up', moduleStatuses) || undefined,
+          badgeCount: smartFollowUpLeadsCount > 0 ? smartFollowUpLeadsCount : undefined,
         },
         // Technique
         {
@@ -463,7 +466,7 @@ function DashboardLayoutContent({
       onClick: logout,
       path: '/login?type=login',
     },
-  ], [t, profilePictureUrl, logout, isAdmin, moduleStatuses, emailUnreadCount]);
+  ], [t, profilePictureUrl, logout, isAdmin, moduleStatuses, emailUnreadCount, smartFollowUpLeadsCount]);
 
   // Filtrer les items selon les préférences de visibilité ET les modules activés
   const visibleSidebarItems = useMemo(() => {

@@ -39,6 +39,7 @@ import {
   deleteFollowUpTask,
   updateAutomationSettings 
 } from '@/lib/smart-follow-up-api';
+import { extractWalegoLeadName } from '@/utils/walego-lead-status';
 import type { AutomationAction, FollowUpTask } from '@/types/smart-follow-up';
 
 function formatRelativeTime(date: Date): string {
@@ -261,7 +262,7 @@ export default function SmartFollowUpPage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="font-medium text-primary truncate">
-                  {action.client?.name || 'Contact inconnu'}
+                  {action.client?.name || extractWalegoLeadName(action.proposed_content.subject) || 'Contact inconnu'}
                 </p>
                 {fromPriorityDomain && (
                   <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-emerald-100 text-emerald-700">
@@ -391,7 +392,7 @@ export default function SmartFollowUpPage() {
       render: (_, task) => (
         <div className="min-w-0">
           <p className="font-medium text-primary truncate">
-            {task.contact?.name || task.context?.from_name || task.context?.from_email || 'Contact inconnu'}
+            {task.contact?.name || task.context?.from_name || extractWalegoLeadName(task.context?.original_subject || task.received_email?.subject || '') || task.context?.from_email || 'Contact inconnu'}
           </p>
           {task.context?.from_email && (
             <p className="text-xs text-muted truncate">{task.context.from_email}</p>
