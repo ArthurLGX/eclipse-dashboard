@@ -169,22 +169,22 @@ export default function DashboardPageTemplate<T>({
               {stats.map((stat, i) => (
                 <div
                   key={i}
-                  className={`card p-4 ${stat.onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''} ${stat.colorClass?.includes('ring-') ? 'ring-2 ring-offset-2 ring-offset-page ' + stat.colorClass.split(' ').find(c => c.startsWith('ring-')) : ''}`}
+                  className={`card p-2 ${stat.onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''} ${stat.colorClass?.includes('ring-') ? 'ring-2 ring-offset-2 ring-offset-page ' + stat.colorClass.split(' ').find(c => c.startsWith('ring-')) : ''}`}
                   onClick={stat.onClick}
                   role={stat.onClick ? 'button' : undefined}
                   tabIndex={stat.onClick ? 0 : undefined}
                   onKeyDown={stat.onClick ? (e) => e.key === 'Enter' && stat.onClick?.() : undefined}
                 >
-                  <h3 className="!text-lg font-semibold !text-primary mb-2 flex items-center gap-2">
+                  <h3 className="!text-sm font-semibold !text-primary mb-2 flex items-center gap-2">
                     {stat.icon && (
-                      <span className="w-6 h-6 flex items-center justify-center">
+                      <span className="w-3 h-3 flex items-center justify-center">
                         {stat.icon}
                       </span>
                     )}
                     {stat.label}
                   </h3>
                   <p
-                    className={`text-3xl font-bold ${
+                    className={`!text-sm font-bold ${
                       (stat.colorClass || 'text-accent').split(' ').find(c => c.startsWith('text-')) || 'text-accent'
                     }`}
                   >

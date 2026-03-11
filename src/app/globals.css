@@ -932,7 +932,7 @@ button {
 
 /* Sidebar */
 .sidebar {
-  background: var(--gradient-sidebar);
+  background: var(--bg-card);
   border-right: 1px solid var(--border-default);
 }
 
