@@ -9,32 +9,27 @@ import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
-import { Column } from '@/app/components/DataTable';
-import { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
-import { IconUsers, IconUserCheck, IconUserPlus, IconFileImport, IconArrowRight, IconUsersGroup } from '@tabler/icons-react';
+import DataTable, { Column } from '@/app/components/DataTable';
+import TableFilters, { FilterOption, AdvancedFilter, DateRangeFilter } from '@/app/components/TableFilters';
+import { IconFileImport, IconArrowRight, IconPlus, IconUsersGroup } from '@tabler/icons-react';
 import { CustomAction } from '@/app/components/DataTable';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import AddClientModal from './AddClientModal';
 import ImportClientsModal from './ImportClientsModal';
 import ImportProgressModal, { ImportProgressItem } from './ImportProgressModal';
-import { useClients, useProjects, useFactures, clearCache } from '@/hooks/useApi';
+import { useClients, clearCache } from '@/hooks/useApi';
 import { generateClientSlug } from '@/utils/slug';
 import type { Client, CreateClientData } from '@/types';
 import { useQuota } from '@/app/context/QuotaContext';
 import { uploadImage } from '@/lib/api';
 import QuotaExceededModal from '@/app/components/QuotaExceededModal';
 import { useQuotaExceeded } from '@/hooks/useQuotaExceeded';
-import ClientWorkflowMapView from '@/app/components/ClientWorkflowMapView';
-
-import type { Project, Facture } from '@/types';
 
 export default function ClientsPage() {
   const { showGlobalPopup } = usePopup();
   const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { canAdd, getVisibleCount, limits, refreshQuotas } = useQuota();
 
   // Rafraîchir les quotas au chargement pour avoir les dernières valeurs
@@ -45,27 +40,7 @@ export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   
-  // Lire le filtre ownership depuis l'URL
-  const ownershipFromUrl = searchParams.get('ownership') as 'all' | 'mine' | 'collaborative' | null;
-  const [ownershipFilter, setOwnershipFilterState] = useState<'all' | 'mine' | 'collaborative'>(
-    ownershipFromUrl && ['all', 'mine', 'collaborative'].includes(ownershipFromUrl) 
-      ? ownershipFromUrl 
-      : 'all'
-  );
-  
-  // Fonction pour mettre à jour le filtre et l'URL
-  const setOwnershipFilter = useCallback((value: 'all' | 'mine' | 'collaborative') => {
-    setOwnershipFilterState(value);
-    // Mettre à jour l'URL sans recharger la page
-    const params = new URLSearchParams(searchParams.toString());
-    if (value === 'all') {
-      params.delete('ownership');
-    } else {
-      params.set('ownership', value);
-    }
-    const newUrl = params.toString() ? `?${params.toString()}` : '/dashboard/clients';
-    router.replace(newUrl, { scroll: false });
-  }, [searchParams, router]);
+  const [ownershipFilter] = useState<'all' | 'mine' | 'collaborative'>('all');
   
   const [showAddModal, setShowAddModal] = useState(false);
   
@@ -91,11 +66,6 @@ export default function ClientsPage() {
   const { data: clientsData, loading, refetch } = useClients(user?.id);
   const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
   
-  // For multi-client workflow view - load all projects and factures
-  const { data: allProjectsData } = useProjects(user?.id);
-  const { data: allFacturesData } = useFactures(user?.id);
-  const allProjects = useMemo(() => allProjectsData || [], [allProjectsData]);
-  const allFactures = useMemo(() => allFacturesData || [], [allFacturesData]);
 
   // Quota exceeded detection
   const { 
@@ -758,85 +728,151 @@ export default function ClientsPage() {
 
   return (
     <ProtectedRoute>
-      <DashboardPageTemplate<Client>
-        title={t('contacts') || 'Contacts'}
-        onRowClick={row => {
-          // Si client collaboratif, rediriger vers le premier projet associé
-          if (row._isCollaborative && row._collaborativeProjects && row._collaborativeProjects.length > 0) {
-            const firstProject = row._collaborativeProjects[0];
-            // Afficher un popup informatif et rediriger vers le projet
-            showGlobalPopup(
-              `${t('collaborative_client_info') || 'Client partagé via'}: ${firstProject.title}`,
-              'info'
-            );
-            router.push(`/dashboard/projects/${firstProject.slug}`);
-          } else {
-            router.push(`/dashboard/clients/${generateClientSlug(row.name, row.documentId)}`);
-          }
-        }}
-        actionButtonLabel={canAdd('clients') ? t('add_client') : `${t('add_client')} (${t('quota_reached') || 'Quota atteint'})`}
-        onActionButtonClick={canAdd('clients') ? () => setShowAddModal(true) : () => showGlobalPopup(t('quota_reached_message') || 'Quota atteint. Passez à un plan supérieur.', 'warning')}
-        additionalActions={[
-          {
-            label: t('import_list') || 'Importer une liste',
-            onClick: () => setShowImportModal(true),
-            icon: <IconFileImport className="w-4 h-4" />,
-            variant: 'outline',
-          },
-        ]}
-        stats={[
-          {
-            label: t('all_contacts') || 'Tous les contacts',
-            value: stats.limit > 0 ? `${stats.total}/${stats.limit}` : stats.total,
-            colorClass: ownershipFilter === 'all' ? 'text-success border-2 border-success' : 'text-success',
-            icon: <IconUsers className="w-6 h-6 !text-success-text -text" />,
-            onClick: () => setOwnershipFilter('all'),
-          },
-          {
-            label: t('clients') || 'Clients',
-            value: stats.active,
-            colorClass: 'text-info',
-            icon: <IconUserCheck className="w-6 h-6 !text-info" />,
-          },
-          {
-            label: t('prospects') || 'Prospects',
-            value: prospectsCount,
-            colorClass: 'text-warning',
-            icon: <IconUserPlus className="w-6 h-6 !text-warning" />,
-          },
-          ...(stats.collaborative > 0 ? [{
-            label: t('collaborative_clients') || 'Collaboratifs',
-            value: stats.collaborative,
-            colorClass: ownershipFilter === 'collaborative' ? 'text-accent border-2 border-accent' : 'text-accent',
-            icon: <IconUsersGroup className="w-6 h-6 !text-accent" />,
-            onClick: () => setOwnershipFilter(ownershipFilter === 'collaborative' ? 'all' : 'collaborative'),
-          }] : []),
-        ]}
-        loading={loading}
-        filterOptions={statusOptions}
-        searchPlaceholder={t('search_placeholder_clients')}
-        searchValue={searchTerm}
-        onSearchChange={setSearchTerm}
-        statusValue={statusFilter}
-        onStatusChange={setStatusFilter}
-        advancedFilters={advancedFilters}
-        onAdvancedFilterChange={handleAdvancedFilterChange}
-        columns={columns}
-        data={filteredClients}
-        emptyMessage={t('no_client_found')}
-        selectable={true}
-        onDeleteSelected={handleDeleteMultipleClients}
-        customActions={customActions}
-        getItemId={(client) => client.documentId || ''}
-        getItemName={(client) => client.name}
-        sortable={true}
-        showFavorites={true}
-        isFavorite={isClientFavorite}
-        onToggleFavorite={handleToggleFavorite}
-        draggable={true}
-        onReorder={handleReorder}
-        mapView={<ClientWorkflowMapView clients={filteredClients} clientId="all" allProjects={allProjects as Project[]} allFactures={allFactures as Facture[]} />}
-      />
+      <div className="min-h-screen">
+        {/* Header épuré */}
+        <div className="bg-card border-b border-default">
+          <div className="max-w-7xl mx-auto px-8 py-5">
+            {/* Breadcrumb + Title Row */}
+            <div className="flex items-start justify-between mb-5">
+              <div>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <span className="!text-muted !text-xs">{t('dashboard') || 'Tableau de bord'}</span>
+                  <span className="!text-border-default !text-xs">→</span>
+                  <span className="!text-secondary !text-xs font-medium">{t('contacts') || 'Contacts'}</span>
+                </div>
+                <h1 className="!text-[22px] font-bold tracking-tight !text-primary">
+                  {t('contacts') || 'Contacts'}
+                </h1>
+              </div>
+              
+              {/* Actions */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowImportModal(true)}
+                  className="btn-ghost flex items-center gap-2 px-4 py-2 !text-sm whitespace-nowrap"
+                >
+                  <IconFileImport className="w-3.5 h-3.5" />
+                  {t('import_list') || 'Importer une liste'}
+                </button>
+                <button
+                  onClick={canAdd('clients') ? () => setShowAddModal(true) : () => showGlobalPopup(t('quota_reached_message') || 'Quota atteint. Passez à un plan supérieur.', 'warning')}
+                  className="btn-primary flex items-center gap-2 px-4 py-2 !text-sm whitespace-nowrap"
+                >
+                  <IconPlus className="w-3.5 h-3.5" />
+                  {canAdd('clients') ? t('add_client') : `${t('add_client')} (${t('quota_reached') || 'Quota atteint'})`}
+                </button>
+              </div>
+            </div>
+
+            {/* Filters + Stats Row */}
+            <div className="flex items-center justify-between">
+              {/* Filter pills */}
+              <div className="flex gap-1 bg-muted rounded-lg p-1">
+                <button
+                  onClick={() => setStatusFilter('')}
+                  className={`px-4 py-1.5 !text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+                    statusFilter === '' ? 'bg-card !text-primary shadow-sm' : '!text-secondary hover:!text-primary'
+                  }`}
+                >
+                  {t('all') || 'Tous'}
+                  <span className={`ml-1.5 !text-xs ${statusFilter === '' ? '!text-muted' : '!text-secondary/60'}`}>
+                    {stats.total}
+                  </span>
+                </button>
+                {statusOptions.map(option => (
+                  <button
+                    key={option.value}
+                    onClick={() => setStatusFilter(option.value)}
+                    className={`px-4 py-1.5 !text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+                      statusFilter === option.value ? 'bg-card !text-primary shadow-sm' : '!text-secondary hover:!text-primary'
+                    }`}
+                  >
+                    {option.label}
+                    <span className={`ml-1.5 !text-xs ${statusFilter === option.value ? '!text-muted' : '!text-secondary/60'}`}>
+                      {option.count}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Mini stats inline */}
+              <div className="flex items-center gap-5">
+                <div className="flex items-center gap-2">
+                  <span className="!text-lg font-bold !text-primary">{stats.active}</span>
+                  <span className="!text-xs !text-muted">{t('clients') || 'Clients'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="!text-lg font-bold !text-primary">{prospectsCount}</span>
+                  <span className="!text-xs !text-muted">{t('prospects') || 'Prospects'}</span>
+                </div>
+                {stats.collaborative > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="!text-lg font-bold !text-primary">{stats.collaborative}</span>
+                    <span className="!text-xs !text-muted">{t('collaborative_clients') || 'Collaboratifs'}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          {/* Search + Advanced Filters */}
+          <div className="mb-4">
+            <TableFilters
+              searchPlaceholder={t('search_placeholder_clients')}
+              statusOptions={[]}
+              onSearchChangeAction={setSearchTerm}
+              onStatusChangeAction={setStatusFilter}
+              searchValue={searchTerm}
+              statusValue={statusFilter}
+              advancedFilters={advancedFilters}
+              onAdvancedFilterChange={handleAdvancedFilterChange}
+              showAdvancedToggle={true}
+              viewMode="table"
+              onViewModeChange={() => {}}
+              showViewToggle={false}
+            />
+          </div>
+
+          {/* Table */}
+          <div className="bg-card border border-default rounded-lg overflow-hidden">
+            <DataTable<Client>
+              columns={columns}
+              data={filteredClients}
+              loading={loading}
+              emptyMessage={t('no_client_found')}
+              onRowClick={row => {
+                if (row._isCollaborative && row._collaborativeProjects && row._collaborativeProjects.length > 0) {
+                  const firstProject = row._collaborativeProjects[0];
+                  showGlobalPopup(
+                    `${t('collaborative_client_info') || 'Client partagé via'}: ${firstProject.title}`,
+                    'info'
+                  );
+                  router.push(`/dashboard/projects/${firstProject.slug}`);
+                } else {
+                  router.push(`/dashboard/clients/${generateClientSlug(row.name, row.documentId)}`);
+                }
+              }}
+              selectable={true}
+              onDeleteSelected={handleDeleteMultipleClients}
+              customActions={customActions}
+              getItemId={(client) => client.documentId || ''}
+              getItemName={(client) => client.name}
+              sortable={true}
+              showFavorites={true}
+              favoritesFirst={true}
+              isFavorite={isClientFavorite}
+              onToggleFavorite={handleToggleFavorite}
+              draggable={true}
+              onReorder={handleReorder}
+              viewMode="table"
+              onViewModeChange={() => {}}
+            />
+          </div>
+        </div>
+      </div>
 
       <AddClientModal
         isOpen={showAddModal}
