@@ -20,6 +20,7 @@ import {
 } from '@tabler/icons-react';
 import { useAIFeatures, type AIFeaturesConfig } from '@/app/context/AIFeaturesContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { Switch } from '@/components/ui/switch';
 
 type FeatureCategory = 'productivity' | 'automation' | 'generation';
 
@@ -290,18 +291,14 @@ export default function AIFeaturesSettingsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <h3 className="font-semibold text-primary">{feature.label}</h3>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
+                        <span onClick={(e) => e.stopPropagation()}>
+                          <Switch
                             checked={isEnabled}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              setLocalFeatures({ ...localFeatures, [feature.key]: e.target.checked });
+                            onCheckedChange={(checked) => {
+                              setLocalFeatures({ ...localFeatures, [feature.key]: checked });
                             }}
-                            className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
-                        </label>
+                        </span>
                       </div>
                       <p className="text-sm text-muted mb-2">{feature.description}</p>
                       <span className="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded">

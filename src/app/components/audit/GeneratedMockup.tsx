@@ -79,6 +79,7 @@ export default function GeneratedMockup({
           content: scrollContainerRef.current.firstElementChild as HTMLElement,
           smoothWheel: true,
           wheelMultiplier: 1,
+          syncTouch: false,
         });
 
         const animate = (time: number) => {

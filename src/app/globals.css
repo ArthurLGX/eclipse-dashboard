@@ -113,23 +113,23 @@
   /* Gradients - Dégradés de noir */
   --gradient-sidebar: linear-gradient(180deg, #000000 0%, #0A0A0A 100%);
 
-  /* Landing page - Dark */
-  --landing-bg: #0a0a0a;
-  --landing-surface: #111111;
-  --landing-surface2: #181818;
-  --landing-border: rgba(255,255,255,0.07);
-  --landing-border2: rgba(255,255,255,0.12);
+  /* Landing page - Dark (aligné au thème accent #ff380b) */
+  --landing-bg: #000000;
+  --landing-surface: #0d0d0d;
+  --landing-surface2: #141414;
+  --landing-border: rgba(255,255,255,0.08);
+  --landing-border2: rgba(255,255,255,0.15);
   --landing-text: #f5f5f5;
-  --landing-text-md: #a3a3a3;
-  --landing-text-sm: #666666;
-  --landing-accent: #e8ff47;
-  --landing-accent-hover: #d4eb3a;
-  --landing-accent-text: #0a0a0a;
+  --landing-text-md: #b0b0b0;
+  --landing-text-sm: #888888;
+  --landing-accent: #ff380b;
+  --landing-accent-hover: #ff5c29;
+  --landing-accent-text: #000000;
   --landing-accent2: #6366f1;
-  --landing-green: #4ade80;
-  --landing-nav-scrolled: rgba(10,10,10,0.85);
-  --landing-grid: rgba(255,255,255,0.8);
-  --landing-star: #f59e0b;
+  --landing-green: #7b9603;
+  --landing-nav-scrolled: rgba(0,0,0,0.9);
+  --landing-grid: rgba(255,56,11,0.08);
+  --landing-star: #ff380b;
 
   /* Login page - Dark */
   --login-bg: #0a0a0a;
@@ -348,23 +348,23 @@
   --banner-rose: linear-gradient(to bottom right, #141414, #0a0a0a, #0a0a0a);
   --banner-cyan: linear-gradient(to bottom right, #121212, #0a0a0a, #0a0a0a);
 
-  /* Landing page - Brutalist Dark (same as default dark) */
-  --landing-bg: #0a0a0a;
-  --landing-surface: #111111;
-  --landing-surface2: #181818;
-  --landing-border: rgba(255,255,255,0.07);
-  --landing-border2: rgba(255,255,255,0.12);
+  /* Landing page - Brutalist Dark (aligné au thème) */
+  --landing-bg: #000000;
+  --landing-surface: #0d0d0d;
+  --landing-surface2: #141414;
+  --landing-border: rgba(255,255,255,0.08);
+  --landing-border2: rgba(255,255,255,0.15);
   --landing-text: #f5f5f5;
-  --landing-text-md: #a3a3a3;
-  --landing-text-sm: #666666;
-  --landing-accent: #e8ff47;
-  --landing-accent-hover: #d4eb3a;
-  --landing-accent-text: #0a0a0a;
+  --landing-text-md: #b0b0b0;
+  --landing-text-sm: #888888;
+  --landing-accent: #ff380b;
+  --landing-accent-hover: #ff5c29;
+  --landing-accent-text: #000000;
   --landing-accent2: #6366f1;
-  --landing-green: #4ade80;
-  --landing-nav-scrolled: rgba(10,10,10,0.85);
-  --landing-grid: rgba(255,255,255,0.8);
-  --landing-star: #f59e0b;
+  --landing-green: #7b9603;
+  --landing-nav-scrolled: rgba(0,0,0,0.9);
+  --landing-grid: rgba(255,56,11,0.08);
+  --landing-star: #ff380b;
 
   /* Login - Brutalist Dark (same as default dark) */
   --login-bg: #0a0a0a;
@@ -2566,10 +2566,10 @@ nav button:hover svg, nav a:hover svg {
 /* Dark mode : boutons mieux contrastés */
 :root:not(.light) .landing-btn-ghost { border-color: rgba(255,255,255,0.2); color: #c4c4c4; }
 :root:not(.light) .landing-btn-ghost:hover { border-color: rgba(255,255,255,0.35); color: #f5f5f5; }
-:root:not(.light) .landing-btn-primary { background: #ffffff; color: #0a0a0a; }
-:root:not(.light) .landing-btn-primary:hover { background: #e8e8e8; }
-:root:not(.light) .landing-btn-primary-lg { background: #ffffff; color: #0a0a0a; }
-:root:not(.light) .landing-btn-primary-lg:hover { background: #e8e8e8; }
+:root:not(.light) .landing-btn-primary { background: var(--landing-accent); color: var(--landing-accent-text); }
+:root:not(.light) .landing-btn-primary:hover { background: var(--landing-accent-hover); }
+:root:not(.light) .landing-btn-primary-lg { background: var(--landing-accent); color: var(--landing-accent-text); }
+:root:not(.light) .landing-btn-primary-lg:hover { background: var(--landing-accent-hover); }
 :root:not(.light) .landing-btn-ghost-lg { border-color: rgba(255,255,255,0.25); color: #c4c4c4; }
 :root:not(.light) .landing-btn-ghost-lg:hover { border-color: rgba(255,255,255,0.4); color: #f5f5f5; }
 .landing-btn-primary {

@@ -14,7 +14,7 @@ import {
 } from '@tabler/icons-react';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
-import ToggleButton from '@/app/components/ToggleButton';
+import { Switch } from '@/components/ui/switch';
 
 interface AppSettings {
   general: {
@@ -81,7 +81,8 @@ export default function AdminSettingsPage() {
     onChange,
     label,
     description,
-    variant = 'accent',
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Conservé pour compatibilité des appels Switch
+    variant: _variant,
   }: {
     enabled: boolean;
     onChange: (value: boolean) => void;
@@ -94,10 +95,9 @@ export default function AdminSettingsPage() {
         <p className="font-medium !text-primary">{label}</p>
         {description && <p className="!text-sm !text-muted">{description}</p>}
       </div>
-      <ToggleButton
+      <Switch
         checked={enabled}
-        onChange={onChange}
-        variant={variant}
+        onCheckedChange={onChange}
       />
     </div>
   );

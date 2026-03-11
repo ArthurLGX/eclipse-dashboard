@@ -17,6 +17,7 @@ import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
 import { updateAutomationSettings, createAutomationSettings } from '@/lib/smart-follow-up-api';
 import { useAuth } from '@/app/context/AuthContext';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
+import { Switch } from '@/components/ui/switch';
 import type { AutomationSettings, FilterRule } from '@/types/smart-follow-up';
 
 export default function SmartFollowUpSettingsPage() {
@@ -220,15 +221,7 @@ export default function SmartFollowUpSettingsPage() {
               <h3 className="font-semibold !text-primary">Smart Follow-Up activé</h3>
               <p className="!text-sm !text-muted">Activer ou désactiver le système de relances automatiques</p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={enabled}
-                onChange={(e) => setEnabled(e.target.checked)}
-                className="sr-only peer"
-              />
-              <div className="w-14 h-7 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-accent"></div>
-            </label>
+            <Switch checked={enabled} onCheckedChange={setEnabled} />
           </div>
 
           <div className="flex items-center justify-between p-4 bg-secondary ">
@@ -236,15 +229,7 @@ export default function SmartFollowUpSettingsPage() {
               <h3 className="font-semibold !text-primary">Approbation automatique</h3>
               <p className="!text-sm !text-muted">Les actions à haute confiance (&gt;80%) seront approuvées automatiquement</p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={autoApprove}
-                onChange={(e) => setAutoApprove(e.target.checked)}
-                className="sr-only peer"
-              />
-              <div className="w-14 h-7 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-accent"></div>
-            </label>
+            <Switch checked={autoApprove} onCheckedChange={setAutoApprove} />
           </div>
         </div>
       </div>
@@ -311,15 +296,10 @@ export default function SmartFollowUpSettingsPage() {
             <h3 className="font-semibold text-primary">Activer le filtrage ICP</h3>
             <p className="text-sm text-muted">Ne traiter que les emails correspondant à votre profil client idéal</p>
           </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={icpSettings.enabled}
-              onChange={(e) => setICPSettings({ ...icpSettings, enabled: e.target.checked })}
-              className="sr-only peer"
-            />
-            <div className="w-14 h-7 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-accent"></div>
-          </label>
+          <Switch
+            checked={icpSettings.enabled}
+            onCheckedChange={(checked) => setICPSettings({ ...icpSettings, enabled: checked })}
+          />
         </div>
 
         {icpSettings.enabled && (
@@ -736,18 +716,13 @@ export default function SmartFollowUpSettingsPage() {
               <h3 className="font-semibold !text-primary">Notifications email</h3>
               <p className="!text-sm !text-muted">Recevoir un email pour chaque action</p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={notificationPreferences.email}
-                onChange={(e) => setNotificationPreferences({
-                  ...notificationPreferences,
-                  email: e.target.checked
-                })}
-                className="sr-only peer"
-              />
-              <div className="w-14 h-7 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-accent"></div>
-            </label>
+            <Switch
+              checked={notificationPreferences.email}
+              onCheckedChange={(checked) => setNotificationPreferences({
+                ...notificationPreferences,
+                email: checked
+              })}
+            />
           </div>
 
           <div className="flex items-center justify-between p-4 bg-secondary ">
@@ -755,18 +730,13 @@ export default function SmartFollowUpSettingsPage() {
               <h3 className="font-semibold !text-primary">Notifications dashboard</h3>
               <p className="!text-sm !text-muted">Afficher les notifications dans l&apos;interface</p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={notificationPreferences.dashboard}
-                onChange={(e) => setNotificationPreferences({
-                  ...notificationPreferences,
-                  dashboard: e.target.checked
-                })}
-                className="sr-only peer"
-              />
-              <div className="w-14 h-7 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-accent"></div>
-            </label>
+            <Switch
+              checked={notificationPreferences.dashboard}
+              onCheckedChange={(checked) => setNotificationPreferences({
+                ...notificationPreferences,
+                dashboard: checked
+              })}
+            />
           </div>
 
           <div>

@@ -18,7 +18,9 @@ import {
   IconSearch,
 } from '@tabler/icons-react';
 import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
+import { Switch } from '@/components/ui/switch';
 import QuickEmailReplyModal from '@/app/components/QuickEmailReplyModal';
+import TaskDetailModal from '@/app/components/TaskDetailModal';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import { usePopup } from '@/app/context/PopupContext';
@@ -67,16 +69,40 @@ export default function SmartFollowUpPage() {
     isOpen: false,
     task: null,
   });
+  const [selectedTask, setSelectedTask] = useState<FollowUpTask | null>(null);
+  const [showTaskDetailModal, setShowTaskDetailModal] = useState(false);
   const [taskSearch, setTaskSearch] = useState('');
   const [filterPrio, setFilterPrio] = useState<'Toutes' | 'Urgent' | 'Prioritaire' | 'Normal'>('Toutes');
   const [filterStatut, setFilterStatut] = useState<'Tous' | 'En attente' | 'Annulé' | 'Terminé'>('Tous');
   
-  const minScore = settings?.icp_settings?.min_score_threshold ?? 50;
-  const qualifiedActions = allActions?.filter(a => a.confidence_score >= minScore) ?? [];
-  const nonQualifiedActions = allActions?.filter(a => a.confidence_score < minScore) ?? [];
+  // min_score_threshold est sur 15 points, confidence_score est 0-1 → seuil = threshold/15
+  const minScoreThreshold = (settings?.icp_settings?.min_score_threshold ?? 3) / 15;
+  const priorityKeywords = settings?.priority_keywords ?? [];
+
+  const isLeadFromPriorityDomain = (action: AutomationAction): boolean => {
+    if (priorityKeywords.length === 0) return false;
+    const email = action.client?.email || action.proposed_content?.to?.[0] || '';
+    const domain = email.includes('@') ? email.split('@')[1]?.toLowerCase() : '';
+    const domainBase = domain?.split('.')[0] ?? '';
+    return priorityKeywords.some((kw) => {
+      const k = kw.toLowerCase().trim();
+      return domain?.includes(k) || domainBase?.includes(k) || k.includes(domainBase);
+    });
+  };
+
+  const qualifiedActions = allActions?.filter((a) => {
+    const meetsScore = a.confidence_score >= minScoreThreshold;
+    const fromPriorityDomain = isLeadFromPriorityDomain(a);
+    return meetsScore || fromPriorityDomain;
+  }) ?? [];
+  const nonQualifiedActions = allActions?.filter((a) => {
+    const meetsScore = a.confidence_score >= minScoreThreshold;
+    const fromPriorityDomain = isLeadFromPriorityDomain(a);
+    return !meetsScore && !fromPriorityDomain;
+  }) ?? [];
   const actions = showLowScoreEmails ? allActions : qualifiedActions;
 
-  const handleToggleSystem = async () => {
+  const handleToggleSystem = async (newEnabled?: boolean) => {
     if (!settings?.documentId) {
       showGlobalPopup('⚠️ Veuillez d\'abord configurer le système', 'warning');
       router.push('/dashboard/smart-follow-up/settings');
@@ -85,10 +111,10 @@ export default function SmartFollowUpPage() {
 
     setTogglingPause(true);
     try {
-      const newEnabled = !settings.enabled;
-      await updateAutomationSettings(settings.documentId, { enabled: newEnabled });
+      const enabled = newEnabled ?? !settings.enabled;
+      await updateAutomationSettings(settings.documentId, { enabled });
       mutateSettings();
-      showGlobalPopup(newEnabled ? '✓ Smart Follow-Up activé' : '⏸️ Smart Follow-Up mis en pause', 'success');
+      showGlobalPopup(enabled ? '✓ Smart Follow-Up activé' : '⏸️ Smart Follow-Up mis en pause', 'success');
     } catch (error) {
       console.error('Erreur:', error);
       showGlobalPopup('Erreur lors du changement d\'état', 'error');
@@ -123,7 +149,7 @@ export default function SmartFollowUpPage() {
       let rejected = 0;
       for (const action of nonQualifiedActions) {
         try {
-          await rejectAutomationAction(action.documentId, `Score ICP < ${minScore}`);
+          await rejectAutomationAction(action.documentId, `Score ICP < ${Math.round(minScoreThreshold * 100)}%`);
           rejected++;
         } catch (error) {
           console.error(`Erreur:`, error);
@@ -219,21 +245,27 @@ export default function SmartFollowUpPage() {
       render: (_, action) => {
         const contactType = getContactType(action);
         const ContactIcon = contactType.icon;
-        const isLowScore = action.confidence_score < minScore / 100;
+        const isLowScore = action.confidence_score < minScoreThreshold;
+        const fromPriorityDomain = isLeadFromPriorityDomain(action);
         
         return (
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-              isLowScore ? 'bg-red-100' : 'bg-accent/10'
+              fromPriorityDomain ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10'
             }`}>
-              <ContactIcon className={`w-5 h-5 ${isLowScore ? 'text-red-500' : contactType.color}`} />
+              <ContactIcon className={`w-5 h-5 ${fromPriorityDomain ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="font-medium text-primary truncate">
                   {action.client?.name || 'Contact inconnu'}
                 </p>
-                {isLowScore && (
+                {fromPriorityDomain && (
+                  <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-emerald-100 text-emerald-700">
+                    Priorité domaine
+                  </span>
+                )}
+                {!fromPriorityDomain && isLowScore && (
                   <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-red-100 text-red-600">
                     Non qualifié
                   </span>
@@ -274,17 +306,28 @@ export default function SmartFollowUpPage() {
     {
       key: 'score',
       label: 'Score ICP',
-      render: (_, action) => (
-        <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
-          action.confidence_score >= 0.8 
-            ? 'bg-success-light text-success-text' 
-            : action.confidence_score >= 0.6
-              ? 'bg-warning-light text-warning-text'
-              : 'bg-error-light text-error-text'
-        }`}>
-          {(action.confidence_score * 100).toFixed(0)}%
-        </span>
-      ),
+      render: (_, action) => {
+        const fromPriorityDomain = isLeadFromPriorityDomain(action);
+        const displayScore = fromPriorityDomain ? 1 : action.confidence_score;
+        return (
+          <div className="flex items-center gap-1 flex-wrap">
+            <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
+              fromPriorityDomain || displayScore >= 0.8
+                ? 'bg-success-light text-success-text' 
+                : displayScore >= 0.6
+                  ? 'bg-warning-light text-warning-text'
+                  : 'bg-error-light text-error-text'
+            }`}>
+              {fromPriorityDomain ? '100%' : `${(action.confidence_score * 100).toFixed(0)}%`}
+            </span>
+            {fromPriorityDomain && action.confidence_score < 1 && (
+              <span className="text-[10px] text-muted" title={`Score brut: ${(action.confidence_score * 100).toFixed(0)}%`}>
+                ↗
+              </span>
+            )}
+          </div>
+        );
+      },
     },
     {
       key: 'createdAt',
@@ -335,7 +378,7 @@ export default function SmartFollowUpPage() {
         </div>
       ),
     },
-  ], [minScore, router]);
+  ], [minScoreThreshold, router, priorityKeywords]);
 
   // Colonnes pour les tâches
   const taskColumns: Column<FollowUpTask>[] = useMemo(() => [
@@ -544,14 +587,14 @@ export default function SmartFollowUpPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => router.push('/dashboard/smart-follow-up/settings#icp')}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-white border border-default hover:bg-hover transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-secondary !text-primary border border-default hover:bg-hover transition-colors"
                 >
                   <IconTarget className="w-3.5 h-3.5" />
-                  IA Eclipse
+                  ICP
                 </button>
                 <button
                   onClick={() => setShowRulesModal(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-white border border-default hover:bg-hover transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-secondary !text-primary border border-default hover:bg-hover transition-colors"
                 >
                   <IconFilter className="w-3.5 h-3.5" />
                   Filtres
@@ -560,7 +603,7 @@ export default function SmartFollowUpPage() {
                   <button
                     onClick={handleCleanNonICP}
                     disabled={cleaningNonICP}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-red-50 border border-red-200 !text-red-600 hover:bg-red-100 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-error/15 border border-error/30 !text-error hover:bg-error/25 transition-colors disabled:opacity-50"
                     title={`Nettoyer ${nonQualifiedActions.length} emails non qualifiés`}
                   >
                     <IconTrash className="w-3.5 h-3.5" />
@@ -569,24 +612,17 @@ export default function SmartFollowUpPage() {
                 )}
                 <button
                   onClick={() => router.push('/dashboard/smart-follow-up/settings')}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-semibold bg-primary !text-white hover:opacity-90 transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-semibold bg-accent !text-accent-text hover:opacity-90 transition-colors"
                 >
                   <IconSettings className="w-3.5 h-3.5" />
                   Paramètres
                 </button>
-                <button
-                  type="button"
-                  onClick={handleToggleSystem}
+                <Switch
+                  checked={!!isSystemEnabled}
+                  onCheckedChange={(checked) => handleToggleSystem(checked)}
                   disabled={togglingPause}
-                  className={`w-9 h-5 rounded-full relative transition-colors flex-shrink-0 disabled:opacity-50 ${
-                    isSystemEnabled ? 'bg-primary' : 'bg-muted'
-                  }`}
                   title={isSystemEnabled ? 'Mettre en pause' : 'Activer'}
-                >
-                  <span className={`absolute top-1 left-1 w-3.5 h-3.5 bg-white rounded-full transition-transform ${
-                    isSystemEnabled ? 'translate-x-4' : ''
-                  }`} />
-                </button>
+                />
               </div>
             </div>
 
@@ -595,12 +631,12 @@ export default function SmartFollowUpPage() {
               <button
                 onClick={() => setActiveTab('actions')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
-                  activeTab === 'actions' ? 'bg-card !text-primary shadow-sm' : '!text-muted hover:!text-primary'
+                  activeTab === 'actions' ? 'bg-card !text-primary shadow-sm border border-default' : '!text-muted hover:!text-primary'
                 }`}
               >
                 Leads
                 <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                  activeTab === 'actions' ? 'bg-primary !text-white' : 'bg-muted !text-muted'
+                  activeTab === 'actions' ? 'bg-emerald-600 !text-white' : 'bg-muted !text-muted'
                 }`}>
                   {qualifiedActions.length}
                 </span>
@@ -608,12 +644,12 @@ export default function SmartFollowUpPage() {
               <button
                 onClick={() => setActiveTab('tasks')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
-                  activeTab === 'tasks' ? 'bg-card !text-primary shadow-sm' : '!text-muted hover:!text-primary'
+                  activeTab === 'tasks' ? 'bg-card !text-primary shadow-sm border border-default' : '!text-muted hover:!text-primary'
                 }`}
               >
                 Tâches
                 <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                  activeTab === 'tasks' ? 'bg-primary !text-white' : 'bg-muted !text-muted'
+                  activeTab === 'tasks' ? 'bg-emerald-600 !text-white' : 'bg-muted !text-muted'
                 }`}>
                   {tasks?.length || 0}
                 </span>
@@ -643,7 +679,7 @@ export default function SmartFollowUpPage() {
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between mb-4">
               <div className="flex items-center gap-2 !text-sm !text-blue-600">
                 <IconFilter className="w-4 h-4" />
-                <span>{nonQualifiedActions.length} emails filtrés (score ICP &lt; {minScore})</span>
+                <span>{nonQualifiedActions.length} emails filtrés (score ICP &lt; {Math.round(minScoreThreshold * 100)}%)</span>
               </div>
               <button onClick={() => setShowLowScoreEmails(true)} className="!text-xs !text-blue-600 hover:underline font-medium">
                 Afficher
@@ -741,6 +777,10 @@ export default function SmartFollowUpPage() {
                   data={filteredTasks}
                   emptyMessage="Aucune tâche trouvée"
                   selectable={true}
+                  onRowClick={(row) => {
+                    setSelectedTask(row);
+                    setShowTaskDetailModal(true);
+                  }}
                   onDeleteSelected={handleDeleteMultipleTasks}
                   customActions={customTaskActions}
                   getItemId={(item) => item.documentId || ''}
@@ -797,6 +837,15 @@ export default function SmartFollowUpPage() {
         title="Supprimer la tâche"
         itemName={deleteModal.task?.context?.original_subject || 'cette tâche'}
         itemType="tâche"
+      />
+
+      <TaskDetailModal
+        isOpen={showTaskDetailModal}
+        onClose={() => {
+          setShowTaskDetailModal(false);
+          setSelectedTask(null);
+        }}
+        task={selectedTask}
       />
     </>
   );

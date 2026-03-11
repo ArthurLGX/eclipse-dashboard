@@ -12,7 +12,7 @@ import {
   IconLayoutGrid,
   IconLayoutGridAdd
 } from '@tabler/icons-react';
-import ToggleButton from './ToggleButton';
+import { Switch } from '@/components/ui/switch';
 import type { ViewMode } from './DataTable';
 
 export interface FilterOption {
@@ -354,14 +354,18 @@ export default function TableFilters({
                 {toggleFilters.length > 0 && (
                   <div className="flex flex-wrap items-center gap-4 lg:gap-6">
                     {toggleFilters.map(filter => (
-                      <ToggleButton
+                      <label
                         key={filter.id}
-                        checked={!!filter.value}
-                        onChange={(value) => onAdvancedFilterChange?.(filter.id, value)}
-                        label={filter.label}
-                        labelPosition="left"
-                        size="md"
-                      />
+                        className="inline-flex items-center gap-2 cursor-pointer"
+                      >
+                        <span className="!text-sm font-medium !text-secondary whitespace-nowrap">
+                          {filter.label}
+                        </span>
+                        <Switch
+                          checked={!!filter.value}
+                          onCheckedChange={(value) => onAdvancedFilterChange?.(filter.id, value)}
+                        />
+                      </label>
                     ))}
                   </div>
                 )}

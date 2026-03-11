@@ -22,6 +22,7 @@ export function LenisProvider({ children }: { children: ReactNode }) {
     const lenis = new Lenis({
       duration: 1,
       smoothWheel: true,
+      syncTouch: false, // Évite l'erreur "Unable to preventDefault" sur les écrans tactiles
     });
 
     lenisRef.current = lenis;

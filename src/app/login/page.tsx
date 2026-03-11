@@ -112,8 +112,8 @@ function LoginContent() {
   }, [authenticated, hasHydrated, user, router]);
 
   const toggleMode = () => {
-    const newMode = !isLogin;
-    router.push(`/login?type=${newMode ? 'register' : 'login'}`);
+    const targetType = isLogin ? 'register' : 'login';
+    router.push(`/login?type=${targetType}`);
     setError('');
     setUsername('');
     setPassword('');

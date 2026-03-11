@@ -14,7 +14,7 @@ import {
   IconWorld,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import ToggleButton from '@/app/components/ToggleButton';
+import { Switch } from '@/components/ui/switch';
 
 interface HealthStatus {
   status: 'ok' | 'error' | 'loading';
@@ -150,13 +150,15 @@ export default function AdminServerPage() {
         </div>
         <div className="flex items-center gap-4">
           {/* Auto-refresh toggle */}
-          <ToggleButton
-            checked={autoRefresh}
-            onChange={setAutoRefresh}
-            label={t('auto_refresh') || 'Auto-refresh'}
-            labelPosition="left"
-            variant="success"
-          />
+          <label className="inline-flex items-center gap-2 cursor-pointer">
+            <span className="!text-sm font-medium !text-secondary">
+              {t('auto_refresh') || 'Auto-refresh'}
+            </span>
+            <Switch
+              checked={autoRefresh}
+              onCheckedChange={setAutoRefresh}
+            />
+          </label>
 
           {autoRefresh && (
             <select

@@ -6,7 +6,9 @@ const useLenis = () => {
         // Initialiser Lenis
         const lenis = new Lenis({
             duration: 1,  // Vitesse du défilement
-            smoothWheel: true});
+            smoothWheel: true,
+            syncTouch: false,  // Évite l'erreur "Unable to preventDefault" sur les écrans tactiles
+        });
 
         // Démarrer l'animation
         function raf(time: number) {

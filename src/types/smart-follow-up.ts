@@ -128,6 +128,10 @@ export interface TaskAIAnalysis {
   entities?: string[];
   language?: string;
   confidence?: number;
+  /** Raisonnement de l'IA sur ce lead/tâche */
+  reasoning?: string;
+  /** Suggestion d'action de l'IA */
+  suggestion?: string;
 }
 
 export interface FollowUpTask {
