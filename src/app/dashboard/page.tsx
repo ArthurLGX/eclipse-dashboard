@@ -319,7 +319,7 @@ export default function DashboardPage() {
                     return (
                       <div key={i} className="flex-1 flex flex-col items-center gap-1">
                         <div 
-                          className={`w-full rounded-t transition-all ${isCurrentMonth ? 'bg-primary' : 'bg-muted'}`}
+                          className={`w-full rounded-t transition-all bg-primary`}
                           style={{ height: `${Math.max(heightPercent * 0.7, month.value > 0 ? 4 : 2)}px` }}
                         />
                         <span className="!text-[10px] !text-muted">{month.month}</span>
