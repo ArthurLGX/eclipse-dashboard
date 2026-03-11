@@ -5,10 +5,9 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { fetchNewslettersUser } from '@/lib/api';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import { useAuth } from '@/app/context/AuthContext';
-import { Column } from '@/app/components/DataTable';
-import { IconPencil, IconTrash, IconMail, IconSend } from '@tabler/icons-react';
-import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
-import { FilterOption } from '@/app/components/TableFilters';
+import DataTable, { Column } from '@/app/components/DataTable';
+import TableFilters, { FilterOption } from '@/app/components/TableFilters';
+import { IconPencil, IconTrash, IconPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 interface Newsletter {
@@ -47,7 +46,11 @@ export default function NewslettersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  const statusOptions: FilterOption[] = [{ label: t('sent'), value: 'sent' }];
+  const statusOptions: FilterOption[] = [
+    { label: t('sent') || 'Envoyée', value: 'sent', count: newsletters.filter(n => n.n_status === 'sent').length },
+    { label: t('draft') || 'Brouillon', value: 'draft', count: newsletters.filter(n => n.n_status === 'draft').length },
+    { label: t('scheduled') || 'Planifiée', value: 'scheduled', count: newsletters.filter(n => n.n_status === 'scheduled').length },
+  ];
 
   const filteredNewsletters = newsletters.filter(newsletter => {
     return (
@@ -93,25 +96,33 @@ export default function NewslettersPage() {
       label: t('status'),
       render: (value: unknown) => {
         const v = value as string;
+        const statusConfig = 
+          v === 'sent' 
+            ? { bg: 'bg-emerald-100', text: '!text-emerald-600', label: t('sent') || 'Envoyée' }
+            : v === 'draft'
+            ? { bg: 'bg-muted', text: '!text-muted', label: t('draft') || 'Brouillon' }
+            : v === 'scheduled'
+            ? { bg: 'bg-blue-100', text: '!text-blue-600', label: t('scheduled') || 'Planifiée' }
+            : { bg: 'bg-muted', text: '!text-muted', label: v };
+        
         return (
-          <p
-            className={`${
-              v === 'sent'
-                ? '!text-emerald-400 bg-emerald-400/20 px-2 py-1 rounded-full lg:w-fit w-full !text-sm'
-                : '!text-orange-400 bg-orange-400/20 px-2 py-1 rounded-full lg:w-fit w-full !text-sm'
-            } !text-sm`}
-          >
-            {v === 'sent' ? t('sent') : t('draft')}
-          </p>
+          <span className={`${statusConfig.bg} ${statusConfig.text} px-2 py-1 rounded-md !text-xs font-medium inline-block whitespace-nowrap`}>
+            {statusConfig.label}
+          </span>
         );
       },
     },
     {
       key: 'createdAt',
-      label: t('created_at'),
-      render: (value: unknown) => (
-        <p className="!text-primary">{value as string}</p>
-      ),
+      label: t('created_at') || 'Créée le',
+      render: (value: unknown) => {
+        const date = new Date(value as string);
+        return (
+          <p className="!text-sm !text-secondary">
+            {date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+          </p>
+        );
+      },
     },
     {
       key: 'actions',
@@ -125,42 +136,86 @@ export default function NewslettersPage() {
     },
   ];
 
+  // Stats
+  const sentCount = newsletters.filter(n => n.n_status === 'sent').length;
+  const draftCount = newsletters.filter(n => n.n_status === 'draft').length;
+  const scheduledCount = newsletters.filter(n => n.n_status === 'scheduled').length;
+
   return (
     <ProtectedRoute>
-      <DashboardPageTemplate<Newsletter>
-        title={t('newsletters')}
-        onRowClick={row => router.push(`/dashboard/newsletters/${row.documentId}`)}
-        actionButtonLabel={t('add_newsletter')}
-        onActionButtonClick={() => router.push('/dashboard/newsletters/compose')}
-        stats={[
-          {
-            label: t('total_newsletters'),
-            value: newsletters.length,
-            colorClass: '!text-pink-400',
-            icon: <IconMail className="w-6 h-6 !text-pink-400" />,
-          },
-          {
-            label: t('sent'),
-            value: newsletters.filter(
-              newsletter => newsletter.n_status === 'sent'
-            ).length,
-            colorClass: '!text-emerald-400',
-            icon: <IconSend className="w-6 h-6 !text-emerald-400" />,
-          },
-        ]}
-        loading={loading}
-        filterOptions={statusOptions}
-        searchPlaceholder={
-          t('search_placeholder_newsletters') || 'Rechercher...'
-        }
-        searchValue={searchTerm}
-        onSearchChange={setSearchTerm}
-        statusValue={statusFilter}
-        onStatusChange={setStatusFilter}
-        columns={columns as unknown as Column<Newsletter>[]}
-        data={filteredNewsletters}
-        emptyMessage={t('no_newsletters_found')}
-      />
+      <div className="min-h-screen">
+        {/* Header épuré */}
+        <div className="bg-card border-b border-default">
+          <div className="max-w-7xl mx-auto px-8 py-5">
+            {/* Breadcrumb + Actions */}
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <div className="!text-xs !text-muted mb-1">
+                  <span>{t('dashboard') || 'Tableau de Bord'}</span>
+                  <span className="mx-1.5">→</span>
+                  <span>{t('newsletters') || 'Newsletters'}</span>
+                </div>
+                <h1 className="!text-[22px] font-bold tracking-tight !text-primary">
+                  {t('newsletters') || 'Newsletters'}
+                </h1>
+              </div>
+              <button
+                onClick={() => router.push('/dashboard/newsletters/compose')}
+                className="flex items-center gap-2 bg-primary !text-white border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
+              >
+                <IconPlus className="w-4 h-4" />
+                {t('add_newsletter') || 'Nouvelle newsletter'}
+              </button>
+            </div>
+
+            {/* Stats inline */}
+            <div className="flex gap-3 flex-wrap">
+              <div className="card flex-1 min-w-[140px] p-3.5">
+                <div className="!text-xs !text-muted mb-1">{t('total_newsletters') || 'Total'}</div>
+                <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : newsletters.length}</div>
+              </div>
+              <div className="card flex-1 min-w-[140px] p-3.5">
+                <div className="!text-xs !text-muted mb-1">{t('sent') || 'Envoyées'}</div>
+                <div className="!text-[22px] font-bold tracking-tight text-emerald-500">{loading ? '...' : sentCount}</div>
+              </div>
+              <div className="card flex-1 min-w-[140px] p-3.5">
+                <div className="!text-xs !text-muted mb-1">{t('draft') || 'Brouillons'}</div>
+                <div className="!text-[22px] font-bold tracking-tight !text-secondary">{loading ? '...' : draftCount}</div>
+              </div>
+              <div className="card flex-1 min-w-[140px] p-3.5">
+                <div className="!text-xs !text-muted mb-1">{t('scheduled') || 'Planifiées'}</div>
+                <div className="!text-[22px] font-bold tracking-tight text-blue-500">{loading ? '...' : scheduledCount}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          {/* Filtres */}
+          <div className="mb-4">
+            <TableFilters
+              searchValue={searchTerm}
+              onSearchChangeAction={setSearchTerm}
+              searchPlaceholder={t('search_placeholder_newsletters') || 'Rechercher une newsletter...'}
+              statusOptions={statusOptions}
+              statusValue={statusFilter}
+              onStatusChangeAction={setStatusFilter}
+            />
+          </div>
+
+          {/* Tableau */}
+          <div className="bg-card border border-default rounded-lg overflow-hidden">
+            <DataTable<Newsletter>
+              columns={columns}
+              data={filteredNewsletters}
+              emptyMessage={t('no_newsletters_found') || 'Aucune newsletter trouvée'}
+              onRowClick={(row) => router.push(`/dashboard/newsletters/${row.documentId}`)}
+              loading={loading}
+            />
+          </div>
+        </div>
+      </div>
     </ProtectedRoute>
   );
 }

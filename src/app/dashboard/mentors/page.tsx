@@ -2,12 +2,12 @@
 
 import React, { useState, useMemo } from 'react';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
-import { Column } from '@/app/components/DataTable';
+import DataTable, { Column } from '@/app/components/DataTable';
+import TableFilters from '@/app/components/TableFilters';
 import TableActions from '@/app/components/TableActions';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
-import { IconBrain, IconUserStar } from '@tabler/icons-react';
+import { IconPlus, IconUserCircle } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useMentors } from '@/hooks/useApi';
 import type { Mentor } from '@/types';
@@ -99,36 +99,98 @@ export default function MentorsPage() {
 
   return (
     <ProtectedRoute>
-      <DashboardPageTemplate<Mentor>
-        title={t('mentors')}
-        onRowClick={row => router.push(`/dashboard/mentors/${row.id}`)}
-        actionButtonLabel={t('add_mentor')}
-        onActionButtonClick={() => {}}
-        stats={[
-          {
-            label: t('total_mentors'),
-            value: mentors.length,
-            colorClass: '!text-indigo-400',
-            icon: <IconBrain className="w-6 h-6 !text-indigo-400" />,
-          },
-          {
-            label: t('available'),
-            value: mentors.length,
-            colorClass: '!text-emerald-400',
-            icon: <IconUserStar className="w-6 h-6 !text-emerald-400" />,
-          },
-        ]}
-        loading={loading}
-        filterOptions={[]}
-        searchPlaceholder={t('search_placeholder_mentors') || 'Rechercher...'}
-        searchValue={searchTerm}
-        onSearchChange={setSearchTerm}
-        statusValue={''}
-        onStatusChange={() => {}}
-        columns={columns}
-        data={filteredMentors}
-        emptyMessage={t('no_mentor_found')}
-      />
+      <div className="min-h-screen">
+        {/* Header épuré */}
+        <div className="bg-card border-b border-default">
+          <div className="max-w-7xl mx-auto px-8 py-5">
+            {/* Breadcrumb + Actions */}
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <div className="!text-xs !text-muted mb-1">
+                  <span>{t('dashboard') || 'Tableau de Bord'}</span>
+                  <span className="mx-1.5">→</span>
+                  <span>{t('mentors') || 'Mentors'}</span>
+                </div>
+                <h1 className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
+                  {t('mentors') || 'Mentors'}
+                </h1>
+                <p className="!text-sm !text-secondary">
+                  {t('manage_mentors_desc') || 'Gérez vos collaborateurs et mentors de projet'}
+                </p>
+              </div>
+              <button
+                onClick={() => {}}
+                className="flex items-center gap-2 bg-primary !text-white border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
+              >
+                <IconPlus className="w-4 h-4" />
+                {t('add_mentor') || 'Ajouter un mentor'}
+              </button>
+            </div>
+
+            {/* Stats inline */}
+            <div className="flex gap-3 flex-wrap">
+              <div className="card min-w-[160px] p-3.5">
+                <div className="!text-xs !text-muted mb-1">{t('total_mentors') || 'Total mentors'}</div>
+                <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : mentors.length}</div>
+              </div>
+              <div className="card min-w-[160px] p-3.5">
+                <div className="!text-xs !text-muted mb-1">{t('available') || 'Disponibles'}</div>
+                <div className="!text-[22px] font-bold tracking-tight text-emerald-500">{loading ? '...' : mentors.length}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          {mentors.length === 0 && !loading ? (
+            /* Empty state actionnable */
+            <div className="card p-16 text-center">
+              <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
+                <IconUserCircle className="w-7 h-7 !text-muted" />
+              </div>
+              <div className="!text-base font-semibold !text-primary mb-1.5">
+                {t('no_mentor_yet') || 'Aucun mentor pour l\'instant'}
+              </div>
+              <div className="!text-sm !text-muted mb-5 max-w-xs mx-auto">
+                {t('invite_mentor_desc') || 'Invitez des collaborateurs à rejoindre vos projets en tant que mentors.'}
+              </div>
+              <button
+                onClick={() => {}}
+                className="flex items-center gap-2 bg-primary !text-white border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all mx-auto"
+              >
+                <IconPlus className="w-4 h-4" />
+                {t('add_first_mentor') || 'Ajouter le premier mentor'}
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Filtres */}
+              <div className="mb-4">
+                <TableFilters
+                  searchValue={searchTerm}
+                  onSearchChangeAction={setSearchTerm}
+                  searchPlaceholder={t('search_placeholder_mentors') || 'Rechercher par nom ou email...'}
+                  statusOptions={[]}
+                  statusValue={''}
+                  onStatusChangeAction={() => {}}
+                />
+              </div>
+
+              {/* Tableau */}
+              <div className="bg-card border border-default rounded-lg overflow-hidden">
+                <DataTable<Mentor>
+                  columns={columns}
+                  data={filteredMentors}
+                  emptyMessage={t('no_mentor_found') || 'Aucun mentor trouvé'}
+                  onRowClick={(row) => router.push(`/dashboard/mentors/${row.id}`)}
+                  loading={loading}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </ProtectedRoute>
   );
 }

@@ -217,40 +217,47 @@ export default function SettingsPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="w-full max-w-7xl mx-auto pb-16"
+      className="min-h-screen"
     >
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="!text-2xl font-semibold !text-primary">
-          {t('settings') || 'Paramètres'}
-        </h1>
-        <p className="!text-sm !text-muted mt-1">
-          {t('settings_description') || 'Gérez vos préférences et personnalisez votre expérience'}
-        </p>
+      {/* Header épuré */}
+      <div className="bg-card border-b border-default">
+        <div className="max-w-5xl mx-auto px-8 py-5">
+          <div className="mb-1">
+            <span className="!text-xs !text-muted">{t('dashboard') || 'Tableau de Bord'}</span>
+            <span className="mx-1.5 !text-muted">→</span>
+            <span className="!text-xs !text-muted">{t('settings') || 'Paramètres'}</span>
+          </div>
+          <h1 className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
+            {t('settings') || 'Paramètres'}
+          </h1>
+          <p className="!text-sm !text-secondary">
+            {t('settings_description') || 'Personnalisez votre expérience'}
+          </p>
+        </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap items-center gap-2 mb-6 pb-4 border-b border-default">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`
-              flex items-center gap-2 px-3 py-2  !text-sm font-medium transition-all
-              ${activeTab === tab.id
-                ? 'bg-accent !text-white'
-                : 'bg-muted !text-primary hover:!text-primary hover:bg-hover'
-              }
-            `}
-          >
-            {tab.icon}
-            <span className="hidden sm:inline">{tab.label}</span>
-          </button>
-        ))}
-      </div>
+      <div className="max-w-5xl mx-auto px-8 py-6">
+        {/* Tabs pills */}
+        <div className="flex flex-wrap gap-0.5 bg-muted rounded-lg p-0.5 mb-6 w-fit">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`
+                px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all whitespace-nowrap
+                ${activeTab === tab.id
+                  ? 'bg-card !text-primary shadow-sm'
+                  : '!text-muted hover:!text-primary'
+                }
+              `}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-      {/* Content */}
-      <div className="space-y-6">
+        {/* Content */}
+        <div className="card p-1 pt-6 px-6 space-y-6">
         {/* APPARENCE */}
         {activeTab === 'appearance' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
@@ -984,10 +991,11 @@ export default function SettingsPage() {
           </motion.div>
         )}
 
-        {/* Footer info */}
-        <div className="pt-4 border-t border-default !text-xs !text-muted flex items-center gap-2">
-          <span className="!text-info">💡</span>
-          {t('settings_saved_locally') || 'Vos préférences sont enregistrées automatiquement.'}
+          {/* Footer info */}
+          <div className="pt-4 border-t border-default !text-xs !text-muted flex items-center gap-2">
+            <span className="!text-info">💡</span>
+            {t('settings_saved_locally') || 'Vos préférences sont enregistrées automatiquement.'}
+          </div>
         </div>
       </div>
     </motion.div>
