@@ -36,13 +36,13 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="landing-page min-h-screen">
-      <div className="landing-scroll-progress" style={{ width: `${scrollProgress}%` }} />
+    <div className="landing-page min-h-screen ">
+      <div className="landing-scroll-progress " style={{ width: `${scrollProgress}%` }} />
 
       <nav className={`landing-nav ${navScrolled ? 'scrolled' : ''}`} id="landing-nav">
         <Link href="/" className="landing-nav-logo">
           <div className="landing-nav-logo-mark">ES</div>
-          <span>Eclipse Studio</span>
+          <span>Eclipse Studio Dashboard</span>
         </Link>
         <ul className="landing-nav-links">
           <li><a href="#features">Fonctionnalités</a></li>
@@ -64,7 +64,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <section className="landing-hero">
+      <section className="landing-hero ">
         <div className="landing-hero-bg" />
         <div className="landing-hero-grid" />
 
@@ -99,7 +99,7 @@ export default function LandingPage() {
           </div>
           <div className="landing-proof-text">
             <div className="landing-stars">★★★★★</div>
-            <strong>124 indépendants</strong> font confiance à Eclipse Studio
+            <strong>124 indépendants</strong> font confiance à Eclipse Studio Dashboard
           </div>
         </div>
 
@@ -269,7 +269,7 @@ export default function LandingPage() {
       </section>
 
       <section className="landing-section" id="pricing">
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center">
           <div className="landing-section-label justify-center landing-reveal" ><span>●</span> Tarifs</div>
           <h2 className="landing-section-title landing-reveal max-w-full text-center" >Simple. <em>Transparent.</em> Sans surprise.</h2>
           <p className="landing-section-sub landing-reveal text-center max-w-md mx-auto mb-0" >Commencez gratuitement. Passez au plan suivant quand vous en avez besoin.</p>
@@ -311,12 +311,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="landing-section pt-0" id="testimonials">
+      <section className="landing-section flex flex-col items-center pt-0" id="testimonials">
         <div className="landing-section-label landing-reveal" ><span>●</span> Témoignages</div>
         <h2 className="landing-section-title landing-reveal" >Ils en parlent <em>mieux</em> que nous.</h2>
         <div className="landing-testimonials-grid landing-reveal" >
           {[
-            { stars: '★★★★★', text: "Eclipse Studio m'a permis de sortir de l'enfer des spreadsheets. Mes devis partent en 30 secondes et je ne loupe plus aucune relance client.", name: 'Jérémie Bole Du Chaumont', role: 'Développeur indépendant', avatar: 'JB' },
+            { stars: '★★★★★', text: "Eclipse Studio Dashboard m'a permis de sortir de l'enfer des spreadsheets. Mes devis partent en 30 secondes et je ne loupe plus aucune relance client.", name: 'Jérémie Bole Du Chaumont', role: 'Développeur indépendant', avatar: 'JB' },
             { stars: '★★★★★', text: 'Le Smart Follow-Up IA est bluffant. Il analyse mes emails entrants et me dit exactement quoi relancer et quand. J\'ai gagné 2 deals grâce à ça.', name: 'Arthur Le Goux', role: 'Eclipse Studio Development', avatar: 'EC', avatarBg: '#1a2e1a', avatarColor: '#86efac' },
             { stars: '★★★★★', text: "Interface propre, intuitive, et ça va vite. C'est rare pour un outil de gestion. Plus besoin de jongler entre 4 apps différentes.", name: 'Nicolas Barbieri', role: 'Barbieri Économie', avatar: 'NB', avatarBg: '#1e1e3f', avatarColor: '#c4b5fd' },
           ].map((t) => (
@@ -336,7 +336,7 @@ export default function LandingPage() {
       </section>
 
       <section className="landing-section pt-0" id="faq">
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center  ">
           <div className="landing-section-label justify-center landing-reveal" ><span>●</span> FAQ</div>
           <h2 className="landing-section-title landing-reveal max-w-full text-center" >Questions <em>fréquentes</em></h2>
         </div>
@@ -345,7 +345,7 @@ export default function LandingPage() {
             { q: "Puis-je essayer avant de payer ?", a: "Oui, le plan Starter est gratuit pour toujours. Le plan Pro inclut un essai gratuit de 14 jours sans carte bancaire requise." },
             { q: "Comment fonctionne le Smart Follow-Up IA ?", a: "En connectant votre boîte email (Gmail, Outlook), l'IA analyse chaque email entrant, lui attribue un score ICP, identifie le type de contact et planifie automatiquement la meilleure action de suivi." },
             { q: "Mes données sont-elles sécurisées ?", a: "Vos données sont hébergées en Europe (France), chiffrées en transit et au repos. Nous ne vendons ni ne partageons aucune donnée avec des tiers." },
-            { q: "Puis-je importer mes données existantes ?", a: "Oui, Eclipse Studio supporte l'import CSV pour les contacts, et des intégrations directes avec Google Contacts, Notion, et d'autres outils sont en cours." },
+            { q: "Puis-je importer mes données existantes ?", a: "Oui, Eclipse Studio Dashboard supporte l'import CSV pour les contacts, et des intégrations directes avec Google Contacts, Notion, et d'autres outils sont en cours." },
             { q: "Y a-t-il une application mobile ?", a: "L'interface web est entièrement responsive et fonctionne parfaitement sur mobile. Une application native iOS/Android est en cours de développement." },
           ].map((faq, i) => (
             <div key={i} className={`landing-faq-item ${openFaq === i ? 'open' : ''}`} onClick={() => setOpenFaq(openFaq === i ? null : i)}>
@@ -374,7 +374,7 @@ export default function LandingPage() {
         <div>
           <div className="landing-footer-logo">
             <div className="landing-footer-logo-mark">ES</div>
-            <span className="font-bold text-[13px] tracking-tight" style={{ color: 'var(--landing-text)' }}>Eclipse Studio</span>
+            <span className="font-bold text-[13px] tracking-tight" style={{ color: 'var(--landing-text)' }}>Eclipse Studio Dashboard</span>
           </div>
           <div className="landing-footer-tagline">Le dashboard des indépendants qui avancent vite.</div>
         </div>
@@ -410,7 +410,7 @@ export default function LandingPage() {
         </div>
       </footer>
       <div className="landing-footer-bottom">
-        <span>© 2026 Eclipse Studio. Tous droits réservés.</span>
+        <span>© 2026 Eclipse Studio Dashboard. Tous droits réservés.</span>
         <span className="font-mono text-[11px]" style={{ color: 'var(--landing-text-sm)' }}>Made in France 🇫🇷</span>
       </div>
     </div>

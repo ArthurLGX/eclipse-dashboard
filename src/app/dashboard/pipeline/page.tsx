@@ -599,6 +599,24 @@ export default function PipelinePage() {
     return calculatePipelineKPIs(allContacts, factures);
   }, [allContacts, facturesData]);
 
+  // Pipeline visuel : comptages par étape (Nouveau → Contacté → Qualifié → Devis → Gagné)
+  const pipelineVisualStages = useMemo(() => {
+    const stages = [
+      { id: 'nouveau', statuses: ['new'], label: t('pipeline_new') || 'Nouveau', color: '#6366f1' },
+      { id: 'contacte', statuses: ['contacted', 'form_sent'], label: t('pipeline_contacted') || 'Contacté', color: '#f59e0b' },
+      { id: 'qualifie', statuses: ['qualified'], label: t('pipeline_qualified') || 'Qualifié', color: '#3b82f6' },
+      { id: 'devis', statuses: ['quote_sent', 'quote_accepted', 'negotiation'], label: t('pipeline_quote_sent') || 'Devis', color: '#8b5cf6' },
+      { id: 'gagne', statuses: ['won', 'in_progress', 'delivered'], label: t('pipeline_won') || 'Gagné', color: '#10b981' },
+    ];
+    const counts = stages.map((s) => ({
+      ...s,
+      count: pipelineContacts.filter((c) => s.statuses.includes(c.pipeline_status || 'new')).length,
+    }));
+    const maxCount = Math.max(1, ...counts.map((c) => c.count));
+    const maxBarHeight = 80;
+    return counts.map((c) => ({ ...c, heightPx: Math.max(8, (c.count / maxCount) * maxBarHeight) }));
+  }, [pipelineContacts, t]);
+
   // Configuration du graphique d'évolution
   const chartData = useMemo(() => ({
     labels: kpis.monthlyPotential.map(m => m.month),
@@ -1007,7 +1025,7 @@ export default function PipelinePage() {
                 <IconCheck size={16} />
                 <span className="!text-xs font-medium">{t('kpi_won_revenue') || 'CA Gagné'}</span>
               </div>
-              <p className="!text-xl font-bold !text-success-text -text">
+              <p className="!text-xl font-bold !text-success-text">
                 {formatCurrency(kpis.wonValue)}
               </p>
               <p className="!text-xs !text-muted mt-1">
@@ -1063,12 +1081,38 @@ export default function PipelinePage() {
                 <IconCheck size={16} />
                 <span className="!text-xs font-medium">{t('won') || 'Gagnés'}</span>
               </div>
-              <p className="!text-xl font-bold !text-success-text -text">
+              <p className="!text-xl font-bold !text-success-text">
                 {kpis.wonCount}
               </p>
               <p className="!text-xs !text-muted mt-1">
                 {kpis.lostCount} {t('lost') || 'perdus'}
               </p>
+            </div>
+          </div>
+
+          {/* Pipeline visuel */}
+          <div className="bg-card border border-default  p-4">
+            <h3 className="!text-sm font-medium !text-primary mb-4 flex items-center gap-2">
+              <IconChartBar size={18} />
+              {t('pipeline_visual') || 'Pipeline visuel'}
+            </h3>
+            <div className="flex gap-4 sm:gap-6 items-end" style={{ minHeight: 120 }}>
+              {pipelineVisualStages.map((s) => (
+                <div key={s.id} className="flex-1 flex flex-col items-center gap-2">
+                  <div
+                    className="w-full rounded-t border-t-2 transition-all"
+                    style={{
+                      height: s.heightPx,
+                      background: `${s.color}20`,
+                      borderColor: s.color,
+                    }}
+                  />
+                  <div className="!text-center">
+                    <div className="!text-[10px] uppercase tracking-wider !text-muted font-medium">{s.label}</div>
+                    <div className="!text-sm font-bold !text-primary">{s.count}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

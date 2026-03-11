@@ -12,24 +12,28 @@ export default function Home() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (hasHydrated && user) {
+      if (!hasHydrated) return;
+      if (user) {
         router.push('/dashboard');
+      } else {
+        // Non connecté : afficher la landing (pas de redirection vers /login)
+        setIsChecking(false);
       }
-      setIsChecking(false);
     }, 100);
     return () => clearTimeout(timer);
   }, [user, hasHydrated, router]);
 
-  if (isChecking || (hasHydrated && user)) {
+  if (!hasHydrated || isChecking) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-page w-full">
+      <div className="min-h-screen flex items-center justify-center w-full" style={{ background: 'var(--landing-bg)' }}>
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-          <p className="!text-muted">Chargement...</p>
+          <div className="w-12 h-12 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--color-accent)', borderTopColor: 'transparent' }} />
+          <p style={{ color: 'var(--landing-text-md)' }}>Chargement...</p>
         </div>
       </div>
     );
   }
 
+  if (user) return null;
   return <LandingPage />;
 }

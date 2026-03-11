@@ -131,6 +131,18 @@
   --landing-grid: rgba(255,255,255,0.8);
   --landing-star: #f59e0b;
 
+  /* Login page - Dark */
+  --login-bg: #0a0a0a;
+  --login-surface: #181818;
+  --login-border: rgba(255,255,255,0.15);
+  --login-text: #f5f5f5;
+  --login-text-muted: #a3a3a3;
+  --login-input-bg: #111111;
+  --login-input-border: rgba(255,255,255,0.2);
+  --login-btn-bg: #ffffff;
+  --login-btn-text: #0a0a0a;
+  --login-link: #a5b4fc;
+
   /* Banner gradients - Nuances de noirs */
   --banner-blue: linear-gradient(to bottom right, #1A1A1A, #000000, #000000);
   --banner-emerald: linear-gradient(to bottom right, #181818, #000000, #000000);
@@ -353,6 +365,18 @@
   --landing-nav-scrolled: rgba(10,10,10,0.85);
   --landing-grid: rgba(255,255,255,0.8);
   --landing-star: #f59e0b;
+
+  /* Login - Brutalist Dark (same as default dark) */
+  --login-bg: #0a0a0a;
+  --login-surface: #181818;
+  --login-border: rgba(255,255,255,0.15);
+  --login-text: #f5f5f5;
+  --login-text-muted: #a3a3a3;
+  --login-input-bg: #111111;
+  --login-input-border: rgba(255,255,255,0.2);
+  --login-btn-bg: #ffffff;
+  --login-btn-text: #0a0a0a;
+  --login-link: #a5b4fc;
 }
 
 /* ============================================
@@ -454,6 +478,18 @@
   --landing-nav-scrolled: rgba(255,255,255,0.9);
   --landing-grid: rgba(0,0,0,0.15);
   --landing-star: #d4a012;
+
+  /* Login - Brutalist Light */
+  --login-bg: #FFFFFF;
+  --login-surface: #FAFAFA;
+  --login-border: rgba(0,0,0,0.2);
+  --login-text: #000000;
+  --login-text-muted: #666666;
+  --login-input-bg: #FFFFFF;
+  --login-input-border: rgba(0,0,0,0.2);
+  --login-btn-bg: #000000;
+  --login-btn-text: #FFFFFF;
+  --login-link: #333333;
 }
 
 /* ============================================
@@ -2497,6 +2533,7 @@ nav button:hover svg, nav a:hover svg {
   background: var(--landing-bg);
   color: var(--landing-text);
   overflow-x: hidden;
+  padding: 0rem 5rem;
 }
 .landing-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -2526,6 +2563,15 @@ nav button:hover svg, nav a:hover svg {
 }
 .landing-btn-ghost:hover { color: var(--landing-text); border-color: rgba(255,255,255,0.25); }
 :root.light .landing-btn-ghost:hover { border-color: rgba(0,0,0,0.2); }
+/* Dark mode : boutons mieux contrastés */
+:root:not(.light) .landing-btn-ghost { border-color: rgba(255,255,255,0.2); color: #c4c4c4; }
+:root:not(.light) .landing-btn-ghost:hover { border-color: rgba(255,255,255,0.35); color: #f5f5f5; }
+:root:not(.light) .landing-btn-primary { background: #ffffff; color: #0a0a0a; }
+:root:not(.light) .landing-btn-primary:hover { background: #e8e8e8; }
+:root:not(.light) .landing-btn-primary-lg { background: #ffffff; color: #0a0a0a; }
+:root:not(.light) .landing-btn-primary-lg:hover { background: #e8e8e8; }
+:root:not(.light) .landing-btn-ghost-lg { border-color: rgba(255,255,255,0.25); color: #c4c4c4; }
+:root:not(.light) .landing-btn-ghost-lg:hover { border-color: rgba(255,255,255,0.4); color: #f5f5f5; }
 .landing-btn-primary {
   padding: 8px 16px; background: var(--landing-accent); border: none; border-radius: 7px;
   color: var(--landing-accent-text); font-size: 13px; font-weight: 700; text-decoration: none;
@@ -2662,6 +2708,9 @@ nav button:hover svg, nav a:hover svg {
 .landing-pricing-card.featured .landing-pricing-check { color: var(--landing-accent-text); }
 .landing-btn-pricing-dark { display: block; width: 100%; padding: 12px; background: var(--landing-bg); border: none; border-radius: 9px; color: var(--landing-text); font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; text-align: center; margin-top: 24px; transition: all .15s; }
 .landing-btn-pricing-dark:hover { background: color-mix(in srgb, var(--landing-bg) 90%, white); }
+/* Offre populaire : contraste max (texte toujours lisible) */
+.landing-pricing-card.featured .landing-btn-pricing-dark { background: #0a0a0a !important; color: #ffffff !important; }
+.landing-pricing-card.featured .landing-btn-pricing-dark:hover { background: #1a1a1a !important; color: #ffffff !important; }
 .landing-btn-pricing-outline { display: block; width: 100%; padding: 12px; background: transparent; border: 1px solid var(--landing-border2); border-radius: 9px; color: var(--landing-text); font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; text-align: center; margin-top: 24px; transition: all .15s; }
 .landing-btn-pricing-outline:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.04); }
 :root.light .landing-btn-pricing-outline:hover { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.02); }
@@ -2698,6 +2747,96 @@ nav button:hover svg, nav a:hover svg {
 .landing-reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
 .landing-reveal.visible { opacity: 1; transform: translateY(0); }
 .landing-scroll-progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--landing-accent); z-index: 200; transition: width .1s linear; }
+/* ============================================
+   LOGIN PAGE - Theme-aware, full width
+   ============================================ */
+.login-page {
+  background: var(--login-bg);
+  font-family: var(--font-dm-sans), sans-serif;
+  position: relative;
+}
+.login-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--login-input-border);
+  border-radius: 9px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--login-text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: var(--login-input-bg);
+}
+.login-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
+.login-input::placeholder { color: var(--login-text-muted); opacity: 0.8; }
+.login-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--login-text);
+  margin-bottom: 6px;
+  display: block;
+}
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--login-btn-bg);
+  color: var(--login-btn-text);
+  border: none;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, transform 0.1s;
+}
+.login-btn:hover:not(:disabled) { filter: brightness(1.05); }
+.login-btn:active:not(:disabled) { transform: scale(0.99); }
+.login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.login-btn-google {
+  padding: 11px;
+  background: var(--login-surface);
+  color: var(--login-text);
+  border: 1.5px solid var(--login-border);
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.login-btn-google:hover:not(:disabled) { background: var(--login-input-bg); border-color: var(--login-input-border); }
+.login-btn-google:disabled { opacity: 0.6; cursor: not-allowed; }
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--login-text-muted);
+  font-size: 12px;
+}
+.login-divider::before, .login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--login-border);
+}
+@keyframes loginFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.login-fade-up { animation: loginFadeUp 0.4s ease both; }
+.login-fade-up-1 { animation-delay: 0.05s; }
+.login-fade-up-2 { animation-delay: 0.1s; }
+.login-fade-up-3 { animation-delay: 0.15s; }
+.login-fade-up-4 { animation-delay: 0.2s; }
+.login-fade-up-5 { animation-delay: 0.25s; }
+
 @media (max-width: 768px) {
   .landing-nav { padding: 0 20px; }
   .landing-nav-links { display: none; }
