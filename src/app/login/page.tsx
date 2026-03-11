@@ -173,7 +173,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center py-32">
+    <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center py-12">
       {/* Background avec grille subtile qui s'estompe */}
       <div className="absolute inset-0 bg-page">
         {/* Grille fine avec masque radial */}
@@ -196,22 +196,22 @@ function LoginContent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 w-full max-w-7xl mx-auto px-4"
+        className="relative z-10 w-full max-w-6xl mx-auto px-4"
       >
         <div className="backdrop-blur-2xl bg-card/50 rounded-3xl border border-default shadow-2xl overflow-hidden">
-          <div className="grid lg:grid-cols-2 grid-cols-1 min-h-[650px]">
+          <div className="grid lg:grid-cols-2 grid-cols-1">
             {/* Côté gauche - Formulaire */}
-            <div className="p-8 lg:p-12 flex flex-col justify-center">
+            <div className="p-6 lg:p-10 flex flex-col justify-center">
               {/* Logo */}
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className="flex items-center gap-3 mb-8"
+                className="flex items-center gap-3 mb-6"
               >
                
                 <div>
-                  <h1 className=" uppercase !text-primary mb-2 !text-right">
+                  <h1 className="lg:text-3xl text-2xl uppercase !text-primary mb-2 !text-center">
                     {isLogin ? t('welcome_to_eclipse') : t('join_eclipse')}
                   </h1>
                   <p className="!text-xs !text-muted !text-right">
@@ -225,7 +225,7 @@ function LoginContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="flex items-center gap-2 mb-6"
+                className="flex items-center gap-2 mb-5"
               >
                 <span className="!text-sm !text-muted">
                   {isLogin ? t("don_t_have_an_account") : t("already_have_an_account")}
@@ -243,7 +243,7 @@ function LoginContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.35 }}
-                className="!text-left !text-xs !text-muted mb-3"
+                className="!text-left !text-xs !text-muted mb-2.5"
               >
                 {isLogin 
                   ? t('continue_with_oauth') || 'Continuez avec votre compte' 
@@ -253,13 +253,13 @@ function LoginContent() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="grid grid-cols-2 gap-3 mb-6"
+                className="grid grid-cols-2 gap-3 mb-5"
               >
                 <button
                   type="button"
                   onClick={handleGoogleLogin}
                   disabled={isGoogleLoading}
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default  transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-card hover:bg-hover border border-default  transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isGoogleLoading ? (
                     <>
@@ -281,7 +281,7 @@ function LoginContent() {
                 </button>
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-card hover:bg-hover border border-default  transition-all duration-200 group opacity-50 cursor-not-allowed"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-card hover:bg-hover border border-default  transition-all duration-200 group opacity-50 cursor-not-allowed"
                   disabled
                   title={t('coming_soon') || 'Prochainement'}
                 >
@@ -295,7 +295,7 @@ function LoginContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="relative my-6"
+                className="relative my-5"
               >
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-default"></div>
@@ -311,20 +311,20 @@ function LoginContent() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
                 onSubmit={handleSubmit}
-                className="space-y-4"
+                className="space-y-3.5"
               >
                 {error && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="p-3 bg-danger-bg border border-danger "
+                    className="p-2.5 bg-danger-bg border border-danger "
                   >
                     <p className="!text-sm !text-danger !text-center">{error}</p>
                   </motion.div>
                 )}
 
                 {/* Email/Username */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label className="!text-sm font-medium !text-secondary">
                     {isLogin ? t('username') : t('email')}
                   </label>
@@ -335,7 +335,7 @@ function LoginContent() {
                     required
                     autoComplete={isLogin ? 'username' : 'email'}
                     onChange={e => isLogin ? setUsername(e.target.value) : setEmail(e.target.value)}
-                    className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                    className="w-full px-4 py-2.5 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                   />
                 </div>
 
@@ -345,7 +345,7 @@ function LoginContent() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="space-y-2"
+                    className="space-y-1.5"
                   >
                     <label className="!text-sm font-medium !text-secondary">{t('username')}</label>
                     <input
@@ -355,13 +355,13 @@ function LoginContent() {
                       required={!isLogin}
                       autoComplete="username"
                       onChange={e => setUsername(e.target.value)}
-                      className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      className="w-full px-4 py-2.5 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                     />
                   </motion.div>
                 )}
 
                 {/* Password */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                       <label className="!text-sm font-medium !text-secondary">{t('password')}</label>
                     {isLogin && (
@@ -384,7 +384,7 @@ function LoginContent() {
                         setPassword(e.target.value);
                         if (!isLogin) setPasswordError(validatePassword(e.target.value));
                       }}
-                      className="w-full px-4 py-3 pr-12 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      className="w-full px-4 py-2.5 pr-12 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                     />
                     <button
                       type="button"
@@ -395,7 +395,7 @@ function LoginContent() {
                     </button>
                   </div>
                   {passwordError && !isLogin && (
-                    <p className="!text-danger !text-xs">{passwordError}</p>
+                    <p className="!text-danger !text-xs mt-1">{passwordError}</p>
                   )}
                 </div>
 
@@ -405,7 +405,7 @@ function LoginContent() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="space-y-2"
+                    className="space-y-1.5"
                   >
                     <label className="!text-sm font-medium !text-secondary">{t('confirm_password')}</label>
                     <div className="relative">
@@ -419,7 +419,7 @@ function LoginContent() {
                           setConfirmPassword(e.target.value);
                           checkPassword(e.target.value);
                         }}
-                        className="w-full px-4 py-3 pr-12 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                        className="w-full px-4 py-2.5 pr-12 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                       />
                       <button
                         type="button"
@@ -430,7 +430,7 @@ function LoginContent() {
                       </button>
                     </div>
                     {confirmPasswordError && (
-                      <p className="!text-danger !text-xs">{confirmPasswordError}</p>
+                      <p className="!text-danger !text-xs mt-1">{confirmPasswordError}</p>
                     )}
                   </motion.div>
                 )}
@@ -438,14 +438,14 @@ function LoginContent() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-highlight hover:bg-highlight-hover !text-highlight-text font-semibold py-3 px-6  transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="w-full bg-highlight hover:bg-highlight-hover !text-highlight-text font-semibold py-2.5 px-6  transition-all duration-200 shadow-lg hover:shadow-xl mt-5"
                 >
                   {isLogin ? t('sign_in') : t('sign_up')}
                 </button>
 
                 {/* Terms */}
                 {!isLogin && (
-                  <p className="!text-xs !text-center !text-muted">
+                  <p className="!text-xs !text-center !text-muted mt-3">
                     {t('by_signing_up_you_agree_to_eclipse_s_terms_of_service')}
                     <a href="#" className="!text-accent hover:underline">
                       {t('terms_of_service')}
@@ -464,7 +464,7 @@ function LoginContent() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
-              className="relative lg:flex hidden flex-col items-center justify-center p-12 border-l border-default overflow-hidden"
+              className="relative lg:flex hidden flex-col items-center justify-center p-8 lg:p-10 border-l border-default overflow-hidden"
             >
               <ProgressiveTimeline />
             </motion.div>
