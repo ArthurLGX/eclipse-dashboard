@@ -456,6 +456,18 @@ export default function SmartFollowUpPage() {
 
                         {/* Actions rapides */}
                         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {!action.client && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/dashboard/clients/new?email=${encodeURIComponent(action.proposed_content.to[0] || '')}&name=${encodeURIComponent(action.proposed_content.to[0]?.split('@')[0] || '')}&source=smart_follow_up`);
+                              }}
+                              className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-xs font-medium hover:opacity-90 transition-opacity flex items-center gap-1"
+                            >
+                              <IconUser className="w-4 h-4" />
+                              Créer fiche
+                            </button>
+                          )}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -504,7 +516,7 @@ export default function SmartFollowUpPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="font-semibold text-primary">
-                          {task.contact?.name || 'N/A'}
+                          {task.contact?.name || task.context?.from_name || task.context?.from_email || 'Contact inconnu'}
                         </h3>
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                           task.status_follow_up === 'pending' ? 'bg-info-light text-info-text' :
@@ -517,10 +529,60 @@ export default function SmartFollowUpPage() {
                            task.status_follow_up === 'completed' ? 'Terminé' :
                            task.status_follow_up === 'cancelled' ? 'Annulé' : 'Échoué'}
                         </span>
+                        <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-600">
+                          {task.task_type === 'payment_reminder' ? 'Relance paiement' :
+                           task.task_type === 'proposal_follow_up' ? 'Suivi devis' :
+                           task.task_type === 'meeting_follow_up' ? 'Suivi réunion' :
+                           task.task_type === 'check_in' ? 'Prise de nouvelles' :
+                           task.task_type === 'thank_you' ? 'Remerciement' : 'Autre'}
+                        </span>
+                      </div>
+                      <div className="!text-sm text-muted mb-1">
+                        {task.context?.from_email && (
+                          <span className="block">{task.context.from_email}</span>
+                        )}
+                        {task.context?.original_subject && (
+                          <span className="block font-medium text-primary">
+                            Sujet: {task.context.original_subject}
+                          </span>
+                        )}
                       </div>
                       <div className="!text-sm text-muted">
-                        Planifié pour le {new Date(task.scheduled_for).toLocaleDateString('fr-FR')}
+                        📅 Planifié pour le {new Date(task.scheduled_for).toLocaleDateString('fr-FR', { 
+                          day: '2-digit', 
+                          month: '2-digit', 
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
                       </div>
+                      {task.ai_analysis && (
+                        <div className="mt-2 flex items-center gap-2 flex-wrap">
+                          {task.ai_analysis.sentiment && (
+                            <span className={`px-2 py-0.5 text-xs rounded ${
+                              task.ai_analysis.sentiment === 'positive' ? 'bg-green-100 text-green-700' :
+                              task.ai_analysis.sentiment === 'negative' ? 'bg-red-100 text-red-700' :
+                              'bg-gray-100 text-gray-700'
+                            }`}>
+                              {task.ai_analysis.sentiment === 'positive' ? '😊 Positif' :
+                               task.ai_analysis.sentiment === 'negative' ? '😟 Négatif' :
+                               '😐 Neutre'}
+                            </span>
+                          )}
+                          {task.ai_analysis.urgency && (
+                            <span className={`px-2 py-0.5 text-xs rounded ${
+                              task.ai_analysis.urgency === 'urgent' ? 'bg-red-100 text-red-700' :
+                              task.ai_analysis.urgency === 'high' ? 'bg-orange-100 text-orange-700' :
+                              task.ai_analysis.urgency === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-gray-100 text-gray-700'
+                            }`}>
+                              🔥 {task.ai_analysis.urgency === 'urgent' ? 'URGENT' :
+                                  task.ai_analysis.urgency === 'high' ? 'Prioritaire' :
+                                  task.ai_analysis.urgency === 'medium' ? 'Normal' : 'Faible'}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <button
                       onClick={() => handlePauseTask(task.id, task.documentId)}
