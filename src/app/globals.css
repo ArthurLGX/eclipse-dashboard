@@ -601,8 +601,8 @@
 }
 
 :root.light .card:hover {
-  background: rgb(231, 229, 229);
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-default);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
 }
 

@@ -230,7 +230,7 @@ export default function SmartFollowUpPage() {
       render: (_, action) => {
         const contactType = getContactType(action);
         return (
-          <span className={`px-2 py-1 text-xs font-medium rounded ${contactType.color} bg-current/10`}>
+          <span className={`px-2 py-1 text-xs font-medium rounded whitespace-nowrap ${contactType.color} bg-current/10`}>
             {contactType.label}
           </span>
         );
@@ -240,7 +240,7 @@ export default function SmartFollowUpPage() {
       key: 'score',
       label: 'Score ICP',
       render: (_, action) => (
-        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+        <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
           action.confidence_score >= 0.8 
             ? 'bg-success-light text-success-text' 
             : action.confidence_score >= 0.6
@@ -264,7 +264,7 @@ export default function SmartFollowUpPage() {
       key: 'actions',
       label: 'Actions',
       render: (_, action) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           {!action.client && (
             <button
               onClick={(e) => {
@@ -331,7 +331,7 @@ export default function SmartFollowUpPage() {
       key: 'task_type',
       label: 'Type',
       render: (_, task) => (
-        <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-600">
+        <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-600 whitespace-nowrap">
           {task.task_type === 'payment_reminder' ? 'Relance paiement' :
            task.task_type === 'proposal_follow_up' ? 'Suivi devis' :
            task.task_type === 'meeting_follow_up' ? 'Suivi réunion' :
@@ -344,7 +344,7 @@ export default function SmartFollowUpPage() {
       key: 'status',
       label: 'Statut',
       render: (_, task) => (
-        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+        <span className={`px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
           task.status_follow_up === 'pending' ? 'bg-info-light text-info-text' :
           task.status_follow_up === 'in_progress' ? 'bg-warning-light text-warning-text' :
           task.status_follow_up === 'completed' ? 'bg-success-light text-success-text' :
@@ -361,7 +361,7 @@ export default function SmartFollowUpPage() {
       key: 'ai_analysis',
       label: 'Analyse',
       render: (_, task) => (
-        <div className="flex items-center gap-1 flex-wrap">
+        <div className="flex items-center gap-1 whitespace-nowrap">
           {task.ai_analysis?.sentiment && (
             <span className={`px-1.5 py-0.5 text-[10px] rounded ${
               task.ai_analysis.sentiment === 'positive' ? 'bg-green-100 text-green-700' :
@@ -406,7 +406,7 @@ export default function SmartFollowUpPage() {
       key: 'task_actions',
       label: 'Actions',
       render: (_, task) => (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 whitespace-nowrap">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -517,7 +517,7 @@ export default function SmartFollowUpPage() {
 
         <div className="flex gap-2">
           {isSystemEnabled && (
-            <span className="px-2 py-1 rounded-full text-xs font-medium bg-success-light text-success-text">
+            <span className="flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium bg-success-light text-success-text">
               ● Actif
             </span>
           )}
