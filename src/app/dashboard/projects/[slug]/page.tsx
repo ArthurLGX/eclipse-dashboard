@@ -674,7 +674,7 @@ const PROJECT_TYPES = [
           <div className="flex flex-col gap-4">
             {/* Row 1: Icon + Title */}
             <div className="flex items-center gap-3">
-              <div className={`p-3  ${statusConfig.colors.bg} border ${statusConfig.colors.border} flex-shrink-0`}>
+              <div className={`p-3  flex-shrink-0`}>
                 <ProjectTypeIcon type={project.type} className={`w-6 h-6 ${statusConfig.colors.text}`} />
               </div>
               
@@ -855,7 +855,7 @@ const PROJECT_TYPES = [
       </div>
 
       {/* Main Content - Pleine largeur */}
-      <div className="px-6 lg:px-10 py-6">
+      <div className="py-6">
         <div className="!space-y-6">
             <AnimatePresence mode="wait">
               {activeTab === 'overview' && (
@@ -867,7 +867,7 @@ const PROJECT_TYPES = [
                   className="space-y-6"
                 >
                   {/* Description */}
-                  <div className="card p-4">
+                  <div className="p-4">
                     <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
                       <IconFileText className="w-5 h-5 !text-success-text -text" />
                       {t('description')}
