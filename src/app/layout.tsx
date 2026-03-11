@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import './globals.css';
-import { Header } from '@/app/components/header';
 import { AuthProvider } from '@/app/context/AuthContext';
-import { Footer } from '@/app/components/footer';
 import { PopupProvider } from './context/PopupContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -12,6 +10,7 @@ import { PreferencesProvider } from './context/PreferencesContext';
 import { QuotaProvider } from './context/QuotaContext';
 import { FathomProvider } from './context/FathomContext';
 import TrialExpiredWrapper from './components/TrialExpiredWrapper';
+import { ConditionalLayout } from './components/ConditionalLayout';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://dashboard.eclipsestudiodev.fr'),
@@ -72,9 +71,9 @@ export default function RootLayout({
                     <PopupProvider>
                       <FathomProvider>
                           <TrialExpiredWrapper>
-                            <Header />
-                            {children}
-                            <Footer />
+                            <ConditionalLayout>
+                              {children}
+                            </ConditionalLayout>
                           </TrialExpiredWrapper>
                       </FathomProvider>
                     </PopupProvider>
