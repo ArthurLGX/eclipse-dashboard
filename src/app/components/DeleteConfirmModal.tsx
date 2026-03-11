@@ -11,7 +11,7 @@ interface DeleteConfirmModalProps {
   onConfirm: () => Promise<void>;
   title: string;
   itemName: string;
-  itemType: 'client' | 'project' | 'facture' | 'prospect' | 'mentor' | 'event' | 'entry' | 'site' | 'quote' | 'contact';
+  itemType: 'client' | 'project' | 'facture' | 'prospect' | 'mentor' | 'event' | 'entry' | 'site' | 'quote' | 'contact' | 'task' | 'tâche';
   warningMessage?: string;
 }
 
@@ -26,6 +26,8 @@ const itemTypeLabels: Record<string, { fr: string; article: string }> = {
   site: { fr: 'site', article: 'ce' },
   quote: { fr: 'devis', article: 'ce' },
   contact: { fr: 'contact', article: 'ce' },
+  task: { fr: 'tâche', article: 'cette' },
+  tâche: { fr: 'tâche', article: 'cette' },
 };
 
 export default function DeleteConfirmModal({

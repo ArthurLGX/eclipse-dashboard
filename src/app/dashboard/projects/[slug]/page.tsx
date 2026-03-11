@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { updateProject, updateProjectStatusWithSync, fetchFacturesByProject, fetchProjectTasks, fetchMeetingNotes } from '@/lib/api';
-import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import {
   IconCalendar,
   IconBuilding,
@@ -19,7 +19,6 @@ import {
   IconListCheck,
   IconChartBar,
   IconX,
-  IconExternalLink,
   IconCalendarEvent,
   IconCode,
   IconPalette,
@@ -33,21 +32,17 @@ import {
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
 import { usePopup } from '@/app/context/PopupContext';
-import { useAIFeatures } from '@/app/context/AIFeaturesContext';
 import ProjectTypeIcon from '@/app/components/ProjectTypeIcon';
 import { extractIdFromSlug, generateSlug, generateClientSlug } from '@/utils/slug';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/app/context/AuthContext';
-import { useProjectByDocumentId, useClients, clearCache } from '@/hooks/useApi';
+import { useProjectByDocumentId, clearCache } from '@/hooks/useApi';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ShareProjectModal from '@/app/components/ShareProjectModal';
 import ProjectTasks from '@/app/components/ProjectTasks';
 import TaskWorkflowView, { type WorkflowTask } from '@/app/components/TaskWorkflowView';
 import { IconRoute } from '@tabler/icons-react';
 import RichTextEditor from '@/app/components/RichTextEditor';
-import ProjectProfitabilityCard from '@/app/components/ProjectProfitabilityCard';
-import ProjectProfitabilityAI from '@/app/components/ProjectProfitabilityAI';
-import ProjectInsightCard from '@/app/components/ProjectInsightCard';
 import ProjectGuidedTour, { useProjectGuidedTour } from '@/app/components/ProjectGuidedTour';
 import QuickProjectModal from '@/app/components/QuickProjectModal';
 import { ProfitabilityBadge, getProfitabilityStatus } from '@/app/components/StatusBadge';
@@ -59,7 +54,7 @@ import {
   createNotification,
   isUserProjectCollaborator,
 } from '@/lib/api';
-import type { Project, Client, Facture, ProjectCollaborator, ProjectTask, MeetingNote } from '@/types';
+import type { Project, Facture, ProjectCollaborator, ProjectTask, MeetingNote } from '@/types';
 import { IconUserPlus, IconHourglass } from '@tabler/icons-react';
 
 
@@ -74,7 +69,6 @@ export default function ProjectDetailsPage() {
   const { user } = useAuth();
   const formRef = useRef<HTMLFormElement>(null);
   const { showGlobalPopup } = usePopup();
-  const { isFeatureEnabled } = useAIFeatures();
 
   // Extraire le documentId du slug
   const slug = params.slug as string;
@@ -86,9 +80,6 @@ export default function ProjectDetailsPage() {
   
   // Mettre à jour le titre de l'onglet avec le nom du projet
   useDocumentTitle(project?.title, { prefix: t('project') });
-  
-  const { data: clientsData } = useClients(user?.id);
-  const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
 
   // État local pour l'édition
   const [isEditMode, setIsEditMode] = useState(false);
@@ -599,9 +590,9 @@ const PROJECT_TYPES = [
           }} />
         </div>
 
-        <div className="relative px-6 lg:px-10 py-6">
+        <div className="relative px-6 lg:px-10 py-3">
           {/* Breadcrumb & Actions */}
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center justify-between mb-3">
             <Link
               href="/dashboard/projects"
               className="flex items-center gap-2 !text-primary hover:!text-primary transition-colors group"
@@ -865,9 +856,7 @@ const PROJECT_TYPES = [
 
       {/* Main Content - Pleine largeur */}
       <div className="px-6 lg:px-10 py-6">
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-          {/* Main Column */}
-          <div className="xl:col-span-3 !space-y-6">
+        <div className="!space-y-6">
             <AnimatePresence mode="wait">
               {activeTab === 'overview' && (
                 <motion.div
@@ -878,7 +867,7 @@ const PROJECT_TYPES = [
                   className="space-y-6"
                 >
                   {/* Description */}
-                  <div className="card p-6">
+                  <div className="card p-4">
                     <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
                       <IconFileText className="w-5 h-5 !text-success-text -text" />
                       {t('description')}
@@ -909,7 +898,7 @@ const PROJECT_TYPES = [
 
                   {/* Notes */}
                   {(project.notes || isEditMode) && (
-                    <div className="card p-6">
+                    <div className="card p-4">
                       <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
                         <IconFileText className="w-5 h-5 !text-info" />
                         {t('internal_notes')}
@@ -964,7 +953,7 @@ const PROJECT_TYPES = [
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="card p-6">
+                  <div className="card p-4">
                     <ProjectTasks
                       projectDocumentId={project.documentId}
                       userId={user?.id || 0}
@@ -1063,7 +1052,7 @@ const PROJECT_TYPES = [
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="card p-6">
+                  <div className="card p-4">
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
                         <IconNotes className="w-5 h-5 !text-info" />
@@ -1223,7 +1212,7 @@ const PROJECT_TYPES = [
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="card p-6">
+                  <div className="card p-4">
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
                         <IconFileInvoice className="w-5 h-5 !text-warning" />
@@ -1307,206 +1296,6 @@ const PROJECT_TYPES = [
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-4">
-            {/* Profitability Card - Bloc rentabilité de base */}
-            <ProjectProfitabilityCard tasks={tasks} hourlyRate={project.hourly_rate} />
-
-            {/* Eclipse Insight - Analyse silencieuse du projet */}
-            {isFeatureEnabled('project_insights') && (
-              <ProjectInsightCard
-                project={project}
-                tasks={tasks}
-                invoices={factures}
-              />
-            )}
-
-            {/* Bilan IA - Analyse approfondie avec insights */}
-            {isFeatureEnabled('project_profitability') && (
-              <ProjectProfitabilityAI
-                project={project}
-                tasks={tasks}
-                invoicedAmount={factures.reduce((sum, inv) => sum + (inv.total_ht || 0), 0)}
-              />
-            )}
-
-            {/* Dates Card */}
-            <div className="card p-5">
-              <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider mb-4">
-                {t('due_dates')}
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-success-light ">
-                    <IconCalendar className="w-4 h-4 !text-success-text -text" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="!text-xs !text-muted mb-0.5">{t('start_date')}</p>
-                    {isEditMode ? (
-                      <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full input rounded px-2 py-1 !text-sm"
-                      />
-                    ) : (
-                      <p className="!text-primary !text-sm font-medium">
-                        {project.start_date 
-                          ? new Date(project.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
-                          : '—'}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-danger-light ">
-                    <IconCalendar className="w-4 h-4 !text-danger" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="!text-xs !text-muted mb-0.5">{t('due_date')}</p>
-                    {isEditMode ? (
-                      <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full input rounded px-2 py-1 !text-sm"
-                      />
-                    ) : (
-                      <p className={`text-sm font-medium ${daysRemaining !== null && daysRemaining < 0 ? 'text-danger' : 'text-primary'}`}>
-                        {project.end_date 
-                          ? new Date(project.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
-                          : '—'}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Client Card */}
-            <div className="card p-5">
-              <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider mb-4">
-                {t('client')}
-              </h3>
-              {isEditMode ? (
-                <select
-                  value={selectedClientId}
-                  onChange={(e) => setSelectedClientId(e.target.value)}
-                  className="w-full input px-3 py-2 !text-sm"
-                >
-                    <option value="">{t('no_client_assigned')}</option>
-                  {clients.map(client => (
-                    <option key={client.documentId} value={client.documentId}>
-                      {client.name}
-                    </option>
-                  ))}
-                </select>
-              ) : project.client ? (
-                <Link
-                  href={`/dashboard/clients/${generateClientSlug(project.client.name, project.client.documentId)}`}
-                  className="flex items-center gap-3 p-3 bg-muted  hover:bg-muted transition-colors group"
-                >
-                  <div className="w-10 h-10 bg-info-light rounded-full flex items-center justify-center">
-                    <span className="!text-info font-semibold">
-                      {project.client.name[0].toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="!text-primary font-medium truncate group-hover:!text-accent transition-colors">
-                      {project.client.name}
-                    </p>
-                    {project.client.email && (
-                      <p className="!text-xs !text-muted truncate">{project.client.email}</p>
-                    )}
-                  </div>
-                  <IconExternalLink className="w-4 h-4 !text-muted group-hover:!text-accent transition-colors" />
-                </Link>
-              ) : (
-                <p className="!text-muted !text-sm">{t('no_client_assigned')}</p>
-              )}
-            </div>
-
-            {/* Team Card */}
-            <div className="card p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider">
-                  {t('team')}
-                </h3>
-                <button
-                  onClick={() => setShowShareModal(true)}
-                  className="!text-xs !text-accent hover:opacity-80 transition-colors"
-                >
-                  {t('manage')}
-                </button>
-              </div>
-              <div className="space-y-2">
-                {/* Owner */}
-                <div className="flex items-center gap-3 p-2 bg-warning-light  border border-warning">
-                  <div className="w-8 h-8 bg-warning rounded-full flex items-center justify-center">
-                    <span className="!text-accent !text-sm font-medium">
-                      {project.user?.username?.[0]?.toUpperCase() || '?'}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="!text-sm !text-primary truncate">{project.user?.username}</p>
-                    <p className="!text-xs !text-warning">{t('owner')}</p>
-                  </div>
-                </div>
-                
-                {/* Collaborators */}
-                {collaborators.filter(c => !c.is_owner).map(collab => (
-                  <div key={collab.documentId} className="flex items-center gap-3 p-2 bg-muted ">
-                    <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
-                      <span className="!text-accent !text-sm font-medium">
-                        {collab.user?.username?.[0]?.toUpperCase() || '?'}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="!text-sm !text-primary truncate">{collab.user?.username}</p>
-                      <p className="!text-xs !text-muted">
-                        {collab.permission === 'edit' ? t('editor') : t('reader')}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-                
-                {collaborators.filter(c => !c.is_owner).length === 0 && (
-                  <p className="!text-xs !text-muted !text-center py-2">
-                    {t('no_collaborators')}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Meta Card */}
-            <div className="card p-5">
-              <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider mb-4">
-                {t('information')}
-              </h3>
-              <div className="space-y-3 !text-sm">
-                <div className="flex justify-between">
-                  <span className="!text-muted">{t('created_at')}</span>
-                  <span className="!text-primary">
-                    {new Date(project.createdAt).toLocaleDateString('fr-FR')}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="!text-muted">{t('updated_at')}</span>
-                  <span className="!text-primary">
-                    {new Date(project.updatedAt).toLocaleDateString('fr-FR')}
-                  </span>
-                </div>
-                {!isOwner && (
-                  <div className="flex justify-between pt-2 border-t border-default">
-                    <span className="!text-muted">{t('your_role')}</span>
-                    <span className="!text-warning-text font-medium">{t('collaborator')}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

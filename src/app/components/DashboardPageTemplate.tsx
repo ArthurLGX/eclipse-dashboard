@@ -169,7 +169,7 @@ export default function DashboardPageTemplate<T>({
               {stats.map((stat, i) => (
                 <div
                   key={i}
-                  className={`card p-6 ${stat.onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''} ${stat.colorClass?.includes('ring-') ? 'ring-2 ring-offset-2 ring-offset-page ' + stat.colorClass.split(' ').find(c => c.startsWith('ring-')) : ''}`}
+                  className={`card p-4 ${stat.onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''} ${stat.colorClass?.includes('ring-') ? 'ring-2 ring-offset-2 ring-offset-page ' + stat.colorClass.split(' ').find(c => c.startsWith('ring-')) : ''}`}
                   onClick={stat.onClick}
                   role={stat.onClick ? 'button' : undefined}
                   tabIndex={stat.onClick ? 0 : undefined}
@@ -200,7 +200,7 @@ export default function DashboardPageTemplate<T>({
 
           {/* Filtres + Table */}
           <div className="card">
-            <div className="p-6">
+            <div className="p-4">
               <TableFilters
                 searchPlaceholder={searchPlaceholder}
                 statusOptions={filterOptions}

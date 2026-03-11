@@ -353,7 +353,7 @@ export default function DashboardPage() {
         {/* Ligne 2 : Mini-graphique + Devis en attente */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Mini-graphique revenus */}
-          <div className="card p-6">
+          <div className="card p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold !text-primary">{t('revenue_evolution')}</h3>
               <button 
@@ -393,7 +393,7 @@ export default function DashboardPage() {
           
 
           {/* Activité récente enrichie */}
-          <div className="card p-6">
+          <div className="card p-4">
             <h3 className="font-semibold !text-primary mb-4">{t('recent_activity')}</h3>
             {loading ? (
               <div className="space-y-3">

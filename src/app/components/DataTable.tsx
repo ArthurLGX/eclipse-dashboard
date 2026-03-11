@@ -707,17 +707,17 @@ export default function DataTable<T = unknown>({
         <thead>
           <tr className="border-b border-default">
             {draggable && (
-              <th className="w-10 py-3 px-2">
+              <th className="w-10 py-2 px-2">
                 {/* Drag handle column */}
               </th>
             )}
             {showFavorites && (
-              <th className="w-10 py-3 px-2">
+              <th className="w-10 py-2 px-2">
                 <IconStar className="w-4 h-4 !text-muted" />
               </th>
             )}
             {selectable && (
-              <th className="w-12 py-3 px-2 lg:px-4">
+              <th className="w-12 py-2 px-2 lg:px-3">
                 <button
                   onClick={toggleCurrentPage}
                   className="flex items-center justify-center !text-muted hover:!text-primary transition-colors"
@@ -737,10 +737,10 @@ export default function DataTable<T = unknown>({
               const isCurrentSort = sortKey === column.key;
               
               return (
-                <th
-                  key={index}
-                  className={`!text-left py-3 px-2 lg:px-4 !text-secondary font-semibold !capitalize ${isSortable ? 'cursor-pointer hover:!text-primary select-none' : ''}`}
-                  onClick={isSortable ? () => handleSort(column.key) : undefined}
+              <th
+                key={index}
+                className={`!text-left py-2 px-2 lg:px-3 !text-secondary text-xs font-semibold !capitalize ${isSortable ? 'cursor-pointer hover:!text-primary select-none' : ''}`}
+                onClick={isSortable ? () => handleSort(column.key) : undefined}
                 >
                   <div className="flex items-center gap-1">
                     {column.label}
@@ -784,11 +784,11 @@ export default function DataTable<T = unknown>({
                           isSelected ? 'bg-accent-light' : ''
                       } ${rowIsFavorite ? 'bg-warning-light' : ''}`}
                     >
-                      <td className="w-10 py-4 px-2">
+                      <td className="w-10 py-3 px-2">
                         <IconGripVertical className="w-4 h-4 !text-muted cursor-grab active:cursor-grabbing" />
                       </td>
                       {showFavorites && (
-                        <td className="w-10 py-4 px-2">
+                        <td className="w-10 py-3 px-2">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -805,7 +805,7 @@ export default function DataTable<T = unknown>({
                         </td>
                       )}
                       {selectable && (
-                        <td className="w-12 py-4 px-2 lg:px-4">
+                        <td className="w-12 py-3 px-2 lg:px-3">
                           <button
                             onClick={(e) => toggleItem(itemId, e)}
                             className="flex items-center justify-center !text-muted hover:!text-primary transition-colors"
@@ -821,7 +821,7 @@ export default function DataTable<T = unknown>({
                       {columns.map((column, colIndex) => (
                         <td
                           key={colIndex}
-                          className={`py-4 px-2 lg:px-4 !text-muted !font-light ${column.className || ''}`}
+                          className={`py-3 px-2 lg:px-3 !text-muted !font-light text-sm ${column.className || ''}`}
                         >
                           {column.render
                             ? column.render(
@@ -871,7 +871,7 @@ export default function DataTable<T = unknown>({
                       </td>
                     )}
                     {selectable && (
-                      <td className="w-12 py-4 px-2 lg:px-4">
+                      <td className="w-12 py-3 px-2 lg:px-3">
                         <button
                           onClick={(e) => toggleItem(itemId, e)}
                           className="flex items-center justify-center !text-muted hover:!text-primary transition-colors"
@@ -887,7 +887,7 @@ export default function DataTable<T = unknown>({
                     {columns.map((column, colIndex) => (
                       <td
                         key={colIndex}
-                        className={`py-4 px-2 lg:px-4 !text-muted !font-light ${column.className || ''}`}
+                        className={`py-3 px-2 lg:px-3 !text-muted !font-light text-sm ${column.className || ''}`}
                       >
                         {column.render
                           ? column.render(

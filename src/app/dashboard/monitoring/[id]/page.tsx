@@ -280,12 +280,12 @@ export default function MonitoringDetailPage() {
 
         {/* Charts */}
         {logsError ? (
-          <div className="card p-6 !text-center">
+          <div className="card p-4 !text-center">
             <IconAlertTriangle className="w-8 h-8 !text-warning-text mx-auto mb-2" />
             <p className="!text-muted">{t('error_loading_logs') || 'Erreur lors du chargement des logs'}</p>
           </div>
         ) : !logs ? (
-          <div className="card p-6 flex items-center justify-center">
+          <div className="card p-4 flex items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-accent"></div>
           </div>
         ) : (

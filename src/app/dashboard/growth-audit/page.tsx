@@ -187,7 +187,7 @@ export default function GrowthAuditPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="card p-6"
+        className="card p-4"
       >
         <div className="space-y-4">
           {/* URL Input */}

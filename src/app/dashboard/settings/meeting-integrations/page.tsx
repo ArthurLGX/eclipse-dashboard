@@ -279,7 +279,7 @@ export default function MeetingIntegrationsPage() {
 
         {/* Tutorial Steps */}
         {showTutorial && (
-          <div className="card p-6">
+          <div className="card p-4">
             <h2 className="!text-lg font-semibold !text-primary mb-6 flex items-center gap-2">
               <IconSettings className="w-5 h-5 !text-accent" />
               {t('setup_guide') || 'Guide de configuration'}
@@ -452,7 +452,7 @@ export default function MeetingIntegrationsPage() {
         )}
 
         {/* How it works */}
-        <div className="card p-6">
+        <div className="card p-4">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconNotes className="w-5 h-5 !text-accent" />
             Comment ça marche ?
@@ -493,7 +493,7 @@ export default function MeetingIntegrationsPage() {
         </div>
 
         {/* Pro Tips */}
-        <div className="card p-6 bg-accent-light border border-accent">
+        <div className="card p-4 bg-accent-light border border-accent">
           <h2 className="!text-lg font-semibold !text-primary mb-4">
             💡 Conseils pour un matching parfait
           </h2>

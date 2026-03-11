@@ -581,7 +581,7 @@ export default function TimeTrackingAnalyticsPage() {
             {/* Charts Row 1 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Daily Time Chart */}
-              <div className="card p-6">
+              <div className="card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('daily_comparison') || 'Comparaison journalière'}
                 </h3>
@@ -591,7 +591,7 @@ export default function TimeTrackingAnalyticsPage() {
               </div>
 
               {/* Project Time Chart */}
-              <div className="card p-6">
+              <div className="card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('time_by_project') || 'Temps par projet'}
                 </h3>
@@ -610,7 +610,7 @@ export default function TimeTrackingAnalyticsPage() {
             {/* Charts Row 2 */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Accuracy Distribution */}
-              <div className="card p-6">
+              <div className="card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('estimation_accuracy') || 'Précision des estimations'}
                 </h3>
@@ -634,7 +634,7 @@ export default function TimeTrackingAnalyticsPage() {
               </div>
 
               {/* Status Distribution */}
-              <div className="card p-6">
+              <div className="card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('task_status') || 'Statut des tâches'}
                 </h3>
@@ -644,7 +644,7 @@ export default function TimeTrackingAnalyticsPage() {
               </div>
 
               {/* Top Deviated Tasks - Regroupées par projet */}
-              <div className="card p-6">
+              <div className="card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('biggest_deviations') || 'Plus grands écarts'}
                 </h3>
@@ -689,7 +689,7 @@ export default function TimeTrackingAnalyticsPage() {
             </div>
 
             {/* Insights */}
-            <div className="card p-6 bg-gradient-to-r from-accent/5 to-transparent border-accent-light">
+            <div className="card p-4 bg-gradient-to-r from-accent/5 to-transparent border-accent-light">
               <h3 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
                 <IconTarget className="w-5 h-5 !text-accent" />
                 {t('insights') || 'Conseils'}
