@@ -105,6 +105,10 @@ export interface AutomationSettings {
   };
   custom_rules: FilterRule[];
   icp_settings: ICPSettings;
+  /** Instruction personnalisée pour l'IA (ex: contexte Walego, priorités) */
+  ai_instruction?: string | null;
+  /** Historique des instructions précédentes (réutilisables) */
+  ai_instruction_history?: string[] | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -119,6 +123,8 @@ export interface TaskContext {
   amount?: string;
   deadline?: string;
   extracted_entities?: string[];
+  /** Corps de l'email reçu (pour extraction Lead Status Walego) */
+  email_body?: string;
 }
 
 export interface TaskAIAnalysis {

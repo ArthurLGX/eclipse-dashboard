@@ -3,6 +3,7 @@ import { anthropic } from '@ai-sdk/anthropic';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import { NextResponse } from 'next/server';
+import { parseWalegoLeadStatus, formatWalegoLeadStatusForAnalysis } from '@/utils/walego-lead-status';
 
 export const maxDuration = 30;
 
@@ -43,7 +44,7 @@ function isQuotaExceeded(error: unknown): boolean {
 
 export async function POST(req: Request) {
   try {
-    const { task } = await req.json();
+    const { task, ai_instruction, email_body } = await req.json();
 
     if (!task) {
       return NextResponse.json({ error: 'Task data is required' }, { status: 400 });
@@ -51,8 +52,23 @@ export async function POST(req: Request) {
 
     const context = task.context || {};
     const aiAnalysis = task.ai_analysis || {};
+    const subject = (context.original_subject || task.received_email?.subject || '').toLowerCase();
 
-    const prompt = `Tu es un assistant IA expert en analyse de leads et suivi commercial.
+    // Emails Walego : extraire directement le Lead Status (suggestions IA Walego) si dispo
+    if (subject.includes('walego') && email_body) {
+      const parsed = parseWalegoLeadStatus(email_body);
+      if (parsed && (parsed.reasoning || parsed.tips)) {
+        const formatted = formatWalegoLeadStatusForAnalysis(parsed);
+        return NextResponse.json(formatted);
+      }
+    }
+
+    const instructionBlock = ai_instruction?.trim()
+      ? `\nINSTRUCTION PERSONNALISÉE (à respecter) :\n${ai_instruction}\n`
+      : '';
+
+    const prompt = `Tu es un assistant IA expert en analyse de leads et suivi commercial.${instructionBlock}
+
 
 CONTEXTE DU LEAD/TÂCHE :
 - Contact : ${context.from_name || task.contact?.name || 'Inconnu'}

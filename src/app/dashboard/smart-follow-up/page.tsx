@@ -16,6 +16,7 @@ import {
   IconBriefcase,
   IconBuilding,
   IconSearch,
+  IconSparkles,
 } from '@tabler/icons-react';
 import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
@@ -23,6 +24,7 @@ import QuickEmailReplyModal from '@/app/components/QuickEmailReplyModal';
 import TaskDetailModal from '@/app/components/TaskDetailModal';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
+import InstructionIADrawer from '@/app/components/InstructionIADrawer';
 import { usePopup } from '@/app/context/PopupContext';
 import { 
   useSmartFollowUpStats, 
@@ -71,6 +73,7 @@ export default function SmartFollowUpPage() {
   });
   const [selectedTask, setSelectedTask] = useState<FollowUpTask | null>(null);
   const [showTaskDetailModal, setShowTaskDetailModal] = useState(false);
+  const [showInstructionDrawer, setShowInstructionDrawer] = useState(false);
   const [taskSearch, setTaskSearch] = useState('');
   const [filterPrio, setFilterPrio] = useState<'Toutes' | 'Urgent' | 'Prioritaire' | 'Normal'>('Toutes');
   const [filterStatut, setFilterStatut] = useState<'Tous' | 'En attente' | 'Annulé' | 'Terminé'>('Tous');
@@ -546,6 +549,24 @@ export default function SmartFollowUpPage() {
     mutateTasks();
   };
 
+  const aiInstruction = settings?.ai_instruction ?? '';
+  const aiInstructionHistory = settings?.ai_instruction_history ?? [];
+  const hasAiInstruction = !!aiInstruction?.trim();
+
+  const handleSaveAiInstruction = async (instruction: string) => {
+    if (!settings?.documentId) return;
+    const prev = aiInstruction?.trim();
+    const newHistory = prev && prev !== instruction
+      ? [prev, ...aiInstructionHistory.filter((h) => h !== prev)].slice(0, 10)
+      : aiInstructionHistory;
+    await updateAutomationSettings(settings.documentId, {
+      ai_instruction: instruction,
+      ai_instruction_history: newHistory,
+    });
+    mutateSettings();
+    showGlobalPopup('✓ Instruction IA enregistrée', 'success');
+  };
+
   const customTaskActions: CustomAction<FollowUpTask>[] = useMemo(() => [
     {
       label: 'Mettre en pause',
@@ -591,6 +612,27 @@ export default function SmartFollowUpPage() {
                 >
                   <IconTarget className="w-3.5 h-3.5" />
                   ICP
+                </button>
+                <button
+                  onClick={() => setShowInstructionDrawer(true)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium transition-colors ${
+                    showInstructionDrawer
+                      ? 'bg-primary !text-white'
+                      : 'bg-secondary !text-primary border border-default hover:bg-hover'
+                  }`}
+                >
+                  <span className={`relative flex ${hasAiInstruction ? 'animate-pulse' : ''}`}>
+                    <IconSparkles className="w-3.5 h-3.5" />
+                    {hasAiInstruction && (
+                      <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-accent" />
+                    )}
+                  </span>
+                  Instruction IA
+                  {hasAiInstruction && (
+                    <span className="!text-[10px] font-bold px-1.5 py-0.5 rounded bg-accent/30">
+                      1
+                    </span>
+                  )}
                 </button>
                 <button
                   onClick={() => setShowRulesModal(true)}
@@ -659,6 +701,22 @@ export default function SmartFollowUpPage() {
         </div>
 
         <div className="max-w-7xl mx-auto px-8 py-6">
+          {/* Bannière instruction IA active */}
+          {hasAiInstruction && (
+            <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 !text-sm !text-primary min-w-0 flex-1">
+                <IconSparkles className="w-4 h-4 shrink-0 text-accent" />
+                <span className="truncate">{aiInstruction}</span>
+              </div>
+              <button
+                onClick={() => setShowInstructionDrawer(true)}
+                className="shrink-0 !text-xs font-medium text-accent hover:underline whitespace-nowrap ml-2"
+              >
+                Modifier →
+              </button>
+            </div>
+          )}
+
           {/* KPIs */}
           <div className="flex gap-3 mb-5 flex-wrap">
             {[
@@ -846,6 +904,15 @@ export default function SmartFollowUpPage() {
           setSelectedTask(null);
         }}
         task={selectedTask}
+        aiInstruction={aiInstruction || undefined}
+      />
+
+      <InstructionIADrawer
+        isOpen={showInstructionDrawer}
+        onClose={() => setShowInstructionDrawer(false)}
+        activeInstruction={aiInstruction || ''}
+        history={aiInstructionHistory}
+        onSave={handleSaveAiInstruction}
       />
     </>
   );
