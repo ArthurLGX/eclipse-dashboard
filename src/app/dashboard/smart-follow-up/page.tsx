@@ -11,14 +11,13 @@ import {
   IconCheck,
   IconX,
   IconUser,
-  IconMail,
   IconTarget,
   IconTrash,
   IconBriefcase,
   IconBuilding,
+  IconSearch,
 } from '@tabler/icons-react';
-import DashboardPageTemplate from '@/app/components/DashboardPageTemplate';
-import { Column, CustomAction } from '@/app/components/DataTable';
+import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
 import QuickEmailReplyModal from '@/app/components/QuickEmailReplyModal';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
@@ -68,6 +67,9 @@ export default function SmartFollowUpPage() {
     isOpen: false,
     task: null,
   });
+  const [taskSearch, setTaskSearch] = useState('');
+  const [filterPrio, setFilterPrio] = useState<'Toutes' | 'Urgent' | 'Prioritaire' | 'Normal'>('Toutes');
+  const [filterStatut, setFilterStatut] = useState<'Tous' | 'En attente' | 'Annulé' | 'Terminé'>('Tous');
   
   const minScore = settings?.icp_settings?.min_score_threshold ?? 50;
   const qualifiedActions = allActions?.filter(a => a.confidence_score >= minScore) ?? [];
@@ -171,10 +173,43 @@ export default function SmartFollowUpPage() {
     if (text.includes('freelance') || text.includes('indépendant')) return { label: 'Freelance', icon: IconUser, color: 'text-blue-500' };
     if (text.includes('agence') || text.includes('agency')) return { label: 'Agence', icon: IconBriefcase, color: 'text-purple-500' };
     if (text.includes('b2b') || text.includes('entreprise')) return { label: 'B2B', icon: IconBuilding, color: 'text-green-500' };
-    return { label: 'B2C', icon: IconMail, color: 'text-orange-500' };
+    return { label: 'B2C', icon: IconUser, color: 'text-orange-500' };
   };
 
   const isSystemEnabled = settings?.enabled ?? true;
+
+  // Filtrage des tâches
+  const getTaskPriority = (task: FollowUpTask): 'Urgent' | 'Prioritaire' | 'Normal' => {
+    const u = task.ai_analysis?.urgency;
+    if (u === 'urgent') return 'Urgent';
+    if (u === 'high') return 'Prioritaire';
+    return 'Normal';
+  };
+  const getTaskStatusLabel = (task: FollowUpTask): string => {
+    const s = task.status_follow_up;
+    if (s === 'pending' || s === 'in_progress') return 'En attente';
+    if (s === 'cancelled') return 'Annulé';
+    if (s === 'completed') return 'Terminé';
+    return 'En attente';
+  };
+
+  const filteredTasks = useMemo(() => {
+    const list = tasks || [];
+    return list.filter(t => {
+      const mp = filterPrio === 'Toutes' || getTaskPriority(t) === filterPrio;
+      const ms = filterStatut === 'Tous' || getTaskStatusLabel(t) === filterStatut;
+      const contact = (t.contact?.name || t.context?.from_name || t.context?.from_email || '').toLowerCase();
+      const subject = (t.context?.original_subject || '').toLowerCase();
+      const mq = !taskSearch || contact.includes(taskSearch.toLowerCase()) || subject.includes(taskSearch.toLowerCase());
+      return mp && ms && mq;
+    });
+  }, [tasks, filterPrio, filterStatut, taskSearch]);
+
+  const taskCounts = useMemo(() => ({
+    attente: (tasks || []).filter(t => getTaskStatusLabel(t) === 'En attente').length,
+    annule: (tasks || []).filter(t => getTaskStatusLabel(t) === 'Annulé').length,
+    urgent: (tasks || []).filter(t => getTaskPriority(t) === 'Urgent').length,
+  }), [tasks]);
 
   // Colonnes pour les actions (leads)
   const actionColumns: Column<AutomationAction>[] = useMemo(() => [
@@ -472,204 +507,255 @@ export default function SmartFollowUpPage() {
     {
       label: 'Mettre en pause',
       icon: <IconPlayerPause className="w-4 h-4" />,
-      onClick: async (tasks) => {
-        tasks.forEach(task => handleUpdateTask(task, { status_follow_up: 'cancelled' }));
+      onClick: async (tasksToUpdate) => {
+        tasksToUpdate.forEach(task => handleUpdateTask(task, { status_follow_up: 'cancelled' }));
       },
       variant: 'warning',
     },
     {
       label: 'Marquer comme terminé',
       icon: <IconCheck className="w-4 h-4" />,
-      onClick: async (tasks) => {
-        tasks.forEach(task => handleUpdateTask(task, { status_follow_up: 'completed' }));
+      onClick: async (tasksToUpdate) => {
+        tasksToUpdate.forEach(task => handleUpdateTask(task, { status_follow_up: 'completed' }));
       },
       variant: 'success',
     },
   ], []);
 
-  // Header Extra avec tabs et contrôles
-  const headerExtra = (
-    <>
-      {/* Contrôles compacts */}
-      <div className="flex items-center justify-between gap-3 mb-4">
-        <div className="flex gap-2">
-          <button
-            onClick={() => setActiveTab('actions')}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-              activeTab === 'actions'
-                ? 'bg-accent text-white'
-                : 'text-muted hover:bg-secondary'
-            }`}
-          >
-            Leads ({qualifiedActions.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('tasks')}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-              activeTab === 'tasks'
-                ? 'bg-accent text-white'
-                : 'text-muted hover:bg-secondary'
-            }`}
-          >
-            Tâches ({tasks?.length || 0})
-          </button>
-        </div>
-
-        <div className="flex gap-2">
-          {isSystemEnabled && (
-            <span className="flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium bg-success-light text-success-text">
-              ● Actif
-            </span>
-          )}
-          
-          <button
-            onClick={() => router.push('/dashboard/smart-follow-up/settings#icp')}
-            className="px-2 py-1.5 bg-blue-500/10 text-blue-600 rounded-lg hover:bg-blue-500/20 transition-colors border border-blue-500/20"
-            title="Configuration ICP"
-          >
-            <IconTarget className="w-4 h-4" />
-          </button>
-
-          {nonQualifiedActions && nonQualifiedActions.length > 0 && (
-            <button
-              onClick={handleCleanNonICP}
-              disabled={cleaningNonICP}
-              className="px-2 py-1.5 bg-red-500/10 text-red-600 rounded-lg hover:bg-red-500/20 transition-colors border border-red-500/20 disabled:opacity-50"
-              title={`Nettoyer ${nonQualifiedActions.length} emails non qualifiés`}
-            >
-              <IconTrash className="w-4 h-4" />
-            </button>
-          )}
-
-          <button
-            onClick={() => setShowRulesModal(true)}
-            className="px-2 py-1.5 bg-purple-500/10 text-purple-600 rounded-lg hover:bg-purple-500/20 transition-colors border border-purple-500/20"
-            title="Règles"
-          >
-            <IconFilter className="w-4 h-4" />
-          </button>
-
-          <button
-            onClick={handleToggleSystem}
-            disabled={togglingPause}
-            className={`px-2 py-1.5 rounded-lg font-medium transition-all ${
-              isSystemEnabled ? 'badge-warning' : 'badge-success'
-            } disabled:opacity-50`}
-          >
-            {isSystemEnabled ? <IconPlayerPause className="w-4 h-4" /> : <IconPlayerPlay className="w-4 h-4" />}
-          </button>
-
-          <button
-            onClick={() => router.push('/dashboard/smart-follow-up/settings')}
-            className="px-2 py-1.5 bg-secondary text-primary rounded-lg hover:bg-hover transition-colors border border-default"
-          >
-            <IconSettings className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Bannière filtre ICP */}
-      {activeTab === 'actions' && nonQualifiedActions && nonQualifiedActions.length > 0 && !showLowScoreEmails && (
-        <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 text-sm text-blue-600">
-            <IconFilter className="w-4 h-4" />
-            <span>
-              {nonQualifiedActions.length} emails filtrés (score ICP &lt; {minScore})
-            </span>
-          </div>
-          <button
-            onClick={() => setShowLowScoreEmails(true)}
-            className="text-xs text-blue-600 hover:underline font-medium"
-          >
-            Afficher
-          </button>
-        </div>
-      )}
-
-      {activeTab === 'actions' && showLowScoreEmails && nonQualifiedActions && nonQualifiedActions.length > 0 && (
-        <div className="p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 text-sm text-orange-600">
-            <IconAlertCircle className="w-4 h-4" />
-            <span>
-              {nonQualifiedActions.length} emails non qualifiés affichés
-            </span>
-          </div>
-          <button
-            onClick={() => setShowLowScoreEmails(false)}
-            className="text-xs text-orange-600 hover:underline font-medium"
-          >
-            Masquer
-          </button>
-        </div>
-      )}
-    </>
-  );
-
-  const sharedProps = {
-    title: "Smart Follow-Up",
-    actionButtonLabel: "Paramètres",
-    onActionButtonClick: () => router.push('/dashboard/smart-follow-up/settings'),
-    stats: [
-      {
-        label: 'Qualifiés ICP',
-        value: qualifiedActions?.length || 0,
-        colorClass: 'text-accent',
-        icon: <IconAlertCircle className="w-6 h-6 text-accent" />,
-      },
-      {
-        label: 'Aujourd\'hui',
-        value: statsLoading ? '...' : stats?.dueToday || 0,
-        colorClass: 'text-warning',
-        icon: <IconMail className="w-6 h-6 text-warning" />,
-      },
-      {
-        label: 'Cette semaine',
-        value: statsLoading ? '...' : stats?.sentThisWeek || 0,
-        colorClass: 'text-success',
-        icon: <IconCheck className="w-6 h-6 text-success" />,
-      },
-      {
-        label: 'Taux succès',
-        value: statsLoading ? '...' : `${stats?.successRate.toFixed(0) || 0}%`,
-        colorClass: 'text-primary',
-        icon: <span className="text-lg font-bold text-purple-500">%</span>,
-      },
-    ],
-    loading: statsLoading,
-    headerExtra,
-    showViewToggle: false,
-    sortable: false,
-  };
-
   return (
     <>
-      {activeTab === 'actions' ? (
-        <DashboardPageTemplate<AutomationAction>
-          {...sharedProps}
-          columns={actionColumns}
-          data={actions || []}
-          emptyMessage="Aucun lead en attente"
-          onRowClick={(row) => {
-            setSelectedAction(row);
-            setShowDetailModal(true);
-          }}
-          selectable={false}
-          getItemId={(item) => item.documentId || ''}
-          getItemName={(item) => item.client?.name || 'Contact'}
-        />
-      ) : (
-        <DashboardPageTemplate<FollowUpTask>
-          {...sharedProps}
-          columns={taskColumns}
-          data={tasks || []}
-          emptyMessage="Aucune tâche planifiée"
-          selectable={true}
-          onDeleteSelected={handleDeleteMultipleTasks}
-          customActions={customTaskActions}
-          getItemId={(item) => item.documentId || ''}
-          getItemName={(item) => item.contact?.name || item.context?.from_name || 'Contact'}
-        />
-      )}
+      <div className="min-h-screen">
+        {/* Header épuré */}
+        <div className="bg-card border-b border-default">
+          <div className="max-w-7xl mx-auto px-8 py-5">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <div className="!text-xs !text-muted mb-1">Tableau de Bord → Smart-Follow-Up</div>
+                <div className="flex items-center gap-2.5">
+                  <h1 className="!text-[20px] font-bold tracking-tight !text-primary">Smart Follow-Up</h1>
+                  <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full !text-[11px] font-semibold ${
+                    isSystemEnabled ? 'bg-emerald-100 !text-emerald-600' : 'bg-muted !text-muted'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${isSystemEnabled ? 'bg-emerald-500' : 'bg-muted'}`} />
+                    {isSystemEnabled ? 'Actif' : 'Inactif'}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => router.push('/dashboard/smart-follow-up/settings#icp')}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-white border border-default hover:bg-hover transition-colors"
+                >
+                  <IconTarget className="w-3.5 h-3.5" />
+                  IA Eclipse
+                </button>
+                <button
+                  onClick={() => setShowRulesModal(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-white border border-default hover:bg-hover transition-colors"
+                >
+                  <IconFilter className="w-3.5 h-3.5" />
+                  Filtres
+                </button>
+                {nonQualifiedActions && nonQualifiedActions.length > 0 && (
+                  <button
+                    onClick={handleCleanNonICP}
+                    disabled={cleaningNonICP}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-red-50 border border-red-200 !text-red-600 hover:bg-red-100 transition-colors disabled:opacity-50"
+                    title={`Nettoyer ${nonQualifiedActions.length} emails non qualifiés`}
+                  >
+                    <IconTrash className="w-3.5 h-3.5" />
+                    Nettoyer ({nonQualifiedActions.length})
+                  </button>
+                )}
+                <button
+                  onClick={() => router.push('/dashboard/smart-follow-up/settings')}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-semibold bg-primary !text-white hover:opacity-90 transition-colors"
+                >
+                  <IconSettings className="w-3.5 h-3.5" />
+                  Paramètres
+                </button>
+                <button
+                  type="button"
+                  onClick={handleToggleSystem}
+                  disabled={togglingPause}
+                  className={`w-9 h-5 rounded-full relative transition-colors flex-shrink-0 disabled:opacity-50 ${
+                    isSystemEnabled ? 'bg-primary' : 'bg-muted'
+                  }`}
+                  title={isSystemEnabled ? 'Mettre en pause' : 'Activer'}
+                >
+                  <span className={`absolute top-1 left-1 w-3.5 h-3.5 bg-white rounded-full transition-transform ${
+                    isSystemEnabled ? 'translate-x-4' : ''
+                  }`} />
+                </button>
+              </div>
+            </div>
+
+            {/* Tabs pills */}
+            <div className="flex gap-0.5 bg-muted rounded-lg p-0.5 w-fit">
+              <button
+                onClick={() => setActiveTab('actions')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
+                  activeTab === 'actions' ? 'bg-card !text-primary shadow-sm' : '!text-muted hover:!text-primary'
+                }`}
+              >
+                Leads
+                <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                  activeTab === 'actions' ? 'bg-primary !text-white' : 'bg-muted !text-muted'
+                }`}>
+                  {qualifiedActions.length}
+                </span>
+              </button>
+              <button
+                onClick={() => setActiveTab('tasks')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
+                  activeTab === 'tasks' ? 'bg-card !text-primary shadow-sm' : '!text-muted hover:!text-primary'
+                }`}
+              >
+                Tâches
+                <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                  activeTab === 'tasks' ? 'bg-primary !text-white' : 'bg-muted !text-muted'
+                }`}>
+                  {tasks?.length || 0}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          {/* KPIs */}
+          <div className="flex gap-3 mb-5 flex-wrap">
+            {[
+              { label: 'Qualifiés ICP', value: statsLoading ? '...' : qualifiedActions.length, color: '!text-muted' },
+              { label: "Aujourd'hui", value: statsLoading ? '...' : (stats?.dueToday ?? taskCounts.attente), color: '!text-blue-500' },
+              { label: 'Cette semaine', value: statsLoading ? '...' : (stats?.sentThisWeek ?? 0), color: '!text-primary' },
+              { label: 'Taux de succès', value: statsLoading ? '...' : `${stats?.successRate?.toFixed(0) ?? 0}%`, color: '!text-violet-500' },
+            ].map(k => (
+              <div key={k.label} className="card flex-1 min-w-[140px] p-3.5">
+                <div className="!text-xs !text-muted mb-1">{k.label}</div>
+                <div className={`!text-[22px] font-bold tracking-tight ${k.color}`}>{k.value}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Bannière filtre ICP */}
+          {activeTab === 'actions' && nonQualifiedActions && nonQualifiedActions.length > 0 && !showLowScoreEmails && (
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 !text-sm !text-blue-600">
+                <IconFilter className="w-4 h-4" />
+                <span>{nonQualifiedActions.length} emails filtrés (score ICP &lt; {minScore})</span>
+              </div>
+              <button onClick={() => setShowLowScoreEmails(true)} className="!text-xs !text-blue-600 hover:underline font-medium">
+                Afficher
+              </button>
+            </div>
+          )}
+          {activeTab === 'actions' && showLowScoreEmails && nonQualifiedActions && nonQualifiedActions.length > 0 && (
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 !text-sm !text-amber-700">
+                <IconAlertCircle className="w-4 h-4" />
+                <span>{nonQualifiedActions.length} emails non qualifiés affichés</span>
+              </div>
+              <button onClick={() => setShowLowScoreEmails(false)} className="!text-xs !text-amber-600 hover:underline font-medium">
+                Masquer
+              </button>
+            </div>
+          )}
+
+          {activeTab === 'actions' ? (
+            /* LEADS */
+            (actions?.length ?? 0) === 0 ? (
+              <div className="card p-16 text-center">
+                <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4 !text-2xl">◎</div>
+                <div className="!text-base font-semibold !text-primary mb-1.5">Aucun lead en attente</div>
+                <div className="!text-sm !text-muted max-w-xs mx-auto">
+                  Les leads qualifiés ICP apparaîtront ici une fois reçus et analysés.
+                </div>
+              </div>
+            ) : (
+              <div className="bg-card border border-default rounded-lg overflow-hidden">
+                <DataTable<AutomationAction>
+                  columns={actionColumns}
+                  data={actions || []}
+                  emptyMessage="Aucun lead en attente"
+                  onRowClick={(row) => { setSelectedAction(row); setShowDetailModal(true); }}
+                  loading={statsLoading}
+                />
+              </div>
+            )
+          ) : (
+            /* TÂCHES */
+            <>
+              {/* Toolbar */}
+              <div className="flex items-center gap-2 flex-wrap mb-4">
+                <div className="relative w-64">
+                  <IconSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted" />
+                  <input
+                    type="text"
+                    value={taskSearch}
+                    onChange={(e) => setTaskSearch(e.target.value)}
+                    placeholder="Rechercher…"
+                    className="w-full pl-9 pr-3 py-2 !text-sm border border-default rounded-lg bg-card focus:outline-none focus:border-primary"
+                  />
+                </div>
+                <div className="flex gap-1">
+                  {(['Toutes', 'Urgent', 'Prioritaire', 'Normal'] as const).map(p => (
+                    <button
+                      key={p}
+                      onClick={() => setFilterPrio(p)}
+                      className={`px-2.5 py-1.5 rounded-lg !text-xs font-medium transition-all whitespace-nowrap ${
+                        filterPrio === p
+                          ? 'bg-muted border border-default !text-primary'
+                          : 'bg-card border border-default !text-muted hover:!text-primary'
+                      }`}
+                    >
+                      {p !== 'Toutes' && <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1 ${
+                        p === 'Urgent' ? 'bg-red-500' : p === 'Prioritaire' ? 'bg-amber-500' : 'bg-muted'
+                      }`} />}
+                      {p}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-1">
+                  {(['Tous', 'En attente', 'Annulé'] as const).map(s => (
+                    <button
+                      key={s}
+                      onClick={() => setFilterStatut(s)}
+                      className={`px-2.5 py-1.5 rounded-lg !text-xs font-medium transition-all ${
+                        filterStatut === s ? 'bg-muted border border-default !text-primary' : 'bg-card border border-default !text-muted hover:!text-primary'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+                <div className="ml-auto flex gap-3 !text-xs !text-muted items-center">
+                  <span><strong className="!text-primary">{taskCounts.attente}</strong> en attente</span>
+                  <span><strong className="!text-red-500">{taskCounts.urgent}</strong> urgents</span>
+                </div>
+              </div>
+
+              <div className="bg-card border border-default rounded-lg overflow-hidden">
+                <DataTable<FollowUpTask>
+                  columns={taskColumns}
+                  data={filteredTasks}
+                  emptyMessage="Aucune tâche trouvée"
+                  selectable={true}
+                  onDeleteSelected={handleDeleteMultipleTasks}
+                  customActions={customTaskActions}
+                  getItemId={(item) => item.documentId || ''}
+                  getItemName={(item) => item.contact?.name || item.context?.from_name || 'Contact'}
+                  loading={statsLoading}
+                />
+              </div>
+
+              <div className="mt-3 flex items-center justify-between">
+                <span className="!text-xs !text-muted">{filteredTasks.length} tâche{filteredTasks.length > 1 ? 's' : ''} affichée{filteredTasks.length > 1 ? 's' : ''}</span>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
 
       <QuickEmailReplyModal
         action={selectedAction}

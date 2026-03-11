@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
 import {
@@ -11,9 +10,8 @@ import {
   fetchCreateAccount,
   fetchSubscriptionsUser,
 } from '@/lib/api';
-import { IconBrandGithub, IconEye, IconEyeOff } from '@tabler/icons-react';
+import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import ProgressiveTimeline from '@/app/components/ProgressiveTimeline';
 
 interface SubscriptionData {
   subscription_status: string;
@@ -23,23 +21,22 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const type = (searchParams.get('type') as 'login' | 'register') || 'login';
   const [isLogin, setIsLogin] = useState(type === 'login');
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [confirmPassword, setConfirmPassword] = React.useState('');
-  const [error, setError] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = React.useState('');
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
   const { authenticated, hasHydrated, login, user } = useAuth();
   const { showGlobalPopup } = usePopup();
-
   const { t } = useLanguage();
 
-  // Check for OAuth error in URL
   useEffect(() => {
     const urlError = searchParams.get('error');
     if (urlError) {
@@ -48,10 +45,8 @@ function LoginContent() {
     }
   }, [searchParams, showGlobalPopup]);
 
-  // Mettre à jour le mode quand l'URL change
   useEffect(() => {
-    const newType =
-      (searchParams.get('type') as 'login' | 'register') || 'login';
+    const newType = (searchParams.get('type') as 'login' | 'register') || 'login';
     setIsLogin(newType === 'login');
   }, [searchParams]);
 
@@ -59,38 +54,34 @@ function LoginContent() {
     e.preventDefault();
     setError('');
 
+    setIsSubmitting(true);
     try {
       if (isLogin) {
-        const data = await fetchLogin(username, password);
+        const identifier = isLogin ? username : email;
+        const data = await fetchLogin(identifier, password);
         if (data.jwt && data.user) {
           login(data.user, data.jwt);
-          showGlobalPopup('Login successful', 'success');
+          showGlobalPopup(t('login_successful') || 'Connexion réussie', 'success');
         } else {
-          console.error('Login failed');
-          setError('Invalid username or password');
-          showGlobalPopup('Invalid username or password', 'error');
+          setError(t('invalid_credentials') || 'Identifiants invalides');
+          showGlobalPopup(t('invalid_credentials') || 'Identifiants invalides', 'error');
         }
       } else {
         const data = await fetchCreateAccount(username, email, password);
         if (!data.error) {
           router.push('/login');
-          showGlobalPopup(
-            'Register successful, please login to continue',
-            'success'
-          );
+          showGlobalPopup(t('register_success_login') || 'Inscription réussie, connectez-vous pour continuer', 'success');
         } else {
-          console.error('Register failed');
-          setError('Register failed');
-          showGlobalPopup('Register failed', 'error');
+          setError(t('register_failed') || 'Erreur lors de l\'inscription');
+          showGlobalPopup(t('register_failed') || 'Erreur lors de l\'inscription', 'error');
         }
       }
-    } catch (error) {
-      console.error('Error during authentication:', error);
-      setError(error instanceof Error ? error.message : 'An error occurred');
-      showGlobalPopup(
-        error instanceof Error ? error.message : 'An error occurred',
-        'error'
-      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : (t('error_occurred') || 'Une erreur est survenue');
+      setError(message);
+      showGlobalPopup(message, 'error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -100,7 +91,6 @@ function LoginContent() {
     const checkSubscriptionAndRedirect = async () => {
       try {
         const subscription = await fetchSubscriptionsUser(user.id) as { data?: SubscriptionData[] };
-
         if (
           subscription?.data &&
           subscription.data.length > 0 &&
@@ -111,8 +101,7 @@ function LoginContent() {
         } else {
           router.push('/pricing');
         }
-      } catch (error) {
-        console.error('Error checking subscription:', error);
+      } catch {
         router.push('/pricing');
       }
     };
@@ -122,48 +111,36 @@ function LoginContent() {
 
   const toggleMode = () => {
     const newMode = !isLogin;
-    router.push(`/login?type=${newMode ? 'login' : 'register'}`);
+    router.push(`/login?type=${newMode ? 'register' : 'login'}`);
     setError('');
     setUsername('');
     setPassword('');
     setEmail('');
     setConfirmPassword('');
+    setPasswordError('');
     setConfirmPasswordError('');
   };
 
   const checkPassword = (value: string) => {
-    if (value !== password) {
-      setConfirmPasswordError('Passwords do not match');
-    } else {
-      setConfirmPasswordError('');
-    }
+    setConfirmPasswordError(value !== password ? (t('passwords_do_not_match') || 'Les mots de passe ne correspondent pas') : '');
   };
 
-  const validatePassword = (password: string) => {
+  const validatePassword = (pwd: string) => {
     const requirements = {
-      hasUpperCase: /[A-Z]/.test(password),
-      hasLowerCase: /[a-z]/.test(password),
-      hasNumbers: /\d/.test(password),
-      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-      isLongEnough: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(pwd),
+      hasLowerCase: /[a-z]/.test(pwd),
+      hasNumbers: /\d/.test(pwd),
+      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(pwd),
+      isLongEnough: pwd.length >= 8,
     };
-
-    const isStrong = Object.values(requirements).every(Boolean);
-
-    if (!isStrong) {
-      const missingRequirements = [];
-      if (!requirements.hasUpperCase)
-        missingRequirements.push('uppercase letter');
-      if (!requirements.hasLowerCase)
-        missingRequirements.push('lowercase letter');
-      if (!requirements.hasNumbers) missingRequirements.push('number');
-      if (!requirements.hasSpecialChar)
-        missingRequirements.push('special character');
-      if (!requirements.isLongEnough)
-        missingRequirements.push('at least 8 characters');
-      return `Password must contain ${missingRequirements.join(', ')}`;
-    }
-    return '';
+    if (Object.values(requirements).every(Boolean)) return '';
+    const missing = [];
+    if (!requirements.hasUpperCase) missing.push(t('uppercase') || 'majuscule');
+    if (!requirements.hasLowerCase) missing.push(t('lowercase') || 'minuscule');
+    if (!requirements.hasNumbers) missing.push(t('number') || 'chiffre');
+    if (!requirements.hasSpecialChar) missing.push(t('special_char') || 'caractère spécial');
+    if (!requirements.isLongEnough) missing.push(t('min_8_chars') || '8 caractères minimum');
+    return (t('password_requirements') || 'Le mot de passe doit contenir') + ' : ' + missing.join(', ');
   };
 
   const handleGoogleLogin = () => {
@@ -172,305 +149,343 @@ function LoginContent() {
     window.location.href = `${strapiUrl}/api/connect/google`;
   };
 
+  const features = [
+    t('feature_projects') || 'Gestion de projets & tâches',
+    t('feature_pipeline') || 'Pipeline commercial & CRM',
+    t('feature_invoices') || 'Factures & devis en 1 clic',
+    t('feature_smart_followup') || 'Smart Follow-Up par email',
+  ];
+
   return (
-    <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center py-12">
-      {/* Background avec grille subtile qui s'estompe */}
-      <div className="absolute inset-0 bg-page">
-        {/* Grille fine avec masque radial */}
-        <div 
-          className="absolute inset-0 opacity-[0.15]"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, var(--border-muted) 1px, transparent 1px),
-              linear-gradient(to bottom, var(--border-muted) 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px',
-            maskImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, black 0%, transparent 100%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, black 0%, transparent 100%)',
-          }}
-        />
+    <div
+      className="min-h-screen flex"
+      style={{
+        fontFamily: "'DM Sans', sans-serif",
+        background: '#f9fafb',
+      }}
+    >
+      <style>{`
+        .login-input {
+          width: 100%;
+          padding: 11px 14px;
+          border: 1.5px solid #e5e7eb;
+          border-radius: 9px;
+          font-size: 14px;
+          font-family: 'DM Sans', sans-serif;
+          color: #111827;
+          outline: none;
+          transition: border-color 0.15s, box-shadow 0.15s;
+          background: white;
+        }
+        .login-input:focus {
+          border-color: #111827;
+          box-shadow: 0 0 0 3px rgba(17,24,39,0.06);
+        }
+        .login-input::placeholder { color: #9ca3af; }
+        .login-btn {
+          width: 100%;
+          padding: 12px;
+          background: #111827;
+          color: white;
+          border: none;
+          border-radius: 9px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          font-family: 'DM Sans', sans-serif;
+          transition: background 0.15s, transform 0.1s;
+          letter-spacing: -0.01em;
+        }
+        .login-btn:hover:not(:disabled) { background: #1f2937; }
+        .login-btn:active:not(:disabled) { transform: scale(0.99); }
+        .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .login-btn-google {
+          width: 100%;
+          padding: 11px;
+          background: white;
+          color: #374151;
+          border: 1.5px solid #e5e7eb;
+          border-radius: 9px;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          font-family: 'DM Sans', sans-serif;
+          transition: all 0.15s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 9px;
+        }
+        .login-btn-google:hover:not(:disabled) { background: #f9fafb; border-color: #d1d5db; }
+        .login-btn-google:disabled { opacity: 0.6; cursor: not-allowed; }
+        .login-link {
+          color: #111827;
+          font-weight: 600;
+          text-decoration: none;
+          font-size: 13px;
+        }
+        .login-link:hover { text-decoration: underline; }
+        .login-label {
+          font-size: 13px;
+          font-weight: 500;
+          color: #374151;
+          margin-bottom: 6px;
+          display: block;
+        }
+        .login-divider {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          color: #9ca3af;
+          font-size: 12px;
+        }
+        .login-divider::before, .login-divider::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: #e5e7eb;
+        }
+        @keyframes loginFadeUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .login-fade-up { animation: loginFadeUp 0.4s ease both; }
+        .login-fade-up-1 { animation-delay: 0.05s; }
+        .login-fade-up-2 { animation-delay: 0.1s; }
+        .login-fade-up-3 { animation-delay: 0.15s; }
+        .login-fade-up-4 { animation-delay: 0.2s; }
+        .login-fade-up-5 { animation-delay: 0.25s; }
+      `}</style>
+
+      {/* Left panel — branding */}
+      <div
+        className="hidden lg:flex flex-col justify-between flex-shrink-0 relative overflow-hidden"
+        style={{ width: 440, background: '#111827', padding: '48px 44px' }}
+      >
+        <div style={{ position: 'absolute', top: -80, right: -80, width: 320, height: 320, borderRadius: '50%', background: 'rgba(255,255,255,0.03)' }} />
+        <div style={{ position: 'absolute', bottom: -60, left: -60, width: 240, height: 240, borderRadius: '50%', background: 'rgba(255,255,255,0.03)' }} />
+        <div style={{ position: 'absolute', top: '40%', right: -20, width: 160, height: 160, borderRadius: '50%', background: 'rgba(99,102,241,0.08)' }} />
+
+        <div className="relative z-10">
+          <div className="flex items-center gap-2.5 mb-14">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center border border-white/15" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <span className="text-white text-sm font-extrabold">ES</span>
+            </div>
+            <span className="text-white text-sm font-bold tracking-tight">Eclipse Studio</span>
+          </div>
+
+          <div className="mb-7">
+            <h2 className="text-[28px] font-bold text-white leading-tight tracking-tight mb-3">
+              {isLogin ? (t('all_your_business') || 'Tout votre business,') : (t('join_eclipse') || 'Rejoignez Eclipse')}
+              {isLogin && <br />}
+              {isLogin && (t('in_one_place') || 'au même endroit.')}
+            </h2>
+            <p className="text-sm text-white/50 leading-relaxed">
+              {isLogin
+                ? (t('login_tagline') || 'Clients, projets, factures, pipeline — gérez tout depuis un dashboard pensé pour les indépendants.')
+                : (t('create_your_account') || 'Créez votre compte et commencez à gérer votre activité en quelques minutes.')}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2.5">
+            {features.map((f, i) => (
+              <div key={i} className="flex items-center gap-2.5">
+                <div className="w-[18px] h-[18px] rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(99,102,241,0.25)' }}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(165,180,252,1)" strokeWidth="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+                <span className="text-sm text-white/65">{f}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative z-10 pt-6 border-t border-white/8">
+          <p className="text-sm text-white/40 leading-relaxed italic">
+            &quot;{t('login_quote') || "Le dashboard qui m'a fait gagner 3h par semaine sur l'admin."}&quot;
+          </p>
+          <div className="flex items-center gap-2 mt-2.5">
+            <div className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-[10px] font-bold text-white/60" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              AL
+            </div>
+            <span className="text-xs text-white/40">Arthur Le Goux — Eclipse Studio</span>
+          </div>
+        </div>
       </div>
 
-      {/* Container principal */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative z-10 w-full max-w-6xl mx-auto px-4"
-      >
-        <div className="backdrop-blur-2xl bg-card/50 rounded-3xl border border-default shadow-2xl overflow-hidden">
-          <div className="grid lg:grid-cols-2 grid-cols-1">
-            {/* Côté gauche - Formulaire */}
-            <div className="p-6 lg:p-10 flex flex-col justify-center">
-              {/* Logo */}
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="flex items-center gap-3 mb-6"
-              >
-               
+      {/* Right panel — form */}
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-12">
+        <div className="w-full max-w-[380px]">
+          <div className="login-fade-up mb-8">
+            <h1 className="text-[22px] font-bold text-[#111827] tracking-tight mb-1.5">
+              {isLogin ? (t('welcome_back') || 'Bon retour 👋') : (t('create_account') || 'Créer un compte')}
+            </h1>
+            <p className="text-sm text-[#6b7280]">
+              {isLogin
+                ? (t('connect_to_eclipse') || 'Connectez-vous à votre espace Eclipse Studio')
+                : (t('join_eclipse_studio') || 'Rejoignez Eclipse Studio en quelques clics')}
+            </p>
+          </div>
+
+          {/* Google */}
+          <div className="login-fade-up login-fade-up-1 mb-5">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isGoogleLoading}
+              className="login-btn-google"
+            >
+              {isGoogleLoading ? (
+                <div className="w-4 h-4 border-2 border-[#374151] border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+              )}
+              {isGoogleLoading ? (t('loading') || 'Chargement...') : (t('continue_with_google') || 'Continuer avec Google')}
+            </button>
+          </div>
+
+          <div className="login-fade-up login-fade-up-2 mb-5">
+            <div className="login-divider">{t('or_by_email') || 'ou par email'}</div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="login-fade-up login-fade-up-3">
+            {error && (
+              <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-4 mb-5">
+              {!isLogin && (
                 <div>
-                  <h1 className="lg:text-3xl text-2xl uppercase !text-primary mb-2 !text-center">
-                    {isLogin ? t('welcome_to_eclipse') : t('join_eclipse')}
-                  </h1>
-                  <p className="!text-xs !text-muted !text-right">
-                    {isLogin ? t('better_project_reviews_for_developers') : t('create_your_account')}
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Lien "Already have an account" / "Don't have an account" */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="flex items-center gap-2 mb-5"
-              >
-                <span className="!text-sm !text-muted">
-                  {isLogin ? t("don_t_have_an_account") : t("already_have_an_account")}
-                </span>
-                <button
-                  onClick={toggleMode}
-                  className="!text-sm !text-accent hover:!text-accent/80 font-medium transition-colors underline"
-                >
-                  {isLogin ? t('sign_up') : t('login')}
-                </button>
-              </motion.div>
-
-              {/* OAuth Buttons */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.35 }}
-                className="!text-left !text-xs !text-muted mb-2.5"
-              >
-                {isLogin 
-                  ? t('continue_with_oauth') || 'Continuez avec votre compte' 
-                  : t('signup_with_oauth') || 'Inscrivez-vous en un clic'}
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="grid grid-cols-2 gap-3 mb-5"
-              >
-                <button
-                  type="button"
-                  onClick={handleGoogleLogin}
-                  disabled={isGoogleLoading}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-card hover:bg-hover border border-default  transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isGoogleLoading ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                      <span className="!text-sm font-medium !text-secondary">Loading...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Image 
-                        src="/images/google-icon.png" 
-                        alt="Google" 
-                        width={20} 
-                        height={20}
-                        className="w-5 h-5"
-                      />
-                      <span className="!text-sm font-medium !text-secondary group-hover:!text-primary">{t('google')}</span>
-                    </>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-card hover:bg-hover border border-default  transition-all duration-200 group opacity-50 cursor-not-allowed"
-                  disabled
-                  title={t('coming_soon') || 'Prochainement'}
-                >
-                  <IconBrandGithub className="w-5 h-5 !text-secondary" />
-                  <span className="!text-sm font-medium !text-secondary">{t('github')}</span>
-                </button>
-              </motion.div>
-
-              {/* Divider */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="relative my-5"
-              >
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-default"></div>
-                </div>
-                <div className="relative flex justify-center !text-xs uppercase">
-                  <span className="bg-card px-2 !text-muted">{t('or')}</span>
-                </div>
-              </motion.div>
-
-              {/* Formulaire */}
-              <motion.form
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                onSubmit={handleSubmit}
-                className="space-y-3.5"
-              >
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="p-2.5 bg-danger-bg border border-danger "
-                  >
-                    <p className="!text-sm !text-danger !text-center">{error}</p>
-                  </motion.div>
-                )}
-
-                {/* Email/Username */}
-                <div className="space-y-1.5">
-                  <label className="!text-sm font-medium !text-secondary">
-                    {isLogin ? t('username') : t('email')}
-                  </label>
+                  <label className="login-label">{t('username') || 'Nom d\'utilisateur'}</label>
                   <input
-                    type={isLogin ? 'text' : 'email'}
-                    placeholder={isLogin ? t('enter_your_username') : t('name@example.com')}
-                    value={isLogin ? username : email}
-                    required
-                    autoComplete={isLogin ? 'username' : 'email'}
-                    onChange={e => isLogin ? setUsername(e.target.value) : setEmail(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                    className="login-input"
+                    type="text"
+                    placeholder="johndoe"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required={!isLogin}
+                    autoComplete="username"
                   />
                 </div>
-
-                {/* Username pour register */}
-                {!isLogin && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="space-y-1.5"
+              )}
+              <div>
+                <label className="login-label">{isLogin ? (t('email_or_username') || 'Email ou nom d\'utilisateur') : (t('email') || 'Email')}</label>
+                <input
+                  className="login-input"
+                  type={isLogin ? 'text' : 'email'}
+                  placeholder="arthur@eclipsestudio.fr"
+                  value={isLogin ? username : email}
+                  onChange={(e) => (isLogin ? setUsername(e.target.value) : setEmail(e.target.value))}
+                  required
+                  autoComplete={isLogin ? 'username' : 'email'}
+                />
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-1.5">
+                  <label className="login-label !mb-0">{t('password') || 'Mot de passe'}</label>
+                  {isLogin && (
+                    <Link href="/forgot-password" className="login-link !font-medium !text-[#6b7280]">
+                      {t('forgot_password') || 'Mot de passe oublié ?'}
+                    </Link>
+                  )}
+                </div>
+                <div className="relative">
+                  <input
+                    className="login-input pr-12"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (!isLogin) setPasswordError(validatePassword(e.target.value));
+                    }}
+                    required
+                    autoComplete={isLogin ? 'current-password' : 'new-password'}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9ca3af] hover:text-[#374151] transition-colors"
                   >
-                    <label className="!text-sm font-medium !text-secondary">{t('username')}</label>
-                    <input
-                      type="text"
-                      placeholder={t('choose_a_username')}
-                      value={username}
-                      required={!isLogin}
-                      autoComplete="username"
-                      onChange={e => setUsername(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
-                    />
-                  </motion.div>
-                )}
-
-                {/* Password */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                      <label className="!text-sm font-medium !text-secondary">{t('password')}</label>
-                    {isLogin && (
-                      <a
-                        href="/forgot-password"
-                        className="!text-xs !text-muted hover:!text-accent transition-colors"
-                      >
-                        {t('forgot_password')}
-                      </a>
-                    )}
-                  </div>
+                    {showPassword ? <IconEyeOff size={18} /> : <IconEye size={18} />}
+                  </button>
+                </div>
+                {passwordError && !isLogin && <p className="text-xs text-red-600 mt-1">{passwordError}</p>}
+              </div>
+              {!isLogin && (
+                <div>
+                  <label className="login-label">{t('confirm_password') || 'Confirmer le mot de passe'}</label>
                   <div className="relative">
                     <input
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder={t('enter_your_password')}
-                      value={password}
-                      required
-                      autoComplete={isLogin ? 'current-password' : 'new-password'}
-                      onChange={e => {
-                        setPassword(e.target.value);
-                        if (!isLogin) setPasswordError(validatePassword(e.target.value));
+                      className="login-input pr-12"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        checkPassword(e.target.value);
                       }}
-                      className="w-full px-4 py-2.5 pr-12 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      required={!isLogin}
+                      autoComplete="new-password"
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 !text-muted hover:!text-primary transition-colors"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9ca3af] hover:text-[#374151] transition-colors"
                     >
-                      {showPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
+                      {showConfirmPassword ? <IconEyeOff size={18} /> : <IconEye size={18} />}
                     </button>
                   </div>
-                  {passwordError && !isLogin && (
-                    <p className="!text-danger !text-xs mt-1">{passwordError}</p>
-                  )}
+                  {confirmPasswordError && <p className="text-xs text-red-600 mt-1">{confirmPasswordError}</p>}
                 </div>
-
-                {/* Confirm Password */}
-                {!isLogin && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="space-y-1.5"
-                  >
-                    <label className="!text-sm font-medium !text-secondary">{t('confirm_password')}</label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        placeholder={t('confirm_your_password')}
-                        value={confirmPassword}
-                        required={!isLogin}
-                        autoComplete="new-password"
-                        onChange={e => {
-                          setConfirmPassword(e.target.value);
-                          checkPassword(e.target.value);
-                        }}
-                        className="w-full px-4 py-2.5 pr-12 bg-input border border-input  !text-primary placeholder:!text-placeholder focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 !text-muted hover:!text-primary transition-colors"
-                      >
-                        {showConfirmPassword ? <IconEyeOff size={15} /> : <IconEye size={15} />}
-                      </button>
-                    </div>
-                    {confirmPasswordError && (
-                      <p className="!text-danger !text-xs mt-1">{confirmPasswordError}</p>
-                    )}
-                  </motion.div>
-                )}
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full bg-highlight hover:bg-highlight-hover !text-highlight-text font-semibold py-2.5 px-6  transition-all duration-200 shadow-lg hover:shadow-xl mt-5"
-                >
-                  {isLogin ? t('sign_in') : t('sign_up')}
-                </button>
-
-                {/* Terms */}
-                {!isLogin && (
-                  <p className="!text-xs !text-center !text-muted mt-3">
-                    {t('by_signing_up_you_agree_to_eclipse_s_terms_of_service')}
-                    <a href="#" className="!text-accent hover:underline">
-                      {t('terms_of_service')}
-                    </a>{' '}
-                    and{' '}
-                    <a href="#" className="!text-accent hover:underline">
-                      {t('privacy_policy')}
-                    </a>
-                  </p>
-                )}
-              </motion.form>
+              )}
             </div>
 
-            {/* Côté droit - Animation progressive timeline */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="relative lg:flex hidden flex-col items-center justify-center p-8 lg:p-10 border-l border-default overflow-hidden"
-            >
-              <ProgressiveTimeline />
-            </motion.div>
+            <div className="login-fade-up login-fade-up-4 mb-6">
+              <button type="submit" disabled={isSubmitting} className="login-btn">
+                {isSubmitting ? (t('loading') || 'Chargement...') : (isLogin ? (t('sign_in') || 'Se connecter') : (t('sign_up') || 'Créer un compte'))}
+              </button>
+            </div>
+
+            {!isLogin && (
+              <p className="text-xs text-center text-[#6b7280] mb-4">
+                {t('by_signing_up_you_agree_to_eclipse_s_terms_of_service')}
+                <Link href="/terms" className="login-link"> {t('terms_of_service')} </Link>
+                {t('and')}{' '}
+                <Link href="/privacy" className="login-link"> {t('privacy_policy')}</Link>
+              </p>
+            )}
+
+            <div className="login-fade-up login-fade-up-5 text-center">
+              <span className="text-sm text-[#9ca3af]">
+                {isLogin ? (t('don_t_have_an_account') || 'Pas encore de compte ? ') : (t('already_have_an_account') || 'Déjà un compte ? ')}
+              </span>
+              <button type="button" onClick={toggleMode} className="login-link ml-1 bg-transparent border-none cursor-pointer">
+                {isLogin ? (t('sign_up') || 'Créer un compte') : (t('login') || 'Se connecter')}
+              </button>
+            </div>
+          </form>
+
+          <div className="mt-10 text-center">
+            <span className="text-[11px] text-[#d1d5db]">© 2026 Eclipse Studio · </span>
+            <Link href="/privacy" className="text-[11px] text-[#d1d5db] no-underline hover:underline">
+              Confidentialité
+            </Link>
+            <span className="text-[11px] text-[#d1d5db]"> · </span>
+            <Link href="/terms" className="text-[11px] text-[#d1d5db] no-underline hover:underline">
+              CGU
+            </Link>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -478,16 +493,16 @@ function LoginContent() {
 function LoginLoading() {
   const { t } = useLanguage();
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-page">
+    <div className="min-h-screen w-full flex items-center justify-center" style={{ background: '#f9fafb' }}>
       <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-          <p className="!text-muted">{t('loading')}...</p>
+        <div className="w-12 h-12 border-4 border-[#111827] border-t-transparent rounded-full animate-spin" />
+        <p className="text-[#6b7280]">{(t('loading') || 'Chargement')}...</p>
       </div>
     </div>
   );
 }
 
-export default function Login() {
+export default function LoginPage() {
   return (
     <Suspense fallback={<LoginLoading />}>
       <LoginContent />

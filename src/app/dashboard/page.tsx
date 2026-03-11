@@ -315,11 +315,11 @@ export default function DashboardPage() {
                   {stats.revenueByMonth.map((month, i) => {
                     const maxValue = Math.max(...stats.revenueByMonth.map(m => m.value), 1);
                     const heightPercent = (month.value / maxValue) * 100;
-                    const isCurrentMonth = i === stats.revenueByMonth.length - 1;
+                    const isCurrent = i === stats.revenueByMonth.length - 1;
                     return (
                       <div key={i} className="flex-1 flex flex-col items-center gap-1">
                         <div 
-                          className={`w-full rounded-t transition-all bg-primary`}
+                          className={`w-full rounded-t transition-all ${isCurrent ? 'bg-primary' : 'bg-muted'}`}
                           style={{ height: `${Math.max(heightPercent * 0.7, month.value > 0 ? 4 : 2)}px` }}
                         />
                         <span className="!text-[10px] !text-muted">{month.month}</span>
