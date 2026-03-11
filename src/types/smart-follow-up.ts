@@ -109,6 +109,27 @@ export interface AutomationSettings {
   updatedAt: string;
 }
 
+export interface TaskContext {
+  original_subject?: string;
+  from_email?: string;
+  from_name?: string;
+  client_name?: string;
+  client_enterprise?: string;
+  received_at?: string;
+  amount?: string;
+  deadline?: string;
+  extracted_entities?: string[];
+}
+
+export interface TaskAIAnalysis {
+  intent?: string;
+  sentiment?: 'positive' | 'neutral' | 'negative';
+  urgency?: 'low' | 'medium' | 'high' | 'urgent';
+  entities?: string[];
+  language?: string;
+  confidence?: number;
+}
+
 export interface FollowUpTask {
   id: number;
   documentId: string;
@@ -132,8 +153,8 @@ export interface FollowUpTask {
   scheduled_for: string;
   status_follow_up: 'pending' | 'in_progress' | 'completed' | 'cancelled' | 'failed';
   priority: 'low' | 'medium' | 'high' | 'urgent';
-  context: unknown;
-  ai_analysis: unknown;
+  context?: TaskContext;
+  ai_analysis?: TaskAIAnalysis;
   completed_at: string | null;
   failure_reason: string | null;
   notes: string | null;
