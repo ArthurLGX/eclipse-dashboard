@@ -27,6 +27,12 @@ interface CustomColors {
   headerTitleColor: string;
   gradientAngle: number;
   fontFamily: string;
+  buttonPaddingX?: number;
+  buttonPaddingY?: number;
+  buttonRounded?: number;
+  buttonHasBorder?: boolean;
+  buttonBorderWidth?: number;
+  buttonBorderColor?: string;
 }
 
 interface FontOption {
@@ -577,6 +583,80 @@ export default function ThemeCustomizer({
         </div>
       </div>
 
+      {/* Button Style (padding, rounded, border) */}
+      <div className="space-y-4 pt-4 border-t border-default">
+        <h4 className="!text-sm font-medium !text-secondary">
+          {t('button_style') || 'Style du bouton'}
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label className="block !text-xs !text-muted mb-1">{t('button_padding_x') || 'Padding horizontal (px)'}</label>
+            <input
+              type="number"
+              min="8"
+              max="64"
+              value={customColors.buttonPaddingX ?? 32}
+              onChange={(e) => setCustomColors(prev => ({ ...prev, buttonPaddingX: Math.max(8, Math.min(64, parseInt(e.target.value) || 32)) }))}
+              className="input w-full !text-sm"
+            />
+          </div>
+          <div>
+            <label className="block !text-xs !text-muted mb-1">{t('button_padding_y') || 'Padding vertical (px)'}</label>
+            <input
+              type="number"
+              min="8"
+              max="48"
+              value={customColors.buttonPaddingY ?? 16}
+              onChange={(e) => setCustomColors(prev => ({ ...prev, buttonPaddingY: Math.max(8, Math.min(48, parseInt(e.target.value) || 16)) }))}
+              className="input w-full !text-sm"
+            />
+          </div>
+          <div>
+            <label className="block !text-xs !text-muted mb-1">{t('button_rounded') || 'Coins arrondis (px)'}</label>
+            <input
+              type="number"
+              min="0"
+              max="24"
+              value={customColors.buttonRounded ?? 8}
+              onChange={(e) => setCustomColors(prev => ({ ...prev, buttonRounded: Math.max(0, Math.min(24, parseInt(e.target.value) || 8)) }))}
+              className="input w-full !text-sm"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="block !text-xs !text-muted">{t('button_border') || 'Bordure'}</label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={customColors.buttonHasBorder ?? false}
+                onChange={(e) => setCustomColors(prev => ({ ...prev, buttonHasBorder: e.target.checked }))}
+                className="rounded accent-accent"
+              />
+              <span className="!text-sm !text-primary">{t('button_show_border') || 'Afficher la bordure'}</span>
+            </label>
+            {(customColors.buttonHasBorder ?? false) && (
+              <div className="flex items-center gap-2 mt-1">
+                <input
+                  type="number"
+                  min="1"
+                  max="6"
+                  value={customColors.buttonBorderWidth ?? 2}
+                  onChange={(e) => setCustomColors(prev => ({ ...prev, buttonBorderWidth: Math.max(1, Math.min(6, parseInt(e.target.value) || 2)) }))}
+                  className="input w-16 !text-sm"
+                  title={t('button_border_width') || 'Épaisseur'}
+                />
+                <input
+                  type="color"
+                  value={customColors.buttonBorderColor ?? '#333333'}
+                  onChange={(e) => setCustomColors(prev => ({ ...prev, buttonBorderColor: e.target.value }))}
+                  className="w-8 h-8 cursor-pointer border border-default"
+                  title={t('button_border_color') || 'Couleur'}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Live Preview */}
       <div className="pt-4 border-t border-default">
         <p className="!text-sm !text-secondary mb-3">{t('color_preview') || 'Aperçu'}</p>
@@ -613,11 +693,16 @@ export default function ThemeCustomizer({
               {t('sample_text_preview') || 'Exemple de texte avec la police sélectionnée.'}
             </p>
             <button
-              className="px-6 py-2  !text-sm font-medium"
+              className="!text-sm font-medium"
               style={{ 
                 backgroundColor: customColors.buttonColor,
                 color: customColors.buttonTextColor,
                 fontFamily: `'${customColors.fontFamily}', Arial, sans-serif`,
+                padding: `${customColors.buttonPaddingY ?? 16}px ${customColors.buttonPaddingX ?? 32}px`,
+                borderRadius: `${customColors.buttonRounded ?? 8}px`,
+                border: (customColors.buttonHasBorder ?? false)
+                  ? `${customColors.buttonBorderWidth ?? 2}px solid ${customColors.buttonBorderColor ?? '#333333'}`
+                  : 'none',
               }}
             >
               {ctaText || t('sample_button') || 'Bouton exemple'}

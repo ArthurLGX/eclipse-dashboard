@@ -122,6 +122,13 @@ interface EmailPreviewProps {
   buttonTextColor?: string;
   headerBackgroundUrl?: string;
   fontFamily?: string;
+  /** Style du bouton CTA */
+  buttonPaddingX?: number;
+  buttonPaddingY?: number;
+  buttonRounded?: number;
+  buttonHasBorder?: boolean;
+  buttonBorderWidth?: number;
+  buttonBorderColor?: string;
   /** Données de signature email - si fournies, utilisées pour le footer */
   signatureData?: CreateEmailSignatureData | null;
   translations: {
@@ -161,6 +168,12 @@ function EmailPreview({
   buttonTextColor,
   headerBackgroundUrl,
   fontFamily,
+  buttonPaddingX = 32,
+  buttonPaddingY = 16,
+  buttonRounded = 8,
+  buttonHasBorder = false,
+  buttonBorderWidth = 2,
+  buttonBorderColor = '#333333',
   signatureData,
   translations,
 }: EmailPreviewProps) {
@@ -239,13 +252,16 @@ function EmailPreview({
           <div className="!text-center my-8">
             <a 
               href={ctaUrl}
-              className={`inline-block px-8 py-4  font-bold shadow-lg ${
+              className={`inline-block font-bold shadow-lg ${
                 isPromo ? 'text-lg' : ''
               }`}
               style={{ 
                 backgroundColor: ctaButtonColor,
                 color: ctaButtonTextColor,
                 fontFamily: emailFontFamily,
+                padding: `${buttonPaddingY}px ${buttonPaddingX}px`,
+                borderRadius: `${buttonRounded}px`,
+                border: buttonHasBorder ? `${buttonBorderWidth}px solid ${buttonBorderColor}` : 'none',
               }}
             >
               {ctaText}
@@ -1417,6 +1433,13 @@ export default function ComposeNewsletterPage() {
     headerTitleColor: '#1F2937', // Couleur du titre sur le header
     gradientAngle: 90,
     fontFamily: 'Inter', // Police Google Fonts
+    // Style du bouton CTA
+    buttonPaddingX: 32,
+    buttonPaddingY: 16,
+    buttonRounded: 8,
+    buttonHasBorder: false,
+    buttonBorderWidth: 2,
+    buttonBorderColor: '#333333',
   });
   
   // UI State for theme customization in content step
@@ -2142,15 +2165,16 @@ export default function ComposeNewsletterPage() {
 
   // Apply a template to the current settings
   const applyTemplate = useCallback((template: CustomTemplate) => {
-    setCustomColors({
-      gradientStops: template.gradient_stops || [],
-      gradientAngle: template.gradient_angle || 135,
-      buttonColor: template.button_color || '#10b981',
-      buttonTextColor: template.button_text_color || '#ffffff',
-      textColor: template.text_color || '#374151',
-      headerTitleColor: template.header_title_color || '#ffffff',
-      fontFamily: template.font_family || 'Inter, sans-serif',
-    });
+    setCustomColors(prev => ({
+      ...prev,
+      gradientStops: template.gradient_stops || prev.gradientStops,
+      gradientAngle: template.gradient_angle ?? prev.gradientAngle,
+      buttonColor: template.button_color || prev.buttonColor,
+      buttonTextColor: template.button_text_color || prev.buttonTextColor,
+      textColor: template.text_color || prev.textColor,
+      headerTitleColor: template.header_title_color || prev.headerTitleColor,
+      fontFamily: (template.font_family || prev.fontFamily).split(',')[0]?.trim() || prev.fontFamily,
+    }));
     if (template.header_background_url) {
       setHeaderBackgroundUrl(template.header_background_url);
     }
@@ -2345,6 +2369,12 @@ export default function ComposeNewsletterPage() {
         headerTitleColor: customColors.headerTitleColor,
         buttonColor: customColors.buttonColor,
         buttonTextColor: customColors.buttonTextColor,
+        buttonPaddingX: customColors.buttonPaddingX,
+        buttonPaddingY: customColors.buttonPaddingY,
+        buttonRounded: customColors.buttonRounded,
+        buttonHasBorder: customColors.buttonHasBorder,
+        buttonBorderWidth: customColors.buttonBorderWidth,
+        buttonBorderColor: customColors.buttonBorderColor,
         headerBackgroundUrl,
         fontFamily: customColors.fontFamily,
         signatureData,
@@ -2463,6 +2493,12 @@ export default function ComposeNewsletterPage() {
     headerTitleColor,
     buttonColor,
     buttonTextColor,
+    buttonPaddingX = 32,
+    buttonPaddingY = 16,
+    buttonRounded = 8,
+    buttonHasBorder = false,
+    buttonBorderWidth = 2,
+    buttonBorderColor = '#333333',
     headerBackgroundUrl: headerBgUrl,
     fontFamily,
     signatureData: sig,
@@ -2480,6 +2516,12 @@ export default function ComposeNewsletterPage() {
     headerTitleColor?: string;
     buttonColor?: string;
     buttonTextColor?: string;
+    buttonPaddingX?: number;
+    buttonPaddingY?: number;
+    buttonRounded?: number;
+    buttonHasBorder?: boolean;
+    buttonBorderWidth?: number;
+    buttonBorderColor?: string;
     headerBackgroundUrl?: string;
     fontFamily?: string;
     signatureData?: CreateEmailSignatureData | null;
@@ -2624,7 +2666,7 @@ export default function ComposeNewsletterPage() {
               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 32px 0;">
                 <tr>
                   <td align="center" style="text-align: center;">
-                    <a href="${ctaLink}" style="display: inline-block; padding: 16px 32px; background-color: ${ctaButtonColor}; color: ${ctaButtonTextColor}; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; font-family: ${fontFamilyCSS};">
+                    <a href="${ctaLink}" style="display: inline-block; padding: ${buttonPaddingY}px ${buttonPaddingX}px; background-color: ${ctaButtonColor}; color: ${ctaButtonTextColor}; text-decoration: none; border-radius: ${buttonRounded}px; font-weight: bold; font-size: 16px; font-family: ${fontFamilyCSS};${buttonHasBorder ? ` border: ${buttonBorderWidth}px solid ${buttonBorderColor};` : ''}">
                       ${cta}${isPromo ? ' →' : ''}
                     </a>
                   </td>
@@ -4186,6 +4228,12 @@ export default function ComposeNewsletterPage() {
                             buttonTextColor={customColors.buttonTextColor}
                             headerBackgroundUrl={headerBackgroundUrl}
                             fontFamily={customColors.fontFamily}
+                            buttonPaddingX={customColors.buttonPaddingX}
+                            buttonPaddingY={customColors.buttonPaddingY}
+                            buttonRounded={customColors.buttonRounded}
+                            buttonHasBorder={customColors.buttonHasBorder}
+                            buttonBorderWidth={customColors.buttonBorderWidth}
+                            buttonBorderColor={customColors.buttonBorderColor}
                             signatureData={signatureData}
                             translations={emailPreviewTranslations}
                           />
